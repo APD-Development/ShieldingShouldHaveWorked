@@ -72,7 +72,9 @@ public class AuthoredLanguageTest {
   // Plus Shielding amount/challenge descriptions and Earthen Armor protection, using existing effects.
   // Plus two existing elixir challenge warnings and the live Arcane Armor protection description.
   // Plus a Might elixir description without a made-up health amount when no hero is loaded.
-  assertEquals(9,files);assertEquals("Reviewed English message inventory",5312,values);
+  // Plus the existing Shard identification interaction in the known Identify scroll description.
+  // Plus three current-rule notices when the existing Healing modifier is zero.
+  assertEquals(9,files);assertEquals("Reviewed English message inventory",5316,values);
  }
  @Test public void localizedAlternativesDoNotDamageInnocentWordsOrOtherLanguages(){
   for(String innocent:new String[]{"Hell","slut","kesialan","Verdammte Charaktere","dictionary","classic","Scunthorpe","Prick","Fan of Blades"})assertEquals(innocent,AuthoredLanguage.select(innocent,false));

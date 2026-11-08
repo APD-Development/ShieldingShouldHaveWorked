@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -27,6 +30,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Foresight;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.watabou.noosa.audio.Sample;
 
+import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+
 public class ScrollOfForesight extends ExoticScroll {
 	
 	{
@@ -46,4 +51,9 @@ public class ScrollOfForesight extends ExoticScroll {
 		readAnimation();
 	}
 	
+    @Override
+    public String desc() {
+        return isKnown() ? Messages.get(this, "desc", Foresight.DISTANCE, Messages.decimalFormat("0.##", Foresight.DURATION)) : super.desc();
+    }
+
 }

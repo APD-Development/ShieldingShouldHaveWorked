@@ -50,7 +50,8 @@ public final class BlandfruitExplanation {
         if(fruit.potionAttrib instanceof PotionOfParalyticGas)return "_Eating releases paralysing gas around you._ Throw it to release the gas at the landing tile instead.";
         if(fruit.potionAttrib instanceof PotionOfFrost)return "_Eating releases freezing cold around you._ Throw it to freeze the area around the landing tile instead.";
         if(fruit.potionAttrib instanceof PotionOfHealing){
-            if(Dungeon.isChallenged(Challenges.NO_HEALING))return "_Pharmacophobia: poisons you instead of healing._ It still cures existing ailments first.";
+            if(Dungeon.hero!=null&&Dungeon.isChallenged(Challenges.NO_HEALING))return "_Pharmacophobia: poisons you instead of healing._ It still cures existing ailments first.";
+            if(Dungeon.hero!=null&&com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomHealingHooks.disabled())return "Your current rules disable healing. Still cures ailments such as poison, bleeding and blindness.";
             return "Gradually restores health and cures ailments such as poison, bleeding and blindness. Your healing setting affects how much health you recover.";
         }
         if(fruit.potionAttrib instanceof PotionOfStrength)return "Permanently increases your Strength by _1_.";

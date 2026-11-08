@@ -1974,4 +1974,40 @@ public class MechanicsExplanationTest {
   }finally{com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion.apdHandler(previous);}
  }
 
+ @Test public void identifyScrollNormalTextMatchesTheRealShardReadinessPath(){
+  com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfIdentify scroll=new com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfIdentify();scroll.anonymize();assertFalse(scroll.desc().contains("ready"));
+  com.shatteredpixel.shatteredpixeldungeon.items.trinkets.ShardOfOblivion shard=new com.shatteredpixel.shatteredpixeldungeon.items.trinkets.ShardOfOblivion();hero.belongings.backpack.items.add(shard);
+  String text=scroll.desc();assertTrue(text,text.contains("equipment becomes ready"));
+  com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sword weapon=new com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sword();assertFalse(weapon.isIdentified());
+  com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfIdentify.IDItem(weapon);assertTrue(weapon.readyToIdentify());assertFalse(weapon.isIdentified());
+  shard.level(3);assertEquals(text,scroll.desc());
+  com.shatteredpixel.shatteredpixeldungeon.items.scrolls.Scroll hidden=new com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfIdentify(){@Override public boolean isKnown(){return false;}};assertFalse(hidden.desc().contains("Shard"));assertFalse(hidden.desc().contains("ready"));
+  hero.belongings.backpack.items.remove(shard);assertFalse(scroll.desc().contains("ready"));
+  com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfIdentify.IDItem(weapon);assertTrue(weapon.isIdentified());
+ }
+ @Test public void allRegularAndExoticScrollDescriptionsKeepUnknownIdentityHidden()throws Exception{
+  Object previous=com.shatteredpixel.shatteredpixeldungeon.items.scrolls.Scroll.apdHandler();
+  Random.pushGenerator(1992);try{com.shatteredpixel.shatteredpixeldungeon.items.scrolls.Scroll.initLabels();}finally{Random.popGenerator();}
+  try{
+   java.util.List<Class<?>> types=new java.util.ArrayList<>();java.util.Collections.addAll(types,com.shatteredpixel.shatteredpixeldungeon.items.Generator.Category.SCROLL.classes);types.addAll(com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ExoticScroll.exoToReg.keySet());
+   for(Class<?> type:types){
+    com.shatteredpixel.shatteredpixeldungeon.items.scrolls.Scroll scroll=(com.shatteredpixel.shatteredpixeldungeon.items.scrolls.Scroll)type.getDeclaredConstructor().newInstance();
+    if(type==com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfGathering.class||type==com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfForwarding.class){assertTrue("Approved fixed-name prototypes remain always known",scroll.isKnown());assertFalse(scroll.desc().contains("Who knows"));continue;}
+    assertFalse(type.getSimpleName(),scroll.isKnown());
+    Class<?> family=scroll instanceof com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ExoticScroll?com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ExoticScroll.class:com.shatteredpixel.shatteredpixeldungeon.items.scrolls.Scroll.class;
+    assertEquals(type.getSimpleName(),com.shatteredpixel.shatteredpixeldungeon.messages.Messages.get(family,"unknown_desc"),scroll.desc());
+   }
+  }finally{com.shatteredpixel.shatteredpixeldungeon.items.scrolls.Scroll.apdHandler(previous);}
+ }
+
+ @Test public void disabledHealingDescriptionsMatchRealZeroHealingWithoutDisablingShielding()throws Exception{
+  com.watabou.utils.Bundle state=new com.watabou.utils.Bundle(),rules=new com.watabou.utils.Bundle();com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomDungeonRules.defaults().with(com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomDungeonRules.Slider.HEALING,0).store(rules);state.put("apd_custom_rules",rules);Dungeon.apdRestoreCustomRules(state);
+  hero.sprite=quietSprite();hero.HP=10;hero.HT=100;
+  com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing potion=new com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing();potion.anonymize();assertTrue(potion.desc().contains("disable healing"));potion.apply(hero);hero.buff(Healing.class).act();assertEquals(10,hero.HP);
+  com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfAquaticRejuvenation aqua=new com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfAquaticRejuvenation();assertTrue(aqua.desc().contains("prevent this elixir"));aqua.apply(hero);Dungeon.level.water[hero.pos]=true;hero.buff(com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfAquaticRejuvenation.AquaHealing.class).act();assertEquals(10,hero.HP);
+  assertTrue(new com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfHoneyedHealing().desc().contains("disable your healing"));
+  com.shatteredpixel.shatteredpixeldungeon.items.food.Blandfruit fruit=new com.shatteredpixel.shatteredpixeldungeon.items.food.Blandfruit();fruit.imbuePotion(new com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing());assertTrue(BlandfruitExplanation.summary(fruit).contains("disable healing"));
+  com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfShielding shield=new com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfShielding();shield.anonymize();shield.apply(hero);assertEquals(70,hero.buff(Barrier.class).shielding());assertTrue(shield.desc().contains("70 shielding"));assertFalse(shield.desc().contains("disable"));
+ }
+
 }

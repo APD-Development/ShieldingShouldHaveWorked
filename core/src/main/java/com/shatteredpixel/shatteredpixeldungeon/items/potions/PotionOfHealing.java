@@ -212,6 +212,9 @@ public class PotionOfHealing extends Potion {
         if (isKnown() && Dungeon.hero != null && Dungeon.isChallenged(Challenges.NO_HEALING)) {
             return Messages.get(this, "desc_pharmacophobia");
         }
+        if (isKnown() && Dungeon.hero != null && com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomHealingHooks.disabled()) {
+            return Messages.get(this, "desc_disabled_healing");
+        }
         return super.desc();
     }
 

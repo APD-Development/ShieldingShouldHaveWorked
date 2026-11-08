@@ -87,7 +87,9 @@ public class ElixirOfHoneyedHealing extends Elixir {
 
     @Override
     public String desc() {
-        return Messages.get(this, Dungeon.hero != null && Dungeon.isChallenged(Challenges.NO_HEALING) ? "desc_pharmacophobia" : "desc");
+        if (Dungeon.hero != null && Dungeon.isChallenged(Challenges.NO_HEALING)) return Messages.get(this, "desc_pharmacophobia");
+        if (Dungeon.hero != null && com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomHealingHooks.disabled()) return Messages.get(this, "desc_disabled_healing");
+        return super.desc();
     }
 
 	public static class Recipe extends com.shatteredpixel.shatteredpixeldungeon.items.Recipe.SimpleRecipe {

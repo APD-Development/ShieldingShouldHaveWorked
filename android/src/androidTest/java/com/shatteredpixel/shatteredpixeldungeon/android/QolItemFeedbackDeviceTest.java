@@ -373,7 +373,7 @@ public class QolItemFeedbackDeviceTest {
             TopScoresDeviceTest.screenshot("qol-dew-settings.png");TopScoresDeviceTest.render(()->settings.get().hide());
             com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfMirrorImage mirror=new com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfMirrorImage();
             TopScoresDeviceTest.render(()->{mirror.identify();mirror.quantity(2);assertTrue(mirror.collect());});
-            showItem(mirror,"fade upon taking damage","qol-mirror-scroll-full-text.png");
+            showItem(mirror,"disappear when damaged","qol-mirror-scroll-full-text.png");
             Sword sword=new Sword();sword.levelKnown=true;sword.cursedKnown=true;
             TopScoresDeviceTest.render(()->{RingOfForce r=new RingOfForce();r.anonymize();r.levelKnown=true;r.cursedKnown=true;Dungeon.hero.belongings.ring=r;r.activate(Dungeon.hero);});
             TopScoresDeviceTest.render(()->{

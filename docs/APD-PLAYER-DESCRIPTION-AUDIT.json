@@ -3,9 +3,9 @@
   "baseline_commit": "32f4f3beab4c23b404c3cb1d43bfa06a39165e70",
   "counting": "Source units, not distinct item types. reviewed_units includes partial reviews; completed_units excludes partial/pending dependency. corrected_units counts source units with corrections, including incomplete reviews. Inventory/export/tests alone are not an individual review.",
   "source_units": 427,
-  "message_entries": 2404,
-  "reviewed_units": 113,
-  "corrected_units": 105,
+  "message_entries": 2408,
+  "reviewed_units": 136,
+  "corrected_units": 128,
   "unresolved_units": 381,
   "category_counts": {
     "apd": 1,
@@ -89,14 +89,14 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/BlandfruitExplanation.java",
-      "sha256": "d1baf613704845975069bc1330983250339a20f36b2a8d696b7ca905c098138a",
+      "sha256": "035b9054fef3d5b3c03c2e638197094f9dd86ddd7527efbff8b1442ec6d92bbb",
       "category": "mechanics",
       "status": "PARTIAL_REVIEW",
       "description_methods": [
         "summary",
         "details"
       ],
-      "review_notes": "Player-language food rewrites; actual source/variant evidence recorded in food entries. PotionExplanation-dependent fruit details pending."
+      "review_notes": "Player-language food rewrites; actual source/variant evidence recorded in food entries. PotionExplanation-dependent fruit details pending. Normal zero-Healing rule notice now matches actual hero healing behavior; Shielding remains unaffected."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/BlastExplanation.java",
@@ -1488,14 +1488,14 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/potions/PotionOfHealing.java",
-      "sha256": "e012106a401ee128091c09e432e42096cff7cf4ed6220077c5954582bd24e2ed",
+      "sha256": "25cdae07b470c6c1dfbbc5051ec47c82204454372e831b93bbe5df119af0cf63",
       "category": "potions",
       "status": "REVIEWED_CORRECTED",
       "description_methods": [
         "info"
       ],
       "wording_corrected": true,
-      "review_notes": "Regular potion source/effect and known/unknown normal description reviewed. Unknown type preserved for all 24 regular/exotic types, durations sourced from actual buffs, existing counters retained, challenge warning applies only to known Healing. Source review complete; Android render verification remains pending."
+      "review_notes": "Regular potion source/effect and known/unknown normal description reviewed. Unknown type preserved for all 24 regular/exotic types, durations sourced from actual buffs, existing counters retained, challenge warning applies only to known Healing. Source review complete; Android render verification remains pending. Normal zero-Healing rule notice now matches actual hero healing behavior; Shielding remains unaffected."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/potions/PotionOfInvisibility.java",
@@ -1639,14 +1639,14 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/potions/elixirs/ElixirOfAquaticRejuvenation.java",
-      "sha256": "a9af3e37f0e0baaeb92f57f4015bbc35f9ae8ec56bc8a045333eaebfd6aa06b7",
+      "sha256": "fcb1c900601d2446fd4f29f66a23cc482e712133a3b7311ce63ffb971f337c73",
       "category": "potions",
       "status": "PARTIAL_REVIEW",
       "description_methods": [
         "desc"
       ],
       "wording_corrected": true,
-      "review_notes": "Ordinary description corrected after source review. Existing damage/cost/status logic retained; known live effects and challenge/hidden-state cases tested. Complete class variants, optional panels where applicable and Android rendering remain under review."
+      "review_notes": "Ordinary description corrected after source review. Existing damage/cost/status logic retained; known live effects and challenge/hidden-state cases tested. Complete class variants, optional panels where applicable and Android rendering remain under review. Normal zero-Healing rule notice now matches actual hero healing behavior; Shielding remains unaffected."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/potions/elixirs/ElixirOfArcaneArmor.java",
@@ -1677,12 +1677,12 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/potions/elixirs/ElixirOfHoneyedHealing.java",
-      "sha256": "02fe0e2a5154511480bee694c2b3fbaa0c24829801f6d5cadbb68e1710804449",
+      "sha256": "8ffff7719b8193479b15d31d62be7b442d8484bfd81ebf4512c061d77d53c20f",
       "category": "potions",
       "status": "PARTIAL_REVIEW",
       "description_methods": [],
       "wording_corrected": true,
-      "review_notes": "Ordinary description corrected after source review. Existing damage/cost/status logic retained; known live effects and challenge/hidden-state cases tested. Complete class variants, optional panels where applicable and Android rendering remain under review."
+      "review_notes": "Ordinary description corrected after source review. Existing damage/cost/status logic retained; known live effects and challenge/hidden-state cases tested. Complete class variants, optional panels where applicable and Android rendering remain under review. Normal zero-Healing rule notice now matches actual hero healing behavior; Shielding remains unaffected."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/potions/elixirs/ElixirOfIcyTouch.java",
@@ -2167,73 +2167,93 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/scrolls/ScrollOfIdentify.java",
-      "sha256": "f535ad61fa6c9d8d4249679344c1ac34866b27f11f22996dcc272b93b44364b3",
+      "sha256": "3e2c85b64bf28cdc8440b03ba10ae990603b3f64b3738bd4be25e2f30a028fb3",
       "category": "scrolls",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "PARTIAL_REVIEW",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Normal scroll wording checked against current APD effect/targeting code. Live constants where shown; hidden identities preserved. Existing complicated panels and complete class/secondary-window review remain pending. Identify/Shards and Metamorphosis use actual APD behavior."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/scrolls/ScrollOfLullaby.java",
       "sha256": "2329a2ebd4b260af5dc86642c8692481b084632596ad754cf4b3e52e15af60cb",
       "category": "scrolls",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "PARTIAL_REVIEW",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Normal scroll wording checked against current APD effect/targeting code. Live constants where shown; hidden identities preserved. Existing complicated panels and complete class/secondary-window review remain pending. Identify/Shards and Metamorphosis use actual APD behavior."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/scrolls/ScrollOfMagicMapping.java",
       "sha256": "6342ba7c8861d78863d2be33d13bbfd05c1b63647874953ea548f62c8ab7c97e",
       "category": "scrolls",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "PARTIAL_REVIEW",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Normal scroll wording checked against current APD effect/targeting code. Live constants where shown; hidden identities preserved. Existing complicated panels and complete class/secondary-window review remain pending. Identify/Shards and Metamorphosis use actual APD behavior."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/scrolls/ScrollOfMirrorImage.java",
-      "sha256": "4b41bffe2d11b168588d0cc912d4aafa1e03b7f69b812f69a4618e3828b03866",
+      "sha256": "777264cab76e6ffba48f1fb7b2f5435e15747a4969ea3bbab3776d8088b6c31e",
       "category": "scrolls",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "PARTIAL_REVIEW",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Normal scroll wording checked against current APD effect/targeting code. Live constants where shown; hidden identities preserved. Existing complicated panels and complete class/secondary-window review remain pending. Identify/Shards and Metamorphosis use actual APD behavior."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/scrolls/ScrollOfRage.java",
       "sha256": "7c7c73b658fd8fd182023967643f5b48761d8d5d8b98fb55b6bb72d55dded390",
       "category": "scrolls",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "PARTIAL_REVIEW",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Normal scroll wording checked against current APD effect/targeting code. Live constants where shown; hidden identities preserved. Existing complicated panels and complete class/secondary-window review remain pending. Identify/Shards and Metamorphosis use actual APD behavior."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/scrolls/ScrollOfRecharging.java",
-      "sha256": "7352d19397647de112dfb7af49c8c1dcf41ee7c29834996abd4138493b568e3d",
+      "sha256": "ed7835812346c5bf50e3cae29bf937a22275eb2481d9503dff2b0b50f9677608",
       "category": "scrolls",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "PARTIAL_REVIEW",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Normal scroll wording checked against current APD effect/targeting code. Live constants where shown; hidden identities preserved. Existing complicated panels and complete class/secondary-window review remain pending. Identify/Shards and Metamorphosis use actual APD behavior."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/scrolls/ScrollOfRemoveCurse.java",
       "sha256": "b9b5e7c32698700cbd85812c502a7b49059b95054b144fc8aa60be4b6b2f908d",
       "category": "scrolls",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "PARTIAL_REVIEW",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Normal scroll wording checked against current APD effect/targeting code. Live constants where shown; hidden identities preserved. Existing complicated panels and complete class/secondary-window review remain pending. Identify/Shards and Metamorphosis use actual APD behavior."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/scrolls/ScrollOfRetribution.java",
       "sha256": "16d347009fe30160bcc8e66f390150f09be2d0b00fc3d0d1cb2e7b9eb08a3601",
       "category": "scrolls",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "PARTIAL_REVIEW",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Normal scroll wording checked against current APD effect/targeting code. Live constants where shown; hidden identities preserved. Existing complicated panels and complete class/secondary-window review remain pending. Identify/Shards and Metamorphosis use actual APD behavior."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/scrolls/ScrollOfTeleportation.java",
       "sha256": "6546595398b4cd142fe4448bf98d98f04e0e0cc7624cc7acf873a8a4ee0ebd48",
       "category": "scrolls",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "PARTIAL_REVIEW",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Normal scroll wording checked against current APD effect/targeting code. Live constants where shown; hidden identities preserved. Existing complicated panels and complete class/secondary-window review remain pending. Identify/Shards and Metamorphosis use actual APD behavior."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/scrolls/ScrollOfTerror.java",
       "sha256": "023b6c98e39db6ed162dfbed67a339035b27bc5f4758e9b2be6d3480433eb6e1",
       "category": "scrolls",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "PARTIAL_REVIEW",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Normal scroll wording checked against current APD effect/targeting code. Live constants where shown; hidden identities preserved. Existing complicated panels and complete class/secondary-window review remain pending. Identify/Shards and Metamorphosis use actual APD behavior."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/scrolls/ScrollOfTransmutation.java",
@@ -2246,10 +2266,12 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/scrolls/ScrollOfUpgrade.java",
       "sha256": "618f90651014f40f89536ddcec7091f9c10ea0f8e1f7d3557e0882473c6d6139",
       "category": "scrolls",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
+      "status": "PARTIAL_REVIEW",
       "description_methods": [
         "info"
-      ]
+      ],
+      "wording_corrected": true,
+      "review_notes": "Normal scroll wording checked against current APD effect/targeting code. Live constants where shown; hidden identities preserved. Existing complicated panels and complete class/secondary-window review remain pending. Identify/Shards and Metamorphosis use actual APD behavior."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/scrolls/exotic/ExoticScroll.java",
@@ -2260,47 +2282,59 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/scrolls/exotic/ScrollOfAntiMagic.java",
-      "sha256": "eddb133ee30fcd7ac269acf69a8b91f649d0594ca47e56485b6c61cfae8b785d",
+      "sha256": "ee45b06bd52fc167dd759c5b2ff9ad3d2ce409c8ea96b678db95b279ad454009",
       "category": "scrolls",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "PARTIAL_REVIEW",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Normal scroll wording checked against current APD effect/targeting code. Live constants where shown; hidden identities preserved. Existing complicated panels and complete class/secondary-window review remain pending. Identify/Shards and Metamorphosis use actual APD behavior."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/scrolls/exotic/ScrollOfChallenge.java",
       "sha256": "edd801014b2cb02247a713f0fed939e3cc1538d179b04970f68f4aba1efc7f7a",
       "category": "scrolls",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
+      "status": "PARTIAL_REVIEW",
       "description_methods": [
         "desc"
-      ]
+      ],
+      "wording_corrected": true,
+      "review_notes": "Normal scroll wording checked against current APD effect/targeting code. Live constants where shown; hidden identities preserved. Existing complicated panels and complete class/secondary-window review remain pending. Identify/Shards and Metamorphosis use actual APD behavior."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/scrolls/exotic/ScrollOfDivination.java",
       "sha256": "7b23e1c29b34807d3d3353f689e9160fc2f3edbe7a607c02f2f5fd3d1a81c577",
       "category": "scrolls",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "PARTIAL_REVIEW",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Normal scroll wording checked against current APD effect/targeting code. Live constants where shown; hidden identities preserved. Existing complicated panels and complete class/secondary-window review remain pending. Identify/Shards and Metamorphosis use actual APD behavior."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/scrolls/exotic/ScrollOfDread.java",
       "sha256": "af27f2168240953dfd7098bd171ecce4c507e574b626bf89ec439d6addc8ca28",
       "category": "scrolls",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "PARTIAL_REVIEW",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Normal scroll wording checked against current APD effect/targeting code. Live constants where shown; hidden identities preserved. Existing complicated panels and complete class/secondary-window review remain pending. Identify/Shards and Metamorphosis use actual APD behavior."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/scrolls/exotic/ScrollOfEnchantment.java",
       "sha256": "f07d9638425925ce9f5265fc91c0dd4f2d626b25de96d4f0ce8847ea46c08be8",
       "category": "scrolls",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "PARTIAL_REVIEW",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Normal scroll wording checked against current APD effect/targeting code. Live constants where shown; hidden identities preserved. Existing complicated panels and complete class/secondary-window review remain pending. Identify/Shards and Metamorphosis use actual APD behavior."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/scrolls/exotic/ScrollOfForesight.java",
-      "sha256": "9b8a749c438805714f1d75c4a378a9adb90ed1b10e4f3994359ef5e2f190891a",
+      "sha256": "28f0b86c9050bac0f4b91be7375055b8c35613af69d456018986efaf0011e860",
       "category": "scrolls",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "PARTIAL_REVIEW",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Normal scroll wording checked against current APD effect/targeting code. Live constants where shown; hidden identities preserved. Existing complicated panels and complete class/secondary-window review remain pending. Identify/Shards and Metamorphosis use actual APD behavior."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/scrolls/exotic/ScrollOfForwarding.java",
@@ -2315,43 +2349,55 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/scrolls/exotic/ScrollOfMetamorphosis.java",
       "sha256": "1df4f61c747b7fca8a882f44ec9e8541c95c24c3d95cc3f398ab7cc4d34058e8",
       "category": "scrolls",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "PARTIAL_REVIEW",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Normal scroll wording checked against current APD effect/targeting code. Live constants where shown; hidden identities preserved. Existing complicated panels and complete class/secondary-window review remain pending. Identify/Shards and Metamorphosis use actual APD behavior."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/scrolls/exotic/ScrollOfMysticalEnergy.java",
       "sha256": "b7a7740d79427a9f28a5f58204bb63e9805ca4739a6dfd1521843d7626126759",
       "category": "scrolls",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "PARTIAL_REVIEW",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Normal scroll wording checked against current APD effect/targeting code. Live constants where shown; hidden identities preserved. Existing complicated panels and complete class/secondary-window review remain pending. Identify/Shards and Metamorphosis use actual APD behavior."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/scrolls/exotic/ScrollOfPassage.java",
       "sha256": "527f45275419ac5ca1858aaa3473970d3dc64f354d2be13ce007502a38da6083",
       "category": "scrolls",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "PARTIAL_REVIEW",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Normal scroll wording checked against current APD effect/targeting code. Live constants where shown; hidden identities preserved. Existing complicated panels and complete class/secondary-window review remain pending. Identify/Shards and Metamorphosis use actual APD behavior."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/scrolls/exotic/ScrollOfPrismaticImage.java",
       "sha256": "dda9e45999eed86005bc24f69e8b69d8b8ef880977b0ab73b114540088671107",
       "category": "scrolls",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "PARTIAL_REVIEW",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Normal scroll wording checked against current APD effect/targeting code. Live constants where shown; hidden identities preserved. Existing complicated panels and complete class/secondary-window review remain pending. Identify/Shards and Metamorphosis use actual APD behavior."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/scrolls/exotic/ScrollOfPsionicBlast.java",
       "sha256": "3a68dfe903fde799c1a6aabd35a8c127f42725d7e588893154e65c2dc910a5fe",
       "category": "scrolls",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "PARTIAL_REVIEW",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Normal scroll wording checked against current APD effect/targeting code. Live constants where shown; hidden identities preserved. Existing complicated panels and complete class/secondary-window review remain pending. Identify/Shards and Metamorphosis use actual APD behavior."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/scrolls/exotic/ScrollOfSirensSong.java",
       "sha256": "2c6a105c8384832fb426efda5f60a504f9be997361ebf49d56ff46875520974b",
       "category": "scrolls",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "PARTIAL_REVIEW",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Normal scroll wording checked against current APD effect/targeting code. Live constants where shown; hidden identities preserved. Existing complicated panels and complete class/secondary-window review remain pending. Identify/Shards and Metamorphosis use actual APD behavior."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/spells/Alchemize.java",
@@ -3801,14 +3847,14 @@
   ],
   "completed_units": 46,
   "latest_tests": {
-    "core_tests": 3005,
+    "core_tests": 3008,
     "suites": 456,
     "failures": 0,
     "errors": 0,
     "skipped": 0,
-    "log": "/workspace/apd-wording-potions-wands-evidence-20261108/full.log",
+    "log": "/workspace/apd-scroll-current-rules-evidence-20261108/full.log",
     "android_verified": false,
     "new_apk_built": false,
-    "scope": "Wand, regular/exotic potion, elixir and brew normal-description continuation. Android fixtures prepared but not compiled or run."
+    "scope": "Scroll and disabled-healing descriptions; prior source corrections retained."
   }
 }
