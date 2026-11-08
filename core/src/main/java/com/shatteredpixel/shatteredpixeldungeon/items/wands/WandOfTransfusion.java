@@ -197,10 +197,11 @@ public class WandOfTransfusion extends DamageWand {
 	@Override
 	public String statsDesc() {
 		int selfDMG = Dungeon.hero != null ? Math.round(Dungeon.hero.HT*0.05f): 1;
+        int healthCost = freeCharge ? 0 : selfDMG;
 		if (levelKnown)
-			return Messages.get(this, "stats_desc", selfDMG, selfDMG + 3*previewEffectiveLevels()[0], 5+previewEffectiveLevels()[0], min(previewEffectiveLevels()[0]), max(previewEffectiveLevels()[1])) + previewUncertaintyNote();
+			return Messages.get(this, "stats_desc", healthCost, selfDMG + 3*previewEffectiveLevels()[0], 5+previewEffectiveLevels()[0], min(previewEffectiveLevels()[0]), max(previewEffectiveLevels()[1])) + previewUncertaintyNote();
 		else
-			return Messages.get(this, "stats_desc", selfDMG, selfDMG, 5, min(0), max(0));
+			return Messages.get(this, "stats_desc", healthCost, selfDMG, 5, min(0), max(0));
 	}
 
 	@Override

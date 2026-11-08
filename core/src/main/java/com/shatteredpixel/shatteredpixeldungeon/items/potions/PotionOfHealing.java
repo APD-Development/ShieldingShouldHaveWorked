@@ -207,6 +207,14 @@ public class PotionOfHealing extends Potion {
 		else Arrays.fill(apdUncollectedEnemyDrops, 0);
 	}
 
+    @Override
+    public String desc() {
+        if (isKnown() && Dungeon.hero != null && Dungeon.isChallenged(Challenges.NO_HEALING)) {
+            return Messages.get(this, "desc_pharmacophobia");
+        }
+        return super.desc();
+    }
+
 	@Override
 	public String info() {
 		String description = super.info();

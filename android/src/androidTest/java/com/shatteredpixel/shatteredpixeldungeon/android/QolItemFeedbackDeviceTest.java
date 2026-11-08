@@ -56,6 +56,9 @@ public class QolItemFeedbackDeviceTest {
         Thread.sleep(250);
     }
     private static void showItem(Item item,String expected,String image)throws Exception{
+        showItem(item,expected,image,false);
+    }
+    private static void showItem(Item item,String expected,String image,boolean captureBottom)throws Exception{
         for(boolean useWindow:new boolean[]{false,true}){
             AtomicReference<WndInfoItem> shown=new AtomicReference<>();
             float[] time=new float[1];int[] hp=new int[1];String[] saved=new String[1];
@@ -93,7 +96,16 @@ public class QolItemFeedbackDeviceTest {
                 assertEquals(time[0],Dungeon.hero.cooldown(),0);assertEquals(hp[0],Dungeon.hero.HP);
                 com.watabou.utils.Bundle after=new com.watabou.utils.Bundle();item.storeInBundle(after);assertEquals(saved[0],after.toString());
             }catch(Exception e){throw new RuntimeException(e);}});
-            if(useWindow)TopScoresDeviceTest.screenshot(image);
+            if(useWindow){
+                TopScoresDeviceTest.screenshot(image);
+                if(captureBottom){
+                    TopScoresDeviceTest.render(()->{try{
+                        ScrollPane scroll=TopScoresDeviceTest.find(shown.get(),ScrollPane.class).get(0);
+                        scroll.scrollTo(0,Math.max(0,scroll.content().height()-scroll.height()));
+                    }catch(Exception e){throw new RuntimeException(e);}});
+                    Thread.sleep(200);TopScoresDeviceTest.screenshot(image.replace(".png","-bottom.png"));
+                }
+            }
             TopScoresDeviceTest.render(()->shown.get().hide());
         }
     }
@@ -189,7 +201,7 @@ public class QolItemFeedbackDeviceTest {
         AtomicReference<WndInfoItem> luckyWindow=new AtomicReference<>();float[] luckyTime=new float[1];
         TopScoresDeviceTest.render(()->{
             Sword lucky=new Sword();lucky.levelKnown=lucky.cursedKnown=true;lucky.enchant(new com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Lucky());
-            assertTrue(lucky.info(),lucky.info().contains("10% to 19.06%"));assertTrue(lucky.info().contains("adds 9.06 percentage points"));
+            assertTrue(lucky.info(),lucky.info().contains("_19.06%_ (_10%_ without Arcana)"));assertEquals(1,lucky.info().split("19.06%",-1).length-1);
             luckyTime[0]=Dungeon.hero.cooldown();WndInfoItem window=new WndInfoItem(lucky);GameScene.show(window);luckyWindow.set(window);
         });
         Thread.sleep(300);
@@ -210,6 +222,52 @@ public class QolItemFeedbackDeviceTest {
         touch(spellAt[0]);AtomicReference<Window> spellWindow=new AtomicReference<>();
         TopScoresDeviceTest.render(()->{try{java.util.List<WndTitledMessage> windows=TopScoresDeviceTest.find(Game.scene(),WndTitledMessage.class);assertEquals("Actual spell button opens its information",1,windows.size());spellWindow.set(windows.get(0));}catch(Exception e){throw new RuntimeException(e);}});
         checkCalculationWindow(spellWindow.get(),"multiplied by weapon enchantment power and rounded","qol-mechanics-spell-expanded.png");TopScoresDeviceTest.render(()->menu.get().hide());
+    }
+    private static void ordinaryEffectsMatchOwnerScreenshots()throws Exception{
+        KindofMisc[] previous=new KindofMisc[2];
+        com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Whip whip=new com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Whip();
+        com.shatteredpixel.shatteredpixeldungeon.items.armor.LeatherArmor armor=new com.shatteredpixel.shatteredpixeldungeon.items.armor.LeatherArmor();
+        com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand fire=new com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfFireblast();
+        com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand growth=new com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfRegrowth();
+        try{
+            TopScoresDeviceTest.render(()->{
+                previous[0]=Dungeon.hero.belongings.ring;previous[1]=Dungeon.hero.belongings.misc;
+                for(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff buff:new java.util.ArrayList<>(Dungeon.hero.buffs(Ring.RingBuff.class)))buff.detach();
+                RingOfArcana arcana=new RingOfArcana();arcana.identify();arcana.level(0);
+                Dungeon.hero.belongings.ring=arcana;Dungeon.hero.belongings.misc=null;arcana.activate(Dungeon.hero);
+                whip.level(3);whip.identify();whip.enchant(new com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Elastic());assertTrue(whip.collect());
+                armor.level(2);armor.identify();armor.inscribe(new com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Viscosity());assertTrue(armor.collect());
+                fire.curChargeKnown=false;growth.curChargeKnown=false;assertTrue(fire.collect());assertTrue(growth.collect());
+                assertTrue(whip.info(),whip.info().contains("2 tiles"));assertFalse(whip.info().contains("Arcana changes"));
+                assertTrue(armor.info(),armor.info().contains("10%"));assertFalse(armor.info().contains("defer power"));assertFalse(armor.info().contains("qualifying"));
+            });
+            showItem(whip,"58.75%","qol-elastic-concise.png",true);
+            showItem(armor,"44.06%","qol-viscosity-concise.png",true);
+            showItem(fire,"cone of fire","qol-fireblast-unknown-charges.png");
+            showItem(growth,"plants in a cone","qol-regrowth-unknown-charges.png");
+        }finally{
+            TopScoresDeviceTest.render(()->{
+                Dungeon.hero.belongings.backpack.items.remove(whip);Dungeon.hero.belongings.backpack.items.remove(armor);
+                Dungeon.hero.belongings.backpack.items.remove(fire);Dungeon.hero.belongings.backpack.items.remove(growth);fire.stopCharging();growth.stopCharging();
+                for(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff buff:new java.util.ArrayList<>(Dungeon.hero.buffs(Ring.RingBuff.class)))buff.detach();
+                Dungeon.hero.belongings.ring=(Ring)previous[0];Dungeon.hero.belongings.misc=previous[1];
+                if(previous[0]!=null)previous[0].activate(Dungeon.hero);if(previous[1] instanceof Ring)previous[1].activate(Dungeon.hero);
+            });
+        }
+    }
+    private static void ordinaryConsumableDescriptionsRender()throws Exception{
+        com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion haste=new com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHaste();
+        com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion shielding=new com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfShielding();
+        int previous=Dungeon.challenges;
+        try{
+            TopScoresDeviceTest.render(()->{haste.anonymize();shielding.anonymize();assertTrue(haste.collect());assertTrue(shielding.collect());Dungeon.challenges=0;});
+            showItem(haste,"turns","qol-haste-concise.png");
+            showItem(shielding,"shielding","qol-shielding-concise.png");
+            TopScoresDeviceTest.render(()->Dungeon.challenges=Challenges.NO_HEALING);
+            showItem(shielding,"poisons you instead","qol-shielding-challenge-warning.png");
+        }finally{
+            TopScoresDeviceTest.render(()->{Dungeon.challenges=previous;Dungeon.hero.belongings.backpack.items.remove(haste);Dungeon.hero.belongings.backpack.items.remove(shielding);});
+        }
     }
     static void combinedOriginsAndRatPreferenceRenderAndRespond()throws Exception{
         boolean previous=SPDSettings.ratKingQuickSearch();AtomicReference<WndAPDSettings> shown=new AtomicReference<>();Point[] at=new Point[1];
@@ -326,10 +384,10 @@ public class QolItemFeedbackDeviceTest {
                 assertTrue(info.contains("Attack time:"));
                 assertTrue(info.contains("Accuracy:"));
             });
-            showItem(sword,"Ring of Force changes this weapon’s damage","qol-force-weapon.png");
+            showItem(sword,"Force damage:","qol-force-weapon.png");
             ThrowingKnife knife=new ThrowingKnife();knife.levelKnown=true;knife.cursedKnown=true;
             TopScoresDeviceTest.render(()->{RingOfSharpshooting r=new RingOfSharpshooting();r.anonymize();r.levelKnown=true;r.cursedKnown=true;Dungeon.hero.belongings.misc=r;r.activate(Dungeon.hero);});
-            showItem(knife,"2-6 -> 3-8","qol-sharpshooting-weapon.png");
+            showItem(knife,"2-6 → 3-8","qol-sharpshooting-weapon.png");
             com.shatteredpixel.shatteredpixeldungeon.items.armor.ScaleArmor scale=new com.shatteredpixel.shatteredpixeldungeon.items.armor.ScaleArmor();
             scale.level(6);scale.levelKnown=scale.cursedKnown=true;
             final int[] priorStrength={0};final com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor[] priorArmor={null};
@@ -341,6 +399,8 @@ public class QolItemFeedbackDeviceTest {
             showItem(scale,"6-32","qol-scale-armor-concise.png");
             TopScoresDeviceTest.render(()->{Dungeon.hero.STR=priorStrength[0];Dungeon.hero.belongings.armor=priorArmor[0];});
             calculationWindowsRenderAndRespond();
+            ordinaryEffectsMatchOwnerScreenshots();
+            ordinaryConsumableDescriptionsRender();
             inventoryOrderShowsAutomatically();
             prepareSearchableFloor();
             final int[] center={0};

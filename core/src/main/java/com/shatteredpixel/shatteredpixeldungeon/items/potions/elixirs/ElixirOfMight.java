@@ -67,7 +67,7 @@ public class ElixirOfMight extends Elixir {
 	}
 	
 	public String desc() {
-		return Messages.get(this, "desc", HTBoost.boost(Dungeon.hero != null ? 15 + 5*Dungeon.hero.lvl : 20));
+		return Dungeon.hero == null ? Messages.get(this, "desc_without_hero") : Messages.get(this, "desc", HTBoost.boost(15 + 5*Dungeon.hero.lvl));
 	}
 	
 	public static class Recipe extends com.shatteredpixel.shatteredpixeldungeon.items.Recipe.SimpleRecipe {

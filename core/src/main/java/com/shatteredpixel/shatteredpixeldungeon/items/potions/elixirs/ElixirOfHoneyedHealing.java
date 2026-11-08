@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -34,6 +37,10 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Honeypot;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.watabou.noosa.audio.Sample;
+
+import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+
+import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 
 public class ElixirOfHoneyedHealing extends Elixir {
 	
@@ -77,6 +84,11 @@ public class ElixirOfHoneyedHealing extends Elixir {
 	public int energyVal() {
 		return quantity * 8;
 	}
+
+    @Override
+    public String desc() {
+        return Messages.get(this, Dungeon.hero != null && Dungeon.isChallenged(Challenges.NO_HEALING) ? "desc_pharmacophobia" : "desc");
+    }
 
 	public static class Recipe extends com.shatteredpixel.shatteredpixeldungeon.items.Recipe.SimpleRecipe {
 		

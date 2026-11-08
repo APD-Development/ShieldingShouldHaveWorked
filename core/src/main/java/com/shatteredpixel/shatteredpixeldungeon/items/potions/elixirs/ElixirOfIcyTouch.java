@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -28,6 +31,8 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.particles.SnowParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfSnapFreeze;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 
+import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+
 public class ElixirOfIcyTouch extends Elixir {
 	
 	{
@@ -40,6 +45,11 @@ public class ElixirOfIcyTouch extends Elixir {
 		hero.sprite.emitter().burst(SnowParticle.FACTORY, 5);
 	}
 	
+    @Override
+    public String desc() {
+        return Messages.get(this, "desc", Messages.decimalFormat("0.##", FrostImbue.DURATION));
+    }
+
 	public static class Recipe extends com.shatteredpixel.shatteredpixeldungeon.items.Recipe.SimpleRecipe {
 		
 		{

@@ -29,9 +29,10 @@ import com.watabou.utils.Random;
 import org.junit.*;
 import static org.junit.Assert.*;
 public class MechanicsExplanationTest {
+ private final java.util.Map<java.lang.reflect.Field,Object> badgeState=new java.util.LinkedHashMap<>();
  private com.watabou.utils.Bundle oldRules;private Object oldNotes;private int oldChallenges;private Hero oldHero,hero;private com.shatteredpixel.shatteredpixeldungeon.levels.Level oldLevel;private MailArmor armor;
- @Before public void setup()throws Exception{HeadlessTestSupport.start();java.lang.reflect.Field notes=com.shatteredpixel.shatteredpixeldungeon.journal.Notes.class.getDeclaredField("records");notes.setAccessible(true);oldNotes=notes.get(null);com.shatteredpixel.shatteredpixeldungeon.journal.Notes.reset();oldChallenges=Dungeon.challenges;Dungeon.challenges=0;oldRules=new com.watabou.utils.Bundle();Dungeon.apdStoreCustomRules(oldRules);Dungeon.apdRestoreCustomRules(new com.watabou.utils.Bundle());oldHero=Dungeon.hero;oldLevel=Dungeon.level;Dungeon.level=new GrassDewPickupTest.TestLevel();Dungeon.level.setSize(7,7);hero=new Hero();hero.heroClass=HeroClass.WARRIOR;Talent.initClassTalents(hero);hero.pos=24;hero.HP=hero.HT=20;Dungeon.hero=hero;armor=new MailArmor();armor.levelKnown=armor.cursedKnown=true;armor.inscribe(new Obfuscation());hero.belongings.armor=armor;}
- @After public void restore()throws Exception{Dungeon.hero=oldHero;Dungeon.level=oldLevel;Dungeon.challenges=oldChallenges;Dungeon.apdRestoreCustomRules(oldRules);java.lang.reflect.Field notes=com.shatteredpixel.shatteredpixeldungeon.journal.Notes.class.getDeclaredField("records");notes.setAccessible(true);notes.set(null,oldNotes);}
+ @Before public void setup()throws Exception{HeadlessTestSupport.start();for(String key:new String[]{"global","local","saveNeeded"}){java.lang.reflect.Field f=Badges.class.getDeclaredField(key);f.setAccessible(true);Object prior=f.get(null);badgeState.put(f,prior);f.set(null,key.equals("saveNeeded")?false:prior==null?new java.util.HashSet<>():new java.util.HashSet<>((java.util.Set<?>)prior));}java.lang.reflect.Field notes=com.shatteredpixel.shatteredpixeldungeon.journal.Notes.class.getDeclaredField("records");notes.setAccessible(true);oldNotes=notes.get(null);com.shatteredpixel.shatteredpixeldungeon.journal.Notes.reset();oldChallenges=Dungeon.challenges;Dungeon.challenges=0;oldRules=new com.watabou.utils.Bundle();Dungeon.apdStoreCustomRules(oldRules);Dungeon.apdRestoreCustomRules(new com.watabou.utils.Bundle());oldHero=Dungeon.hero;oldLevel=Dungeon.level;Dungeon.level=new GrassDewPickupTest.TestLevel();Dungeon.level.setSize(7,7);hero=new Hero();hero.heroClass=HeroClass.WARRIOR;Talent.initClassTalents(hero);hero.pos=24;hero.HP=hero.HT=20;Dungeon.hero=hero;armor=new MailArmor();armor.levelKnown=armor.cursedKnown=true;armor.inscribe(new Obfuscation());hero.belongings.armor=armor;}
+ @After public void restore()throws Exception{for(java.util.Map.Entry<java.lang.reflect.Field,Object> e:badgeState.entrySet())e.getKey().set(null,e.getValue());Dungeon.hero=oldHero;Dungeon.level=oldLevel;Dungeon.challenges=oldChallenges;Dungeon.apdRestoreCustomRules(oldRules);java.lang.reflect.Field notes=com.shatteredpixel.shatteredpixeldungeon.journal.Notes.class.getDeclaredField("records");notes.setAccessible(true);notes.set(null,oldNotes);}
  private RingOfArcana ring(int level){RingOfArcana ring=new RingOfArcana();ring.level(level);ring.anonymize();ring.levelKnown=ring.cursedKnown=true;hero.belongings.ring=ring;ring.activate(hero);return ring;}
  @Test public void plantDescriptionWithoutAHeroDoesNotPresentAStaleFloorCalculation(){
   int depth=Dungeon.depth;Dungeon.depth=20;Dungeon.hero=null;try{String earth=PlantExplanation.details(com.shatteredpixel.shatteredpixeldungeon.plants.Earthroot.class,null),poison=PlantExplanation.details(com.shatteredpixel.shatteredpixeldungeon.plants.Sorrowmoss.class,null);assertTrue(earth.contains("floor((scaling floor + 5) / 2)"));assertTrue(poison.contains("5 + round(2 × scaling floor / 3)"));assertTrue(earth.contains("requires an active run"));assertTrue(poison.contains("requires an active run"));assertFalse(earth.contains("currently"));assertFalse(poison.contains("currently"));}finally{Dungeon.depth=depth;Dungeon.hero=hero;}
@@ -150,12 +151,12 @@ public class MechanicsExplanationTest {
  }
  @Test public void mightElixirPreviewMatchesActualFreshBoostWhenOtherEffectsChangeMaximumHp(){
   hero.lvl=15;hero.HT=300;com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfMight.HTBoost boost=new com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfMight.HTBoost();boost.target=hero;boost.reset();int actual=boost.boost();
-  String text=new com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfMight().desc();assertTrue(text,text.contains("by "+actual+" points"));
+  String text=new com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfMight().desc();assertTrue(text,text.contains("_"+actual+" maximum HP_"));
  }
  @Test public void knownPotionDescriptionsMatchActualHealingPoolAndBarrierOffers()throws Exception{
   hero.sprite=quietSprite();com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing healing=new com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing();healing.anonymize();com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfShielding shielding=new com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfShielding();shielding.anonymize();
   for(int max:new int[]{20,47,100,151}){hero.HT=max;hero.HP=1;Healing previous=hero.buff(Healing.class);if(previous!=null)previous.detach();com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing.heal(hero);assertEquals((int)(.8f*max+14),hero.buff(Healing.class).remainingHealingPool());assertTrue(PotionExplanation.details(healing,hero).contains((int)(.8f*max+14)+" base HP"));
-   Barrier shield=Buff.affect(hero,Barrier.class);shield.setShield(1000);shielding.apply(hero);assertEquals(1000,shield.shielding());shield.detach();shielding.apply(hero);assertEquals((int)(.6f*max+10),hero.buff(Barrier.class).shielding());assertTrue(PotionExplanation.details(shielding,hero).contains((int)(.6f*max+10)+" shield points"));hero.buff(Barrier.class).detach();
+   Barrier shield=Buff.affect(hero,Barrier.class);shield.setShield(1000);shielding.apply(hero);assertEquals(1000,shield.shielding());shield.detach();shielding.apply(hero);assertEquals((int)(.6f*max+10),hero.buff(Barrier.class).shielding());assertTrue(PotionExplanation.details(shielding,hero).contains((int)(.6f*max+10)+" shield points"));assertTrue(shielding.desc(),shielding.desc().contains("_"+hero.buff(Barrier.class).shielding()+" shielding_"));hero.buff(Barrier.class).detach();
   }
  }
  @Test public void knownHasteAndInvisibilityPotionDetailsMatchActualProlonging()throws Exception{
@@ -732,7 +733,7 @@ public class MechanicsExplanationTest {
   hero.heroClass=HeroClass.MAGE;Talent.initClassTalents(hero);hero.talents.get(1).put(Talent.DESPERATE_POWER,2);java.util.List<String> leaked=new java.util.ArrayList<>();
   for(String name:new String[]{"BlastWave","Corrosion","Corruption","Disintegration","Fireblast","Frost","Lightning","LivingEarth","MagicMissile","PrismaticLight","Regrowth","Transfusion","Warding"}){
    com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand wand=(com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand)Class.forName("com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOf"+name).getConstructor().newInstance();wand.level(2);wand.levelKnown=wand.cursedKnown=true;wand.curChargeKnown=false;hero.belongings.backpack.items.add(wand);wand.charge(hero);
-   try{wand.curCharges=1;String first=wand.statsDesc();wand.curCharges=4;if(!first.equals(wand.statsDesc()))leaked.add(name);if(name.equals("Fireblast")||name.equals("Regrowth")){wand.curChargeKnown=true;String known=wand.statsDesc();wand.curCharges=1;assertNotEquals(name+" known charge-dependent values should return",known,wand.statsDesc());}}finally{wand.stopCharging();hero.belongings.backpack.items.remove(wand);}
+   try{wand.curCharges=1;String first=wand.statsDesc(),firstInfo=wand.info();wand.curCharges=4;if(!first.equals(wand.statsDesc()))leaked.add(name);assertEquals(name+" ordinary description must preserve unknown charge privacy",firstInfo,wand.info());if(name.equals("Fireblast")||name.equals("Regrowth")){assertTrue(name+" still explains its basic effect without known charges",firstInfo.contains("cone"));wand.curChargeKnown=true;String known=wand.statsDesc();wand.curCharges=1;assertNotEquals(name+" known charge-dependent values should return",known,wand.statsDesc());}}finally{wand.stopCharging();hero.belongings.backpack.items.remove(wand);}
   }
   assertEquals("Unidentified charge counts must not change visible effect descriptions",java.util.Collections.emptyList(),leaked);
  }
@@ -1886,6 +1887,91 @@ public class MechanicsExplanationTest {
   com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CloakOfShadows cloak=new com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CloakOfShadows();cloak.identify();
   java.lang.reflect.Field charge=com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Artifact.class.getDeclaredField("charge");charge.setAccessible(true);charge.setInt(cloak,0);
   hero.belongings.artifact=null;String text=ArtifactEconomyExplanation.summary(cloak,hero);assertTrue(text,text.contains("Equip"));assertFalse(text.contains("∞"));assertFalse(text.contains("Infinity"));
+ }
+
+ @Test public void frostWandDescriptionMatchesItsActualFrozenTargetNoEffect()throws Exception{
+  descriptionSightArena();PlainStatusTarget target=new PlainStatusTarget();target.sprite=quietSprite();target.pos=hero.pos+1;
+  while(com.shatteredpixel.shatteredpixeldungeon.actors.Actor.findChar(target.pos)!=null)target.pos++;
+  com.shatteredpixel.shatteredpixeldungeon.actors.Actor.add(target);
+  try{
+   Frost frozen=Buff.affect(target,Frost.class);int hp=target.HP;
+   com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfFrost wand=new com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfFrost();wand.identify();
+   assertTrue(wand.statsDesc().contains("frozen enemies are unaffected"));
+   wand.onZap(new com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica(hero.pos,target.pos,com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica.PROJECTILE));
+   assertEquals(hp,target.HP);assertSame(frozen,target.buff(Frost.class));
+  }finally{for(Buff buff:target.buffs())buff.detach();com.shatteredpixel.shatteredpixeldungeon.actors.Actor.remove(target);}
+ }
+ @Test public void transfusionReadyFreeHealingDisplaysZeroCostWithoutReducingHealingOrConsumingIt(){
+  com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfTransfusion wand=new com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfTransfusion();wand.identify();
+  for(int level:new int[]{0,3,8})for(int maximum:new int[]{20,85,140}){
+   hero.HT=maximum;wand.level(level);int healing=Math.round(maximum*.05f)+3*wand.previewEffectiveLevels()[0];
+   com.watabou.utils.Bundle state=new com.watabou.utils.Bundle();wand.storeInBundle(state);state.put("freecharge",true);wand=new com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfTransfusion();wand.restoreFromBundle(state);
+   String text=wand.statsDesc();assertTrue(text,text.contains("costs _0 HP_"));assertTrue(text,text.contains("restore _"+healing+" HP_"));
+   com.watabou.utils.Bundle after=new com.watabou.utils.Bundle();wand.storeInBundle(after);assertTrue(after.getBoolean("freecharge"));
+   state.put("freecharge",false);wand=new com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfTransfusion();wand.restoreFromBundle(state);assertTrue(wand.statsDesc().contains("costs _"+Math.round(maximum*.05f)+" HP_"));
+  }
+ }
+
+ @Test public void timedPotionNormalDescriptionsUseActualDurationsAndKeepUnknownTypesHidden()throws Exception{
+  Class<?>[] types={com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHaste.class,com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfInvisibility.class,com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfMindVision.class,com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfLevitation.class,com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfPurity.class,com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfStamina.class,com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfMagicalSight.class,com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfCleansing.class};
+  float[] turns={Haste.DURATION,Invisibility.DURATION,MindVision.DURATION,Levitation.DURATION,BlobImmunity.DURATION,Stamina.DURATION,MagicalSight.DURATION,com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfCleansing.Cleanse.DURATION};
+  for(int i=0;i<types.length;i++){
+   com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion potion=(com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion)types[i].getDeclaredConstructor().newInstance();potion.anonymize();
+   assertTrue(potion.desc(),potion.desc().contains(com.shatteredpixel.shatteredpixeldungeon.messages.Messages.decimalFormat("0.##",turns[i])+" turns"));
+  }
+  com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion hidden=new com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHaste(){@Override public boolean isKnown(){return false;}};
+  String unknown=hidden.desc();assertFalse(unknown,unknown.contains("turns"));assertFalse(unknown.contains("movement"));
+ }
+
+ @Test public void healingPotionDescriptionWarnsAboutActualPharmacophobiaWithoutRevealingUnknownType(){
+  com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing healing=new com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing();healing.anonymize();
+  assertTrue(healing.desc().contains("restores health"));Dungeon.challenges=Challenges.NO_HEALING;
+  assertTrue(healing.desc().contains("poisons you instead of healing"));assertTrue(healing.desc().contains("cures existing ailments"));
+  com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion hidden=new com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing(){@Override public boolean isKnown(){return false;}};
+  assertFalse(hidden.desc().contains("Pharmacophobia"));assertFalse(hidden.desc().contains("poisons you"));
+ }
+
+ @Test public void earthenArmorNormalDescriptionMatchesItsActualBarkskinAndPreservesStrongerProtection(){
+  com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfEarthenArmor potion=new com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfEarthenArmor();potion.anonymize();
+  for(int level:new int[]{1,12,30}){
+   for(Barkskin old:hero.buffs(Barkskin.class))old.detach();hero.lvl=level;potion.apply(hero);
+   assertTrue(potion.desc(),potion.desc().contains("_0-"+Barkskin.currentLevel(hero)+" extra damage_"));
+  }
+  hero.lvl=1;Barkskin.conditionallyAppend(hero,99,50);potion.apply(hero);assertEquals(99,Barkskin.currentLevel(hero));
+ }
+ @Test public void shieldingNormalDescriptionUsesExistingChallengeBehaviorAndNoStaleHeroValues(){
+  com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfShielding potion=new com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfShielding();potion.anonymize();
+  Dungeon.challenges=Challenges.NO_HEALING;assertTrue(potion.desc().contains("poisons you instead of granting shielding"));
+  Dungeon.hero=null;assertFalse(potion.desc().contains("Pharmacophobia"));assertFalse(potion.desc().contains("_22"));
+  Dungeon.hero=hero;Dungeon.challenges=0;
+ }
+
+ @Test public void elixirDescriptionsUseLiveDurationsAndDistinguishChallengeAndNoHeroCases(){
+  assertTrue(new com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfDragonsBlood().desc().contains(com.shatteredpixel.shatteredpixeldungeon.messages.Messages.decimalFormat("0.##",FireImbue.DURATION)+" turns"));
+  String cold=new com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfIcyTouch().desc();assertTrue(cold.contains("chilling and freezing"));assertTrue(cold.contains(com.shatteredpixel.shatteredpixeldungeon.messages.Messages.decimalFormat("0.##",FrostImbue.DURATION)+" turns"));
+  Dungeon.challenges=Challenges.NO_HEALING;
+  assertTrue(new com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfAquaticRejuvenation().desc().contains("poisons you"));
+  String honey=new com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfHoneyedHealing().desc();assertTrue(honey.contains("poisons you"));assertTrue(honey.contains("heal other creatures"));
+  Dungeon.hero=null;
+  assertFalse(new com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfMight().desc().contains("maximum HP_"));
+  assertFalse(new com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfAquaticRejuvenation().desc().contains("Pharmacophobia"));
+  Dungeon.hero=hero;
+ }
+
+ @Test public void allRegularAndExoticPotionDescriptionsKeepUnknownIdentityAndChallengeEffectsHidden()throws Exception{
+  Object previous=com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion.apdHandler();
+  Random.pushGenerator(1991);try{com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion.initColors();}finally{Random.popGenerator();}
+  try{
+   java.util.List<Class<?>> types=new java.util.ArrayList<>();java.util.Collections.addAll(types,com.shatteredpixel.shatteredpixeldungeon.items.Generator.Category.POTION.classes);types.addAll(com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.ExoticPotion.exoToReg.keySet());
+   for(Class<?> type:types){
+    com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion potion=(com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion)type.getDeclaredConstructor().newInstance();
+    assertFalse(type.getSimpleName(),potion.isKnown());
+    Class<?> family=potion instanceof com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.ExoticPotion?com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.ExoticPotion.class:com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion.class;
+    String expected=com.shatteredpixel.shatteredpixeldungeon.messages.Messages.get(family,"unknown_desc");
+    assertEquals(type.getSimpleName(),expected,potion.desc());Dungeon.challenges=Challenges.NO_HEALING;assertEquals(type.getSimpleName(),expected,potion.desc());Dungeon.challenges=0;
+   }
+   assertEquals(24,types.size());
+  }finally{com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion.apdHandler(previous);}
  }
 
 }

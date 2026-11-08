@@ -158,6 +158,11 @@ public class ElixirOfAquaticRejuvenation extends Elixir {
 		}
 	}
 	
+    @Override
+    public String desc() {
+        return Messages.get(this, Dungeon.hero != null && Dungeon.isChallenged(Challenges.NO_HEALING) ? "desc_pharmacophobia" : "desc");
+    }
+
 	public static class Recipe extends com.shatteredpixel.shatteredpixeldungeon.items.Recipe.SimpleRecipe {
 		
 		{

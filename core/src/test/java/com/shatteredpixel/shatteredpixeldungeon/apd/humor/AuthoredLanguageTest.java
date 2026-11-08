@@ -68,7 +68,11 @@ public class AuthoredLanguageTest {
   // Plus one neutral floor label using a key’s existing recorded depth.
   // Plus one neutral remains-item consumption/time label, using the existing action cost.
   // Plus two Petrified Seed base-level descriptions that omit its zero grass-loot bonus.
-  assertEquals(9,files);assertEquals("Reviewed English message inventory",5304,values);
+  // Plus the known Healing potion warning for the existing Pharmacophobia challenge.
+  // Plus Shielding amount/challenge descriptions and Earthen Armor protection, using existing effects.
+  // Plus two existing elixir challenge warnings and the live Arcane Armor protection description.
+  // Plus a Might elixir description without a made-up health amount when no hero is loaded.
+  assertEquals(9,files);assertEquals("Reviewed English message inventory",5312,values);
  }
  @Test public void localizedAlternativesDoNotDamageInnocentWordsOrOtherLanguages(){
   for(String innocent:new String[]{"Hell","slut","kesialan","Verdammte Charaktere","dictionary","classic","Scunthorpe","Prick","Fan of Blades"})assertEquals(innocent,AuthoredLanguage.select(innocent,false));

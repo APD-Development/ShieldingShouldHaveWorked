@@ -3,10 +3,10 @@
   "baseline_commit": "32f4f3beab4c23b404c3cb1d43bfa06a39165e70",
   "counting": "Source units, not distinct item types. reviewed_units includes partial reviews; completed_units excludes partial/pending dependency. corrected_units counts source units with corrections, including incomplete reviews. Inventory/export/tests alone are not an individual review.",
   "source_units": 427,
-  "message_entries": 2393,
-  "reviewed_units": 73,
-  "corrected_units": 66,
-  "unresolved_units": 393,
+  "message_entries": 2404,
+  "reviewed_units": 113,
+  "corrected_units": 105,
+  "unresolved_units": 381,
   "category_counts": {
     "apd": 1,
     "mechanics": 38,
@@ -1463,89 +1463,113 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/potions/PotionOfExperience.java",
       "sha256": "ea0d400d2fa2bc31e22e42df5234d5a4e223a13d3ae78c0044993a20596e416e",
       "category": "potions",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "REVIEWED_CORRECTED",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Regular potion source/effect and known/unknown normal description reviewed. Unknown type preserved for all 24 regular/exotic types, durations sourced from actual buffs, existing counters retained, challenge warning applies only to known Healing. Source review complete; Android render verification remains pending."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/potions/PotionOfFrost.java",
       "sha256": "8a2279332a96e979f5ae98984bf7588fdb74f0327bd22949cf13be32ba6f6f97",
       "category": "potions",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "REVIEWED_CORRECTED",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Regular potion source/effect and known/unknown normal description reviewed. Unknown type preserved for all 24 regular/exotic types, durations sourced from actual buffs, existing counters retained, challenge warning applies only to known Healing. Source review complete; Android render verification remains pending."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/potions/PotionOfHaste.java",
-      "sha256": "4e3693d82af33625227463630d5822facf91b3f30be9c85ba28a2b90c978590f",
+      "sha256": "d9df5e76c6f453335530619fed07ba5df983af9c4a2f8f2fbab2da28ca81ff21",
       "category": "potions",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "REVIEWED_CORRECTED",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Regular potion source/effect and known/unknown normal description reviewed. Unknown type preserved for all 24 regular/exotic types, durations sourced from actual buffs, existing counters retained, challenge warning applies only to known Healing. Source review complete; Android render verification remains pending."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/potions/PotionOfHealing.java",
-      "sha256": "bfd87b39ea77e2e3710b2bd1a369c82028cd73afda4853464b3ecde4d0180d42",
+      "sha256": "e012106a401ee128091c09e432e42096cff7cf4ed6220077c5954582bd24e2ed",
       "category": "potions",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [
         "info"
-      ]
+      ],
+      "wording_corrected": true,
+      "review_notes": "Regular potion source/effect and known/unknown normal description reviewed. Unknown type preserved for all 24 regular/exotic types, durations sourced from actual buffs, existing counters retained, challenge warning applies only to known Healing. Source review complete; Android render verification remains pending."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/potions/PotionOfInvisibility.java",
-      "sha256": "c933e3094c29cc097fa3a979f2a86b71a4ca091dbcdffdfa84007dd7c82207d7",
+      "sha256": "eec1c4156bf4eec7e36cd2f4f8143b05208c1a35a1053e0656dfea9eafd04ae6",
       "category": "potions",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "REVIEWED_CORRECTED",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Regular potion source/effect and known/unknown normal description reviewed. Unknown type preserved for all 24 regular/exotic types, durations sourced from actual buffs, existing counters retained, challenge warning applies only to known Healing. Source review complete; Android render verification remains pending."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/potions/PotionOfLevitation.java",
-      "sha256": "0f702ccc50e3055e639f83f719e308c0eb9c1b4cecb36cac59658a98f6e9ace4",
+      "sha256": "84bf9c52a1c8ba36e27d1361d94daeef5738540a624b15cc7115c414c329877b",
       "category": "potions",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "REVIEWED_CORRECTED",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Regular potion source/effect and known/unknown normal description reviewed. Unknown type preserved for all 24 regular/exotic types, durations sourced from actual buffs, existing counters retained, challenge warning applies only to known Healing. Source review complete; Android render verification remains pending."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/potions/PotionOfLiquidFlame.java",
       "sha256": "5296f9e8dc505e88ae7988edd080cb9d6df444b56134a6b51acbf5556d4a44d2",
       "category": "potions",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "REVIEWED_CORRECTED",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Regular potion source/effect and known/unknown normal description reviewed. Unknown type preserved for all 24 regular/exotic types, durations sourced from actual buffs, existing counters retained, challenge warning applies only to known Healing. Source review complete; Android render verification remains pending."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/potions/PotionOfMindVision.java",
-      "sha256": "915d24872fa3fc366dd0c28990c00825860a670b23023b23fba1df3a8393c09e",
+      "sha256": "0c1edea487191edb5e06fb0c2503de5be79b2085cbeb7e91a964b5ca39e2b26e",
       "category": "potions",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "REVIEWED_CORRECTED",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Regular potion source/effect and known/unknown normal description reviewed. Unknown type preserved for all 24 regular/exotic types, durations sourced from actual buffs, existing counters retained, challenge warning applies only to known Healing. Source review complete; Android render verification remains pending."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/potions/PotionOfParalyticGas.java",
       "sha256": "8feccdee3066ebea5ac1acee6f08b9195805e2effd2a8bd361a4805a4ffe574b",
       "category": "potions",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "REVIEWED_CORRECTED",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Regular potion source/effect and known/unknown normal description reviewed. Unknown type preserved for all 24 regular/exotic types, durations sourced from actual buffs, existing counters retained, challenge warning applies only to known Healing. Source review complete; Android render verification remains pending."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/potions/PotionOfPurity.java",
-      "sha256": "e12296bc816267c23d90755f632ab5c7f21f9e8b94fb75a3d1ae40882814587c",
+      "sha256": "2cf2fd7d468305addaf47505a381533e137bf1646743d1d3841a665d3ec619cf",
       "category": "potions",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "REVIEWED_CORRECTED",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Regular potion source/effect and known/unknown normal description reviewed. Unknown type preserved for all 24 regular/exotic types, durations sourced from actual buffs, existing counters retained, challenge warning applies only to known Healing. Source review complete; Android render verification remains pending."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/potions/PotionOfStrength.java",
       "sha256": "ebf44d04cb718401a37927710b2abf814d69791aebef76dea5c597ca090be8cd",
       "category": "potions",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
+      "status": "REVIEWED_UNCHANGED",
       "description_methods": [
         "info"
-      ]
+      ],
+      "wording_corrected": false,
+      "review_notes": "Regular potion source/effect and known/unknown normal description reviewed. Unknown type preserved for all 24 regular/exotic types, durations sourced from actual buffs, existing counters retained, challenge warning applies only to known Healing. Source review complete; Android render verification remains pending."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/potions/PotionOfToxicGas.java",
       "sha256": "6369406fbc0a1e1ddcb64d80e3a3db209d2e50cbf5dcb8a5ae20f5fc7db3b415",
       "category": "potions",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "REVIEWED_CORRECTED",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Regular potion source/effect and known/unknown normal description reviewed. Unknown type preserved for all 24 regular/exotic types, durations sourced from actual buffs, existing counters retained, challenge warning applies only to known Healing. Source review complete; Android render verification remains pending."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/potions/brews/AquaBrew.java",
@@ -1558,8 +1582,10 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/potions/brews/BlizzardBrew.java",
       "sha256": "ea81750f839e90094d90ea392a51c4424a3af6243722a0cd36658da9ed42ac76",
       "category": "potions",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "PARTIAL_REVIEW",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Ordinary description corrected after source review. Existing damage/cost/status logic retained; known live effects and challenge/hidden-state cases tested. Complete class variants, optional panels where applicable and Android rendering remain under review."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/potions/brews/Brew.java",
@@ -1572,29 +1598,37 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/potions/brews/CausticBrew.java",
       "sha256": "9f205fe0607b58dd4f28f6bb4158e2ae27cdac93a513c6bac0e4bb01d0291788",
       "category": "potions",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "PARTIAL_REVIEW",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Ordinary description corrected after source review. Existing damage/cost/status logic retained; known live effects and challenge/hidden-state cases tested. Complete class variants, optional panels where applicable and Android rendering remain under review."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/potions/brews/InfernalBrew.java",
       "sha256": "3a4884af7f70fb8e216d8d3d976a80fc5096b8c3c78cc1869e51feb5097154c6",
       "category": "potions",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "PARTIAL_REVIEW",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Ordinary description corrected after source review. Existing damage/cost/status logic retained; known live effects and challenge/hidden-state cases tested. Complete class variants, optional panels where applicable and Android rendering remain under review."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/potions/brews/ShockingBrew.java",
       "sha256": "557f26c5518599d0950f5164185752d07d4846107e3a03dabd3201b4d20799c2",
       "category": "potions",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "PARTIAL_REVIEW",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Ordinary description corrected after source review. Existing damage/cost/status logic retained; known live effects and challenge/hidden-state cases tested. Complete class variants, optional panels where applicable and Android rendering remain under review."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/potions/brews/UnstableBrew.java",
       "sha256": "7d127a94f7881e0d92901e8310ce2ed5a2d4d1f017b2ff2b16abb0574463fa31",
       "category": "potions",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "PARTIAL_REVIEW",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Ordinary description corrected after source review. Existing damage/cost/status logic retained; known live effects and challenge/hidden-state cases tested. Complete class variants, optional panels where applicable and Android rendering remain under review."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/potions/elixirs/Elixir.java",
@@ -1605,64 +1639,80 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/potions/elixirs/ElixirOfAquaticRejuvenation.java",
-      "sha256": "35f268c540b19ed0c36b9565d962ca1d2bf0f11f233ffd162e2c28da50e87e66",
+      "sha256": "a9af3e37f0e0baaeb92f57f4015bbc35f9ae8ec56bc8a045333eaebfd6aa06b7",
       "category": "potions",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
+      "status": "PARTIAL_REVIEW",
       "description_methods": [
         "desc"
-      ]
+      ],
+      "wording_corrected": true,
+      "review_notes": "Ordinary description corrected after source review. Existing damage/cost/status logic retained; known live effects and challenge/hidden-state cases tested. Complete class variants, optional panels where applicable and Android rendering remain under review."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/potions/elixirs/ElixirOfArcaneArmor.java",
-      "sha256": "7e825b08ac5e4de9819c543b55003247252d1b7b44c07762d717e3ceaa7e4456",
+      "sha256": "78f2b867199be053aee9e9a8d1aa74d04be012c4aa4815ad07a474ec9d142771",
       "category": "potions",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "PARTIAL_REVIEW",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Ordinary description corrected after source review. Existing damage/cost/status logic retained; known live effects and challenge/hidden-state cases tested. Complete class variants, optional panels where applicable and Android rendering remain under review."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/potions/elixirs/ElixirOfDragonsBlood.java",
-      "sha256": "3d511a9949ad7c17b4a8d752952d84ee1cf7e5d3d436b25c49695c22530d16b6",
+      "sha256": "f36bf2dc6420e5fe4700c6e81ee7381307ad762f2d02815543bf6040163f65f5",
       "category": "potions",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "PARTIAL_REVIEW",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Ordinary description corrected after source review. Existing damage/cost/status logic retained; known live effects and challenge/hidden-state cases tested. Complete class variants, optional panels where applicable and Android rendering remain under review."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/potions/elixirs/ElixirOfFeatherFall.java",
-      "sha256": "a8877228f7e70e1536b4d503522c7bb98b582ed859412c3df1e8d710ef97cc9e",
+      "sha256": "4913f8e742b7e01f6ca8015b18a159eb0da7608748c274b59cb8381d941f1599",
       "category": "potions",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "PARTIAL_REVIEW",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Ordinary description corrected after source review. Existing damage/cost/status logic retained; known live effects and challenge/hidden-state cases tested. Complete class variants, optional panels where applicable and Android rendering remain under review."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/potions/elixirs/ElixirOfHoneyedHealing.java",
-      "sha256": "e884edf00c4299c13575210d8a2763b8f6609a730a5edd07a97344e1d8ae7b42",
+      "sha256": "02fe0e2a5154511480bee694c2b3fbaa0c24829801f6d5cadbb68e1710804449",
       "category": "potions",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "PARTIAL_REVIEW",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Ordinary description corrected after source review. Existing damage/cost/status logic retained; known live effects and challenge/hidden-state cases tested. Complete class variants, optional panels where applicable and Android rendering remain under review."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/potions/elixirs/ElixirOfIcyTouch.java",
-      "sha256": "eb2a6d4cc5920ceeebf95062b9c3de263f8b4d3bceeb4a60b35050c0e46b5b62",
+      "sha256": "802fdb33ed879b513bbbbc87ee4e26b51d023bc2a0fc964e77dad39839ba02f3",
       "category": "potions",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "PARTIAL_REVIEW",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Ordinary description corrected after source review. Existing damage/cost/status logic retained; known live effects and challenge/hidden-state cases tested. Complete class variants, optional panels where applicable and Android rendering remain under review."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/potions/elixirs/ElixirOfMight.java",
-      "sha256": "94179d35d339cee2539244040f4425c935c3ba431682cf3db32675fea3f97e3b",
+      "sha256": "4ffeec3393220cda665f89645ebc87b68fe5a17716c89ad0a445c7dc882f62fc",
       "category": "potions",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
+      "status": "PARTIAL_REVIEW",
       "description_methods": [
         "desc",
         "desc"
-      ]
+      ],
+      "wording_corrected": true,
+      "review_notes": "Ordinary description corrected after source review. Existing damage/cost/status logic retained; known live effects and challenge/hidden-state cases tested. Complete class variants, optional panels where applicable and Android rendering remain under review."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/potions/elixirs/ElixirOfToxicEssence.java",
-      "sha256": "c987ccdcb1ce70a4974f5c69864d0d8bfd90c4fce1768d8035c7cef527b6be88",
+      "sha256": "2b18e426568644c71d643c8e0adfb874bb351083149436480422b062b1874f06",
       "category": "potions",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "PARTIAL_REVIEW",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Ordinary description corrected after source review. Existing damage/cost/status logic retained; known live effects and challenge/hidden-state cases tested. Complete class variants, optional panels where applicable and Android rendering remain under review."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/potions/exotic/ExoticPotion.java",
@@ -1673,10 +1723,12 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/potions/exotic/PotionOfCleansing.java",
-      "sha256": "8e0ce0c76d2576a19b3be15dfdf0564c2a93af249d67e3af0c63e0fabfd63aa8",
+      "sha256": "fbed990d004299827e01549ec3803f70677dc8fb7f67aece3ad267073d18cfae",
       "category": "potions",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "PARTIAL_REVIEW",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Ordinary description corrected after source review. Existing damage/cost/status logic retained; known live effects and challenge/hidden-state cases tested. Complete class variants, optional panels where applicable and Android rendering remain under review."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/potions/exotic/PotionOfCorrosiveGas.java",
@@ -1696,22 +1748,28 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/potions/exotic/PotionOfDragonsBreath.java",
       "sha256": "d8532b0398126b9de6f09ec2fe84f439a3fa571411ec62a1515b54fff00c7396",
       "category": "potions",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "PARTIAL_REVIEW",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Ordinary description corrected after source review. Existing damage/cost/status logic retained; known live effects and challenge/hidden-state cases tested. Complete class variants, optional panels where applicable and Android rendering remain under review."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/potions/exotic/PotionOfEarthenArmor.java",
-      "sha256": "6887b8a899cdba19727ea5b36bea6738e31cb5a23575951109cb4f1a2dd6bea6",
+      "sha256": "5cf413bce6669b3b1d62f59ced09e731fe6041621db5bcf880401ebf61ddbb4f",
       "category": "potions",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "PARTIAL_REVIEW",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Ordinary description corrected after source review. Existing damage/cost/status logic retained; known live effects and challenge/hidden-state cases tested. Complete class variants, optional panels where applicable and Android rendering remain under review."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/potions/exotic/PotionOfMagicalSight.java",
-      "sha256": "37505cabc79e2036d9fb752d0a6f2594f8bfc15a782bd6c92559d8868c34e11c",
+      "sha256": "cdc3fe826f293cfda563d4f0e1508e954afaae3c551c5bea3712c0ac3690e0a5",
       "category": "potions",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "PARTIAL_REVIEW",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Ordinary description corrected after source review. Existing damage/cost/status logic retained; known live effects and challenge/hidden-state cases tested. Complete class variants, optional panels where applicable and Android rendering remain under review."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/potions/exotic/PotionOfMastery.java",
@@ -1722,31 +1780,39 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/potions/exotic/PotionOfShielding.java",
-      "sha256": "9c0a977744ed81431a85596431106cf6bab3b89fd6a2077ad66e74335d5f8c65",
+      "sha256": "5ed4e5094c53ec405bba885ad4a72eeb1276f1003a040258ca1da0f7aaa3f118",
       "category": "potions",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "PARTIAL_REVIEW",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Ordinary description corrected after source review. Existing damage/cost/status logic retained; known live effects and challenge/hidden-state cases tested. Complete class variants, optional panels where applicable and Android rendering remain under review."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/potions/exotic/PotionOfShroudingFog.java",
       "sha256": "054ee5fe23627eebf22d8363732e418191c38b7e32b11ee074d543caad53f5dd",
       "category": "potions",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "PARTIAL_REVIEW",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Ordinary description corrected after source review. Existing damage/cost/status logic retained; known live effects and challenge/hidden-state cases tested. Complete class variants, optional panels where applicable and Android rendering remain under review."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/potions/exotic/PotionOfSnapFreeze.java",
       "sha256": "4c92509c3cda7ccd042dde7c635ae7a5e7b5335da03fc4b2e2a79c1c44242ee5",
       "category": "potions",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "PARTIAL_REVIEW",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Ordinary description corrected after source review. Existing damage/cost/status logic retained; known live effects and challenge/hidden-state cases tested. Complete class variants, optional panels where applicable and Android rendering remain under review."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/potions/exotic/PotionOfStamina.java",
-      "sha256": "36156626aa8b78599f5328df6e795e436bb58f8c0566da92863783b501334175",
+      "sha256": "0a451eabe3e628b233b52d5ae15ed3aedfafc3c1b5abdfe7c072a728dd90ec24",
       "category": "potions",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "PARTIAL_REVIEW",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Ordinary description corrected after source review. Existing damage/cost/status logic retained; known live effects and challenge/hidden-state cases tested. Complete class variants, optional panels where applicable and Android rendering remain under review."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/potions/exotic/PotionOfStormClouds.java",
@@ -2730,8 +2796,10 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/wands/WandOfBlastWave.java",
       "sha256": "894966d0de072fdf13d612c55595da79abe168276b97a16f341f14f51aed62ff",
       "category": "wands",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "PARTIAL_REVIEW",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Ordinary description corrected after source review. Existing damage/cost/status logic retained; known live effects and challenge/hidden-state cases tested. Complete class variants, optional panels where applicable and Android rendering remain under review."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/wands/WandOfCorrosion.java",
@@ -2746,8 +2814,10 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/wands/WandOfCorruption.java",
       "sha256": "97dfb7f4cc96a5175af32721de9814389e264b5bf29f90e717421b37652b27cb",
       "category": "wands",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "PARTIAL_REVIEW",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Ordinary description corrected after source review. Existing damage/cost/status logic retained; known live effects and challenge/hidden-state cases tested. Complete class variants, optional panels where applicable and Android rendering remain under review."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/wands/WandOfDisintegration.java",
@@ -2760,17 +2830,21 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/wands/WandOfFireblast.java",
       "sha256": "bc41c8088cee3c5569addf72597b1fb20bffd1762d8c8cffefe00f38d2d7892c",
       "category": "wands",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
+      "status": "PARTIAL_REVIEW",
       "description_methods": [
         "statsDesc"
-      ]
+      ],
+      "wording_corrected": true,
+      "review_notes": "Ordinary description corrected after source review. Existing damage/cost/status logic retained; known live effects and challenge/hidden-state cases tested. Complete class variants, optional panels where applicable and Android rendering remain under review."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/wands/WandOfFrost.java",
       "sha256": "b7648e5427668fbaa2244f1e14fbf9ef6de3ff86cc9a9d34875006f1c42aaf3e",
       "category": "wands",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "PARTIAL_REVIEW",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Ordinary description corrected after source review. Existing damage/cost/status logic retained; known live effects and challenge/hidden-state cases tested. Complete class variants, optional panels where applicable and Android rendering remain under review."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/wands/WandOfLightning.java",
@@ -2808,28 +2882,34 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/wands/WandOfRegrowth.java",
       "sha256": "cb0a1618e27b6cb6eb5e1c3c66503745458c6feabbbdf7a4f508358d45d92329",
       "category": "wands",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
+      "status": "PARTIAL_REVIEW",
       "description_methods": [
         "statsDesc"
-      ]
+      ],
+      "wording_corrected": true,
+      "review_notes": "Ordinary description corrected after source review. Existing damage/cost/status logic retained; known live effects and challenge/hidden-state cases tested. Complete class variants, optional panels where applicable and Android rendering remain under review."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/wands/WandOfTransfusion.java",
-      "sha256": "de517b5d881a6925317b5f3bcb9d2c6123a5dcd975ee2d386727078c77c503c9",
+      "sha256": "06da09a975300c514188f4d3667b9c12373cdc45fa2647dc217abf2fbc774581",
       "category": "wands",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
+      "status": "PARTIAL_REVIEW",
       "description_methods": [
         "statsDesc"
-      ]
+      ],
+      "wording_corrected": true,
+      "review_notes": "Ordinary description corrected after source review. Existing damage/cost/status logic retained; known live effects and challenge/hidden-state cases tested. Complete class variants, optional panels where applicable and Android rendering remain under review."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/wands/WandOfWarding.java",
       "sha256": "07135639f73bd6733f0475fbe9e1ccfa77439430d96818ece47beec6bcd7ba7a",
       "category": "wands",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
+      "status": "PARTIAL_REVIEW",
       "description_methods": [
         "statsDesc"
-      ]
+      ],
+      "wording_corrected": true,
+      "review_notes": "Ordinary description corrected after source review. Existing damage/cost/status logic retained; known live effects and challenge/hidden-state cases tested. Complete class variants, optional panels where applicable and Android rendering remain under review."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/SpiritBow.java",
@@ -3719,16 +3799,16 @@
       "review_notes": "Added missing display provider to inventory. Reading its output is not a complete provenance/generation audit."
     }
   ],
-  "completed_units": 34,
+  "completed_units": 46,
   "latest_tests": {
-    "core_tests": 2997,
+    "core_tests": 3005,
     "suites": 456,
     "failures": 0,
     "errors": 0,
     "skipped": 0,
-    "log": "/workspace/apd-guard-root-and-descriptions-full.log",
+    "log": "/workspace/apd-wording-potions-wands-evidence-20261108/full.log",
     "android_verified": false,
     "new_apk_built": false,
-    "scope": "Combined guard/root scheduler fix and current wording checkpoint; later Shard sentence refinement checked by catalog export."
+    "scope": "Wand, regular/exotic potion, elixir and brew normal-description continuation. Android fixtures prepared but not compiled or run."
   }
 }

@@ -1,3 +1,7 @@
+## Wands and potions continuation
+
+Full source check now 3,005 tests / 456 suites with zero failures/errors/skips. Inventory distinguishes 113 full/partial source reviews from 46 completed source reviews; 381 units remain unresolved. Completed source review is not Android acceptance. Known durations, challenge behavior, free Transfusion cost and area-effect descriptions corrected; actual source/unknown-state tests and pending Android windows are detailed in `APD-DESCRIPTION-CORRECTION-2026-11-08.md`. Continue the scroll and remaining-category review. No new APK has been built for this unfinished audit.
+
 ## Current continuation — November 8, after APD378
 
 The earlier checkpoints below are historical. Current correction details: `APD-DESCRIPTION-CORRECTION-2026-11-08.md`. Inventory now includes 427 source units, including two previously omitted origin/range providers. Only 34 units are marked complete; partial reviews are counted separately. Full combined 2,997/456 check passed with zero failures/errors/skips. The Guard pull report has a separately documented scheduler correction. Current corrections are not yet Android-verified or delivered in an APK. Continue individual category and variant review; do not claim comprehensive completion.

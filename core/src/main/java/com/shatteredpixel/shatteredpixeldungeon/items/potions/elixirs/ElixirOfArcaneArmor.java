@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -32,6 +35,10 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 
 import java.util.ArrayList;
 
+import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+
 public class ElixirOfArcaneArmor extends Elixir {
 	
 	{
@@ -43,6 +50,11 @@ public class ElixirOfArcaneArmor extends Elixir {
 		Buff.affect(hero, ArcaneArmor.class).set(5 + hero.lvl/2, 80);
 	}
 	
+    @Override
+    public String desc() {
+        return Dungeon.hero == null ? super.desc() : Messages.get(this, "desc_amount", 5 + Dungeon.hero.lvl/2);
+    }
+
 	public static class Recipe extends com.shatteredpixel.shatteredpixeldungeon.items.Recipe.SimpleRecipe {
 		
 		{
