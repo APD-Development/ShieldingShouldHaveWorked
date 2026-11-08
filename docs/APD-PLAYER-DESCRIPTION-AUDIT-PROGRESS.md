@@ -1,0 +1,9 @@
+# Player-language item audit — in progress
+
+Inventory:425source units and2388item-message entries. These are not counts of reviewed item types. Current completed review:11food source units plus PastyExplanation; Blandfruit source reviewed with secondary potion-text dependency unresolved. FoodExplanation/BlandfruitExplanation helper reviews remain partial until that dependency is closed. Food category contains14playable concrete types including chunks/leftovers, plus a recipe placeholder; seasonal/cooked forms are tracked in the notes, not counted as separate source units. Do not call this an entire-item audit.
+
+Rewrote ordinary food descriptions individually after reading actual food classes, hunger/eating paths, raw/frozen/phantom effects, Barkskin/WellFed and seasonal recharge/XP/heal/shield paths. Display nourishment relative to a normal ration and actual talent-dependent meal time; explain food-specific risks and benefits. Remove generic programmer disclaimers and keep state/knowledge/RNG untouched. Plain Chargrilled Meat remains concise. All12cooked fruit mappings and10calendar Pasty forms checked; fruit delegated potion wording remains a known unresolved case.
+
+Full local core suite2957/452 passed with zero failures/errors/skips. Earlier targeted failures were stale prose expectations; actual eating, buffs, knowledge, randomness, nutrition, recipes, calendar and save/load assertions remain. No Android verification or APK publication for these new audit changes. APD376 remains the independently verified delivered correction pair.
+
+Next work: ring prose and combined-stat knowledge leakage found during actual inspection; inspect and test all ring variants and call sites. Then remaining item categories, providers and secondary panels. No new UI/mechanics/panel authorized. Preserve progress and continue.

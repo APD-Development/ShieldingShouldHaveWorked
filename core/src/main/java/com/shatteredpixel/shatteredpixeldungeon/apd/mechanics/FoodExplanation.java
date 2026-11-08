@@ -39,33 +39,40 @@ public final class FoodExplanation {
         return Dungeon.isChallenged(Challenges.NO_FOOD)?base/3f:base;
     }
     private static String unavailable(Food food){
-        if(food instanceof MysteryMeat.PlaceHolder)return "This is a crafting placeholder, not a preview of an edible meal.";
-        if(food instanceof Blandfruit && ((Blandfruit)food).potionAttrib==null)return "This uncooked fruit cannot be eaten. Its cooked form has separate nutrition and potion effects.";
+        if(food instanceof MysteryMeat.PlaceHolder)return "This recipe accepts raw, stewed, chargrilled or frozen meat.";
+        if(food instanceof Blandfruit && ((Blandfruit)food).potionAttrib==null)return "This fruit cannot be eaten raw. Cook it with a seed first.";
         return "";
     }
     public static String summary(Food food){
         String unavailable=unavailable(food);if(!unavailable.isEmpty())return unavailable;
-        String text="Nutrition: _"+ObfuscationExplanation.number(nutritionBeforeHorn(food))+" hunger points_ before a cursed Horn's penalty and the fully-fed limit. Eating subtracts hunger points; it does not restore that many HP.";
+        String text="Hunger relief: _"+n(100f*nutritionBeforeHorn(food)/Hunger.HUNGRY)+"% of a normal ration_. Hunger relief stops when full.";
+        if(Dungeon.isChallenged(Challenges.NO_FOOD))text+=" On Diet's reduction is included.";
         float time=food.previewEatingTime();
-        if(Float.isFinite(time))text+=" Current eating action: _"+ObfuscationExplanation.number(time)+" game turns_ before effects that change all action times.";
+        if(Float.isFinite(time))text+=" Eating takes _"+n(time)+(time==1?" turn_.":" turns_.");
+        if(Dungeon.hero!=null&&Dungeon.hero.belongings.getItem(com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HornOfPlenty.class)!=null)
+            text+=" An active Horn of Plenty curse reduces hunger relief by another 33%.";
         if(food instanceof Blandfruit)text+="\n"+BlandfruitExplanation.summary((Blandfruit)food);
-        if(food instanceof Pasty)text+="\n"+PastyExplanation.summary(Dungeon.hero);
+        else if(food instanceof Pasty)text+="\n"+PastyExplanation.summary(Dungeon.hero);
+        else {String effect=specialEffect(food,Dungeon.hero);if(!effect.isEmpty())text+="\n"+effect.trim();}
         return text;
     }
     public static String details(Food food){
         String unavailable=unavailable(food);if(!unavailable.isEmpty())return unavailable;
-        return "_Nutrition and meal time_\nBase nutrition: "+ObfuscationExplanation.number(baseNutrition(food))+" hunger points. On Diet divides this by 3; under the current challenge it offers "+ObfuscationExplanation.number(nutritionBeforeHorn(food))+" points before other limits. An active cursed Horn multiplies the meal's offered nutrition by 0.67, unless its curse is suppressed. A personal cursed-Horn result is not guessed from unidentified equipment.\nOrdinary satisfaction subtracts that amount from hunger, stopping at zero. Excess is not stored as extra HP or an unlimited food reserve. The hunger-rate setting changes hunger accumulation rather than multiplying this positive nutrition. Meal-related talents and special food effects follow their separate rules.\nThe current action-time preview uses this food's actual eating-time rule. Normal food uses "+ObfuscationExplanation.number(Food.TIME_TO_EAT)+" turns, shortened by qualifying meal talents; berries and Supply Rations have their own faster rule. Any zero shown comes from an existing food/talent rule. It is not a free action added by this description. The food is still consumed, and other actors and hunger advance according to the actual elapsed game time. Random food effects are not rolled during inspection."+specialEffect(food,Dungeon.hero);
+        return "_Food and eating_\nThis meal provides "+n(100f*nutritionBeforeHorn(food)/Hunger.HUNGRY)+"% of a normal ration’s nourishment, including On Diet if active. Hunger relief stops when you are full, so excess nourishment is wasted. On Diet reduces food's nourishment to one third. A cursed Horn of Plenty reduces it by another 33%.\nEating normally takes "+n(Food.TIME_TO_EAT)+" turns. Meal talents can shorten this, while berries and Supply Rations already take only one turn without those talents. The eating time above uses your current meal talents."+specialEffect(food,Dungeon.hero);
+
     }
     private static String n(float value){return ObfuscationExplanation.number(value);}
     public static String specialEffect(Food food,Hero hero){
         if(food instanceof MysteryMeat.PlaceHolder)return "";
-        String current=hero==null?"":" At current maximum health, that base offer is "+(hero.HT/4)+" HP or Barkskin strength points, respectively.";
-        if(food instanceof FrozenCarpaccio)return "\n_Frozen meat effect_\nFive equally likely initial outcomes: Invisibility for "+n(Invisibility.DURATION)+" scheduled game-time units; Barkskin strength floor(maximum HP / 4), decaying one point per one-unit update; the Healing potion's supported ailment cure; healing with a base offer floor(maximum HP / 4); or no extra effect. Each initial outcome has a 20% chance. Healing modifiers, missing health, status resistance and reapplication still apply."+current;
-        if(food instanceof PhantomMeat)return "\n_Phantom meat effect_\nOffers all four supported benefits: Barkskin strength floor(maximum HP / 4), decaying one point per one-unit update; Invisibility for "+n(Invisibility.DURATION)+" scheduled units; healing with a base offer floor(maximum HP / 4); and the Healing potion's supported ailment cure. Healing modifiers, missing health, resistance and reapplication still apply."+current;
-        if(food instanceof MysteryMeat)return "\n_Raw meat risk_\nFive equally likely initial outcomes: reignite Burning; add Roots for "+n(Roots.DURATION*2)+" scheduled units; offer Poison with duration floor(maximum HP / 5) game-time units; add Slow for "+n(Slow.DURATION)+" scheduled units; or no extra effect. Each initial outcome has a 20% chance before immunity and resistance. Poison duration also controls its changing damage per tick; it is not guaranteed total damage, and raw meat is inappropriate for automatic eating.";
-        if(food instanceof MeatPie)return "\n_Well Fed_\nResets the Well Fed reserve to "+n(Dungeon.isChallenged(Challenges.NO_FOOD)?Hunger.STARVING/3:Hunger.STARVING)+" scheduled updates. It offers 1 base HP at each supported multiple of "+WellFed.HEAL_INTERVAL+" remaining updates when health is missing. Salt Cube changes update spacing rather than the base heal per offer; healing modifiers still apply. Well Fed pauses ordinary hunger accumulation. Eating another pie resets this reserve rather than adding a second independent reserve.";
-        if(food instanceof Berry)return "\n_Berry seeds_\nEvery second eaten berry creates one random seed through the normal seed table. The saved counter carries between berries and is cleared after the seed is produced. Inspection does not increment it or choose a seed.";
-        if(food instanceof SupplyRation)return "\n_Supply Ration_\nOffers 5 base HP of healing, subject to healing modifiers and missing health. If a Cloak of Shadows is carried, it also offers 1 direct Cloak charge and the ordinary recharge visual feedback. Capacity and item rules still apply; this is separate from its nutrition and fast eating time.";
+        String health=hero==null?"one quarter of your maximum health, rounded down":(hero.HT/4)+" HP";
+        String bark=hero==null?"one quarter of your maximum health, rounded down":Integer.toString(hero.HT/4);
+        String cure="cures poison, bleeding, blindness, weakness, vulnerability, cripple, drowsiness, slowing and vertigo";
+        if(food instanceof FrozenCarpaccio)return "\n_Frozen meat_\nEach meal has five equally likely outcomes (20% each): invisibility for "+n(Invisibility.DURATION)+" turns; Barkskin that can block up to "+bark+" extra physical damage; a cure for the ailments listed below; healing for "+health+" before healing modifiers; or no extra benefit. Barkskin weakens by 1 each turn. The cure "+cure+".";
+        if(food instanceof PhantomMeat)return "\n_Phantom meat_\nGrants invisibility for "+n(Invisibility.DURATION)+" turns, healing for "+health+" before healing modifiers, and Barkskin that can block up to "+bark+" extra physical damage, weakening by 1 each turn. It also "+cure+".";
+        if(food instanceof MysteryMeat)return "\n_Raw meat risk_\nEach meal has a 20% chance of each outcome: catching fire; being rooted for "+n(Roots.DURATION*2)+" turns; being poisoned for "+(hero==null?"a duration based on your maximum health":(hero.HT/5)+" turns")+"; being slowed for "+n(Slow.DURATION)+" turns; or no harmful effect. Poison damage varies over its duration. Immunities and resistances can protect you. Cook or freeze the meat to avoid these risks.";
+        if(food instanceof MeatPie)return "\n_Well Fed_\nPauses hunger and normally restores 1 HP every "+WellFed.HEAL_INTERVAL+" turns for "+n(Dungeon.isChallenged(Challenges.NO_FOOD)?Hunger.STARVING/3:Hunger.STARVING)+" turns. Salt Cube makes both the duration and the time between heals longer. Your healing setting still applies. Eating another pie refreshes Well Fed instead of stacking its duration.";
+        if(food instanceof Berry)return "\nEvery second berry you eat drops one random seed at your feet.";
+        if(food instanceof SupplyRation)return "\nRestores 5 HP before healing modifiers and adds 1 charge to your Cloak of Shadows, if carried. A full cloak gains no extra charge.";
         if(food instanceof Blandfruit)return "\n"+BlandfruitExplanation.details((Blandfruit)food,hero);
         if(food instanceof Pasty)return "\n"+PastyExplanation.details(hero);
         return "";

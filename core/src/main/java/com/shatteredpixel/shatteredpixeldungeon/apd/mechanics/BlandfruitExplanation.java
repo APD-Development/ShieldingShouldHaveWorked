@@ -45,18 +45,21 @@ public final class BlandfruitExplanation {
     public static String summary(Blandfruit fruit){
         if(fruit.potionAttrib==null)return "Uncooked fruit cannot be eaten.";
         if(!recognized(fruit))return "Detailed effects are unavailable for this imbued fruit.";
-        if(harmfulMeal(fruit))return "_Eating releases its harmful effect on your own tile._ Throwing places the effect at the landing tile instead; you and nearby creatures can still be affected.";
+        if(fruit.potionAttrib instanceof PotionOfLiquidFlame)return "_Eating releases fire around you._ Throw it to release the fire at the landing tile instead.";
+        if(fruit.potionAttrib instanceof PotionOfToxicGas)return "_Eating releases toxic gas around you._ Throw it to release the gas at the landing tile instead.";
+        if(fruit.potionAttrib instanceof PotionOfParalyticGas)return "_Eating releases paralysing gas around you._ Throw it to release the gas at the landing tile instead.";
+        if(fruit.potionAttrib instanceof PotionOfFrost)return "_Eating releases freezing cold around you._ Throw it to freeze the area around the landing tile instead.";
         if(fruit.potionAttrib instanceof PotionOfHealing){
-            if(Dungeon.isChallenged(Challenges.NO_HEALING))return "_Pharmacophobia: eating offers Poison instead of healing_, after its normal supported ailment cure.";
-            return "Eating offers gradual healing and cures its supported ailments. Missing health and healing modifiers affect the result.";
+            if(Dungeon.isChallenged(Challenges.NO_HEALING))return "_Pharmacophobia: poisons you instead of healing._ It still cures existing ailments first.";
+            return "Gradually restores health and cures ailments such as poison, bleeding and blindness. Your healing setting affects how much health you recover.";
         }
-        if(fruit.potionAttrib instanceof PotionOfStrength)return "Eating permanently adds _1 base Strength point_. It does not immediately heal HP or upgrade equipment.";
-        if(fruit.potionAttrib instanceof PotionOfExperience)return "Eating grants experience toward your next level; this is separate from its nutrition.";
-        if(fruit.potionAttrib instanceof PotionOfInvisibility)return "Eating offers Invisibility for _"+n(Invisibility.DURATION)+" game-time units_; supported attacks and other actions can end it early.";
-        if(fruit.potionAttrib instanceof PotionOfHaste)return "Eating offers Haste for _"+n(Haste.DURATION)+" game-time units_, speeding movement rather than every action.";
-        if(fruit.potionAttrib instanceof PotionOfMindVision)return "Eating offers Mind Vision for _"+n(MindVision.DURATION)+" game-time units_, sensing eligible creatures under its normal rules.";
-        if(fruit.potionAttrib instanceof PotionOfLevitation)return "Eating offers Levitation for _"+n(Levitation.DURATION)+" game-time units_. Throwing instead releases Confusion Gas and leaves edible chunks on ordinary ground.";
-        if(fruit.potionAttrib instanceof PotionOfPurity)return "Eating offers protection against supported environmental clouds for _"+n(BlobImmunity.DURATION)+" game-time units_. Throwing instead clears supported nearby clouds and leaves edible chunks.";
+        if(fruit.potionAttrib instanceof PotionOfStrength)return "Permanently increases your Strength by _1_.";
+        if(fruit.potionAttrib instanceof PotionOfExperience)return "Grants XP equal to one full level’s requirement. At maximum level, this grants Bless instead.";
+        if(fruit.potionAttrib instanceof PotionOfInvisibility)return "Makes you invisible for _"+n(Invisibility.DURATION)+" turns_. Attacking or using certain items ends invisibility early.";
+        if(fruit.potionAttrib instanceof PotionOfHaste)return "Grants Haste for _"+n(Haste.DURATION)+" turns_, speeding up movement without speeding up attacks.";
+        if(fruit.potionAttrib instanceof PotionOfMindVision)return "Reveals creatures across the floor for _"+n(MindVision.DURATION)+" turns_, even through walls. This does not let you attack through walls.";
+        if(fruit.potionAttrib instanceof PotionOfLevitation)return "Floats you over pits and floor traps for _"+n(Levitation.DURATION)+" turns_. Reach safe ground before it ends. Throwing it releases Confusion Gas instead.";
+        if(fruit.potionAttrib instanceof PotionOfPurity)return "Protects you from harmful clouds, fire and similar environmental hazards for _"+n(BlobImmunity.DURATION)+" turns_. Throwing it clears nearby harmful clouds instead.";
         return "Its visible cooked form determines its extra effect.";
     }
     public static String details(Blandfruit fruit,Hero hero){
@@ -65,12 +68,12 @@ public final class BlandfruitExplanation {
         String effect=PotionExplanation.effect(fruit.potionAttrib,hero);
         String text="_Cooked fruit: "+fruit.name()+"_\n"+effect;
         if(fruit.potionAttrib instanceof PotionOfHealing&&Dungeon.isChallenged(Challenges.NO_HEALING))
-            text+="\n_Current challenge: Pharmacophobia._ The healing branch instead offers Poison"+(hero==null?" with a duration based on hero level.":" for "+(4+hero.lvl/2)+" game-time units, from 4 + floor(hero level / 2).")+" This duration is not guaranteed total damage; normal status and damage rules apply.";
-        if(harmfulMeal(fruit))text+="\n_Eating is hazardous:_ it releases the described shattering effect at your own location after the food action. The nutrition does not make that effect safe. Immunities and exposure keep their normal rules.";
-        else text+="\nEating applies the described benefit after its normal food action. The food's displayed meal time applies; no separate one-turn potion-drinking action is added.";
+            text+="\n_Current challenge: Pharmacophobia._ The healing branch instead offers Poison"+(hero==null?" for a duration based on your level.":" for "+(4+hero.lvl/2)+" turns (4 plus half your level, rounded down).")+" Poison damage changes over time; immunity and resistance still apply.";
+        if(harmfulMeal(fruit))text+="\n_Eating is hazardous:_ it releases the described shattering effect at your own location when eaten. Relieving hunger does not protect you from that effect.";
+        else text+="\nEating grants the benefit as part of the meal; it takes only the displayed eating time.";
         if(releasesEffectWhenThrown(fruit)){
-            text+="\nThrowing onto ordinary ground releases this form's shattering effect at the landing tile and leaves _1 portion of edible fruit chunks_. Chunks offer "+n(FoodExplanation.nutritionBeforeHorn(Hunger.STARVING))+" hunger points before a cursed Horn and the fully-fed limit. The potion effect and that later meal are separate; the thrown fruit does not feed you immediately. Wells and pits instead keep their ordinary item-drop/fall behavior.";
+            text+="\nThrowing onto ordinary ground releases this form's shattering effect at the landing tile and leaves _1 portion of edible fruit chunks_. Chunks provide "+n(100f*FoodExplanation.nutritionBeforeHorn(Hunger.STARVING)/Hunger.HUNGRY)+"% of a normal ration’s nourishment before an active Horn curse. The potion effect and that later meal are separate; the thrown fruit does not feed you immediately. Wells and pits instead keep their ordinary item-drop/fall behavior.";
         }else text+="\nThrowing normally drops the _whole fruit_ without applying its eating effect or creating chunks. Wells and pits keep their ordinary item-drop/fall behavior.";
-        return text+"\nInspection does not eat, throw, spend time or identify other potions. The publicly visible fruit type supplies this explanation.";
+        return text;
     }
 }

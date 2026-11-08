@@ -86,18 +86,18 @@ public class BlandfruitExplanationTest {
     }
     @Test public void pharmacophobiaFruitWarnsAndUsesActualPoisonInsteadOfHealing(){
         Dungeon.challenges=Challenges.NO_HEALING;hero.lvl=9;hero.sprite=null;Blandfruit f=fruit(new PotionOfHealing());
-        assertTrue(BlandfruitExplanation.summary(f).contains("Pharmacophobia"));assertTrue(BlandfruitExplanation.details(f,hero).contains("8 game-time units"));
+        assertTrue(BlandfruitExplanation.summary(f).contains("Pharmacophobia"));assertTrue(BlandfruitExplanation.details(f,hero).contains("8 turns"));
         int hp=hero.HP;f.potionAttrib.apply(hero);assertEquals(hp,hero.HP);assertNull(hero.buff(Healing.class));assertEquals(8,hero.buff(Poison.class).apdRemaining(),0);
     }
     @Test public void rotfruitAddsOneBaseStrengthWithoutDirectHealingOrMaximumHpChange(){
         Blandfruit f=fruit(new PotionOfStrength());int hp=hero.HP,ht=hero.HT,str=hero.STR;
-        assertTrue(BlandfruitExplanation.summary(f).contains("1 base Strength point"));assertFalse(PotionExplanation.details(f.potionAttrib,hero).contains("updates the hero's health limits"));
+        assertTrue(BlandfruitExplanation.summary(f).contains("Strength by _1_"));assertFalse(PotionExplanation.details(f.potionAttrib,hero).contains("updates the hero's health limits"));
         f.potionAttrib.apply(hero);assertEquals(str+1,hero.STR);assertEquals(hp,hero.HP);assertEquals(ht,hero.HT);
     }
     @Test public void timedFruitDescriptionsMatchActualOffersAndDoNotShortenLongerEffects(){
         Potion[] potions={new PotionOfInvisibility(),new PotionOfHaste(),new PotionOfLevitation(),new PotionOfPurity()};Class[] buffs={Invisibility.class,Haste.class,Levitation.class,BlobImmunity.class};float[] durations={Invisibility.DURATION,Haste.DURATION,Levitation.DURATION,BlobImmunity.DURATION};
         for(int i=0;i<potions.length;i++){
-            Blandfruit f=fruit(potions[i]);assertTrue(BlandfruitExplanation.summary(f).contains(ObfuscationExplanation.number(durations[i])+" game-time units"));potions[i].apply(hero);
+            Blandfruit f=fruit(potions[i]);assertTrue(BlandfruitExplanation.summary(f).contains(ObfuscationExplanation.number(durations[i])+" turns"));potions[i].apply(hero);
             Buff b=hero.buff(buffs[i]);assertNotNull(b);assertEquals(durations[i],b.cooldown(),.001f);String before=saved(hero);BlandfruitExplanation.details(f,hero);assertEquals(before,saved(hero));
             Buff.prolong(hero,buffs[i],durations[i]+7);potions[i].apply(hero);assertEquals(durations[i]+7,b.cooldown(),.001f);b.detach();
         }
@@ -107,7 +107,7 @@ public class BlandfruitExplanationTest {
         for(int challenge:new int[]{0,Challenges.NO_FOOD})for(Food meal:new Food[]{fruit(new PotionOfLevitation()),new Blandfruit.Chunks()}){
             Dungeon.challenges=challenge;Hunger hunger=Buff.affect(hero,Hunger.class);Bundle state=new Bundle();hunger.storeInBundle(state);state.put("level",450f);hunger.restoreFromBundle(state);
             float offer=challenge==0?450:150;assertEquals(offer,FoodExplanation.nutritionBeforeHorn(meal),0);satisfy.invoke(meal,hero);assertEquals(450-offer,hunger.hungerPoints(),0);
-            if(meal instanceof Blandfruit)assertTrue(BlandfruitExplanation.details((Blandfruit)meal,hero).contains(ObfuscationExplanation.number(offer)+" hunger points"));
+            if(meal instanceof Blandfruit)assertTrue(BlandfruitExplanation.details((Blandfruit)meal,hero).contains(ObfuscationExplanation.number(100f*offer/Hunger.HUNGRY)+"% of a normal ration"));
         }
         Food meal=fruit(new PotionOfInvisibility());assertEquals(3,meal.previewEatingTime(),0);hero.talents.get(0).put(Talent.IRON_STOMACH,1);assertEquals(1,meal.previewEatingTime(),0);
     }
@@ -144,7 +144,7 @@ public class BlandfruitExplanationTest {
             satisfy.invoke(berry,hero);assertNull(l.dropped);
             Berry.SeedCounter counter=hero.buff(Berry.SeedCounter.class);assertNotNull(counter);assertEquals(1,counter.count(),0);assertTrue(counter.revivePersists);
             Bundle stored=new Bundle();counter.storeInBundle(stored);Berry.SeedCounter copy=new Berry.SeedCounter();copy.restoreFromBundle(stored);assertEquals(1,copy.count(),0);assertTrue(copy.revivePersists);
-            String heroBefore=saved(hero);String detail=FoodExplanation.specialEffect(berry,hero);assertTrue(detail.contains("Every second eaten berry"));assertEquals(heroBefore,saved(hero));assertEquals(1,counter.count(),0);assertNull(l.dropped);
+            String heroBefore=saved(hero);String detail=FoodExplanation.specialEffect(berry,hero);assertTrue(detail.contains("Every second berry you eat"));assertEquals(heroBefore,saved(hero));assertEquals(1,counter.count(),0);assertNull(l.dropped);
             satisfy.invoke(berry,hero);assertTrue(l.dropped instanceof com.shatteredpixel.shatteredpixeldungeon.plants.Plant.Seed);assertEquals(1,l.dropped.quantity());assertNull(hero.buff(Berry.SeedCounter.class));
         }finally{Random.popGenerator();}
     }
@@ -172,7 +172,7 @@ public class BlandfruitExplanationTest {
             for(int maximum:new int[]{20,79,100,151}){
                 cached.set(null,com.shatteredpixel.shatteredpixeldungeon.utils.Holiday.HALLOWEEN);hero.HT=maximum;hero.HP=1;
                 Pasty meal=new Pasty();String description=FoodExplanation.specialEffect(meal,hero);
-                int offer=Math.max(3,maximum/20);assertTrue(description,description.contains(offer+" base HP"));assertEquals(1,hero.HP);
+                int offer=Math.max(3,maximum/20);assertTrue(description,description.contains(offer+" HP"));assertEquals(1,hero.HP);
                 satisfy.invoke(meal,hero);assertEquals(Math.min(maximum,1+offer),hero.HP);
                 cached.set(null,com.shatteredpixel.shatteredpixeldungeon.utils.Holiday.NEW_YEARS);
                 Barrier barrier=Buff.affect(hero,Barrier.class);barrier.setShield(100);
