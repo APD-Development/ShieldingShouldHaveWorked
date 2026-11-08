@@ -28,7 +28,7 @@ repo=os.environ['GITHUB_REPOSITORY'];assert api('repos/'+repo)['private']
 summary=xml_summary('core/build/test-results/test');assert summary['tests']==2986
 assert len(list(pathlib.Path('core/build/test-results/test').glob('TEST-*.xml')))==455
 signer=sorted(pathlib.Path(os.environ['ANDROID_HOME']).glob('build-tools/*/apksigner'))[-1]
-expected='067688b3ab6bd5820a67f4c1ba7d5859db578173781cf31d3252b3e4e012246e'
+expected='067688b3ab6bd5820a67f4c1ba7d5859db578173771cf31d3252b3e4e012246e'
 assets={};variants={};hashes={};files=[]
 for label,version in [('Developer','4.0.8-apd-INDEV-bC378-TEST'),('Alpha-Testers','4.0.8-apd-INDEV-bP378')]:
  apk=OUT/f'APD-{label}-378.apk'
