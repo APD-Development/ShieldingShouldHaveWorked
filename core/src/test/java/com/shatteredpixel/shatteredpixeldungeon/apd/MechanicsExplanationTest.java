@@ -1827,12 +1827,28 @@ public class MechanicsExplanationTest {
   com.shatteredpixel.shatteredpixeldungeon.items.remains.SealShard seal=new com.shatteredpixel.shatteredpixeldungeon.items.remains.SealShard();
   com.shatteredpixel.shatteredpixeldungeon.items.remains.TornPage page=new com.shatteredpixel.shatteredpixeldungeon.items.remains.TornPage();
   for(int level:new int[]{1,6,20})for(int maximum:new int[]{20,51,100}){
-   hero.lvl=level;hero.HT=maximum;
+   hero.lvl=level;hero.HT=maximum;hero.HP=0;
    assertTrue(hilt.info().contains(Math.max(2,level/3)+" damage"));assertTrue(hilt.info().contains("physical hits"));
    assertTrue(seal.info().contains(Math.round(maximum/5f)+" shielding"));assertTrue(page.info().contains(Math.round(maximum/10f)+" HP"));
    assertTrue(page.info().contains("1 turn"));assertNull(hero.buff(PhysicalEmpower.class));assertNull(hero.buff(Barrier.class));
   }
   assertTrue(new com.shatteredpixel.shatteredpixeldungeon.items.remains.BowFragment().info().contains(com.shatteredpixel.shatteredpixeldungeon.items.remains.BowFragment.HIGH_GRASS_TILES+" tiles of high grass"));
+ }
+ @Test public void tornPagePreviewMatchesRealHealingWithoutSpendingCredit()throws Exception{
+  hero.sprite=quietSprite();hero.HT=100;
+  com.shatteredpixel.shatteredpixeldungeon.items.remains.TornPage page=new com.shatteredpixel.shatteredpixeldungeon.items.remains.TornPage();
+  java.lang.reflect.Method effect=page.getClass().getDeclaredMethod("doEffect",Hero.class);effect.setAccessible(true);
+  for(int percent=0;percent<=com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomDungeonRules.Slider.HEALING.max;percent+=25){
+   com.watabou.utils.Bundle all=new com.watabou.utils.Bundle(),settings=new com.watabou.utils.Bundle();
+   com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomDungeonRules.defaults().with(com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomDungeonRules.Slider.HEALING,percent).store(settings);all.put("apd_custom_rules",settings);Dungeon.apdRestoreCustomRules(all);
+   for(int hp:new int[]{1,50,99,100})for(float fraction:new float[]{0,.25f,.75f}){
+    hero.HP=hp;hero.apdCustomHealingFraction=fraction;
+    int preview=com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomHealingHooks.preview(hero,10);
+    for(int inspect=0;inspect<3;inspect++)assertTrue(page.info(),page.info().contains(preview+" HP"));
+    assertEquals(hp,hero.HP);assertEquals(fraction,hero.apdCustomHealingFraction,0);
+    effect.invoke(page,hero);assertEquals("healing setting "+percent,preview,hero.HP-hp);
+   }
+  }
  }
  @Test public void tokenDescriptionsDistinguishCurrentAndBothLegacyQuestGoals()throws Exception{
   Class<?> type=com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Imp.Quest.class;

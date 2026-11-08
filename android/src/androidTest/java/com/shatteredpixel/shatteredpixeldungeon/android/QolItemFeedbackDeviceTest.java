@@ -273,6 +273,21 @@ public class QolItemFeedbackDeviceTest {
             TopScoresDeviceTest.render(()->{Dungeon.challenges=previous;Dungeon.hero.belongings.backpack.items.remove(haste);Dungeon.hero.belongings.backpack.items.remove(shielding);Dungeon.hero.belongings.backpack.items.remove(noisemaker);Dungeon.hero.belongings.backpack.items.remove(regrowthBomb);});
         }
     }
+    private static void remainsAndLoreDescriptionsRender()throws Exception{
+        int hp=Dungeon.hero.HP;
+        com.watabou.utils.Bundle rules=new com.watabou.utils.Bundle();
+        TopScoresDeviceTest.render(()->{Dungeon.apdStoreCustomRules(rules);Dungeon.hero.HP=1;});
+        try{
+            Item page=new com.shatteredpixel.shatteredpixeldungeon.items.remains.TornPage();
+            showItem(page,"Would restore","qol-torn-page-current-healing.png",true);
+            TopScoresDeviceTest.render(()->{
+                com.watabou.utils.Bundle all=new com.watabou.utils.Bundle(),settings=new com.watabou.utils.Bundle();
+                com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomDungeonRules.defaults().with(com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomDungeonRules.Slider.HEALING,0).store(settings);all.put("apd_custom_rules",settings);Dungeon.apdRestoreCustomRules(all);
+            });
+            showItem(page,"0 HP","qol-torn-page-zero-healing.png",true);
+            showItem(new com.shatteredpixel.shatteredpixeldungeon.items.journal.RegionLorePage.Prison(),"read it in your journal","qol-prison-lore-concise.png");
+        }finally{TopScoresDeviceTest.render(()->{Dungeon.hero.HP=hp;Dungeon.apdRestoreCustomRules(rules);});}
+    }
     private static void craftedSpellVariantsRender()throws Exception{
         com.shatteredpixel.shatteredpixeldungeon.items.spells.SummonElemental spell=new com.shatteredpixel.shatteredpixeldungeon.items.spells.SummonElemental();
         Class<?>[] variants={com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Elemental.AllyNewBornElemental.class,com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Elemental.FireElemental.class,com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Elemental.FrostElemental.class,com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Elemental.ShockElemental.class,com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Elemental.ChaosElemental.class};
@@ -414,6 +429,7 @@ public class QolItemFeedbackDeviceTest {
             ordinaryEffectsMatchOwnerScreenshots();
             ordinaryConsumableDescriptionsRender();
             craftedSpellVariantsRender();
+            remainsAndLoreDescriptionsRender();
             inventoryOrderShowsAutomatically();
             prepareSearchableFloor();
             final int[] center={0};

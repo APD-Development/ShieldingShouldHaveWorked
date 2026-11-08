@@ -41,7 +41,10 @@ public class TornPage extends RemainsItem {
 		image = ItemSpriteSheet.TORN_PAGE;
 	}
 
-    @Override public String desc(){return Messages.get(this,"desc",Dungeon.hero==null?"10% of your maximum health, rounded":Math.round(Dungeon.hero.HT/10f)+" HP");}
+    @Override public String desc(){
+        if(Dungeon.hero==null)return Messages.get(this,"desc","10% of your maximum health, rounded");
+        return Messages.get(this,"desc_current",com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomHealingHooks.preview(Dungeon.hero,Math.round(Dungeon.hero.HT/10f)));
+    }
 
 	@Override
 	protected void doEffect(Hero hero) {

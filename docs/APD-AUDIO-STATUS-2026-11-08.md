@@ -35,7 +35,28 @@ Current producing CI raw XML was independently downloaded: all four `RealTimeSou
 1. Use the same RedMagic/Android version and built-in speakers, fixed volume and a noted music setting. Compare the affected vanilla SPD build, if available, with APD378. Preserve live saves; use disposable runs or backed-up test copies. Record versions and settings. Start at 1x playback, then repeat at the owner's usual playback speed; do not assume speed caused the original symptom.
 2. Establish a Sewers control, then play Prison floors6–9 with single and multi-enemy encounters, rapid attacks, ranged/wand effects, traps and doors. Test first entry and repeat/warmed encounters. On floor10, cover both Tengu phases, attacks, jumps, bombs, fire and shockers, including dense bursts. Repeat runs rather than treating one quiet encounter as proof.
 3. Capture synchronized action/video and **actual speaker output** with an external microphone/camera where possible. Internal screen-recording audio alone does not measure speaker onset and can affect load; compare recorder-on/off trials. An audio-enabled API36 emulator can support controlled Android checks, but does not substitute for the actual Android16 phone and speaker path.
-4. If further diagnostics are approved, timestamp the game request, Handler enqueue, worker entry, SoundPool call/result and acoustic onset using a shared monotonic clock. Correlate frame stalls, GC and queue age. This separates late game triggers from backend queue delay and output delay. These hooks have NOT been added under this investigation-only request.
+4. If further diagnostics are approved, timestamp the game request, Handler enqueue, worker entry, SoundPool call/result and acoustic onset using a shared monotonic clock. Correlate frame stalls, GC and queue age. This separates late game triggers from backend queue delay and output delay. Test-only endpoint timestamps have now been added as described below; acoustic onset and physical-phone encounter measurements remain unperformed.
 5. Log request-to-dispatch and action-to-audible delays, worst cases and clustered late events during repeated Prison/Tengu trials. Preserve intentional overlap. Only after a spontaneous failure is reproduced and a bounded correction passes the same scenarios plus Sewers/normal simultaneous effects should this specific issue be marked fixed. A passing fake-endpoint or cadence test is insufficient.
 
 Read-only evidence sources: [libGDX1.14.0 Android backend](https://github.com/libgdx/libgdx/tree/1.14.0/backends/gdx-backend-android/src/com/badlogic/gdx/backends/android); [pinned upstream Sample](https://github.com/00-Evan/shattered-pixel-dungeon/blob/57a4e06a4caf162446d1c28caa7983f0493fecf0/SPD-classes/src/main/java/com/watabou/noosa/audio/Sample.java). Retrieved-source hashes are retained locally in `/workspace/apd-audio-investigation-2026-11-08/fetched-sources.json`; no third-party source was added to production.
+
+
+## November 8 clarification and real Android endpoint diagnostic
+
+The owner clarified that, to their recollection, the delayed/bunched sounds happened **only in vanilla SPD**. APD occurrence remains unconfirmed. No production audio correction is justified by that recollection or the diagnostics below.
+
+Audio-enabled API36 emulator run [42529880268](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/42529880268) reused the original APD379 Developer APK. Test-only instrumentation timed requests through the real shared AsynchronousSound worker and original AndroidSound/SoundPool endpoint. Three asset mixes (Sewers, Prison, Tengu), three burst intervals (500,125,16ms), and16 bursts per case produced480 requests. No worker blockage was deliberately injected. This exercises asset mixes, **not actual encounters or acoustic speaker output**.
+
+| Asset mix | Burst interval (ms) | Requests | Failed starts (-1) | Maximum worker queue delay (ms) | Maximum endpoint return time (ms) |
+|---|---:|---:|---:|---:|---:|
+| Sewers |500|48|26|216.194|2.946|
+| Sewers |125|48|16|10.253|5.460|
+| Sewers |16|48|16|34.223|57.854|
+| Prison |500|48|17|216.425|216.036|
+| Prison |125|48|16|39.847|0.987|
+| Prison |16|48|16|144.975|8.312|
+| Tengu |500|64|13|22.067|4.621|
+| Tengu |125|64|0|14.112|10.369|
+| Tengu |16|64|0|5.429|0.175|
+
+Raw JSON: artifact13636996609, `apd379-audio-endpoint-evidence/audio-real-endpoint.json`; summary reader [42530934839](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/42530934839). The120 failed starts and timing outliers are observations, not an established cause of the owner's SPD report. Loading, stream capacity, emulator scheduling, GC and codec behavior were not separated. Return time does not measure audible onset. Neither a specific fix nor physical-phone resolution has been demonstrated. Production playback, effects and intentional overlaps remain unchanged.

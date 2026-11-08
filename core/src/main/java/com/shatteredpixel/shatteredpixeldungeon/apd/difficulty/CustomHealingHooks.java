@@ -13,6 +13,14 @@ public final class CustomHealingHooks {
         if(!(target instanceof Hero) || CustomCombatHooks.percentage(CustomDungeonRules.Slider.HEALING)==100)return target.HT;
         return (int)Math.min(target.HT,(long)target.HP+amount(target,target.HT));
     }
+    /** Read-only HP gain preview; never spends the saved fractional healing credit. */
+    public static int preview(Hero hero,int requested) {
+        if(requested<=0 || hero.HP>=hero.HT)return 0;
+        int percent=CustomCombatHooks.percentage(CustomDungeonRules.Slider.HEALING);
+        if(percent==0)return 0;
+        long whole=percent==100?requested:(long)Math.floor((double)requested*percent/100.0+hero.apdCustomHealingFraction);
+        return (int)Math.max(0,Math.min(Integer.MAX_VALUE,Math.min((long)hero.HT-hero.HP,whole)));
+    }
     public static int amount(Char target,int requested) {
         if(!(target instanceof Hero))return requested;
         int percent=CustomCombatHooks.percentage(CustomDungeonRules.Slider.HEALING);

@@ -4,9 +4,9 @@
   "counting": "Source units, not distinct item types. reviewed_units includes partial reviews; completed_units excludes partial/pending dependency. corrected_units counts source units with corrections, including incomplete reviews. Inventory/export/tests alone are not an individual review.",
   "source_units": 427,
   "message_entries": 2411,
-  "reviewed_units": 223,
-  "corrected_units": 210,
-  "unresolved_units": 332,
+  "reviewed_units": 235,
+  "corrected_units": 221,
+  "unresolved_units": 320,
   "category_counts": {
     "apd": 1,
     "mechanics": 38,
@@ -1390,40 +1390,50 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/journal/AlchemyPage.java",
       "sha256": "2c5631fe687fbedb6061450a5172669dd9e6a3684f5c8f1b3e41913bbd8a50a4",
       "category": "journal",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [
         "desc"
-      ]
+      ],
+      "wording_corrected": true,
+      "review_notes": "Individually checked pickup/use, saved page names, actual healing/charge/shield/empower/grass effects and inherited normal info. Current Torn Page heal uses read-only custom-healing preview, capped at missing HP; inspection cannot spend fractional healing. Lore does not reveal uncollected contents. Actual Android info/use windows included in381; result pending."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/journal/DocumentPage.java",
       "sha256": "513049bbf979b3e5dd9127e89cac78c2edf70effc0999d4456b751831e5a241e",
       "category": "journal",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "REVIEWED_UNCHANGED",
+      "description_methods": [],
+      "wording_corrected": false,
+      "review_notes": "Individually checked pickup/use, saved page names, actual healing/charge/shield/empower/grass effects and inherited normal info. Current Torn Page heal uses read-only custom-healing preview, capped at missing HP; inspection cannot spend fractional healing. Lore does not reveal uncollected contents. Actual Android info/use windows included in381; result pending."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/journal/GuidePage.java",
       "sha256": "23570b3b46acd08c8667d2e9bbecdcd8c7f4e9a0af9ba4df59414ad570235edf",
       "category": "journal",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [
         "desc"
-      ]
+      ],
+      "wording_corrected": true,
+      "review_notes": "Individually checked pickup/use, saved page names, actual healing/charge/shield/empower/grass effects and inherited normal info. Current Torn Page heal uses read-only custom-healing preview, capped at missing HP; inspection cannot spend fractional healing. Lore does not reveal uncollected contents. Actual Android info/use windows included in381; result pending."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/journal/Guidebook.java",
       "sha256": "6ad189dbac85c33bf7bf42d5c3e12fbcb9c22b06703101541398d6b907395746",
       "category": "journal",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "REVIEWED_CORRECTED",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Individually checked pickup/use, saved page names, actual healing/charge/shield/empower/grass effects and inherited normal info. Current Torn Page heal uses read-only custom-healing preview, capped at missing HP; inspection cannot spend fractional healing. Lore does not reveal uncollected contents. Actual Android info/use windows included in381; result pending."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/journal/RegionLorePage.java",
       "sha256": "c0e051e50cbee4e7c4fa19723dd82f27604f47ea66780ccdac1e30348cb33e91",
       "category": "journal",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "REVIEWED_CORRECTED",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Individually checked pickup/use, saved page names, actual healing/charge/shield/empower/grass effects and inherited normal info. Current Torn Page heal uses read-only custom-healing preview, capped at missing HP; inspection cannot spend fractional healing. Lore does not reveal uncollected contents. Actual Android info/use windows included in381; result pending."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/keys/CrystalKey.java",
@@ -1946,50 +1956,64 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/remains/BowFragment.java",
       "sha256": "adc12793d403791529252da2dc9ffc44f5dda233de64dc01da15d2e4f1842c88",
       "category": "remains",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "REVIEWED_CORRECTED",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Individually checked pickup/use, saved page names, actual healing/charge/shield/empower/grass effects and inherited normal info. Current Torn Page heal uses read-only custom-healing preview, capped at missing HP; inspection cannot spend fractional healing. Lore does not reveal uncollected contents. Actual Android info/use windows included in381; result pending."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/remains/BrokenHilt.java",
       "sha256": "3f029acf1a9e5993cab637c950412a08f10ffa3d177aa2690fe5349b9e15c950",
       "category": "remains",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "REVIEWED_CORRECTED",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Individually checked pickup/use, saved page names, actual healing/charge/shield/empower/grass effects and inherited normal info. Current Torn Page heal uses read-only custom-healing preview, capped at missing HP; inspection cannot spend fractional healing. Lore does not reveal uncollected contents. Actual Android info/use windows included in381; result pending."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/remains/BrokenStaff.java",
       "sha256": "950cf9e828facd69c43fb8ca3be4762c3c5433159c2a39b13018a90112a33623",
       "category": "remains",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "REVIEWED_CORRECTED",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Individually checked pickup/use, saved page names, actual healing/charge/shield/empower/grass effects and inherited normal info. Current Torn Page heal uses read-only custom-healing preview, capped at missing HP; inspection cannot spend fractional healing. Lore does not reveal uncollected contents. Actual Android info/use windows included in381; result pending."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/remains/CloakScrap.java",
       "sha256": "051d1775407996b4d7a0aa9b9a2c15fb657f4215db683b54ecf6d3dce31aea44",
       "category": "remains",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "REVIEWED_CORRECTED",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Individually checked pickup/use, saved page names, actual healing/charge/shield/empower/grass effects and inherited normal info. Current Torn Page heal uses read-only custom-healing preview, capped at missing HP; inspection cannot spend fractional healing. Lore does not reveal uncollected contents. Actual Android info/use windows included in381; result pending."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/remains/RemainsItem.java",
       "sha256": "27415f0909e4fcd0dc02560581f1ff230f4f0717b4b22478082c3c65f10b14b2",
       "category": "remains",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "REVIEWED_CORRECTED",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Individually checked pickup/use, saved page names, actual healing/charge/shield/empower/grass effects and inherited normal info. Current Torn Page heal uses read-only custom-healing preview, capped at missing HP; inspection cannot spend fractional healing. Lore does not reveal uncollected contents. Actual Android info/use windows included in381; result pending."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/remains/SealShard.java",
       "sha256": "40e39c0cee9820ac28999f4fff55fb4667fab3597b6ee706414ea416b781b586",
       "category": "remains",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "REVIEWED_CORRECTED",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Individually checked pickup/use, saved page names, actual healing/charge/shield/empower/grass effects and inherited normal info. Current Torn Page heal uses read-only custom-healing preview, capped at missing HP; inspection cannot spend fractional healing. Lore does not reveal uncollected contents. Actual Android info/use windows included in381; result pending."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/remains/TornPage.java",
-      "sha256": "0decdb8d664a5c5d831ea0e269120a569c8756816484ab0f1da69af79842e234",
+      "sha256": "045957596a7eff17a0261c9f5507672e6c126d0009070411218346efa372ffe1",
       "category": "remains",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "REVIEWED_CORRECTED",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Individually checked pickup/use, saved page names, actual healing/charge/shield/empower/grass effects and inherited normal info. Current Torn Page heal uses read-only custom-healing preview, capped at missing HP; inspection cannot spend fractional healing. Lore does not reveal uncollected contents. Actual Android info/use windows included in381; result pending."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/rings/Ring.java",
@@ -4019,7 +4043,7 @@
       "review_notes": "Added missing display provider to inventory. Reading its output is not a complete provenance/generation audit."
     }
   ],
-  "completed_units": 95,
+  "completed_units": 107,
   "latest_tests": {
     "core_tests": 3030,
     "suites": 457,
