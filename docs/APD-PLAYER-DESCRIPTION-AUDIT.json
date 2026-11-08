@@ -3,10 +3,10 @@
   "baseline_commit": "32f4f3beab4c23b404c3cb1d43bfa06a39165e70",
   "counting": "Source units, not a claimed count of distinct item types or individual human reviews. Seasonal/cooked/identified variants tracked separately in reviewed entries.",
   "source_units": 425,
-  "message_entries": 2390,
-  "reviewed_units": 26,
-  "corrected_units": 26,
-  "unresolved_units": 402,
+  "message_entries": 2393,
+  "reviewed_units": 37,
+  "corrected_units": 37,
+  "unresolved_units": 391,
   "category_counts": {
     "apd": 1,
     "mechanics": 38,
@@ -188,11 +188,16 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/KeyExplanation.java",
-      "sha256": "ca352c0e6b36a669f22d91fa66b0564c3567fa7e4f432b4ee151b2f445b310a6",
+      "sha256": "c58e952686023edb7e7e0c627bdbd8b50378818e17adcb70aab8869102774ec8",
       "category": "mechanics",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [
         "details"
+      ],
+      "review_notes": "Actual Key depth, journal pickup/stack/save behavior and Hero door/chest/exit checks reviewed. Plain lock type and live floor; one-turn use explained without code terminology. Crystal doors/chests share key count. No lock or turn logic changed.",
+      "tests": [
+        "MechanicsExplanationTest.keyDescriptionsDistinguishLockTypesAndRecordedFloorWithoutUsingKeys",
+        "MechanicsExplanationTest.keyFloorMatchingDescriptionAgreesWithRealJournalConsumption"
       ]
     },
     {
@@ -366,10 +371,11 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/UtilityItemExplanation.java",
       "sha256": "1588d3ba43bbc2dbcd6f5e93d8b94d16579240800c160463d79510895c8bd772",
       "category": "mechanics",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
+      "status": "PARTIAL_REVIEW",
       "description_methods": [
         "details"
-      ]
+      ],
+      "review_notes": "Container section and holster formulas read; remaining utility item cases pending individual review."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/WandExplanation.java",
@@ -974,38 +980,58 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/bags/Bag.java",
-      "sha256": "24d014a12b821aaca8cd6efaa6618a61e65109b93c3b6831ee58f82ba73c1dd2",
+      "sha256": "6def7c3f96fb6d6af2c554fc1fdd2fb7a5d66b2d8478e1ca3e6fba22636b400c",
       "category": "bags",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "REVIEWED_CORRECTED",
+      "description_methods": [],
+      "review_notes": "Actual canHold/capacity/collect and effect paths reviewed; cold/fire protection checked against top-level backpack item selection in Frost/Burning. Capacity now shown from actual method, including dynamic Backpack accounting; holster20% durability from constant, no uniform wand-recharge percentage invented.",
+      "tests": [
+        "MechanicsExplanationTest.allContainerDescriptionsMatchTheirAcceptedItemsAndLiveCapacity"
+      ]
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/bags/MagicalHolster.java",
-      "sha256": "0c2a4b00168c45d5a2287c597533a83ec066fdc1f943ff08bdffb9c32a913314",
+      "sha256": "32a28b3f11105d43529f8f4d9d5d0ce9c1ec34f4d57d6fb1b569e97b9b5b19cc",
       "category": "bags",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "REVIEWED_CORRECTED",
+      "description_methods": [],
+      "review_notes": "Actual canHold/capacity/collect and effect paths reviewed; cold/fire protection checked against top-level backpack item selection in Frost/Burning. Capacity now shown from actual method, including dynamic Backpack accounting; holster20% durability from constant, no uniform wand-recharge percentage invented.",
+      "tests": [
+        "MechanicsExplanationTest.allContainerDescriptionsMatchTheirAcceptedItemsAndLiveCapacity"
+      ]
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/bags/PotionBandolier.java",
       "sha256": "f57fc9a8957d570bbccadd883c22945282d0ff62733607ed113ad0d05ea7b032",
       "category": "bags",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "REVIEWED_CORRECTED",
+      "description_methods": [],
+      "review_notes": "Actual canHold/capacity/collect and effect paths reviewed; cold/fire protection checked against top-level backpack item selection in Frost/Burning. Capacity now shown from actual method, including dynamic Backpack accounting; holster20% durability from constant, no uniform wand-recharge percentage invented.",
+      "tests": [
+        "MechanicsExplanationTest.allContainerDescriptionsMatchTheirAcceptedItemsAndLiveCapacity"
+      ]
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/bags/ScrollHolder.java",
       "sha256": "4c70299c56edfb82f3e5766052b212110dbd9241b7c7f1da0fa192a78e3aed1a",
       "category": "bags",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "REVIEWED_CORRECTED",
+      "description_methods": [],
+      "review_notes": "Actual canHold/capacity/collect and effect paths reviewed; cold/fire protection checked against top-level backpack item selection in Frost/Burning. Capacity now shown from actual method, including dynamic Backpack accounting; holster20% durability from constant, no uniform wand-recharge percentage invented.",
+      "tests": [
+        "MechanicsExplanationTest.allContainerDescriptionsMatchTheirAcceptedItemsAndLiveCapacity"
+      ]
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/bags/VelvetPouch.java",
       "sha256": "c6b9c3ff9a1ab79436e37fe497ad9b70b28641bc6527a108ff3b285f881d41b9",
       "category": "bags",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "REVIEWED_CORRECTED",
+      "description_methods": [],
+      "review_notes": "Actual canHold/capacity/collect and effect paths reviewed; cold/fire protection checked against top-level backpack item selection in Frost/Burning. Capacity now shown from actual method, including dynamic Backpack accounting; holster20% durability from constant, no uniform wand-recharge percentage invented.",
+      "tests": [
+        "MechanicsExplanationTest.allContainerDescriptionsMatchTheirAcceptedItemsAndLiveCapacity"
+      ]
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/bombs/ArcaneBomb.java",
@@ -1341,36 +1367,61 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/keys/CrystalKey.java",
       "sha256": "6affd7abd9de8a6297ae2edb98dab83e7e0c9ebb2f7b9e2de504b68034f2a721",
       "category": "keys",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "REVIEWED_CORRECTED",
+      "description_methods": [],
+      "review_notes": "Actual Key depth, journal pickup/stack/save behavior and Hero door/chest/exit checks reviewed. Plain lock type and live floor; one-turn use explained without code terminology. Crystal doors/chests share key count. No lock or turn logic changed.",
+      "tests": [
+        "MechanicsExplanationTest.keyDescriptionsDistinguishLockTypesAndRecordedFloorWithoutUsingKeys",
+        "MechanicsExplanationTest.keyFloorMatchingDescriptionAgreesWithRealJournalConsumption"
+      ]
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/keys/GoldenKey.java",
       "sha256": "c115580fde5c0e4602c5edf1258d4a256246fa16ff3791ddb97a904309877cb2",
       "category": "keys",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "REVIEWED_CORRECTED",
+      "description_methods": [],
+      "review_notes": "Actual Key depth, journal pickup/stack/save behavior and Hero door/chest/exit checks reviewed. Plain lock type and live floor; one-turn use explained without code terminology. Crystal doors/chests share key count. No lock or turn logic changed.",
+      "tests": [
+        "MechanicsExplanationTest.keyDescriptionsDistinguishLockTypesAndRecordedFloorWithoutUsingKeys",
+        "MechanicsExplanationTest.keyFloorMatchingDescriptionAgreesWithRealJournalConsumption"
+      ]
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/keys/IronKey.java",
       "sha256": "5f77eed2b1e98681ff21de33c85505ccd9d56135a5f8ead0edc87e97e91f5fb4",
       "category": "keys",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "REVIEWED_CORRECTED",
+      "description_methods": [],
+      "review_notes": "Actual Key depth, journal pickup/stack/save behavior and Hero door/chest/exit checks reviewed. Plain lock type and live floor; one-turn use explained without code terminology. Crystal doors/chests share key count. No lock or turn logic changed.",
+      "tests": [
+        "MechanicsExplanationTest.keyDescriptionsDistinguishLockTypesAndRecordedFloorWithoutUsingKeys",
+        "MechanicsExplanationTest.keyFloorMatchingDescriptionAgreesWithRealJournalConsumption"
+      ]
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/keys/Key.java",
-      "sha256": "f0c0840e37f8cd2ad68d85dff33b126a43a3232b7c01f815d9c4576629d1c358",
+      "sha256": "8003db4073325824826be7084b713846402eb3024b447418bd04b94d7a6740f2",
       "category": "keys",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "REVIEWED_CORRECTED",
+      "description_methods": [],
+      "review_notes": "Actual Key depth, journal pickup/stack/save behavior and Hero door/chest/exit checks reviewed. Plain lock type and live floor; one-turn use explained without code terminology. Crystal doors/chests share key count. No lock or turn logic changed.",
+      "tests": [
+        "MechanicsExplanationTest.keyDescriptionsDistinguishLockTypesAndRecordedFloorWithoutUsingKeys",
+        "MechanicsExplanationTest.keyFloorMatchingDescriptionAgreesWithRealJournalConsumption"
+      ]
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/keys/WornKey.java",
       "sha256": "371fbd18f65c295599f8bf8aea79d6a02da319bf9112950181d12d7f841fd017",
       "category": "keys",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "REVIEWED_CORRECTED",
+      "description_methods": [],
+      "review_notes": "Actual Key depth, journal pickup/stack/save behavior and Hero door/chest/exit checks reviewed. Plain lock type and live floor; one-turn use explained without code terminology. Crystal doors/chests share key count. No lock or turn logic changed.",
+      "tests": [
+        "MechanicsExplanationTest.keyDescriptionsDistinguishLockTypesAndRecordedFloorWithoutUsingKeys",
+        "MechanicsExplanationTest.keyFloorMatchingDescriptionAgreesWithRealJournalConsumption"
+      ]
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/potions/Potion.java",
@@ -3584,14 +3635,14 @@
       "description_methods": []
     }
   ],
-  "completed_units": 23,
+  "completed_units": 34,
   "latest_tests": {
-    "core_tests": 2961,
+    "core_tests": 2962,
     "suites": 452,
     "failures": 0,
     "errors": 0,
     "skipped": 0,
-    "log": "/workspace/apd-player-ring-audit-full.log",
+    "log": "/workspace/apd-player-containers-keys-full.log",
     "android_verified": false,
     "changes_in_apk376": false
   }

@@ -24,8 +24,9 @@ public final class KeyExplanation {
     private KeyExplanation(){}
     public static String details(Key key){
         String target=key instanceof GoldenKey?"a locked chest":key instanceof CrystalKey?"a crystal chest or crystal door":key instanceof IronKey?"an ordinary locked door":key instanceof WornKey?"a locked exit":"a matching lock";
-        String text="_Key type, floor and use_\nThis key opens "+target+". ";
+        String text="_Using this key_\nThis key opens "+target+". ";
         text+=key.depth>0?"It belongs to Floor "+key.depth+"; a key from a different floor cannot substitute. ":"No floor is recorded for this key; a matching floor cannot be assumed. ";
-        return text+"Collected keys are recorded in the journal rather than occupying ordinary backpack slots. One ordinary successful unlocking consumes one matching key and costs "+ObfuscationExplanation.number(Key.TIME_TO_UNLOCK)+" game-time unit, in addition to any movement needed to reach the lock. Doors require an adjacent position; chests can also be opened while standing on them. Ordinary floor keys do not unlock sub-floor branch locks. Crystal keys are shared between crystal doors and crystal chests on their floor; using one spends that resource for either kind of lock. A key does not reveal unseen rooms or guarantee that every remaining lock can be opened. Skeleton Key artifact effects retain their separate replacement and curse rules.";
+        return text+"Picking it up records it in your journal; keys do not take up backpack slots. Using a key consumes it and takes "+ObfuscationExplanation.number(Key.TIME_TO_UNLOCK)+(Key.TIME_TO_UNLOCK==1?" turn.":" turns.")+" You must stand next to a locked door; you can open a chest from beside it or while standing on it. These keys work on main-dungeon floors, not side areas. Crystal doors and crystal chests on the same floor share your supply of crystal keys.";
+
     }
 }

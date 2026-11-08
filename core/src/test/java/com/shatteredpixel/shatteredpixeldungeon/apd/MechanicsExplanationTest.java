@@ -748,7 +748,7 @@ public class MechanicsExplanationTest {
   String[] names={"GoldenKey","CrystalKey","IronKey","WornKey"},targets={"a locked chest","a crystal chest or crystal door","an ordinary locked door","a locked exit"};
   for(int index=0;index<names.length;index++){
    com.shatteredpixel.shatteredpixeldungeon.items.keys.Key key=(com.shatteredpixel.shatteredpixeldungeon.items.keys.Key)Class.forName("com.shatteredpixel.shatteredpixeldungeon.items.keys."+names[index]).getConstructor(int.class).newInstance(8);com.shatteredpixel.shatteredpixeldungeon.journal.Notes.add(key);int count=com.shatteredpixel.shatteredpixeldungeon.journal.Notes.keyCount(key);String heroBefore=savedDescriptionHero();com.watabou.utils.Bundle before=new com.watabou.utils.Bundle(),after=new com.watabou.utils.Bundle();key.storeInBundle(before);
-   Random.pushGenerator(424);int expected=Random.Int();Random.popGenerator();Random.pushGenerator(424);try{String text=UtilityItemExplanation.details(key,hero);assertTrue(text,text.contains("opens "+targets[index]));assertTrue(text,text.contains("belongs to Floor 8"));assertTrue(key.info(),key.info().contains("matching dungeon floor"));assertTrue(text,text.contains(ObfuscationExplanation.number(com.shatteredpixel.shatteredpixeldungeon.items.keys.Key.TIME_TO_UNLOCK)+" game-time unit"));assertEquals(expected,Random.Int());}finally{Random.popGenerator();}
+   Random.pushGenerator(424);int expected=Random.Int();Random.popGenerator();Random.pushGenerator(424);try{String text=UtilityItemExplanation.details(key,hero);assertTrue(text,text.contains("opens "+targets[index]));assertTrue(text,text.contains("belongs to Floor 8"));assertTrue(key.info(),key.info().contains("matching dungeon floor"));assertTrue(key.info(),key.info().contains("Floor 8"));assertTrue(text,text.contains(ObfuscationExplanation.number(com.shatteredpixel.shatteredpixeldungeon.items.keys.Key.TIME_TO_UNLOCK)+" turn"));assertEquals(expected,Random.Int());}finally{Random.popGenerator();}
    key.storeInBundle(after);assertEquals(before.toString(),after.toString());assertEquals(heroBefore,savedDescriptionHero());assertEquals(count,com.shatteredpixel.shatteredpixeldungeon.journal.Notes.keyCount(key));
    com.shatteredpixel.shatteredpixeldungeon.items.keys.Key restored=(com.shatteredpixel.shatteredpixeldungeon.items.keys.Key)key.getClass().getConstructor().newInstance();restored.restoreFromBundle(before);assertEquals(UtilityItemExplanation.details(key,hero),UtilityItemExplanation.details(restored,hero));
   }
@@ -1761,5 +1761,15 @@ public class MechanicsExplanationTest {
   RingOfAccuracy ring=new RingOfAccuracy();ring.anonymize();ring.levelKnown=ring.cursedKnown=true;hero.belongings.ring=ring;
   String plain=ring.info();assertTrue(plain.contains("Accuracy bonus"));assertTrue(plain.contains("not hit chance"));assertFalse(plain.contains("percentage points"));assertTrue(plain.length()<250);
   Buff.affect(hero,MagicImmune.class);assertTrue(ring.info().contains("inactive while you are magic-immune"));
+ }
+ @Test public void allContainerDescriptionsMatchTheirAcceptedItemsAndLiveCapacity(){
+  com.shatteredpixel.shatteredpixeldungeon.items.bags.Bag[] bags={hero.belongings.backpack,new com.shatteredpixel.shatteredpixeldungeon.items.bags.PotionBandolier(),new com.shatteredpixel.shatteredpixeldungeon.items.bags.ScrollHolder(),new com.shatteredpixel.shatteredpixeldungeon.items.bags.VelvetPouch(),new com.shatteredpixel.shatteredpixeldungeon.items.bags.MagicalHolster()};
+  com.shatteredpixel.shatteredpixeldungeon.items.Item[] accepted={new com.shatteredpixel.shatteredpixeldungeon.items.food.Food(),new com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing(),new com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfIdentify(),new com.shatteredpixel.shatteredpixeldungeon.plants.Sungrass.Seed(),new com.shatteredpixel.shatteredpixeldungeon.items.bombs.Bomb()};
+  for(int i=0;i<bags.length;i++){
+   assertTrue(bags[i].canHold(accepted[i]));String text=bags[i].info();assertTrue(text,text.contains(bags[i].capacity()+" item slots"));assertFalse(text,text.contains("NO TEXT"));
+   if(i>0)assertFalse(bags[i].canHold(new com.shatteredpixel.shatteredpixeldungeon.items.food.Food()));
+  }
+  assertTrue(bags[4].info().contains("20%"));
+  int initial=hero.belongings.backpack.capacity();hero.belongings.backpack.items.add(bags[1]);assertTrue(hero.belongings.backpack.info().contains((initial+1)+" item slots"));
  }
 }

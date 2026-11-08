@@ -64,7 +64,9 @@ public class AuthoredLanguageTest {
   // Plus the reviewed Wild Magic range message and one neutral seal-cooldown-ready message, and one unknown-charge privacy message.
   // Plus three neutral Arcana comparison labels: decrease, percentage-point increase and decrease.
   // Plus two reviewed ring knowledge/suppression notices; no new description interface.
-  assertEquals(9,files);assertEquals("Reviewed English message inventory",5298,values);
+  // Plus two neutral backpack description/capacity labels, describing existing container behavior.
+  // Plus one neutral floor label using a key’s existing recorded depth.
+  assertEquals(9,files);assertEquals("Reviewed English message inventory",5301,values);
  }
  @Test public void localizedAlternativesDoNotDamageInnocentWordsOrOtherLanguages(){
   for(String innocent:new String[]{"Hell","slut","kesialan","Verdammte Charaktere","dictionary","classic","Scunthorpe","Prick","Fan of Blades"})assertEquals(innocent,AuthoredLanguage.select(innocent,false));
