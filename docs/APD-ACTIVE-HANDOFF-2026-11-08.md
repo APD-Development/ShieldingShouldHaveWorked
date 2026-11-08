@@ -1,4 +1,7 @@
-# Active continuation — November8,23:43UTC
+# Active continuation — November8,23:50UTC
+
+Latest retries:382 run42536990071 and383 run42536990078, verification fixture source0bad3712e. Previous synchronized retries correctly passed camera checks but exposed a wrong fixture assumption: cursed+3 Tenacity is neutral, not harmful. Harm fixture now uses cursed+0; exact harmful-text assertion retained. Existing core test already covers all sign/level states. No product/game APK change. Permanent attempt report APD-382-383-NATIVE-VERIFICATION-ATTEMPTS.json. Staging request IDs updated in this commit; still no successful native/publish claim.
+
 
 Latest:382 first retry42535769537 failed because new Tenacity/retained-artifact helper checked viewport cameras in the same frame as window creation, before normal UI update. Generic existing helper waits300ms. Fixed instrumentation only to wait a rendered frame and retain all exact viewport assertions. Native-fixture patches and retry workflows committed a737dc47c. Second382 retry42536441243 pinned original d6d source;383 retry42536441338 pinned original728 source, both reuse original APKs. Staging requests updated below in this commit; no acceptance/publish claim yet.383 original run42536083963 is still completing its original native cases; initial failures retained.
 
