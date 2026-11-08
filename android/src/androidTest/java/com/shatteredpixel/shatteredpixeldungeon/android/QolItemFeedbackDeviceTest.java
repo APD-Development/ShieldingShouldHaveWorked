@@ -276,7 +276,15 @@ public class QolItemFeedbackDeviceTest {
             TopScoresDeviceTest.screenshot("qol-dew-settings.png");TopScoresDeviceTest.render(()->settings.get().hide());
             Sword sword=new Sword();sword.levelKnown=true;sword.cursedKnown=true;
             TopScoresDeviceTest.render(()->{RingOfForce r=new RingOfForce();r.anonymize();r.levelKnown=true;r.cursedKnown=true;Dungeon.hero.belongings.ring=r;r.activate(Dungeon.hero);});
-            showItem(sword,"Force changes this weapon’s base armed damage","qol-force-weapon.png");
+            TopScoresDeviceTest.render(()->{
+                String info=sword.info();
+                assertFalse(info.contains("Attack time is measured"));
+                assertFalse(info.contains("Combined identified rings only"));
+                assertFalse(info.contains("Enemy evasion and other effects determine"));
+                assertTrue(info.contains("Attack time:"));
+                assertTrue(info.contains("Accuracy:"));
+            });
+            showItem(sword,"Ring of Force changes this weapon’s damage","qol-force-weapon.png");
             ThrowingKnife knife=new ThrowingKnife();knife.levelKnown=true;knife.cursedKnown=true;
             TopScoresDeviceTest.render(()->{RingOfSharpshooting r=new RingOfSharpshooting();r.anonymize();r.levelKnown=true;r.cursedKnown=true;Dungeon.hero.belongings.misc=r;r.activate(Dungeon.hero);});
             showItem(knife,"2-6 -> 3-8","qol-sharpshooting-weapon.png");

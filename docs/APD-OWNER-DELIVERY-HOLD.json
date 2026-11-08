@@ -4,6 +4,6 @@
   "recorded_date": "2026-11-07",
   "scope": "Remaining approved work, including description audit and verification. Continue implementation/tests/backups without routine approval.",
   "preserve_delivered_build": 369,
-  "additional_apk_delivery": "Owner explicitly superseded prior hold for this completed-work snapshot. Unfinished work must remain clearly labelled.",
+  "additional_apk_delivery": "Owner explicitly authorizes corrective APD375 delivery: failed deliveries do not count against limit. One corrected Developer/Alpha pair; do not interpret as unlimited releases.",
   "daily_limit_when_delivery_resumes": "10 APKs total per New York day, five Developer and five Alpha. A maximum, not a build target."
 }
