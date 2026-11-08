@@ -1,3 +1,7 @@
+## Removed-actor freeze reproduced and fixed locally — APK pending
+
+APD376 owner reports ten-minute unresponsive gameplay after ghoul defeat. Exact phone cause unconfirmed without diagnostic/save. Controlled real scheduler + sprite-animation test reproduced stale Actor.current after current actor removal and attack-to-death animation cancellation (two failing regressions before fix). Actor.remove now clears only its own current reference; live attacks, scheduled turn times and saves preserved. Full local 2972/453 passes with zero failures/errors/skips, including existing description-audit changes. No Android/emulator/phone/APK verification of this new fix. APD376 remains delivered and lacks it. Details: APD-REMOVED-ACTOR-FREEZE-2026-11-08.md. Preserve ongoing audit; no source-only remote delivery.
+
 ## APD376 actually delivered; full item-description audit newly requested
 
 Exact source2c3f736887c92c133e2623448768ae8635054eda / tagapd-alpha-preview-376. Short weapon tooltips and clipped final item-description line corrected together. Description content uses ceil(height)+2 bottom padding with integer viewport sizing, including relevant expanded panels. No gameplay changes. Full2956 core/452 suites zero failures/errors/skips, required compile/build/signing/source checks and10 API34 native cases passed in42429291798. Actual raw producing XML/native evidence independently downloaded and checked;8actual Mirror Image/Sword/Lucky/Arcana PNGs inspected. No phone verification or whole audit claimed.

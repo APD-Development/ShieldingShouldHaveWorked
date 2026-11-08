@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -373,6 +376,11 @@ public abstract class Actor implements Bundlable {
 		if (actor != null) {
 			all.remove( actor );
 			chars.remove( actor );
+			// Death or ghoul downing can replace an in-flight attack animation.
+			// Its completion callback will then never call next(). A removed actor
+			// must not keep the scheduler waiting for that cancelled callback.
+			// Leave other actors' pending animations and turn costs alone.
+			if (current == actor) current = null;
 			actor.onRemove();
 
 			if (actor.id > 0) {
