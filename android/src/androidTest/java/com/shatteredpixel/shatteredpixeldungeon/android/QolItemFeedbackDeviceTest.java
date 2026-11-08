@@ -75,6 +75,12 @@ public class QolItemFeedbackDeviceTest {
                     if(text.text().equals(item.info())){found=true;assertTrue(text.text().contains(expected));}
                 }
                 assertTrue("Approved ordinary description remains intact",found);
+                for(RenderedTextBlock body:TopScoresDeviceTest.find(scroll.content(),RenderedTextBlock.class)){
+                    assertTrue("Description reserves space below its final line",scroll.content().height()>=Math.ceil(body.height())+2);
+                    float bottomScroll=Math.max(0,scroll.content().height()-scroll.content().camera.height);
+                    assertTrue("Last line is reachable without clipping",body.bottom()-bottomScroll<=scroll.content().camera.height-2);
+                }
+
                 java.util.List<RedButton> buttons=TopScoresDeviceTest.find(window,RedButton.class);
                 for(RedButton button:buttons){
                     assertNotEquals("No unauthorized item expander","Show calculations",button.text());
@@ -274,6 +280,9 @@ public class QolItemFeedbackDeviceTest {
             }catch(Exception e){throw new RuntimeException(e);}});
             touch(p[0]);TopScoresDeviceTest.render(()->assertTrue(SPDSettings.autoCollectDewWithEnemies()));
             TopScoresDeviceTest.screenshot("qol-dew-settings.png");TopScoresDeviceTest.render(()->settings.get().hide());
+            com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfMirrorImage mirror=new com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfMirrorImage();
+            TopScoresDeviceTest.render(()->{mirror.identify();mirror.quantity(2);assertTrue(mirror.collect());});
+            showItem(mirror,"fade upon taking damage","qol-mirror-scroll-full-text.png");
             Sword sword=new Sword();sword.levelKnown=true;sword.cursedKnown=true;
             TopScoresDeviceTest.render(()->{RingOfForce r=new RingOfForce();r.anonymize();r.levelKnown=true;r.cursedKnown=true;Dungeon.hero.belongings.ring=r;r.activate(Dungeon.hero);});
             TopScoresDeviceTest.render(()->{
