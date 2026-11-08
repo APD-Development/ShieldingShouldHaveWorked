@@ -215,7 +215,8 @@ public class StormCloudDamageProvenanceTest {
 		Actor.remove(taggedTarget);
 
 		Dungeon.level.blobs = new java.util.HashMap<>();
-		java.util.Arrays.fill(Dungeon.level.water, false);
+		java.util.Arrays.fill(Dungeon.level.map, Terrain.EMPTY);
+		Dungeon.level.buildFlagMaps();
 		FieryTarget plainTarget = new FieryTarget();
 		Actor.add(plainTarget);
 		Random.pushGenerator(19087);
