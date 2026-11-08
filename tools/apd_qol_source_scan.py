@@ -38,8 +38,8 @@ for name,args in [('source',['dir',str(directory)]),('history',['git','.','--log
     assert values and all(v in hashes or v in {v['sha256'] for v in manifest['variants'].values()} for v in values)
     item['disposition']='Verified file/APK SHA256 integrity fields, not credentials'
    elif (rel=='docs/APD-PLAYER-DESCRIPTION-AUDIT-PROGRESS.md'
-         and a['RuleID']=='generic-api-key' and a['StartLine']==11
-         and hashlib.sha256(path.read_text().splitlines()[10].encode()).hexdigest()==
+         and a['RuleID']=='generic-api-key'
+         and hashlib.sha256(path.read_text().splitlines()[a['StartLine']-1].encode()).hexdigest()==
          'a6b5d80342669da493ebf3a2d54c199a1d1d8b4763e297a9859a660519bcf343'):
     # Reviewed exact match: "keys reviewed, inventory5298. "; captured secret "inventory5298.".
     # Hash binds the entire reviewed prose line; changed text requires a fresh review.
