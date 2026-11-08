@@ -1,4 +1,7 @@
-# Active continuation — November8,23:39UTC
+# Active continuation — November8,23:43UTC
+
+Latest:382 first retry42535769537 failed because new Tenacity/retained-artifact helper checked viewport cameras in the same frame as window creation, before normal UI update. Generic existing helper waits300ms. Fixed instrumentation only to wait a rendered frame and retain all exact viewport assertions. Native-fixture patches and retry workflows committed a737dc47c. Second382 retry42536441243 pinned original d6d source;383 retry42536441338 pinned original728 source, both reuse original APKs. Staging requests updated below in this commit; no acceptance/publish claim yet.383 original run42536083963 is still completing its original native cases; initial failures retained.
+
 
 Owner requests sustained approved development, actual GitHub APK pairs every30minutes, target7pmEST (00:00UTC). Do not stop at checkpoints. No new panels/design/balance changes. No subagents authorized.
 
