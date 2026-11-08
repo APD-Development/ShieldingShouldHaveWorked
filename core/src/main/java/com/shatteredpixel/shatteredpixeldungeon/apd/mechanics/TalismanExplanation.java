@@ -27,8 +27,8 @@ public final class TalismanExplanation {
     }
     public static String summary(TalismanOfForesight item) {
         if(!item.isIdentified())return "";
-        return "Scrying searches a cone for secrets and maps supported tiles; it is different from the passive warning about nearby hidden traps. Each cast costs 1 base game turn and stored meter points. Spotted creatures and item piles can remain detectable for "
-            +(5+2*item.level())+" scheduled game-time units. This duration is not an all-floor map reveal.";
+        return "Scrying searches a cone for secrets and maps it, costing _1 turn_ and charge. It reveals creatures and item piles for _"
+            +(5+2*item.level())+" turns_. The talisman's warning about nearby hidden traps is passive.";
     }
     public static String details(TalismanOfForesight item) {
         if(!item.isIdentified())return "";

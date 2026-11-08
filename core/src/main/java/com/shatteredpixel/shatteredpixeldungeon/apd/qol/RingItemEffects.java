@@ -57,7 +57,7 @@ public final class RingItemEffects {
     }
     private static int bonus(Hero hero, Class<? extends Ring> type){return bonus(hero,type,true);}
     private static String text(String key,Object...values){return Messages.get(RingItemEffects.class,key,values);}
-    private static String number(float value){return Messages.decimalFormat(Math.abs(value)>=1000000?"0.##E0":"0.###",value);}
+    private static String number(float value){return Messages.decimalFormat(Math.abs(value)>=1000000?"0.##E0":"0.##",value);}
     private static void multiplier(StringBuilder out,String key,float value){out.append("\n").append(text(key,number(value)));}
 
     private static boolean aliveForInspection(Hero hero){

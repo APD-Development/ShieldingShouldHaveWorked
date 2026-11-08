@@ -65,8 +65,7 @@ public class WeaponAccuracyDisplayTest {
             String before = sword.description();
             sword.level(8);
             assertEquals(before, sword.description());
-            assertTrue(before.contains("not hit chance"));
-            assertTrue(before.contains("until upgrades are identified"));
+            assertEquals("", before);
             int hp = Dungeon.hero.HP, quantity = sword.quantity();
             Random.pushGenerator(91021);
             int expected;
@@ -76,6 +75,7 @@ public class WeaponAccuracyDisplayTest {
             assertEquals(hp, Dungeon.hero.HP);
             assertEquals(quantity, sword.quantity());
             sword.levelKnown = true;
+            Dungeon.hero.STR = 5;
             assertNotEquals(before, sword.description());
             assertFalse(sword.description().contains("until upgrades are identified"));
             assertTrue("compact explanation", sword.description().length() < 200);
@@ -93,7 +93,7 @@ public class WeaponAccuracyDisplayTest {
             String text = weapon.description();
             assertTrue(text, text.contains("150.0%"));
             assertTrue(text, text.contains("50.0%"));
-            assertTrue(text, text.contains("not hit chance"));
+            assertTrue(text, text.contains("of normal"));
             assertTrue(text.length() < 200);
         } finally { Dungeon.hero = previous; }
     }
@@ -107,7 +107,7 @@ public class WeaponAccuracyDisplayTest {
             DisplaySword weapon = new DisplaySword();
             weapon.levelKnown = weapon.cursedKnown = true;
             weapon.enchantment = new Wayward();
-            assertEquals("\n\n" + Messages.get(Weapon.class, "apd_accuracy", 100f), weapon.description());
+            assertEquals("", weapon.description());
             Buff.affect(Dungeon.hero, Wayward.WaywardBuff.class);
             float actual = 100f * weapon.accuracyFactor(Dungeon.hero, null);
             assertEquals(20f, actual, 0.001f);
@@ -126,7 +126,7 @@ public class WeaponAccuracyDisplayTest {
             assertEquals(time, Dungeon.hero.cooldown(), 0f);
             assertNotNull("reading the description does not consume the curse effect", Dungeon.hero.buff(Wayward.WaywardBuff.class));
             Buff.detach(Dungeon.hero, Wayward.WaywardBuff.class);
-            assertEquals("\n\n" + Messages.get(Weapon.class, "apd_accuracy", 100f), weapon.description());
+            assertEquals("", weapon.description());
         } finally {
             if (Dungeon.hero != null) Buff.detach(Dungeon.hero, Wayward.WaywardBuff.class);
             Dungeon.hero = previous;

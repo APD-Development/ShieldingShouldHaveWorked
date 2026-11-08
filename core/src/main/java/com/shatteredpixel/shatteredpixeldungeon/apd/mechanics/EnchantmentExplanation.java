@@ -75,6 +75,46 @@ public final class EnchantmentExplanation {
             default:return "";
         }
     }
+    private static String playerNumber(float value){return com.shatteredpixel.shatteredpixeldungeon.messages.Messages.decimalFormat(value!=0&&Math.abs(value)<.01f?"0.##E0":"0.##",value);}
+    private static String playerChance(float base,float power,Hero hero){
+        String value="_"+playerNumber(100*Math.max(0,Math.min(1,base*power)))+"%_";
+        float without=knownPowerWithoutArcana(hero);
+        if(ArcanaInfoDisplay.hasKnownArcana(hero)&&Float.isFinite(without)&&Math.abs(Math.min(1,base*power)-Math.min(1,base*without))>.00001f)
+            value+=" (_"+playerNumber(100*Math.max(0,Math.min(1,base*without)))+"%_ without Arcana)";
+        return value;
+    }
+    /** Complete ordinary enchantment text; do not append the old generic Arcana breakdown. */
+    public static String playerDescription(Weapon weapon,Hero hero){
+        if(weapon.enchantment==null)return "";
+        String fallback=weapon.enchantment.desc();
+        if(weapon.enchantment.curse()||!weapon.enchantment.getClass().getPackage().getName().equals(Blazing.class.getPackage().getName()))return fallback;
+        if(hero!=null&&hero.buff(MagicImmune.class)!=null)return fallback+" Magic immunity currently disables this enchantment.";
+        if(hero!=null&&!weapon.hasEnchant(weapon.enchantment.getClass(),hero))return fallback+" Your current effects replace this enchantment.";
+        if(!weapon.levelKnown)return fallback;
+        float power=knownPower(hero);if(!Float.isFinite(power))return fallback;
+        String name=weapon.enchantment.getClass().getSimpleName();int level=Math.max(0,weapon.buffedLvl());float base=chance(name,level,hero),strength=Math.max(1,base*power);
+        String chance=Float.isFinite(base)?playerChance(base,power,hero):"";
+        switch(name){
+            case "Elastic":return "Has a "+chance+" chance to knock an enemy back up to _"+Math.round(2*strength)+" tiles_. Walls and obstacles can shorten the push.";
+            case "Blazing":return "Has a "+chance+" chance to set enemies on fire. Hitting an enemy that is already burning deals extra fire damage.";
+            case "Chilling":return "Has a "+chance+" chance to slow an enemy with _"+playerNumber(3*strength)+" turns_ of chill. Repeated hits build up to _"+playerNumber(6*strength)+" turns_.";
+            case "Venomous":return "Has a "+chance+" chance to poison an enemy for _"+playerNumber((3+level/2f)*strength)+" turns_. Fresh poison starts after a _3-turn_ delay.";
+            case "Blocking":return "Has a "+chance+" chance to grant _"+Math.max(0,Math.round((2+weapon.buffedLvl())*strength))+" shielding_. It normally lasts up to _5 turns_ unless used up by damage; Hold Fast can make it last longer.";
+            case "Blooming":return "Has a "+chance+" chance to grow grass around the enemy. Higher weapon upgrades grow more grass, if space allows.";
+            case "Shocking":return "Has a "+chance+" chance to arc lightning to nearby enemies for _"+playerNumber(50*strength)+"%_ of the hit's damage. Water helps it spread; the enemy you struck does not take this extra lightning damage.";
+            case "Eldritch":return "Has a "+chance+" chance to frighten nearby enemies that witness the attack for _"+playerNumber(5*strength)+" turns_. It normally does not frighten the enemy you struck.";
+            case "Vorpal":return "Has a "+chance+" chance to make the enemy bleed. Harder hits cause heavier bleeding, which weakens over time.";
+            case "Lucky":return "Has a "+chance+" chance to make a killing blow produce an extra consumable unless you have outlevelled that enemy."+(base*power>1?" At 100%, more enchantment power can improve the reward instead.":"");
+            case "Corrupting":return "Has a "+chance+" chance to turn an enemy you kill into a corrupted ally. Some enemies cannot be corrupted."+(strength>1.1f?" The new ally also gains _"+Math.round(5*(strength-1))+" turns_ of adrenaline.":"");
+            case "Vampiric":return "Has a "+chance+" chance to heal you for _"+playerNumber(50*strength)+"%_ of the hit's damage. It activates more often when you are low on health.";
+            case "Kinetic":{Kinetic.ConservedDamage stored=hero==null?null:hero.buff(Kinetic.ConservedDamage.class);return "Stores damage left over from a killing blow and adds it to your next hit. Stored damage fades over time. Current bonus: _"+(stored==null?0:stored.damageBonus())+" damage_.";}
+            case "Projecting":return weapon instanceof MissileWeapon||weapon instanceof SpiritBow?"Lets shots pass through obstacles near their target, within _"+Math.round(4*power)+" tiles_.":"Extends this weapon's reach to _"+(weapon.RCH+Projecting.additionalReach(power,weapon.RCH))+" tiles_.";
+            case "Crystal":return "Deals an extra _"+playerNumber(25*power)+"%_ magic damage. The crystal wears down with use; a melee weapon can shatter unless repaired.";
+            case "Grim":return "Can instantly kill an enemy weakened by your hit. It becomes more likely as the enemy loses health; some enemies resist or are immune.";
+            case "Unstable":return "Uses a random enchantment on each attack. Each chosen enchantment works in its usual way.";
+            default:return fallback;
+        }
+    }
     public static String itemSummary(Weapon weapon,Hero hero){String text=describe(weapon,hero,false);if(text.isEmpty())text=CurseExplanation.weapon(weapon,hero,false);return (text.isEmpty()?"":"\n\n"+text)+ArcanaInfoDisplay.weapon(weapon);}
     public static String describe(Weapon weapon,Hero hero,boolean detailed){
         if(weapon.enchantment==null||weapon.enchantment.curse()||!weapon.enchantment.getClass().getPackage().getName().equals(Blazing.class.getPackage().getName()))return "";

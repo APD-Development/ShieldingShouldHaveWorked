@@ -31,7 +31,7 @@ public final class CloakExplanation {
     }
     public static String summary(CloakOfShadows cloak){
         if(!cloak.isIdentified())return "";
-        return "Makes you invisible while active. Activating stealth takes 1 base game-time unit. While active, its charge countdown normally resets to 4 scheduled updates after each paid charge. Invisibility is not damage immunity, and actions that break invisibility can end it early. Ordinary passive recharging pauses while cloaked.";
+        return "Makes you invisible. Activation takes _1 turn_; staying cloaked uses _1 charge every 4 turns_, starting on the first turn. Attacking or using magic can end invisibility early. The cloak does not recharge while active.";
     }
     public static String details(CloakOfShadows cloak,Hero hero){
         if(!cloak.isIdentified())return "";

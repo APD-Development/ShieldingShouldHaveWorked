@@ -35,18 +35,18 @@ public final class ObfuscationExplanation {
     public static float aura(Hero hero){return hero!=null&&hero.buff(AuraOfProtection.AuraBuff.class)!=null?.25f+.25f*hero.pointsInTalent(Talent.AURA_OF_PROTECTION):0;}
     public static String summary(Armor armor,Hero hero){
         if(!applies(armor))return "";
-        String meaning="Stealth points are not percentages. Higher stealth makes an unaware enemy less likely to notice you during a detection check. Distance, visibility and enemy behavior matter; stealth does not make an alerted enemy forget you.";
-        if(hero!=null&&hero.buff(MagicImmune.class)!=null)return "Magic immunity currently disables this glyph. "+meaning;
-        if(hero!=null&&!armor.hasGlyph(Obfuscation.class,hero))return "This glyph is currently overridden or suppressed by your active effects. "+meaning;
-        if(!armor.levelKnown)return "Obfuscation can make you harder to notice. Identify the armor's upgrades to reveal its added stealth points. "+meaning;
-        int level=Math.max(-1,armor.buffedLvl());float base=base(level);
-        if(base==0)return "This glyph is inactive at the current effective armor level. "+meaning;
-        String text="While worn, this armor adds _"+number(base)+" stealth points_ before bonuses. ";
-        float power=ArcanaInfoDisplay.knownArcanaPower(hero);
-        if(Float.isFinite(power)&&ArcanaInfoDisplay.hasKnownArcana(hero))text+="With Arcana: _"+number(base)+" → "+number(base*power)+" stealth points_ ("+(power>=1?"+":"")+number(base*(power-1))+" points), before other effects. ";
-        else if(!Float.isFinite(power))text+="Unidentified or unavailable bonuses are not included in a numerical preview. ";
-        if(Float.isFinite(power)&&aura(hero)>0)text+="With your current protective aura: _"+number(base*(power+aura(hero)))+" points_. ";
-        return text+meaning;
+        String meaning="Makes unaware enemies less likely to notice you. It does not hide you from enemies already alerted.";
+        if(hero!=null&&hero.buff(MagicImmune.class)!=null)return "Magic immunity currently disables this glyph.";
+        if(hero!=null&&!armor.hasGlyph(Obfuscation.class,hero))return "Your current effects replace this glyph.";
+        if(!armor.levelKnown)return meaning;
+        float value=base(Math.max(-1,armor.buffedLvl()));
+        if(value==0)return "This glyph currently adds no stealth.";
+        float power=ArcanaInfoDisplay.knownArcanaPower(hero),aura=aura(hero);
+        if(!Float.isFinite(power))return "Adds _"+number(value)+" stealth_ before ring bonuses. "+meaning;
+        float total=value*(power+aura),without=value*(1+aura);
+        String text="Adds _"+Messages.decimalFormat("0.##",total)+" stealth_";
+        if(ArcanaInfoDisplay.hasKnownArcana(hero)&&Math.abs(total-without)>.00001f)text+=" (_"+Messages.decimalFormat("0.##",without)+"_ without Arcana)";
+        return text+". "+meaning;
     }
     public static String details(Armor armor,Hero hero){
         if(!applies(armor))return "";

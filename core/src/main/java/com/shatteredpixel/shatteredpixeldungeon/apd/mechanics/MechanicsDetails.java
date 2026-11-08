@@ -69,11 +69,12 @@ public final class MechanicsDetails {
         }
         if(item instanceof Armor){
             Armor armor=(Armor)item;
+            if(armor.glyph instanceof com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Viscosity)return "";
             return armor.levelKnown&&armor.glyph!=null&&!armor.glyph.curse()?GlyphExplanation.details(armor,Dungeon.hero):"";
         }
         if(item instanceof Weapon){
             Weapon weapon=(Weapon)item;
-            if(!weapon.levelKnown||weapon.enchantment==null||weapon.enchantment.curse())return "";
+            if(!weapon.levelKnown||weapon.enchantment==null||weapon.enchantment.curse()||weapon.enchantment instanceof com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Elastic)return "";
             if(weapon instanceof com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.Dart)
                 return com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.Dart.inspect(()->EnchantmentExplanation.describe(weapon,Dungeon.hero,true));
             return EnchantmentExplanation.describe(weapon,Dungeon.hero,true);

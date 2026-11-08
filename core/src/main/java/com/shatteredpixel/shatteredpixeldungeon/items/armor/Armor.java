@@ -619,15 +619,7 @@ public class Armor extends EquipableItem {
 		} else if (glyph != null  && (cursedKnown || !glyph.curse())) {
 			info += "\n\n" +  Messages.capitalize(Messages.get(Armor.class, "inscribed", glyph.name()));
 			if (glyphHardened) info += " " + Messages.get(Armor.class, "glyph_hardened");
-			info += " " + glyph.desc();
-            if(glyph instanceof com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Obfuscation)
-                info += "\n\n"+com.shatteredpixel.shatteredpixeldungeon.apd.mechanics.ObfuscationExplanation.summary(this,Dungeon.hero);
-            else {
-                String explanation=com.shatteredpixel.shatteredpixeldungeon.apd.mechanics.GlyphExplanation.summary(this,Dungeon.hero);
-                if(explanation.isEmpty())explanation=com.shatteredpixel.shatteredpixeldungeon.apd.mechanics.CurseExplanation.armor(this,Dungeon.hero,false);
-                if(!explanation.isEmpty())info+="\n\n"+explanation;
-                info+=com.shatteredpixel.shatteredpixeldungeon.apd.ArcanaInfoDisplay.armor(this);
-            }
+			info += " " + com.shatteredpixel.shatteredpixeldungeon.apd.mechanics.GlyphExplanation.playerDescription(this,Dungeon.hero);
 		} else if (glyphHardened){
 			info += "\n\n" + Messages.get(Armor.class, "hardened_no_glyph");
 		}

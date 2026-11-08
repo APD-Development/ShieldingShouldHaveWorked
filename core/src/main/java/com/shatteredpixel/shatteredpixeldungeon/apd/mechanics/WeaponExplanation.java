@@ -50,12 +50,11 @@ public final class WeaponExplanation {
     }
     public static String blockSummary(Weapon weapon,Hero hero){
         if(!passiveBlockWeapon(weapon))return "";
-        String text="When wielded normally, passive weapon blocking subtracts a rolled number of damage points; it is not a percentage chance to stop an entire attack. Missing strength lowers that roll, and unarmed-stance or ability rules can disable this contribution.";
-        if(!weapon.levelKnown)return text+" Upgrade-dependent protection remains hidden until identified.";
+        if(!weapon.levelKnown)return "Can block incoming attack damage while wielded normally.";
         Integer strength=ArmorExplanation.knownStrength(hero);
-        if(strength==null)return text+" Personal strength penalties are withheld while contributing bonuses are unknown or unavailable.";
+        if(strength==null)return "Can block incoming attack damage while wielded normally.";
         int maximum=weapon.defenseFactor(hero),missing=Math.max(0,weapon.STRReq()-strength);
-        return text+" With your known strength, its contribution is _0–"+Math.max(0,maximum-2*missing)+" protection points_ before other defenses.";
+        return "Blocks _0–"+Math.max(0,maximum-2*missing)+" damage_ while wielded normally.";
     }
     public static String blockDetails(Weapon weapon,Hero hero){
         if(!passiveBlockWeapon(weapon))return "";
@@ -69,8 +68,8 @@ public final class WeaponExplanation {
 
     public static String summary(Weapon weapon, Hero hero) {
         Float delay = normalAttackDelay(weapon, hero);
-        String result = delay == null ? "" : "Attack time: _" + ObfuscationExplanation.number(delay)
-                + " turns per attack_ (normal attacks).";
+        String result = delay == null ? "" : "Attack time: _" + com.shatteredpixel.shatteredpixeldungeon.messages.Messages.decimalFormat("0.##",delay)
+                + " turns per attack_.";
         String block=blockSummary(weapon,hero);if(!block.isEmpty())result+="\n\n"+block;
         return result;
     }

@@ -31,9 +31,9 @@ public final class ArtifactExplanation {
         if(!artifact.isIdentified())return "";
         if(artifact.cursed)return "\n\n"+ArtifactEconomyExplanation.summary(artifact,Dungeon.hero);
         String effect="";
-        if(artifact instanceof CapeOfThorns)effect="While its effect is active, each applicable incoming hit can lose anywhere from none to all of its damage, with results biased toward the middle. Only an adjacent attacker receives the amount removed. This is not a fixed damage-reduction percentage.";
+        if(artifact instanceof CapeOfThorns)effect="When active, absorbs a random amount of damage from each hit. If the attacker is adjacent, it takes the absorbed damage instead.";
         else if(artifact instanceof ChaliceOfBlood)effect="When worn and active, this Chalice shortens natural healing's delay. Its current base delay is "+n(10f-(1.33f+artifact.level()*.667f))+" turns per HP before recharge, regeneration and healing modifiers. It does not heal through starvation or bypass rules that disable regeneration. Pricking upgrades it at the cost of potentially lethal damage.";
-        else if(artifact instanceof HornOfPlenty){int nourishment=(int)(Hunger.STARVING/5f);if(Dungeon.isChallenged(Challenges.NO_FOOD))nourishment/=3;effect="Each charge restores "+nourishment+" hunger points in the current challenge configuration, limited by how hungry you are. Snack spends one charge; Eat can spend several. Hunger points are nourishment, not real-world seconds. Eating still costs normal eating time.";}
+        else if(artifact instanceof HornOfPlenty){int nourishment=(int)(Hunger.STARVING/5f);if(Dungeon.isChallenged(Challenges.NO_FOOD))nourishment/=3;effect="Each charge provides _"+com.shatteredpixel.shatteredpixeldungeon.messages.Messages.decimalFormat("0.##",100f*nourishment/Hunger.HUNGRY)+"% of a normal ration_. Snack uses one charge; Eat uses as many as needed and available.";}
         if(artifact instanceof DriedRose)effect=RoseExplanation.summary((DriedRose)artifact);
         if(artifact instanceof CloakOfShadows)effect=CloakExplanation.summary((CloakOfShadows)artifact)+" "+ArtifactEconomyExplanation.summary(artifact,Dungeon.hero);
         if(artifact instanceof TalismanOfForesight)effect=TalismanExplanation.summary((TalismanOfForesight)artifact)+" "+ArtifactEconomyExplanation.summary(artifact,Dungeon.hero);

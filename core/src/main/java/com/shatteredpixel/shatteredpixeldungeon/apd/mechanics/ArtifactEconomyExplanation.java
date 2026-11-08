@@ -71,11 +71,20 @@ public final class ArtifactEconomyExplanation {
         if(!item.isIdentified())return "";
         if(item.cursed)return cursed(item);
         float base=baseGain(item),known=knownGain(item,hero);if(!Float.isFinite(base)||base<=0)return "";
-        if(hero!=null&&hero.buff(MagicImmune.class)!=null&&!(item instanceof LloydsBeacon))return "Magic immunity currently blocks this artifact's normal recharging path. Its base gain when eligible is "+n(base)+" "+units(item)+", before other bonuses.";
-        if(item instanceof EtherealChains&&item.currentCharges()>=5+2*item.level())return "Natural recharging is currently paused at or above the soft target of "+(5+2*item.level())+" chain charges. Experience can still add charge above that target under its separate rule.";
-        if(item.maximumCharges()>0&&item.currentCharges()>=item.maximumCharges())return "The resource is currently full at "+item.currentCharges()+" / "+item.maximumCharges()+". Its ordinary recharge path pauses at its own capacity; spending resources allows it to resume when eligible.";
-        String value=Float.isFinite(known)?n(known):n(base);
-        return "While its recharge conditions are met, "+(Float.isFinite(known)?"the current known gain is ":"the base gain before unidentified recharge bonuses is ")+value+" "+units(item)+". Fractional progress accumulates toward whole resources. "+(item instanceof EtherealChains?"Natural recharging stops at its soft target; experience can still add charge above it.":item.maximumCharges()>0?"Recharging does not give unlimited resources beyond this artifact's own capacity rules.":"");
+        if(hero!=null&&hero.buff(MagicImmune.class)!=null&&!(item instanceof LloydsBeacon))return "Magic immunity prevents recharging.";
+        if(item instanceof EtherealChains&&item.currentCharges()>=5+2*item.level())return "Natural recharge stops at _"+(5+2*item.level())+" charges_. Gaining experience can add more.";
+        if(item.maximumCharges()>0&&item.currentCharges()>=item.maximumCharges())return "Fully charged: _"+item.currentCharges()+"/"+item.maximumCharges()+"_.";
+        float gain=Float.isFinite(known)?known:base;
+        if(gain<=0)return "Equip this artifact to recharge it.";
+        String qualifier=Float.isFinite(known)?"":" before ring bonuses";
+        String value=com.shatteredpixel.shatteredpixeldungeon.messages.Messages.decimalFormat("0.##",gain);
+        if(item instanceof AlchemistsToolkit)return "Gaining a full experience level provides _"+value+" energy_"+qualifier+".";
+        if(item instanceof HornOfPlenty||item instanceof MasterThievesArmband)return "Gaining a full experience level provides _"+value+" charges_"+qualifier+".";
+        if(item instanceof SandalsOfNature)return "Trampling grass restores _"+value+"% charge_"+qualifier+".";
+        String time=com.shatteredpixel.shatteredpixeldungeon.messages.Messages.decimalFormat("0.##",1f/gain);
+        String recharge="At the current charge, restores _"+(item instanceof TalismanOfForesight||item instanceof DriedRose?"1% charge":"1 charge")+"_ in about _"+time+" turns_"+qualifier+" while recharging is active.";
+        if(item instanceof EtherealChains)recharge+=" Natural recharge stops at _"+(5+2*item.level())+" charges_; experience can add more.";
+        return recharge;
     }
     private static String cursed(Artifact item){
         if(item instanceof DriedRose)return "While this cursed Rose's passive effect is equipped, each normal tick has a 1% chance to try spawning a wraith on a valid adjacent tile. No valid tile means no spawn. Normal uncursed recharge is disabled.";

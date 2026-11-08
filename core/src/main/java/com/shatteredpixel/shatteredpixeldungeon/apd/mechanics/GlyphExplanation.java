@@ -41,6 +41,50 @@ public final class GlyphExplanation {
         if(detailed)text+="\n\nGain offered = floor(2 × (power − 1)), with one extra point if a random roll passes the fractional remainder. Limit = round(8 × (power − 1)). Gain is added only when the limit and rolled gain are positive, and only up to the space below that total Barrier limit. Larger existing Barriers are not reduced. Armor upgrades do not directly enter this extra-shield formula, beyond needing the glyph to remain active. This check is per attempted Burning application, not a universal once-per-turn heal.";
         return text;
     }
+    private static String playerNumber(float value){return com.shatteredpixel.shatteredpixeldungeon.messages.Messages.decimalFormat(value!=0&&Math.abs(value)<.01f?"0.##E0":"0.##",value);}
+    private static String playerChance(float base,float power,Hero hero){
+        String chance="_"+playerNumber(100*Math.max(0,Math.min(1,base*power)))+"%_";
+        float ring=ArcanaInfoDisplay.knownArcanaPower(hero),without=1+ObfuscationExplanation.aura(hero);
+        if(Float.isFinite(ring)&&ArcanaInfoDisplay.hasKnownArcana(hero)&&Math.abs(Math.min(1,base*power)-Math.min(1,base*without))>.00001f)
+            chance+=" (_"+playerNumber(100*Math.max(0,Math.min(1,base*without)))+"%_ without Arcana)";
+        return chance;
+    }
+    /** Ordinary glyph explanation, replacing repeated flavor plus mathematical summaries. */
+    public static String playerDescription(Armor armor,Hero hero){
+        if(armor.glyph==null)return "";
+        String fallback=armor.glyph.desc();
+        if(armor.glyph.curse()||!armor.glyph.getClass().getPackage().getName().equals(Flow.class.getPackage().getName()))return fallback;
+        if(armor.glyph instanceof Obfuscation)return ObfuscationExplanation.summary(armor,hero);
+        if(hero!=null&&hero.buff(MagicImmune.class)!=null)return fallback+" Magic immunity currently disables this glyph.";
+        if(hero!=null&&!armor.hasGlyph(armor.glyph.getClass(),hero))return fallback+" Your current effects replace this glyph.";
+        if(!armor.levelKnown)return fallback;
+        int raw=armor.buffedLvl(),level=Math.max(0,raw);float ring=ArcanaInfoDisplay.knownArcanaPower(hero),power=ring+ObfuscationExplanation.aura(hero);
+        if(!Float.isFinite(power))return fallback;
+        if((armor.glyph instanceof Flow||armor.glyph instanceof Swiftness||armor.glyph instanceof Camouflage||armor.glyph instanceof AntiMagic||armor.glyph instanceof Brimstone)&&raw<0)return "This glyph is inactive at the armor's current level.";
+        if(armor.glyph instanceof Flow)return "Move at _"+playerNumber((2+.5f*raw)*power)+"×_ normal speed in water.";
+        if(armor.glyph instanceof Swiftness)return "Move at _"+playerNumber((1.2f+.04f*raw)*power)+"×_ normal speed when no enemy is within a _3-tile walking path_.";
+        if(armor.glyph instanceof Camouflage)return "Trampling tall grass grants _"+Math.round((3+raw/2f)*power)+" turns_ of invisibility. Attacking or using magic can end it early; repeated activations refresh it rather than adding their durations.";
+        if(armor.glyph instanceof AntiMagic)return "Blocks an extra _"+Math.round(raw*power)+"–"+Math.round((3+1.5f*raw)*power)+" damage_ from certain magical attacks.";
+        if(armor.glyph instanceof Stone)return "Replaces dodging with damage reduction. Attacks that would be easier to dodge deal less damage, up to _75%_ less.";
+        if(armor.glyph instanceof Brimstone){
+            String text="Prevents damage from Burning.";float gain=2*(power-1);int cap=Math.round(8*(power-1));
+            if(gain>0&&cap>0)text+=" When you would catch fire, it can also grant up to _"+Math.min(cap,(int)Math.ceil(gain))+" shielding_. It stops adding shielding while you already have _"+cap+" or more_.";
+            return text;
+        }
+        if(armor.glyph instanceof Viscosity){
+            float fraction=(level+1f)/(level+6f)*power;
+            String text=fraction<=1?"Delays "+playerChance((level+1f)/(level+6f),power,hero)+" of attack damage after armor, rounded up.":"Delays all attack damage after armor and reduces the stored amount by about _"+playerNumber(100*(1-1/fraction))+"%_.";
+            return text+" The first damage arrives _1 turn_ later. You then take about _10%_ of the remaining stored damage each turn, at least _1 damage_. Delayed damage can still kill you.";
+        }
+        float base=armor.glyph instanceof Potential?(level+1f)/(level+6f):armor.glyph instanceof Entanglement?.25f:armor.glyph instanceof Repulsion?(level+1f)/(level+5f):armor.glyph instanceof Affection?(level+3f)/(level+20f):armor.glyph instanceof Thorns?(level+2f)/(level+12f):Float.NaN;
+        if(!Float.isFinite(base))return fallback;
+        String chance=playerChance(base,power,hero);float strength=Math.max(1,base*power);
+        if(armor.glyph instanceof Potential)return "Has a "+chance+" chance when you are hit to restore up to _"+playerNumber(strength)+" charge_ to each wand.";
+        if(armor.glyph instanceof Entanglement)return "Has a "+chance+" chance when you are hit to surround you with protective roots. They block up to _"+new com.shatteredpixel.shatteredpixeldungeon.plants.Earthroot.Armor().perHitLimit()+" damage per hit_ while you stay still, starting with _"+Math.round((5+2*level)*strength)+" stored protection_. Moving ends the protection.";
+        if(armor.glyph instanceof Repulsion)return "Has a "+chance+" chance to push an adjacent attacker back up to _"+Math.round(2*strength)+" tiles_.";
+        if(armor.glyph instanceof Affection)return "Has a "+chance+" chance to charm your attacker for _"+Math.round(Charm.DURATION*strength)+" turns_, stopping it from attacking you. Damage can shorten the charm.";
+        return "Has a "+chance+" chance to make an attacker bleed. Upgrades strengthen the bleeding; extra power beyond a guaranteed activation strengthens it further.";
+    }
     public static String summary(Armor armor,Hero hero){
         if(armor.glyph==null||armor.glyph.curse()||armor.glyph instanceof Obfuscation||!armor.glyph.getClass().getPackage().getName().equals(Flow.class.getPackage().getName()))return "";
         if(hero!=null&&(!armor.hasGlyph(armor.glyph.getClass(),hero)||hero.buff(MagicImmune.class)!=null))return "This glyph is currently suppressed or overridden.";

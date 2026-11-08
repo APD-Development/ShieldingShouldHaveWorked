@@ -1,0 +1,21 @@
+# Player-facing description correction — unfinished
+
+The owner rejected the APD378 Elastic/Viscosity inspection prose and required an individual audit across all item categories. This checkpoint is not a completed whole-item audit or APK delivery.
+
+## Implemented ordinary text
+
+Built-in weapon enchantments and armor glyphs now provide one ordinary description rather than flavor followed by generated activation numbers followed by another Arcana breakdown. Known live activation chances show one short comparison without Arcana where it changes that chance; caps avoid duplicate 100%-to-100% claims. Unknown equipment/bonuses keep non-numerical descriptions. Elastic +3 with known +0 Arcana shows 58.75% and up to two tiles. Viscosity +2 under that same ring shows 44.06% delayed attack damage, the later 10%-of-remaining ticks and lethal risk, without internal coefficients. Their explicitly rejected calculation panels are disabled. Existing ambiguous mechanic-specific panels remain pending the owner's decision after an explanation of their contents; no new panels were added.
+
+Normal weapon timing, passive blocks, accuracy and equipped-ring contributions are shorter. Neutral 100% melee accuracy and unknown-upgrade accuracy estimates are omitted. Original damage/strength/ability/curse warnings remain. Obfuscation has one live stealth value and short baseline comparison, retaining its specifically requested detection explanation separately.
+
+Artifact normal text shortened for Cape, Horn, Cloak, Rose and Talisman. Recharge messages now describe actual charge/energy/grass events or approximate time per charge, rather than fractional-resource lectures. Full-charge and suppression notices are brief. A carried cloak that cannot recharge does not print infinite time. Existing artifact formulas/panels remain; ordinary summaries no longer teach internal resource accounting.
+
+Trinket normal descriptions individually revised from their source-specific rates/conditions. Vial of Blood correctly says its per-turn healing cap scales with maximum health. Shard wording distinguishes identification through use from manually identifying ready equipment; Scroll of Identify makes equipment ready. Clover separates forced maximum/minimum rolls from ordinary rolls. Ferret explicitly includes enemy evasion. Rat Skull retains half bonus for crystal mimics and armored statues, verified against generation. Other trinkets keep their own rates and exclusions. Petrified Seed at +0 omits a meaningless zero grass-loot bonus; unknown levels keep the +0 example.
+
+## Verification and limits
+
+Full combined core check: 2,997 tests / 456 suites, zero failures/errors/skips; raw XML/log preserved in `/workspace/apd-description-guard-evidence-20261108`. Includes real Elastic probability and Viscosity deferral checks, known/unknown equipment variants, actual artifact recharge handlers, save/state/RNG purity, trinket live values and guard scheduler regression. The later Shard sentence refinement was also exercised by the catalog export. Stale prose expectations were updated; numerical/mechanical assertions retained. The exact English-message inventory rose by two reviewed Petrified Seed baseline strings, without excluding either from the profanity/Adult Humor checks.
+
+Catalog runtime output: 289 item types before/current under `/workspace/apd-descriptions-20261108`. Exporting is a reading aid and purity check, not proof that each item was individually reviewed or that UI rendered correctly. Android SDK/emulator is unavailable locally; no new inspection screenshots or APK verification claimed.
+
+Audit inventory corrected to include the two omitted origin/range display providers. Counts distinguish partial reviews from completed ones. Most of the comprehensive audit remains unresolved, including full category variants and secondary-panel decisions. Do not present this checkpoint as finished. Original balance, turns, identification and save schema remain unchanged by wording work.

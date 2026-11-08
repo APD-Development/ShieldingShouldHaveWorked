@@ -27,7 +27,7 @@ public final class RoseExplanation {
     public static int unarmedMaximum(DriedRose rose){return rose.isIdentified()?rose.ghostStrength()-8:-1;}
     public static String summary(DriedRose rose){
         if(!rose.isIdentified())return "";
-        return "Once the Ghost's quest is complete, an equipped, uncursed Rose with a full summoning meter can summon the ghost. At this Rose level, its base maximum health is "+maximumHealth(rose)+" HP and its equipment strength is "+rose.ghostStrength()+" points. While a ghost is present, the icon's percentage shows the ghost's health, not the summoning charge meter. Without a ghost, eligible recharge fills the summon meter; while it lives, eligible passive recharge heals it instead.";
+        return "After completing the Ghost's quest, equip the rose and fill its charge to summon him. His base stats are _"+maximumHealth(rose)+" HP_ and _"+rose.ghostStrength()+" strength_. While summoned, the rose's charge display shows his health and recharging heals him instead.";
     }
     public static String details(DriedRose rose,Hero hero){
         if(!rose.isIdentified())return "";

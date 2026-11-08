@@ -67,7 +67,8 @@ public class AuthoredLanguageTest {
   // Plus two neutral backpack description/capacity labels, describing existing container behavior.
   // Plus one neutral floor label using a key’s existing recorded depth.
   // Plus one neutral remains-item consumption/time label, using the existing action cost.
-  assertEquals(9,files);assertEquals("Reviewed English message inventory",5302,values);
+  // Plus two Petrified Seed base-level descriptions that omit its zero grass-loot bonus.
+  assertEquals(9,files);assertEquals("Reviewed English message inventory",5304,values);
  }
  @Test public void localizedAlternativesDoNotDamageInnocentWordsOrOtherLanguages(){
   for(String innocent:new String[]{"Hell","slut","kesialan","Verdammte Charaktere","dictionary","classic","Scunthorpe","Prick","Fan of Blades"})assertEquals(innocent,AuthoredLanguage.select(innocent,false));

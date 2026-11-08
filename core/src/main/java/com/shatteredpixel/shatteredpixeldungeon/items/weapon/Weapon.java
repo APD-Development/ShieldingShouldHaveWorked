@@ -314,13 +314,14 @@ abstract public class Weapon extends KindOfWeapon {
     }
 
 	protected String accuracyDescription() {
-		if (Dungeon.hero == null) return "";
+		if (Dungeon.hero == null || (!levelKnown && !(this instanceof SpiritBow))) return "";
 		float knownAccuracy = ACC;
 		if (cursedKnown && enchantment instanceof Wayward && Dungeon.hero.buff(Wayward.WaywardBuff.class) != null) {
 			knownAccuracy /= 5;
 		}
 		float percent = 100f * strengthAccuracyModifier(knownAccuracy, displayedStrengthRequirement(), Dungeon.hero.STR());
 		String text;
+        if(!(this instanceof MissileWeapon)&&!(this instanceof SpiritBow)&&Math.abs(percent-100f)<.0001f)return "";
 		if (this instanceof MissileWeapon || this instanceof SpiritBow) {
 			float adjacent = 0.5f + 0.25f * Dungeon.hero.pointsInTalent(Talent.POINT_BLANK);
 			text = Messages.get(Weapon.class, "apd_accuracy_ranged", percent * 1.5f, percent * adjacent);

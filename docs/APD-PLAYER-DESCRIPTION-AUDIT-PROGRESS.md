@@ -1,3 +1,7 @@
+## Current continuation — November 8, after APD378
+
+The earlier checkpoints below are historical. Current correction details: `APD-DESCRIPTION-CORRECTION-2026-11-08.md`. Inventory now includes 427 source units, including two previously omitted origin/range providers. Only 34 units are marked complete; partial reviews are counted separately. Full combined 2,997/456 check passed with zero failures/errors/skips. The Guard pull report has a separately documented scheduler correction. Current corrections are not yet Android-verified or delivered in an APK. Continue individual category and variant review; do not claim comprehensive completion.
+
 # Player-language item audit — in progress
 
 Inventory:425source units and2388item-message entries. These are not counts of reviewed item types. Current completed review:11food source units plus PastyExplanation; Blandfruit source reviewed with secondary potion-text dependency unresolved. FoodExplanation/BlandfruitExplanation helper reviews remain partial until that dependency is closed. Food category contains14playable concrete types including chunks/leftovers, plus a recipe placeholder; seasonal/cooked forms are tracked in the notes, not counted as separate source units. Do not call this an entire-item audit.

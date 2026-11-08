@@ -1,16 +1,16 @@
 {
   "scope": "Every item category, inherited and generated descriptions, enchantments/glyphs/curses, class interactions and existing secondary panels. Inventory is not review completion.",
   "baseline_commit": "32f4f3beab4c23b404c3cb1d43bfa06a39165e70",
-  "counting": "Source units, not a claimed count of distinct item types or individual human reviews. Seasonal/cooked/identified variants tracked separately in reviewed entries.",
-  "source_units": 425,
+  "counting": "Source units, not distinct item types. reviewed_units includes partial reviews; completed_units excludes partial/pending dependency. corrected_units counts source units with corrections, including incomplete reviews. Inventory/export/tests alone are not an individual review.",
+  "source_units": 427,
   "message_entries": 2393,
-  "reviewed_units": 37,
-  "corrected_units": 37,
-  "unresolved_units": 391,
+  "reviewed_units": 73,
+  "corrected_units": 66,
+  "unresolved_units": 393,
   "category_counts": {
     "apd": 1,
     "mechanics": 38,
-    "qol": 1,
+    "qol": 3,
     "items": 23,
     "armor": 34,
     "artifacts": 16,
@@ -65,23 +65,27 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/ArtifactEconomyExplanation.java",
-      "sha256": "e73f6fbc8bb5aa3e665ba92b852839aab322771d36485b670a048e00c7ac3e5e",
+      "sha256": "e9dbcdac537df79142220f75da26123e21ec9219505b21a49585d2d91e3caa61",
       "category": "mechanics",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
+      "status": "PARTIAL_REVIEW",
       "description_methods": [
         "summary",
         "details"
-      ]
+      ],
+      "wording_corrected": true,
+      "review_notes": "Current ordinary-description pass: concise live values, duplicate mathematical prose removed. Existing optional details and entire category variants remain under review; panel decisions pending. See APD-DESCRIPTION-CORRECTION-2026-11-08.md."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/ArtifactExplanation.java",
-      "sha256": "982030bc2e58177aa565bf141f40e53faaf1469fef346f1580cf6c852cb97f71",
+      "sha256": "ec58a8d0eab186049945d9062234d26be979e51251c68da5a2a3ba99441e9913",
       "category": "mechanics",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
+      "status": "PARTIAL_REVIEW",
       "description_methods": [
         "summary",
         "details"
-      ]
+      ],
+      "wording_corrected": true,
+      "review_notes": "Current ordinary-description pass: concise live values, duplicate mathematical prose removed. Existing optional details and entire category variants remain under review; panel decisions pending. See APD-DESCRIPTION-CORRECTION-2026-11-08.md."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/BlandfruitExplanation.java",
@@ -123,13 +127,15 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/CloakExplanation.java",
-      "sha256": "7aa54d8054d6c68e6ddf814532097b7d00b274e840757a0a3c0b70e28ff0ffcc",
+      "sha256": "a5aa6305134752401f7356b9f2123d41578dd077b73d7d6282cca0115b21e1bd",
       "category": "mechanics",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
+      "status": "PARTIAL_REVIEW",
       "description_methods": [
         "summary",
         "details"
-      ]
+      ],
+      "wording_corrected": true,
+      "review_notes": "Current ordinary-description pass: concise live values, duplicate mathematical prose removed. Existing optional details and entire category variants remain under review; panel decisions pending. See APD-DESCRIPTION-CORRECTION-2026-11-08.md."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/CraftingEffectExplanation.java",
@@ -158,12 +164,14 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/EnchantmentExplanation.java",
-      "sha256": "ee1a273c5ddbe77140a7f80fde961eb5385970c214157416787f5925bbe905ab",
+      "sha256": "4d952ebaa8eae99b9765eb6e63796430000b164dca0bd0a2b775de47046578e6",
       "category": "mechanics",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
+      "status": "PARTIAL_REVIEW",
       "description_methods": [
         "describe"
-      ]
+      ],
+      "wording_corrected": true,
+      "review_notes": "Current ordinary-description pass: concise live values, duplicate mathematical prose removed. Existing optional details and entire category variants remain under review; panel decisions pending. See APD-DESCRIPTION-CORRECTION-2026-11-08.md."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/FoodExplanation.java",
@@ -178,13 +186,15 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/GlyphExplanation.java",
-      "sha256": "07d224561e82e21ec7d3b1c110a30e68c1ad1de4b0a9cb3a1d907740b8d5d1a2",
+      "sha256": "a0bc3c582b0fc938d07211d36f00b2ecf861271b728b27b291d7f3135c14d6fa",
       "category": "mechanics",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
+      "status": "PARTIAL_REVIEW",
       "description_methods": [
         "summary",
         "details"
-      ]
+      ],
+      "wording_corrected": true,
+      "review_notes": "Current ordinary-description pass: concise live values, duplicate mathematical prose removed. Existing optional details and entire category variants remain under review; panel decisions pending. See APD-DESCRIPTION-CORRECTION-2026-11-08.md."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/KeyExplanation.java",
@@ -202,10 +212,12 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/MechanicsDetails.java",
-      "sha256": "9e5d5087919a45f7b32d9eb987da00190464520f7623560e5e4c0e86b384ac36",
+      "sha256": "e98a3a922c34d556ac2efd0838697432e602d8b91de2f81a7a9196cf2386bd23",
       "category": "mechanics",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "PARTIAL_REVIEW",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Current ordinary-description pass: concise live values, duplicate mathematical prose removed. Existing optional details and entire category variants remain under review; panel decisions pending. See APD-DESCRIPTION-CORRECTION-2026-11-08.md."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/MetalExplanation.java",
@@ -236,13 +248,15 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/ObfuscationExplanation.java",
-      "sha256": "3009c4f5b2bcd652c5ff3e7e5744e5d78da7f019a02abe75a45d94c6700ae83a",
+      "sha256": "3dcf3bf9683a0b1ef4d761c9b319198cbc9fb967ef6bfad00624df6b60ce8025",
       "category": "mechanics",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
+      "status": "PARTIAL_REVIEW",
       "description_methods": [
         "summary",
         "details"
-      ]
+      ],
+      "wording_corrected": true,
+      "review_notes": "Current ordinary-description pass: concise live values, duplicate mathematical prose removed. Existing optional details and entire category variants remain under review; panel decisions pending. See APD-DESCRIPTION-CORRECTION-2026-11-08.md."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/PastyExplanation.java",
@@ -293,13 +307,15 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/RoseExplanation.java",
-      "sha256": "ed9867ad9278fb1b3d00285a17e84c493216cc39f4f56a29cffb73481f34f7ee",
+      "sha256": "e9068d037664ee586e5514e013803ba722865256b80afcd621a01fd33b0eaeae",
       "category": "mechanics",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
+      "status": "PARTIAL_REVIEW",
       "description_methods": [
         "summary",
         "details"
-      ]
+      ],
+      "wording_corrected": true,
+      "review_notes": "Current ordinary-description pass: concise live values, duplicate mathematical prose removed. Existing optional details and entire category variants remain under review; panel decisions pending. See APD-DESCRIPTION-CORRECTION-2026-11-08.md."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/ScrollExplanation.java",
@@ -350,13 +366,15 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/TalismanExplanation.java",
-      "sha256": "b44b8c1e37c8f32613b0dcd5d65c7b8fc744d04b8653ea9e7cd118e3cf45ed1d",
+      "sha256": "59a9b126ff91c2be7b60a4d8fb43e45c3796e6b780d680f5eabac767b3aff8ef",
       "category": "mechanics",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
+      "status": "PARTIAL_REVIEW",
       "description_methods": [
         "summary",
         "details"
-      ]
+      ],
+      "wording_corrected": true,
+      "review_notes": "Current ordinary-description pass: concise live values, duplicate mathematical prose removed. Existing optional details and entire category variants remain under review; panel decisions pending. See APD-DESCRIPTION-CORRECTION-2026-11-08.md."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/TrinketExplanation.java",
@@ -397,22 +415,26 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/WeaponExplanation.java",
-      "sha256": "3091af61e1fc7a4bb03556081b4b6d88b8868defbf939ce8c13bb78c14c29b2d",
+      "sha256": "192fa3e53dc04ca124c213db3a81e3a41885e905f5d6836444694bcc5c75c247",
       "category": "mechanics",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
+      "status": "PARTIAL_REVIEW",
       "description_methods": [
         "summary",
         "details"
-      ]
+      ],
+      "wording_corrected": true,
+      "review_notes": "Current ordinary-description pass: concise live values, duplicate mathematical prose removed. Existing optional details and entire category variants remain under review; panel decisions pending. See APD-DESCRIPTION-CORRECTION-2026-11-08.md."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/qol/RingItemEffects.java",
-      "sha256": "54833fe737682f5e363097a085140d1e1e81f2340aa4755011090ee07beabae6",
+      "sha256": "aad0d8c7f8c5c361a512a440ee439fbdcf9779936b138f2ad471c476ef3d0ba2",
       "category": "qol",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
+      "status": "PARTIAL_REVIEW",
       "description_methods": [
         "describe"
-      ]
+      ],
+      "wording_corrected": true,
+      "review_notes": "Current ordinary-description pass: concise live values, duplicate mathematical prose removed. Existing optional details and entire category variants remain under review; panel decisions pending. See APD-DESCRIPTION-CORRECTION-2026-11-08.md."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/Amulet.java",
@@ -591,13 +613,15 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/armor/Armor.java",
-      "sha256": "261152bbb7532fca8df8e4453d4f45bef59a0552994d815695129ee83157b839",
+      "sha256": "73fdd8a6e724244ec0b31ec630dae5c67435f4758629d9e55ba9e528f1664109",
       "category": "armor",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
+      "status": "PARTIAL_REVIEW",
       "description_methods": [
         "info",
         "desc"
-      ]
+      ],
+      "wording_corrected": true,
+      "review_notes": "Normal inherited/dynamic wording reviewed against current source. Changes use existing mechanics and known live values. Full source/variant and optional-panel review not complete."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/armor/ClassArmor.java",
@@ -2473,136 +2497,166 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/trinkets/ChaoticCenser.java",
       "sha256": "a6cc9b80504664f68356e64cfe19f90e437a2487b09f7e7374a7e6b3aa1f6f90",
       "category": "trinkets",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
+      "status": "PARTIAL_REVIEW",
       "description_methods": [
         "statsDesc"
-      ]
+      ],
+      "wording_corrected": true,
+      "review_notes": "Normal inherited/dynamic wording reviewed against current source. Changes use existing mechanics and known live values. Full source/variant and optional-panel review not complete."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/trinkets/CrackedSpyglass.java",
       "sha256": "21e0e2ac8474bd1550530c4050dc0801d18787f7db44fe903f3e08726d07ddda",
       "category": "trinkets",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
+      "status": "PARTIAL_REVIEW",
       "description_methods": [
         "statsDesc"
-      ]
+      ],
+      "wording_corrected": true,
+      "review_notes": "Normal inherited/dynamic wording reviewed against current source. Changes use existing mechanics and known live values. Full source/variant and optional-panel review not complete."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/trinkets/DimensionalSundial.java",
       "sha256": "9ea4a8feffe9f0a0d6384677ffdf203b2cc3084f784f18021d456b884d2057e8",
       "category": "trinkets",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
+      "status": "PARTIAL_REVIEW",
       "description_methods": [
         "statsDesc"
-      ]
+      ],
+      "wording_corrected": true,
+      "review_notes": "Normal inherited/dynamic wording reviewed against current source. Changes use existing mechanics and known live values. Full source/variant and optional-panel review not complete."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/trinkets/ExoticCrystals.java",
       "sha256": "e8c9ecd118328349e055a9966b6d030cda907d0f91c787232824716e03613d8f",
       "category": "trinkets",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
+      "status": "PARTIAL_REVIEW",
       "description_methods": [
         "statsDesc"
-      ]
+      ],
+      "wording_corrected": true,
+      "review_notes": "Normal inherited/dynamic wording reviewed against current source. Changes use existing mechanics and known live values. Full source/variant and optional-panel review not complete."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/trinkets/EyeOfNewt.java",
       "sha256": "2ad59789dd4b47491923ffb8a34d8c7f116189bb825fe9d513db7da73b03d658",
       "category": "trinkets",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
+      "status": "PARTIAL_REVIEW",
       "description_methods": [
         "statsDesc"
-      ]
+      ],
+      "wording_corrected": true,
+      "review_notes": "Normal inherited/dynamic wording reviewed against current source. Changes use existing mechanics and known live values. Full source/variant and optional-panel review not complete."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/trinkets/FerretTuft.java",
       "sha256": "b4c9f198fc87e0e44e2be39509153b0a9b1f6748a11ade89207366995912730e",
       "category": "trinkets",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
+      "status": "PARTIAL_REVIEW",
       "description_methods": [
         "statsDesc"
-      ]
+      ],
+      "wording_corrected": true,
+      "review_notes": "Normal inherited/dynamic wording reviewed against current source. Changes use existing mechanics and known live values. Full source/variant and optional-panel review not complete."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/trinkets/MimicTooth.java",
       "sha256": "efa2f068fd3f35c8a6020c0d7e04adb614f40f88b48b0e760c70b503240d1d77",
       "category": "trinkets",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
+      "status": "PARTIAL_REVIEW",
       "description_methods": [
         "statsDesc"
-      ]
+      ],
+      "wording_corrected": true,
+      "review_notes": "Normal inherited/dynamic wording reviewed against current source. Changes use existing mechanics and known live values. Full source/variant and optional-panel review not complete."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/trinkets/MossyClump.java",
       "sha256": "7ac06ee5966785f6c2a44ece7288e6985ddcd7c98aa7a6d3d567a755fde6a526",
       "category": "trinkets",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
+      "status": "PARTIAL_REVIEW",
       "description_methods": [
         "statsDesc"
-      ]
+      ],
+      "wording_corrected": true,
+      "review_notes": "Normal inherited/dynamic wording reviewed against current source. Changes use existing mechanics and known live values. Full source/variant and optional-panel review not complete."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/trinkets/ParchmentScrap.java",
       "sha256": "a5f6da99c01bbd716cbe53d7e9a683cc1f2f358251ddbde17a194f46f170f341",
       "category": "trinkets",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
+      "status": "PARTIAL_REVIEW",
       "description_methods": [
         "statsDesc"
-      ]
+      ],
+      "wording_corrected": true,
+      "review_notes": "Normal inherited/dynamic wording reviewed against current source. Changes use existing mechanics and known live values. Full source/variant and optional-panel review not complete."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/trinkets/PetrifiedSeed.java",
-      "sha256": "7021a36c9ba29d5cd78965edda39df72acfc0788203761a72096cd926c4e4ab5",
+      "sha256": "c9db273db915ce1d026609c88c3c6595470f53fbbf6ac1df3b7aefe2dbdccb65",
       "category": "trinkets",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
+      "status": "PARTIAL_REVIEW",
       "description_methods": [
         "statsDesc"
-      ]
+      ],
+      "wording_corrected": true,
+      "review_notes": "Normal inherited/dynamic wording reviewed against current source. Changes use existing mechanics and known live values. Full source/variant and optional-panel review not complete."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/trinkets/RatSkull.java",
       "sha256": "a09fe478c82c6313dbb3ea7194f946459aaa9bfc60b8347dfd2fb3464acb9650",
       "category": "trinkets",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
+      "status": "PARTIAL_REVIEW",
       "description_methods": [
         "statsDesc"
-      ]
+      ],
+      "wording_corrected": true,
+      "review_notes": "Normal inherited/dynamic wording reviewed against current source. Changes use existing mechanics and known live values. Full source/variant and optional-panel review not complete."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/trinkets/SaltCube.java",
       "sha256": "eba513601ba90c7a07b7e988b0001e420865c30efedd2843dbf51d380330c7e0",
       "category": "trinkets",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
+      "status": "PARTIAL_REVIEW",
       "description_methods": [
         "statsDesc"
-      ]
+      ],
+      "wording_corrected": true,
+      "review_notes": "Normal inherited/dynamic wording reviewed against current source. Changes use existing mechanics and known live values. Full source/variant and optional-panel review not complete."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/trinkets/ShardOfOblivion.java",
       "sha256": "5015df85b293c4d546deb20743414228b8c5484a559499373da450c40b013f99",
       "category": "trinkets",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
+      "status": "PARTIAL_REVIEW",
       "description_methods": [
         "statsDesc"
-      ]
+      ],
+      "wording_corrected": true,
+      "review_notes": "Normal inherited/dynamic wording reviewed against current source. Changes use existing mechanics and known live values. Full source/variant and optional-panel review not complete."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/trinkets/ThirteenLeafClover.java",
       "sha256": "8ac436c41b0a6b879ebb76945fa18444090cbf636c1501a895a961680e509d29",
       "category": "trinkets",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
+      "status": "PARTIAL_REVIEW",
       "description_methods": [
         "statsDesc"
-      ]
+      ],
+      "wording_corrected": true,
+      "review_notes": "Normal inherited/dynamic wording reviewed against current source. Changes use existing mechanics and known live values. Full source/variant and optional-panel review not complete."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/trinkets/TrapMechanism.java",
       "sha256": "da87fd1fe039e26ce868d7f8f650bce80b8698b3c57afa3a34c8da169314a7d3",
       "category": "trinkets",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
+      "status": "PARTIAL_REVIEW",
       "description_methods": [
         "statsDesc"
-      ]
+      ],
+      "wording_corrected": true,
+      "review_notes": "Normal inherited/dynamic wording reviewed against current source. Changes use existing mechanics and known live values. Full source/variant and optional-panel review not complete."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/trinkets/Trinket.java",
@@ -2627,19 +2681,23 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/trinkets/VialOfBlood.java",
       "sha256": "3305937e3ea29004c1e84d6b7d2939d83a55509bc3ac204b6189eb823acff4cc",
       "category": "trinkets",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
+      "status": "PARTIAL_REVIEW",
       "description_methods": [
         "statsDesc"
-      ]
+      ],
+      "wording_corrected": true,
+      "review_notes": "Normal inherited/dynamic wording reviewed against current source. Changes use existing mechanics and known live values. Full source/variant and optional-panel review not complete."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/trinkets/WondrousResin.java",
       "sha256": "49917260bb28d4b157edac646b8ab9724fb1a77e5cb55846a297ab065e1f0bac",
       "category": "trinkets",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
+      "status": "PARTIAL_REVIEW",
       "description_methods": [
         "statsDesc"
-      ]
+      ],
+      "wording_corrected": true,
+      "review_notes": "Normal inherited/dynamic wording reviewed against current source. Changes use existing mechanics and known live values. Full source/variant and optional-panel review not complete."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/wands/CursedWand.java",
@@ -2784,13 +2842,15 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/Weapon.java",
-      "sha256": "40aa834b5230ae9723d75d2a1960b584bc0037b029d0559170602ccce6f7029c",
+      "sha256": "2ec8dd6f7cda76b7f53cd98582451ae1103f4b8da31c29f66b44923f18691fe0",
       "category": "weapon",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
+      "status": "PARTIAL_REVIEW",
       "description_methods": [
         "info",
         "desc"
-      ]
+      ],
+      "wording_corrected": true,
+      "review_notes": "Normal inherited/dynamic wording reviewed against current source. Changes use existing mechanics and known live values. Full source/variant and optional-panel review not complete."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/curses/Annoying.java",
@@ -3154,13 +3214,15 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/melee/MeleeWeapon.java",
-      "sha256": "b305a473114824ed4c7062368a09597d7ac7929039e493b0024c27c1079b26de",
+      "sha256": "a8a335998bbcfa829095d54c2979a2e2574793446d9e212136d7deb4e1f553ae",
       "category": "weapon",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
+      "status": "PARTIAL_REVIEW",
       "description_methods": [
         "info",
         "abilityInfo"
-      ]
+      ],
+      "wording_corrected": true,
+      "review_notes": "Normal inherited/dynamic wording reviewed against current source. Changes use existing mechanics and known live values. Full source/variant and optional-panel review not complete."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/melee/Quarterstaff.java",
@@ -3333,13 +3395,15 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/missiles/MissileWeapon.java",
-      "sha256": "c434e9c2ffe64cc3e8b24e7c03c7c9fc13d7c6f3d850ca08be54880832fda262",
+      "sha256": "aa2324a2a69e3d2c44c2ae931e0f18223311b2ae94d4f8c6fee3229608c84b7f",
       "category": "weapon",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
+      "status": "PARTIAL_REVIEW",
       "description_methods": [
         "info",
         "info"
-      ]
+      ],
+      "wording_corrected": true,
+      "review_notes": "Normal inherited/dynamic wording reviewed against current source. Changes use existing mechanics and known live values. Full source/variant and optional-panel review not complete."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/missiles/Shuriken.java",
@@ -3633,17 +3697,38 @@
       "category": "windows",
       "status": "PENDING_INDIVIDUAL_REVIEW",
       "description_methods": []
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/qol/ItemOrigins.java",
+      "sha256": "b27aa65626855e174aa01b9328412cca45a9622288c92e8e01f41e0e3670ed38",
+      "category": "qol",
+      "status": "PENDING_INDIVIDUAL_REVIEW",
+      "description_methods": [
+        "describe"
+      ],
+      "review_notes": "Added missing display provider to inventory. Reading its output is not a complete provenance/generation audit."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/qol/GenerationUpgradeRanges.java",
+      "sha256": "29479b2d63e9ccee80eadb2a5d1a67fb3936226118b8442a302af783285df3be",
+      "category": "qol",
+      "status": "PENDING_INDIVIDUAL_REVIEW",
+      "description_methods": [
+        "describe"
+      ],
+      "review_notes": "Added missing display provider to inventory. Reading its output is not a complete provenance/generation audit."
     }
   ],
   "completed_units": 34,
   "latest_tests": {
-    "core_tests": 2962,
-    "suites": 452,
+    "core_tests": 2997,
+    "suites": 456,
     "failures": 0,
     "errors": 0,
     "skipped": 0,
-    "log": "/workspace/apd-player-containers-keys-full.log",
+    "log": "/workspace/apd-guard-root-and-descriptions-full.log",
     "android_verified": false,
-    "changes_in_apk376": false
+    "new_apk_built": false,
+    "scope": "Combined guard/root scheduler fix and current wording checkpoint; later Shard sentence refinement checked by catalog export."
   }
 }
