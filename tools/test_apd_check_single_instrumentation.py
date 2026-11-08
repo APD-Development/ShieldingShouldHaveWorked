@@ -16,11 +16,20 @@
 import pathlib,subprocess,sys,tempfile,unittest
 
 class InstrumentationEvidenceTest(unittest.TestCase):
-    def run_check(self,text):
+    def run_check(self,text,expected_class=None):
         with tempfile.TemporaryDirectory() as folder:
             path=pathlib.Path(folder)/"result.txt";path.write_text(text)
-            return subprocess.run([sys.executable,str(pathlib.Path(__file__).with_name("apd_check_single_instrumentation.py")),str(path),"actualCase"],capture_output=True).returncode
+            return subprocess.run([sys.executable,str(pathlib.Path(__file__).with_name("apd_check_single_instrumentation.py")),str(path),"actualCase"]+([] if expected_class is None else [expected_class]),capture_output=True).returncode
     def valid(self):return "INSTRUMENTATION_STATUS: class=com.shatteredpixel.shatteredpixeldungeon.android.TrapDiscoveryDeviceTest\nINSTRUMENTATION_STATUS: test=actualCase\nINSTRUMENTATION_STATUS_CODE: 1\nINSTRUMENTATION_STATUS: test=actualCase\nINSTRUMENTATION_STATUS_CODE: 0\nOK (1 test)\nINSTRUMENTATION_CODE: -1\n"
+    def test_explicit_freeze_class_passes_without_accepting_wrong_or_skipped_output(self):
+        name="com.shatteredpixel.shatteredpixeldungeon.android.RemovedActorStallDeviceTest"
+        text=self.valid().replace("TrapDiscoveryDeviceTest","RemovedActorStallDeviceTest")
+        self.assertEqual(0,self.run_check(text,name))
+        self.assertNotEqual(0,self.run_check(self.valid(),name))
+        self.assertNotEqual(0,self.run_check(text+"AssumptionFailure",name))
+        self.assertNotEqual(0,self.run_check(text.replace("INSTRUMENTATION_STATUS_CODE: 0","INSTRUMENTATION_STATUS_CODE: -2"),name))
+    def test_expected_class_is_literal_and_must_be_a_java_class_name(self):
+        self.assertNotEqual(0,self.run_check(self.valid(),".*"))
     def test_accepts_only_actual_complete_single_case(self):self.assertEqual(0,self.run_check(self.valid()))
     def test_rejects_incomplete_failed_or_skipped_runs(self):
         for text in ["OK (1 test)",self.valid().replace("INSTRUMENTATION_STATUS_CODE: 0","INSTRUMENTATION_STATUS_CODE: -2"),self.valid()+"AssumptionFailure"]:

@@ -17,9 +17,11 @@
 import pathlib,re,sys
 text=pathlib.Path(sys.argv[1]).read_text()
 method=sys.argv[2]
+expected_class=sys.argv[3] if len(sys.argv)>3 else "com.shatteredpixel.shatteredpixeldungeon.android.TrapDiscoveryDeviceTest"
+assert re.fullmatch(r"[A-Za-z_$][A-Za-z0-9_$]*(?:\.[A-Za-z_$][A-Za-z0-9_$]*)+",expected_class)
 assert 'OK (1 test)' in text, text[-4000:]
 assert 'INSTRUMENTATION_CODE: -1' in text, text[-4000:]
-assert re.search(r'INSTRUMENTATION_STATUS: class=com\.shatteredpixel\.shatteredpixeldungeon\.android\.TrapDiscoveryDeviceTest(?:\r?\n|$)',text), text[-4000:]
+assert re.search(r'INSTRUMENTATION_STATUS: class='+re.escape(expected_class)+r'(?:\r?\n|$)',text), text[-4000:]
 assert len(re.findall(r'INSTRUMENTATION_STATUS_CODE: 0(?:\r?\n|$)',text))==1, text[-4000:]
 assert re.search(r'INSTRUMENTATION_STATUS: test='+re.escape(method)+r'(?:\r?\n|$)',text), text[-4000:]
 assert not re.search(r'FAILURES!!!|INSTRUMENTATION_FAILED|Process crashed|AssumptionFailure|\bFAILURE\b',text), text[-4000:]
