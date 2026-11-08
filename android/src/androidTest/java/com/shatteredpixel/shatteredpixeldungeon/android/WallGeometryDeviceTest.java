@@ -52,14 +52,21 @@ public class WallGeometryDeviceTest {
             return clear.get();
         });
     }
+    private static void assertVisibleMarkerPixels(int cell)throws Exception{
+        com.watabou.utils.Point[] corners=new com.watabou.utils.Point[2];
+        TopScoresDeviceTest.render(()->{int w=Dungeon.level.width();corners[0]=Camera.main.cameraToScreen((cell%w)*16,(cell/w)*16);corners[1]=Camera.main.cameraToScreen((cell%w+1)*16,(cell/w+1)*16);});
+        Thread.sleep(300);
+        android.graphics.Bitmap bitmap=androidx.test.platform.app.InstrumentationRegistry.getInstrumentation().getUiAutomation().takeScreenshot();assertNotNull(bitmap);
+        try{int count=0;for(int y=Math.max(0,corners[0].y);y<Math.min(bitmap.getHeight(),corners[1].y);y++)for(int x=Math.max(0,corners[0].x);x<Math.min(bitmap.getWidth(),corners[1].x);x++){int c=bitmap.getPixel(x,y);if(Math.abs(android.graphics.Color.red(c)-255)<=24&&Math.abs(android.graphics.Color.green(c)-102)<=24&&Math.abs(android.graphics.Color.blue(c)-204)<=24)count++;}assertTrue("rendered magenta checkmark pixels, not only retained model data: "+count,count>=4);}finally{bitmap.recycle();}
+    }
     @Test public void observedGeometryAndRetainedMarksUseTheActualAndroidLayer()throws Exception{
-        final boolean intro=SPDSettings.intro();final int oldSlot=GamesInProgress.curSlot;final HeroClass oldClass=GamesInProgress.selectedClass;final int[] slot={-1},wall={-1};final Bundle saved=new Bundle();
+        final boolean intro=SPDSettings.intro();final int oldMarkColor=SPDSettings.searchedWallColor();final int oldSlot=GamesInProgress.curSlot;final HeroClass oldClass=GamesInProgress.selectedClass;final int[] slot={-1},wall={-1};final Bundle saved=new Bundle();
         try(ActivityScenario<AndroidLauncher> app=ActivityScenario.launch(AndroidLauncher.class)){
             waitFor(()->Game.scene()!=null&&PixelScene.uiCamera!=null);
             TopScoresDeviceTest.render(()->ShatteredPixelDungeon.switchNoFade(TitleScene.class));waitFor(()->Game.scene() instanceof TitleScene);
             TopScoresDeviceTest.render(()->{SPDSettings.intro(false);slot[0]=GamesInProgress.firstEmpty(HeroClass.WARRIOR);assertTrue(slot[0]>0);GamesInProgress.curSlot=slot[0];GamesInProgress.selectedClass=HeroClass.WARRIOR;Dungeon.hero=null;Dungeon.daily=false;Dungeon.dailyReplay=false;Dungeon.customSeedText="";Dungeon.initSeed();InterlevelScene.mode=InterlevelScene.Mode.DESCEND;Game.switchScene(InterlevelScene.class);});
             waitFor(()->Game.scene() instanceof GameScene&&Dungeon.hero!=null&&Dungeon.hero.ready);
-            QolItemFeedbackDeviceTest.prepareSearchableFloor();Thread.sleep(300);waitForBanners();
+            QolItemFeedbackDeviceTest.prepareSearchableFloor();TopScoresDeviceTest.render(()->{SPDSettings.searchedWallColor(4);GameScene.updateSearchedWallAppearance();});Thread.sleep(300);waitForBanners();
             TopScoresDeviceTest.render(()->{try{
                 Hero hero=Dungeon.hero;Level l=Dungeon.level;int w=l.width(),anchor=w*(l.height()/2)+w/2,p=anchor-w;wall[0]=p;
                 for(Mob mob:new ArrayList<>(l.mobs)){Actor.remove(mob);if(mob.sprite!=null)mob.sprite.killAndErase();}l.mobs.clear();
@@ -82,6 +89,13 @@ public class WallGeometryDeviceTest {
                 l.searchedWalls.clear();layer.refreshKnownGeometry();assertEquals(-1,visual(layer,p));l.searchedWalls.restore(saved,l.length());layer.refreshKnownGeometry();assertEquals(SearchedWallMarkers.FACE,visual(layer,p));
             }catch(Exception error){throw new RuntimeException(error);}});
             Thread.sleep(300);TopScoresDeviceTest.screenshot("wall-geometry-valid-searched-face.png");
+            assertVisibleMarkerPixels(wall[0]);
+            TopScoresDeviceTest.render(()->{Camera.main.zoom(Camera.main.zoom+1);Camera.main.snapTo(Dungeon.hero.sprite.center());});assertVisibleMarkerPixels(wall[0]);
+            TopScoresDeviceTest.render(()->{com.watabou.utils.PointF center=Dungeon.hero.sprite.center();Camera.main.snapTo(new com.watabou.utils.PointF(center.x+160,center.y));});Thread.sleep(200);
+            TopScoresDeviceTest.render(()->Camera.main.snapTo(Dungeon.hero.sprite.center()));assertVisibleMarkerPixels(wall[0]);
+            app.moveToState(androidx.lifecycle.Lifecycle.State.CREATED);app.moveToState(androidx.lifecycle.Lifecycle.State.RESUMED);waitFor(()->Game.scene() instanceof GameScene&&Dungeon.hero.ready&&!Game.switchingScene());assertVisibleMarkerPixels(wall[0]);
+            TopScoresDeviceTest.render(()->ShatteredPixelDungeon.switchNoFade(GameScene.class));waitFor(()->Game.scene() instanceof GameScene&&Dungeon.hero.ready&&!Game.switchingScene());waitForBanners();assertVisibleMarkerPixels(wall[0]);
+            TopScoresDeviceTest.screenshot("wall-geometry-retained-after-zoom-pan-pause-rebuild.png");
             TopScoresDeviceTest.render(()->{try{
                 Level l=Dungeon.level;int p=wall[0];SearchedWallTilemap layer=TopScoresDeviceTest.find(Game.scene(),SearchedWallTilemap.class).get(0);
                 l.heroFOV[p]=false;l.heroFOV[p-1]=false;l.heroFOV[p+1]=false;layer.refreshKnownGeometry();assertTrue(DoorSearchEligibility.candidate(l,p));assertEquals(SearchedWallMarkers.FACE,visual(layer,p));
@@ -89,6 +103,6 @@ public class WallGeometryDeviceTest {
                 l.heroFOV[p]=true;Level.set(p,Terrain.DOOR);GameScene.updateMap();GameScene.updateFog();layer.refreshKnownGeometry();assertEquals(-1,visual(layer,p));assertEquals(-1,SearchedWallMarkers.visual(l,p-l.width()));
             }catch(Exception error){throw new RuntimeException(error);}});
             Thread.sleep(300);TopScoresDeviceTest.screenshot("wall-geometry-door-no-stale-check.png");
-        }finally{SPDSettings.intro(intro);if(slot[0]>0)Dungeon.deleteGame(slot[0],true);GamesInProgress.curSlot=oldSlot;GamesInProgress.selectedClass=oldClass;}
+        }finally{SPDSettings.searchedWallColor(oldMarkColor);SPDSettings.intro(intro);if(slot[0]>0)Dungeon.deleteGame(slot[0],true);GamesInProgress.curSlot=oldSlot;GamesInProgress.selectedClass=oldClass;}
     }
 }
