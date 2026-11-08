@@ -1,0 +1,33 @@
+# ADHD Pixel Dungeon
+# Copyright (C) 2026 Chris Charlton
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>
+name: Inspect379 retained native test results without rebuilding
+on:
+  push:
+    branches: [codex/apd-phone-fixes-2026-10-09]
+    paths: [docs/APD-379-EVIDENCE-REQUEST.txt]
+permissions: {contents: read, actions: read}
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with: {name: apd379-native-Developer, run-id: 42526945257, github-token: '${{ github.token }}', path: evidence}
+      - uses: actions/download-artifact@v4
+        with: {name: apd379-native-Alpha-Testers, run-id: 42526945257, github-token: '${{ github.token }}', path: evidence}
+      - name: Report exact retained item-window failures
+        run: |
+          cat evidence/developer-qol.txt
+          cat evidence/alpha-qol.txt
