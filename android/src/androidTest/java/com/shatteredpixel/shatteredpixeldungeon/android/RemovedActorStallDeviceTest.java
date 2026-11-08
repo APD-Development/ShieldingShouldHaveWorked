@@ -26,6 +26,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Ghoul;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.*;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.GhoulSprite;
+import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
+import com.watabou.utils.PathFinder;
 import com.watabou.noosa.Game;
 import com.watabou.utils.SparseArray;
 import java.lang.reflect.Field;
@@ -38,6 +40,11 @@ import org.junit.runner.RunWith;
 @RunWith(AndroidJUnit4.class)
 public class RemovedActorStallDeviceTest {
     private static Field field(String name)throws Exception{Field f=Actor.class.getDeclaredField(name);f.setAccessible(true);return f;}
+    private static class Board extends Level {
+        @Override protected boolean build(){return true;}
+        @Override protected void createMobs(){}
+        @Override protected void createItems(){}
+    }
     private static class GhoulAttack extends Ghoul {
         final AtomicInteger attacks=new AtomicInteger();
         @Override protected boolean act(){sprite.attack(0);return false;}
@@ -66,7 +73,7 @@ public class RemovedActorStallDeviceTest {
             TopScoresDeviceTest.render(()->com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon.switchNoFade(TitleScene.class));
             while(!(Game.scene() instanceof TitleScene)){assertTrue(android.os.SystemClock.uptimeMillis()<deadline);Thread.sleep(100);}
             for(boolean cancel:new boolean[]{true,false}){
-                Map<Field,Object> previous=new LinkedHashMap<>();Hero oldHero=Dungeon.hero;boolean oldKeepAlive=Actor.keepActorThreadAlive;
+                Map<Field,Object> previous=new LinkedHashMap<>();Hero oldHero=Dungeon.hero;Level oldLevel=Dungeon.level;boolean oldKeepAlive=Actor.keepActorThreadAlive;
                 AtomicReference<GhoulAttack> ghoul=new AtomicReference<>();AtomicReference<ActualGhoulSprite> sprite=new AtomicReference<>();InputBoundary input=new InputBoundary();
                 AtomicReference<Throwable> failure=new AtomicReference<>();Thread worker=null;
                 try{
@@ -74,6 +81,7 @@ public class RemovedActorStallDeviceTest {
                         for(String name:new String[]{"all","chars","ids","current","now","nextID"}){Field f=field(name);previous.put(f,f.get(null));}
                         field("all").set(null,new HashSet<Actor>());field("chars").set(null,new HashSet<Char>());field("ids").set(null,new SparseArray<Actor>());
                         field("current").set(null,null);field("now").setFloat(null,0);field("nextID").setInt(null,1);
+                        Board board=new Board();board.setSize(9,9);Dungeon.level=board;
                         Dungeon.hero=new Hero();Dungeon.hero.HP=Dungeon.hero.HT=100;
                         ghoul.set(new GhoulAttack());sprite.set(new ActualGhoulSprite(ghoul.get()));Actor.add(ghoul.get());Actor.addDelayed(input,1);
                     }catch(Exception e){throw new AssertionError(e);}});
@@ -87,7 +95,7 @@ public class RemovedActorStallDeviceTest {
                     System.out.println("APD_NATIVE_REMOVED_ACTOR cancel="+cancel+" nextInputTurns="+input.turns.get()+" clock="+Actor.now());
                 }finally{
                     Actor.keepActorThreadAlive=false;if(worker!=null){worker.interrupt();synchronized(worker){worker.notifyAll();}worker.join(3000);assertFalse(worker.isAlive());}
-                    TopScoresDeviceTest.render(()->{try{for(Map.Entry<Field,Object> e:previous.entrySet())e.getKey().set(null,e.getValue());Dungeon.hero=oldHero;Actor.keepActorThreadAlive=oldKeepAlive;if(sprite.get()!=null)sprite.get().destroy();}catch(Exception e){throw new AssertionError(e);}});
+                    TopScoresDeviceTest.render(()->{try{for(Map.Entry<Field,Object> e:previous.entrySet())e.getKey().set(null,e.getValue());Dungeon.hero=oldHero;Dungeon.level=oldLevel;if(oldLevel!=null)PathFinder.setMapSize(oldLevel.width(),oldLevel.height());Actor.keepActorThreadAlive=oldKeepAlive;if(sprite.get()!=null)sprite.get().destroy();}catch(Exception e){throw new AssertionError(e);}});
                     if(failure.get()!=null)throw new AssertionError(failure.get());
                 }
             }
