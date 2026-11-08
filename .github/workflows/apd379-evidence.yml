@@ -13,7 +13,7 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>
-name: Inspect379 retained native test results without rebuilding
+name: Report379 real Android audio endpoint measurements
 on:
   push:
     branches: [codex/apd-phone-fixes-2026-10-09]
@@ -24,10 +24,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/download-artifact@v4
-        with: {name: apd379-native-Developer, run-id: 42526945257, github-token: '${{ github.token }}', path: evidence}
-      - uses: actions/download-artifact@v4
-        with: {name: apd379-native-Alpha-Testers, run-id: 42526945257, github-token: '${{ github.token }}', path: evidence}
-      - name: Report exact retained item-window failures
+        with: {name: apd379-audio-endpoint-evidence, run-id: 42529880268, github-token: '${{ github.token }}', path: evidence}
+      - name: Report measured queue and endpoint durations with explicit limits
         run: |
-          cat evidence/developer-qol.txt
-          cat evidence/alpha-qol.txt
+          python3 - <<'PYREPORT'
+          import pathlib,json
+          d=json.loads(pathlib.Path('evidence/audio-real-endpoint.json').read_text());assert d['real_android_soundpool'];assert not d['injected_worker_stall'];assert not d['actual_encounter_played'];assert not d['acoustic_onset_measured'];assert not d['physical_phone_verified']
+          print('Actual Android SoundPool; no injected stall, natural encounter, acoustic or phone verification.')
+          for s in d['scenarios']:print(json.dumps(s,sort_keys=True))
+          print('Recorded request count:',len(d['events']))
+          PYREPORT
