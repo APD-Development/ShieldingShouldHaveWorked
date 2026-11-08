@@ -332,7 +332,7 @@ public class QolItemFeedbackDeviceTest {
         for(boolean cursed:new boolean[]{false,true})for(boolean use:new boolean[]{false,true}){
             AtomicReference<WndInfoItem> shown=new AtomicReference<>();
             TopScoresDeviceTest.render(()->{
-                ring.anonymize();ring.level(3);ring.levelKnown=ring.cursedKnown=true;ring.cursed=cursed;
+                ring.anonymize();ring.level(cursed?0:3);ring.levelKnown=ring.cursedKnown=true;ring.cursed=cursed;
                 assertTrue(ring.info(),ring.info().contains(cursed?"more damage taken":"less damage"));
                 WndInfoItem window=use?new WndUseItem(null,ring):new WndInfoItem(ring);GameScene.show(window);shown.set(window);
             });Thread.sleep(300);TopScoresDeviceTest.render(()->assertDescriptionViewport(shown.get()));
