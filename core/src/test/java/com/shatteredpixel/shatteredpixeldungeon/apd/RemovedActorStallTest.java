@@ -136,4 +136,30 @@ public class RemovedActorStallTest {
         Actor.addDelayed(ghoul,5);Actor.add(ghoul);assertEquals(1,Actor.all().size());assertSame(ghoul,Actor.findById(ghoul.id()));
         wake();awaitWaitingOn(ghoul);assertEquals(5,Actor.now(),0);
     }
+    @Test public void pushingKeepsSchedulerWaitingUntilItsLandingCallback()throws Exception{
+        com.shatteredpixel.shatteredpixeldungeon.levels.Level priorLevel=Dungeon.level;
+        float priorElapsed=Game.elapsed;
+        try {
+            Dungeon.level=new com.shatteredpixel.shatteredpixeldungeon.apd.qol.GrassDewPickupTest.TestLevel();
+            Dungeon.level.setSize(5,5);
+            Char victim=new Char(){};
+            victim.sprite=new CharSprite(){
+                @Override public com.watabou.utils.PointF worldToCamera(int cell){return new com.watabou.utils.PointF(cell,0);}
+            };
+            com.watabou.noosa.Group group=new com.watabou.noosa.Group();group.add(victim.sprite);
+            AtomicInteger landed=new AtomicInteger();
+            com.shatteredpixel.shatteredpixeldungeon.effects.Pushing pushing=new com.shatteredpixel.shatteredpixeldungeon.effects.Pushing(victim,6,7,()->landed.incrementAndGet());
+            InputBoundary input=new InputBoundary();Actor.add(pushing);Actor.addDelayed(input,1);
+            start();awaitWaitingOn(pushing);
+            assertFalse("push leaves actor queue while its visual is running",Actor.all().contains(pushing));
+            assertTrue("temporary removal must not let guard move before victim lands",Actor.processing());
+            assertEquals(0,landed.get());assertEquals(0,input.turns.get());
+            com.shatteredpixel.shatteredpixeldungeon.effects.Pushing.Effect effect=null;
+            for(Object child:(java.util.List<?>)field(com.watabou.noosa.Group.class,"members").get(group))if(child instanceof com.shatteredpixel.shatteredpixeldungeon.effects.Pushing.Effect)effect=(com.shatteredpixel.shatteredpixeldungeon.effects.Pushing.Effect)child;
+            assertNotNull(effect);Game.elapsed=.2f;effect.update();
+            assertEquals(1,landed.get());assertFalse(Actor.processing());
+            wake();awaitWaitingOn(input);assertEquals(1,input.turns.get());assertEquals(1,Actor.now(),0);
+        } finally {Dungeon.level=priorLevel;Game.elapsed=priorElapsed;}
+    }
+
 }

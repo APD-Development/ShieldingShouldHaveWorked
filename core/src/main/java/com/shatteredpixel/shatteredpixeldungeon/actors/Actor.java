@@ -380,7 +380,10 @@ public abstract class Actor implements Bundlable {
 			// Its completion callback will then never call next(). A removed actor
 			// must not keep the scheduler waiting for that cancelled callback.
 			// Leave other actors' pending animations and turn costs alone.
-			if (current == actor) current = null;
+            // Pushing deliberately leaves the queue before its visual finishes.
+            // Its landing callback must still release the wait, otherwise mobs
+            // can act and enter the destination before the pulled character lands.
+            if (current == actor && !(actor instanceof com.shatteredpixel.shatteredpixeldungeon.effects.Pushing)) current = null;
 			actor.onRemove();
 
 			if (actor.id > 0) {
