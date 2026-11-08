@@ -1,0 +1,17 @@
+# Active continuation — November8,23:39UTC
+
+Owner requests sustained approved development, actual GitHub APK pairs every30minutes, target7pmEST (00:00UTC). Do not stop at checkpoints. No new panels/design/balance changes. No subagents authorized.
+
+Published379(22:18),380(22:49),381(23:13UTC). All have both original signed APK variants and corresponding source. Latest published: https://github.com/APD-Development/ShieldingShouldHaveWorked/releases/tag/apd-alpha-preview-381 .381 is Torn Page/current-healing and journal correction, not the newer weapon/privacy/artifact/trinket source.
+
+382 source d6d21c97de27c5a49848c76bc62a5ae9fa276a60; original build42534873950 passed3035core/457suites and ten other native cases but Qol failed before UI because synthetic EscapeCrystal.storedItems was null during fixture serialization. No owner/game crash established. Retry42535769537 compiles instrumentation only, initializes copied stored gear/slots/gold/energy, reuses original APKs and ten original cases, preserves failures. Production source unchanged. Stage42535798704 waits on that complete retry and keeps draft unpublished. Tag apd-alpha-preview-382 already exists. Need successful acceptance, download draft assets, verify hashes/source scan, inspect all new actual windows, then publish around23:43UTC. Source scan/prepare assertions must not be weakened.
+
+383 source728ca445fe62dffab483ec824a1c977d970f24ff, build42536083963 in progress. New eight-trinket descriptions, Vial max cap reflects actual Healing rule/fractional maximum, no-character catalog invents no20HP. Source and test fixture fix committed444a61ba3; all3036core/457suites passed.383 preserves381 published fallback and explicitly merges382 built-APK history. Tag/draft383 created; staging request in same commit as this handoff. Need actual completed Android checks and visual review before publication. Whole audit incomplete.
+
+Current tracker:427 source units,276 reviewed fully/partially,257 corrected,141 complete,286 unresolved; source units are not item types. Eight trinkets remain partial pending full secondary/variant review. Existing specific panels remain pending owner review; detailed group explanation in APD-EXISTING-PANELS-PENDING-OWNER-REVIEW.md. Ring Arcana is percentage-only/no button; Elastic and Viscosity no calculations button. No universal panel added.
+
+Audio owner clarified SPD only, to recollection. APD not reproduced; no production audio change or verified specific fix. Real API36 endpoint diagnostic42529880268, summary42530934839 observed480requests/120failed starts and timing outliers, not actual encounters/acoustic phone onset. Report documents limits.
+
+Core full evidence3036: /workspace/apd-eight-trinkets-final-evidence-20261108 . Runtime export is refreshing under /workspace/apd-descriptions-20261108/current via filtered ItemDescriptionPurityTest; filtered XML is not full-suite evidence. Local Gradle wrapper /workspace/apd-fire-report-4lp1xi68, JDK /workspace/apd-java21, Gradle /workspace/apd-gradle-runtime/gradle-9.5.0/bin/gradle. No local Android SDK; Android claims require actual CI.
+
+Direct Actions artifact ZIP download locally returns403. GitHub Release assets work, even draft; REST /releases/tags excludes drafts, so list releases and filter tag. Native error reports can be printed by short Actions workflow. APK and source signing/appID/versionCode920 unchanged. Never uninstall/clear saves, overwrite newer source or rewrite history. Continue after delivery.
