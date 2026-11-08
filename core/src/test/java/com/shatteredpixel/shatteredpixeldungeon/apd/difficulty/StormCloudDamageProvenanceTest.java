@@ -78,10 +78,17 @@ public class StormCloudDamageProvenanceTest {
 		size.invoke(Dungeon.level, 15, 15);
 		java.util.Arrays.fill(Dungeon.level.map, Terrain.EMPTY);
 		java.util.Arrays.fill(Dungeon.level.passable, true);
+		// Real generated levels initialize these collections before Storm Cloud
+		// can convert a cell to water. Keep the headless fixture on that real path.
+		Dungeon.level.transitions = new java.util.ArrayList<>();
+		Dungeon.level.mobs = new java.util.HashSet<>();
+		Dungeon.level.heaps = new com.watabou.utils.SparseArray<>();
 		Dungeon.level.blobs = new java.util.HashMap<>();
-		// Real generated levels always initialize this before Storm Cloud can
-		// convert a cell to water. Keep the headless fixture on that real path.
+		Dungeon.level.plants = new com.watabou.utils.SparseArray<>();
+		Dungeon.level.traps = new com.watabou.utils.SparseArray<>();
 		Dungeon.level.customTiles = new java.util.ArrayList<>();
+		Dungeon.level.customTerrain = new java.util.ArrayList<>();
+		Dungeon.level.customWalls = new java.util.ArrayList<>();
 	}
 
 	@After
