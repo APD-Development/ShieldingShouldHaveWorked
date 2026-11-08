@@ -95,12 +95,15 @@ public class ItemDescriptionPurityTest {
     }
     /** Optional local audit evidence, not a player interface or a claim of human review. */
     private static void exportForIndividualReview(Item item,String legacy)throws Exception{
+        exportForIndividualReview(item,legacy,"");
+    }
+    private static void exportForIndividualReview(Item item,String legacy,String subdirectory)throws Exception{
         String directory=System.getenv("APD_DESCRIPTION_EXPORT");if(directory==null||directory.isEmpty())return;
         boolean owned=Dungeon.hero.belongings.contains(item);
         if(!owned)Dungeon.hero.belongings.backpack.items.add(item);
         try{
-            java.nio.file.Path output=java.nio.file.Paths.get(directory);java.nio.file.Files.createDirectories(output);
-            String text="Constructor-model catalog fixture; Warrior, Floor 6, Strength 10, 20/20 HP. Level/curse knowledge enabled; other knowledge follows constructor defaults. Automated evidence only.\n\nPRIMARY ITEM DESCRIPTION\n"+item.info()
+            java.nio.file.Path output=java.nio.file.Paths.get(directory);if(!subdirectory.isEmpty())output=output.resolve(subdirectory);java.nio.file.Files.createDirectories(output);
+            String text="Constructor-model catalog fixture; "+Dungeon.hero.heroClass+", Floor "+Dungeon.depth+", base Strength "+Dungeon.hero.STR+", "+Dungeon.hero.HP+"/"+Dungeon.hero.HT+" HP. Level/curse knowledge follows fixture state. Automated evidence only.\n\nPRIMARY ITEM DESCRIPTION\n"+item.info()
                     +"\n\nEXISTING OPTIONAL ITEM PANEL\n"+MechanicsDetails.itemCalculations(item)
                     +"\n\nLEGACY HELPER OUTPUT (not necessarily an active interface)\n"+legacy;
             java.nio.file.Files.write(output.resolve(item.getClass().getName()+".txt"),text.getBytes(java.nio.charset.StandardCharsets.UTF_8));
@@ -312,4 +315,29 @@ public class ItemDescriptionPurityTest {
         com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff.affect(Dungeon.hero,com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune.class);
         assertEquals(0,Ring.getBonus(Dungeon.hero,type));assertEquals(0,Ring.getBuffedBonus(Dungeon.hero,type));assertEquals(7,virtual.level());
     }
+    @Test public void everyClassInspectsCatalogWithoutChangingStateOrRevealingHiddenEquipmentLevels()throws Exception{
+        List<String> failures=new ArrayList<>();int inspected=0;
+        for(HeroClass heroClass:HeroClass.values()){
+            Hero hero=new Hero();hero.heroClass=heroClass;Talent.initClassTalents(hero);hero.HP=hero.HT=20;hero.pos=24;Dungeon.hero=hero;
+            for(Class<?> type:classes(Arrays.asList(Catalog.values())).values()){
+                try{
+                    Item candidate=item(type);if(candidate.isUpgradable())candidate.level(3);candidate.levelKnown=candidate.cursedKnown=true;
+                    if(candidate instanceof com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand)((com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand)candidate).curChargeKnown=true;
+                    Bundle before=new Bundle(),after=new Bundle(),heroBefore=new Bundle(),heroAfter=new Bundle();candidate.storeInBundle(before);hero.storeInBundle(heroBefore);
+                    Random.pushGenerator(8031);int expected;try{expected=Random.Int();}finally{Random.popGenerator();}
+                    Random.pushGenerator(8031);String known;try{known=inspect(candidate);assertEquals("inspection consumes no random roll",expected,Random.Int());}finally{Random.popGenerator();}
+                    assertFalse("known description is not empty",candidate.info().trim().isEmpty());candidate.storeInBundle(after);hero.storeInBundle(heroAfter);
+                    assertEquals("item state",before.toString(),after.toString());assertEquals("hero state",heroBefore.toString(),heroAfter.toString());
+                    exportForIndividualReview(candidate,known,"by-class/"+heroClass.name());inspected++;
+                    if(candidate instanceof com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon||candidate instanceof com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor||candidate instanceof com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand||candidate instanceof Ring){
+                        candidate.levelKnown=candidate.cursedKnown=false;if(candidate instanceof com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand)((com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand)candidate).curChargeKnown=false;
+                        candidate.level(0);String unknown=inspect(candidate);candidate.level(3);assertEquals("hidden upgrades",unknown,inspect(candidate));inspected++;
+                    }
+                }catch(Throwable problem){failures.add(heroClass+" "+type.getSimpleName()+": "+problem);}
+            }
+        }
+        System.out.println("CLASS_DESCRIPTION_VARIANTS inspected="+inspected+" failures="+failures);
+        assertTrue(inspected>1000);assertEquals(failures.toString(),Collections.emptyList(),failures);
+    }
+
 }

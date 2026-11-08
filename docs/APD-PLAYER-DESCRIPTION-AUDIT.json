@@ -3,9 +3,9 @@
   "baseline_commit": "32f4f3beab4c23b404c3cb1d43bfa06a39165e70",
   "counting": "Source units, not distinct item types. reviewed_units includes partial reviews; completed_units excludes partial/pending dependency. corrected_units counts source units with corrections, including incomplete reviews. Inventory/export/tests alone are not an individual review.",
   "source_units": 427,
-  "message_entries": 2408,
-  "reviewed_units": 136,
-  "corrected_units": 128,
+  "message_entries": 2410,
+  "reviewed_units": 170,
+  "corrected_units": 162,
   "unresolved_units": 381,
   "category_counts": {
     "apd": 1,
@@ -55,7 +55,7 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/ArmorExplanation.java",
-      "sha256": "6361ac90ef2b033f26a648141f0bde5196ce84796e3e676862e05eb73c65fb9a",
+      "sha256": "c7de19f8756457d3e312846bd687c64a5c742fa1a1f5a5166ea9f73fe906da4e",
       "category": "mechanics",
       "status": "PENDING_INDIVIDUAL_REVIEW",
       "description_methods": [
@@ -175,7 +175,7 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/FoodExplanation.java",
-      "sha256": "6cd5d17779599e4029ec51b75673b8498425a595c6f7cbccd03cfa6bbdbc8e90",
+      "sha256": "257218fa2e334cd380cb7be0cd89d7af8e411840a5ab3c593da81e8d57549282",
       "category": "mechanics",
       "status": "PARTIAL_REVIEW",
       "description_methods": [
@@ -186,7 +186,7 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/GlyphExplanation.java",
-      "sha256": "a0bc3c582b0fc938d07211d36f00b2ecf861271b728b27b291d7f3135c14d6fa",
+      "sha256": "f3ec528618aec753d01d8abfac4c35c1757ea50be89d23035bc1dad3215d39a6",
       "category": "mechanics",
       "status": "PARTIAL_REVIEW",
       "description_methods": [
@@ -415,7 +415,7 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/WeaponExplanation.java",
-      "sha256": "192fa3e53dc04ca124c213db3a81e3a41885e905f5d6836444694bcc5c75c247",
+      "sha256": "4267f8605f28e74740c974ec42702b75bb2cb062aae1e9f5d3034d4042bb0399",
       "category": "mechanics",
       "status": "PARTIAL_REVIEW",
       "description_methods": [
@@ -447,7 +447,7 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/Ankh.java",
-      "sha256": "3a5a6654b984fb5e72387963d1365807418ca3247fdf735c83a17196bcc17d28",
+      "sha256": "4e2b7b9fe1959e71e5db87675371edd6f310fdd6f5c8d599f65c513abd30cf11",
       "category": "items",
       "status": "PENDING_INDIVIDUAL_REVIEW",
       "description_methods": [
@@ -524,7 +524,7 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/Item.java",
-      "sha256": "3ef4e1a6e0ff59d92f5dafc0b20d8c9735081ba07835521122bb3cb96fec417c",
+      "sha256": "39b729cc3c92af7daa281825673cd0959209b7a5bfa6a5b7cb209ad647cb8112",
       "category": "items",
       "status": "PENDING_INDIVIDUAL_REVIEW",
       "description_methods": [
@@ -597,14 +597,14 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/Torch.java",
-      "sha256": "84768f0e7882792997cb5f7875ec4a2d52894716f4e9a6326e9f93c26489f760",
+      "sha256": "dbefbc52681ee85ea9d999458316df27f3b0fdc730b41c9b88c388a9fcc828ef",
       "category": "items",
       "status": "PENDING_INDIVIDUAL_REVIEW",
       "description_methods": []
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/Waterskin.java",
-      "sha256": "297ec018deae5f20b2fa5aaf0ee7ebd0c1e7cb95fb24e8c1ef96b0d0e06e9bdc",
+      "sha256": "9c8af95c7d2b03e64052bf70e0265a45901a2e5b43c699979c5340b56d8fabbf",
       "category": "items",
       "status": "PENDING_INDIVIDUAL_REVIEW",
       "description_methods": [
@@ -713,57 +713,73 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/armor/curses/AntiEntropy.java",
       "sha256": "8a6c8c0f41b69868f6aa1824e33d3368a902aa4ee6cef68b6918fe7a81c916dd",
       "category": "armor",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "PARTIAL_REVIEW",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Normal curse wording or weapon ability display reviewed against implementation; full variants and existing optional panel review remain unfinished. See November 8 correction record."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/armor/curses/Bulk.java",
       "sha256": "9c7f8eb0b5da90066efb537a988e1affcff82ef1eeb4a02b4a82fe50601f13af",
       "category": "armor",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "PARTIAL_REVIEW",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Normal curse wording or weapon ability display reviewed against implementation; full variants and existing optional panel review remain unfinished. See November 8 correction record."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/armor/curses/Corrosion.java",
       "sha256": "c2d3a32bd0fab0afee5543b4230255590b5d8a2e453aed22af7a7258ff572f7b",
       "category": "armor",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "PARTIAL_REVIEW",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Normal curse wording or weapon ability display reviewed against implementation; full variants and existing optional panel review remain unfinished. See November 8 correction record."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/armor/curses/Displacement.java",
       "sha256": "448fe2565b88fa6b6a48e296f71808bf241850ad0f195af6028d536a940337e8",
       "category": "armor",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "PARTIAL_REVIEW",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Normal curse wording or weapon ability display reviewed against implementation; full variants and existing optional panel review remain unfinished. See November 8 correction record."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/armor/curses/Metabolism.java",
       "sha256": "ae7b7dbafea5db80ff01178a95e4280dcf7468257a4b948a67cfdb839380d6b7",
       "category": "armor",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "PARTIAL_REVIEW",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Normal curse wording or weapon ability display reviewed against implementation; full variants and existing optional panel review remain unfinished. See November 8 correction record."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/armor/curses/Multiplicity.java",
       "sha256": "f439224e5bb83a19fcf8afc4bc88d741a5d4607d25d9a417429cb5362b46fadf",
       "category": "armor",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "PARTIAL_REVIEW",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Normal curse wording or weapon ability display reviewed against implementation; full variants and existing optional panel review remain unfinished. See November 8 correction record."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/armor/curses/Overgrowth.java",
       "sha256": "42a60a5c7c12aab2e0f889886a1537feacd34e61d0343278ffbe8fbcd0e01958",
       "category": "armor",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "PARTIAL_REVIEW",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Normal curse wording or weapon ability display reviewed against implementation; full variants and existing optional panel review remain unfinished. See November 8 correction record."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/armor/curses/Stench.java",
       "sha256": "6051f4c923916d11f4076058f8b5095b9ea5805593d882e4f109b55878946df0",
       "category": "armor",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "PARTIAL_REVIEW",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Normal curse wording or weapon ability display reviewed against implementation; full variants and existing optional panel review remain unfinished. See November 8 correction record."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/armor/glyphs/Affection.java",
@@ -1004,7 +1020,7 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/bags/Bag.java",
-      "sha256": "6def7c3f96fb6d6af2c554fc1fdd2fb7a5d66b2d8478e1ca3e6fba22636b400c",
+      "sha256": "6b5ae54e4551b0e6813aa4734b77e0d40dde4900a1a54f097eb8905d57f65b9b",
       "category": "bags",
       "status": "REVIEWED_CORRECTED",
       "description_methods": [],
@@ -1082,7 +1098,7 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/bombs/FlashBangBomb.java",
-      "sha256": "eb0338ee97c110d053f541871c3e3e3decc1a95a157051839427ee9ccda56b98",
+      "sha256": "06a846f42801e4af0bdb819e901272e67aa7a8c8f439a766f9aef3afaa0a7793",
       "category": "bombs",
       "status": "PENDING_INDIVIDUAL_REVIEW",
       "description_methods": []
@@ -1191,7 +1207,7 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/food/Food.java",
-      "sha256": "d177155bb3ddaffe11fff461eb4ed2d2643dcf2e83d310a7c8e3861689c54fec",
+      "sha256": "85526d922211e67b4c9066e9488b4598de105c5f3055f9dd2f25b6bc76dcf2ce",
       "category": "food",
       "status": "REVIEWED_CORRECTED",
       "description_methods": [
@@ -1350,7 +1366,7 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/journal/AlchemyPage.java",
-      "sha256": "e42751a8a97ff3b1b5496a03f31ec0e22beb812e69929685d9009759757fdfd9",
+      "sha256": "2c5631fe687fbedb6061450a5172669dd9e6a3684f5c8f1b3e41913bbd8a50a4",
       "category": "journal",
       "status": "PENDING_INDIVIDUAL_REVIEW",
       "description_methods": [
@@ -1366,7 +1382,7 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/journal/GuidePage.java",
-      "sha256": "617fbad9468f18a5aaa124be8e08f7aef4e970eed3977c1982bb9eed8b773782",
+      "sha256": "23570b3b46acd08c8667d2e9bbecdcd8c7f4e9a0af9ba4df59414ad570235edf",
       "category": "journal",
       "status": "PENDING_INDIVIDUAL_REVIEW",
       "description_methods": [
@@ -1844,7 +1860,7 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/quest/DwarfToken.java",
-      "sha256": "bc9849b41e3131c8990ca6748ddcdafdac6e61ccef86cd15b944c7c8c187423f",
+      "sha256": "49f055e6413d5f9e6bf351081b70ea91595deea70bf5da46d0ca1f24c842a245",
       "category": "quest",
       "status": "PENDING_INDIVIDUAL_REVIEW",
       "description_methods": [
@@ -1888,12 +1904,14 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/quest/Pickaxe.java",
-      "sha256": "1a5b14347fd9ebfe607cc0a76b851e455fb8e824aabaaa1d3909c7719fdee01b",
+      "sha256": "3f80dc0a0158ee7b683228f9c537b7b5ed3ab8c09a61dcb5a819a840db068871",
       "category": "quest",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
+      "status": "PARTIAL_REVIEW",
       "description_methods": [
         "abilityInfo"
-      ]
+      ],
+      "wording_corrected": true,
+      "review_notes": "Normal curse wording or weapon ability display reviewed against implementation; full variants and existing optional panel review remain unfinished. See November 8 correction record."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/quest/VaultBeacon.java",
@@ -1904,14 +1922,14 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/remains/BowFragment.java",
-      "sha256": "85ced5ed58a076b00331b4b041ca9a59bf179ba1611f85598c491cc492172472",
+      "sha256": "adc12793d403791529252da2dc9ffc44f5dda233de64dc01da15d2e4f1842c88",
       "category": "remains",
       "status": "PENDING_INDIVIDUAL_REVIEW",
       "description_methods": []
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/remains/BrokenHilt.java",
-      "sha256": "f615995983c7f8a8ce1153b849afb20aa1dd23d28198d7bcfcbf44d8fa744cea",
+      "sha256": "3f029acf1a9e5993cab637c950412a08f10ffa3d177aa2690fe5349b9e15c950",
       "category": "remains",
       "status": "PENDING_INDIVIDUAL_REVIEW",
       "description_methods": []
@@ -1932,21 +1950,21 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/remains/RemainsItem.java",
-      "sha256": "d3094b631c6435042d718e1f4f000724029da9bf10f000f74d4fafb836261b7c",
+      "sha256": "27415f0909e4fcd0dc02560581f1ff230f4f0717b4b22478082c3c65f10b14b2",
       "category": "remains",
       "status": "PENDING_INDIVIDUAL_REVIEW",
       "description_methods": []
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/remains/SealShard.java",
-      "sha256": "d28aef66de766b3b2ed1291a1067ae413d7cda9e839aaf3429265e5c7cf471ba",
+      "sha256": "40e39c0cee9820ac28999f4fff55fb4667fab3597b6ee706414ea416b781b586",
       "category": "remains",
       "status": "PENDING_INDIVIDUAL_REVIEW",
       "description_methods": []
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/remains/TornPage.java",
-      "sha256": "c2dc909c1510e11242db3b8c42b0e6ec6025a3b64a0b1e20d7925b2b9fc7cfa9",
+      "sha256": "0decdb8d664a5c5d831ea0e269120a569c8756816484ab0f1da69af79842e234",
       "category": "remains",
       "status": "PENDING_INDIVIDUAL_REVIEW",
       "description_methods": []
@@ -2040,7 +2058,7 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/rings/RingOfForce.java",
-      "sha256": "4ab5467d9c68690829fb36c58336e36642c15d1e4753a92bf905d88a63bdffa0",
+      "sha256": "6398780db0493f28203c482efb523c71b52474c2328d17255ac5963eabb960fc",
       "category": "rings",
       "status": "REVIEWED_PENDING_DEPENDENCY",
       "description_methods": [
@@ -2937,7 +2955,7 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/wands/WandOfTransfusion.java",
-      "sha256": "06da09a975300c514188f4d3667b9c12373cdc45fa2647dc217abf2fbc774581",
+      "sha256": "e621f8cff38bb5885fc57cbcce548c3852194d74b86278c4e077f50280b35a4f",
       "category": "wands",
       "status": "PARTIAL_REVIEW",
       "description_methods": [
@@ -2982,73 +3000,93 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/curses/Annoying.java",
       "sha256": "bd75f253dc3b13ca110221d004d2c47100c7a995377a590ecfaf2051cfac3bbd",
       "category": "weapon",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "PARTIAL_REVIEW",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Normal curse wording or weapon ability display reviewed against implementation; full variants and existing optional panel review remain unfinished. See November 8 correction record."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/curses/Dazzling.java",
       "sha256": "82801009f866f2ea82a044c4abcacaca6701454335eb5ff3048c169ecec954bc",
       "category": "weapon",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "PARTIAL_REVIEW",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Normal curse wording or weapon ability display reviewed against implementation; full variants and existing optional panel review remain unfinished. See November 8 correction record."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/curses/Displacing.java",
       "sha256": "17e4f20c4cc6000a7aff0ccddcfb29d783c9bfad3db0a6b623a18643c3bd4dd1",
       "category": "weapon",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "PARTIAL_REVIEW",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Normal curse wording or weapon ability display reviewed against implementation; full variants and existing optional panel review remain unfinished. See November 8 correction record."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/curses/Explosive.java",
       "sha256": "2c395033152a9d86768e654eab6107de898fa8335eee2baacb4b23b9ea5e2058",
       "category": "weapon",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
+      "status": "PARTIAL_REVIEW",
       "description_methods": [
         "desc"
-      ]
+      ],
+      "wording_corrected": true,
+      "review_notes": "Normal curse wording or weapon ability display reviewed against implementation; full variants and existing optional panel review remain unfinished. See November 8 correction record."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/curses/Friendly.java",
       "sha256": "d8576d61ab6e61c50e30c97a771aa49e65a299b505ffe8f527e723b53f88a6eb",
       "category": "weapon",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "PARTIAL_REVIEW",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Normal curse wording or weapon ability display reviewed against implementation; full variants and existing optional panel review remain unfinished. See November 8 correction record."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/curses/Polarized.java",
       "sha256": "32bba91b2fd04d4fe86f91b5501eda24954ba21122d0a3f20c57b7f967d9d093",
       "category": "weapon",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "PARTIAL_REVIEW",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Normal curse wording or weapon ability display reviewed against implementation; full variants and existing optional panel review remain unfinished. See November 8 correction record."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/curses/Pressurized.java",
       "sha256": "eeb565ed340ab045182925d30cce3df04944fa615d672c03dc85d4e59e055b42",
       "category": "weapon",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "PARTIAL_REVIEW",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Normal curse wording or weapon ability display reviewed against implementation; full variants and existing optional panel review remain unfinished. See November 8 correction record."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/curses/Sacrificial.java",
       "sha256": "99f7ece73e192001fbf974dbca04cb2999de54ae3bc8c6034b77d5a0cb0c2694",
       "category": "weapon",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "PARTIAL_REVIEW",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Normal curse wording or weapon ability display reviewed against implementation; full variants and existing optional panel review remain unfinished. See November 8 correction record."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/curses/Wayward.java",
       "sha256": "46d907057a427ae874035387df626189c288ef693fd1f3079167cca6692e98ab",
       "category": "weapon",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "PARTIAL_REVIEW",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Normal curse wording or weapon ability display reviewed against implementation; full variants and existing optional panel review remain unfinished. See November 8 correction record."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/curses/Wondrous.java",
       "sha256": "11526fde7ef332d7e3e470c3bc2ee2eb390c54994c51e2efdec6a965edc86fb0",
       "category": "weapon",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "PARTIAL_REVIEW",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Normal curse wording or weapon ability display reviewed against implementation; full variants and existing optional panel review remain unfinished. See November 8 correction record."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/enchantments/Blazing.java",
@@ -3186,12 +3224,14 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/melee/BattleAxe.java",
-      "sha256": "6c887ead83893391d419d4f866ca4def27266da8284d91fef5d8995bc9f487e5",
+      "sha256": "6fc873ef32fb74fdb48c61e450be4b0581cdd3c963ed7a336a3cd308f4f66204",
       "category": "weapon",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
+      "status": "PARTIAL_REVIEW",
       "description_methods": [
         "abilityInfo"
-      ]
+      ],
+      "wording_corrected": true,
+      "review_notes": "Normal curse wording or weapon ability display reviewed against implementation; full variants and existing optional panel review remain unfinished. See November 8 correction record."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/melee/Crossbow.java",
@@ -3204,12 +3244,14 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/melee/Cudgel.java",
-      "sha256": "24ff9ff9481fdc959009eb6ba9cd82757f0969f150bf89132c2465eca0664905",
+      "sha256": "c60c10ffe3e4e849a63681407907def44d714d51e74aa1b3f511904a2a5c0040",
       "category": "weapon",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
+      "status": "PARTIAL_REVIEW",
       "description_methods": [
         "abilityInfo"
-      ]
+      ],
+      "wording_corrected": true,
+      "review_notes": "Normal curse wording or weapon ability display reviewed against implementation; full variants and existing optional panel review remain unfinished. See November 8 correction record."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/melee/Dagger.java",
@@ -3250,12 +3292,14 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/melee/Glaive.java",
-      "sha256": "ae9d40c3a5b6852348186ab73f733a79ac63b79a47978f23ec45592cb94baf1b",
+      "sha256": "bdd18f91336673e74c88fb156cbc3be4b777a2a220717b53a9e73008c14dd1fd",
       "category": "weapon",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
+      "status": "PARTIAL_REVIEW",
       "description_methods": [
         "abilityInfo"
-      ]
+      ],
+      "wording_corrected": true,
+      "review_notes": "Normal curse wording or weapon ability display reviewed against implementation; full variants and existing optional panel review remain unfinished. See November 8 correction record."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/melee/Gloves.java",
@@ -3268,12 +3312,14 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/melee/Greataxe.java",
-      "sha256": "ea6e05cfc8d2bbbb96c76739b14ca94f871f5c3deb36332e5d4047ff226f392e",
+      "sha256": "2008641e7876ae735e7b2f94daadb864a2249c19c74bb6dec3ec9d1dcd727c64",
       "category": "weapon",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
+      "status": "PARTIAL_REVIEW",
       "description_methods": [
         "abilityInfo"
-      ]
+      ],
+      "wording_corrected": true,
+      "review_notes": "Normal curse wording or weapon ability display reviewed against implementation; full variants and existing optional panel review remain unfinished. See November 8 correction record."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/melee/Greatshield.java",
@@ -3286,48 +3332,58 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/melee/Greatsword.java",
-      "sha256": "81bfb03402ae57ae2c551fcb6f60f54cfde5373c9034ae1180269ed7ed3a7b19",
+      "sha256": "0f701e10105a4b3ed5f270575904398a477e680ab56dbbf7aa3c2c4d53eb19db",
       "category": "weapon",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
+      "status": "PARTIAL_REVIEW",
       "description_methods": [
         "abilityInfo"
-      ]
+      ],
+      "wording_corrected": true,
+      "review_notes": "Normal curse wording or weapon ability display reviewed against implementation; full variants and existing optional panel review remain unfinished. See November 8 correction record."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/melee/HandAxe.java",
-      "sha256": "f323257fe5e71a8271b1e520c88a3c6b4f0a57c685014b96fe653b999cab6d0c",
+      "sha256": "84a5ee159deb56f4ca788a8c2f307eedf45555f03441918397d6d04ddd878e66",
       "category": "weapon",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
+      "status": "PARTIAL_REVIEW",
       "description_methods": [
         "abilityInfo"
-      ]
+      ],
+      "wording_corrected": true,
+      "review_notes": "Normal curse wording or weapon ability display reviewed against implementation; full variants and existing optional panel review remain unfinished. See November 8 correction record."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/melee/Katana.java",
-      "sha256": "f9df6fb746029cb80a36cf93019ec6cf8c906af4c6280ab2acda63178e575649",
+      "sha256": "8864ac36a401fae7d0ed9b171045896901f0704affdd293990fd231311e4b068",
       "category": "weapon",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
+      "status": "PARTIAL_REVIEW",
       "description_methods": [
         "abilityInfo"
-      ]
+      ],
+      "wording_corrected": true,
+      "review_notes": "Normal curse wording or weapon ability display reviewed against implementation; full variants and existing optional panel review remain unfinished. See November 8 correction record."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/melee/Longsword.java",
-      "sha256": "44b2142f2dbf27afd49d7e85db6b8db319fec72f05d5e9b868dcf9d9bf43c782",
+      "sha256": "6026a48fbbe5a0c12f14f3325663e67d518cd49548c106af52787dd522874c4d",
       "category": "weapon",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
+      "status": "PARTIAL_REVIEW",
       "description_methods": [
         "abilityInfo"
-      ]
+      ],
+      "wording_corrected": true,
+      "review_notes": "Normal curse wording or weapon ability display reviewed against implementation; full variants and existing optional panel review remain unfinished. See November 8 correction record."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/melee/Mace.java",
-      "sha256": "a0fc1c2d37a50e874fceb54b0c72cd7ec9397f13e3ec8eb6c61aeded5e13d5cf",
+      "sha256": "062f0d12e6f21f0d51d05120049284b81094631bc3abf51e8a962bb24f8f164b",
       "category": "weapon",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
+      "status": "PARTIAL_REVIEW",
       "description_methods": [
         "abilityInfo"
-      ]
+      ],
+      "wording_corrected": true,
+      "review_notes": "Normal curse wording or weapon ability display reviewed against implementation; full variants and existing optional panel review remain unfinished. See November 8 correction record."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/melee/MagesStaff.java",
@@ -3361,12 +3417,14 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/melee/Rapier.java",
-      "sha256": "c30623ef07c000779abdf3b4257eec858600e99b28e452d176a3eeb1f8051f24",
+      "sha256": "1fc9f87b9451b67c3222f7d218a19ce39a87b20c490dc843271dcf56fe781770",
       "category": "weapon",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
+      "status": "PARTIAL_REVIEW",
       "description_methods": [
         "abilityInfo"
-      ]
+      ],
+      "wording_corrected": true,
+      "review_notes": "Normal curse wording or weapon ability display reviewed against implementation; full variants and existing optional panel review remain unfinished. See November 8 correction record."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/melee/RoundShield.java",
@@ -3407,12 +3465,14 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/melee/Shortsword.java",
-      "sha256": "d29a865dead16b2cb005aa94fd87595926fad2cd6ff960bea2ad065cbded1e80",
+      "sha256": "2408823f09c22d7ffccdb91cf8ce0cc4970189b0d86f49f10191b534cd17c02b",
       "category": "weapon",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
+      "status": "PARTIAL_REVIEW",
       "description_methods": [
         "abilityInfo"
-      ]
+      ],
+      "wording_corrected": true,
+      "review_notes": "Normal curse wording or weapon ability display reviewed against implementation; full variants and existing optional panel review remain unfinished. See November 8 correction record."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/melee/Sickle.java",
@@ -3425,30 +3485,36 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/melee/Spear.java",
-      "sha256": "f447124b52abfa7dd50718766fbd4a526f3b64f5bdb8034834f75d4d27cca6df",
+      "sha256": "7758627420b572cd7ba2aa042127a7701a65ee18d11080f9c21915df244c7716",
       "category": "weapon",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
+      "status": "PARTIAL_REVIEW",
       "description_methods": [
         "abilityInfo"
-      ]
+      ],
+      "wording_corrected": true,
+      "review_notes": "Normal curse wording or weapon ability display reviewed against implementation; full variants and existing optional panel review remain unfinished. See November 8 correction record."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/melee/Sword.java",
-      "sha256": "df03e2d724c3113571a30d8cabc58568e5297d39c071fbf8824f9fca9416999c",
+      "sha256": "1f888002ec7c782c84c046e33e99ad7850aaacb6bc3e4bd10088e2ae11ab3cb1",
       "category": "weapon",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
+      "status": "PARTIAL_REVIEW",
       "description_methods": [
         "abilityInfo"
-      ]
+      ],
+      "wording_corrected": true,
+      "review_notes": "Normal curse wording or weapon ability display reviewed against implementation; full variants and existing optional panel review remain unfinished. See November 8 correction record."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/melee/WarHammer.java",
-      "sha256": "194c26d22b7334de0f1101cb6ecc428312a3739ec7a6449775613226c60fba58",
+      "sha256": "1ad0438f7e4ff3758ceba48c3e0594f19f02314a1cced7d9069f8a5848f9c9ef",
       "category": "weapon",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
+      "status": "PARTIAL_REVIEW",
       "description_methods": [
         "abilityInfo"
-      ]
+      ],
+      "wording_corrected": true,
+      "review_notes": "Normal curse wording or weapon ability display reviewed against implementation; full variants and existing optional panel review remain unfinished. See November 8 correction record."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/melee/WarScythe.java",
@@ -3470,12 +3536,14 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/melee/WornShortsword.java",
-      "sha256": "31c3370169ce48acd50ceb2676664d6e88d756b71285dba9a2aa71d7f1b0f31f",
+      "sha256": "cc31b897ecca3f2fd74b3de81fe634be4135cc3a2f4cefc50e50e68560449856",
       "category": "weapon",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
+      "status": "PARTIAL_REVIEW",
       "description_methods": [
         "abilityInfo"
-      ]
+      ],
+      "wording_corrected": true,
+      "review_notes": "Normal curse wording or weapon ability display reviewed against implementation; full variants and existing optional panel review remain unfinished. See November 8 correction record."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/missiles/Bolas.java",
@@ -3847,14 +3915,14 @@
   ],
   "completed_units": 46,
   "latest_tests": {
-    "core_tests": 3008,
+    "core_tests": 3013,
     "suites": 456,
     "failures": 0,
     "errors": 0,
     "skipped": 0,
-    "log": "/workspace/apd-scroll-current-rules-evidence-20261108/full.log",
+    "log": "/workspace/apd-description-fifteen-abilities-evidence-20261108/full.log",
     "android_verified": false,
     "new_apk_built": false,
-    "scope": "Scroll and disabled-healing descriptions; prior source corrections retained."
+    "scope": "Curse/class/privacy/no-hero and fifteen-weapon ability preview corrections."
   }
 }

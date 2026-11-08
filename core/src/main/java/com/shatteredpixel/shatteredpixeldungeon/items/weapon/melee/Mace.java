@@ -70,7 +70,7 @@ public class Mace extends MeleeWeapon {
 	public String abilityInfo() {
 		int dmgBoost = levelKnown ? 5 + Math.round(1.5f*buffedLvl()) : 5;
 		if (levelKnown){
-			return Messages.get(this, "ability_desc", augment.damageFactor(min()+dmgBoost), augment.damageFactor(max()+dmgBoost));
+			return Messages.get(this, "ability_desc", (augment.damageFactor(min()) + augment.damageFactor(dmgBoost)), (augment.damageFactor(max()) + augment.damageFactor(dmgBoost)));
 		} else {
 			return Messages.get(this, "typical_ability_desc", min(0)+dmgBoost, max(0)+dmgBoost);
 		}
@@ -78,7 +78,7 @@ public class Mace extends MeleeWeapon {
 
 	public String upgradeAbilityStat(int level){
 		int dmgBoost = 5 + Math.round(1.5f*level);
-		return augment.damageFactor(min(level)+dmgBoost) + "-" + augment.damageFactor(max(level)+dmgBoost);
+		return (augment.damageFactor(min(level)) + augment.damageFactor(dmgBoost)) + "-" + (augment.damageFactor(max(level)) + augment.damageFactor(dmgBoost));
 	}
 
 	public static void heavyBlowAbility(Hero hero, Integer target, float dmgMulti, int dmgBoost, MeleeWeapon wep){

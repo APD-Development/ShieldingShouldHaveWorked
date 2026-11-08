@@ -380,7 +380,7 @@ public class MechanicsExplanationTest {
    weapon.levelKnown=weapon.cursedKnown=true;weapon.level(3);weapon.augment=augment;hero.STR=strength;
    if(dancing)Buff.affect(hero,com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Scimitar.SwordDance.class);else if(hero.buff(com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Scimitar.SwordDance.class)!=null)hero.buff(com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Scimitar.SwordDance.class).detach();
    assertEquals(weapon.delayFactor(hero),WeaponExplanation.normalAttackDelay(weapon,hero),0);
-   assertTrue(WeaponExplanation.summary(weapon,hero).contains(com.shatteredpixel.shatteredpixeldungeon.messages.Messages.decimalFormat("0.##",weapon.delayFactor(hero))+" turns per attack"));
+   String shownTime=com.shatteredpixel.shatteredpixeldungeon.messages.Messages.decimalFormat("0.##",weapon.delayFactor(hero));assertTrue(WeaponExplanation.summary(weapon,hero).contains(shownTime+(shownTime.equals("1")?" turn":" turns")+" per attack"));
    WeaponExplanation.details(weapon,hero);assertSame(free,hero.buff(Talent.LethalMomentumTracker.class));
   }
  }
@@ -1824,6 +1824,18 @@ public class MechanicsExplanationTest {
    com.watabou.utils.Bundle before=new com.watabou.utils.Bundle(),after=new com.watabou.utils.Bundle();page.storeInBundle(before);page.info();page.storeInBundle(after);assertEquals(before.toString(),after.toString());
   }
  }
+ @Test public void cleaveAndHeavyBlowPreviewsRoundBaseAndBonusSeparately(){
+  com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon[] weapons={new com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sword(),new com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Greatsword(),new com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Cudgel(),new com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Mace(),new com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.BattleAxe(),new com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WornShortsword(),new com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Shortsword(),new com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Longsword(),new com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.HandAxe(),new com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WarHammer(),new com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Greataxe(),new com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Katana(),new com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Glaive(),new com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Spear(),new com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Rapier()};
+  for(int i=0;i<weapons.length;i++)for(com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon.Augment augment:com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon.Augment.values())for(int level:new int[]{0,1,3,8}){
+   com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon weapon=weapons[i];weapon.identify();weapon.level(level);weapon.augment=augment;
+   int[] base={5,7,3,5,5,3,4,6,4,6,15,8,12,9,5};
+   float[] scale={1,1,1.5f,1.5f,1.5f,1,1,1,1.5f,1.5f,2,2,2.5f,2,1.5f};
+   int bonus=augment.damageFactor(base[i]+Math.round(scale[i]*level));
+   String expected=(augment.damageFactor(weapon.min())+bonus)+"-"+(augment.damageFactor(weapon.max())+bonus);
+   assertTrue(weapon.getClass().getSimpleName()+" "+augment+" +"+level+" expected "+expected+" in "+weapon.abilityInfo(),weapon.abilityInfo().contains(expected));
+   assertEquals(expected,weapon.upgradeAbilityStat(level));
+  }
+ }
  @Test public void pickaxeAbilityPreviewRoundsItsSeparateDamagePartsLikeTheActualAttack(){
   com.shatteredpixel.shatteredpixeldungeon.items.quest.Pickaxe pick=new com.shatteredpixel.shatteredpixeldungeon.items.quest.Pickaxe();
   com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Crab target=new com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Crab();
@@ -2008,6 +2020,29 @@ public class MechanicsExplanationTest {
   assertTrue(new com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfHoneyedHealing().desc().contains("disable your healing"));
   com.shatteredpixel.shatteredpixeldungeon.items.food.Blandfruit fruit=new com.shatteredpixel.shatteredpixeldungeon.items.food.Blandfruit();fruit.imbuePotion(new com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing());assertTrue(BlandfruitExplanation.summary(fruit).contains("disable healing"));
   com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfShielding shield=new com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfShielding();shield.anonymize();shield.apply(hero);assertEquals(70,hero.buff(Barrier.class).shielding());assertTrue(shield.desc().contains("70 shielding"));assertFalse(shield.desc().contains("disable"));
+ }
+
+ @Test public void bulkNormalDescriptionMatchesActualDoorwaySpeedAndHidesUnknownLevels()throws Exception{
+  hero.sprite=quietSprite();armor.inscribe(new com.shatteredpixel.shatteredpixeldungeon.items.armor.curses.Bulk());armor.levelKnown=armor.cursedKnown=true;hero.STR=50;Dungeon.level.map[hero.pos]=com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.DOOR;RingOfArcana arcana=ring(0);
+  for(int level:new int[]{0,3,12}){
+   arcana.level(level);float speed=hero.speed();com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor.Glyph curse=armor.glyph;armor.glyph=null;float normal=hero.speed();armor.glyph=curse;
+   String text=armor.info();assertTrue(text,text.contains(com.shatteredpixel.shatteredpixeldungeon.messages.Messages.decimalFormat("0.##",100*speed/normal)+"%"));assertTrue(text.contains("normal speed in doorways"));
+  }
+  armor.level(-1);assertEquals(1,hero.speed(),.00001f);assertTrue(armor.info().contains("currently has no effect"));
+  armor.levelKnown=false;String unknown=armor.info();armor.level(9);assertEquals(unknown,armor.info());
+ }
+ @Test public void metabolismNormalDescriptionMatchesFoodSpentWithoutHealingUnderZeroRule()throws Exception{
+  com.watabou.utils.Bundle state=new com.watabou.utils.Bundle(),rules=new com.watabou.utils.Bundle();com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomDungeonRules.defaults().with(com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomDungeonRules.Slider.HEALING,0).store(rules);state.put("apd_custom_rules",rules);Dungeon.apdRestoreCustomRules(state);
+  armor.inscribe(new com.shatteredpixel.shatteredpixeldungeon.items.armor.curses.Metabolism());armor.cursedKnown=true;hero.sprite=quietSprite();hero.HP=10;hero.HT=20;Hunger hunger=Buff.affect(hero,Hunger.class);
+  assertTrue(armor.info().contains("current rules prevent the healing"));
+  int seed=0;for(;seed<10000;seed++){Random.pushGenerator(seed);float value;try{value=Random.Float();}finally{Random.popGenerator();}if(value<1/6f)break;}assertTrue(seed<10000);
+  Random.pushGenerator(seed);try{assertEquals(7,armor.glyph.proc(armor,null,hero,7));}finally{Random.popGenerator();}
+  assertEquals(10,hero.HP);assertEquals(40,hunger.hungerPoints(),.00001f);
+ }
+
+ @Test public void transfusionWithoutALoadedHeroDoesNotInventAHealthCost(){
+  com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfTransfusion wand=new com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfTransfusion();wand.identify();
+  Dungeon.hero=null;String text=wand.statsDesc();assertTrue(text.contains("heal an ally"));assertFalse(text.contains("costs _1"));assertFalse(text.contains("restore _1"));Dungeon.hero=hero;
  }
 
 }

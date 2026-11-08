@@ -74,7 +74,9 @@ public class AuthoredLanguageTest {
   // Plus a Might elixir description without a made-up health amount when no hero is loaded.
   // Plus the existing Shard identification interaction in the known Identify scroll description.
   // Plus three current-rule notices when the existing Healing modifier is zero.
-  assertEquals(9,files);assertEquals("Reviewed English message inventory",5316,values);
+  // Plus a typical Pickaxe ability description that does not reveal unidentified upgrades.
+  // Plus a Transfusion description without a fabricated HP cost when no hero is loaded.
+  assertEquals(9,files);assertEquals("Reviewed English message inventory",5318,values);
  }
  @Test public void localizedAlternativesDoNotDamageInnocentWordsOrOtherLanguages(){
   for(String innocent:new String[]{"Hell","slut","kesialan","Verdammte Charaktere","dictionary","classic","Scunthorpe","Prick","Fan of Blades"})assertEquals(innocent,AuthoredLanguage.select(innocent,false));

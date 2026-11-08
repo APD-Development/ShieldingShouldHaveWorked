@@ -53,7 +53,22 @@ public final class GlyphExplanation {
     public static String playerDescription(Armor armor,Hero hero){
         if(armor.glyph==null)return "";
         String fallback=armor.glyph.desc();
-        if(armor.glyph.curse()||!armor.glyph.getClass().getPackage().getName().equals(Flow.class.getPackage().getName()))return fallback;
+        if(armor.glyph.curse()){
+            if(!armor.cursedKnown)return "";
+            if(hero!=null&&(hero.buff(MagicImmune.class)!=null||!armor.hasGlyph(armor.glyph.getClass(),hero)))return fallback+" The curse is currently suppressed.";
+            if(armor.glyph.getClass()==com.shatteredpixel.shatteredpixeldungeon.items.armor.curses.Bulk.class&&armor.levelKnown){
+                if(armor.buffedLvl()<0)return "This curse currently has no effect.";
+                float ring=ArcanaInfoDisplay.knownArcanaPower(hero),aura=ObfuscationExplanation.aura(hero);
+                if(Float.isFinite(ring)){
+                    String text="Move at _"+playerNumber(100*(ring+aura)/3f)+"%_ of normal speed in doorways";
+                    if(ArcanaInfoDisplay.hasKnownArcana(hero)&&Math.abs(ring-1)>.00001f)text+=" (_"+playerNumber(100*(1+aura)/3f)+"%_ without Arcana)";
+                    return text+". Adds no protection.";
+                }
+            }
+            if(hero!=null&&armor.glyph.getClass()==com.shatteredpixel.shatteredpixeldungeon.items.armor.curses.Metabolism.class&&com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomHealingHooks.disabled())return "Can consume food when you are hurt, but your current rules prevent the healing.";
+            return fallback;
+        }
+        if(!armor.glyph.getClass().getPackage().getName().equals(Flow.class.getPackage().getName()))return fallback;
         if(armor.glyph instanceof Obfuscation)return ObfuscationExplanation.summary(armor,hero);
         if(hero!=null&&hero.buff(MagicImmune.class)!=null)return fallback+" Magic immunity currently disables this glyph.";
         if(hero!=null&&!armor.hasGlyph(armor.glyph.getClass(),hero))return fallback+" Your current effects replace this glyph.";
@@ -80,7 +95,7 @@ public final class GlyphExplanation {
         if(!Float.isFinite(base))return fallback;
         String chance=playerChance(base,power,hero);float strength=Math.max(1,base*power);
         if(armor.glyph instanceof Potential)return "Has a "+chance+" chance when you are hit to restore up to _"+playerNumber(strength)+" charge_ to each wand.";
-        if(armor.glyph instanceof Entanglement)return "Has a "+chance+" chance when you are hit to surround you with protective roots. They block up to _"+new com.shatteredpixel.shatteredpixeldungeon.plants.Earthroot.Armor().perHitLimit()+" damage per hit_ while you stay still, starting with _"+Math.round((5+2*level)*strength)+" stored protection_. Moving ends the protection.";
+        if(armor.glyph instanceof Entanglement)return "Has a "+chance+" chance when you are hit to surround you with protective roots. They block up to _"+new com.shatteredpixel.shatteredpixeldungeon.plants.Earthroot.Armor().perHitLimit()+" damage per hit_, absorbing _"+Math.round((5+2*level)*strength)+" damage_ or more before breaking. Moving ends the protection; repeated activations can refresh it.";
         if(armor.glyph instanceof Repulsion)return "Has a "+chance+" chance to push an adjacent attacker back up to _"+Math.round(2*strength)+" tiles_.";
         if(armor.glyph instanceof Affection)return "Has a "+chance+" chance to charm your attacker for _"+Math.round(Charm.DURATION*strength)+" turns_, stopping it from attacking you. Damage can shorten the charm.";
         return "Has a "+chance+" chance to make an attacker bleed. Upgrades strengthen the bleeding; extra power beyond a guaranteed activation strengthens it further.";

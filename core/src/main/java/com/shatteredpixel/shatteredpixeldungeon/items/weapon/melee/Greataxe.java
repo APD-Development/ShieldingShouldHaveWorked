@@ -118,7 +118,7 @@ public class Greataxe extends MeleeWeapon {
 	public String abilityInfo() {
 		int dmgBoost = levelKnown ? 15 + 2*buffedLvl() : 15;
 		if (levelKnown){
-			return Messages.get(this, "ability_desc", augment.damageFactor(min()+dmgBoost), augment.damageFactor(max()+dmgBoost));
+			return Messages.get(this, "ability_desc", (augment.damageFactor(min()) + augment.damageFactor(dmgBoost)), (augment.damageFactor(max()) + augment.damageFactor(dmgBoost)));
 		} else {
 			return Messages.get(this, "typical_ability_desc", min(0)+dmgBoost, max(0)+dmgBoost);
 		}
@@ -126,6 +126,6 @@ public class Greataxe extends MeleeWeapon {
 
 	public String upgradeAbilityStat(int level){
 		int dmgBoost = 15 + 2*level;
-		return augment.damageFactor(min(level)+dmgBoost) + "-" + augment.damageFactor(max(level)+dmgBoost);
+		return (augment.damageFactor(min(level)) + augment.damageFactor(dmgBoost)) + "-" + (augment.damageFactor(max(level)) + augment.damageFactor(dmgBoost));
 	}
 }

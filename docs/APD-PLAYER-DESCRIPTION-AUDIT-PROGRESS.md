@@ -1,3 +1,7 @@
+## Latest continuation — curses, class privacy and ability previews
+
+170 source units have full or partial reviews; only 46 are complete and 381 remain unresolved. The combined 3,013-test / 456-suite run passed with no failures/errors/skips. A subsequent targeted check covers the related fifteen-weapon preview correction. See the correction record for exact scope and evidence. No new APK or Android acceptance is claimed. Continue the remaining categories and variant review.
+
 ## Wands and potions continuation
 
 Full source check now 3,005 tests / 456 suites with zero failures/errors/skips. Inventory distinguishes 113 full/partial source reviews from 46 completed source reviews; 381 units remain unresolved. Completed source review is not Android acceptance. Known durations, challenge behavior, free Transfusion cost and area-effect descriptions corrected; actual source/unknown-state tests and pending Android windows are detailed in `APD-DESCRIPTION-CORRECTION-2026-11-08.md`. Continue the scroll and remaining-category review. No new APK has been built for this unfinished audit.

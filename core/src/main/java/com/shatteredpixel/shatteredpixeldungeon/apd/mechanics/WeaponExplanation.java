@@ -68,8 +68,8 @@ public final class WeaponExplanation {
 
     public static String summary(Weapon weapon, Hero hero) {
         Float delay = normalAttackDelay(weapon, hero);
-        String result = delay == null ? "" : "Attack time: _" + com.shatteredpixel.shatteredpixeldungeon.messages.Messages.decimalFormat("0.##",delay)
-                + " turns per attack_.";
+        String time = delay == null ? "" : com.shatteredpixel.shatteredpixeldungeon.messages.Messages.decimalFormat("0.##",delay);
+        String result = delay == null ? "" : "Attack time: _" + time + (time.equals("1") ? " turn" : " turns") + " per attack_.";
         String block=blockSummary(weapon,hero);if(!block.isEmpty())result+="\n\n"+block;
         return result;
     }
