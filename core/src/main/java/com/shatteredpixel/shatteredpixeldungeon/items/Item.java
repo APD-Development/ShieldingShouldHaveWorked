@@ -123,7 +123,7 @@ public class Item implements Bundlable {
 	public static final Comparator<Item> itemComparator = new Comparator<Item>() {
 		@Override
 		public int compare( Item lhs, Item rhs ) {
-			return Generator.Category.order( lhs ) - Generator.Category.order( rhs );
+			return com.shatteredpixel.shatteredpixeldungeon.apd.qol.InventoryOrder.compare(lhs, rhs);
 		}
 	};
 	

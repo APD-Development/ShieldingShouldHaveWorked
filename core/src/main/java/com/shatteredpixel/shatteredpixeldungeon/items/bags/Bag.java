@@ -59,6 +59,14 @@ public class Bag extends Item implements Iterable<Item> {
 
 	public ArrayList<Item> items = new ArrayList<>();
 
+    /** Fresh stable display snapshot: upgrades, identification and stack changes need no manual sort. */
+    public ArrayList<Item> itemsForDisplay(){
+        ArrayList<Item> display=new ArrayList<>(items);
+        display.sort((a,b)->com.shatteredpixel.shatteredpixeldungeon.apd.qol.InventoryOrder.compareInBag(this,a,b));
+        return display;
+    }
+
+
 	public int capacity(){
 		return 20; // default container size
 	}

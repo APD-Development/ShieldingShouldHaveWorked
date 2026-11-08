@@ -1,3 +1,7 @@
+## Automatic inventory ordering implemented — APK/native verification pending
+
+Owner approved automatic category/tier/upgrade order, consumable bag stack counts, holster throwables before wands, unidentified last within respective categories without using hidden properties. Shared InventoryOrder and fresh Bag display snapshots wired through bag window, inventory pane and quick bag; equipped/secondary slots preserved. Eleven regressions, full local2983/454 pass zero failures/errors/skips. Native slot-order/post-identification proof added; one378pair preparation pending, not delivered. APD377 remains currently delivered and lacks sorting. Details: APD-AUTOMATIC-INVENTORY-ORDER-2026-11-08.md. Retain whole-description audit as unfinished.
+
 ## APD377 actually delivered — reproduced turn-queue freeze correction
 
 Exact producing source/tag52e00c273064dd43ade94dde88b851369aaa0ddc / apd-alpha-preview-377. Actor.remove releases only the exact waiting actor when it is removed, preventing a cancelled attack/death animation from leaving the queue stuck. Reproduced stale-current failure before fix; live attacks, original next-turn timestamp, late callbacks and re-registration controls pass. Exact owner's APD376 phone freeze cause remains unconfirmed without affected diagnostics/save. No save or balance changes.

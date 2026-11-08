@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -168,7 +171,7 @@ public class WndQuickBag extends Window {
 			} else if (!lhs.isEquipped(Dungeon.hero) && rhs.isEquipped(Dungeon.hero)){
 				return 1;
 			} else {
-				return Generator.Category.order(lhs) - Generator.Category.order(rhs);
+				return com.shatteredpixel.shatteredpixeldungeon.apd.qol.InventoryOrder.compareInBag(bag instanceof Bag ? (Bag)bag : null,lhs,rhs);
 			}
 		}
 	};

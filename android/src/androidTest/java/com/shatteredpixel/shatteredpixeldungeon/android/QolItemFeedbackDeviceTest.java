@@ -142,6 +142,39 @@ public class QolItemFeedbackDeviceTest {
         TopScoresDeviceTest.screenshot(screenshot);touch(at[0]);
         TopScoresDeviceTest.render(()->{assertEquals("Pointer closes advanced explanation","Show calculations",expander.get().text());assertEquals(time[0],Dungeon.hero.cooldown(),0);assertEquals(hp[0],Dungeon.hero.HP);window.hide();});
     }
+    private static void inventoryOrderShowsAutomatically()throws Exception{
+        final java.util.ArrayList<Item> original=new java.util.ArrayList<>();
+        final java.util.ArrayList<com.shatteredpixel.shatteredpixeldungeon.items.bags.Bag> bags=new java.util.ArrayList<>();
+        final java.util.ArrayList<java.util.List<Item>> expected=new java.util.ArrayList<>();
+        TopScoresDeviceTest.render(()->{
+            com.shatteredpixel.shatteredpixeldungeon.items.bags.Bag backpack=Dungeon.hero.belongings.backpack;original.addAll(backpack.items);backpack.items.clear();
+            Item low=new com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WornShortsword().level(8).identify();
+            Item middle=new com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Shortsword().identify();
+            Item plus=new com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Spear().level(3).identify();Item high=new Sword().identify();Item unknown=new com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WornShortsword().level(-2);
+            backpack.items.addAll(java.util.Arrays.asList(high,unknown,plus,middle,low));bags.add(backpack);expected.add(java.util.Arrays.asList(low,middle,plus,high,unknown));
+            com.shatteredpixel.shatteredpixeldungeon.items.bags.MagicalHolster holster=new com.shatteredpixel.shatteredpixeldungeon.items.bags.MagicalHolster();
+            Item knife=new ThrowingKnife().level(8).identify(),club=new com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingClub().identify(),clubPlus=new com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingClub().level(3).identify();
+            Item wand=new com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfFrost().identify(),wandPlus=new com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfMagicMissile().level(4).identify(),unknownWand=new com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfFrost().level(-3);
+            holster.items.addAll(java.util.Arrays.asList(unknownWand,wandPlus,clubPlus,wand,club,knife));bags.add(holster);expected.add(java.util.Arrays.asList(knife,club,clubPlus,wand,wandPlus,unknownWand));
+            com.shatteredpixel.shatteredpixeldungeon.items.bags.PotionBandolier bandolier=new com.shatteredpixel.shatteredpixeldungeon.items.bags.PotionBandolier();
+            Item few=new com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing().identify().quantity(1),many=new com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfShielding().identify().quantity(8);
+            bandolier.items.addAll(java.util.Arrays.asList(many,few));bags.add(bandolier);expected.add(java.util.Arrays.asList(few,many));
+        });
+        try{
+            for(int i=0;i<bags.size()+1;i++){
+                final int index=i<bags.size()?i:0;
+                if(i==bags.size())TopScoresDeviceTest.render(()->{Item moved=expected.get(0).get(4);moved.identify();java.util.ArrayList<Item> newOrder=new java.util.ArrayList<>(expected.get(0));newOrder.remove(moved);newOrder.add(0,moved);expected.set(0,newOrder);});AtomicReference<WndBag> window=new AtomicReference<>();
+                TopScoresDeviceTest.render(()->{window.set(new WndBag(bags.get(index)));GameScene.show(window.get());});Thread.sleep(200);
+                TopScoresDeviceTest.render(()->{try{
+                    java.lang.reflect.Field item=ItemSlot.class.getDeclaredField("item");item.setAccessible(true);
+                    java.util.List<InventorySlot> slots=TopScoresDeviceTest.find(window.get(),InventorySlot.class);slots.sort(java.util.Comparator.comparingDouble((InventorySlot slot)->slot.top()).thenComparingDouble(slot->slot.left()));
+                    java.util.ArrayList<Item> actual=new java.util.ArrayList<>();for(InventorySlot slot:slots){Item value=(Item)item.get(slot);if(expected.get(index).contains(value))actual.add(value);}
+                    assertEquals("Actual inventory slots sort automatically without a button",expected.get(index),actual);
+                }catch(Exception e){throw new AssertionError(e);}});
+                TopScoresDeviceTest.screenshot("qol-automatic-inventory-"+i+".png");TopScoresDeviceTest.render(()->window.get().hide());
+            }
+        }finally{TopScoresDeviceTest.render(()->{Dungeon.hero.belongings.backpack.items.clear();Dungeon.hero.belongings.backpack.items.addAll(original);});}
+    }
     private static void calculationWindowsRenderAndRespond()throws Exception{
         calculationWindow(()->{com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CloakOfShadows cloak=new com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CloakOfShadows();cloak.levelKnown=cloak.cursedKnown=true;return new WndInfoItem(cloak);},"4 scheduled updates","qol-cloak-explanation-expanded.png");
         calculationWindow(()->{com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose rose=new com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose();rose.levelKnown=rose.cursedKnown=true;return new WndInfoItem(rose);},"remaining health percentage instead of this meter","qol-rose-explanation-expanded.png");
@@ -308,6 +341,7 @@ public class QolItemFeedbackDeviceTest {
             showItem(scale,"6-32","qol-scale-armor-concise.png");
             TopScoresDeviceTest.render(()->{Dungeon.hero.STR=priorStrength[0];Dungeon.hero.belongings.armor=priorArmor[0];});
             calculationWindowsRenderAndRespond();
+            inventoryOrderShowsAutomatically();
             prepareSearchableFloor();
             final int[] center={0};
             TopScoresDeviceTest.render(()->{
