@@ -680,7 +680,8 @@ abstract public class MissileWeapon extends Weapon {
 	public String info() {
         Integer knownStrength=com.shatteredpixel.shatteredpixeldungeon.apd.mechanics.ArmorExplanation.knownStrength(Dungeon.hero);
 
-		String info = super.info() + accuracyDescription();
+		String accuracy=accuracyDescription();
+		String info = super.info() + accuracy;
 
         Integer knownAim=com.shatteredpixel.shatteredpixeldungeon.apd.qol.RingItemEffects.knownBonus(Dungeon.hero,RingOfSharpshooting.class,true);
         int displayedLevel=levelKnown?buffedLvl()+(knownAim==null?0:knownAim):0;
@@ -714,20 +715,14 @@ abstract public class MissileWeapon extends Weapon {
 			info += "\n\n" + Messages.get(Weapon.class, "not_cursed");
 		}
 
-		info += "\n\n";
-		String statsInfo = statsInfo();
-		if (!statsInfo.equals("")) info += statsInfo + " ";
-		info += Messages.get(MissileWeapon.class, "distance");
-
-		switch (augment) {
-			case SPEED:
-				info += " " + Messages.get(Weapon.class, "faster");
-				break;
-			case DAMAGE:
-				info += " " + Messages.get(Weapon.class, "stronger");
-				break;
-			case NONE:
-		}
+		String extra=statsInfo();
+        if(accuracy.isEmpty())extra+=(extra.isEmpty()?"":" ")+Messages.get(MissileWeapon.class,"distance");
+        switch(augment){
+            case SPEED:extra+=(extra.isEmpty()?"":" ")+Messages.get(Weapon.class,"faster");break;
+            case DAMAGE:extra+=(extra.isEmpty()?"":" ")+Messages.get(Weapon.class,"stronger");break;
+            case NONE:break;
+        }
+        if(!extra.isEmpty())info+="\n\n"+extra;
 
         if(Dungeon.hero!=null && knownAim==null){
             info+="\n\n"+Messages.get(MissileWeapon.class,"durability_unknown");

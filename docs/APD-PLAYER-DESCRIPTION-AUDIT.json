@@ -3760,7 +3760,7 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/missiles/MissileWeapon.java",
-      "sha256": "ec8cf84b8190ed2cf18b6ade9144146278e60502c13af53eac4f971bc0b7473c",
+      "sha256": "045a81d68ce99121a1eca62c23f196a3ce2f227b82423eacb0d420218a54172d",
       "category": "weapon",
       "status": "PARTIAL_REVIEW",
       "description_methods": [
@@ -3768,7 +3768,7 @@
         "info"
       ],
       "wording_corrected": true,
-      "review_notes": "Normal inherited/dynamic wording reviewed against current source. Changes use existing mechanics and known live values. Full source/variant and optional-panel review not complete. Current ordinary info paths also checked: knowledge-safe strength, ranged damage and wear estimates; real damage/accuracy/wear formulas untouched. Full inherited/class/secondary review remains partial."
+      "review_notes": "Normal inherited/dynamic wording reviewed against current source. Changes use existing mechanics and known live values. Full source/variant and optional-panel review not complete. Current ordinary info paths also checked: knowledge-safe strength, ranged damage and wear estimates; real damage/accuracy/wear formulas untouched. Full inherited/class/secondary review remains partial. Duplicate generic distance instruction omitted when live range/adjacent accuracy is already displayed; retained for unknown stats. Avoid empty extra paragraphs. Source-only follow-up after383, not yet Android-verified."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/missiles/Shuriken.java",
