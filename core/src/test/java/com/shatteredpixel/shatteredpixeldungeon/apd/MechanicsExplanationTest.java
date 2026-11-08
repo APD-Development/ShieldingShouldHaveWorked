@@ -1089,7 +1089,7 @@ public class MechanicsExplanationTest {
  }
  @Test public void artifactRatesExplainDifferentEventsAndPausedFullMeters(){
   com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HornOfPlenty horn=new com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HornOfPlenty();horn.levelKnown=horn.cursedKnown=true;assertTrue(ArtifactEconomyExplanation.summary(horn,hero).contains("full experience level"));
-  com.shatteredpixel.shatteredpixeldungeon.items.artifacts.SandalsOfNature sandals=new com.shatteredpixel.shatteredpixeldungeon.items.artifacts.SandalsOfNature();sandals.levelKnown=sandals.cursedKnown=true;assertTrue(ArtifactEconomyExplanation.summary(sandals,hero).contains("Trampling grass"));
+  com.shatteredpixel.shatteredpixeldungeon.items.artifacts.SandalsOfNature sandals=new com.shatteredpixel.shatteredpixeldungeon.items.artifacts.SandalsOfNature();sandals.levelKnown=sandals.cursedKnown=true;assertTrue(ArtifactEconomyExplanation.summary(sandals,hero).contains("Trampling tall grass"));
   com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CloakOfShadows cloak=new com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CloakOfShadows();cloak.levelKnown=cloak.cursedKnown=true;assertTrue(ArtifactEconomyExplanation.summary(cloak,hero).contains("Fully charged"));
  }
  @Test public void cursedArmbandDescriptionMatchesActualGoldChanceAndZeroGoldGuard()throws Exception{

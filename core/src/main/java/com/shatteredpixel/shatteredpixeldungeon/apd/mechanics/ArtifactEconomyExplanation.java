@@ -69,7 +69,12 @@ public final class ArtifactEconomyExplanation {
     }
     public static String summary(Artifact item,Hero hero){
         if(!item.isIdentified())return "";
-        if(item.cursed)return cursed(item);
+        if(item.cursed){
+            // These individually reviewed artifacts already explain their curse in their worn description.
+            if(item instanceof TimekeepersHourglass||item instanceof UnstableSpellbook||item instanceof MasterThievesArmband||item instanceof SandalsOfNature)
+                return item.isEquipped(hero)?"":com.shatteredpixel.shatteredpixeldungeon.messages.Messages.get(item,"desc_cursed");
+            return cursed(item);
+        }
         float base=baseGain(item),known=knownGain(item,hero);if(!Float.isFinite(base)||base<=0)return "";
         if(hero!=null&&hero.buff(MagicImmune.class)!=null&&!(item instanceof LloydsBeacon))return "Magic immunity prevents recharging.";
         if(item instanceof EtherealChains&&item.currentCharges()>=5+2*item.level())return "Natural recharge stops at _"+(5+2*item.level())+" charges_. Gaining experience can add more.";
@@ -80,7 +85,7 @@ public final class ArtifactEconomyExplanation {
         String value=com.shatteredpixel.shatteredpixeldungeon.messages.Messages.decimalFormat("0.##",gain);
         if(item instanceof AlchemistsToolkit)return "Gaining a full experience level provides _"+value+" energy_"+qualifier+".";
         if(item instanceof HornOfPlenty||item instanceof MasterThievesArmband)return "Gaining a full experience level provides _"+value+" charges_"+qualifier+".";
-        if(item instanceof SandalsOfNature)return "Trampling grass restores _"+value+"% charge_"+qualifier+".";
+        if(item instanceof SandalsOfNature)return "Trampling tall grass restores _"+value+"% charge_"+qualifier+".";
         String time=com.shatteredpixel.shatteredpixeldungeon.messages.Messages.decimalFormat("0.##",1f/gain);
         String recharge="At the current charge, restores _"+(item instanceof TalismanOfForesight||item instanceof DriedRose?"1% charge":"1 charge")+"_ in about _"+time+" turns_"+qualifier+" while recharging is active.";
         if(item instanceof EtherealChains)recharge+=" Natural recharge stops at _"+(5+2*item.level())+" charges_; experience can add more.";

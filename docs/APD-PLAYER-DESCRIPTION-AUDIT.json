@@ -4,8 +4,8 @@
   "counting": "Source units, not distinct item types. reviewed_units includes partial reviews; completed_units excludes partial/pending dependency. corrected_units counts source units with corrections, including incomplete reviews. Inventory/export/tests alone are not an individual review.",
   "source_units": 427,
   "message_entries": 2411,
-  "reviewed_units": 272,
-  "corrected_units": 253,
+  "reviewed_units": 276,
+  "corrected_units": 257,
   "unresolved_units": 286,
   "category_counts": {
     "apd": 1,
@@ -65,7 +65,7 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/ArtifactEconomyExplanation.java",
-      "sha256": "e9dbcdac537df79142220f75da26123e21ec9219505b21a49585d2d91e3caa61",
+      "sha256": "1c930c6a1940fe9ec741a747169e55e6b1573bb3614017cc9c5470f7cb2ee086",
       "category": "mechanics",
       "status": "PARTIAL_REVIEW",
       "description_methods": [
@@ -77,7 +77,7 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/ArtifactExplanation.java",
-      "sha256": "ec58a8d0eab186049945d9062234d26be979e51251c68da5a2a3ba99441e9913",
+      "sha256": "785cd9ae2e12656d77f77792494da830a430b290a822d9cd552f32ee5b4b86c4",
       "category": "mechanics",
       "status": "PARTIAL_REVIEW",
       "description_methods": [
@@ -987,19 +987,23 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/artifacts/MasterThievesArmband.java",
       "sha256": "67c4780c0ba6dd6668601e27ad0a96896e4b4bf9ee6bed1cde494292d947156f",
       "category": "artifacts",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
+      "status": "PARTIAL_REVIEW",
       "description_methods": [
         "desc"
-      ]
+      ],
+      "wording_corrected": true,
+      "review_notes": "Ordinary descriptions and important cursed states checked individually against real activation, charging, scroll talent suppression/exception, theft and grass/seed code. Clear normal uses and drawbacks replace vague flavor-only guidance; redundant technical cursed summary suppressed only for these four reviewed types when their own worn description already states it. Existing mechanic-specific panels retained pending review. Full variant/corner-case review still pending; native382 worn normal/cursed windows included, not yet run."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/artifacts/SandalsOfNature.java",
       "sha256": "60136b1b4b7823a8723729d74d49ff1a79096677c53399dead036a2a5f44321c",
       "category": "artifacts",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
+      "status": "PARTIAL_REVIEW",
       "description_methods": [
         "desc"
-      ]
+      ],
+      "wording_corrected": true,
+      "review_notes": "Ordinary descriptions and important cursed states checked individually against real activation, charging, scroll talent suppression/exception, theft and grass/seed code. Clear normal uses and drawbacks replace vague flavor-only guidance; redundant technical cursed summary suppressed only for these four reviewed types when their own worn description already states it. Existing mechanic-specific panels retained pending review. Full variant/corner-case review still pending; native382 worn normal/cursed windows included, not yet run."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/artifacts/SkeletonKey.java",
@@ -1023,20 +1027,24 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/artifacts/TimekeepersHourglass.java",
       "sha256": "2dfcbcb3b8bdc3b0e19dbeb0269c902e91ffdfaa8cc4e3dd22b544ae71885390",
       "category": "artifacts",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
+      "status": "PARTIAL_REVIEW",
       "description_methods": [
         "desc",
         "desc"
-      ]
+      ],
+      "wording_corrected": true,
+      "review_notes": "Ordinary descriptions and important cursed states checked individually against real activation, charging, scroll talent suppression/exception, theft and grass/seed code. Clear normal uses and drawbacks replace vague flavor-only guidance; redundant technical cursed summary suppressed only for these four reviewed types when their own worn description already states it. Existing mechanic-specific panels retained pending review. Full variant/corner-case review still pending; native382 worn normal/cursed windows included, not yet run."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/artifacts/UnstableSpellbook.java",
       "sha256": "d76ee2ed3dee3f1a1ddd6fd02cce2cc4d892df0f9fd8d540d5e728fd6324f20b",
       "category": "artifacts",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
+      "status": "PARTIAL_REVIEW",
       "description_methods": [
         "desc"
-      ]
+      ],
+      "wording_corrected": true,
+      "review_notes": "Ordinary descriptions and important cursed states checked individually against real activation, charging, scroll talent suppression/exception, theft and grass/seed code. Clear normal uses and drawbacks replace vague flavor-only guidance; redundant technical cursed summary suppressed only for these four reviewed types when their own worn description already states it. Existing mechanic-specific panels retained pending review. Full variant/corner-case review still pending; native382 worn normal/cursed windows included, not yet run."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/bags/Bag.java",

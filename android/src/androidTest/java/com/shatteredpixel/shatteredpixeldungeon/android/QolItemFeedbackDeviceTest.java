@@ -273,6 +273,18 @@ public class QolItemFeedbackDeviceTest {
             TopScoresDeviceTest.render(()->{Dungeon.challenges=previous;Dungeon.hero.belongings.backpack.items.remove(haste);Dungeon.hero.belongings.backpack.items.remove(shielding);Dungeon.hero.belongings.backpack.items.remove(noisemaker);Dungeon.hero.belongings.backpack.items.remove(regrowthBomb);});
         }
     }
+    private static void retainedArtifactDescriptionsRender()throws Exception{
+        com.shatteredpixel.shatteredpixeldungeon.items.KindofMisc previous=Dungeon.hero.belongings.misc;
+        Item[] items={new com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass(),new com.shatteredpixel.shatteredpixeldungeon.items.artifacts.UnstableSpellbook(),new com.shatteredpixel.shatteredpixeldungeon.items.artifacts.MasterThievesArmband(),new com.shatteredpixel.shatteredpixeldungeon.items.artifacts.SandalsOfNature()};
+        String[] expected={"makes you invulnerable","random scroll effect","one chance at loot","Trampling tall grass"};
+        String[] curseExpected={"10% chance","except Remove Curse and Anti-Magic","20% chance","stops normal seed"};
+        try{for(int i=0;i<items.length;i++)for(boolean cursed:new boolean[]{false,true})for(boolean use:new boolean[]{false,true}){
+            Item item=items[i];String required=cursed?curseExpected[i]:expected[i];AtomicReference<WndInfoItem> shown=new AtomicReference<>();
+            TopScoresDeviceTest.render(()->{Dungeon.hero.belongings.misc=(com.shatteredpixel.shatteredpixeldungeon.items.KindofMisc)item;item.levelKnown=item.cursedKnown=true;item.cursed=cursed;assertTrue(item.info(),item.info().contains(required));assertFalse(item.info().contains("base action time"));WndInfoItem window=use?new WndUseItem(null,item):new WndInfoItem(item);GameScene.show(window);assertDescriptionViewport(window);shown.set(window);});Thread.sleep(300);
+            if(use)TopScoresDeviceTest.screenshot("qol-retained-artifact-"+i+(cursed?"-cursed":"-normal")+"-description.png");
+            TopScoresDeviceTest.render(()->shown.get().hide());
+        }}finally{TopScoresDeviceTest.render(()->Dungeon.hero.belongings.misc=previous);}
+    }
     private static void additionalDuelistDescriptionsRender()throws Exception{
         HeroClass previous=Dungeon.hero.heroClass;
         try{
@@ -491,6 +503,7 @@ public class QolItemFeedbackDeviceTest {
             unknownRingMissileDescriptionsRender();
             missileEffectDescriptionsRender();
             additionalDuelistDescriptionsRender();
+            retainedArtifactDescriptionsRender();
             inventoryOrderShowsAutomatically();
             prepareSearchableFloor();
             final int[] center={0};

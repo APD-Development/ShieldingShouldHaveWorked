@@ -29,7 +29,7 @@ public final class ArtifactExplanation {
     private static String n(float value){return ObfuscationExplanation.number(value);}
     public static String summary(Artifact artifact){
         if(!artifact.isIdentified())return "";
-        if(artifact.cursed)return "\n\n"+ArtifactEconomyExplanation.summary(artifact,Dungeon.hero);
+        if(artifact.cursed){String curse=ArtifactEconomyExplanation.summary(artifact,Dungeon.hero);return curse.isEmpty()?"":"\n\n"+curse;}
         String effect="";
         if(artifact instanceof CapeOfThorns)effect="When active, absorbs a random amount of damage from each hit. If the attacker is adjacent, it takes the absorbed damage instead.";
         else if(artifact instanceof ChaliceOfBlood)effect="When worn and active, this Chalice shortens natural healing's delay. Its current base delay is "+n(10f-(1.33f+artifact.level()*.667f))+" turns per HP before recharge, regeneration and healing modifiers. It does not heal through starvation or bypass rules that disable regeneration. Pricking upgrades it at the cost of potentially lethal damage.";
