@@ -32,10 +32,25 @@ jobs:
       - name: Build only corrected instrumentation, never another game APK
         run: |
           "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "platforms;android-36"
-          ./gradlew :android:assembleDebugAndroidTest -PapdTestBuild -PapdBuild=C377
+          ./gradlew :android:assembleDebugAndroidTest -x :android:packageDebug -x :android:assembleDebug -PapdTestBuild -PapdBuild=C377
           test ! -e android/build/outputs/apk/debug/android-debug.apk
           mkdir -p evidence
           cp android/build/outputs/apk/androidTest/debug/android-debug-androidTest.apk evidence/instrumentation.apk
+      - name: Require the original successful game build before using its APKs
+        env: {GH_TOKEN: '${{ github.token }}'}
+        run: |
+          python3 - <<'PY'
+          import subprocess,json,time
+          base='repos/APD-Development/ShieldingShouldHaveWorked/actions/runs/42491383670'
+          for attempt in range(40):
+              jobs=json.loads(subprocess.check_output(['gh','api',base+'/jobs']))['jobs']
+              original=next(j for j in jobs if j['name']=='build')
+              if original['status']=='completed':
+                  assert original['conclusion']=='success',original['conclusion']
+                  break
+              time.sleep(15)
+          else: raise RuntimeError('Original build has not completed; no game rebuild permitted')
+          PY
       - uses: actions/upload-artifact@v4
         with: {name: apd377-corrected-instrumentation, path: evidence/instrumentation.apk, retention-days: 14}
   native:
