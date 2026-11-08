@@ -1,6 +1,6 @@
 ## Automatic inventory ordering implemented — APK/native verification pending
 
-Owner approved automatic category/tier/upgrade order, consumable bag stack counts, holster throwables before wands, unidentified last within respective categories without using hidden properties. Shared InventoryOrder and fresh Bag display snapshots wired through bag window, inventory pane and quick bag; equipped/secondary slots preserved. Eleven regressions, full local2983/454 pass zero failures/errors/skips. Native slot-order/post-identification proof added; one378pair preparation pending, not delivered. APD377 remains currently delivered and lacks sorting. Details: APD-AUTOMATIC-INVENTORY-ORDER-2026-11-08.md. Retain whole-description audit as unfinished.
+Owner approved automatic category/tier/upgrade order, consumable bag stack counts, holster throwables before wands, unidentified last within respective categories without using hidden properties. Shared InventoryOrder and fresh Bag display snapshots wired through bag window, inventory pane and quick bag; equipped/secondary slots preserved. Eleven regressions, full local2986/455 pass zero failures/errors/skips. Native slot-order/post-identification proof added; one378pair preparation pending, not delivered. APD377 remains currently delivered and lacks sorting. Details: APD-AUTOMATIC-INVENTORY-ORDER-2026-11-08.md. Retain whole-description audit as unfinished.
 
 ## Flashbang attributable electricity damage corrected — source gate passed, APK pending
 

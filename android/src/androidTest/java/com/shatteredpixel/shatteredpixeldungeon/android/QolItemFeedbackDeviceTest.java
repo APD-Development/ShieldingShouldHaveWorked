@@ -155,10 +155,10 @@ public class QolItemFeedbackDeviceTest {
             com.shatteredpixel.shatteredpixeldungeon.items.bags.MagicalHolster holster=new com.shatteredpixel.shatteredpixeldungeon.items.bags.MagicalHolster();
             Item knife=new ThrowingKnife().level(8).identify(),club=new com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingClub().identify(),clubPlus=new com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingClub().level(3).identify();
             Item wand=new com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfFrost().identify(),wandPlus=new com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfMagicMissile().level(4).identify(),unknownWand=new com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfFrost().level(-3);
-            holster.items.addAll(java.util.Arrays.asList(unknownWand,wandPlus,clubPlus,wand,club,knife));bags.add(holster);expected.add(java.util.Arrays.asList(knife,club,clubPlus,wand,wandPlus,unknownWand));
+            holster.owner=Dungeon.hero;backpack.items.add(holster);holster.items.addAll(java.util.Arrays.asList(unknownWand,wandPlus,clubPlus,wand,club,knife));bags.add(holster);expected.add(java.util.Arrays.asList(knife,club,clubPlus,wand,wandPlus,unknownWand));
             com.shatteredpixel.shatteredpixeldungeon.items.bags.PotionBandolier bandolier=new com.shatteredpixel.shatteredpixeldungeon.items.bags.PotionBandolier();
             Item few=new com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing().identify().quantity(1),many=new com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfShielding().identify().quantity(8);
-            bandolier.items.addAll(java.util.Arrays.asList(many,few));bags.add(bandolier);expected.add(java.util.Arrays.asList(few,many));
+            bandolier.owner=Dungeon.hero;backpack.items.add(bandolier);bandolier.items.addAll(java.util.Arrays.asList(many,few));bags.add(bandolier);expected.add(java.util.Arrays.asList(few,many));
         });
         try{
             for(int i=0;i<bags.size()+1;i++){
