@@ -35,6 +35,13 @@ for name,args in [('source',['dir',str(directory)]),('history',['git','.','--log
     line=path.read_text().splitlines()[a['StartLine']-1];values=__import__('re').findall(r'"([0-9a-f]{64})"',line)
     assert values and all(v in hashes or v in {v['sha256'] for v in manifest['variants'].values()} for v in values)
     item['disposition']='Verified file/APK SHA256 integrity fields, not credentials'
+   elif (rel=='docs/APD-PLAYER-DESCRIPTION-AUDIT-PROGRESS.md'
+         and a['RuleID']=='generic-api-key' and a['StartLine']==11
+         and hashlib.sha256(path.read_text().splitlines()[10].encode()).hexdigest()==
+         'a6b5d80342669da493ebf3a2d54c199a1d1d8b4763e297a9859a660519bcf343'):
+    # Reviewed exact match: "keys reviewed, inventory5298. "; captured secret "inventory5298.".
+    # Hash binds the entire reviewed prose line; changed text requires a fresh review.
+    item['disposition']='Exact reviewed audit prose false positive: keys reviewed, inventory5298.; no API credential. Entire line SHA256 pinned.'
    elif rel in ('.github/workflows/codex-android16-acceptance.yml','core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/WndKeyBindings.java','tools/apd_publish_gathering331.py','docs/HANDOFF.md'):
     item['disposition']='Previously inspected literal sound filename, integer keyboard fields, or pinned commit/checksum assertions; no new credentials introduced by this build'
    else:
