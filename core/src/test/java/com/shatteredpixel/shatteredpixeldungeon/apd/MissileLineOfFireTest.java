@@ -60,6 +60,60 @@ public class MissileLineOfFireTest {
         Level.set(at(4,4),Terrain.WALL);assertFalse(hero.fieldOfView[enemy.pos]);
         assertEquals(new Ballistica(hero.pos,enemy.pos,Ballistica.PROJECTILE).collisionPos.intValue(),new ThrowingKnife().throwPos(hero,enemy.pos));
     }
+    private void largeArena(){
+        arena.setSize(64,64);java.util.Arrays.fill(arena.map,Terrain.EMPTY);
+        for(int y=0;y<64;y++)for(int x=0;x<64;x++)if(x==0||y==0||x==63||y==63)arena.map[at(x,y)]=Terrain.WALL;
+        arena.buildFlagMaps();hero.pos=at(32,32);hero.fieldOfView=new boolean[arena.length()];
+    }
+    @Test public void aimingDirectlyFindsTheAlreadyLegalBeyondTargetRayInEveryOctant(){
+        int[][] directions={{1,0,0,1},{1,0,0,-1},{-1,0,0,1},{-1,0,0,-1},{0,1,1,0},{0,1,-1,0},{0,-1,1,0},{0,-1,-1,0}};
+        for(int[] d:directions){
+            largeArena();enemy.pos=at(32+d[0]*22+d[1]*9,32+d[2]*22+d[3]*9);
+            int wall=at(32+d[0]*21+d[1]*9,32+d[2]*21+d[3]*9),beyond=at(32+d[0]*23+d[1]*9,32+d[2]*23+d[3]*9);
+            Level.set(wall,Terrain.WALL);hero.fieldOfView[enemy.pos]=true;
+            assertNotEquals(enemy.pos,new Ballistica(hero.pos,enemy.pos,Ballistica.PROJECTILE).collisionPos.intValue());
+            assertNotEquals(hero.pos,new Ballistica(enemy.pos,hero.pos,Ballistica.PROJECTILE).collisionPos.intValue());
+            assertEquals("aiming beyond already hits legally",enemy.pos,new Ballistica(hero.pos,beyond,Ballistica.PROJECTILE).collisionPos.intValue());
+            ThrowingKnife knife=new ThrowingKnife();assertEquals("direct targeting must use the existing legal ray",enemy.pos,knife.throwPos(hero,enemy.pos));assertEquals(enemy.pos,knife.targetingPos(hero,enemy.pos));assertEquals(enemy.pos,com.shatteredpixel.shatteredpixeldungeon.ui.QuickSlotButton.autoAim(enemy,knife));
+        }
+    }
+    @Test public void alternativeThrowAimingDoesNotChangeOrdinaryItemsWandsOrBowArrows(){
+        largeArena();hero.pos=at(3,3);enemy.pos=at(25,12);Level.set(at(24,12),Terrain.WALL);hero.fieldOfView[enemy.pos]=true;
+        int original=new Ballistica(hero.pos,enemy.pos,Ballistica.PROJECTILE).collisionPos;
+        assertEquals(original,new com.shatteredpixel.shatteredpixeldungeon.items.Item().throwPos(hero,enemy.pos));
+        assertEquals(original,new com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfMagicMissile().throwPos(hero,enemy.pos));
+        assertEquals(original,new com.shatteredpixel.shatteredpixeldungeon.items.weapon.SpiritBow().knockArrow().throwPos(hero,enemy.pos));
+        assertEquals(enemy.pos,new ThrowingKnife().throwPos(hero,at(26,12)));
+        hero.fieldOfView[enemy.pos]=false;assertEquals(original,new ThrowingKnife().throwPos(hero,enemy.pos));
+    }
+    @Test public void candidateFilterMatchesEveryLegalAimAcrossDifferentAnglesAndObstacles(){
+        java.util.Random layouts=new java.util.Random(8112026);
+        for(int sample=0;sample<64;sample++){
+            arena.setSize(16,16);java.util.Arrays.fill(arena.map,Terrain.EMPTY);hero.pos=at(7,7);
+            for(int y=0;y<16;y++)for(int x=0;x<16;x++)if(x==0||y==0||x==15||y==15||layouts.nextInt(5)==0)arena.map[at(x,y)]=Terrain.WALL;
+            do{enemy.pos=at(1+layouts.nextInt(14),1+layouts.nextInt(14));}while(enemy.pos==hero.pos);
+            arena.map[hero.pos]=arena.map[enemy.pos]=Terrain.EMPTY;arena.buildFlagMaps();hero.fieldOfView=new boolean[arena.length()];hero.fieldOfView[enemy.pos]=true;
+            boolean bruteForce=false;
+            for(int aim=0;aim<arena.length();aim++)if(aim!=hero.pos&&aim!=enemy.pos&&new Ballistica(hero.pos,aim,Ballistica.PROJECTILE).collisionPos==enemy.pos){bruteForce=true;break;}
+            assertEquals("layout "+sample,bruteForce,com.shatteredpixel.shatteredpixeldungeon.apd.qol.ThrowableTargeting.hasExistingTrajectory(hero.pos,enemy.pos));
+            boolean direct=new Ballistica(hero.pos,enemy.pos,Ballistica.PROJECTILE).collisionPos==enemy.pos;
+            boolean reverse=new Ballistica(enemy.pos,hero.pos,Ballistica.PROJECTILE).collisionPos==hero.pos;
+            assertEquals(direct||reverse||bruteForce,new ThrowingKnife().throwPos(hero,enemy.pos)==enemy.pos);
+        }
+    }
+    @Test public void longDistanceFallbackStillStopsForSolidWallsAndInterveningCreatures(){
+        largeArena();enemy.pos=at(54,41);hero.fieldOfView[enemy.pos]=true;Level.set(at(53,41),Terrain.WALL);
+        blocker=new Rat();blocker.pos=at(33,32);Actor.add(blocker);
+        assertNotEquals(enemy.pos,new ThrowingKnife().throwPos(hero,enemy.pos));Actor.remove(blocker);blocker=null;
+        for(int y=1;y<63;y++)Level.set(at(40,y),Terrain.WALL);
+        assertNotEquals(enemy.pos,new ThrowingKnife().throwPos(hero,enemy.pos));
+    }
+    @Test public void searchingForAnExistingAimDoesNotSpendTurnsOrRandomness(){
+        largeArena();enemy.pos=at(54,41);Level.set(at(53,41),Terrain.WALL);float time=hero.cooldown();int hp=hero.HP;
+        com.watabou.utils.Random.pushGenerator(81126);int next=com.watabou.utils.Random.Int();com.watabou.utils.Random.popGenerator();
+        com.watabou.utils.Random.pushGenerator(81126);try{assertTrue(com.shatteredpixel.shatteredpixeldungeon.apd.qol.ThrowableTargeting.hasExistingTrajectory(hero.pos,enemy.pos));assertEquals(next,com.watabou.utils.Random.Int());}finally{com.watabou.utils.Random.popGenerator();}
+        assertEquals(time,hero.cooldown(),0);assertEquals(hp,hero.HP);
+    }
     @Test public void intentionalProjectingEnchantmentRetainsItsExistingWallBypass(){
         for(int y=1;y<31;y++)Level.set(at(4,y),Terrain.WALL);
         ThrowingKnife weapon=new ThrowingKnife();weapon.enchantment=new Projecting();

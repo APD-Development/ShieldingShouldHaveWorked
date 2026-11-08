@@ -211,15 +211,16 @@ abstract public class MissileWeapon extends Weapon {
 			return dst;
 		} else {
             int collision = super.throwPos(user, dst);
-            // A Bresenham tie can choose opposite sides of the same straight ray
-            // in opposite directions. Accept its clear reverse rounding only for
-            // a currently visible enemy; this never bends a projectile path.
+            // Preserve the existing reverse-rounding fix, then look for an aim
+            // beyond the visible enemy that already hits under normal Ballistica
+            // rules. Direct targeting must not require manually finding that aim.
             Char target = Actor.findChar(dst);
             if (collision != dst && !(this instanceof SpiritBow.SpiritArrow)
                     && user == Dungeon.hero && target != null && target.alignment == Char.Alignment.ENEMY
                     && user.fieldOfView != null && dst >= 0 && dst < user.fieldOfView.length && user.fieldOfView[dst]
-                    && new com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica(
-                            dst, user.pos, com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica.PROJECTILE).collisionPos == user.pos) {
+                    && (new com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica(
+                            dst, user.pos, com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica.PROJECTILE).collisionPos == user.pos
+                        || com.shatteredpixel.shatteredpixeldungeon.apd.qol.ThrowableTargeting.hasExistingTrajectory(user.pos, dst))) {
                 return dst;
             }
             return collision;
