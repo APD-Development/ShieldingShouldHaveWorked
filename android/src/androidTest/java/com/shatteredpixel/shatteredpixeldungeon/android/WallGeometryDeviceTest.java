@@ -53,11 +53,18 @@ public class WallGeometryDeviceTest {
         });
     }
     private static void assertVisibleMarkerPixels(int cell)throws Exception{
-        com.watabou.utils.Point[] corners=new com.watabou.utils.Point[2];
-        TopScoresDeviceTest.render(()->{int w=Dungeon.level.width();corners[0]=Camera.main.cameraToScreen((cell%w)*16,(cell/w)*16);corners[1]=Camera.main.cameraToScreen((cell%w+1)*16,(cell/w+1)*16);});
-        Thread.sleep(300);
-        android.graphics.Bitmap bitmap=androidx.test.platform.app.InstrumentationRegistry.getInstrumentation().getUiAutomation().takeScreenshot();assertNotNull(bitmap);
-        try{int count=0;for(int y=Math.max(0,corners[0].y);y<Math.min(bitmap.getHeight(),corners[1].y);y++)for(int x=Math.max(0,corners[0].x);x<Math.min(bitmap.getWidth(),corners[1].x);x++){int c=bitmap.getPixel(x,y);if(Math.abs(android.graphics.Color.red(c)-255)<=24&&Math.abs(android.graphics.Color.green(c)-102)<=24&&Math.abs(android.graphics.Color.blue(c)-204)<=24)count++;}assertTrue("rendered magenta checkmark pixels, not only retained model data: "+count,count>=4);}finally{bitmap.recycle();}
+        int count=0;long end=SystemClock.uptimeMillis()+6000;
+        do{
+            com.watabou.utils.Point[] corners=new com.watabou.utils.Point[2];
+            TopScoresDeviceTest.render(()->{int w=Dungeon.level.width();corners[0]=Camera.main.cameraToScreen((cell%w)*16,(cell/w)*16);corners[1]=Camera.main.cameraToScreen((cell%w+1)*16,(cell/w+1)*16);});
+            Thread.sleep(250);
+            android.graphics.Bitmap bitmap=androidx.test.platform.app.InstrumentationRegistry.getInstrumentation().getUiAutomation().takeScreenshot();assertNotNull(bitmap);
+            try{count=0;for(int y=Math.max(0,corners[0].y);y<Math.min(bitmap.getHeight(),corners[1].y);y++)for(int x=Math.max(0,corners[0].x);x<Math.min(bitmap.getWidth(),corners[1].x);x++){int c=bitmap.getPixel(x,y);if(Math.abs(android.graphics.Color.red(c)-255)<=24&&Math.abs(android.graphics.Color.green(c)-102)<=24&&Math.abs(android.graphics.Color.blue(c)-204)<=24)count++;}}finally{bitmap.recycle();}
+            if(count>=4)return;
+        }while(SystemClock.uptimeMillis()<end);
+        TopScoresDeviceTest.screenshot("wall-geometry-missing-pixels-after-lifecycle.png");
+        TopScoresDeviceTest.render(()->{try{Level l=Dungeon.level;SearchedWallTilemap layer=TopScoresDeviceTest.find(Game.scene(),SearchedWallTilemap.class).get(0);System.out.println("WALL_PIXEL_FAILURE model="+SearchedWallMarkers.visual(l,cell)+" layer="+visual(layer,cell)+" attempted="+l.searchedWalls.attempted(cell)+" candidate="+DoorSearchEligibility.candidate(l,cell)+" fov="+l.heroFOV[cell]+" visited="+l.visited[cell]+" color="+SPDSettings.searchedWallColor()+" frame="+com.badlogic.gdx.Gdx.graphics.getFrameId());}catch(Exception error){throw new RuntimeException(error);}});
+        fail("rendered magenta checkmark pixels absent after waiting for resumed rendering: "+count);
     }
     @Test public void observedGeometryAndRetainedMarksUseTheActualAndroidLayer()throws Exception{
         final boolean intro=SPDSettings.intro();final int[] oldMarkColor={-1};final int oldSlot=GamesInProgress.curSlot;final HeroClass oldClass=GamesInProgress.selectedClass;final int[] slot={-1},wall={-1};final Bundle saved=new Bundle();

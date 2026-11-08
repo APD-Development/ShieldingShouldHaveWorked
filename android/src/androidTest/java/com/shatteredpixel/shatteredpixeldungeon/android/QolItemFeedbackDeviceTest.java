@@ -86,15 +86,13 @@ public class QolItemFeedbackDeviceTest {
 
                 java.util.List<RedButton> buttons=TopScoresDeviceTest.find(window,RedButton.class);
                 for(RedButton button:buttons){
-                    if(!(item instanceof RingOfArcana)){
-                        assertNotEquals("No unauthorized ordinary item expander","Show calculations",button.text());
-                        assertNotEquals("No unauthorized ordinary item expander","Hide calculations",button.text());
-                    }
+                    assertNotEquals("No unnecessary expander on these ordinary summaries","Show calculations",button.text());
+                    assertNotEquals("No unnecessary expander on these ordinary summaries","Hide calculations",button.text());
                     Point a=button.camera().cameraToScreen(button.left(),button.top()),z=button.camera().cameraToScreen(button.right(),button.bottom());
                     assertTrue("Item action remains visible",a.x>=0&&a.y>=0&&z.x<=Game.width&&z.y<=Game.height);
                 }
                 int expectedButtons=useWindow&&Dungeon.hero.isAlive()&&Dungeon.hero.belongings.contains(item)?item.actions(Dungeon.hero).size():0;
-                assertEquals("Only existing item actions and approved Arcana details appear",expectedButtons+(item instanceof RingOfArcana?1:0),buttons.size());
+                assertEquals("Only existing item actions appear",expectedButtons,buttons.size());
                 assertEquals(time[0],Dungeon.hero.cooldown(),0);assertEquals(hp[0],Dungeon.hero.HP);
                 com.watabou.utils.Bundle after=new com.watabou.utils.Bundle();item.storeInBundle(after);assertEquals(saved[0],after.toString());
             }catch(Exception e){throw new RuntimeException(e);}});

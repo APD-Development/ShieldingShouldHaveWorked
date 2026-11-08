@@ -59,8 +59,8 @@ jobs:
             adb install -r wall-lifecycle-evidence/instrumentation.apk
             timeout 420 adb shell am instrument -w -r -e class com.shatteredpixel.shatteredpixeldungeon.android.WallGeometryDeviceTest com.charltonchris29.adhdpixeldungeon.indev.test/androidx.test.runner.AndroidJUnitRunner > wall-lifecycle-evidence/wall.txt
             cat wall-lifecycle-evidence/wall.txt
-            python3 tools/apd_check_single_instrumentation.py wall-lifecycle-evidence/wall.txt observedGeometryAndRetainedMarksUseTheActualAndroidLayer com.shatteredpixel.shatteredpixeldungeon.android.WallGeometryDeviceTest
             adb pull /sdcard/Pictures/APD-Test-Visuals/. wall-lifecycle-evidence/visuals/
+            python3 tools/apd_check_single_instrumentation.py wall-lifecycle-evidence/wall.txt observedGeometryAndRetainedMarksUseTheActualAndroidLayer com.shatteredpixel.shatteredpixeldungeon.android.WallGeometryDeviceTest
             sha256sum -c application-before.sha256
       - uses: actions/upload-artifact@v4
         if: always()
