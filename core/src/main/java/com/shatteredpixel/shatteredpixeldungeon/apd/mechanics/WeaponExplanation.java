@@ -68,10 +68,9 @@ public final class WeaponExplanation {
     }
 
     public static String summary(Weapon weapon, Hero hero) {
-        String result = "Attack time is measured in game turns: a smaller time lets you attack sooner. Being below this weapon's strength requirement makes ordinary attacks slower and less accurate; an accuracy bonus changes your attack score, not your chance to hit by that percentage.";
         Float delay = normalAttackDelay(weapon, hero);
-        if (delay != null) result += " Used normally with your known bonuses: _" + ObfuscationExplanation.number(delay)
-                + " turns per attack_ before effects that change all action times, special abilities or free attacks. Unarmed stances use their own timing.";
+        String result = delay == null ? "" : "Attack time: _" + ObfuscationExplanation.number(delay)
+                + " turns per attack_ (normal attacks).";
         String block=blockSummary(weapon,hero);if(!block.isEmpty())result+="\n\n"+block;
         return result;
     }

@@ -128,7 +128,7 @@ public final class RingItemEffects {
             if(item instanceof ClassArmor)multiplier(out,"armor_charge",charge);
             if(energyArtifact(item))multiplier(out,"artifact_charge",charge);
         }
-        return out.length()==0?"":"\n\n"+text("title")+out+"\n"+text("context");
+        return out.length()==0?"":"\n\n"+text("title")+out;
     }
 
     private static boolean energyArtifact(Item item){

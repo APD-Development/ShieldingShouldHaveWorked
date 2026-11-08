@@ -384,6 +384,15 @@ public class MechanicsExplanationTest {
    WeaponExplanation.details(weapon,hero);assertSame(free,hero.buff(Talent.LethalMomentumTracker.class));
   }
  }
+ @Test public void ordinarySwordSummaryIsShortAndKeepsLiveTiming(){
+  com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sword sword=new com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sword();
+  sword.levelKnown=true;
+  String summary=WeaponExplanation.summary(sword,hero);
+  assertEquals("Attack time: _"+ObfuscationExplanation.number(sword.delayFactor(hero))+" turns per attack_ (normal attacks).",summary);
+  assertTrue(summary.length()<100);
+  assertFalse(summary.contains("attack score"));
+  assertFalse(summary.contains("strength requirement"));
+ }
  @Test public void weaponTimingHidesUnknownLevelsAndRingEffectsAndDoesNotPretendBowIsOrdinary(){
   com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon weapon=new com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Glaive();weapon.levelKnown=false;String hidden=WeaponExplanation.details(weapon,hero);weapon.level(8);assertEquals(hidden,WeaponExplanation.details(weapon,hero));assertNull(WeaponExplanation.normalAttackDelay(weapon,hero));
   weapon.levelKnown=true;RingOfFuror furor=new RingOfFuror();furor.levelKnown=false;hero.belongings.ring=furor;String unknown=WeaponExplanation.details(weapon,hero);furor.level(8);assertEquals(unknown,WeaponExplanation.details(weapon,hero));assertNull(WeaponExplanation.normalAttackDelay(weapon,hero));

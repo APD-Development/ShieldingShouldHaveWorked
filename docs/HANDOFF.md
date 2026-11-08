@@ -1,3 +1,7 @@
+## Ordinary weapon tooltip shortened — source tested, APK pending
+
+Owner ordered the screenshot’s wording shortened. Generic combat tutorial and repeated ring disclaimer removed; live attack-time/accuracy and concise Force/Sharpshooting damage changes retained. No mechanics or panel changes. Full local 2955/451 passed, zero failures/errors/skips; no Android/APK check claimed. Report docs/APD-SHORT-WEAPON-TOOLTIP-2026-11-07.md. This change is not in APD374. Preserve for next authorized APK; no new release or source-only remote delivery performed.
+
 ## APD374 delivered — requested Arcana percentage and actual increases, 2026-11-07
 
 Current delivered source/tag: 9041b7a155f97def09648b4d277996cab0f72c58 / apd-alpha-preview-374. Ring of Arcana normal description shows percentage, no calculations control. Affected enchantments/glyphs show actual before/after values and increase; Lucky +0 with Arcana +3 shows 10% to 19.06%, adds 9.06 percentage points. Other known modifiers are held constant; chance caps and unidentified-information guards remain. Obfuscation shows stealth points gained. Existing relevant detailed mechanic panels retained. Gameplay/proc/balance/save formulas unchanged.
