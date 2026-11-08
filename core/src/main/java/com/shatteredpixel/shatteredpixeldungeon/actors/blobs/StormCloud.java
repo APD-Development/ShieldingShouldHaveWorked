@@ -29,10 +29,48 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 
 public class StormCloud extends Blob {
+
+	private com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CellDamageOrigins apdOrigins =
+			new com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CellDamageOrigins();
+	private static final String APD_ORIGINS = "apd_storm_origins";
+
+	@Override
+	public void seed(com.shatteredpixel.shatteredpixeldungeon.levels.Level level, int cell, int amount) {
+		apdOrigins.seed(cur, level.length(), cell, amount,
+				com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveEffectContext.current());
+		super.seed(level, cell, amount);
+	}
+
+	@Override
+	public void clear(int cell) {
+		super.clear(cell);
+		apdOrigins.clear(cell);
+	}
+
+	@Override
+	public void fullyClear() {
+		super.fullyClear();
+		apdOrigins.clearAll();
+	}
+
+	@Override
+	public void storeInBundle(com.watabou.utils.Bundle bundle) {
+		super.storeInBundle(bundle);
+		if (volume > 0) apdOrigins.store(bundle, APD_ORIGINS, cur);
+		else com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CellDamageOrigins.clearMetadata(bundle, APD_ORIGINS);
+	}
+
+	@Override
+	public void restoreFromBundle(com.watabou.utils.Bundle bundle) {
+		super.restoreFromBundle(bundle);
+		apdOrigins = com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CellDamageOrigins.restore(bundle, APD_ORIGINS, cur);
+	}
 	
 	@Override
 	protected void evolve() {
+		apdOrigins.synchronize(cur);
 		super.evolve();
+		apdOrigins.prepareDiffusion(cur, off, Dungeon.level.solid, Dungeon.level.width());
 		
 		int cell;
 
@@ -51,11 +89,12 @@ public class StormCloud extends Blob {
 					if (ch != null
 							&& !ch.isImmune(getClass())
 							&& Char.hasProp(ch, Char.Property.FIERY)){
-						ch.damage(1 + Dungeon.scalingDepth()/5, this);
+						ch.damage(apdOrigins.scale(1 + Dungeon.scalingDepth()/5, cell), this);
 					}
 				}
 			}
 		}
+		apdOrigins.finishDiffusion();
 	}
 	
 	@Override
