@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -116,6 +119,17 @@ public class RegrowthBomb extends Bomb {
 		}
 	}
 	
+    @Override
+    public String desc() {
+        String text = super.desc();
+        if (Dungeon.hero != null && Dungeon.isChallenged(com.shatteredpixel.shatteredpixeldungeon.Challenges.NO_HEALING)) {
+            text += "\n\n" + com.shatteredpixel.shatteredpixeldungeon.messages.Messages.get(PotionOfHealing.class, "desc_pharmacophobia");
+        } else if (Dungeon.hero != null && com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomHealingHooks.disabled()) {
+            text += "\n\n" + com.shatteredpixel.shatteredpixeldungeon.messages.Messages.get(PotionOfHealing.class, "desc_disabled_healing");
+        }
+        return text;
+    }
+
 	@Override
 	public int value() {
 		//prices of ingredients

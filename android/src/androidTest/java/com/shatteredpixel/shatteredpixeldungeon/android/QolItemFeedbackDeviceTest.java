@@ -258,15 +258,19 @@ public class QolItemFeedbackDeviceTest {
     private static void ordinaryConsumableDescriptionsRender()throws Exception{
         com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion haste=new com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHaste();
         com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion shielding=new com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfShielding();
+        Item noisemaker=new com.shatteredpixel.shatteredpixeldungeon.items.bombs.Noisemaker(),regrowthBomb=new com.shatteredpixel.shatteredpixeldungeon.items.bombs.RegrowthBomb();
         int previous=Dungeon.challenges;
         try{
-            TopScoresDeviceTest.render(()->{haste.anonymize();shielding.anonymize();assertTrue(haste.collect());assertTrue(shielding.collect());Dungeon.challenges=0;});
+            TopScoresDeviceTest.render(()->{haste.anonymize();shielding.anonymize();assertTrue(haste.collect());assertTrue(shielding.collect());assertTrue(noisemaker.collect());assertTrue(regrowthBomb.collect());Dungeon.challenges=0;});
             showItem(haste,"turns","qol-haste-concise.png");
             showItem(shielding,"shielding","qol-shielding-concise.png");
+            showItem(noisemaker,"steps onto its tile","qol-noisemaker-trigger-description.png",true);
+            showItem(regrowthBomb,"instead of exploding","qol-regrowth-bomb-description.png",true);
             TopScoresDeviceTest.render(()->Dungeon.challenges=Challenges.NO_HEALING);
             showItem(shielding,"poisons you instead","qol-shielding-challenge-warning.png");
+            showItem(regrowthBomb,"poisons you instead","qol-regrowth-bomb-challenge-warning.png",true);
         }finally{
-            TopScoresDeviceTest.render(()->{Dungeon.challenges=previous;Dungeon.hero.belongings.backpack.items.remove(haste);Dungeon.hero.belongings.backpack.items.remove(shielding);});
+            TopScoresDeviceTest.render(()->{Dungeon.challenges=previous;Dungeon.hero.belongings.backpack.items.remove(haste);Dungeon.hero.belongings.backpack.items.remove(shielding);Dungeon.hero.belongings.backpack.items.remove(noisemaker);Dungeon.hero.belongings.backpack.items.remove(regrowthBomb);});
         }
     }
     static void combinedOriginsAndRatPreferenceRenderAndRespond()throws Exception{

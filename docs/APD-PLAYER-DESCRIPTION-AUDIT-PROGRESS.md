@@ -1,3 +1,7 @@
+## Latest continuation — bombs, seeds and plants
+
+195 source units now have full or partial reviews; 187 have corrections and 67 source reviews are complete. 360 units remain unresolved. The combined 3,016-test / 456-suite run passed with zero failures/errors/skips, followed by targeted final wording checks. Android window fixtures are prepared but have not been run; no new APK is claimed. See the correction record for scope and exact evidence.
+
 ## Latest continuation — curses, class privacy and ability previews
 
 170 source units have full or partial reviews; only 46 are complete and 381 remain unresolved. The combined 3,013-test / 456-suite run passed with no failures/errors/skips. A subsequent targeted check covers the related fifteen-weapon preview correction. See the correction record for exact scope and evidence. No new APK or Android acceptance is claimed. Continue the remaining categories and variant review.

@@ -3,10 +3,10 @@
   "baseline_commit": "32f4f3beab4c23b404c3cb1d43bfa06a39165e70",
   "counting": "Source units, not distinct item types. reviewed_units includes partial reviews; completed_units excludes partial/pending dependency. corrected_units counts source units with corrections, including incomplete reviews. Inventory/export/tests alone are not an individual review.",
   "source_units": 427,
-  "message_entries": 2410,
-  "reviewed_units": 170,
-  "corrected_units": 162,
-  "unresolved_units": 381,
+  "message_entries": 2411,
+  "reviewed_units": 195,
+  "corrected_units": 187,
+  "unresolved_units": 360,
   "category_counts": {
     "apd": 1,
     "mechanics": 38,
@@ -1077,80 +1077,102 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/bombs/ArcaneBomb.java",
       "sha256": "d50e335f056137903fe1b75f2b3c835b1914aca4b8788bb7927b9f913fbeacbd",
       "category": "bombs",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "REVIEWED_CORRECTED",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Normal effects, ranges, independent damage bursts, fuse/pickup stages and healing restrictions checked against actual detonation paths. No bomb calculation panel is exposed by itemCalculations. Android render acceptance remains pending."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/bombs/Bomb.java",
       "sha256": "d9e0a2958a645eb5d5a59d71a5cf27f99976d201b7228ccb7b9f37cedfa2ff39",
       "category": "bombs",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [
         "desc"
-      ]
+      ],
+      "wording_corrected": true,
+      "review_notes": "Normal effects, ranges, independent damage bursts, fuse/pickup stages and healing restrictions checked against actual detonation paths. No bomb calculation panel is exposed by itemCalculations. Android render acceptance remains pending."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/bombs/Firebomb.java",
       "sha256": "0c4c8d5c5a80bf81abe8ec82317def90e5f3adafc04925bbb45d30d23eae2b83",
       "category": "bombs",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "REVIEWED_CORRECTED",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Normal effects, ranges, independent damage bursts, fuse/pickup stages and healing restrictions checked against actual detonation paths. No bomb calculation panel is exposed by itemCalculations. Android render acceptance remains pending."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/bombs/FlashBangBomb.java",
       "sha256": "06a846f42801e4af0bdb819e901272e67aa7a8c8f439a766f9aef3afaa0a7793",
       "category": "bombs",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "REVIEWED_CORRECTED",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Normal effects, ranges, independent damage bursts, fuse/pickup stages and healing restrictions checked against actual detonation paths. No bomb calculation panel is exposed by itemCalculations. Android render acceptance remains pending."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/bombs/FrostBomb.java",
       "sha256": "5207b771e0fe94c868b49f60dd658152ebf87c523ce5df40564fb2b3419d54ea",
       "category": "bombs",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "REVIEWED_CORRECTED",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Normal effects, ranges, independent damage bursts, fuse/pickup stages and healing restrictions checked against actual detonation paths. No bomb calculation panel is exposed by itemCalculations. Android render acceptance remains pending."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/bombs/HolyBomb.java",
       "sha256": "07e8fb4a1cd78469a1c68b0010892a024fc3c29b530f0368d9ffb637a06443d0",
       "category": "bombs",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "REVIEWED_CORRECTED",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Normal effects, ranges, independent damage bursts, fuse/pickup stages and healing restrictions checked against actual detonation paths. No bomb calculation panel is exposed by itemCalculations. Android render acceptance remains pending."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/bombs/Noisemaker.java",
       "sha256": "aa0d0a1535975932ce7f335f2c3ae453dfde93473e6a8cdf09b8009d07583304",
       "category": "bombs",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "REVIEWED_CORRECTED",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Normal effects, ranges, independent damage bursts, fuse/pickup stages and healing restrictions checked against actual detonation paths. No bomb calculation panel is exposed by itemCalculations. Android render acceptance remains pending."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/bombs/RegrowthBomb.java",
-      "sha256": "e2f9002a996bc0689cff5adc9995b6e45012c2bcf818f1a8584141841c2b7a53",
+      "sha256": "65340d56d3bb81c21ebb0bbe2955365e954e3ab223e54c4f4692726ea10bbeee",
       "category": "bombs",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "REVIEWED_CORRECTED",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Normal effects, ranges, independent damage bursts, fuse/pickup stages and healing restrictions checked against actual detonation paths. No bomb calculation panel is exposed by itemCalculations. Android render acceptance remains pending."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/bombs/ShrapnelBomb.java",
       "sha256": "047a6cc67be18a914993e650626f3ada78bdf58afac256cbb984906dfc4f044f",
       "category": "bombs",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "REVIEWED_CORRECTED",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Normal effects, ranges, independent damage bursts, fuse/pickup stages and healing restrictions checked against actual detonation paths. No bomb calculation panel is exposed by itemCalculations. Android render acceptance remains pending."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/bombs/SmokeBomb.java",
       "sha256": "39c372117dca91aba241535419cbd8f417d30234b83c20d6192d257fd2f0ecee",
       "category": "bombs",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "REVIEWED_CORRECTED",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Normal effects, ranges, independent damage bursts, fuse/pickup stages and healing restrictions checked against actual detonation paths. No bomb calculation panel is exposed by itemCalculations. Android render acceptance remains pending."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/bombs/WoollyBomb.java",
       "sha256": "925971f60f678d76299610ba36963f97444eef5bdf1324c18b9123e022dc826b",
       "category": "bombs",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "REVIEWED_CORRECTED",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Normal effects, ranges, independent damage bursts, fuse/pickup stages and healing restrictions checked against actual detonation paths. No bomb calculation panel is exposed by itemCalculations. Android render acceptance remains pending."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/food/Berry.java",
@@ -3766,110 +3788,138 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/plants/BlandfruitBush.java",
       "sha256": "2c0a83272f370ae5190805d91076df00018751e8b66cefb9c11680b3aa5fa9ee",
       "category": "plants",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "REVIEWED_CORRECTED",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Seed and plant normal descriptions checked against activation and Warden branches. Floor-one Fadeleaf, immunity limits and movement-ending effects distinguished. Earthroot/Sungrass/Swiftthistle buff details and shared Plant variants remain under review. Android acceptance pending."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/plants/Blindweed.java",
       "sha256": "e2aa7378bce125ca1640e921c0031b8057b59e61d2e735e210eb1ce70a3b70d7",
       "category": "plants",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "REVIEWED_CORRECTED",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Seed and plant normal descriptions checked against activation and Warden branches. Floor-one Fadeleaf, immunity limits and movement-ending effects distinguished. Earthroot/Sungrass/Swiftthistle buff details and shared Plant variants remain under review. Android acceptance pending."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/plants/Earthroot.java",
       "sha256": "c64d38bb55b0145e1f31270eb4d412acf3dd0f52f5a90174a178780ef3bca436",
       "category": "plants",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
+      "status": "PARTIAL_REVIEW",
       "description_methods": [
         "desc"
-      ]
+      ],
+      "wording_corrected": true,
+      "review_notes": "Seed and plant normal descriptions checked against activation and Warden branches. Floor-one Fadeleaf, immunity limits and movement-ending effects distinguished. Earthroot/Sungrass/Swiftthistle buff details and shared Plant variants remain under review. Android acceptance pending."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/plants/Fadeleaf.java",
       "sha256": "8f13def41cc5bc478f74e871041b13e682ebd895cedc0b3908153979dcacc018",
       "category": "plants",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "REVIEWED_CORRECTED",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Seed and plant normal descriptions checked against activation and Warden branches. Floor-one Fadeleaf, immunity limits and movement-ending effects distinguished. Earthroot/Sungrass/Swiftthistle buff details and shared Plant variants remain under review. Android acceptance pending."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/plants/Firebloom.java",
       "sha256": "6a4ecda081029ab602bdc4832eaf4c3f16a63f18143203ac52473771a6a680ff",
       "category": "plants",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "REVIEWED_CORRECTED",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Seed and plant normal descriptions checked against activation and Warden branches. Floor-one Fadeleaf, immunity limits and movement-ending effects distinguished. Earthroot/Sungrass/Swiftthistle buff details and shared Plant variants remain under review. Android acceptance pending."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/plants/Icecap.java",
       "sha256": "497f0ef15f9e5bfaa81800372e57c070ed4faff9820c7d01a14c2ec526d12663",
       "category": "plants",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "REVIEWED_CORRECTED",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Seed and plant normal descriptions checked against activation and Warden branches. Floor-one Fadeleaf, immunity limits and movement-ending effects distinguished. Earthroot/Sungrass/Swiftthistle buff details and shared Plant variants remain under review. Android acceptance pending."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/plants/Mageroyal.java",
       "sha256": "da803654823df72818fd85ce1bc1f6def634ae6093e69572cbf5c66a14100623",
       "category": "plants",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "REVIEWED_CORRECTED",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Seed and plant normal descriptions checked against activation and Warden branches. Floor-one Fadeleaf, immunity limits and movement-ending effects distinguished. Earthroot/Sungrass/Swiftthistle buff details and shared Plant variants remain under review. Android acceptance pending."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/plants/Plant.java",
       "sha256": "cae62960adbf4789fc0a0bf92f391c37df261d2b7d9f476577d2bacce9cbf423",
       "category": "plants",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
+      "status": "PARTIAL_REVIEW",
       "description_methods": [
         "desc",
         "desc",
         "info",
         "info"
-      ]
+      ],
+      "wording_corrected": true,
+      "review_notes": "Seed and plant normal descriptions checked against activation and Warden branches. Floor-one Fadeleaf, immunity limits and movement-ending effects distinguished. Earthroot/Sungrass/Swiftthistle buff details and shared Plant variants remain under review. Android acceptance pending."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/plants/Rotberry.java",
       "sha256": "9901ea347257f6b8219413aea36eba731bfd0a40c1d199e921f237f42f6f5171",
       "category": "plants",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "REVIEWED_CORRECTED",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Seed and plant normal descriptions checked against activation and Warden branches. Floor-one Fadeleaf, immunity limits and movement-ending effects distinguished. Earthroot/Sungrass/Swiftthistle buff details and shared Plant variants remain under review. Android acceptance pending."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/plants/Sorrowmoss.java",
       "sha256": "1da05c5f6eb6bc1f94bce8bf4bb270f1ce0de8c605b6ba34be5661b7649f2fe6",
       "category": "plants",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "REVIEWED_CORRECTED",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Seed and plant normal descriptions checked against activation and Warden branches. Floor-one Fadeleaf, immunity limits and movement-ending effects distinguished. Earthroot/Sungrass/Swiftthistle buff details and shared Plant variants remain under review. Android acceptance pending."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/plants/Starflower.java",
       "sha256": "05fc1ca57f60b7a0388bf82a025836cdb7f50c27a22be30e042bbcb379cb4c1b",
       "category": "plants",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "REVIEWED_CORRECTED",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Seed and plant normal descriptions checked against activation and Warden branches. Floor-one Fadeleaf, immunity limits and movement-ending effects distinguished. Earthroot/Sungrass/Swiftthistle buff details and shared Plant variants remain under review. Android acceptance pending."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/plants/Stormvine.java",
       "sha256": "52f1742354e1ad2614f8410fd20a782c8a788de1ae2083b2b09641fdc38495a1",
       "category": "plants",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "REVIEWED_CORRECTED",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Seed and plant normal descriptions checked against activation and Warden branches. Floor-one Fadeleaf, immunity limits and movement-ending effects distinguished. Earthroot/Sungrass/Swiftthistle buff details and shared Plant variants remain under review. Android acceptance pending."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/plants/Sungrass.java",
       "sha256": "3343cde8c9f56f58e126e7bba6eeaedf770996eb5ba706fa98630644b7ed67a0",
       "category": "plants",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
+      "status": "PARTIAL_REVIEW",
       "description_methods": [
         "desc"
-      ]
+      ],
+      "wording_corrected": true,
+      "review_notes": "Seed and plant normal descriptions checked against activation and Warden branches. Floor-one Fadeleaf, immunity limits and movement-ending effects distinguished. Earthroot/Sungrass/Swiftthistle buff details and shared Plant variants remain under review. Android acceptance pending."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/plants/Swiftthistle.java",
       "sha256": "e15f72fe56be0399b6dabcb654583b0d05e7a12f6af5125bbbfab39fbf861a84",
       "category": "plants",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
+      "status": "PARTIAL_REVIEW",
       "description_methods": [
         "desc"
-      ]
+      ],
+      "wording_corrected": true,
+      "review_notes": "Seed and plant normal descriptions checked against activation and Warden branches. Floor-one Fadeleaf, immunity limits and movement-ending effects distinguished. Earthroot/Sungrass/Swiftthistle buff details and shared Plant variants remain under review. Android acceptance pending."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/MechanicsInfoPanel.java",
@@ -3913,16 +3963,16 @@
       "review_notes": "Added missing display provider to inventory. Reading its output is not a complete provenance/generation audit."
     }
   ],
-  "completed_units": 46,
+  "completed_units": 67,
   "latest_tests": {
-    "core_tests": 3013,
+    "core_tests": 3016,
     "suites": 456,
     "failures": 0,
     "errors": 0,
     "skipped": 0,
-    "log": "/workspace/apd-description-fifteen-abilities-evidence-20261108/full.log",
+    "log": "/workspace/apd-bombs-plants-verified-evidence-20261108/full.log",
     "android_verified": false,
     "new_apk_built": false,
-    "scope": "Curse/class/privacy/no-hero and fifteen-weapon ability preview corrections."
+    "scope": "Combined core suite after bomb/plant behavior checks; final Noisemaker arming and plant wording receive separate targeted checks. Android fixtures prepared but not compiled or executed."
   }
 }
