@@ -136,13 +136,13 @@ public class RingOfForce extends Ring {
 
 	@Override
 	public String statsInfo() {
-        if(Dungeon.hero==null)return "Unarmed damage depends on the wearer's strength; a personal range requires a loaded hero. "
-                +(isIdentified()?"This ring's armed damage contribution without temporary wearer effects is "+soloBonus()+" damage points.":"Identify the ring to see its exact contribution.");
+        if(com.shatteredpixel.shatteredpixeldungeon.apd.mechanics.ArmorExplanation.knownStrength(Dungeon.hero)==null)return "Unarmed damage depends on your Strength. Its damage range is unavailable while ring effects are unknown or suppressed. "
+                +(isIdentified()?"This ring’s melee weapon damage bonus is "+soloBonus()+".":"Identify the ring to see its exact bonus.");
 		float tier = tier(Dungeon.hero.STR());
 		if (isIdentified()) {
 			int level = soloBuffedBonus();
 			String info = Messages.get(this, "stats", min(level, tier), max(level, tier), level);
-			if (isEquipped(Dungeon.hero) && soloBuffedBonus() != combinedBuffedBonus(Dungeon.hero)){
+			if (isEquipped(Dungeon.hero) && knownEquippedRings(Dungeon.hero) && soloBuffedBonus() != combinedBuffedBonus(Dungeon.hero)){
 				level = combinedBuffedBonus(Dungeon.hero);
 				info += "\n\n" + Messages.get(this, "combined_stats", min(level, tier), max(level, tier), level);
 			}
@@ -154,7 +154,7 @@ public class RingOfForce extends Ring {
 
 	@Override
 	public String upgradeStat1(int level) {
-        if(Dungeon.hero==null)return "Depends on strength";
+        if(com.shatteredpixel.shatteredpixeldungeon.apd.mechanics.ArmorExplanation.knownStrength(Dungeon.hero)==null)return "Depends on Strength";
 		if (cursed && cursedKnown) level = Math.min(-1, level-3);
 		float tier = tier(Dungeon.hero != null ? Dungeon.hero.STR() : 10);
 		return min(level+1, tier) + "-" + max(level+1, tier);
@@ -170,6 +170,7 @@ public class RingOfForce extends Ring {
 	public String upgradeStat3(int level) {
 		if (cursed && cursedKnown) level = Math.min(-1, level-3);
 		if (Dungeon.hero != null && Dungeon.hero.heroClass == HeroClass.DUELIST){
+            if(com.shatteredpixel.shatteredpixeldungeon.apd.mechanics.ArmorExplanation.knownStrength(Dungeon.hero)==null)return "Depends on Strength";
 			float tier = tier(Dungeon.hero != null ? Dungeon.hero.STR() : 10);
 			int bonus = Math.round(3+tier+(level*((4+2*tier)/8f)));
 			return (min(level+1, tier) + bonus) + "-" + (max(level+1, tier) + bonus);
@@ -251,6 +252,8 @@ public class RingOfForce extends Ring {
 
 		if (Dungeon.hero != null && Dungeon.hero.heroClass == HeroClass.DUELIST
 			&& (anonymous || isIdentified() || isEquipped(Dungeon.hero))){
+            if(!isIdentified()||com.shatteredpixel.shatteredpixeldungeon.apd.mechanics.ArmorExplanation.knownStrength(Dungeon.hero)==null||!knownEquippedRings(Dungeon.hero))
+                return info+"\n\n"+Messages.get(this,"ability_unconfirmed");
 			//0 if unidentified, solo level if unequipped, combined level if equipped
 			int level = isIdentified() ? (isEquipped(Dungeon.hero) ? getBuffedBonus(Dungeon.hero, Force.class) : soloBuffedBonus()) : 0;
 			float tier = tier(Dungeon.hero.STR());

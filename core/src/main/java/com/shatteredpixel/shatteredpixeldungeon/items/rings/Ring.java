@@ -218,6 +218,8 @@ public class Ring extends KindofMisc {
 		
 		if (isKnown()) {
 			desc += "\n\n" + statsInfo();
+            if(Dungeon.hero!=null&&Dungeon.hero.buff(MagicImmune.class)!=null)
+                desc += "\n\n"+Messages.get(Ring.class,"magic_suppressed");
 		}
 		
 		return desc;
@@ -398,6 +400,16 @@ public class Ring extends KindofMisc {
 		}
 		return bonus;
 	}
+
+    /** Description-only knowledge gate: an unknown companion must not reveal its type or level. */
+    protected static boolean knownEquippedRings(Hero hero){
+        if(hero==null)return false;
+        for(Item worn:new Item[]{hero.belongings.ring(),hero.belongings.misc()}){
+            if(worn instanceof Ring&&!worn.isIdentified())return false;
+        }
+        SpiritForm.SpiritFormBuff spirit=hero.buff(SpiritForm.SpiritFormBuff.class);
+        return spirit==null||spirit.previewRingIdentified();
+    }
 
 	//just used for ring descriptions
 	public int soloBonus(){

@@ -3,10 +3,10 @@
   "baseline_commit": "32f4f3beab4c23b404c3cb1d43bfa06a39165e70",
   "counting": "Source units, not a claimed count of distinct item types or individual human reviews. Seasonal/cooked/identified variants tracked separately in reviewed entries.",
   "source_units": 425,
-  "message_entries": 2388,
-  "reviewed_units": 13,
-  "corrected_units": 13,
-  "unresolved_units": 413,
+  "message_entries": 2390,
+  "reviewed_units": 26,
+  "corrected_units": 26,
+  "unresolved_units": 402,
   "category_counts": {
     "apd": 1,
     "mechanics": 38,
@@ -278,12 +278,13 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/RingExplanation.java",
-      "sha256": "3c32ca896c641153327561fe1cc0d19c3a33c01fac455273e0decb276168030c",
+      "sha256": "f4982b8c5d79330ff6e87bba0bb40e0d9d1a1280fc6720ffca82536c956d8b3e",
       "category": "mechanics",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
+      "status": "PARTIAL_REVIEW",
       "description_methods": [
         "details"
-      ]
+      ],
+      "review_notes": "All formula branches read; Force unknown-strength disclosure fixed and boilerplate reduced. Remaining mechanic-specific complex explanation prose still needs individual refinement."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/RoseExplanation.java",
@@ -1811,99 +1812,190 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/rings/Ring.java",
-      "sha256": "5f9e306616be7e1effab8d60476a1ae426aa6083a35564d915efa60b76239c7f",
+      "sha256": "a0c0baea0673efed21de517780cbd631a39835ad4328cb0607fd77c60f5d08c4",
       "category": "rings",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [
         "desc",
         "info"
+      ],
+      "review_notes": "Actual statsInfo, solo/combined bonus formulas and identification/cursing branches reviewed. Concise player-facing benefits and numeric labels. Combined descriptions now withhold unknown companion bonuses; no combat calculation changed.",
+      "tests": [
+        "MechanicsExplanationTest.everyRingInspectionWithholdsUnknownCompanionLevels",
+        "MechanicsExplanationTest.forceInspectionAndUpgradePreviewDoNotExposeUnknownStrengthRing",
+        "MechanicsExplanationTest.arcanaUpgradePreviewCannotRevealAnUnknownCurse",
+        "MechanicsExplanationTest.identifiedRingSummariesRemainBriefAndLabelSuppressedEffects"
       ]
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/rings/RingOfAccuracy.java",
-      "sha256": "f2faa8b13479bc691db5762072a82ccde97bab40f1f97f3f59739d3dd767a252",
+      "sha256": "6e8f69e8ba5527f8a3e5bd59f066e7b2f5daa4174d27ad28a936288bf3623c15",
       "category": "rings",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "REVIEWED_CORRECTED",
+      "description_methods": [],
+      "review_notes": "Actual statsInfo, solo/combined bonus formulas and identification/cursing branches reviewed. Concise player-facing benefits and numeric labels. Combined descriptions now withhold unknown companion bonuses; no combat calculation changed.",
+      "tests": [
+        "MechanicsExplanationTest.everyRingInspectionWithholdsUnknownCompanionLevels",
+        "MechanicsExplanationTest.forceInspectionAndUpgradePreviewDoNotExposeUnknownStrengthRing",
+        "MechanicsExplanationTest.arcanaUpgradePreviewCannotRevealAnUnknownCurse",
+        "MechanicsExplanationTest.identifiedRingSummariesRemainBriefAndLabelSuppressedEffects"
+      ]
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/rings/RingOfArcana.java",
-      "sha256": "4a594ae301bbcd212fb8c7ef6c0735f6700523151f74733f643b5850289a7f02",
+      "sha256": "1b2f809305d99c1cc6128b0bc71b847f6e8cccdc9733aec3e89c8d2fb823daab",
       "category": "rings",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "REVIEWED_CORRECTED",
+      "description_methods": [],
+      "review_notes": "Actual statsInfo, solo/combined bonus formulas and identification/cursing branches reviewed. Concise player-facing benefits and numeric labels. Combined descriptions now withhold unknown companion bonuses; no combat calculation changed. Arcana upgrade preview now respects unknown curse; normal percentage and per-effect detailed panels preserved.",
+      "tests": [
+        "MechanicsExplanationTest.everyRingInspectionWithholdsUnknownCompanionLevels",
+        "MechanicsExplanationTest.forceInspectionAndUpgradePreviewDoNotExposeUnknownStrengthRing",
+        "MechanicsExplanationTest.arcanaUpgradePreviewCannotRevealAnUnknownCurse",
+        "MechanicsExplanationTest.identifiedRingSummariesRemainBriefAndLabelSuppressedEffects"
+      ]
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/rings/RingOfElements.java",
-      "sha256": "58b3a120a4022ada2061bc4ea5e946baacaebdb00afae4c8ae53ece359fc985e",
+      "sha256": "d39f48b097e2f09f6edb081019bf53263c263ccf546eeed2ea638bcba0798932",
       "category": "rings",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "REVIEWED_CORRECTED",
+      "description_methods": [],
+      "review_notes": "Actual statsInfo, solo/combined bonus formulas and identification/cursing branches reviewed. Concise player-facing benefits and numeric labels. Combined descriptions now withhold unknown companion bonuses; no combat calculation changed.",
+      "tests": [
+        "MechanicsExplanationTest.everyRingInspectionWithholdsUnknownCompanionLevels",
+        "MechanicsExplanationTest.forceInspectionAndUpgradePreviewDoNotExposeUnknownStrengthRing",
+        "MechanicsExplanationTest.arcanaUpgradePreviewCannotRevealAnUnknownCurse",
+        "MechanicsExplanationTest.identifiedRingSummariesRemainBriefAndLabelSuppressedEffects"
+      ]
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/rings/RingOfEnergy.java",
-      "sha256": "6e01cc93ede47268afed2030a34eff5fb49cf203503163e689344d5a75528900",
+      "sha256": "e2a2849ea47ec5b2a3b2ad740efddb92604f20b485151daebb9e93f0c24bcac3",
       "category": "rings",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "REVIEWED_CORRECTED",
+      "description_methods": [],
+      "review_notes": "Actual statsInfo, solo/combined bonus formulas and identification/cursing branches reviewed. Concise player-facing benefits and numeric labels. Combined descriptions now withhold unknown companion bonuses; no combat calculation changed.",
+      "tests": [
+        "MechanicsExplanationTest.everyRingInspectionWithholdsUnknownCompanionLevels",
+        "MechanicsExplanationTest.forceInspectionAndUpgradePreviewDoNotExposeUnknownStrengthRing",
+        "MechanicsExplanationTest.arcanaUpgradePreviewCannotRevealAnUnknownCurse",
+        "MechanicsExplanationTest.identifiedRingSummariesRemainBriefAndLabelSuppressedEffects"
+      ]
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/rings/RingOfEvasion.java",
-      "sha256": "094294cbd826bfd448153d3da17327d5980d3b80a4ba4ec1df67417fb78aa74f",
+      "sha256": "c121e41964b3e5c87fb9e34c551d73b20e1d4daf35d34c81df58a3d733c212f9",
       "category": "rings",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "REVIEWED_CORRECTED",
+      "description_methods": [],
+      "review_notes": "Actual statsInfo, solo/combined bonus formulas and identification/cursing branches reviewed. Concise player-facing benefits and numeric labels. Combined descriptions now withhold unknown companion bonuses; no combat calculation changed.",
+      "tests": [
+        "MechanicsExplanationTest.everyRingInspectionWithholdsUnknownCompanionLevels",
+        "MechanicsExplanationTest.forceInspectionAndUpgradePreviewDoNotExposeUnknownStrengthRing",
+        "MechanicsExplanationTest.arcanaUpgradePreviewCannotRevealAnUnknownCurse",
+        "MechanicsExplanationTest.identifiedRingSummariesRemainBriefAndLabelSuppressedEffects"
+      ]
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/rings/RingOfForce.java",
-      "sha256": "af5875c544b324b28c31fea0bedb2e459ada968aeaa39653badf51abc30b7eae",
+      "sha256": "4ab5467d9c68690829fb36c58336e36642c15d1e4753a92bf905d88a63bdffa0",
       "category": "rings",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
+      "status": "REVIEWED_PENDING_DEPENDENCY",
       "description_methods": [
         "info"
+      ],
+      "review_notes": "Actual statsInfo, solo/combined bonus formulas and identification/cursing branches reviewed. Concise player-facing benefits and numeric labels. Combined descriptions now withhold unknown companion bonuses; no combat calculation changed. Force personal range and upgrade previews also guard unknown Strength; complex detail prose remains pending.",
+      "tests": [
+        "MechanicsExplanationTest.everyRingInspectionWithholdsUnknownCompanionLevels",
+        "MechanicsExplanationTest.forceInspectionAndUpgradePreviewDoNotExposeUnknownStrengthRing",
+        "MechanicsExplanationTest.arcanaUpgradePreviewCannotRevealAnUnknownCurse",
+        "MechanicsExplanationTest.identifiedRingSummariesRemainBriefAndLabelSuppressedEffects"
       ]
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/rings/RingOfFuror.java",
-      "sha256": "d909269ee7ed8fbf16fcd032fa308d546f52b705ca8d231eaf71039dfda60295",
+      "sha256": "65606a8a510ca65995c5dad5b4d15a258e17db2c3b55a096f3f420e71c2c22cd",
       "category": "rings",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "REVIEWED_CORRECTED",
+      "description_methods": [],
+      "review_notes": "Actual statsInfo, solo/combined bonus formulas and identification/cursing branches reviewed. Concise player-facing benefits and numeric labels. Combined descriptions now withhold unknown companion bonuses; no combat calculation changed.",
+      "tests": [
+        "MechanicsExplanationTest.everyRingInspectionWithholdsUnknownCompanionLevels",
+        "MechanicsExplanationTest.forceInspectionAndUpgradePreviewDoNotExposeUnknownStrengthRing",
+        "MechanicsExplanationTest.arcanaUpgradePreviewCannotRevealAnUnknownCurse",
+        "MechanicsExplanationTest.identifiedRingSummariesRemainBriefAndLabelSuppressedEffects"
+      ]
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/rings/RingOfHaste.java",
-      "sha256": "c44c997006703312e9a1b62de2d36a7446ce721d54ccddfb3a9c13f551f92557",
+      "sha256": "c50c9f1a96e537e9e8d1dc4a71bf55ab8d8f26411a0dba01cdded7e9ada62133",
       "category": "rings",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "REVIEWED_CORRECTED",
+      "description_methods": [],
+      "review_notes": "Actual statsInfo, solo/combined bonus formulas and identification/cursing branches reviewed. Concise player-facing benefits and numeric labels. Combined descriptions now withhold unknown companion bonuses; no combat calculation changed.",
+      "tests": [
+        "MechanicsExplanationTest.everyRingInspectionWithholdsUnknownCompanionLevels",
+        "MechanicsExplanationTest.forceInspectionAndUpgradePreviewDoNotExposeUnknownStrengthRing",
+        "MechanicsExplanationTest.arcanaUpgradePreviewCannotRevealAnUnknownCurse",
+        "MechanicsExplanationTest.identifiedRingSummariesRemainBriefAndLabelSuppressedEffects"
+      ]
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/rings/RingOfMight.java",
-      "sha256": "e6d284e22f1034fcfcea71046931977d417e7dc512c439063755c9a3e3aff263",
+      "sha256": "045c1b574a02e0d96aae512ad75b7cbbffde00c14273780420cc23ca62c5ed9c",
       "category": "rings",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "REVIEWED_CORRECTED",
+      "description_methods": [],
+      "review_notes": "Actual statsInfo, solo/combined bonus formulas and identification/cursing branches reviewed. Concise player-facing benefits and numeric labels. Combined descriptions now withhold unknown companion bonuses; no combat calculation changed.",
+      "tests": [
+        "MechanicsExplanationTest.everyRingInspectionWithholdsUnknownCompanionLevels",
+        "MechanicsExplanationTest.forceInspectionAndUpgradePreviewDoNotExposeUnknownStrengthRing",
+        "MechanicsExplanationTest.arcanaUpgradePreviewCannotRevealAnUnknownCurse",
+        "MechanicsExplanationTest.identifiedRingSummariesRemainBriefAndLabelSuppressedEffects"
+      ]
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/rings/RingOfSharpshooting.java",
-      "sha256": "39f7b9309ca30473b0a61e16292bf4946c5572a61f0fcd6ca7a81853668866f5",
+      "sha256": "3dfdb1e9696354221dae8ae489f031d71cf8dc667169049a2beda06458d406e4",
       "category": "rings",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "REVIEWED_CORRECTED",
+      "description_methods": [],
+      "review_notes": "Actual statsInfo, solo/combined bonus formulas and identification/cursing branches reviewed. Concise player-facing benefits and numeric labels. Combined descriptions now withhold unknown companion bonuses; no combat calculation changed.",
+      "tests": [
+        "MechanicsExplanationTest.everyRingInspectionWithholdsUnknownCompanionLevels",
+        "MechanicsExplanationTest.forceInspectionAndUpgradePreviewDoNotExposeUnknownStrengthRing",
+        "MechanicsExplanationTest.arcanaUpgradePreviewCannotRevealAnUnknownCurse",
+        "MechanicsExplanationTest.identifiedRingSummariesRemainBriefAndLabelSuppressedEffects"
+      ]
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/rings/RingOfTenacity.java",
-      "sha256": "58522dce9d5c147263eee5196545707522117ac965a4d48bd09f4179651d147b",
+      "sha256": "3bc8fcba10a385b5dface64ffb8d62e9347250b3f1334bbfc8cc6157ec69397d",
       "category": "rings",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "REVIEWED_PENDING_DEPENDENCY",
+      "description_methods": [],
+      "review_notes": "Actual statsInfo, solo/combined bonus formulas and identification/cursing branches reviewed. Concise player-facing benefits and numeric labels. Combined descriptions now withhold unknown companion bonuses; no combat calculation changed. Health-dependent detailed formula prose remains pending.",
+      "tests": [
+        "MechanicsExplanationTest.everyRingInspectionWithholdsUnknownCompanionLevels",
+        "MechanicsExplanationTest.forceInspectionAndUpgradePreviewDoNotExposeUnknownStrengthRing",
+        "MechanicsExplanationTest.arcanaUpgradePreviewCannotRevealAnUnknownCurse",
+        "MechanicsExplanationTest.identifiedRingSummariesRemainBriefAndLabelSuppressedEffects"
+      ]
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/rings/RingOfWealth.java",
-      "sha256": "0609b135880270c5a1842d160a8595a537f61c4bf2b7be1c513ce42c7219eb8b",
+      "sha256": "a046cbf8289c1668299877f82b56459d762e68746b0eba9084e136d1a854205f",
       "category": "rings",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "REVIEWED_CORRECTED",
+      "description_methods": [],
+      "review_notes": "Actual statsInfo, solo/combined bonus formulas and identification/cursing branches reviewed. Concise player-facing benefits and numeric labels. Combined descriptions now withhold unknown companion bonuses; no combat calculation changed.",
+      "tests": [
+        "MechanicsExplanationTest.everyRingInspectionWithholdsUnknownCompanionLevels",
+        "MechanicsExplanationTest.forceInspectionAndUpgradePreviewDoNotExposeUnknownStrengthRing",
+        "MechanicsExplanationTest.arcanaUpgradePreviewCannotRevealAnUnknownCurse",
+        "MechanicsExplanationTest.identifiedRingSummariesRemainBriefAndLabelSuppressedEffects"
+      ]
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/scrolls/InventoryScroll.java",
@@ -3492,14 +3584,14 @@
       "description_methods": []
     }
   ],
-  "completed_units": 12,
+  "completed_units": 23,
   "latest_tests": {
-    "core_tests": 2957,
+    "core_tests": 2961,
     "suites": 452,
     "failures": 0,
     "errors": 0,
     "skipped": 0,
-    "log": "/workspace/apd-player-food-audit-full.log",
+    "log": "/workspace/apd-player-ring-audit-full.log",
     "android_verified": false,
     "changes_in_apk376": false
   }

@@ -1735,4 +1735,31 @@ public class MechanicsExplanationTest {
   RingOfArcana arcana=ring(3);com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sword lucky=new com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sword();lucky.levelKnown=lucky.cursedKnown=true;lucky.enchant(new com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Lucky());String first=lucky.info();lucky.upgrade();arcana.upgrade();String upgraded=lucky.info();assertNotEquals(first,upgraded);float base=5f/41f,power=(float)Math.pow(1.175f,5);assertTrue(upgraded,upgraded.contains(com.shatteredpixel.shatteredpixeldungeon.messages.Messages.decimalFormat("0.##",base*100)+"% to "+com.shatteredpixel.shatteredpixeldungeon.messages.Messages.decimalFormat("0.##",base*power*100)+"%"));
   arcana.level(100);com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.RunicBlade.RunicSlashTracker slash=Buff.affect(hero,com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.RunicBlade.RunicSlashTracker.class);slash.boost=30;String capped=lucky.info();assertTrue(capped,capped.contains("100% to 100%"));assertTrue(capped.contains("adds 0 percentage points"));arcana.levelKnown=false;assertFalse(lucky.info().contains("Arcana adds"));
  }
+
+ @Test public void everyRingInspectionWithholdsUnknownCompanionLevels()throws Exception{
+  for(Class type:com.shatteredpixel.shatteredpixeldungeon.items.Generator.Category.RING.classes){
+   Ring known=(Ring)type.getDeclaredConstructor().newInstance(),unknown=(Ring)type.getDeclaredConstructor().newInstance();
+   known.anonymize();known.levelKnown=known.cursedKnown=true;unknown.anonymize();unknown.levelKnown=unknown.cursedKnown=false;
+   hero.belongings.ring=known;hero.belongings.misc=unknown;
+   String before=known.info();unknown.level(5);assertEquals(type.getSimpleName(),before,known.info());
+   unknown.levelKnown=unknown.cursedKnown=true;assertNotEquals("Identified combined values remain available for "+type.getSimpleName(),before,known.info());
+  }
+ }
+ @Test public void forceInspectionAndUpgradePreviewDoNotExposeUnknownStrengthRing(){
+  RingOfForce force=new RingOfForce();force.anonymize();force.levelKnown=force.cursedKnown=true;
+  RingOfMight might=new RingOfMight();might.anonymize();might.levelKnown=might.cursedKnown=false;
+  hero.belongings.ring=force;hero.belongings.misc=might;might.activate(hero);hero.heroClass=HeroClass.DUELIST;
+  String first=force.info(),detail=RingExplanation.details(force),upgrade=force.upgradeStat1(3),ability=force.upgradeStat3(3);int strength=hero.STR();
+  might.level(5);assertNotEquals(strength,hero.STR());assertEquals(first,force.info());assertEquals(detail,RingExplanation.details(force));assertEquals(upgrade,force.upgradeStat1(3));assertEquals(ability,force.upgradeStat3(3));
+ }
+ @Test public void arcanaUpgradePreviewCannotRevealAnUnknownCurse(){
+  RingOfArcana arcana=new RingOfArcana();arcana.levelKnown=true;arcana.cursedKnown=false;
+  String uncursed=arcana.upgradeStat1(3);arcana.cursed=true;assertEquals(uncursed,arcana.upgradeStat1(3));
+  arcana.cursedKnown=true;assertNotEquals(uncursed,arcana.upgradeStat1(3));
+ }
+ @Test public void identifiedRingSummariesRemainBriefAndLabelSuppressedEffects(){
+  RingOfAccuracy ring=new RingOfAccuracy();ring.anonymize();ring.levelKnown=ring.cursedKnown=true;hero.belongings.ring=ring;
+  String plain=ring.info();assertTrue(plain.contains("Accuracy bonus"));assertTrue(plain.contains("not hit chance"));assertFalse(plain.contains("percentage points"));assertTrue(plain.length()<250);
+  Buff.affect(hero,MagicImmune.class);assertTrue(ring.info().contains("inactive while you are magic-immune"));
+ }
 }

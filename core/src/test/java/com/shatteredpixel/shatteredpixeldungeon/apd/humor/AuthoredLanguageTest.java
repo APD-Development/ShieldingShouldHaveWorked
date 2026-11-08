@@ -63,7 +63,8 @@ public class AuthoredLanguageTest {
   // Plus 186 neutral origin/classification labels and two source-generation range labels, plus four action-evidence wall-search labels.
   // Plus the reviewed Wild Magic range message and one neutral seal-cooldown-ready message, and one unknown-charge privacy message.
   // Plus three neutral Arcana comparison labels: decrease, percentage-point increase and decrease.
-  assertEquals(9,files);assertEquals("Reviewed English message inventory",5296,values);
+  // Plus two reviewed ring knowledge/suppression notices; no new description interface.
+  assertEquals(9,files);assertEquals("Reviewed English message inventory",5298,values);
  }
  @Test public void localizedAlternativesDoNotDamageInnocentWordsOrOtherLanguages(){
   for(String innocent:new String[]{"Hell","slut","kesialan","Verdammte Charaktere","dictionary","classic","Scunthorpe","Prick","Fan of Blades"})assertEquals(innocent,AuthoredLanguage.select(innocent,false));
