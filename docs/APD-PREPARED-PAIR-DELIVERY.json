@@ -1,25 +1,25 @@
 {
-  "number": 374,
-  "core_tests": 2954,
+  "number": 376,
+  "core_tests": 2956,
   "android_tests": 10,
   "application_id": "com.charltonchris29.adhdpixeldungeon.indev",
   "version_code": 920,
   "signing_certificate": "067688b3ab6bd5820a67f4c1ba7d5859db578173771cf31d3252b3e4e012246e",
   "apk_hashes": {
-    "Developer": "96869c0cbf9205a8f22094ead3fd8af45a2395d7dbaa87655eb377a9332c2a43",
-    "Alpha-Testers": "3aca21efe6a123090096d760271491cebf6faff67d9c24d6e9d523316ee46e1d"
+    "Developer": "d8daca8d50bed28f4a2be64194f5c46d364788f8414fe2239a90d58587645ca3",
+    "Alpha-Testers": "7a54ef6ec0858e5dd68b470f17a37e45925de385d590f2f5ce6b2f2216187017"
   },
-  "source_sha256": "3b5616507dcc7b754fcc375028dd172d99564645126ffaf495f595e105c25649",
-  "source": "9041b7a155f97def09648b4d277996cab0f72c58",
-  "artifact_id": 13595389716,
-  "artifact_sha256": "0892b42eb47cdbc2ddd6e56e6931961161a8c5810655ba9926cbd73c19f94bf6",
-  "prepared_run": 42426299732,
-  "prepared_source": "9041b7a155f97def09648b4d277996cab0f72c58",
-  "status_note": "docs/APD-374-DELIVERY-BOUNDARIES.md",
-  "title": "APD374 \u2014 Arcana percentages and actual effect increases",
+  "source_sha256": "bba16e20cb9166b9b2ed13926711ade9e001e0c64490f3e2a4ceb4aeb1d535c8",
+  "source": "2c3f736887c92c133e2623448768ae8635054eda",
+  "artifact_id": 13597465413,
+  "artifact_sha256": "49490872483a9c7fe04ce89d9909cf0a6daca23c4938a819ab7d575012f02ddd",
+  "prepared_run": 42429291798,
+  "prepared_source": "2c3f736887c92c133e2623448768ae8635054eda",
+  "status_note": "docs/APD-376-DELIVERY-BOUNDARIES.md",
+  "title": "APD376 \u2014 shorter descriptions and complete item text",
   "variants": [
     "Developer",
     "Alpha-Testers"
   ],
-  "visual_review": "docs/APD-374-VISUAL-REVIEW.json"
+  "visual_review": "docs/APD-376-VISUAL-REVIEW.json"
 }
