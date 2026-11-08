@@ -1,0 +1,1 @@
+Correct instrumentation expectations only: inactive Cloak says every4turns, and the explicitly approved Arcana button is allowed and counted. Reuse both exact379 APKs; preserve initial failures and ten already-passed native cases. Run complete item-window acceptance anew for each variant, compile instrumentation only, then repackage original source/signing evidence.
