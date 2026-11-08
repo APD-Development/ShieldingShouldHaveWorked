@@ -1,3 +1,15 @@
+## APD376 actually delivered; full item-description audit newly requested
+
+Exact source2c3f736887c92c133e2623448768ae8635054eda / tagapd-alpha-preview-376. Short weapon tooltips and clipped final item-description line corrected together. Description content uses ceil(height)+2 bottom padding with integer viewport sizing, including relevant expanded panels. No gameplay changes. Full2956 core/452 suites zero failures/errors/skips, required compile/build/signing/source checks and10 API34 native cases passed in42429291798. Actual raw producing XML/native evidence independently downloaded and checked;8actual Mirror Image/Sword/Lucky/Arcana PNGs inspected. No phone verification or whole audit claimed.
+
+Private publication42430072321/job128576789145 succeeded at2026-11-08T00:31:55Z. Prepared artifact13597465413 reused exactly; no publication rebuild. Runner downloaded back APK/source; completed local release APK downloads checked against sidecars and proof. Both direct APK links actually sent in task commentary after verification. Receipt docs/APD-376-OWNER-DELIVERY-RECEIPT.json. Original signing identity/application ID/versionCode920 preserved; install over, never uninstall/clear. Owner authorizes corrective delivery and excludes failed deliveries from quota. Preserve all prior releases/main/saves/statistics. Unpublished375 superseded on new clipping report; its failed packaging and emulator retry evidence retained, not called delivered.
+
+Developer: https://github.com/APD-Development/ShieldingShouldHaveWorked/releases/download/apd-alpha-preview-376/APD-Developer-376.apk
+Alpha: https://github.com/APD-Development/ShieldingShouldHaveWorked/releases/download/apd-alpha-preview-376/APD-Alpha-Testers-376.apk
+Source: https://github.com/APD-Development/ShieldingShouldHaveWorked/releases/download/apd-alpha-preview-376/APD-Source-376.zip
+
+New standing work: owner requests individual implementation-backed audit of EVERY item description, variants and secondary panels; concise player language, no mechanics/interface/panel additions. Inventory docs/APD-PLAYER-DESCRIPTION-AUDIT.json has425source units and2388item-message entries; inventory is NOT completed review. Food category review underway. Continue other categories and maintain honest reviewed/corrected/unresolved counts. Do not represent376 as comprehensive audit completion or rebuild unchanged binaries for documentation.
+
 ## Ordinary weapon tooltip shortened — source tested, APK pending
 
 Owner ordered the screenshot’s wording shortened. Generic combat tutorial and repeated ring disclaimer removed; live attack-time/accuracy and concise Force/Sharpshooting damage changes retained. No mechanics or panel changes. Full local 2955/451 passed, zero failures/errors/skips; no Android/APK check claimed. Report docs/APD-SHORT-WEAPON-TOOLTIP-2026-11-07.md. This change is not in APD374. Preserve for next authorized APK; no new release or source-only remote delivery performed.
