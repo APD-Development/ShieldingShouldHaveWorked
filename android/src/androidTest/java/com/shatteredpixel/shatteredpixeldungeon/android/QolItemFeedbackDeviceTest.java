@@ -297,6 +297,16 @@ public class QolItemFeedbackDeviceTest {
             ThrowingKnife knife=new ThrowingKnife();knife.levelKnown=true;knife.cursedKnown=true;
             TopScoresDeviceTest.render(()->{RingOfSharpshooting r=new RingOfSharpshooting();r.anonymize();r.levelKnown=true;r.cursedKnown=true;Dungeon.hero.belongings.misc=r;r.activate(Dungeon.hero);});
             showItem(knife,"2-6 -> 3-8","qol-sharpshooting-weapon.png");
+            com.shatteredpixel.shatteredpixeldungeon.items.armor.ScaleArmor scale=new com.shatteredpixel.shatteredpixeldungeon.items.armor.ScaleArmor();
+            scale.level(6);scale.levelKnown=scale.cursedKnown=true;
+            final int[] priorStrength={0};final com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor[] priorArmor={null};
+            TopScoresDeviceTest.render(()->{
+                priorStrength[0]=Dungeon.hero.STR;priorArmor[0]=Dungeon.hero.belongings.armor;
+                Dungeon.hero.STR=16;Dungeon.hero.belongings.armor=scale;
+                assertFalse(scale.info().contains("Armor subtracts"));assertFalse(scale.info().contains("points short"));
+            });
+            showItem(scale,"6-32","qol-scale-armor-concise.png");
+            TopScoresDeviceTest.render(()->{Dungeon.hero.STR=priorStrength[0];Dungeon.hero.belongings.armor=priorArmor[0];});
             calculationWindowsRenderAndRespond();
             prepareSearchableFloor();
             final int[] center={0};

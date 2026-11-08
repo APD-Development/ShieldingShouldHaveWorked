@@ -93,6 +93,19 @@ public class ItemDescriptionPurityTest {
         try{String plain=item.info();return plain+"\n"+MechanicsDetails.item(item,plain);}
         finally{if(temporarilyOwned)Dungeon.hero.belongings.backpack.items.remove(item);}
     }
+    /** Optional local audit evidence, not a player interface or a claim of human review. */
+    private static void exportForIndividualReview(Item item,String legacy)throws Exception{
+        String directory=System.getenv("APD_DESCRIPTION_EXPORT");if(directory==null||directory.isEmpty())return;
+        boolean owned=Dungeon.hero.belongings.contains(item);
+        if(!owned)Dungeon.hero.belongings.backpack.items.add(item);
+        try{
+            java.nio.file.Path output=java.nio.file.Paths.get(directory);java.nio.file.Files.createDirectories(output);
+            String text="Constructor-model catalog fixture; Warrior, Floor 6, Strength 10, 20/20 HP. Level/curse knowledge enabled; other knowledge follows constructor defaults. Automated evidence only.\n\nPRIMARY ITEM DESCRIPTION\n"+item.info()
+                    +"\n\nEXISTING OPTIONAL ITEM PANEL\n"+MechanicsDetails.itemCalculations(item)
+                    +"\n\nLEGACY HELPER OUTPUT (not necessarily an active interface)\n"+legacy;
+            java.nio.file.Files.write(output.resolve(item.getClass().getName()+".txt"),text.getBytes(java.nio.charset.StandardCharsets.UTF_8));
+        }finally{if(!owned)Dungeon.hero.belongings.backpack.items.remove(item);}
+    }
     @Test public void catalogDescriptionsWithoutALoadedHeroPreserveItemsAndRandomness()throws Exception{
         List<Item> items=new ArrayList<>();for(Class<?> type:classes(Arrays.asList(Catalog.values())).values())items.add(item(type));
         com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff staff=new com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff();
@@ -134,7 +147,7 @@ public class ItemDescriptionPurityTest {
                     Random.pushGenerator(10471);float expected=Random.Float();Random.popGenerator();
                     String description;float afterRandom;
                     Random.pushGenerator(10471);
-                    try{description=inspect(item);afterRandom=Random.Float();}finally{Random.popGenerator();}
+                    try{description=inspect(item);exportForIndividualReview(item,description);afterRandom=Random.Float();}finally{Random.popGenerator();}
                     Bundle after=new Bundle();item.storeInBundle(after);
                     if(description.trim().isEmpty())failures.add(type.getSimpleName()+": empty description");
                     if(!before.toString().equals(after.toString()))failures.add(type.getSimpleName()+": inspection changed saved state");

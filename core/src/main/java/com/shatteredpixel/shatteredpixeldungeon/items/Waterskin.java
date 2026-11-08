@@ -160,6 +160,8 @@ public class Waterskin extends Item {
 		}
 	}
 
+    @Override public String desc(){return Messages.get(this,"desc",MAX_VOLUME);}
+
 	@Override
 	public String info() {
 		String info = super.info();
@@ -167,7 +169,7 @@ public class Waterskin extends Item {
 		if (volume == 0){
 			info += "\n\n" + Messages.get(this, "desc_water");
 		} else {
-			info += "\n\n" + Messages.get(this, "desc_heal");
+			info += "\n\n" + Messages.get(this, "desc_heal",volume,MAX_VOLUME,com.shatteredpixel.shatteredpixeldungeon.apd.mechanics.ObfuscationExplanation.number(TIME_TO_DRINK),TIME_TO_DRINK==1?"turn":"turns");
 		}
 
 		if (isFull()){

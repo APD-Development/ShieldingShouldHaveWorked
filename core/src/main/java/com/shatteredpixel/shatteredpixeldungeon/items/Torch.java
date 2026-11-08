@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -22,6 +25,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.items;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Light;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
@@ -78,6 +82,11 @@ public class Torch extends Item {
 		}
 	}
 	
+    @Override public String desc(){
+        return Messages.get(this,"desc",com.shatteredpixel.shatteredpixeldungeon.apd.mechanics.ObfuscationExplanation.number(Light.DURATION),
+                com.shatteredpixel.shatteredpixeldungeon.apd.mechanics.ObfuscationExplanation.number(TIME_TO_LIGHT),TIME_TO_LIGHT==1?"turn":"turns");
+    }
+
 	@Override
 	public boolean isUpgradable() {
 		return false;

@@ -105,7 +105,8 @@ public class Food extends Item {
 
     @Override
     public String info(){
-        return super.info()+"\n\n"+com.shatteredpixel.shatteredpixeldungeon.apd.mechanics.FoodExplanation.summary(this);
+        String extra=com.shatteredpixel.shatteredpixeldungeon.apd.mechanics.FoodExplanation.summary(this);
+        return super.info()+(extra.isEmpty()?"":"\n\n"+extra);
     }
 
 	protected float eatingTime(){

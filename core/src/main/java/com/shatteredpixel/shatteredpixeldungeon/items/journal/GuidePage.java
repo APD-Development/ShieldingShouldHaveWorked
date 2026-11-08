@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -38,6 +41,7 @@ public class GuidePage extends DocumentPage {
 
 	@Override
 	public String desc() {
-		return Messages.get(this, "desc", document().pageTitle(page()));
+		if(page()==null||document().pageIdx(page())<0)return Messages.get(DocumentPage.class,"desc");
+        return Messages.get(this, "desc", document().pageTitle(page()));
 	}
 }

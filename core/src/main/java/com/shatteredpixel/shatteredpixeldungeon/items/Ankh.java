@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -22,6 +25,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.items;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
@@ -93,7 +97,7 @@ public class Ankh extends Item {
 	@Override
 	public String desc() {
 		if (blessed)
-			return Messages.get(this, "desc_blessed");
+			return Messages.get(this, "desc_blessed",Dungeon.hero==null?"one quarter of your maximum health, rounded down":blessedReviveHP(Dungeon.hero.HT)+" HP",com.shatteredpixel.shatteredpixeldungeon.apd.mechanics.ObfuscationExplanation.number(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invulnerability.DURATION));
 		else
 			return super.desc();
 	}

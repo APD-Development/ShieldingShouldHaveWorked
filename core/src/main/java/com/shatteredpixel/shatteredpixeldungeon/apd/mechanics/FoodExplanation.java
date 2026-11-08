@@ -45,10 +45,10 @@ public final class FoodExplanation {
     }
     public static String summary(Food food){
         String unavailable=unavailable(food);if(!unavailable.isEmpty())return unavailable;
-        String text="Hunger relief: _"+n(100f*nutritionBeforeHorn(food)/Hunger.HUNGRY)+"% of a normal ration_. Hunger relief stops when full.";
+        String text=food.getClass()==Food.class&&nutritionBeforeHorn(food)==Hunger.HUNGRY?"":"Hunger relief: _"+n(100f*nutritionBeforeHorn(food)/Hunger.HUNGRY)+"% of a normal ration_.";
         if(Dungeon.isChallenged(Challenges.NO_FOOD))text+=" On Diet's reduction is included.";
         float time=food.previewEatingTime();
-        if(Float.isFinite(time))text+=" Eating takes _"+n(time)+(time==1?" turn_.":" turns_.");
+        if(Float.isFinite(time))text+=(text.isEmpty()?"":" ")+"Eating takes _"+n(time)+(time==1?" turn_.":" turns_.");
         if(Dungeon.hero!=null&&Dungeon.hero.belongings.getItem(com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HornOfPlenty.class)!=null)
             text+=" An active Horn of Plenty curse reduces hunger relief by another 33%.";
         if(food instanceof Blandfruit)text+="\n"+BlandfruitExplanation.summary((Blandfruit)food);

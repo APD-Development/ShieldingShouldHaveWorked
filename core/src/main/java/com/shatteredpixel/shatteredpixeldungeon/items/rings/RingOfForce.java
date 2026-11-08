@@ -172,7 +172,7 @@ public class RingOfForce extends Ring {
 		if (Dungeon.hero != null && Dungeon.hero.heroClass == HeroClass.DUELIST){
             if(com.shatteredpixel.shatteredpixeldungeon.apd.mechanics.ArmorExplanation.knownStrength(Dungeon.hero)==null)return "Depends on Strength";
 			float tier = tier(Dungeon.hero != null ? Dungeon.hero.STR() : 10);
-			int bonus = Math.round(3+tier+(level*((4+2*tier)/8f)));
+			int bonus = Math.round(3+tier+((level+1)*((4+2*tier)/8f)));
 			return (min(level+1, tier) + bonus) + "-" + (max(level+1, tier) + bonus);
 		} else {
 			return null;

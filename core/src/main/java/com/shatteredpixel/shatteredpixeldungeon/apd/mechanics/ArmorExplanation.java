@@ -31,17 +31,6 @@ public final class ArmorExplanation {
         return might == null ? null : hero.previewStrength(might);
     }
 
-    public static String summary(Armor armor, Hero hero) {
-        String text = "Armor subtracts a rolled number of damage points from attacks that use armor protection. It does not reduce all damage by a fixed percentage. Each point of missing strength removes 2 points from this armor's protection roll; its contribution cannot fall below zero. Being too weak also slows walking and makes ordinary dodges less effective.";
-        if (!armor.levelKnown) return text;
-        Integer strength = knownStrength(hero);
-        if (strength == null) return text + " A personal strength-penalty preview is unavailable while contributing bonuses are unknown.";
-        int missing = Math.max(0, armor.STRReq() - strength);
-        return text + " With your known strength: _" + missing + " points short_; this armor contributes _"
-                + Math.max(0, armor.DRMin() - 2 * missing) + "–" + Math.max(0, armor.DRMax() - 2 * missing)
-                + " protection points_ before other defenses.";
-    }
-
     public static String details(Armor armor, Hero hero) {
         String rules = "_Armor, strength and augmentation_\nProtection is rolled between this armor's minimum and maximum, favoring middle values. Subtract 2 × max(0, requirement − strength), then keep only a positive contribution. Other armor-piercing, magical or special attacks can use different rules.\n"
                 + "For each missing strength point, divide the incoming evasion score by 1.5 and movement speed by 1.2. Thus an otherwise unchanged step takes 1.2^missing times as long. Momentum can add evasion afterward; augmentation then adds its evasion points. Stone can replace ordinary dodging entirely. These factors are not dodge percentages.\n"

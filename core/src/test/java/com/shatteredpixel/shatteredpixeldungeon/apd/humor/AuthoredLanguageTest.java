@@ -66,7 +66,8 @@ public class AuthoredLanguageTest {
   // Plus two reviewed ring knowledge/suppression notices; no new description interface.
   // Plus two neutral backpack description/capacity labels, describing existing container behavior.
   // Plus one neutral floor label using a key’s existing recorded depth.
-  assertEquals(9,files);assertEquals("Reviewed English message inventory",5301,values);
+  // Plus one neutral remains-item consumption/time label, using the existing action cost.
+  assertEquals(9,files);assertEquals("Reviewed English message inventory",5302,values);
  }
  @Test public void localizedAlternativesDoNotDamageInnocentWordsOrOtherLanguages(){
   for(String innocent:new String[]{"Hell","slut","kesialan","Verdammte Charaktere","dictionary","classic","Scunthorpe","Prick","Fan of Blades"})assertEquals(innocent,AuthoredLanguage.select(innocent,false));

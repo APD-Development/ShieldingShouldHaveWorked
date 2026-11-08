@@ -346,8 +346,7 @@ public class MechanicsExplanationTest {
   for(int challenge:new int[]{0,Challenges.NO_ARMOR})for(Armor.Augment augment:Armor.Augment.values())for(int level:new int[]{-3,0,3,8})for(int strength:new int[]{6,10,20}){
    Dungeon.challenges=challenge;armor.augment=augment;armor.level(level);hero.STR=strength;
    int missing=Math.max(0,armor.STRReq()-hero.STR());
-   String summary=ArmorExplanation.summary(armor,hero),detail=ArmorExplanation.details(armor,hero);
-   assertTrue(summary,summary.contains("_"+missing+" points short_"));
+   String detail=ArmorExplanation.details(armor,hero);
    assertTrue(detail,detail.contains("protection-roll penalty: "+2*missing+" points"));
    for(int seed=0;seed<10;seed++){
     Random.pushGenerator(seed);int expected;try{Random.NormalIntRange(0,0);expected=Math.max(0,Random.NormalIntRange(armor.DRMin(),armor.DRMax())-2*missing);}finally{Random.popGenerator();}
@@ -361,11 +360,11 @@ public class MechanicsExplanationTest {
   armor.level(3);hero.STR=10;RingOfMight might=new RingOfMight();might.level(1);might.anonymize();might.levelKnown=might.cursedKnown=true;hero.belongings.ring=might;might.activate(hero);
   Buff.affect(hero,EnhancedRings.class);assertEquals(Integer.valueOf(hero.STR()),ArmorExplanation.knownStrength(hero));
   assertTrue(ArmorExplanation.details(armor,hero).contains("Known strength: "+hero.STR()));
-  might.levelKnown=false;String unknown=ArmorExplanation.summary(armor,hero);might.level(9);assertEquals(unknown,ArmorExplanation.summary(armor,hero));assertTrue(unknown.contains("unavailable"));
+  might.levelKnown=false;String unknown=ArmorExplanation.details(armor,hero);might.level(9);assertEquals(unknown,ArmorExplanation.details(armor,hero));assertTrue(unknown.contains("withheld"));
  }
  @Test public void armorUnknownUpgradeDetailsDoNotChangeWithHiddenLevel(){
-  armor.levelKnown=false;armor.level(0);String detail=ArmorExplanation.details(armor,hero),summary=ArmorExplanation.summary(armor,hero);armor.level(9);
-  assertEquals(detail,ArmorExplanation.details(armor,hero));assertEquals(summary,ArmorExplanation.summary(armor,hero));assertTrue(detail.contains("stay hidden"));
+  armor.levelKnown=false;armor.level(0);String detail=ArmorExplanation.details(armor,hero);armor.level(9);
+  assertEquals(detail,ArmorExplanation.details(armor,hero));assertTrue(detail.contains("stay hidden"));
  }
  @Test public void armorRequirementPreviewSeparatesDegradeFromOwnLevelAndMastery(){
   armor.level(6);armor.masteryPotionBonus=true;int requirement=armor.STRReq();Buff.affect(hero,Degrade.class);
@@ -461,7 +460,7 @@ public class MechanicsExplanationTest {
   java.lang.reflect.Method satisfy=com.shatteredpixel.shatteredpixeldungeon.items.food.Food.class.getDeclaredMethod("satisfy",Hero.class);satisfy.setAccessible(true);
   com.shatteredpixel.shatteredpixeldungeon.items.food.Food[] meals={new com.shatteredpixel.shatteredpixeldungeon.items.food.Food(),new com.shatteredpixel.shatteredpixeldungeon.items.food.SmallRation(),new com.shatteredpixel.shatteredpixeldungeon.items.food.ChargrilledMeat()};
   for(int challenge:new int[]{0,Challenges.NO_FOOD})for(com.shatteredpixel.shatteredpixeldungeon.items.food.Food food:meals){
-   Dungeon.challenges=challenge;Hunger hunger=Buff.affect(hero,Hunger.class);com.watabou.utils.Bundle state=new com.watabou.utils.Bundle();hunger.storeInBundle(state);state.put("level",450f);hunger.restoreFromBundle(state);float offered=FoodExplanation.nutritionBeforeHorn(food);String info=food.info();assertTrue(info.contains(ObfuscationExplanation.number(100f*offered/Hunger.HUNGRY)+"% of a normal ration"));assertEquals(450,hunger.hungerPoints(),0);satisfy.invoke(food,hero);assertEquals(Math.max(0,450-offered),hunger.hungerPoints(),0);
+   Dungeon.challenges=challenge;Hunger hunger=Buff.affect(hero,Hunger.class);com.watabou.utils.Bundle state=new com.watabou.utils.Bundle();hunger.storeInBundle(state);state.put("level",450f);hunger.restoreFromBundle(state);float offered=FoodExplanation.nutritionBeforeHorn(food);String info=food.info();if(food.getClass()!=com.shatteredpixel.shatteredpixeldungeon.items.food.Food.class||challenge!=0)assertTrue(info.contains(ObfuscationExplanation.number(100f*offered/Hunger.HUNGRY)+"% of a normal ration"));else assertFalse(info.contains("100% of a normal ration"));assertEquals(450,hunger.hungerPoints(),0);satisfy.invoke(food,hero);assertEquals(Math.max(0,450-offered),hunger.hungerPoints(),0);
   }
  }
  @Test public void ordinaryMealsAreConciseAndSpecialFoodsExplainTheirActualRisks(){
@@ -1771,5 +1770,77 @@ public class MechanicsExplanationTest {
   }
   assertTrue(bags[4].info().contains("20%"));
   int initial=hero.belongings.backpack.capacity();hero.belongings.backpack.items.add(bags[1]);assertTrue(hero.belongings.backpack.info().contains((initial+1)+" item slots"));
+ }
+ @Test public void ordinaryArmorKeepsItsStatsAndRealPenaltyWithoutTheTutorial(){
+  com.shatteredpixel.shatteredpixeldungeon.items.armor.ScaleArmor scale=new com.shatteredpixel.shatteredpixeldungeon.items.armor.ScaleArmor();
+  scale.level(6);scale.levelKnown=scale.cursedKnown=true;hero.STR=scale.STRReq();
+  String info=scale.info();
+  assertTrue(info.contains(com.shatteredpixel.shatteredpixeldungeon.messages.Messages.get(Armor.class,"curr_absorb",scale.tier,scale.DRMin(),scale.DRMax(),scale.STRReq())));
+  assertFalse(info.contains("Armor subtracts"));assertFalse(info.contains("points short"));assertFalse(info.contains("protection points"));
+  assertFalse(info.contains(com.shatteredpixel.shatteredpixeldungeon.messages.Messages.get(Armor.class,"too_heavy")));
+  hero.STR=scale.STRReq()-1;
+  assertTrue(scale.info().contains(com.shatteredpixel.shatteredpixeldungeon.messages.Messages.get(Armor.class,"too_heavy")));
+ }
+ @Test public void utilityItemDescriptionsUseRealValuesAndDoNotPointToMissingPanels(){
+  com.shatteredpixel.shatteredpixeldungeon.items.Ankh ankh=new com.shatteredpixel.shatteredpixeldungeon.items.Ankh();ankh.bless();
+  for(int maximum:new int[]{3,20,51,100}){hero.HT=maximum;assertTrue(ankh.desc().contains(com.shatteredpixel.shatteredpixeldungeon.items.Ankh.blessedReviveHP(maximum)+" HP"));}
+  assertFalse(ankh.desc().contains("calculation details"));
+  String torch=new com.shatteredpixel.shatteredpixeldungeon.items.Torch().desc();assertTrue(torch.contains(ObfuscationExplanation.number(Light.DURATION)+" turns"));assertTrue(UtilityItemExplanation.details(new com.shatteredpixel.shatteredpixeldungeon.items.Torch(),hero).contains(Light.DISTANCE+" tiles"));assertTrue(torch.contains("1 turn"));
+  com.shatteredpixel.shatteredpixeldungeon.items.Waterskin skin=new com.shatteredpixel.shatteredpixeldungeon.items.Waterskin();skin.fill();String full=skin.info();
+  assertTrue(full.contains(skin.storedDrops()+"/"+skin.capacity()+" drops"));assertFalse(full.contains("calculation details"));assertTrue(full.contains("5%"));assertFalse(full.contains("5%%"));
+  assertFalse(new com.shatteredpixel.shatteredpixeldungeon.items.LiquidMetal().desc().contains("expanded calculations"));
+ }
+ @Test public void remainsDescriptionsFollowCurrentHealthAndLevelWithoutUsingTheItems(){
+  com.shatteredpixel.shatteredpixeldungeon.items.remains.BrokenHilt hilt=new com.shatteredpixel.shatteredpixeldungeon.items.remains.BrokenHilt();
+  com.shatteredpixel.shatteredpixeldungeon.items.remains.SealShard seal=new com.shatteredpixel.shatteredpixeldungeon.items.remains.SealShard();
+  com.shatteredpixel.shatteredpixeldungeon.items.remains.TornPage page=new com.shatteredpixel.shatteredpixeldungeon.items.remains.TornPage();
+  for(int level:new int[]{1,6,20})for(int maximum:new int[]{20,51,100}){
+   hero.lvl=level;hero.HT=maximum;
+   assertTrue(hilt.info().contains(Math.max(2,level/3)+" damage"));assertTrue(hilt.info().contains("physical hits"));
+   assertTrue(seal.info().contains(Math.round(maximum/5f)+" shielding"));assertTrue(page.info().contains(Math.round(maximum/10f)+" HP"));
+   assertTrue(page.info().contains("1 turn"));assertNull(hero.buff(PhysicalEmpower.class));assertNull(hero.buff(Barrier.class));
+  }
+  assertTrue(new com.shatteredpixel.shatteredpixeldungeon.items.remains.BowFragment().info().contains(com.shatteredpixel.shatteredpixeldungeon.items.remains.BowFragment.HIGH_GRASS_TILES+" tiles of high grass"));
+ }
+ @Test public void tokenDescriptionsDistinguishCurrentAndBothLegacyQuestGoals()throws Exception{
+  Class<?> type=com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Imp.Quest.class;
+  java.lang.reflect.Field old=type.getDeclaredField("oldQuest"),alternate=type.getDeclaredField("alternative");old.setAccessible(true);alternate.setAccessible(true);
+  boolean previousOld=old.getBoolean(null),previousAlternate=alternate.getBoolean(null);
+  try{
+   com.shatteredpixel.shatteredpixeldungeon.items.quest.DwarfToken token=new com.shatteredpixel.shatteredpixeldungeon.items.quest.DwarfToken();
+   old.setBoolean(null,false);assertTrue(token.desc().contains("10 tokens"));
+   old.setBoolean(null,true);alternate.setBoolean(null,false);assertTrue(token.desc().contains("4 tokens"));
+   alternate.setBoolean(null,true);assertTrue(token.desc().contains("5 tokens"));
+  }finally{old.setBoolean(null,previousOld);alternate.setBoolean(null,previousAlternate);}
+ }
+ @Test public void guidePagesShowOnlyRecordedTitlesAndInspectionDoesNotCollectThem(){
+  com.shatteredpixel.shatteredpixeldungeon.items.journal.DocumentPage[] pages={new com.shatteredpixel.shatteredpixeldungeon.items.journal.AlchemyPage(),new com.shatteredpixel.shatteredpixeldungeon.items.journal.GuidePage()};
+  for(com.shatteredpixel.shatteredpixeldungeon.items.journal.DocumentPage page:pages){
+   String generic=com.shatteredpixel.shatteredpixeldungeon.messages.Messages.get(com.shatteredpixel.shatteredpixeldungeon.items.journal.DocumentPage.class,"desc");
+   assertEquals(generic,page.desc());page.page("unrecorded-page");assertEquals(generic,page.desc());
+   String name=page.document().pageNames().iterator().next();page.page(name);boolean found=page.document().isPageFound(name);
+   assertTrue(page.desc().contains(page.document().pageTitle(name)));assertEquals(found,page.document().isPageFound(name));
+   com.watabou.utils.Bundle before=new com.watabou.utils.Bundle(),after=new com.watabou.utils.Bundle();page.storeInBundle(before);page.info();page.storeInBundle(after);assertEquals(before.toString(),after.toString());
+  }
+ }
+ @Test public void pickaxeAbilityPreviewRoundsItsSeparateDamagePartsLikeTheActualAttack(){
+  com.shatteredpixel.shatteredpixeldungeon.items.quest.Pickaxe pick=new com.shatteredpixel.shatteredpixeldungeon.items.quest.Pickaxe();
+  com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Crab target=new com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Crab();
+  for(com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon.Augment augment:com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon.Augment.values())for(int level:new int[]{0,1,3,8}){
+   pick.augment=augment;pick.level(level);int extra=pick.pierceDamageBoost(target);
+   String expected=(pick.augment.damageFactor(pick.min())+extra)+"-"+(pick.augment.damageFactor(pick.max())+extra);
+   assertTrue(augment+" level="+level+" expected "+expected+" in "+pick.abilityInfo(),pick.abilityInfo().contains(expected));
+   assertEquals(expected,pick.upgradeAbilityStat(level));
+  }
+ }
+ @Test public void forceStanceUpgradePreviewUsesTheSameRingBonusAsActualDamage(){
+  hero.heroClass=HeroClass.DUELIST;RingOfForce force=new RingOfForce();force.anonymize();force.levelKnown=force.cursedKnown=true;hero.belongings.ring=force;force.activate(hero);
+  RingOfForce.BrawlersStance stance=Buff.affect(hero,RingOfForce.BrawlersStance.class);stance.active=true;
+  for(boolean cursed:new boolean[]{false,true})for(int strength:new int[]{10,18,22})for(int level:new int[]{0,1,3,8}){
+   hero.STR=strength;force.cursed=cursed;force.level(level);int bonus=force.soloBuffedBonus();float tier=RingOfForce.unarmedTier(hero.STR());
+   int added=Math.round(3+tier+bonus*(4+2*tier)/8f),minimum=RingOfForce.unarmedMinimum(hero.STR(),bonus)+added,maximum=RingOfForce.unarmedMaximum(hero.STR(),bonus)+added;
+   assertEquals("Strength="+strength+" level="+level+" cursed="+cursed,minimum+"-"+maximum,force.upgradeStat3(level));
+   Random.pushGenerator(771);try{for(int roll=0;roll<30;roll++){int actual=RingOfForce.damageRoll(hero);assertTrue(actual>=minimum&&actual<=maximum);}}finally{Random.popGenerator();}
+  }
  }
 }

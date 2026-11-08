@@ -372,6 +372,9 @@ public class Imp extends NPC {
 			return given;
 		}
 
+        /** Read-only amount requested by the legacy quest's existing interaction checks. */
+        public static int legacyTokenRequirement(){return alternative?5:4;}
+
 		public static boolean isOld(){
 			return oldQuest;
 		}
