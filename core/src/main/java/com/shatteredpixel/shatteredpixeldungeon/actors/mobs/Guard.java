@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -121,6 +124,12 @@ public class Guard extends Mob {
 	}
 
 	private void pullEnemy( Char enemy, int pullPos ){
+        // The chain and push animations finish after the destination was chosen.
+        // Another actor (including this guard) may have moved there meanwhile.
+        if (!pullDestinationOpen(enemy, pullPos)) {
+            enemy.sprite.place(enemy.pos);
+            return;
+        }
 		enemy.pos = pullPos;
 		enemy.sprite.place(pullPos);
 		Dungeon.level.occupyCell(enemy);
@@ -133,6 +142,23 @@ public class Guard extends Mob {
 			enemy.sprite.visible = Dungeon.level.heroFOV[pullPos];
 		}
 	}
+
+
+    private boolean pullDestinationOpen(Char victim, int destination) {
+        if (Dungeon.level == null || destination < 0 || destination >= Dungeon.level.length()
+                || destination == pos || Dungeon.level.solid[destination]
+                || (!Dungeon.level.openSpace[destination] && Char.hasProp(victim, Property.LARGE))) {
+            return false;
+        }
+        Char occupant = Actor.findChar(destination);
+        if (occupant != null && occupant != victim) return false;
+        if (Dungeon.hero != null && Dungeon.hero != victim && Dungeon.hero.pos == destination) return false;
+        // Floor mobs remain authoritative even if an actor registration is missing.
+        if (Dungeon.level.mobs != null) for (Mob mob : Dungeon.level.mobs) {
+            if (mob != victim && mob.pos == destination) return false;
+        }
+        return true;
+    }
 
 	@Override
 	public int attackSkill( Char target ) {
