@@ -4,9 +4,9 @@
   "counting": "Source units, not distinct item types. reviewed_units includes partial reviews; completed_units excludes partial/pending dependency. corrected_units counts source units with corrections, including incomplete reviews. Inventory/export/tests alone are not an individual review.",
   "source_units": 427,
   "message_entries": 2411,
-  "reviewed_units": 235,
-  "corrected_units": 221,
-  "unresolved_units": 320,
+  "reviewed_units": 272,
+  "corrected_units": 253,
+  "unresolved_units": 286,
   "category_counts": {
     "apd": 1,
     "mechanics": 38,
@@ -456,10 +456,12 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/ArcaneResin.java",
-      "sha256": "14f4f3a635cba73f41c57d3ae7012ed168e717b18b5ad1bf3ccf1a0ca6ba9f4a",
+      "sha256": "6d231cde18af6b31d7452e412f9c0475569a83ce75bda31cdeb72ac5c62a10df",
       "category": "items",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "REVIEWED_CORRECTED",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Normal description individually checked against actual pickup/use, transfer and capacity behavior. Removed unnecessary wording while retaining real restrictions. Resin costs/limit come from existing application helpers; no hidden wand inspected. No new panels. Native382 utility windows pending."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/BrokenSeal.java",
@@ -482,8 +484,10 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/EnergyCrystal.java",
       "sha256": "63a7b31a76ff62470e9a3aa84b0aebd00b26078bda9bda4b52359eb6b23188ee",
       "category": "items",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "REVIEWED_CORRECTED",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Normal description individually checked against actual pickup/use, transfer and capacity behavior. Removed unnecessary wording while retaining real restrictions. Resin costs/limit come from existing application helpers; no hidden wand inspected. No new panels. Native382 utility windows pending."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/EquipableItem.java",
@@ -503,8 +507,10 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/Gold.java",
       "sha256": "7b3a94e0dc54f72e7d038027055dafbf587e9389feed112cfef76ee62a0f8f72",
       "category": "items",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "REVIEWED_UNCHANGED",
+      "description_methods": [],
+      "wording_corrected": false,
+      "review_notes": "Individually checked normal description against actual gold pickup or Lost Inventory recovery. Existing wording is concise and accurate; retained unchanged. No new panel."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/Heap.java",
@@ -519,8 +525,10 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/Honeypot.java",
       "sha256": "2a50ba9353f37693d2c7184fedb6995493925a86f777d75f28bfd4ad20563f15",
       "category": "items",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "REVIEWED_CORRECTED",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Normal description individually checked against actual pickup/use, transfer and capacity behavior. Removed unnecessary wording while retaining real restrictions. Resin costs/limit come from existing application helpers; no hidden wand inspected. No new panels. Native382 utility windows pending."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/Item.java",
@@ -557,8 +565,10 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/KingsCrown.java",
       "sha256": "e9e73bd914dbff767f310a4a0b871ed54eb607ca64a719f7c976b0b5459a50df",
       "category": "items",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "REVIEWED_CORRECTED",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Normal description individually checked against actual pickup/use, transfer and capacity behavior. Removed unnecessary wording while retaining real restrictions. Resin costs/limit come from existing application helpers; no hidden wand inspected. No new panels. Native382 utility windows pending."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/LiquidMetal.java",
@@ -571,8 +581,10 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/LostBackpack.java",
       "sha256": "7c18f6d61f0cdfd2b9bc0cc2e506db95606f5ab9843381772a83fd6aa10b0f58",
       "category": "items",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "REVIEWED_UNCHANGED",
+      "description_methods": [],
+      "wording_corrected": false,
+      "review_notes": "Individually checked normal description against actual gold pickup or Lost Inventory recovery. Existing wording is concise and accurate; retained unchanged. No new panel."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/Recipe.java",
@@ -585,35 +597,43 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/Stylus.java",
       "sha256": "717559c4875da5b9991ffd9efd4e22871e06696ab6b35ddeb9de7e030c561c98",
       "category": "items",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "REVIEWED_CORRECTED",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Normal description individually checked against actual pickup/use, transfer and capacity behavior. Removed unnecessary wording while retaining real restrictions. Resin costs/limit come from existing application helpers; no hidden wand inspected. No new panels. Native382 utility windows pending."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/TengusMask.java",
       "sha256": "09a9358e47a1374eb9de1e2d52ea08217d3000317129176eb4040d078c74b826",
       "category": "items",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "REVIEWED_CORRECTED",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Normal description individually checked against actual pickup/use, transfer and capacity behavior. Removed unnecessary wording while retaining real restrictions. Resin costs/limit come from existing application helpers; no hidden wand inspected. No new panels. Native382 utility windows pending."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/Torch.java",
       "sha256": "dbefbc52681ee85ea9d999458316df27f3b0fdc730b41c9b88c388a9fcc828ef",
       "category": "items",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "REVIEWED_CORRECTED",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Normal description individually checked against actual pickup/use, transfer and capacity behavior. Removed unnecessary wording while retaining real restrictions. Resin costs/limit come from existing application helpers; no hidden wand inspected. No new panels. Native382 utility windows pending."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/Waterskin.java",
       "sha256": "9c8af95c7d2b03e64052bf70e0265a45901a2e5b43c699979c5340b56d8fabbf",
       "category": "items",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [
         "info"
-      ]
+      ],
+      "wording_corrected": true,
+      "review_notes": "Normal description individually checked against actual pickup/use, transfer and capacity behavior. Removed unnecessary wording while retaining real restrictions. Resin costs/limit come from existing application helpers; no hidden wand inspected. No new panels. Native382 utility windows pending."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/armor/Armor.java",
-      "sha256": "73fdd8a6e724244ec0b31ec630dae5c67435f4758629d9e55ba9e528f1664109",
+      "sha256": "071416bf430630f529fbae28a7a6cf03ad0aabd10b4af055f28832f89063425a",
       "category": "armor",
       "status": "PARTIAL_REVIEW",
       "description_methods": [
@@ -621,7 +641,7 @@
         "desc"
       ],
       "wording_corrected": true,
-      "review_notes": "Normal inherited/dynamic wording reviewed against current source. Changes use existing mechanics and known live values. Full source/variant and optional-panel review not complete."
+      "review_notes": "Normal inherited/dynamic wording reviewed against current source. Changes use existing mechanics and known live values. Full source/variant and optional-panel review not complete. Current ordinary info paths also checked: knowledge-safe strength, ranged damage and wear estimates; real damage/accuracy/wear formulas untouched. Full inherited/class/secondary review remains partial."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/armor/ClassArmor.java",
@@ -1873,66 +1893,84 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/quest/CeremonialCandle.java",
       "sha256": "3dcad684605c0dabf9d7543e4fade870ae22dc9b708c1e4bb5048d6545800a7f",
       "category": "quest",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "REVIEWED_CORRECTED",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Individually re-read source and relevant quest/recipe/teleport call sites. Checked ritual positions and consumption, dust spawner disposal, ore/token/reward purposes, live legacy token branches, recipe examples and beacon successful-use cost. Existing clear corrections retained; Corpse Dust now explicitly describes banishing existing wraiths. Native382 includes ritual/dust examples; not physical-phone verification."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/quest/CorpseDust.java",
       "sha256": "4309d8478ed9459a06d3c47efd682eb66f4576c8bf396ce9af7a789332ffbd5c",
       "category": "quest",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "REVIEWED_CORRECTED",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Individually re-read source and relevant quest/recipe/teleport call sites. Checked ritual positions and consumption, dust spawner disposal, ore/token/reward purposes, live legacy token branches, recipe examples and beacon successful-use cost. Existing clear corrections retained; Corpse Dust now explicitly describes banishing existing wraiths. Native382 includes ritual/dust examples; not physical-phone verification."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/quest/DarkGold.java",
       "sha256": "24999c1a5443f9788b7bdb78fb1d6dd2754ed2e83ec5e9a4335a15d8bc35f73b",
       "category": "quest",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "REVIEWED_CORRECTED",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Individually re-read source and relevant quest/recipe/teleport call sites. Checked ritual positions and consumption, dust spawner disposal, ore/token/reward purposes, live legacy token branches, recipe examples and beacon successful-use cost. Existing clear corrections retained; Corpse Dust now explicitly describes banishing existing wraiths. Native382 includes ritual/dust examples; not physical-phone verification."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/quest/DwarfToken.java",
       "sha256": "49f055e6413d5f9e6bf351081b70ea91595deea70bf5da46d0ca1f24c842a245",
       "category": "quest",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [
         "desc"
-      ]
+      ],
+      "wording_corrected": true,
+      "review_notes": "Individually re-read source and relevant quest/recipe/teleport call sites. Checked ritual positions and consumption, dust spawner disposal, ore/token/reward purposes, live legacy token branches, recipe examples and beacon successful-use cost. Existing clear corrections retained; Corpse Dust now explicitly describes banishing existing wraiths. Native382 includes ritual/dust examples; not physical-phone verification."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/quest/Embers.java",
       "sha256": "c37665b439d2c1cdbb330cbb1d3dcf8783d681a3c663588be8126533c20609db",
       "category": "quest",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "REVIEWED_CORRECTED",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Individually re-read source and relevant quest/recipe/teleport call sites. Checked ritual positions and consumption, dust spawner disposal, ore/token/reward purposes, live legacy token branches, recipe examples and beacon successful-use cost. Existing clear corrections retained; Corpse Dust now explicitly describes banishing existing wraiths. Native382 includes ritual/dust examples; not physical-phone verification."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/quest/EscapeCrystal.java",
       "sha256": "cb579be0eb42dcfeee1671cf111da939e18e6934d15e7e3bf1b3b5ea3b2f9219",
       "category": "quest",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "PARTIAL_REVIEW",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Normal description checked against stored belongings, progress gates and one-item reward selector; still pending individual review of every score-specific dialogue and legacy failure path. No quest balance changes."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/quest/GooBlob.java",
       "sha256": "e62d62dd00af9a3d4e5963fbb17e494cfdb36d64af15cdfa7a213d16b235da49",
       "category": "quest",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "REVIEWED_CORRECTED",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Individually re-read source and relevant quest/recipe/teleport call sites. Checked ritual positions and consumption, dust spawner disposal, ore/token/reward purposes, live legacy token branches, recipe examples and beacon successful-use cost. Existing clear corrections retained; Corpse Dust now explicitly describes banishing existing wraiths. Native382 includes ritual/dust examples; not physical-phone verification."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/quest/ImpStatue.java",
       "sha256": "2b17a77690797d221952652a8d16699c68e19f0cf96e38330529cf72cc52e04e",
       "category": "quest",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "REVIEWED_CORRECTED",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Individually re-read source and relevant quest/recipe/teleport call sites. Checked ritual positions and consumption, dust spawner disposal, ore/token/reward purposes, live legacy token branches, recipe examples and beacon successful-use cost. Existing clear corrections retained; Corpse Dust now explicitly describes banishing existing wraiths. Native382 includes ritual/dust examples; not physical-phone verification."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/quest/MetalShard.java",
       "sha256": "ef1896ed9b0e2be475228e8a8059311ba37c7462975e3c517fdc3bdece5ca049",
       "category": "quest",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "REVIEWED_CORRECTED",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Individually re-read source and relevant quest/recipe/teleport call sites. Checked ritual positions and consumption, dust spawner disposal, ore/token/reward purposes, live legacy token branches, recipe examples and beacon successful-use cost. Existing clear corrections retained; Corpse Dust now explicitly describes banishing existing wraiths. Native382 includes ritual/dust examples; not physical-phone verification."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/quest/Pickaxe.java",
@@ -1949,8 +1987,10 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/quest/VaultBeacon.java",
       "sha256": "d2e4592f200263611c126330f26b83a4add05cfc091af41c03aeb4031f66b958",
       "category": "quest",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "REVIEWED_CORRECTED",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Individually re-read source and relevant quest/recipe/teleport call sites. Checked ritual positions and consumption, dust spawner disposal, ore/token/reward purposes, live legacy token branches, recipe examples and beacon successful-use cost. Existing clear corrections retained; Corpse Dust now explicitly describes banishing existing wraiths. Native382 includes ritual/dust examples; not physical-phone verification."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/remains/BowFragment.java",
@@ -2176,17 +2216,18 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/rings/RingOfTenacity.java",
-      "sha256": "3bc8fcba10a385b5dface64ffb8d62e9347250b3f1334bbfc8cc6157ec69397d",
+      "sha256": "3f13ac681cf1191a37e8a5aab8f8f2facedb410c091b47dab1763abd8ff005d4",
       "category": "rings",
       "status": "REVIEWED_PENDING_DEPENDENCY",
       "description_methods": [],
-      "review_notes": "Actual statsInfo, solo/combined bonus formulas and identification/cursing branches reviewed. Concise player-facing benefits and numeric labels. Combined descriptions now withhold unknown companion bonuses; no combat calculation changed. Health-dependent detailed formula prose remains pending.",
+      "review_notes": "Normal protection/harm values now use less/more damage instead of negative-reduction jargon; hidden stats still use the labelled generic example. Actual formula unchanged. Specific existing nonlinear detail panel retained pending owner review; full review not claimed.",
       "tests": [
         "MechanicsExplanationTest.everyRingInspectionWithholdsUnknownCompanionLevels",
         "MechanicsExplanationTest.forceInspectionAndUpgradePreviewDoNotExposeUnknownStrengthRing",
         "MechanicsExplanationTest.arcanaUpgradePreviewCannotRevealAnUnknownCurse",
         "MechanicsExplanationTest.identifiedRingSummariesRemainBriefAndLabelSuppressedEffects"
-      ]
+      ],
+      "wording_corrected": true
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/rings/RingOfWealth.java",
@@ -3079,16 +3120,18 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/SpiritBow.java",
-      "sha256": "d61c37ed367fd753b2f99c91e931843e6452c90ad53d6241c78f792f5f2bf4b5",
+      "sha256": "c196746d5b5e87e5afd41b68025c38ed4eeaaf3b575805e827c675b40846ec7d",
       "category": "weapon",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
+      "status": "PARTIAL_REVIEW",
       "description_methods": [
         "info"
-      ]
+      ],
+      "wording_corrected": true,
+      "review_notes": "Primary stats use only known ring bonuses and known Strength; no-hero text shortened. Existing gameplay damage, arrow targeting and ability mechanics unchanged. Remaining special shot descriptions still pending individual review."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/Weapon.java",
-      "sha256": "2ec8dd6f7cda76b7f53cd98582451ae1103f4b8da31c29f66b44923f18691fe0",
+      "sha256": "db1ce8bf57b10886f8beb0822011b5b0895d53a9ab1c3ddbaf42de94856a63d6",
       "category": "weapon",
       "status": "PARTIAL_REVIEW",
       "description_methods": [
@@ -3096,7 +3139,7 @@
         "desc"
       ],
       "wording_corrected": true,
-      "review_notes": "Normal inherited/dynamic wording reviewed against current source. Changes use existing mechanics and known live values. Full source/variant and optional-panel review not complete."
+      "review_notes": "Normal inherited/dynamic wording reviewed against current source. Changes use existing mechanics and known live values. Full source/variant and optional-panel review not complete. Current ordinary info paths also checked: knowledge-safe strength, ranged damage and wear estimates; real damage/accuracy/wear formulas untouched. Full inherited/class/secondary review remains partial."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/curses/Annoying.java",
@@ -3337,12 +3380,14 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/melee/Crossbow.java",
-      "sha256": "da6a84afe8e48b056000590a090badd151f158bbd89ac9f24c1b7c7b8cd11d49",
+      "sha256": "e57d579f545d3f62f51347da2e3d05efc0c5cafa47c65e8a296b00d2eac412cd",
       "category": "weapon",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
+      "status": "PARTIAL_REVIEW",
       "description_methods": [
         "abilityInfo"
-      ]
+      ],
+      "wording_corrected": true,
+      "review_notes": "Ordinary dart range and Charged Shot text checked against actual Crossbow/Dart/TippedDart code. Corrected display-only +3 to actual +4 base dart boost, distinct from +3 tip uses; upgrade row now accurately labels extra tip uses. Complex secondary dart/enchantment interactions remain pending. No combat changes."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/melee/Cudgel.java",
@@ -3498,7 +3543,7 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/melee/MeleeWeapon.java",
-      "sha256": "a8a335998bbcfa829095d54c2979a2e2574793446d9e212136d7deb4e1f553ae",
+      "sha256": "87b127b8f50073a912a619ad56bf678742f77b8ab9994b2e659254a7f42b6906",
       "category": "weapon",
       "status": "PARTIAL_REVIEW",
       "description_methods": [
@@ -3506,7 +3551,7 @@
         "abilityInfo"
       ],
       "wording_corrected": true,
-      "review_notes": "Normal inherited/dynamic wording reviewed against current source. Changes use existing mechanics and known live values. Full source/variant and optional-panel review not complete."
+      "review_notes": "Normal inherited/dynamic wording reviewed against current source. Changes use existing mechanics and known live values. Full source/variant and optional-panel review not complete. Current ordinary info paths also checked: knowledge-safe strength, ranged damage and wear estimates; real damage/accuracy/wear formulas untouched. Full inherited/class/secondary review remains partial."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/melee/Quarterstaff.java",
@@ -3578,12 +3623,14 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/melee/Sickle.java",
-      "sha256": "33c4b595be516c46ee6916e1e25806931337936880da176dff6c465bc8c060bb",
+      "sha256": "1b84ec1024c5c1d4611911dce9555745965fa686165c4ecf0f64169fd48aea0d",
       "category": "weapon",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [
         "abilityInfo"
-      ]
+      ],
+      "wording_corrected": true,
+      "review_notes": "Individually read ability/attack paths. Harvest explains initial bleed per turn and immune-target immediate damage; Lash explains all enemies within reach. Unknown +0 examples now include known augmentation without reading hidden levels. Existing damage and targeting unchanged. Native382 windows pending."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/melee/Spear.java",
@@ -3620,21 +3667,25 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/melee/WarScythe.java",
-      "sha256": "cd521f5207066e6bd5788ffb5ac93cde9ee04799d22e881db4731b9029a858af",
+      "sha256": "05f6c70f06ef133c3a291b69d73c2efdc9353c5938dba2cbdbcc17aee282b620",
       "category": "weapon",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [
         "abilityInfo"
-      ]
+      ],
+      "wording_corrected": true,
+      "review_notes": "Individually read ability/attack paths. Harvest explains initial bleed per turn and immune-target immediate damage; Lash explains all enemies within reach. Unknown +0 examples now include known augmentation without reading hidden levels. Existing damage and targeting unchanged. Native382 windows pending."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/melee/Whip.java",
-      "sha256": "b78b703c3dcaa0fd387fcb37d4b5c1b4c66bcbf15f79e09b9029ce2d76343291",
+      "sha256": "46129bdc0f4f517aba4791f736a13dc46abffb21784af50c1035da11511ff2df",
       "category": "weapon",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [
         "abilityInfo"
-      ]
+      ],
+      "wording_corrected": true,
+      "review_notes": "Individually read ability/attack paths. Harvest explains initial bleed per turn and immune-target immediate damage; Lash explains all enemies within reach. Unknown +0 examples now include known augmentation without reading hidden levels. Existing damage and targeting unchanged. Native382 windows pending."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/melee/WornShortsword.java",
@@ -3649,31 +3700,39 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/missiles/Bolas.java",
-      "sha256": "2bea13257aa6cb80b53b134c03e027feae4ceacfb04b11e0f273714c428927e7",
+      "sha256": "e17deb293854be578de885af8108bd30272bf51de8f5a773020cbeb31f6f4f5b",
       "category": "weapon",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "REVIEWED_CORRECTED",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Individually read direct damage/status/recovery/surprise behavior and normal text. Bolas movement duration and Shuriken cooldown are live; Tomahawk bleeding states units and hides unknown ring values; boomerang catches/return hits, Force Cube friendly fire/traps and fishing bonus explained. Existing clear pickup/surprise descriptions retained unchanged. No effect, balance or collision changes; native382 specific windows pending."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/missiles/FishingSpear.java",
       "sha256": "e65a5c013e7358b22253b03c157c20c86734bf196b276853ce9632d1b5cffec3",
       "category": "weapon",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "REVIEWED_CORRECTED",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Individually read direct damage/status/recovery/surprise behavior and normal text. Bolas movement duration and Shuriken cooldown are live; Tomahawk bleeding states units and hides unknown ring values; boomerang catches/return hits, Force Cube friendly fire/traps and fishing bonus explained. Existing clear pickup/surprise descriptions retained unchanged. No effect, balance or collision changes; native382 specific windows pending."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/missiles/ForceCube.java",
       "sha256": "4a43841a155b77de79c25c83934d8f8f810b13e5b742ca886ac930087d212016",
       "category": "weapon",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "REVIEWED_CORRECTED",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Individually read direct damage/status/recovery/surprise behavior and normal text. Bolas movement duration and Shuriken cooldown are live; Tomahawk bleeding states units and hides unknown ring values; boomerang catches/return hits, Force Cube friendly fire/traps and fishing bonus explained. Existing clear pickup/surprise descriptions retained unchanged. No effect, balance or collision changes; native382 specific windows pending."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/missiles/HeavyBoomerang.java",
       "sha256": "1e176bb17b50b5bd788323577269e7bea2eedfced72894a8cafbeef593ab8d8e",
       "category": "weapon",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "REVIEWED_CORRECTED",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Individually read direct damage/status/recovery/surprise behavior and normal text. Bolas movement duration and Shuriken cooldown are live; Tomahawk bleeding states units and hides unknown ring values; boomerang catches/return hits, Force Cube friendly fire/traps and fishing bonus explained. Existing clear pickup/surprise descriptions retained unchanged. No effect, balance or collision changes; native382 specific windows pending."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/missiles/Javelin.java",
@@ -3686,12 +3745,14 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/missiles/Kunai.java",
       "sha256": "4b6dc1522578af3d3c187fc43ba8cc2cf6497b45a78511966cde33b014d23378",
       "category": "weapon",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "REVIEWED_UNCHANGED",
+      "description_methods": [],
+      "wording_corrected": false,
+      "review_notes": "Individually read direct damage/status/recovery/surprise behavior and normal text. Bolas movement duration and Shuriken cooldown are live; Tomahawk bleeding states units and hides unknown ring values; boomerang catches/return hits, Force Cube friendly fire/traps and fishing bonus explained. Existing clear pickup/surprise descriptions retained unchanged. No effect, balance or collision changes; native382 specific windows pending."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/missiles/MissileWeapon.java",
-      "sha256": "019c6c386ff876b527b2fb970f970a6956acc29d756075cb18d2c9fbbf340d4e",
+      "sha256": "ec8cf84b8190ed2cf18b6ade9144146278e60502c13af53eac4f971bc0b7473c",
       "category": "weapon",
       "status": "PARTIAL_REVIEW",
       "description_methods": [
@@ -3699,42 +3760,52 @@
         "info"
       ],
       "wording_corrected": true,
-      "review_notes": "Normal inherited/dynamic wording reviewed against current source. Changes use existing mechanics and known live values. Full source/variant and optional-panel review not complete."
+      "review_notes": "Normal inherited/dynamic wording reviewed against current source. Changes use existing mechanics and known live values. Full source/variant and optional-panel review not complete. Current ordinary info paths also checked: knowledge-safe strength, ranged damage and wear estimates; real damage/accuracy/wear formulas untouched. Full inherited/class/secondary review remains partial."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/missiles/Shuriken.java",
-      "sha256": "8ca821e00f7d6821f6331d93dfaf1807be41c2990bb25b33f5a37707bb712bac",
+      "sha256": "414167c68aefd76a41f9d6203cc00c7d2f6e44ab01a917e5a6c7289ed6a51b5d",
       "category": "weapon",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "REVIEWED_CORRECTED",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Individually read direct damage/status/recovery/surprise behavior and normal text. Bolas movement duration and Shuriken cooldown are live; Tomahawk bleeding states units and hides unknown ring values; boomerang catches/return hits, Force Cube friendly fire/traps and fishing bonus explained. Existing clear pickup/surprise descriptions retained unchanged. No effect, balance or collision changes; native382 specific windows pending."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/missiles/ThrowingClub.java",
       "sha256": "987ab3e1e2bea9c327f9508a29e3d8d16b05d25900a0578a47fde4248ab2cd8a",
       "category": "weapon",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "REVIEWED_UNCHANGED",
+      "description_methods": [],
+      "wording_corrected": false,
+      "review_notes": "Individually read direct damage/status/recovery/surprise behavior and normal text. Bolas movement duration and Shuriken cooldown are live; Tomahawk bleeding states units and hides unknown ring values; boomerang catches/return hits, Force Cube friendly fire/traps and fishing bonus explained. Existing clear pickup/surprise descriptions retained unchanged. No effect, balance or collision changes; native382 specific windows pending."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/missiles/ThrowingHammer.java",
       "sha256": "a7d592ec671bbbf9eef5b6f6001ed84d43b93d56fc0e49ab9105dc10930c36e6",
       "category": "weapon",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "REVIEWED_UNCHANGED",
+      "description_methods": [],
+      "wording_corrected": false,
+      "review_notes": "Individually read direct damage/status/recovery/surprise behavior and normal text. Bolas movement duration and Shuriken cooldown are live; Tomahawk bleeding states units and hides unknown ring values; boomerang catches/return hits, Force Cube friendly fire/traps and fishing bonus explained. Existing clear pickup/surprise descriptions retained unchanged. No effect, balance or collision changes; native382 specific windows pending."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/missiles/ThrowingKnife.java",
       "sha256": "9a01dc762fe97ce2124a12848fcb7f3bc7a83cd622c73962061441e4a28b6c51",
       "category": "weapon",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "REVIEWED_UNCHANGED",
+      "description_methods": [],
+      "wording_corrected": false,
+      "review_notes": "Individually read direct damage/status/recovery/surprise behavior and normal text. Bolas movement duration and Shuriken cooldown are live; Tomahawk bleeding states units and hides unknown ring values; boomerang catches/return hits, Force Cube friendly fire/traps and fishing bonus explained. Existing clear pickup/surprise descriptions retained unchanged. No effect, balance or collision changes; native382 specific windows pending."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/missiles/ThrowingSpear.java",
       "sha256": "cc30a280b6f364b4be2bc3b796b876e1e489c3f17b6de8f031c69c30f071fd45",
       "category": "weapon",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "REVIEWED_CORRECTED",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Individually read direct damage/status/recovery/surprise behavior and normal text. Bolas movement duration and Shuriken cooldown are live; Tomahawk bleeding states units and hides unknown ring values; boomerang catches/return hits, Force Cube friendly fire/traps and fishing bonus explained. Existing clear pickup/surprise descriptions retained unchanged. No effect, balance or collision changes; native382 specific windows pending."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/missiles/ThrowingSpike.java",
@@ -3747,15 +3818,19 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/missiles/ThrowingStone.java",
       "sha256": "41930d6e5f7dcf70f2179198baf075c69b29d752ea53d3deb3906782074d0e62",
       "category": "weapon",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "REVIEWED_CORRECTED",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Individually read direct damage/status/recovery/surprise behavior and normal text. Bolas movement duration and Shuriken cooldown are live; Tomahawk bleeding states units and hides unknown ring values; boomerang catches/return hits, Force Cube friendly fire/traps and fishing bonus explained. Existing clear pickup/surprise descriptions retained unchanged. No effect, balance or collision changes; native382 specific windows pending."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/missiles/Tomahawk.java",
-      "sha256": "fd5d66719b50266034a3bbca48296f795faec783ac86f9b361a46bde349d376f",
+      "sha256": "0c888e5e6e0148e33eee849a75473837a43d36178e40fc093f72858d917eab43",
       "category": "weapon",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "REVIEWED_CORRECTED",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Individually read direct damage/status/recovery/surprise behavior and normal text. Bolas movement duration and Shuriken cooldown are live; Tomahawk bleeding states units and hides unknown ring values; boomerang catches/return hits, Force Cube friendly fire/traps and fishing bonus explained. Existing clear pickup/surprise descriptions retained unchanged. No effect, balance or collision changes; native382 specific windows pending."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/missiles/Trident.java",
@@ -4043,7 +4118,7 @@
       "review_notes": "Added missing display provider to inventory. Reading its output is not a complete provenance/generation audit."
     }
   ],
-  "completed_units": 107,
+  "completed_units": 141,
   "latest_tests": {
     "core_tests": 3030,
     "suites": 457,

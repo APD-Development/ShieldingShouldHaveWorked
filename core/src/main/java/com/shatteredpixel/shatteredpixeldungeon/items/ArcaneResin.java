@@ -93,6 +93,15 @@ public class ArcaneResin extends Item {
 		return 30*quantity();
 	}
 
+    @Override public String desc(){
+        StringBuilder costs=new StringBuilder();
+        for(int level=0;level<applicationLevelLimit();level++){
+            if(level>0)costs.append(level==applicationLevelLimit()-1?" or ":", ");
+            costs.append(applicationCost(level));
+        }
+        return Messages.get(this,"desc",applicationLevelLimit(),costs.toString());
+    }
+
     public static int applicationLevelLimit(){return 3;}
     public static int applicationCost(int currentPermanentLevel){return currentPermanentLevel+1;}
 

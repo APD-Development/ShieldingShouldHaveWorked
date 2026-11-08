@@ -83,20 +83,13 @@ public class Tomahawk extends MissileWeapon {
 		return super.proc( attacker, defender, damage );
 	}
 
-	public String statsInfo(){
-		if (isIdentified()){
-            if(Dungeon.hero==null)return Messages.get(this,"stats_desc",
-                    Math.round(augment.damageFactor(minBleed(buffedLvl()))),
-                    Math.round(augment.damageFactor(maxBleed(buffedLvl()))))
-                    + " No wearer is loaded, so this is the weapon's own range before ring or temporary wearer bonuses.";
-			return Messages.get(this, "stats_desc",
-					Math.round(augment.damageFactor(minBleed())),
-					Math.round(augment.damageFactor(maxBleed())));
-		} else {
-			return Messages.get(this, "typical_stats_desc",
-					Math.round(augment.damageFactor(minBleed(0))),
-					Math.round(augment.damageFactor(maxBleed(0))));
-		}
-	}
+    public String statsInfo(){
+        if(!isIdentified())return Messages.get(this,"typical_stats_desc",
+                Math.round(augment.damageFactor(minBleed(0))),Math.round(augment.damageFactor(maxBleed(0))));
+        Integer ringBonus=com.shatteredpixel.shatteredpixeldungeon.apd.qol.RingItemEffects.knownBonus(Dungeon.hero,RingOfSharpshooting.class,true);
+        int level=buffedLvl()+(ringBonus==null?0:ringBonus);
+        return Messages.get(this,ringBonus==null?"weapon_only_stats_desc":"stats_desc",
+                Math.round(augment.damageFactor(minBleed(level))),Math.round(augment.damageFactor(maxBleed(level))));
+    }
 
 }

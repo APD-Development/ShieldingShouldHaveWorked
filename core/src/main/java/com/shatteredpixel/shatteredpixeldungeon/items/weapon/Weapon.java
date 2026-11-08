@@ -315,11 +315,13 @@ abstract public class Weapon extends KindOfWeapon {
 
 	protected String accuracyDescription() {
 		if (Dungeon.hero == null || (!levelKnown && !(this instanceof SpiritBow))) return "";
+        Integer knownStrength=com.shatteredpixel.shatteredpixeldungeon.apd.mechanics.ArmorExplanation.knownStrength(Dungeon.hero);
+        if(knownStrength==null)return "";
 		float knownAccuracy = ACC;
 		if (cursedKnown && enchantment instanceof Wayward && Dungeon.hero.buff(Wayward.WaywardBuff.class) != null) {
 			knownAccuracy /= 5;
 		}
-		float percent = 100f * strengthAccuracyModifier(knownAccuracy, displayedStrengthRequirement(), Dungeon.hero.STR());
+		float percent = 100f * strengthAccuracyModifier(knownAccuracy, displayedStrengthRequirement(), knownStrength);
 		String text;
         if(!(this instanceof MissileWeapon)&&!(this instanceof SpiritBow)&&Math.abs(percent-100f)<.0001f)return "";
 		if (this instanceof MissileWeapon || this instanceof SpiritBow) {

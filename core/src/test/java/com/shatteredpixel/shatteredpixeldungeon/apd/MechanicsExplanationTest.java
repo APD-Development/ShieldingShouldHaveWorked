@@ -226,7 +226,7 @@ public class MechanicsExplanationTest {
   com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Tomahawk axe=new com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Tomahawk();axe.levelKnown=axe.cursedKnown=true;
   RingOfSharpshooting aim=new RingOfSharpshooting();aim.anonymize();aim.levelKnown=aim.cursedKnown=true;hero.belongings.ring=aim;aim.activate(hero);
   for(int level:new int[]{0,3,8})for(int bonus:new int[]{0,2,5}){axe.level(level);aim.level(bonus);int damageLevel=axe.buffedLvl()+RingOfSharpshooting.levelDamageBonus(hero);String text=MissileExplanation.details(axe,hero);assertTrue(text.contains(ObfuscationExplanation.number(axe.augment.damageFactor(axe.minBleed(damageLevel)))+"–"+ObfuscationExplanation.number(axe.augment.damageFactor(axe.maxBleed(damageLevel)))+" points"));}
-  aim.levelKnown=false;aim.level(0);String zero=MissileExplanation.details(axe,hero);aim.level(9);assertEquals(zero,MissileExplanation.details(axe,hero));
+  aim.levelKnown=false;aim.level(0);String zero=MissileExplanation.details(axe,hero),ordinary=axe.statsInfo();aim.level(9);assertEquals(zero,MissileExplanation.details(axe,hero));assertEquals("Ordinary bleeding description must not expose unknown ring upgrades",ordinary,axe.statsInfo());
  }
  public static class CapturedAbilitySprite extends QuietMovementSprite {
   public com.watabou.utils.Callback offered;
@@ -1834,6 +1834,41 @@ public class MechanicsExplanationTest {
   }
   assertTrue(new com.shatteredpixel.shatteredpixeldungeon.items.remains.BowFragment().info().contains(com.shatteredpixel.shatteredpixeldungeon.items.remains.BowFragment.HIGH_GRASS_TILES+" tiles of high grass"));
  }
+ @Test public void chargedCrossbowSeparatesDartDamageFromExtraTipUses(){
+  com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Crossbow bow=new com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Crossbow();
+  for(int level:new int[]{0,3,8}){bow.level(level);bow.levelKnown=true;String text=bow.abilityInfo();assertTrue(text,text.contains("+"+(4+level)+" base damage"));assertTrue(text,text.contains((3+level)+" more uses"));}
+ }
+ @Test public void thrownWeaponTimingDescriptionsMatchActualStatusAndThrowAvailability()throws Exception{
+  hero.STR=50;hero.sprite=quietSprite();
+  com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Shuriken shuriken=new com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Shuriken();
+  assertEquals(0,shuriken.castDelay(hero,hero.pos+1),0);assertTrue(shuriken.statsInfo().contains(com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Shuriken.ShurikenInstantTracker.DURATION+" turns"));
+  Buff.affect(hero,com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Shuriken.ShurikenInstantTracker.class,19);assertTrue(shuriken.castDelay(hero,hero.pos+1)>0);Buff.detach(hero,com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Shuriken.ShurikenInstantTracker.class);assertEquals(0,shuriken.castDelay(hero,hero.pos+1),0);
+  PlainStatusTarget target=new PlainStatusTarget();target.sprite=quietSprite();float speed=target.speed();com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Bolas bolas=new com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Bolas();bolas.proc(hero,target,1);assertEquals(speed/2,target.speed(),0);assertEquals(Cripple.DURATION/2,target.buff(Cripple.class).cooldown(),0);assertTrue(bolas.statsInfo().contains(ObfuscationExplanation.number(target.buff(Cripple.class).cooldown())+" turns"));
+ }
+ @Test public void ordinaryEquipmentDescriptionsDoNotExposeUnknownRingLevels()throws Exception{
+  java.util.List<com.shatteredpixel.shatteredpixeldungeon.items.Item> equipment=new java.util.ArrayList<>();
+  equipment.add(new com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sword());equipment.add(new MailArmor());equipment.add(new com.shatteredpixel.shatteredpixeldungeon.items.weapon.SpiritBow());
+  for(Class<?> type:com.shatteredpixel.shatteredpixeldungeon.journal.Catalog.THROWN_WEAPONS.items())equipment.add((com.shatteredpixel.shatteredpixeldungeon.items.Item)type.getDeclaredConstructor().newInstance());
+  for(String name:new String[]{"Dart","AdrenalineDart","BlindingDart","ChillingDart","CleansingDart","DisplacingDart","HealingDart","HolyDart","IncendiaryDart","ParalyticDart","PoisonDart","RotDart","ShockingDart"})equipment.add((com.shatteredpixel.shatteredpixeldungeon.items.Item)Class.forName("com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts."+name).getDeclaredConstructor().newInstance());
+  for(com.shatteredpixel.shatteredpixeldungeon.items.Item item:equipment){item.levelKnown=item.cursedKnown=true;}
+  for(Ring ring:new Ring[]{new RingOfMight(),new RingOfSharpshooting()}){
+   ring.anonymize();ring.levelKnown=ring.cursedKnown=false;hero.belongings.ring=ring;ring.activate(hero);
+   for(com.shatteredpixel.shatteredpixeldungeon.items.Item item:equipment){ring.level(0);String zero=item.info();ring.level(9);assertEquals(item.getClass().getSimpleName()+" with unknown "+ring.getClass().getSimpleName(),zero,item.info());}
+   Buff immune=Buff.affect(hero,MagicImmune.class);
+   for(com.shatteredpixel.shatteredpixeldungeon.items.Item item:equipment){ring.level(0);String zero=item.info();ring.level(9);assertEquals(zero,item.info());assertFalse(item.info().contains("Identify your rings"));}
+   immune.detach();for(Buff buff:hero.buffs())if(buff instanceof Ring.RingBuff)buff.detach();hero.belongings.ring=null;
+  }
+ }
+ @Test public void tenacityDescribesProtectionAndHarmWithoutNegativeReductionJargon(){
+  RingOfTenacity ring=new RingOfTenacity();ring.anonymize();ring.levelKnown=ring.cursedKnown=true;
+  for(int level=0;level<=6;level++)for(boolean cursed:new boolean[]{false,true}){
+   ring.level(level);ring.cursed=cursed;String text=ring.statsInfo();int bonus=ring.soloBuffedBonus();
+   double reduction=100f*(1f-Math.pow(.85f,bonus));
+   assertTrue(text,text.contains(com.shatteredpixel.shatteredpixeldungeon.messages.Messages.decimalFormat("#.##",Math.abs(reduction))+"%"));
+   assertTrue(text,text.contains(reduction<0?"more damage taken":"less damage"));assertFalse(text.contains("negative reduction"));
+  }
+  ring.levelKnown=ring.cursedKnown=false;String unknown=ring.statsInfo();ring.level(12);ring.cursed=!ring.cursed;assertEquals(unknown,ring.statsInfo());assertTrue(unknown.contains("Example for an uncursed +0 ring"));
+ }
  @Test public void tornPagePreviewMatchesRealHealingWithoutSpendingCredit()throws Exception{
   hero.sprite=quietSprite();hero.HT=100;
   com.shatteredpixel.shatteredpixeldungeon.items.remains.TornPage page=new com.shatteredpixel.shatteredpixeldungeon.items.remains.TornPage();
@@ -1872,7 +1907,7 @@ public class MechanicsExplanationTest {
   }
  }
  @Test public void unknownAbilityExamplesUseOnlyPublicAugmentationAndTheLabelledZeroLevel()throws Exception{
-  String[] names={"WornShortsword","Shortsword","Sword","Longsword","Greatsword","Cudgel","HandAxe","Mace","BattleAxe","WarHammer","Greataxe","Rapier","Katana","Spear","Glaive"};
+  String[] names={"WornShortsword","Shortsword","Sword","Longsword","Greatsword","Cudgel","HandAxe","Mace","BattleAxe","WarHammer","Greataxe","Rapier","Katana","Spear","Glaive","Sickle","WarScythe","Whip"};
   for(String name:names)for(com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon.Augment augment:com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon.Augment.values()){
    com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon weapon=(com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon)Class.forName("com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee."+name).getDeclaredConstructor().newInstance();weapon.augment=augment;String expected=weapon.upgradeAbilityStat(0);String first=null;
    for(int hidden:new int[]{0,3,8}){weapon.level(hidden);weapon.levelKnown=false;String text=weapon.abilityInfo();assertTrue(name+" "+augment+" "+text,text.contains(expected));assertTrue(text.contains("Unupgraded example (+0)"));if(first!=null)assertEquals(first,text);first=text;}

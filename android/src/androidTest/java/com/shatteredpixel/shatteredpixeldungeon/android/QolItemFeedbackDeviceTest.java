@@ -273,6 +273,61 @@ public class QolItemFeedbackDeviceTest {
             TopScoresDeviceTest.render(()->{Dungeon.challenges=previous;Dungeon.hero.belongings.backpack.items.remove(haste);Dungeon.hero.belongings.backpack.items.remove(shielding);Dungeon.hero.belongings.backpack.items.remove(noisemaker);Dungeon.hero.belongings.backpack.items.remove(regrowthBomb);});
         }
     }
+    private static void additionalDuelistDescriptionsRender()throws Exception{
+        HeroClass previous=Dungeon.hero.heroClass;
+        try{
+            TopScoresDeviceTest.render(()->Dungeon.hero.heroClass=HeroClass.DUELIST);
+            Item[] items={new com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Crossbow(),new com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sickle(),new com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WarScythe(),new com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Whip()};
+            String[] expected={"+7 base damage","base damage per turn","base damage per turn","every enemy within reach"};
+            for(int i=0;i<items.length;i++){
+                Item item=items[i];TopScoresDeviceTest.render(()->{item.level(3);item.levelKnown=item.cursedKnown=true;});showItem(item,expected[i],"qol-duelist-"+i+"-concise.png",true);
+                TopScoresDeviceTest.render(()->{item.levelKnown=false;((com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon)item).augment=com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon.Augment.DAMAGE;});showItem(item,"Unupgraded example (+0)","qol-duelist-"+i+"-unknown-example.png",true);
+            }
+        }finally{TopScoresDeviceTest.render(()->Dungeon.hero.heroClass=previous);}
+    }
+    private static void missileEffectDescriptionsRender()throws Exception{
+        Item[] items={new com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Shuriken(),new com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Bolas(),new com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ForceCube(),new com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.HeavyBoomerang(),new com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.FishingSpear()};
+        String[] expected={"instant throw","movement speed","including you and allies","Stay there to catch it","Against piranhas"};
+        for(int i=0;i<items.length;i++){items[i].levelKnown=items[i].cursedKnown=true;showItem(items[i],expected[i],"qol-missile-"+i+"-concise.png",true);}
+    }
+    private static void unknownRingMissileDescriptionsRender()throws Exception{
+        com.shatteredpixel.shatteredpixeldungeon.items.rings.Ring old=Dungeon.hero.belongings.ring;
+        java.util.Set<com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff> before=new java.util.HashSet<>(Dungeon.hero.buffs());
+        com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfSharpshooting unknown=new com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfSharpshooting();
+        com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Tomahawk axe=new com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Tomahawk();
+        try{
+            TopScoresDeviceTest.render(()->{
+                unknown.anonymize();unknown.levelKnown=unknown.cursedKnown=false;Dungeon.hero.belongings.ring=unknown;unknown.activate(Dungeon.hero);axe.levelKnown=axe.cursedKnown=true;axe.level(3);
+                unknown.level(0);String baseline=axe.info();unknown.level(9);assertEquals("Unknown ring cannot change ordinary weapon text",baseline,axe.info());
+            });
+            showItem(axe,"Weapon alone:","qol-tomahawk-unknown-ring-safe.png",true);
+            TopScoresDeviceTest.render(()->unknown.levelKnown=unknown.cursedKnown=true);
+            showItem(axe,"damage per turn","qol-tomahawk-known-ring.png",true);
+        }finally{TopScoresDeviceTest.render(()->{for(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff buff:Dungeon.hero.buffs())if(!before.contains(buff)&&buff instanceof com.shatteredpixel.shatteredpixeldungeon.items.rings.Ring.RingBuff)buff.detach();Dungeon.hero.belongings.ring=old;});}
+    }
+    private static void tenacityDescriptionsRender()throws Exception{
+        com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfTenacity ring=new com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfTenacity();
+        for(boolean cursed:new boolean[]{false,true})for(boolean use:new boolean[]{false,true}){
+            AtomicReference<WndInfoItem> shown=new AtomicReference<>();
+            TopScoresDeviceTest.render(()->{
+                ring.anonymize();ring.level(3);ring.levelKnown=ring.cursedKnown=true;ring.cursed=cursed;
+                assertTrue(ring.info(),ring.info().contains(cursed?"more damage taken":"less damage"));
+                WndInfoItem window=use?new WndUseItem(null,ring):new WndInfoItem(ring);GameScene.show(window);assertDescriptionViewport(window);shown.set(window);
+            });Thread.sleep(300);
+            if(use)TopScoresDeviceTest.screenshot(cursed?"qol-tenacity-curse-concise.png":"qol-tenacity-protection-concise.png");
+            TopScoresDeviceTest.render(()->shown.get().hide());
+        }
+    }
+    private static void questDescriptionsRender()throws Exception{
+        Item[] items={new com.shatteredpixel.shatteredpixeldungeon.items.quest.CeremonialCandle(),new com.shatteredpixel.shatteredpixeldungeon.items.quest.CorpseDust(),new com.shatteredpixel.shatteredpixeldungeon.items.quest.EscapeCrystal()};
+        String[] expected={"north, east, south and west","banishes its wraiths","returns your original equipment"};
+        for(int i=0;i<items.length;i++)showItem(items[i],expected[i],"qol-quest-"+i+"-concise.png",true);
+    }
+    private static void utilityDescriptionsRender()throws Exception{
+        Item[] items={new com.shatteredpixel.shatteredpixeldungeon.items.ArcaneResin(),new com.shatteredpixel.shatteredpixeldungeon.items.Stylus(),new com.shatteredpixel.shatteredpixeldungeon.items.TengusMask(),new com.shatteredpixel.shatteredpixeldungeon.items.KingsCrown()};
+        String[] expected={"one level","random glyph","choose a subclass","choose an armor ability"};
+        for(int i=0;i<items.length;i++)showItem(items[i],expected[i],"qol-utility-"+i+"-concise.png",true);
+    }
     private static void remainsAndLoreDescriptionsRender()throws Exception{
         int hp=Dungeon.hero.HP;
         com.watabou.utils.Bundle rules=new com.watabou.utils.Bundle();
@@ -430,6 +485,12 @@ public class QolItemFeedbackDeviceTest {
             ordinaryConsumableDescriptionsRender();
             craftedSpellVariantsRender();
             remainsAndLoreDescriptionsRender();
+            utilityDescriptionsRender();
+            questDescriptionsRender();
+            tenacityDescriptionsRender();
+            unknownRingMissileDescriptionsRender();
+            missileEffectDescriptionsRender();
+            additionalDuelistDescriptionsRender();
             inventoryOrderShowsAutomatically();
             prepareSearchableFloor();
             final int[] center={0};

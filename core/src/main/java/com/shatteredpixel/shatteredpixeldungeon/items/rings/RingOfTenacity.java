@@ -38,17 +38,20 @@ public class RingOfTenacity extends Ring {
 
 	public String statsInfo() {
 		if (isIdentified()){
-			String info = Messages.get(this, "stats",
-					Messages.decimalFormat("#.##", 100f * (1f - Math.pow(0.85f, soloBuffedBonus()))));
+			String info = benefitDescription("stats",soloBuffedBonus());
 			if (isEquipped(Dungeon.hero) && knownEquippedRings(Dungeon.hero) && soloBuffedBonus() != combinedBuffedBonus(Dungeon.hero)){
-				info += "\n\n" + Messages.get(this, "combined_stats",
-						Messages.decimalFormat("#.##", 100f * (1f - Math.pow(0.85f, combinedBuffedBonus(Dungeon.hero)))));
+				info += "\n\n" + benefitDescription("combined_stats",combinedBuffedBonus(Dungeon.hero));
 			}
 			return info;
 		} else {
 			return Messages.get(this, "typical_stats", Messages.decimalFormat("#.##", 15f));
 		}
 	}
+
+    private String benefitDescription(String key,int bonus){
+        double reduction=100f*(1f-Math.pow(0.85f,bonus));
+        return Messages.get(this,key+(reduction<0?"_harm":""),Messages.decimalFormat("#.##",Math.abs(reduction)));
+    }
 
 	public String upgradeStat1(int level){
 		if (cursed && cursedKnown) level = Math.min(-1, level-3);

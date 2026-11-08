@@ -585,19 +585,20 @@ public class Armor extends EquipableItem {
 	
 	@Override
 	public String info() {
+        Integer knownStrength=com.shatteredpixel.shatteredpixeldungeon.apd.mechanics.ArmorExplanation.knownStrength(Dungeon.hero);
 		String info = super.info();
 		
 		if (levelKnown) {
 
 			info += "\n\n" + Messages.get(Armor.class, "curr_absorb", tier, DRMin(), DRMax(), STRReq());
 			
-			if (Dungeon.hero != null && STRReq() > Dungeon.hero.STR()) {
+			if (knownStrength != null && STRReq() > knownStrength) {
 				info += " " + Messages.get(Armor.class, "too_heavy");
 			}
 		} else {
 			info += "\n\n" + Messages.get(Armor.class, "avg_absorb", tier, DRMin(0), DRMax(0), STRReq(0));
 
-			if (Dungeon.hero != null && STRReq(0) > Dungeon.hero.STR()) {
+			if (knownStrength != null && STRReq(0) > knownStrength) {
 				info += " " + Messages.get(Armor.class, "probably_too_heavy");
 			}
 		}

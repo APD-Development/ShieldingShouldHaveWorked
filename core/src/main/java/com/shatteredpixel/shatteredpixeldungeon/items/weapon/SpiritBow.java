@@ -139,20 +139,22 @@ public class SpiritBow extends Weapon {
 
 	@Override
 	public String info() {
+        Integer knownStrength=com.shatteredpixel.shatteredpixeldungeon.apd.mechanics.ArmorExplanation.knownStrength(Dungeon.hero);
 		String info = super.info() + accuracyDescription();
 		
         if(Dungeon.hero==null){
-            info+="\n\nSpirit Bow damage scales with the user's hero level and Sharpshooting. A personal damage range and strength penalties require a loaded hero; no example character is assumed.";
+            info+="\n\nDamage grows with your level and Ring of Sharpshooting.";
         }else{
-		info += "\n\n" + Messages.get( SpiritBow.class, "stats",
-				Math.round(augment.damageFactor(min())),
-				Math.round(augment.damageFactor(max())),
+        Integer knownAim=com.shatteredpixel.shatteredpixeldungeon.apd.qol.RingItemEffects.knownBonus(Dungeon.hero,RingOfSharpshooting.class,true);
+		info += "\n\n" + (knownAim==null?Messages.get(MissileWeapon.class,"weapon_only")+" ":"") + Messages.get( SpiritBow.class, "stats",
+				Math.round(augment.damageFactor(previewMin(knownAim==null?0:knownAim))),
+				Math.round(augment.damageFactor(previewMax(knownAim==null?0:knownAim))),
 				STRReq());
 		
-		if (STRReq() > Dungeon.hero.STR()) {
+		if (knownStrength!=null && STRReq() > knownStrength) {
 			info += " " + Messages.get(Weapon.class, "too_heavy");
-		} else if (Dungeon.hero.STR() > STRReq()){
-			info += " " + Messages.get(Weapon.class, "excess_str", Dungeon.hero.STR() - STRReq());
+		} else if (knownStrength!=null && knownStrength > STRReq()){
+			info += " " + Messages.get(Weapon.class, "excess_str", knownStrength - STRReq());
 		}
 		        }
 

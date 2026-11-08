@@ -678,21 +678,24 @@ abstract public class MissileWeapon extends Weapon {
 	
 	@Override
 	public String info() {
+        Integer knownStrength=com.shatteredpixel.shatteredpixeldungeon.apd.mechanics.ArmorExplanation.knownStrength(Dungeon.hero);
 
 		String info = super.info() + accuracyDescription();
 
+        Integer knownAim=com.shatteredpixel.shatteredpixeldungeon.apd.qol.RingItemEffects.knownBonus(Dungeon.hero,RingOfSharpshooting.class,true);
+        int displayedLevel=levelKnown?buffedLvl()+(knownAim==null?0:knownAim):0;
 		if (levelKnown) {
-			info += "\n\n" + Messages.get(MissileWeapon.class, "stats_known", tier, augment.damageFactor(min()), augment.damageFactor(max()), STRReq());
-			if (Dungeon.hero != null) {
-				if (STRReq() > Dungeon.hero.STR()) {
+			info += "\n\n" + (Dungeon.hero!=null && knownAim==null?Messages.get(MissileWeapon.class,"weapon_only")+" ":"")+Messages.get(MissileWeapon.class, "stats_known", tier, augment.damageFactor(Math.max(0,min(displayedLevel))), augment.damageFactor(Math.max(0,max(displayedLevel))), STRReq());
+			if (knownStrength != null) {
+				if (STRReq() > knownStrength) {
 					info += " " + Messages.get(Weapon.class, "too_heavy");
-				} else if (Dungeon.hero.STR() > STRReq()) {
-					info += " " + Messages.get(Weapon.class, "excess_str", Dungeon.hero.STR() - STRReq());
+				} else if (knownStrength > STRReq()) {
+					info += " " + Messages.get(Weapon.class, "excess_str", knownStrength - STRReq());
 				}
 			}
 		} else {
 			info += "\n\n" + Messages.get(MissileWeapon.class, "stats_unknown", tier, min(0), max(0), STRReq(0));
-			if (Dungeon.hero != null && STRReq(0) > Dungeon.hero.STR()) {
+			if (knownStrength != null && STRReq(0) > knownStrength) {
 				info += " " + Messages.get(MissileWeapon.class, "probably_too_heavy");
 			}
 		}
@@ -726,7 +729,9 @@ abstract public class MissileWeapon extends Weapon {
 			case NONE:
 		}
 
-		if (levelKnown) {
+        if(Dungeon.hero!=null && knownAim==null){
+            info+="\n\n"+Messages.get(MissileWeapon.class,"durability_unknown");
+        }else if (levelKnown) {
 			if (previewDurabilityPerUse() > 0) {
 				info += "\n\n" + Messages.get(this, "uses_left",
 						(int) Math.ceil(durability / previewDurabilityPerUse()),

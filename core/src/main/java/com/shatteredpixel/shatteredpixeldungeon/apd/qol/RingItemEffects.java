@@ -40,7 +40,9 @@ public final class RingItemEffects {
 
     /** Public-value numerical authority for description helpers, with the same privacy guards. */
     public static Integer knownBonus(Hero hero,Class<? extends Ring> type,boolean buffed){
-        if(hero==null||hero.buff(MagicImmune.class)!=null)return null;
+        if(hero==null)return null;
+        // Suppressed rings contribute a known zero, even when their properties are unknown.
+        if(hero.buff(MagicImmune.class)!=null)return 0;
         for(Item worn:new Item[]{hero.belongings.ring(),hero.belongings.misc()})if(worn instanceof Ring&&!worn.isIdentified())return null;
         SpiritForm.SpiritFormBuff spirit=hero.buff(SpiritForm.SpiritFormBuff.class);
         if(spirit!=null&&!spirit.previewRingIdentified())return null;
