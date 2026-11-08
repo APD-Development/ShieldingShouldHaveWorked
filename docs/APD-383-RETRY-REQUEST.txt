@@ -1,0 +1,1 @@
+Full Qol retry on original383 APKs using pinned728ca445f source and reviewed camera synchronization instrumentation patch. All viewport assertions retained after a rendered frame. No new game APK. Other ten original cases and initial failure retained.

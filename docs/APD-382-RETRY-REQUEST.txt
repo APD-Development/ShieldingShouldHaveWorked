@@ -1,1 +1,1 @@
-Rerun full Qol on both unchanged382 APKs. Initialize the synthetic Escape Crystal saved-items bundle using copies only; no real inventory clearing or game APK rebuild. Original failures and original ten other native cases retained.
+Full Qol retry on unchanged original382 APKs. Use exact producing source d6d21c97de27c5a49848c76bc62a5ae9fa276a60 and reviewed instrumentation-only patch: valid copied Escape Crystal state, camera assertions after a rendered frame. No weakening of viewport checks or new game APK. Original failures and other ten cases retained.
