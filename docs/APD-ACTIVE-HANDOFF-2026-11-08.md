@@ -235,3 +235,8 @@ Finaltest-onlypreparation: existingTenacitynativehelper now coverspositive/negat
 
 
 09:30UTCcutoff: source-only42593449057SUCCESSon5e23d687c:3115core457+Androiddebug/release/instrumentationJava+desktopcompile, noAPK/runtimeclaim. Later1fd09c436test-onlythree-statefixtureuncompiled/unrun. Allsource/evidencepushed,403latestpublished,405/406confirmedPRIVATEheld. Endauthorizedwindow; no backgroundcodingclaim.
+
+
+### Resumed authorization and Talisman detail review
+
+OwnerextendsactiveAPDworkthrough2026-11-09 16:00EST/21:00UTC, verified30minuteGitHubcadence/Easternmetadata, separatefailurebranches.404–406sourcebranches pushed;403fallback retained.407originalcorrectedpairinAndroidacceptance. Talismanfullownsource/read-onlyprovider reviewed; retaineddetailshorter, live range/cost/cone/progress formulas preserved, +10cap explicit, duplicate resource prose removed.27actualempty-floorcastsverifyrange/wholefractiondebit/1turn/selfcancel;8actualwarningstatesverifyvisibility/distance/searchability/type/curse/immunity.3117fullcore457pass, rawXML/logcommitted. New+3/+10expanded/bottomnativefixtureprepared, NOTyetcompiled/run.436units433fullpartial350corrected309complete127unresolved; no newpanel/gameplay/savechange. Continueapprovedwork.

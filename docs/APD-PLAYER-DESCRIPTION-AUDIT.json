@@ -6,7 +6,7 @@
   "message_entries": 2411,
   "reviewed_units": 433,
   "corrected_units": 350,
-  "unresolved_units": 129,
+  "unresolved_units": 127,
   "category_counts": {
     "apd": 1,
     "mechanics": 38,
@@ -72,7 +72,7 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/ArtifactEconomyExplanation.java",
-      "sha256": "b21a6a9ce16ea29cb209bb2f855b0b42794da6265356ca8692c66910fefc8cc3",
+      "sha256": "52506b951965a01f6fb962b9424e3df832ec011732426e0f5c0ba7b9326282d3",
       "category": "mechanics",
       "status": "PARTIAL_REVIEW",
       "description_methods": [
@@ -80,7 +80,7 @@
         "details"
       ],
       "wording_corrected": true,
-      "review_notes": "Current ordinary-description pass: concise live values, duplicate mathematical prose removed. Existing optional details and entire category variants remain under review; panel decisions pending. See APD-DESCRIPTION-CORRECTION-2026-11-08.md."
+      "review_notes": "Current ordinary-description pass: concise live values, duplicate mathematical prose removed. Existing optional details and entire category variants remain under review; panel decisions pending. See APD-DESCRIPTION-CORRECTION-2026-11-08.md. Talisman retained resource branch now onlypassiveformula/charge meaning; detailedrange/warning lives once in TalismanExplanation. Other artifact branches stillpartial."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/ArtifactExplanation.java",
@@ -397,15 +397,15 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/TalismanExplanation.java",
-      "sha256": "59a9b126ff91c2be7b60a4d8fb43e45c3796e6b780d680f5eabac767b3aff8ef",
+      "sha256": "2da5dec710958d8eecf1e30c98395123a5d441856cc8736cb0d95e80513f6cf2",
       "category": "mechanics",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [
         "summary",
         "details"
       ],
       "wording_corrected": true,
-      "review_notes": "Current ordinary-description pass: concise live values, duplicate mathematical prose removed. Existing optional details and entire category variants remain under review; panel decisions pending. See APD-DESCRIPTION-CORRECTION-2026-11-08.md."
+      "review_notes": "Entire own scry/charge/warning/action/save/awareness paths individually read. Retained detailed explanation shorter, with range/cost/cone/progress formulas preserved, +10maximum stated rather than an unavailable nextupgrade. Duplicate range/warning prose removed only from Talisman resource branch. Actual27empty-floor casts verify selection/range, whole/fractional charge debit and1turn, selftargetcancel;8warningstates verify distance/FOV/searchability/secret type/curse/immunity without revealing secrets. Existing88range/read-only/unknowncases retained.3117core457pass; two expanded/bottom nativewindows pending. Own-source completion only; inheritedArtifact/class/effect providers remain separately tracked."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/TrinketExplanation.java",
@@ -1119,12 +1119,12 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/artifacts/TalismanOfForesight.java",
       "sha256": "30179e55ad8f08753b4237227b5ea74ed8d19417c305e9bc1b95f53bc33c8304",
       "category": "artifacts",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [
         "desc"
       ],
       "wording_corrected": true,
-      "review_notes": " All15 actual curse branches reviewed; concise conditional ordinary text,15type read-only regression, actual Horn/Chalice effects tested. Existing advanced panels retained pending owner review; full non-curse/class paths may remain incomplete. Ordinary flavor/worn text decluttered after reading passive FOV trap warning, charge and cone discovery paths; no actual hidden tile query added to description. Existing real Talisman tests retained. Native ordinary expanded next pair; full detailed scope remains open."
+      "review_notes": "Entire own scry/charge/warning/action/save/awareness paths individually read. Retained detailed explanation shorter, with range/cost/cone/progress formulas preserved, +10maximum stated rather than an unavailable nextupgrade. Duplicate range/warning prose removed only from Talisman resource branch. Actual27empty-floor casts verify selection/range, whole/fractional charge debit and1turn, selftargetcancel;8warningstates verify distance/FOV/searchability/secret type/curse/immunity without revealing secrets. Existing88range/read-only/unknowncases retained.3117core457pass; two expanded/bottom nativewindows pending. Own-source completion only; inheritedArtifact/class/effect providers remain separately tracked."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/artifacts/TimekeepersHourglass.java",
@@ -4466,7 +4466,7 @@
       "review_notes": "Previously omitted normal buff source added. Entire own duration/decay/save/icon path and actual Hero/Char hit/protection consumer read. Ordinary prose shorter; Bless/Hex/Daze percentages use live ROLL_FACTOR; other languages retain existing turn argument plus ignored extra argument. Existing optional panels unchanged. Real8combination\u00d7100seed\u00d72direction hit tests assert live percentages; actual defensive decay/save/read-only test passes.3113core457. New ordinary Android window pending406. Own-source completion, not all BuffExplanation/class providers."
     }
   ],
-  "completed_units": 307,
-  "latest_tests": "3115core457 failures/errors/skips zero on final Tenacity zero-state correction plus Vampiric/currenthealing and all-language livebuff tests. Actual manual405review of32captures rejected inaccurate cursed-zero generic claim despite correct0%number;405/406same affectedprovider held PRIVATE, not published. Latestpublished403. Fullraw /workspace/apd-tenacity-zero-evidence-20261109/accepted-full. Latestsource-onlyAndroid compilation requested; corrected Tenacity/Vampiric actualnativewindows/newAPK still pending. Wholeaudit436units433fullpartial350corrected307complete129unresolved.",
+  "completed_units": 309,
+  "latest_tests": "3117core457allfail/error/skipzero.27actualTalismanemptyfloorcasts and8warningstates, existing88range/state/hidden cases. Raw /workspace/apd408-talisman-evidence-20261109/accepted-full. Actualexpanded/bottom3/10Talismanwindows prepared; notrunyet.407originalnativepending. No gameplay/save/newpanel changes. Wholeaudit436units433reviewedpartial350corrected309complete127unresolved.",
   "message_inventory_entries": 5339
 }

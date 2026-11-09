@@ -576,6 +576,17 @@ public class QolItemFeedbackDeviceTest {
             finally { TopScoresDeviceTest.render(() -> shown.get().hide()); }
         }
     }
+    private static void conciseRetainedTalismanDetailsRender() throws Exception {
+        for (int level : new int[]{3, 10}) {
+            calculationWindow(() -> {
+                com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TalismanOfForesight item = new com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TalismanOfForesight();
+                item.level(level); item.levelKnown = item.cursedKnown = true;
+                java.lang.reflect.Field charge = com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Artifact.class.getDeclaredField("charge");
+                charge.setAccessible(true); charge.setInt(item, level == 10 ? 100 : 50);
+                return new WndInfoItem(item);
+            }, level == 10 ? "Maximum upgrade +10 reached" : "Long-cast range", "qol-talisman-retained-clear-" + level + ".png");
+        }
+    }
     private static void retainedMonkEnergyDetailsRender()throws Exception{
         final com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass heroClass=Dungeon.hero.heroClass;final com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass subclass=Dungeon.hero.subClass;
         final java.util.ArrayList<java.util.LinkedHashMap<com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent,Integer>> talents=Dungeon.hero.talents;
@@ -1325,6 +1336,7 @@ public class QolItemFeedbackDeviceTest {
             retainedMonkEnergyDetailsRender();
             conciseHolyDescriptionsRender();
             conciseRetainedRingDetailsRender();
+            conciseRetainedTalismanDetailsRender();
             conciseDefensiveBuffDescriptionsRender();
             liveElementalBlastDescriptionsRender();
             gradualHealingNonStackDescriptionsRender();

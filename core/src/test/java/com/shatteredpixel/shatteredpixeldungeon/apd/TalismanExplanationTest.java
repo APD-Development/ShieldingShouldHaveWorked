@@ -42,7 +42,7 @@ public class TalismanExplanationTest {
                 assertEquals((Float)actual.invoke(item),TalismanExplanation.range(item),0);
                 String detail=ArtifactExplanation.details(item);
                 assertTrue(detail.contains(TalismanExplanation.details(item)));assertTrue(ArtifactExplanation.summary(item).contains(TalismanExplanation.summary(item)));
-                assertTrue(detail.contains((5+2*level)+" scheduled"));assertTrue(detail.contains((100+50*level)+" progress points"));
+                assertTrue(detail.contains((5+2*level)+" turns"));if(level<10)assertTrue(detail.contains((100+50*level)+" progress points"));else assertTrue(detail.contains("Maximum upgrade +10 reached"));
                 Bundle after=new Bundle();item.storeInBundle(after);assertEquals(before.toString(),after.toString());
                 assertNull(Dungeon.hero);assertNull(Dungeon.level);
             }
