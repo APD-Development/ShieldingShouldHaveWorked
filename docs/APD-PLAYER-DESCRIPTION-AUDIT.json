@@ -4,9 +4,9 @@
   "counting": "Source units, not distinct item types. reviewed_units includes partial reviews; completed_units excludes partial/pending dependency. corrected_units counts source units with corrections, including incomplete reviews. Inventory/export/tests alone are not an individual review.",
   "source_units": 437,
   "message_entries": 2432,
-  "reviewed_units": 435,
+  "reviewed_units": 436,
   "corrected_units": 354,
-  "unresolved_units": 17,
+  "unresolved_units": 10,
   "category_counts": {
     "apd": 1,
     "mechanics": 38,
@@ -546,9 +546,9 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/Generator.java",
       "sha256": "08fe70140803870b6985a773164cb5d48197c37bc2fa3b45dfe524743de601ac",
       "category": "items",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
+      "status": "REVIEWED_UNCHANGED",
       "description_methods": [],
-      "review_notes": ""
+      "review_notes": "2026-11-09: Full1062line own source reviewed: complete item arrays/weights and public factories, category/subordering, seeded decks/defaults, ExoticCrystals conditions, Gathering availability, floor tier distributions, artifact uniqueness, record wrappers and old-deck migration. No player explanation is generated directly here; actual factories underpin separately tested source-specific ranges and consumable descriptions. No code/probability/seed changes."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/Gold.java",
@@ -1632,14 +1632,14 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/potions/Potion.java",
       "sha256": "349c7c1066d4295c889dfb23d30caac9bd7956fda0e2cbb47dc0ef7bd12b709f",
       "category": "potions",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_UNCHANGED",
       "description_methods": [
         "info",
         "desc",
         "info",
         "info"
       ],
-      "review_notes": "Individual source read2026-11-09; normal Potion identity/color/actions/drink/throw/splash/crafting and exotic shared identity reviewed; Brew/Elixir abstract action/known states unchanged. Aqua now concise actual geyser/water/trap/fire/knockback warning including hero/allies, real shatter verifies flood/removes hidden trap/extinguishes fire/preserves wall. ClassArmor entire source transfer/seal/charge/conditional shortdesc and six sprite-only variants read; normal charge label now percent matching0\u2013100meter. Ability summary concise current cost, separate Warp placement restriction and Trinity variable effect cost retained. Existing specific advanced panels unchanged; full effects provider/inherited dependency reviews remain incomplete.3062core/457suites pass; actual new native windows pending next pair, not392."
+      "review_notes": "2026-11-09: Full580line own source read including anonymous versus discovered type, color/name/description/save, harmful drink/beneficial throw confirmations, targeting and one-turn drinking, shatter trap attribution, splash cure, prices and12seed recipe mappings/deck restrictions. Ordinary type text remains hidden until known, source preview labels remain separate. No mechanics change."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/potions/PotionOfExperience.java",
@@ -3282,12 +3282,12 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/SpiritBow.java",
       "sha256": "45cf88780f360f6330ba56600379d886c234f5308ae0999d00aa7aef4beefec5",
       "category": "weapon",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [
         "info"
       ],
       "wording_corrected": true,
-      "review_notes": "Primary stats use only known ring bonuses and known Strength; no-hero text shortened. Existing gameplay damage, arrow targeting and ability mechanics unchanged. Remaining special shot descriptions still pending individual review. Reproduced ordinary bow retaining old generic Arcana paragraphs; now same concise playerDescription as melee/missile, skips duplicate distance instruction when actual accuracy row exists. Existing specific panels retained, no gameplay change. Known Elastic/Lucky/Projecting/Vorpal text regression and unknown-ring/read-only one-use buff matrix; actual native windows pending392."
+      "review_notes": "2026-11-09: Full523line own source including actual level and Sharpshooting/infusion damage, known strength/ring guards, augments, enchants/curses, Nature Power and Sniper flurry/mark timing, hit/accuracy/targeting and Seer Shot read. Shortened ordinary progression/damage/strength text while preserving live placeholders. Existing actual bow damage/known-only/purity/timing/trajectory tests pass. No formulas or targeting changed."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/Weapon.java",
@@ -3735,14 +3735,14 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/melee/MagesStaff.java",
-      "sha256": "662a156e8a29b1b723b60b021fd3aafd4446867b0b0116f00adfa5c05cbaa8c8",
+      "sha256": "7cb9923a90f18669305597d389ac3791c8345f4396914f57ac77dfc78697f8fd",
       "category": "weapon",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [
         "info"
       ],
       "wording_corrected": true,
-      "review_notes": "Read ordinary info, imbue selection/level calculation, wand preservation and Battlemage hit/reach paths. Imbue confirmation now accurately explains no bonus for an unupgraded staff and level retention with a weaker wand. Existing selected result/unknown lower-bound/cursed and old-wand loss warnings preserved. Full wand-specific, talent and secondary panels remain under review. Followup2026-11-09: normal Battlemage text now says frenzy attacks nearby creatures, nearby burning creatures/tiles improve fire explosion, Transfusion requires charm by you, Warding restores spent upgraded-ward attacks or sentry HP, not basic ward repair. Actual Transfusion ownership/no free charge/time and six ward tier repair checks added; four actual native windows prepared for397. Gameplay and panel availability unchanged. Followup2026-11-09 reproduced Twin Upgrades hidden-companion disclosure: Sword known1damage4\u201324became11\u201352and Cleave10\u201330became24\u201365; Dart5\u201315became12\u201336. Existing thread-local weapon/crossbow inspection now excludes unknown companion upgrade contribution, clearly labels omission based solely on visible tier/talent/knowledge, covers normal/optional enchantment/passive-block/ring/legacy/staff queries. Raw combat still borrows actual8outside inspection and on another thread; knowledge change updates displayed values. Exception unwinding/pending crossbow state/read-only saved state retained. Four meaningful regressions pass, actual new owned Sword/Dart windows pending399. No gameplay, balance, saves, targeting or controls changed."
+      "review_notes": "2026-11-09: Full570line own source and English imbue/curse/level/wand-preservation/Battlemage strings read. Empty staff previously omitted its existing no-wand message; now briefly explains it needs a wand to cast. Test checks no ZAP action on empty, real imbued ZAP available, no false warning and unchanged saved state. Future actual empty-staff Android window prepared. Wand sources/StaffExplanation already individually reviewed; mechanics unchanged."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/melee/MeleeWeapon.java",
@@ -4252,7 +4252,7 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/plants/Plant.java",
       "sha256": "ce756e02318659e2ec521fcb31538a36b397685898ecb35280aed7640c758ecc",
       "category": "plants",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [
         "desc",
         "desc",
@@ -4260,7 +4260,7 @@
         "info"
       ],
       "wording_corrected": true,
-      "review_notes": "Seed and plant normal descriptions checked against activation and Warden branches. Floor-one Fadeleaf, immunity limits and movement-ending effects distinguished. Earthroot/Sungrass/Swiftthistle buff details and shared Plant variants remain under review. Android acceptance pending. Followup2026-11-09: actual Sungrass normal/Warden activation and ticks under HEALING0 tested, player-only warnings on plant/seed/herbal buff; NPC healing and no-hero preview preserved. BarrenLand seed wrapper now states original no-growth rule, actual Level.plant still returns null. Dart selector accepted Blandfruit seed with no recipe; reproduced then filtered by existing TippedDart.types, every real recipe remains selectable and creates expected quantity. No valid recipe, healing rule, challenge, turn cost or new interface changed. English inventory5334. Full3068core457suites pass; actual picker disabled-slot tap/valid prompt and seed states prepared for394, not393. Shared/dependent review remains partial."
+      "review_notes": "2026-11-09: Full own source read: trample/wither/seed preservation and attribution, Warden seed growth, Barren Land and trap/pit/alchemy restrictions, planting action, seed desc/info and save state. Ordinary messages preserve species/Warden distinctions and no generic panel. Existing actual Sungrass NONE/WARDEN Healing0, NPC healing, save/purity and Barren warning tests pass. No additional change."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/plants/Rotberry.java",
@@ -4348,22 +4348,22 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/qol/ItemOrigins.java",
       "sha256": "b27aa65626855e174aa01b9328412cca45a9622288c92e8e01f41e0e3670ed38",
       "category": "qol",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [
         "describe"
       ],
-      "review_notes": "Added missing display provider to inventory. Reading its output is not a complete provenance/generation audit. Followup2026-11-09: actual Item.info notes/rings/origin composition, unknown origin/range gates, both item window/action layouts and bounded panel source read. Source-specific decorated crossing/rows/patch and mine labels written after actual room subclasses read; classification/source/recovery rules untouched. Transmutation ordinary text no longer promises unsupported armor/glyph changes, reflects actual restrictions/property transfer; actual sword transfer/knowledge regression. WndInfoItem title color now uses read-only public level, preserving stale wand-infusion metadata; actual native checks pending. Empty Weapon summary no longer adds blank paragraphs, zero-wear missiles omit meaningless Sharpshooting durability multiplier. Full3064core457suites pass; new portrait/landscape native pending393, not392. Full inherited/secondary room-rule and shared variants remain open.",
+      "review_notes": "2026-11-09: Full immutable metadata/capture/record/recovery/merge/save/description source and key/source labels reviewed. Actual classification tests distinguish Golden Key chests versus Iron Key room doors and Crystal variants; all concrete room labels tested, old missing evidence stays missing, original source not overwritten, identified line hidden. No unknown properties read or new historical claim fabricated.",
       "wording_corrected": true
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/qol/GenerationUpgradeRanges.java",
       "sha256": "29479b2d63e9ccee80eadb2a5d1a67fb3936226118b8442a302af783285df3be",
       "category": "qol",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [
         "describe"
       ],
-      "review_notes": "Added missing display provider to inventory. Reading its output is not a complete provenance/generation audit. Followup2026-11-09: actual Item.info notes/rings/origin composition, unknown origin/range gates, both item window/action layouts and bounded panel source read. Source-specific decorated crossing/rows/patch and mine labels written after actual room subclasses read; classification/source/recovery rules untouched. Transmutation ordinary text no longer promises unsupported armor/glyph changes, reflects actual restrictions/property transfer; actual sword transfer/knowledge regression. WndInfoItem title color now uses read-only public level, preserving stale wand-infusion metadata; actual native checks pending. Empty Weapon summary no longer adds blank paragraphs, zero-wear missiles omit meaningless Sharpshooting durability multiplier. Full3064core457suites pass; new portrait/landscape native pending393, not392. Full inherited/secondary room-rule and shared variants remain open.",
+      "review_notes": "2026-11-09: Full source reviewed against actual seeded room/quest/mob generation tests and hidden-accessor throwing tests. Ranges describe source support, using independent Parchment/equipment conditions; legacy missing context uses unions, never hidden upgrade/curse rolls. Shop/artifact/Imp/room/mob cases, merge, identity changes and save malformed cases retained. No gameplay changes.",
       "wording_corrected": true
     },
     {
@@ -4478,7 +4478,7 @@
       "review_notes": "2026-11-09 individually inspected previously omitted plant window. Removed universal plant calculations supplier/button, outside owner-retained mechanic-specific groups, keeping normal species/Warden descriptions and existing plain window. No new layout or effects. Thirty actual plant windows across NONE/WARDEN prepared to assert no expander, text screen bounds, pure save/time; Android pending next pair."
     }
   ],
-  "completed_units": 420,
+  "completed_units": 427,
   "latest_tests": "3134core457all0 after full Weapon/Melee/ability/timing/preparation own-provider reviews and two ordinary wording changes.412source8bd99c644build/core/compile passed, native in progress.411originalnative rejected stale exact Catalyst phrase; full original-APK test-only retry42613038722running, originals/sourcefailurebranch preserved.410 latestpublished.",
   "message_inventory_entries": 5343,
   "message_inventory_counting": "Current authored English property entries across nine files;2432 item entries. Two concise zero-Healing dew/waterskin keys added. Exact Adult OFF/ON checks retained."

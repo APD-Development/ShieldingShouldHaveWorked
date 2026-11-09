@@ -365,6 +365,8 @@ public class MagesStaff extends MeleeWeapon {
                         && com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomHealingHooks.disabled()
                         ? "bmage_desc_disabled" : "bmage_desc");
 			}
+		} else {
+			info += "\n\n" + Messages.get(this, "no_wand");
 		}
 
 		return info;

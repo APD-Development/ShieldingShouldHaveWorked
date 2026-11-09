@@ -476,6 +476,7 @@ public class QolItemFeedbackDeviceTest {
                 Window window=new WndInfoBuff(buff);GameScene.show(window);buffWindow.set(window);
             });Thread.sleep(300);TopScoresDeviceTest.render(()->assertDescriptionViewport(buffWindow.get()));TopScoresDeviceTest.screenshot("qol-herbal-time-buff-"+type+".png");TopScoresDeviceTest.render(()->buffWindow.get().hide());
         }
+        showItem(new com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff(),"Imbue a wand to let this staff cast spells.","qol-empty-staff-needs-wand.png",true);
         HeroSubClass plantSubclass=Dungeon.hero.subClass;
         try{for(HeroSubClass subclass:new HeroSubClass[]{HeroSubClass.NONE,HeroSubClass.WARDEN}){
             TopScoresDeviceTest.render(()->Dungeon.hero.subClass=subclass);
