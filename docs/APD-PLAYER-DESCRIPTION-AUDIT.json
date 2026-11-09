@@ -2,11 +2,11 @@
   "scope": "Every item category, inherited and generated descriptions, enchantments/glyphs/curses, class interactions and existing secondary panels. Inventory is not review completion.",
   "baseline_commit": "32f4f3beab4c23b404c3cb1d43bfa06a39165e70",
   "counting": "Source units, not distinct item types. reviewed_units includes partial reviews; completed_units excludes partial/pending dependency. corrected_units counts source units with corrections, including incomplete reviews. Inventory/export/tests alone are not an individual review.",
-  "source_units": 427,
+  "source_units": 428,
   "message_entries": 2411,
-  "reviewed_units": 422,
-  "corrected_units": 338,
-  "unresolved_units": 184,
+  "reviewed_units": 423,
+  "corrected_units": 340,
+  "unresolved_units": 180,
   "category_counts": {
     "apd": 1,
     "mechanics": 38,
@@ -31,7 +31,7 @@
     "weapon": 92,
     "plants": 14,
     "ui": 1,
-    "windows": 2
+    "windows": 3
   },
   "entries": [
     {
@@ -123,14 +123,14 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/BuffExplanation.java",
-      "sha256": "488fe04c74559e6125e4b94e60b3ee21db03ce8b06c46a8041b288cb5c0838ef",
+      "sha256": "f2d4a0f7e9e51fbd0d3187d413657f2c1982bafa9b087330d3b0b3644daf5f72",
       "category": "mechanics",
       "status": "PARTIAL_REVIEW",
       "description_methods": [
         "details"
       ],
       "wording_corrected": true,
-      "review_notes": "Partial2026-11-09 source review: exact Fire/Frost/Toxic cases reconciled with actual proc/duration/immunity/gas handlers; existing details now share unchanged constants. Many other individual buff cases remain open. No new panels or blanket completion claim."
+      "review_notes": "Partial2026-11-09 source review: exact Fire/Frost/Toxic cases reconciled with actual proc/duration/immunity/gas handlers; existing details now share unchanged constants. Many other individual buff cases remain open. No new panels or blanket completion claim. Monk advanced energy branch individually shortened after full actual gain/cap/empower/legacycooldown source read2026-11-09. Preserves fractional energy/costs/all kill classes/additive gear bonuses/cap overflow/exactfloatthreshold includingrank2boundary/current state. No generic boilerplate, no new controls or calculations. Existing actual gain/stance/cap/empowerment checks updated for new wording, not weakened.3108pass; other buff branches still tracked separately."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/CloakExplanation.java",
@@ -251,13 +251,14 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/MonkAbilityExplanation.java",
-      "sha256": "dbd9e8ae7e45a2a5f0edfe2afb27b125b204f5f14f0af2b24cddc794233bbd88",
+      "sha256": "713eba1f6352fa3e99bdc30868584838cb4af2042a4af88ba587fbf1b5cf0839",
       "category": "mechanics",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [
         "details"
       ],
-      "review_notes": "Read entire provider plus all5actual MonkEnergy ability implementations2026-11-09. Core actions/formulas/conditional empowerment checked; found advanced Meditate resistance phrasing should explicitly limit to empowerment. No change yet, provider remains incomplete. Existing actual Focus/time/energy/empowerment/basicdamage/privacy tests retained."
+      "review_notes": "Entire five-ability provider and all actual MonkEnergy ability implementations individually reconciled2026-11-09. Shorter retained descriptions preserve basic damage/ranges/Force exclusion/special dodges, free-time Flurry/Dash, Focus ready cost, legal movement, Dragon push/paralysis and five-turn delayed meditation. Explicitly fixes empowered-only Meditate resistance. Actual four empowered/Healing0 states execute doAbility:5turns,5energy,heal pool2 ornone,conditional resistance,scheduled recharge atcurrentdelay\u22121thenactual8turns withHorn. No actions/formulas changed. Real Focus/gain/cap/stance/known-strength and read-only/RNG checks retained.3108core457pass; new actual retained MonkBuff expanded/bottom screenshots pending403.",
+      "wording_corrected": true
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/ObfuscationExplanation.java",
@@ -3535,12 +3536,12 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/melee/AssassinsBlade.java",
       "sha256": "22ffaff4b0d98251fdd8ba49fdd0e925e6b687fef01343cb1e7a591ea56639bc",
       "category": "weapon",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [
         "abilityInfo"
       ],
       "wording_corrected": true,
-      "review_notes": "Individually read normal damage, surprise/spin, ability and preview code. Concise Sneak destinations/root restriction, explicit labelled +0 examples; Spin describes per-spin damage and initial charge. Flail buff displays actual1\u20133spin count rather than a percentage labelled spins, preserving translated percentage argument. Full inherited/class/secondary interaction review remains unfinished."
+      "review_notes": "Individually read normal damage, surprise/spin, ability and preview code. Concise Sneak destinations/root restriction, explicit labelled +0 examples; Spin describes per-spin damage and initial charge. Flail buff displays actual1\u20133spin count rather than a percentage labelled spins, preserving translated percentage argument. Full inherited/class/secondary interaction review remains unfinished. Entire own source reviewed2026-11-09: surprise roll uses upper75/67/50%portion of ordinary range then augmentation/excessSTR; existing ordinary text accurately says stronger against unaware enemies. Sneak actual legal path range5/4/3,visibleemptydestination/root guard/instant relocation/invisibility and known versus+0duration match current prose. No additional wording or mechanics needed. Existing known/unknown/all-family native fixtures and source tests retained; inherited providers separate."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/melee/BattleAxe.java",
@@ -3579,23 +3580,23 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/melee/Dagger.java",
       "sha256": "bae342c90b940c591ad6e313f44ded3d071408a4e1b7ae6c885265b6271dcba2",
       "category": "weapon",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [
         "abilityInfo"
       ],
       "wording_corrected": true,
-      "review_notes": "Individually read normal damage, surprise/spin, ability and preview code. Concise Sneak destinations/root restriction, explicit labelled +0 examples; Spin describes per-spin damage and initial charge. Flail buff displays actual1\u20133spin count rather than a percentage labelled spins, preserving translated percentage argument. Full inherited/class/secondary interaction review remains unfinished."
+      "review_notes": "Individually read normal damage, surprise/spin, ability and preview code. Concise Sneak destinations/root restriction, explicit labelled +0 examples; Spin describes per-spin damage and initial charge. Flail buff displays actual1\u20133spin count rather than a percentage labelled spins, preserving translated percentage argument. Full inherited/class/secondary interaction review remains unfinished. Entire own source reviewed2026-11-09: surprise roll uses upper75/67/50%portion of ordinary range then augmentation/excessSTR; existing ordinary text accurately says stronger against unaware enemies. Sneak actual legal path range5/4/3,visibleemptydestination/root guard/instant relocation/invisibility and known versus+0duration match current prose. No additional wording or mechanics needed. Existing known/unknown/all-family native fixtures and source tests retained; inherited providers separate."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/melee/Dirk.java",
       "sha256": "7322a1c39911de09c8f8d87e8be48f7da628bc98ec576728e68610cbbd11e514",
       "category": "weapon",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [
         "abilityInfo"
       ],
       "wording_corrected": true,
-      "review_notes": "Individually read normal damage, surprise/spin, ability and preview code. Concise Sneak destinations/root restriction, explicit labelled +0 examples; Spin describes per-spin damage and initial charge. Flail buff displays actual1\u20133spin count rather than a percentage labelled spins, preserving translated percentage argument. Full inherited/class/secondary interaction review remains unfinished."
+      "review_notes": "Individually read normal damage, surprise/spin, ability and preview code. Concise Sneak destinations/root restriction, explicit labelled +0 examples; Spin describes per-spin damage and initial charge. Flail buff displays actual1\u20133spin count rather than a percentage labelled spins, preserving translated percentage argument. Full inherited/class/secondary interaction review remains unfinished. Entire own source reviewed2026-11-09: surprise roll uses upper75/67/50%portion of ordinary range then augmentation/excessSTR; existing ordinary text accurately says stronger against unaware enemies. Sneak actual legal path range5/4/3,visibleemptydestination/root guard/instant relocation/invisibility and known versus+0duration match current prose. No additional wording or mechanics needed. Existing known/unknown/all-family native fixtures and source tests retained; inherited providers separate."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/melee/Flail.java",
@@ -4351,9 +4352,21 @@
       ],
       "review_notes": "Added missing display provider to inventory. Reading its output is not a complete provenance/generation audit. Followup2026-11-09: actual Item.info notes/rings/origin composition, unknown origin/range gates, both item window/action layouts and bounded panel source read. Source-specific decorated crossing/rows/patch and mine labels written after actual room subclasses read; classification/source/recovery rules untouched. Transmutation ordinary text no longer promises unsupported armor/glyph changes, reflects actual restrictions/property transfer; actual sword transfer/knowledge regression. WndInfoItem title color now uses read-only public level, preserving stale wand-infusion metadata; actual native checks pending. Empty Weapon summary no longer adds blank paragraphs, zero-wear missiles omit meaningless Sharpshooting durability multiplier. Full3064core457suites pass; new portrait/landscape native pending393, not392. Full inherited/secondary room-rule and shared variants remain open.",
       "wording_corrected": true
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/WndClericSpells.java",
+      "sha256": "e698b965aad38b091091778079e272761180f1e5bddda04d77543cf6d431bd75",
+      "category": "windows",
+      "status": "REVIEWED_CORRECTED",
+      "wording_corrected": true,
+      "description_methods": [
+        "SpellButton.onClick",
+        "SpellButton.onRightClick"
+      ],
+      "review_notes": "Previously omitted UI source added to inventory2026-11-09. Read entire own class: learned-spell lists, icons, information versus casting, quickcast/rightclick/hover paths. Both information paths now retain original spell.desc single live cost and existing optional detail, removing duplicate summary. Casting and targeting untouched.243spell/rank/subclass source cases pass; real ordinary HolyWeapon window pending exact402retry. No claim all spell effect details reviewed."
     }
   ],
-  "completed_units": 243,
+  "completed_units": 248,
   "latest_tests": "3103core/457suites no failures/errors/skips; Twin unknown-source preview invariance, known-source update, passive block/enchantment/legacy values, raw combat/other thread and exception cleanup. Full evidence /workspace/apd-twin-inspection-evidence-20261109/accepted-full. New native windows pending399. Earlier source-only compile42575862693passed ondd9eccc670ca7927c5ef44ad3d3a40c95958798f with3099tests; not later Twin source.",
   "message_inventory_entries": 5338
 }

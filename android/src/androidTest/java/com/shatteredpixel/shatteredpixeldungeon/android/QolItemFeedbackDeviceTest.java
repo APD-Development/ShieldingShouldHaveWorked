@@ -244,7 +244,7 @@ public class QolItemFeedbackDeviceTest {
     }
     private static void calculationWindowsRenderAndRespond()throws Exception{
         calculationWindow(()->{com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CloakOfShadows cloak=new com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CloakOfShadows();cloak.levelKnown=cloak.cursedKnown=true;return new WndInfoItem(cloak);},"every 4 turns","qol-cloak-explanation-expanded.png");
-        calculationWindow(()->{com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose rose=new com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose();rose.levelKnown=rose.cursedKnown=true;return new WndInfoItem(rose);},"remaining health percentage instead of this meter","qol-rose-explanation-expanded.png");
+        calculationWindow(()->{com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose rose=new com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose();rose.levelKnown=rose.cursedKnown=true;return new WndInfoItem(rose);},"the ghost’s health percentage","qol-rose-explanation-expanded.png");
 
         RingOfArcana arcana=new RingOfArcana();
         TopScoresDeviceTest.render(()->{arcana.level(3);arcana.identify();});
@@ -504,6 +504,13 @@ public class QolItemFeedbackDeviceTest {
         com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing potion=new com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing();potion.anonymize();showItem(potion,"Repeated doses do not add","qol-healing-potion-no-stacking.png",true);
         AtomicReference<Window> shown=new AtomicReference<>();TopScoresDeviceTest.render(()->{com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Healing healing=new com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Healing();healing.setHeal(100,.25f,0);assertTrue(healing.desc().contains("Next heal: up to 25 HP"));com.watabou.utils.Bundle before=new com.watabou.utils.Bundle();healing.storeInBundle(before);Window window=new WndInfoBuff(healing);GameScene.show(window);shown.set(window);com.watabou.utils.Bundle after=new com.watabou.utils.Bundle();healing.storeInBundle(after);assertEquals(before.toString(),after.toString());});
         try{Thread.sleep(300);TopScoresDeviceTest.render(()->assertDescriptionViewport(shown.get()));TopScoresDeviceTest.screenshot("qol-gradual-healing-concise-status.png");}finally{TopScoresDeviceTest.render(()->shown.get().hide());}
+    }
+    private static void retainedMonkEnergyDetailsRender()throws Exception{
+        final com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass heroClass=Dungeon.hero.heroClass;final com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass subclass=Dungeon.hero.subClass;
+        final java.util.ArrayList<java.util.LinkedHashMap<com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent,Integer>> talents=Dungeon.hero.talents;
+        final com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MonkEnergy[] energy={null};
+        TopScoresDeviceTest.render(()->{Dungeon.hero.heroClass=com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass.DUELIST;Dungeon.hero.subClass=com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass.MONK;Dungeon.hero.talents=new java.util.ArrayList<>();com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent.initClassTalents(Dungeon.hero);Dungeon.hero.talents.get(2).put(com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent.MONASTIC_VIGOR,2);energy[0]=com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff.affect(Dungeon.hero,com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MonkEnergy.class);energy[0].energy=9;});
+        try{calculationWindow(()->new WndInfoBuff(energy[0]),"Only empowered meditation","qol-monk-existing-detail-clear.png");}finally{TopScoresDeviceTest.render(()->{energy[0].detach();Dungeon.hero.heroClass=heroClass;Dungeon.hero.subClass=subclass;Dungeon.hero.talents=talents;});}
     }
     private static void retainedThreeArtifactDetailsRender()throws Exception{
         calculationWindow(()->{com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CapeOfThorns cape=new com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CapeOfThorns();cape.level(3);cape.levelKnown=cape.cursedKnown=true;return new WndInfoItem(cape);},"Charging and deflection","qol-cape-existing-detail-clear.png");
@@ -1226,6 +1233,7 @@ public class QolItemFeedbackDeviceTest {
             retainedGrowthAndWardDescriptionsRender();
             additionalTrinketDetailsRender();
             retainedThreeArtifactDetailsRender();
+            retainedMonkEnergyDetailsRender();
             gradualHealingNonStackDescriptionsRender();
             hiddenTwinUpgradeDescriptionsRender();
             divineInspirationChoiceDescriptionRenders();
