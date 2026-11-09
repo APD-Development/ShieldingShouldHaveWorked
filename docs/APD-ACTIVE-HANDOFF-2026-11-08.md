@@ -156,3 +156,8 @@ Cape/Chalice/Horn optional math prose and common charge header shorter, preservi
 
 
 400published 2026-11-09T07:53:37Z source56ee1e8f9b3c04288af3e5b2093b5a032f467c7b build42580333970 stage42580378706,3103core457/12targetedAPI34passed. APK/source hashes and supplemental scan independently checked; three actual expanded screenshots manually reviewed. Native controls/viewport/offset checks, no claim manually viewed last lines: next401adds bottom capture/assert. Receipt APD-400-DELIVERY-RECEIPT.json. Continue later3106source; all previous source/APKs preserved.
+
+
+### APK401 rejection and continued Cleric correction
+
+401build42582332906 failed instrumentation Java compilation before assembly: scroll-end lambda omitted checked-exception handling. Exact log/source preserved in APD-401-android-scroll-fixture-compile.zip, original401draft now explicitly rejected, noAPK produced or published. Fixed test helper catch in later source. Both real Cleric information paths now omit redundant CurrentCost paragraph, retaining original ChargeCost and existing details control.243descriptions across27spells/3subclasses/3valid-rank settings pass one-cost/RNG/save checks in3107fullcore457suites. Android real ordinaryHolyWeapon single-cost capture/assert added, pending402. Source-only42581691955passed3106/desktop/Androiddebug/release/testJava at2f4b15aff before later artifact/bottom changes; no runtime claim. Monk provider plus5actual abilities read; advanced Meditate resistance conditional phrasing still needs correction.422full/partial338corrected243complete184unresolved,5338English; continue approved work.

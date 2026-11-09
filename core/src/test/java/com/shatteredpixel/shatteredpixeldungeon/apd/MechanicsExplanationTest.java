@@ -336,6 +336,15 @@ public class MechanicsExplanationTest {
   }
   shard.levelKnown=false;assertTrue(shard.statsDesc().startsWith("At +0,"));
  }
+ @Test public void ordinaryClericDescriptionsAlreadyContainOneLiveCostForAllSpellsAndRanks(){
+  hero.heroClass=HeroClass.CLERIC;Talent.initClassTalents(hero);descriptionSightArena();int checked=0;
+  for(HeroSubClass subclass:new HeroSubClass[]{HeroSubClass.NONE,HeroSubClass.PRIEST,HeroSubClass.PALADIN})for(int rank:new int[]{0,1,4}){
+   hero.subClass=subclass;for(java.util.LinkedHashMap<Talent,Integer> tier:hero.talents)tier.replaceAll((talent,value)->Math.min(rank,talent.maxPoints()));
+   for(com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.ClericSpell spell:com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.ClericSpell.getAllSpells()){
+    String before=savedDescriptionHero();Random.pushGenerator(387);int next=Random.Int();Random.popGenerator();Random.pushGenerator(387);try{String text=spell.desc();assertEquals(spell.getClass().getSimpleName(),1,text.split("Charge cost:",-1).length-1);assertTrue(text,text.endsWith("Charge cost: "+(int)spell.chargeUse(hero)));assertEquals(next,Random.Int());assertEquals(before,savedDescriptionHero());}finally{Random.popGenerator();}checked++;
+   }
+  }assertEquals(243,checked);
+ }
  @Test public void eyeOfNewtDescriptionMatchesActualRoundedVisionRange(){
   descriptionSightArena();hero.viewDistance=8;com.shatteredpixel.shatteredpixeldungeon.items.trinkets.EyeOfNewt eye=new com.shatteredpixel.shatteredpixeldungeon.items.trinkets.EyeOfNewt();eye.cursedKnown=true;hero.belongings.backpack.items.add(eye);
   for(int level=0;level<=3;level++){eye.level(level);boolean[] fov=new boolean[Dungeon.level.length()];Dungeon.level.updateFieldOfView(hero,fov);int radius=Math.round(8*com.shatteredpixel.shatteredpixeldungeon.items.trinkets.EyeOfNewt.visionRangeMultiplier(level));assertTrue(fov[hero.pos+radius]);assertFalse(fov[hero.pos+radius+1]);assertTrue(TrinketExplanation.details(eye).contains("_"+(2+level)+" tiles_"));}

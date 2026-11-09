@@ -159,7 +159,7 @@ public class QolItemFeedbackDeviceTest {
         Thread.sleep(100);TopScoresDeviceTest.render(()->{assertDescriptionViewport(window);window.offset(originalOffset);});
         Thread.sleep(100);TopScoresDeviceTest.render(()->assertDescriptionViewport(window));
         TopScoresDeviceTest.screenshot(screenshot);
-        TopScoresDeviceTest.render(()->{ScrollPane scroll=TopScoresDeviceTest.find(window,ScrollPane.class).get(0);float bottom=Math.max(0,scroll.content().height()-scroll.height());scroll.scrollTo(0,bottom);assertEquals("Last description line remains reachable",bottom,scroll.content().camera.scroll.y,.001f);assertDescriptionViewport(window);});
+        TopScoresDeviceTest.render(()->{try{ScrollPane scroll=TopScoresDeviceTest.find(window,ScrollPane.class).get(0);float bottom=Math.max(0,scroll.content().height()-scroll.height());scroll.scrollTo(0,bottom);assertEquals("Last description line remains reachable",bottom,scroll.content().camera.scroll.y,.001f);assertDescriptionViewport(window);}catch(Exception e){throw new RuntimeException(e);}});
         Thread.sleep(100);TopScoresDeviceTest.screenshot(screenshot.replace(".png","-bottom.png"));touch(at[0]);
         TopScoresDeviceTest.render(()->{assertEquals("Pointer closes advanced explanation","Show calculations",expander.get().text());assertEquals(time[0],Dungeon.hero.cooldown(),0);assertEquals(hp[0],Dungeon.hero.HP);window.hide();});
     }
@@ -281,7 +281,8 @@ public class QolItemFeedbackDeviceTest {
             assertNotNull("Actual spell information button exists",spellAt[0]);
         }catch(Exception e){throw new RuntimeException(e);}});
         touch(spellAt[0]);AtomicReference<Window> spellWindow=new AtomicReference<>();
-        TopScoresDeviceTest.render(()->{try{java.util.List<WndTitledMessage> windows=TopScoresDeviceTest.find(Game.scene(),WndTitledMessage.class);assertEquals("Actual spell button opens its information",1,windows.size());spellWindow.set(windows.get(0));}catch(Exception e){throw new RuntimeException(e);}});
+        TopScoresDeviceTest.render(()->{try{java.util.List<WndTitledMessage> windows=TopScoresDeviceTest.find(Game.scene(),WndTitledMessage.class);assertEquals("Actual spell button opens its information",1,windows.size());spellWindow.set(windows.get(0));StringBuilder normal=new StringBuilder();for(RenderedTextBlock text:TopScoresDeviceTest.find(windows.get(0),RenderedTextBlock.class))normal.append(text.text()).append('\n');assertTrue(normal.toString(),normal.toString().contains("Charge cost: 2"));assertEquals("One live charge cost in the ordinary spell window",1,normal.toString().split("Charge cost:",-1).length-1);assertFalse(normal.toString().contains("Current cost:"));}catch(Exception e){throw new RuntimeException(e);}});
+        TopScoresDeviceTest.screenshot("qol-cleric-one-normal-charge-cost.png");
         checkCalculationWindow(spellWindow.get(),"multiplied by weapon enchantment power and rounded","qol-mechanics-spell-expanded.png");TopScoresDeviceTest.render(()->menu.get().hide());
     }
     private static void ordinaryEffectsMatchOwnerScreenshots()throws Exception{

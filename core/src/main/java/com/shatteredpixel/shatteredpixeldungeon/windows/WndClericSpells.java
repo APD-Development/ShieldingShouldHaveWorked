@@ -190,7 +190,7 @@ public class WndClericSpells extends Window {
 		@Override
 		protected void onClick() {
 			if (info){
-				GameScene.show(new WndTitledMessage(new HeroIcon(spell), Messages.titleCase(spell.name()), spell.desc()+"\n\n"+com.shatteredpixel.shatteredpixeldungeon.apd.mechanics.SpellExplanation.summary(spell,Dungeon.hero), ()->com.shatteredpixel.shatteredpixeldungeon.apd.mechanics.SpellExplanation.details(spell,Dungeon.hero),0));
+				GameScene.show(new WndTitledMessage(new HeroIcon(spell), Messages.titleCase(spell.name()), spell.desc(), ()->com.shatteredpixel.shatteredpixeldungeon.apd.mechanics.SpellExplanation.details(spell,Dungeon.hero),0));
 			} else {
 				hide();
 
@@ -246,7 +246,7 @@ public class WndClericSpells extends Window {
 							}
 							break;
 						case 1:
-							GameScene.show(new WndTitledMessage(new HeroIcon(spell), Messages.titleCase(spell.name()), spell.desc()+"\n\n"+com.shatteredpixel.shatteredpixeldungeon.apd.mechanics.SpellExplanation.summary(spell,Dungeon.hero), ()->com.shatteredpixel.shatteredpixeldungeon.apd.mechanics.SpellExplanation.details(spell,Dungeon.hero),0));
+							GameScene.show(new WndTitledMessage(new HeroIcon(spell), Messages.titleCase(spell.name()), spell.desc(), ()->com.shatteredpixel.shatteredpixeldungeon.apd.mechanics.SpellExplanation.details(spell,Dungeon.hero),0));
 							break;
 						case 2:
 							hide();
