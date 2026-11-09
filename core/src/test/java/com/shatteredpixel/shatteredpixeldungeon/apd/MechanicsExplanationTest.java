@@ -454,8 +454,8 @@ public class MechanicsExplanationTest {
  }
  @Test public void protectionDecayDescriptionsMatchActualUpdateAndSaveRestore(){
   for(int interval:new int[]{1,3,5}){
-   Barkskin bark=Buff.affect(hero,Barkskin.class);bark.set(8,interval);float before=bark.cooldown();String text=BuffExplanation.details(bark);assertTrue(text.contains(interval+" game-time units"));assertEquals(8,bark.level());assertEquals(before,bark.cooldown(),0);bark.act();assertEquals(7,bark.level());assertEquals(before+interval,bark.cooldown(),0);com.watabou.utils.Bundle saved=new com.watabou.utils.Bundle();bark.storeInBundle(saved);Barkskin loaded=new Barkskin();loaded.restoreFromBundle(saved);assertEquals(interval,loaded.decayInterval());bark.detach();
-   ArcaneArmor arcane=Buff.affect(hero,ArcaneArmor.class);arcane.set(8,interval);before=arcane.cooldown();assertTrue(BuffExplanation.details(arcane).contains(interval+" game-time units"));assertEquals(8,arcane.level());arcane.act();assertEquals(7,arcane.level());assertEquals(before+interval,arcane.cooldown(),0);arcane.storeInBundle(saved);ArcaneArmor restored=new ArcaneArmor();restored.restoreFromBundle(saved);assertEquals(interval,restored.decayInterval());arcane.detach();
+   Barkskin bark=Buff.affect(hero,Barkskin.class);bark.set(8,interval);float before=bark.cooldown();String text=BuffExplanation.details(bark);assertTrue(text.contains(interval+" turns apart"));assertEquals(8,bark.level());assertEquals(before,bark.cooldown(),0);bark.act();assertEquals(7,bark.level());assertEquals(before+interval,bark.cooldown(),0);com.watabou.utils.Bundle saved=new com.watabou.utils.Bundle();bark.storeInBundle(saved);Barkskin loaded=new Barkskin();loaded.restoreFromBundle(saved);assertEquals(interval,loaded.decayInterval());bark.detach();
+   ArcaneArmor arcane=Buff.affect(hero,ArcaneArmor.class);arcane.set(8,interval);before=arcane.cooldown();assertTrue(BuffExplanation.details(arcane).contains(interval+" turns apart"));assertEquals(8,arcane.level());arcane.act();assertEquals(7,arcane.level());assertEquals(before+interval,arcane.cooldown(),0);arcane.storeInBundle(saved);ArcaneArmor restored=new ArcaneArmor();restored.restoreFromBundle(saved);assertEquals(interval,restored.decayInterval());arcane.detach();
   }
  }
  @Test public void remainingStatusDetailsUseSavedPublicStateWithoutAdvancingIt(){
@@ -1945,7 +1945,7 @@ public class MechanicsExplanationTest {
   com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Rat rat=new com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Rat();float delay=rat.attackDelay();Buff.affect(rat,Adrenaline.class,5);assertEquals(delay/1.5f,rat.attackDelay(),.00001f);
  }
  @Test public void furyConditionKeepsExactHalfHpAndEndsAboveIt(){
-  PlainStatusTarget target=new PlainStatusTarget();target.HP=50;Fury fury=Buff.affect(target,Fury.class);fury.act();assertSame(fury,target.buff(Fury.class));assertTrue(MechanicsDetails.buff(fury,fury.desc()).contains("strictly above 50%"));target.HP=51;fury.act();assertNull(target.buff(Fury.class));assertFalse(fury.desc().contains("%%"));
+  PlainStatusTarget target=new PlainStatusTarget();target.HP=50;Fury fury=Buff.affect(target,Fury.class);fury.act();assertSame(fury,target.buff(Fury.class));assertTrue(MechanicsDetails.buff(fury,fury.desc()).contains("health is above 50%"));target.HP=51;fury.act();assertNull(target.buff(Fury.class));assertFalse(fury.desc().contains("%%"));
  }
  @Test public void fireImbueDescriptionMatchesActualIgnitionChecksAndDuration()throws Exception{
   FireImbue fire=Buff.affect(hero,FireImbue.class);fire.set(7);fire.extend(3);assertTrue(fire.desc().contains("_50% chance_"));assertTrue(hero.isImmune(Burning.class));assertTrue(new com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfDragonsBlood().desc().startsWith("For _50 turns_"));assertTrue(MechanicsDetails.buff(fire,fire.desc()).contains("duration: 10 turns"));
@@ -1985,7 +1985,7 @@ public class MechanicsExplanationTest {
   PlainStatusTarget enemy=new PlainStatusTarget();Paralysis other=Buff.affect(enemy,Paralysis.class,5);assertFalse(BuffExplanation.details(other).contains("current counted damage"));
  }
  @Test public void magicalSleepExplanationMatchesActualHealingAndFullHpEnding()throws Exception{
-  hero.sprite=quietSprite();hero.HP=18;MagicalSleep sleep=Buff.affect(hero,MagicalSleep.class);assertTrue(BuffExplanation.details(sleep).contains("one unmodified HP"));float fraction=hero.apdCustomHealingFraction;for(int i=0;i<30;i++)MechanicsDetails.buff(sleep,sleep.desc());assertEquals(18,hero.HP);assertEquals(fraction,hero.apdCustomHealingFraction,0);sleep.act();assertEquals(19,hero.HP);sleep.act();assertEquals(20,hero.HP);assertNull(hero.buff(MagicalSleep.class));
+  hero.sprite=quietSprite();hero.HP=18;MagicalSleep sleep=Buff.affect(hero,MagicalSleep.class);assertTrue(BuffExplanation.details(sleep).contains("Normally restores 1 HP per turn"));float fraction=hero.apdCustomHealingFraction;for(int i=0;i<30;i++)MechanicsDetails.buff(sleep,sleep.desc());assertEquals(18,hero.HP);assertEquals(fraction,hero.apdCustomHealingFraction,0);sleep.act();assertEquals(19,hero.HP);sleep.act();assertEquals(20,hero.HP);assertNull(hero.buff(MagicalSleep.class));
  }
 
  @Test public void regrowthAllowanceExplanationMatchesRealFormulaRatherThanStaleComments()throws Exception{

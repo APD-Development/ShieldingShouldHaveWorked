@@ -129,14 +129,14 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/BuffExplanation.java",
-      "sha256": "e966f3e1bf0a8bdce5d99b17c7341918a9f69372c431a6f1e20a03df53b29bc6",
+      "sha256": "1a39eb93c2f2de0a94d53bbe16740b15368b75262303c77dcc9860e19c0a8ea4",
       "category": "mechanics",
       "status": "PARTIAL_REVIEW",
       "description_methods": [
         "details"
       ],
       "wording_corrected": true,
-      "review_notes": "Partial2026-11-09 source review: exact Fire/Frost/Toxic cases reconciled with actual proc/duration/immunity/gas handlers; existing details now share unchanged constants. Many other individual buff cases remain open. No new panels or blanket completion claim. Monk advanced energy branch individually shortened after full actual gain/cap/empower/legacycooldown source read2026-11-09. Preserves fractional energy/costs/all kill classes/additive gear bonuses/cap overflow/exactfloatthreshold includingrank2boundary/current state. No generic boilerplate, no new controls or calculations. Existing actual gain/stance/cap/empowerment checks updated for new wording, not weakened.3108pass; other buff branches still tracked separately. November9: Seven existing status explanations individually shortened: Invisibility, Invulnerability, Cripple, Stamina, Blindness, Roots, embedded projectiles. Actual semantics and panel availability retained; real damage, independent invisibility, Roots/flight and projectile quantity assertions preserved. Three stale wording expectations updated.3136core457all0; seven actual native windows prepared for414. Remaining branches still open."
+      "review_notes": "Partial2026-11-09 source review: exact Fire/Frost/Toxic cases reconciled with actual proc/duration/immunity/gas handlers; existing details now share unchanged constants. Many other individual buff cases remain open. No new panels or blanket completion claim. Monk advanced energy branch individually shortened after full actual gain/cap/empower/legacycooldown source read2026-11-09. Preserves fractional energy/costs/all kill classes/additive gear bonuses/cap overflow/exactfloatthreshold includingrank2boundary/current state. No generic boilerplate, no new controls or calculations. Existing actual gain/stance/cap/empowerment checks updated for new wording, not weakened.3108pass; other buff branches still tracked separately. November9: Seven existing status explanations individually shortened: Invisibility, Invulnerability, Cripple, Stamina, Blindness, Roots, embedded projectiles. Actual semantics and panel availability retained; real damage, independent invisibility, Roots/flight and projectile quantity assertions preserved. Three stale wording expectations updated.3136core457all0; seven actual native windows prepared for414. Remaining branches still open. After414cutoff: individually shortened Barkskin/ArcaneArmor decay, revealed3x3area, gravity pulses, observed swarm range, Drowsy/MagicalSleep, Fire/FrostImbue, Adrenaline/Fury and strength surge details; normal six status entries also simplified. Actual counters, live duration/chance/threshold values, ally/hero restrictions and panel availability preserved.3136core457all0; native existing-window fixtures prepared for19 statuses, not yet verified. Full remaining-provider review stays open."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/CloakExplanation.java",
@@ -4533,7 +4533,7 @@
     }
   ],
   "completed_units": 434,
-  "latest_tests": "3136core457all0;414source3b47da4be Android acceptance pending.",
+  "latest_tests": "3136core457all0 after additional individual status/normal wording reviews. Source after414cutoff; native pending.",
   "message_inventory_entries": 5343,
   "message_inventory_counting": "Current authored English property entries across nine files;2432 item entries. Two concise zero-Healing dew/waterskin keys added. Exact Adult OFF/ON checks retained."
 }

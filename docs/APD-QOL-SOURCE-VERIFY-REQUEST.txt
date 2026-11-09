@@ -1,1 +1,1 @@
-3136core457all0: Hearty Meal display-only custom-healing fix; normal alternate Weapon Recharging false percent corrected without formula change; Lethal time wording and actual timing test. Compile actual Hearty0popup, sealed armor and two retained talent windows with proper metamorph state. No APK assembly.
+2026-11-09:3136core457all0; compile latest post414 status wording and nineteen existing Android status window fixtures, without APK creation. Owner continuation ends20UTC. Preserve414 original acceptance source.
