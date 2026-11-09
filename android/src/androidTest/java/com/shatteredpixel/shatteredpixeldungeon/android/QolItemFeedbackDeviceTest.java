@@ -215,6 +215,7 @@ public class QolItemFeedbackDeviceTest {
         TopScoresDeviceTest.render(()->{try{ScrollPane scroll=TopScoresDeviceTest.find(luckyWindow.get(),ScrollPane.class).get(0);scroll.scrollTo(0,Math.max(0,scroll.content().height()-scroll.height()));}catch(Exception e){throw new RuntimeException(e);}});
         Thread.sleep(200);TopScoresDeviceTest.screenshot("qol-lucky-arcana-increase.png");
         TopScoresDeviceTest.render(()->{assertEquals(luckyTime[0],Dungeon.hero.cooldown(),0);luckyWindow.get().hide();});
+        Sword kinetic=new Sword();TopScoresDeviceTest.render(()->{kinetic.levelKnown=kinetic.cursedKnown=true;kinetic.enchant(new com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Kinetic());});showItem(kinetic,"_190.61%_","qol-kinetic-arcana-storage.png",true,true);
         calculationWindow(()->{com.shatteredpixel.shatteredpixeldungeon.items.armor.MailArmor armor=new com.shatteredpixel.shatteredpixeldungeon.items.armor.MailArmor();armor.level(3);armor.levelKnown=armor.cursedKnown=true;armor.glyph=new com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Obfuscation();return new WndInfoItem(armor);},"stealth","qol-obfuscation-calculations-retained.png");
 
         calculationWindow(()->{com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier b=new com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier();b.setShield(17);return new WndInfoBuff(b);},"17 shield points","qol-mechanics-buff-expanded.png");

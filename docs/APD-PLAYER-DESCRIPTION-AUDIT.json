@@ -3396,7 +3396,7 @@
       "description_methods": [
         "desc"
       ],
-      "review_notes": "Entire concrete enchantment source and relevant Char/Mob damage, loot or tracker paths read. Ordinary provider checked against actual effect, no gameplay change. Existing real proc/power/suppression/identification tests retained. Class-specific Elemental Strike/secondary scope remains open. Ordinary stored-damage buff identifies Kinetic/Unstable successful hits and fading rather than vague any attack. Actual Unstable consumption path read. Source storage/decay formulas unchanged; full shared chance/panel audit still open.",
+      "review_notes": "Entire concrete enchantment source and relevant Char/Mob damage, loot or tracker paths read. Ordinary provider checked against actual effect, no gameplay change. Existing real proc/power/suppression/identification tests retained. Class-specific Elemental Strike/secondary scope remains open. Ordinary stored-damage buff identifies Kinetic/Unstable successful hits and fading rather than vague any attack. Actual Unstable consumption path read. Source storage/decay formulas unchanged; full shared chance/panel audit still open. Current normal provider now shows live percent of newly stored excess and a concise known-Arcana baseline; actual Char.damage regression at ring-2/0/3 proves new storage and exclusion of reused10damage. Full3050pass. New native190.61% owned window prepared for next pair, not in390.",
       "wording_corrected": true
     },
     {
@@ -4268,14 +4268,14 @@
   ],
   "completed_units": 160,
   "latest_tests": {
-    "core_tests": 3049,
+    "core_tests": 3050,
     "suites": 457,
     "failures": 0,
     "errors": 0,
     "skipped": 0,
-    "log": "/workspace/apd-post389-enchantment-evidence-20261109/apd-enchantment-replacement-loot-healing-corrected-full.log",
+    "log": "/workspace/apd-kinetic-arcana-storage-evidence-20261109/apd-kinetic-live-arcana-storage-full.log",
     "android_verified": false,
     "new_apk_built": false,
-    "scope": "Post389 Lucky/Vorpal/Vampiric/Blocking/Kinetic corrections, actual replacement/immunity and disabled healing.389 blocked by Android test compilation;388 remains published fallback. Corrected native compile wrappers prepared for390."
+    "scope": "Post390 Kinetic live new-storage Arcana comparison; actual proc\u2192Char.damage overkill with/without reused bonus at three ring levels.390 building3049source;388 latest published."
   }
 }

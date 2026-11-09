@@ -153,3 +153,8 @@ Read Catalyst recipe/four saved choices/confirmation, abstract Trinket/upgrade r
 ### Enchantment replacement, loot and disabled healing
 
 Entire Lucky/Elastic/Blocking/Kinetic/Vorpal/Vampiric/Venomous/Unstable source paths read. Lucky includes gold, Vorpal replaces immediate damage, Vampiric warns at Healing0 even unknown upgrades, Blocking/Kinetic buff text concise. New actual proc→Char.damage HP/shield/immunity regression and seeded actual disabled-heal cases pass; existing Arcana/Lucky/HoldFast tests retained. Headless sprite scale fixture failure preserved; initialized rendering scale without weakening mechanic assertions. Full3049core457suites zero failures/errors/skips. Evidence /workspace/apd-post389-enchantment-evidence-20261109.357reviewed source units/313corrected/160complete/267unresolved; Elemental Strike/complete shared scope remains open.389 rejected Android-test compilation, no publication; corrected checked-exception wrappers and new actual windows pending390.
+
+
+### Kinetic live storage comparison
+
+Actual Kinetic/Unstable/Char.damage path checked: Arcana scales newly created storage, subtracting previously reused bonus. Normal text shows live new-storage percent and short without-Arcana comparison only when known; no new interface. New real proc→damage regression covers ring-2/0/3 and reused0/10 with actual overkill. Full3050core457suites zero failures/errors/skips; evidence /workspace/apd-kinetic-arcana-storage-evidence-20261109. New190.61% actual window fixture prepared, not yet Androidverified and not in390.357reviewed313corrected160complete267unresolved.

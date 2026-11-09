@@ -108,7 +108,13 @@ public final class EnchantmentExplanation {
             case "Lucky":return "Has a "+chance+" chance to make a killing blow produce extra loot unless you have outlevelled that enemy."+(base*power>1?" At 100%, more enchantment power can improve the reward instead.":"");
             case "Corrupting":return "Has a "+chance+" chance to turn an enemy you kill into a corrupted ally. Some enemies cannot be corrupted."+(strength>1.1f?" The new ally also gains _"+Math.round(5*(strength-1))+" turns_ of adrenaline.":"");
             case "Vampiric":return "Has a "+chance+" chance to heal you for _"+playerNumber(50*strength)+"%_ of the hit's damage. It activates more often when you are low on health.";
-            case "Kinetic":{Kinetic.ConservedDamage stored=hero==null?null:hero.buff(Kinetic.ConservedDamage.class);return "Stores damage left over from a killing blow and adds it to your next hit. Stored damage fades over time. Current bonus: _"+(stored==null?0:stored.damageBonus())+" damage_.";}
+            case "Kinetic":{
+                Kinetic.ConservedDamage stored=hero==null?null:hero.buff(Kinetic.ConservedDamage.class);
+                String amount=Math.abs(power-1f)<.00001f?"excess damage":"_"+playerNumber(100*power)+"%_ of new excess damage";
+                float without=knownPowerWithoutArcana(hero);
+                if(ArcanaInfoDisplay.hasKnownArcana(hero)&&Float.isFinite(without)&&Math.abs(power-without)>.00001f)amount+=" (_"+playerNumber(100*without)+"%_ without Arcana)";
+                return "Stores "+amount+" from killing blows for your next Kinetic hit. It fades over time. Stored bonus: _"+(stored==null?0:stored.damageBonus())+" damage_.";
+            }
             case "Projecting":return weapon instanceof MissileWeapon||weapon instanceof SpiritBow?"Lets shots pass through obstacles near their target, within _"+Math.round(4*power)+" tiles_.":"Extends this weapon's reach to _"+(weapon.RCH+Projecting.additionalReach(power,weapon.RCH))+" tiles_.";
             case "Crystal":return "Deals an extra _"+playerNumber(25*power)+"%_ magic damage. The crystal wears down with use; a melee weapon can shatter unless repaired.";
             case "Grim":return "Can instantly kill an enemy weakened by your hit. It becomes more likely as the enemy loses health; some enemies resist or are immune.";
