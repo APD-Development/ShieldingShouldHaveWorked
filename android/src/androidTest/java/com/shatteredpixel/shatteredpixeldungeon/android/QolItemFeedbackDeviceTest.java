@@ -1066,6 +1066,13 @@ public class QolItemFeedbackDeviceTest {
         }finally{TopScoresDeviceTest.render(()->{shown.get().hide();buff[0].detach();});}
     }
     private static void inventoryScrollCancellationWarningRenders()throws Exception{
+        com.watabou.utils.Bundle savedRules=new com.watabou.utils.Bundle();TopScoresDeviceTest.render(()->Dungeon.apdStoreCustomRules(savedRules));
+        com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfLullaby lullaby=new com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfLullaby();
+        try{
+            TopScoresDeviceTest.render(()->{lullaby.anonymize();Dungeon.apdRestoreCustomRules(new com.watabou.utils.Bundle());});showItem(lullaby,"allies recover health","qol-lullaby-normal-healing.png",true);
+            TopScoresDeviceTest.render(()->{com.watabou.utils.Bundle all=new com.watabou.utils.Bundle(),rules=new com.watabou.utils.Bundle();com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomDungeonRules.defaults().with(com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomDungeonRules.Slider.HEALING,0).store(rules);all.put("apd_custom_rules",rules);Dungeon.apdRestoreCustomRules(all);});showItem(lullaby,"prevent restorative sleep for you","qol-lullaby-zero-healing.png",true);
+        }finally{TopScoresDeviceTest.render(()->Dungeon.apdRestoreCustomRules(savedRules));}
+
         AtomicReference<Window> shown=new AtomicReference<>();float[] time={0};
         com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfIdentify scroll=new com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfIdentify();
         TopScoresDeviceTest.render(()->{scroll.anonymize();time[0]=Dungeon.hero.cooldown();Window window=scroll.new WndConfirmCancel();GameScene.show(window);shown.set(window);});

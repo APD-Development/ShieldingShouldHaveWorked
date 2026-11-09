@@ -3,10 +3,10 @@
   "baseline_commit": "32f4f3beab4c23b404c3cb1d43bfa06a39165e70",
   "counting": "Source units, not distinct item types. reviewed_units includes partial reviews; completed_units excludes partial/pending dependency. corrected_units counts source units with corrections, including incomplete reviews. Inventory/export/tests alone are not an individual review.",
   "source_units": 436,
-  "message_entries": 2411,
+  "message_entries": 2429,
   "reviewed_units": 433,
   "corrected_units": 350,
-  "unresolved_units": 89,
+  "unresolved_units": 82,
   "category_counts": {
     "apd": 1,
     "mechanics": 38,
@@ -2373,9 +2373,9 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/scrolls/InventoryScroll.java",
       "sha256": "b3092d2337d555a0efd973414d966090480bc3f81be8cfb5ac4e326c96331442",
       "category": "scrolls",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [],
-      "review_notes": " Followup2026-11-09: read shared regular/exotic labels, identity/actions/recipe code and inventory cancellation flow. Human cancellation warning preserves original consumption; cursed book warning names both actual exceptions. Wayward buff text shortened after real proc/accuracy checks; no new chance/calculation. Four existing retained enchantment details now plain timer/neutral witnesses/direct-damage replacement; source Shocking/Eldritch/Vorpal/Block paths and existing actual proc tests unchanged. No panel/formula changes. Full3064core457suites pass. Actual warning/Wayward/expanded windows pending394, not393; shared full secondary review remains open.",
+      "review_notes": " Followup2026-11-09: read shared regular/exotic labels, identity/actions/recipe code and inventory cancellation flow. Human cancellation warning preserves original consumption; cursed book warning names both actual exceptions. Wayward buff text shortened after real proc/accuracy checks; no new chance/calculation. Four existing retained enchantment details now plain timer/neutral witnesses/direct-damage replacement; source Shocking/Eldritch/Vorpal/Block paths and existing actual proc tests unchanged. No panel/formula changes. Full3064core457suites pass. Actual warning/Wayward/expanded windows pending394, not393; shared full secondary review remains open. IndividualownsourceNovember9. Fullownidentification/detach/cancellationconfirmation/anonymousscroll/callback/readanimation/Upgradeexception paths read. Current cancellation warning accurately says cancelling after use-identification stillconsumes it. Nativeactualwarningpreviouslyverified; own-source complete, sharedScroll/subtype providers separate. Inherited/shared/class providers remain separately tracked.",
       "wording_corrected": true
     },
     {
@@ -2406,46 +2406,46 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/scrolls/ScrollOfIdentify.java",
       "sha256": "3e2c85b64bf28cdc8440b03ba10ae990603b3f64b3738bd4be25e2f30a028fb3",
       "category": "scrolls",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [],
       "wording_corrected": true,
-      "review_notes": "Normal scroll wording checked against current APD effect/targeting code. Live constants where shown; hidden identities preserved. Existing complicated panels and complete class/secondary-window review remain pending. Identify/Shards and Metamorphosis use actual APD behavior."
+      "review_notes": "Normal scroll wording checked against current APD effect/targeting code. Live constants where shown; hidden identities preserved. Existing complicated panels and complete class/secondary-window review remain pending. Identify/Shards and Metamorphosis use actual APD behavior. IndividualownsourceNovember9. Fullowneligibility/IDItem/Shardready path/known-description/value read with Shardidentifyconsumer. Currentconcise normal/Shardprose accurate, existing actualreadiness/hiddenidentitytests preserved. Inherited/shared/class providers remain separately tracked."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/scrolls/ScrollOfLullaby.java",
-      "sha256": "2329a2ebd4b260af5dc86642c8692481b084632596ad754cf4b3e52e15af60cb",
+      "sha256": "9f1a3a0c6af53083fce0258504db21b9afc4f832ad83d50876a0b8bbe9bd4d51",
       "category": "scrolls",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [],
       "wording_corrected": true,
-      "review_notes": "Normal scroll wording checked against current APD effect/targeting code. Live constants where shown; hidden identities preserved. Existing complicated panels and complete class/secondary-window review remain pending. Identify/Shards and Metamorphosis use actual APD behavior."
+      "review_notes": "Normal scroll wording checked against current APD effect/targeting code. Live constants where shown; hidden identities preserved. Existing complicated panels and complete class/secondary-window review remain pending. Identify/Shards and Metamorphosis use actual APD behavior. IndividualownsourceNovember9. Fullownread/FOVtargets/Drowsy and MagicalSleep handlers read. Reproduced falseherohealingpromise atHealing0; knownloadedheroalternate nowstatesrestorativesleepdisabledwhilealliesheal. ActualDrowsy-to-sleep heroimmediateexit/noHP versusally1HP, hiddenidentity/nohero/inspectionpurity regression passes. Newkey raises exactall-Englishinventory5339to5340; strictAdultOFF/ON andeverymessagechecksretained.3127core457pass, actualnormal/zero windows preparednotyetAndroidrun. No sleep/healing/turn mechanics change. Inherited/shared/class providers remain separately tracked."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/scrolls/ScrollOfMagicMapping.java",
       "sha256": "6342ba7c8861d78863d2be33d13bbfd05c1b63647874953ea548f62c8ab7c97e",
       "category": "scrolls",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [],
       "wording_corrected": true,
-      "review_notes": "Normal scroll wording checked against current APD effect/targeting code. Live constants where shown; hidden identities preserved. Existing complicated panels and complete class/secondary-window review remain pending. Identify/Shards and Metamorphosis use actual APD behavior."
+      "review_notes": "Normal scroll wording checked against current APD effect/targeting code. Live constants where shown; hidden identities preserved. Existing complicated panels and complete class/secondary-window review remain pending. Identify/Shards and Metamorphosis use actual APD behavior. IndividualownsourceNovember9. Fullowndetach/discoverablemap/SECRETflags/reveal/FOVfeedback/read/value read. Normal concise layout/hidden-door/trap and no creature/item-location prose accurate; no mechanic or discovery changes. Inherited/shared/class providers remain separately tracked."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/scrolls/ScrollOfMirrorImage.java",
       "sha256": "777264cab76e6ffba48f1fb7b2f5435e15747a4969ea3bbab3776d8088b6c31e",
       "category": "scrolls",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [],
       "wording_corrected": true,
-      "review_notes": "Normal scroll wording checked against current APD effect/targeting code. Live constants where shown; hidden identities preserved. Existing complicated panels and complete class/secondary-window review remain pending. Identify/Shards and Metamorphosis use actual APD behavior."
+      "review_notes": "Normal scroll wording checked against current APD effect/targeting code. Live constants where shown; hidden identities preserved. Existing complicated panels and complete class/secondary-window review remain pending. Identify/Shards and Metamorphosis use actual APD behavior. IndividualownsourceNovember9. Fullownread/spawn/spacechecks/NIMAGES/liveknown-desc/value and fullMirrorImage damage/accuracy/evasion/timing/enchant/class/immunity/save consumers read. Existing concise up-to-two/fragile/open-spaces prose accurate; nativeportrait/landscapefulltext checks retained. Inherited/shared/class providers remain separately tracked."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/scrolls/ScrollOfRage.java",
       "sha256": "7c7c73b658fd8fd182023967643f5b48761d8d5d8b98fb55b6bb72d55dded390",
       "category": "scrolls",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [],
       "wording_corrected": true,
-      "review_notes": "Normal scroll wording checked against current APD effect/targeting code. Live constants where shown; hidden identities preserved. Existing complicated panels and complete class/secondary-window review remain pending. Identify/Shards and Metamorphosis use actual APD behavior."
+      "review_notes": "Normal scroll wording checked against current APD effect/targeting code. Live constants where shown; hidden identities preserved. Existing complicated panels and complete class/secondary-window review remain pending. Identify/Shards and Metamorphosis use actual APD behavior. IndividualownsourceNovember9. Fullowndetach/floorwidebeckon/nonallyFOVAmok/read/value andMob.beckon/Amoktarget behavior read. Current concise attraction/berserk mayattackeachother prose accurate; no fixedtarget guarantee or mechanics change. Inherited/shared/class providers remain separately tracked."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/scrolls/ScrollOfRecharging.java",
@@ -2487,10 +2487,10 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/scrolls/ScrollOfTerror.java",
       "sha256": "023b6c98e39db6ed162dfbed67a339035b27bc5f4758e9b2be6d3480433eb6e1",
       "category": "scrolls",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [],
       "wording_corrected": true,
-      "review_notes": "Normal scroll wording checked against current APD effect/targeting code. Live constants where shown; hidden identities preserved. Existing complicated panels and complete class/secondary-window review remain pending. Identify/Shards and Metamorphosis use actual APD behavior."
+      "review_notes": "Normal scroll wording checked against current APD effect/targeting code. Live constants where shown; hidden identities preserved. Existing complicated panels and complete class/secondary-window review remain pending. Identify/Shards and Metamorphosis use actual APD behavior. IndividualownsourceNovember9. Fullowndetach/FOVnonallies/Terror20/sourceobject/count/read/value andTerror.recover consumer read. Current concise fleeing/attacks-shorten prose accurate, no probability/duration changes. Inherited/shared/class providers remain separately tracked."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/scrolls/ScrollOfTransmutation.java",
@@ -4466,7 +4466,8 @@
       "review_notes": "Previously omitted normal buff source added. Entire own duration/decay/save/icon path and actual Hero/Char hit/protection consumer read. Ordinary prose shorter; Bless/Hex/Daze percentages use live ROLL_FACTOR; other languages retain existing turn argument plus ignored extra argument. Existing optional panels unchanged. Real8combination\u00d7100seed\u00d72direction hit tests assert live percentages; actual defensive decay/save/read-only test passes.3113core457. New ordinary Android window pending406. Own-source completion, not all BuffExplanation/class providers."
     }
   ],
-  "completed_units": 317,
-  "latest_tests": "3118core457allfail/error/skipzero. RetainedCloak/Rose shorter; actual charge/progress/dispelling/save/ghoststat tests retained, fourstate NoRoseDamage guard probe added. Talisman27actualcasts/8warnings and88range/unknowncases included. Sourceonlycompile3117at5a34d1d16passed42597979181beforelaterCloakRose. ExistingnativeCloak/Roseexpandedbottomcaptures prepared fornextbuild; notyetAndroidverified.407original3115/12passed, stagingpendingmanualreview. Wholeaudit436units433fullpartial350corrected317complete119unresolved.",
-  "message_inventory_entries": 5339
+  "completed_units": 354,
+  "latest_tests": "3127core457zero failures/errors/skips. Actual Lullaby zerohealing hero/ally/unknown/nohero/inspection regression passed; initialred and new-key count failure preserved. Native normal/zero windows prepared for next build after409, notyetverified.409originalpairat9fddee7ee inAndroidacceptance;408latestpublished. Completed354/436 ownsource,82unresolved; shared/inheritedprovidersremainopen.",
+  "message_inventory_entries": 5340,
+  "message_inventory_counting": "Current authored English property entries across nine files; item-message entries2429. Prior5339 inventory grew by the single knownLullabyHealing0description; original2411item-key baseline is historical."
 }

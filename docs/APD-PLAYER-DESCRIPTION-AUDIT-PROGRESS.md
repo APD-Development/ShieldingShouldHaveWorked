@@ -1,6 +1,6 @@
-## Current status — November 9, 2026, end of authorized window
+## Current status — November 9, 2026, active owner-authorized development
 
-The audit is unfinished:436sourceunits,433fully/partiallyreviewed,350withcorrections,307completedown-source reviews,129unresolved;5339Englishmessageentries. Source units are not distinct items. LatestpublishedAPK403.405/406passed automated checks but remain private after manual Tenacity wording rejection. Latestsourcefixespassed3115core/457suites; no correctedAPK yet. See [current state](APD-CURRENT-STATE-2026-11-09.json) for exact commits, evidence and remaining work. Historical notes below retain earlier counts/statuses.
+Active authorization runs through16:00EST/21:00UTC. Audit unfinished:436sourceunits,433fully/partiallyreviewed,350corrected,354completedown-source reviews,82unresolved;5340currentEnglishmessageentries across ninefiles (2429itementries). Sourceunits are not distinctitems. LatestpublishedAPK408;409originalpairundergoingAndroidacceptance. LatestlaterLullabycorrectionpasses3127core/457suites; actualnormal/zeroinspectionwindowsnotyetAndroidverified. PreviousfailedAPK/evidence/sourcebranchespreserved. Historicalnotesbelowretainoldcutoffs; own-source completion does not complete separately trackedshared/class/effectproviders.
 
 ## Latest continuation — crafted spells, runestones and Duelist examples
 
@@ -411,3 +411,6 @@ Original77950dd132349381a70928bcc7c9180910ff9ea3;3118core457 and12distinctAPI34c
 
 ### Skeleton Key and revival/victory item own reviews
 Key purpose/lockcosts/limitations/wallcost-duration prose concise; actualIron1/freeown-door/cardinalwall2charges/3cells/1turn/10turnexpiry verified;Golden/Crystal source paths read butnotheadlessactivated. FullAnkh/Amulet ownclasses andrelevantrevival/backpack/choice/victory/Ascension consumers read, currentproseaccurateunchanged.3126core457allpass, rawXML/logpreserved. Audit347complete89unresolvedof436units,433partial/full350corrected5339Englishentries.409originalpairwillinclude laterartifactandSandalscorrections; actualnewAndroidwindowsnotyetverified.408publishedfallbackpreserved; continueownerwindowthrough21UTC.
+
+### Lullaby Healing0 and seven scroll own reviews
+Known Lullaby nowstates currentrulespreventrestorativesleep; actualDrowsy heroendswithouthealing, allystillheals1HP. Hidden/nohero/inspectionpure; no mechanicschange. Initialred and strictEnglishinventorycount failure preserved; newneutralkey explicitlycounted5340, allAdultOFF/ON/formatchecks retained.3127core457allpass, rawfullXML/logpreserved. InventoryScroll,Identify,MagicMapping,MirrorImage,Lullaby,Rage,Terror ownsource/consumers individuallyreviewed; existingotherconciseproseretained. Audit354complete82unresolved,436units433partial/full350corrected; topcompleted_units andlateststatussynchronized (older317fieldhadlaggedappendix). NativeLullabywindowsreadyforlaterbuild, not409.

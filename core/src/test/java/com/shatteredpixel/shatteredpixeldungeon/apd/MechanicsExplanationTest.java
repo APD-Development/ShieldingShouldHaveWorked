@@ -2804,6 +2804,14 @@ public class MechanicsExplanationTest {
   }finally{com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion.apdHandler(previous);}
  }
 
+ @Test public void lullabyZeroHealingDescriptionMatchesActualHeroAndAllySleep()throws Exception{
+  hero.sprite=quietSprite();hero.HP=10;hero.HT=20;com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfLullaby scroll=new com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfLullaby();scroll.anonymize();assertFalse(scroll.desc().contains("prevent restorative sleep"));
+  com.watabou.utils.Bundle all=new com.watabou.utils.Bundle(),rules=new com.watabou.utils.Bundle();com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomDungeonRules.defaults().with(com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomDungeonRules.Slider.HEALING,0).store(rules);all.put("apd_custom_rules",rules);Dungeon.apdRestoreCustomRules(all);
+  String before=savedDescriptionHero();float fraction=hero.apdCustomHealingFraction;assertTrue(scroll.desc(),scroll.desc().contains("prevent restorative sleep for you"));assertTrue(scroll.desc().contains("allies heal"));assertEquals(before,savedDescriptionHero());assertEquals(fraction,hero.apdCustomHealingFraction,0);
+  Drowsy drowsy=Buff.affect(hero,Drowsy.class,Drowsy.DURATION);drowsy.act();assertNull(hero.buff(MagicalSleep.class));assertEquals(10,hero.HP);
+  PlainStatusTarget ally=new PlainStatusTarget();ally.alignment=com.shatteredpixel.shatteredpixeldungeon.actors.Char.Alignment.ALLY;ally.HP=5;ally.HT=20;ally.sprite=quietSprite();Buff.affect(ally,Drowsy.class,Drowsy.DURATION).act();MagicalSleep sleeping=ally.buff(MagicalSleep.class);assertNotNull(sleeping);sleeping.act();assertEquals(6,ally.HP);sleeping.detach();
+  com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfLullaby hidden=new com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfLullaby(){@Override public boolean isKnown(){return false;}};assertFalse(hidden.desc().contains("restorative"));Dungeon.hero=null;try{assertFalse(scroll.desc().contains("Your current rules"));}finally{Dungeon.hero=hero;}
+ }
  @Test public void identifyScrollNormalTextMatchesTheRealShardReadinessPath(){
   com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfIdentify scroll=new com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfIdentify();scroll.anonymize();assertFalse(scroll.desc().contains("ready"));
   com.shatteredpixel.shatteredpixeldungeon.items.trinkets.ShardOfOblivion shard=new com.shatteredpixel.shatteredpixeldungeon.items.trinkets.ShardOfOblivion();hero.belongings.backpack.items.add(shard);

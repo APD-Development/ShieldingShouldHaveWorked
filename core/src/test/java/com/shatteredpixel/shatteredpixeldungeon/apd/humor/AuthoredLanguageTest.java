@@ -78,7 +78,8 @@ public class AuthoredLanguageTest {
   // Plus a Transfusion description without a fabricated HP cost when no hero is loaded.
   assertEquals(9,files);// Plus the Noisemaker’s own arming instructions, avoiding the ordinary bomb pickup promise.
   // Plus one existing Elemental Blast paragraph with live talent-adjusted radius.
-  assertEquals("Reviewed English message inventory",5339,values);
+  // Plus one neutral known-Lullaby description for the existing zero-Healing sleep rule.
+  assertEquals("Reviewed English message inventory",5340,values);
  }
  @Test public void localizedAlternativesDoNotDamageInnocentWordsOrOtherLanguages(){
   for(String innocent:new String[]{"Hell","slut","kesialan","Verdammte Charaktere","dictionary","classic","Scunthorpe","Prick","Fan of Blades"})assertEquals(innocent,AuthoredLanguage.select(innocent,false));
