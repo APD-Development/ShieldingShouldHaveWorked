@@ -70,8 +70,12 @@ public final class ArtifactEconomyExplanation {
     public static String summary(Artifact item,Hero hero){
         if(!item.isIdentified())return "";
         if(item.cursed){
+            if(item instanceof CloakOfShadows||item instanceof HolyTome||item instanceof LloydsBeacon||item instanceof CapeOfThorns)
+                return com.shatteredpixel.shatteredpixeldungeon.messages.Messages.get(item,"desc_cursed");
             // These individually reviewed artifacts already explain their curse in their worn description.
-            if(item instanceof TimekeepersHourglass||item instanceof UnstableSpellbook||item instanceof MasterThievesArmband||item instanceof SandalsOfNature)
+            if(item instanceof TimekeepersHourglass||item instanceof UnstableSpellbook||item instanceof MasterThievesArmband||item instanceof SandalsOfNature
+                    ||item instanceof DriedRose||item instanceof EtherealChains||item instanceof HornOfPlenty||item instanceof ChaliceOfBlood||item instanceof TalismanOfForesight
+                    ||item instanceof AlchemistsToolkit||item instanceof SkeletonKey)
                 return item.isEquipped(hero)?"":com.shatteredpixel.shatteredpixeldungeon.messages.Messages.get(item,"desc_cursed");
             return cursed(item);
         }

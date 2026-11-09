@@ -77,7 +77,7 @@ public class AuthoredLanguageTest {
   // Plus a typical Pickaxe ability description that does not reveal unidentified upgrades.
   // Plus a Transfusion description without a fabricated HP cost when no hero is loaded.
   assertEquals(9,files);// Plus the Noisemaker’s own arming instructions, avoiding the ordinary bomb pickup promise.
-  assertEquals("Reviewed English message inventory",5326,values);
+  assertEquals("Reviewed English message inventory",5330,values);
  }
  @Test public void localizedAlternativesDoNotDamageInnocentWordsOrOtherLanguages(){
   for(String innocent:new String[]{"Hell","slut","kesialan","Verdammte Charaktere","dictionary","classic","Scunthorpe","Prick","Fan of Blades"})assertEquals(innocent,AuthoredLanguage.select(innocent,false));
