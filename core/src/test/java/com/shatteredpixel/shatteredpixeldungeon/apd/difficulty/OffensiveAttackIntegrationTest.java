@@ -99,7 +99,7 @@ public class OffensiveAttackIntegrationTest {
   com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vulnerable vulnerable=com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff.affect(target,com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vulnerable.class);
   Random.pushGenerator(89237);try{assertTrue(attacker.attack(target));}finally{Random.popGenerator();}
   assertEquals(Math.round(20*.67f),target.incoming);assertEquals(1000-(int)((target.incoming-5)*1.33f),target.HP);
-  assertTrue(com.shatteredpixel.shatteredpixeldungeon.apd.mechanics.MechanicsDetails.buff(weak,weak.desc()).contains("0.67 before the target's armor"));
-  assertTrue(com.shatteredpixel.shatteredpixeldungeon.apd.mechanics.MechanicsDetails.buff(vulnerable,vulnerable.desc()).contains("1.33 and truncated"));
+  assertTrue(com.shatteredpixel.shatteredpixeldungeon.apd.mechanics.MechanicsDetails.buff(weak,weak.desc()).contains("33% less damage before armor and rounding"));
+  assertTrue(com.shatteredpixel.shatteredpixeldungeon.apd.mechanics.MechanicsDetails.buff(vulnerable,vulnerable.desc()).contains("33% more of the damage left after armor, rounded down"));
  }
 }

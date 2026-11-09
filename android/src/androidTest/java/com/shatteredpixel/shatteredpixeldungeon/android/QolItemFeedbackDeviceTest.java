@@ -150,7 +150,7 @@ public class QolItemFeedbackDeviceTest {
             }
             assertNotNull("The actual information window offers calculations",expander.get());
         }catch(Exception e){throw new RuntimeException(e);}});
-        if(screenshot.startsWith("qol-existing-status-clear-")||screenshot.startsWith("qol-existing-power-link-")||screenshot.startsWith("qol-reviewed-talent-clear-")||screenshot.startsWith("qol-twin-upgrades-existing-panel-")||screenshot.startsWith("qol-weapon-recharging-existing-panel-")){
+        if(screenshot.startsWith("qol-existing-status-clear-")||screenshot.startsWith("qol-existing-power-link-")||screenshot.startsWith("qol-reviewed-talent-clear-")||screenshot.startsWith("qol-twin-upgrades-existing-panel-")||screenshot.startsWith("qol-weapon-recharging-existing-panel-")||screenshot.startsWith("qol-reviewed-spell-clear-")||screenshot.startsWith("qol-reviewed-spell-magic-")||screenshot.startsWith("qol-elemental-strike-reviewed-")){
             Thread.sleep(120);TopScoresDeviceTest.render(()->assertDescriptionViewport(window));
             TopScoresDeviceTest.screenshot(screenshot.replace(".png","-normal.png"));
         }
@@ -259,6 +259,25 @@ public class QolItemFeedbackDeviceTest {
         }finally{TopScoresDeviceTest.render(()->{if(shown.get()!=null)shown.get().hide();Dungeon.hero.belongings.weapon=previous[0];});}
     }
     private static void calculationWindowsRenderAndRespond()throws Exception{
+        String[] conciseBuffNames={"Haste","Slow","Speed","Chill","Weakness","Vulnerable","Recharging","ArtifactRecharge","Poison","Bleeding","Barrier","Combo"};
+        String[] conciseBuffExpected={"Walk three times as fast","Actions take twice as long","Actions take half their usual time","Current action speed:","Attacks deal 33% less","Attacks deal 33% more","Extra wand charging","Extra artifact charging","Next turn:","randomly weakens","Barrier gradually fades","Time left:"};
+        for(int i=0;i<conciseBuffNames.length;i++){
+            final String name=conciseBuffNames[i];
+            calculationWindow(()->{
+                com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff effect=(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff)Class.forName("com.shatteredpixel.shatteredpixeldungeon.actors.buffs."+name).getDeclaredConstructor().newInstance();
+                if(effect instanceof com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff){com.watabou.utils.Bundle b=new com.watabou.utils.Bundle();effect.storeInBundle(b);b.put("time",b.getFloat("time")-effect.cooldown()+5);effect.restoreFromBundle(b);}
+                if(effect instanceof com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ArtifactRecharge)((com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ArtifactRecharge)effect).set(5);
+                if(effect instanceof com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Poison)((com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Poison)effect).set(9);
+                if(effect instanceof com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bleeding){com.watabou.utils.Bundle b=new com.watabou.utils.Bundle();effect.storeInBundle(b);b.put("level",8f);effect.restoreFromBundle(b);}
+                if(effect instanceof com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier)((com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier)effect).setShield(10);
+                if(effect instanceof com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Combo){com.watabou.utils.Bundle b=new com.watabou.utils.Bundle();effect.storeInBundle(b);b.put("count",8);b.put("combotime",10f);effect.restoreFromBundle(b);}
+                effect.target=Dungeon.hero;
+                return new WndInfoBuff(effect);
+            },conciseBuffExpected[i],"qol-existing-status-clear-concise-"+name+".png");
+        }
+        calculationWindow(()->{
+            com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Blocking.BlockBuff effect=new com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Blocking.BlockBuff();effect.target=Dungeon.hero;effect.setShield(10);return new WndInfoBuff(effect);
+        },"Countdown:","qol-existing-status-clear-concise-Blocking.png");
         String[] statusNames={"Invisibility","Invulnerability","Cripple","Stamina","Blindness","Roots","PinCushion","Barkskin","ArcaneArmor","RevealedArea","GravityChaosTracker","SwarmIntelTracker","Drowsy","MagicalSleep","FireImbue","FrostImbue","Adrenaline","Fury","AdrenalineSurge","Healing","GreaterHaste","WellFed","PhysicalEmpower","WandEmpower","Amok","Charm","Terror","Dread","Vertigo","Light","LifeLink","MagicImmune","BlobImmunity","EnhancedRings","PrismaticGuard","Frost","Levitation","ToxicImbue","LockedFloor","Burning","Corrosion","Ooze","ScrollEmpower","MagicalSight","MindVision","Shadows"};
         String[] statusText={"last known position","ordinary damage","twice as long","two thirds","normal scroll and tome reading","Teleportation","quantity: 3","3 turns apart","3 turns apart","3 × 3","pulse count: 11","visible monsters","Incoming damage","1 HP per turn","50% chance","3 turns of Chill","hero does not gain","health is above 50%","Added strength: 2","Healing reserve: 100 HP","haste units: 6","multiple of 18","Adds 3 damage","Adds 4 damage","visible hero","shortens the effect by 5 turns","regardless of damage amount","Remaining fear updates","eight neighboring directions","base sight","combined raw shares can exceed","Suppressed equipment","Burning and Poison","Might's strength bonus","Stored health: 5","Freezing belongings","sacrificial fire","Gas releases left: 2","Recovery grace","Base damage per turn","Base damage grows each turn","flying prevents water","Wand casts left: 3","Sight through walls","within 2 tiles","Refresh countdown: 2"};
         for(int i=0;i<statusNames.length;i++){
@@ -433,7 +452,9 @@ public class QolItemFeedbackDeviceTest {
         final int[] beforeBarkskinLevel=new int[1];TopScoresDeviceTest.render(()->{beforeBarkskinLevel[0]=Dungeon.hero.lvl;Dungeon.hero.lvl=12;});
         try{calculationWindow(()->new WndInfoTalent(com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent.BARKSKIN,2,null),"0–8 damage protection","qol-reviewed-talent-clear-BARKSKIN-positive.png");}
         finally{TopScoresDeviceTest.render(()->Dungeon.hero.lvl=beforeBarkskinLevel[0]);}
-        calculationWindow(()->new WndInfoTalent(com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent.ENHANCED_RINGS,1,null),"= 3 turns","qol-mechanics-talent-expanded.png");
+        calculationWindow(()->new WndInfoTalent(com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent.ENHANCED_RINGS,1,null),"for 3 turns","qol-reviewed-talent-clear-ENHANCED_RINGS.png");
+        calculationWindow(()->new WndInfoTalent(com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent.PROTECTIVE_SHADOWS,2,null),"up to 5 shield points","qol-reviewed-talent-clear-PROTECTIVE_SHADOWS.png");
+        calculationWindow(()->new WndInfoTalent(com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent.SILENT_STEPS,2,null),"2 or more tiles away","qol-reviewed-talent-clear-SILENT_STEPS.png");
         calculationWindow(()->new WndInfoTalent(com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent.TWIN_UPGRADES,3,null),"Other level bonuses still apply","qol-twin-upgrades-existing-panel-clear.png");
         java.util.LinkedHashMap<com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent,com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent> priorMetamorphs=new java.util.LinkedHashMap<>(Dungeon.hero.metamorphedTalents);
         try{

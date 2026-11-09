@@ -1,2 +1,2 @@
-2026-11-09T18:34:45.455487+00:00
-Verify3155core plus Androiddebug/release/instrumentationJava/desktop. All27SpellExplanationbranches individually reviewed;32actualcontexts including Priest/Paladin/immunity restoreclass/subclass/talents/ability/armor/HP.439complete6open445units359corrected. Prior3154source42671531873failedwithjobs[]andemptyfailedlog, not an established codefailure; preserve and verifylatestsource.425packaging-onlyrecovery42673560388 andstage42674685237passed;manualpending.
+2026-11-09T18:56:24.716368+00:00
+Verify3157core/457 and Androiddebug/release/instrumentationJava/desktop. Concise existing buff and three talent wrappers; no gameplay/panel gates changed. Thirteen new actualbuff/three talent windows and normal spell captures. Localfull3157allzero. Authorize no publication until native and manual acceptance.

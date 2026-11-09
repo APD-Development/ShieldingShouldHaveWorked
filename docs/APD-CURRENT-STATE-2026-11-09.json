@@ -1,11 +1,11 @@
 {
-  "recorded_utc": "2026-11-09T18:44:23.090261+00:00",
+  "recorded_utc": "2026-11-09T18:56:24.716368+00:00",
   "authorization_end_utc": "2026-11-09T20:00:00Z",
   "latest_verified_published_build": 425,
   "release_url": "https://github.com/APD-Development/ShieldingShouldHaveWorked/releases/tag/apd-alpha-preview-425",
   "source_fix_commit": "75809609745851368fe81f2dced1b69eb63cdfdf",
   "local_full_core": {
-    "tests": 3155,
+    "tests": 3157,
     "suites": 457,
     "failures": 0,
     "errors": 0,
@@ -35,35 +35,27 @@
     "424": "Inherits unsupported fraction glyph from423; originalpair running42667109736. Preserve all results/assets privately even if automated checks pass."
   },
   "newest_source_not_in_any_apk": [
-    "Drowsy grammar correction",
-    "Sight/cover/wand empowerment descriptions",
-    "HoldFast active/inactive wording",
-    "Shadows own countdown and linked Power live protection/marked-target descriptions",
-    "Concise four talent ordinary/existingpanel descriptions with real plant/followup tests",
-    "Shortened existing powered-ally detail panel",
-    "Shortened Endure ready-state/details with actual sequential rounding/unseen-enemy test",
-    "Temporary-health/aquatic/momentum/hunger detail simplifications and new native windows",
-    "SoulMark ordinary/detail simplification and existing-helper custom healing-number correction with reproduced zero-Healing regression",
-    "Berserk unknown-armor shield-preview privacy and shorter normal text"
+    "Shortened existing buff/talent wrapper details, no panel-availability changes;3157core passed; Android source/native pending"
   ],
   "audit": {
     "source_units": 445,
-    "completed_units": 437,
-    "unresolved_units": 8,
+    "completed_units": 440,
+    "unresolved_units": 5,
     "corrected_units": 359,
     "message_inventory_entries": 5353
   },
   "remaining": [
-    "Complete8 individual description source reviews and pending panel scope decisions",
-    "Verify newest source in next APK including actual native Hearty Meal popup",
-    "Continue nonduplicative SPD-only audio investigation; physical acoustic reproduction unverified"
+    "Finish5 individual source reviews: AbilityExplanation, BuffExplanation, TalentExplanation, CursedWand owner wording decision, Talent normal text",
+    "426 native tests/staging/independent byte and manual window acceptance pending",
+    "New427 wrapper native verification and publication pending",
+    "SPD-only audio: physical acoustic reproduction remains unverified; no proven APD fix"
   ],
   "preservation": "All source pushed to codex/apd-phone-fixes-2026-10-09; published403 and priorreleases retained.405/406privateassets include completeAPK/source/tests;404rejectedarchivesretained. Raw local full suites and committed evidence ZIPs retained.",
   "physical_phone_or_acoustic_audio_verified": false,
   "background_development_after_window_claimed": false,
   "active_build": {
     "number": 426,
-    "status": "Preparing exactlatest3155verifiedsource;all12native/source/scans/manual acceptance pending.",
+    "status": "App build passed; both native jobs running. Private draft only.",
     "previous_compiled_history": [
       425,
       424,
@@ -72,7 +64,8 @@
       421,
       420
     ],
-    "source_parent": "1b6d43d1e44886055cbfc8093eb85377dc5cdd9b"
+    "source_parent": "1b6d43d1e44886055cbfc8093eb85377dc5cdd9b",
+    "run": 42676677970
   },
   "recovered_failed_attempts": {
     "415": {
