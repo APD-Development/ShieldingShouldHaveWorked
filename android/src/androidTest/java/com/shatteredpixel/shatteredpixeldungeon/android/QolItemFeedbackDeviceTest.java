@@ -786,7 +786,7 @@ public class QolItemFeedbackDeviceTest {
     }
     private static void catalystAndTransferDescriptionsRender()throws Exception{
         com.shatteredpixel.shatteredpixeldungeon.items.trinkets.TrinketCatalyst catalyst=new com.shatteredpixel.shatteredpixeldungeon.items.trinkets.TrinketCatalyst();
-        showItem(catalyst,"6 energy","qol-catalyst-concise.png",true);
+        showItem(catalyst,"6 alchemy energy","qol-catalyst-concise.png",true);
         showItem(new com.shatteredpixel.shatteredpixeldungeon.items.LiquidMetal(),"Repairs worn thrown weapons","qol-liquid-metal-reviewed.png",true);
         showItem(new com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfGathering(),"beside the downstairs","qol-gathering-reviewed.png",true);
         showItem(new com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfForwarding(),"Nothing is sold","qol-forwarding-concise.png",true);
