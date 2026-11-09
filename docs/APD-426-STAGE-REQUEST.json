@@ -1,0 +1,6 @@
+{
+  "run_id": 42676677970,
+  "source_commit": "1bd96affecc830ade14346d60842bcf3c9489e0e",
+  "purpose": "Stage only after original candidate completes; retain draft for independent byte and actual window review.",
+  "requested_utc": "2026-11-09T18:50:12.541280+00:00"
+}
