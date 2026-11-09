@@ -1,2 +1,2 @@
-2026-11-09T19:56:54.927001+00:00
-Separatefollowup3160core/457all0. CompileAndroiddebug/release/instrumentationJava/desktop; noAPK. Prior3159tree compiled42685979663. NewBountyHuntercopy andactualMobloot24tier/rank/Wealth combos pluszeroloot/absentguardchecks. No gameplay/newpanels; nativefollowup pending. Notin428.
+2026-11-09T20:46:16.478232+00:00
+All19 armor ability explanation branches individually reviewed; retained existing panels only. Full3160 core/457 zero failures/errors/skips. Compile Android debug/release/instrumentationJava/desktop, including new actual19ability window coverage. NoAPK in this check.

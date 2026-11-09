@@ -151,7 +151,7 @@ public class QolItemFeedbackDeviceTest {
             }
             assertNotNull("The actual information window offers calculations",expander.get());
         }catch(Exception e){throw new RuntimeException(e);}});
-        if(screenshot.startsWith("qol-existing-status-clear-")||screenshot.startsWith("qol-existing-power-link-")||screenshot.startsWith("qol-reviewed-talent-clear-")||screenshot.startsWith("qol-twin-upgrades-existing-panel-")||screenshot.startsWith("qol-weapon-recharging-existing-panel-")||screenshot.startsWith("qol-reviewed-spell-clear-")||screenshot.startsWith("qol-reviewed-spell-magic-")||screenshot.startsWith("qol-elemental-strike-reviewed-")||screenshot.startsWith("qol-reviewed-ability-charge-")){
+        if(screenshot.startsWith("qol-existing-status-clear-")||screenshot.startsWith("qol-existing-power-link-")||screenshot.startsWith("qol-reviewed-talent-clear-")||screenshot.startsWith("qol-twin-upgrades-existing-panel-")||screenshot.startsWith("qol-weapon-recharging-existing-panel-")||screenshot.startsWith("qol-reviewed-spell-clear-")||screenshot.startsWith("qol-reviewed-spell-magic-")||screenshot.startsWith("qol-elemental-strike-reviewed-")||screenshot.startsWith("qol-reviewed-ability-charge-")||screenshot.startsWith("qol-reviewed-ability-all-")){
             Thread.sleep(120);TopScoresDeviceTest.render(()->assertDescriptionViewport(window));
             TopScoresDeviceTest.screenshot(screenshot.replace(".png","-normal.png"));
         }
@@ -260,6 +260,31 @@ public class QolItemFeedbackDeviceTest {
                 sword.cursedKnown=true;assertTrue(ability.desc(),ability.desc().toLowerCase(java.util.Locale.ROOT).contains("annoying"));
             });
         }finally{TopScoresDeviceTest.render(()->{if(shown.get()!=null)shown.get().hide();Dungeon.hero.belongings.weapon=previous[0];});}
+    }
+    private static void reviewedArmorAbilityWindows()throws Exception{
+        final HeroClass[] oldClass=new HeroClass[1];
+        final com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass[] oldSubclass=new com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass[1];
+        final com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.ArmorAbility[] oldAbility=new com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.ArmorAbility[1];
+        final com.shatteredpixel.shatteredpixeldungeon.items.KindOfWeapon[] oldWeapon=new com.shatteredpixel.shatteredpixeldungeon.items.KindOfWeapon[1];
+        final boolean[] oldRatEnergy=new boolean[1];
+        final java.util.ArrayList<java.util.LinkedHashMap<com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent,Integer>> oldTalents=new java.util.ArrayList<>();
+        TopScoresDeviceTest.render(()->{oldClass[0]=Dungeon.hero.heroClass;oldSubclass[0]=Dungeon.hero.subClass;oldAbility[0]=Dungeon.hero.armorAbility;oldWeapon[0]=Dungeon.hero.belongings.weapon;oldRatEnergy[0]=com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.Ratmogrify.useRatroicEnergy;for(java.util.LinkedHashMap<com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent,Integer> tier:Dungeon.hero.talents)oldTalents.add(new java.util.LinkedHashMap<>(tier));});
+        java.util.ArrayList<HeroClass> classes=new java.util.ArrayList<>();
+        java.util.ArrayList<com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.ArmorAbility> abilities=new java.util.ArrayList<>();
+        for(HeroClass type:HeroClass.values())for(com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.ArmorAbility ability:type.armorAbilities()){classes.add(type);abilities.add(ability);}
+        classes.add(HeroClass.WARRIOR);abilities.add(new com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.Ratmogrify());assertEquals("All existing selectable armor abilities",19,abilities.size());
+        try{for(int i=0;i<abilities.size();i++){
+            final HeroClass type=classes.get(i);final com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.ArmorAbility ability=abilities.get(i);final String[] expected=new String[1];
+            TopScoresDeviceTest.render(()->{
+                Dungeon.hero.heroClass=type;Dungeon.hero.subClass=com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass.NONE;Dungeon.hero.armorAbility=ability;
+                for(int tier=0;tier<oldTalents.size();tier++){Dungeon.hero.talents.get(tier).clear();Dungeon.hero.talents.get(tier).putAll(oldTalents.get(tier));}
+                for(com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent talent:ability.talents()){for(java.util.LinkedHashMap<com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent,Integer> tier:Dungeon.hero.talents)tier.remove(talent);Dungeon.hero.talents.get(0).put(talent,2);}
+                if(ability instanceof com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.cleric.Trinity)for(com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent talent:new com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent[]{com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent.BODY_FORM,com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent.MIND_FORM,com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent.SPIRIT_FORM}){for(java.util.LinkedHashMap<com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent,Integer> tier:Dungeon.hero.talents)tier.remove(talent);Dungeon.hero.talents.get(0).put(talent,2);}
+                com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon weapon=ability instanceof com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.mage.ElementalBlast?new com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff(new com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfMagicMissile()):new com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sword();weapon.level(3);weapon.levelKnown=weapon.cursedKnown=true;Dungeon.hero.belongings.weapon=weapon;
+                expected[0]=com.shatteredpixel.shatteredpixeldungeon.apd.mechanics.AbilityExplanation.effects(ability,Dungeon.hero).trim();assertFalse("Existing ability has its own effect explanation",expected[0].isEmpty());
+            });
+            calculationWindow(()->new WndInfoArmorAbility(type,ability),expected[0],"qol-reviewed-ability-all-"+ability.getClass().getSimpleName()+".png");
+        }}finally{TopScoresDeviceTest.render(()->{Dungeon.hero.heroClass=oldClass[0];Dungeon.hero.subClass=oldSubclass[0];Dungeon.hero.armorAbility=oldAbility[0];Dungeon.hero.belongings.weapon=oldWeapon[0];com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.Ratmogrify.useRatroicEnergy=oldRatEnergy[0];for(int tier=0;tier<oldTalents.size();tier++){Dungeon.hero.talents.get(tier).clear();Dungeon.hero.talents.get(tier).putAll(oldTalents.get(tier));}});}
     }
     private static void calculationWindowsRenderAndRespond()throws Exception{
         String[] conciseBuffNames={"Haste","Slow","Speed","Chill","Weakness","Vulnerable","Recharging","ArtifactRecharge","Poison","Bleeding","Barrier","Combo","Paralysis","Foresight","AscensionChallenge","Bless","Hex","Daze","ChampionEnemy$Growing","ChampionEnemy$AntiMagic"};
@@ -477,6 +502,7 @@ public class QolItemFeedbackDeviceTest {
         calculationWindow(()->new WndInfoArmorAbility(HeroClass.WARRIOR,new com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.Ratmogrify()),"This is the rat’s action time","qol-reviewed-ability-charge-Ratmogrify.png");
         calculationWindow(()->new WndInfoArmorAbility(HeroClass.WARRIOR,new com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.HeroicLeap()),"Current cost:","qol-reviewed-ability-charge-HeroicLeap.png");
         calculationWindow(()->new WndInfoArmorAbility(HeroClass.CLERIC,new com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.cleric.Trinity()),"no single cost for Trinity","qol-reviewed-ability-charge-Trinity.png");
+        reviewedArmorAbilityWindows();
         final HeroClass[] beforeSpellClass=new HeroClass[1];
         final com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.ArmorAbility[] beforeSpellAbility=new com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.ArmorAbility[1];
         final com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass[] beforeSpellSubclass=new com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass[1];
