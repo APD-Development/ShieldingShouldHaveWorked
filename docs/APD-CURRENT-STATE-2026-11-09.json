@@ -1,5 +1,5 @@
 {
-  "recorded_utc": "2026-11-09T17:54:19.784713+00:00",
+  "recorded_utc": "2026-11-09T17:58:34.525152+00:00",
   "authorization_end_utc": "2026-11-09T20:00:00Z",
   "latest_verified_published_build": 418,
   "release_url": "https://github.com/APD-Development/ShieldingShouldHaveWorked/releases/tag/apd-alpha-preview-418",
@@ -12,7 +12,7 @@
     "skipped": 0
   },
   "last_completed_android_source_compile": {
-    "commit": "aa224a068",
+    "commit": "aa224a0683418f4159586e3a8ea5f3bc4b78bd26",
     "run": 42668339102,
     "scope": "3153core and Androiddebug/release/instrumentationJava/desktop allpassed. Includes manually caught unsupportedglyph correction,14spellbranches/15actualspellcontexts with state restoration."
   },
@@ -64,7 +64,7 @@
   "background_development_after_window_claimed": false,
   "active_build": {
     "number": 425,
-    "status": "Preparing from latest verified3153source after actualfontfix. All12native/scans/independent/manual acceptance pending.",
+    "status": "Originalpair running,14spellbranches plus readablefontfix; all12native/source/scans/manual acceptance still required. Newer17branch text not in425.",
     "previous_compiled_history": [
       424,
       423,
@@ -72,7 +72,9 @@
       421,
       420
     ],
-    "source_parent": "aa224a068"
+    "source_parent": "aa224a0683418f4159586e3a8ea5f3bc4b78bd26",
+    "source_commit": "75809609745851368fe81f2dced1b69eb63cdfdf",
+    "run": 42669136432
   },
   "recovered_failed_attempts": {
     "415": {
@@ -105,7 +107,7 @@
     "run": 42656324353,
     "report": "docs/APD-421-HELD-HISTORY-2026-11-09.json"
   },
-  "current_work": "3153core457all0: font fixed to dynamic about16.67% with exact count\u00f76,14spellbranches simplified.15actualspellwindow contexts prepared. Latest Androidsourcecompile requested before425.423/424held,418published; wholeaudit438complete7open.",
+  "current_work": "3153core457all0:17of27existing spellbranches revised,18actualcontexts prepared; next Androidsourcecompile requested.425source758096097 has14branches/fontfix; running.423/424privateheld,418published.7helpers/sourcecases still open.",
   "apd423": {
     "source": "2a98ed3e4d050d2eaa1c34a54a2ca09facde08d9",
     "original_run": 42662501545,

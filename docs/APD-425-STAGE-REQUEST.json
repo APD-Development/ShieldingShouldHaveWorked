@@ -1,0 +1,5 @@
+{
+  "run_id": 42669136432,
+  "source_commit": "75809609745851368fe81f2dced1b69eb63cdfdf",
+  "purpose": "Stage exact verified candidate privately; no automaticpublication. Independently verify hashes/source and actual font/windows before publishing."
+}

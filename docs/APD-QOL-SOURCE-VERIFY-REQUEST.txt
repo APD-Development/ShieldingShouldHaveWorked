@@ -1,2 +1,2 @@
-2026-11-09T17:49:17.814044+00:00
-Verify3153core and Androiddebug/release/instrumentationJava/desktop for actual manually caught unsupported fraction glyph fix plus14existing spell branches and15real spell contexts. Restore class/subclass/talents/ability; no new UI, no balance change.423core3149/all12native/source4714hashes passed but28manualframes rejected glyph;424inherits; bothprivate. Need next425 after source compile succeeds.
+2026-11-09T17:58:34.525152+00:00
+Verify3153core plus Androiddebug/release/instrumentationJava/desktop after shorter LifeLink/BeamingRay/Stasis existing details and18spell contexts. Actual rounding/starvation/range/boost/save/charge tests unchanged and passing.17of27branches reviewed; no gameplay or panel changes.425 source758096097 running with earlier14/fontfix; stage it privately pending independent+manual.
