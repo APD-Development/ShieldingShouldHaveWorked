@@ -1,11 +1,11 @@
 {
-  "recorded_utc": "2026-11-09T10:18:08.501337+00:00",
+  "recorded_utc": "2026-11-09T10:39:36.228898+00:00",
   "authorization_end_utc": "2026-11-09T21:00:00Z",
-  "latest_verified_published_build": 407,
-  "release_url": "https://github.com/APD-Development/ShieldingShouldHaveWorked/releases/tag/apd-alpha-preview-407",
-  "source_fix_commit": "11e73f663f8bccf1e2fd8b2fbb7c4d935bf31c6a",
+  "latest_verified_published_build": 408,
+  "release_url": "https://github.com/APD-Development/ShieldingShouldHaveWorked/releases/tag/apd-alpha-preview-408",
+  "source_fix_commit": "77950dd132349381a70928bcc7c9180910ff9ea3",
   "local_full_core": {
-    "tests": 3118,
+    "tests": 3125,
     "suites": 457,
     "failures": 0,
     "errors": 0,
@@ -27,24 +27,24 @@
     "406": "3113core/12nativepassed, independenthashes+4463sourcefilehashes,10newbuffcapturesreadable. Same bad Tenacity provider; originalpairheldprivate."
   },
   "newest_source_not_in_any_apk": [
-    "Talisman concise retained detail and maximum-level handling,27actualcast/8warningstates; +3/+10 native captures prepared",
-    "Cloak natural versus external recharge clarification and shorter retained detail",
-    "Rose equipment/MagicImmunity upkeep clarification and shorter retained detail;4actualguardstates"
+    "Shorter retained Armband/Toolkit/Hourglass/Spellbook details; actual shop/budget/warmup regressions",
+    "Sandals visible-tile/livegrowth prose and actual18feeds",
+    "Unsupported Sandals seed crash reproduced/fixed with legacy-save data preserved;12supported abilities unchanged; native fixture prepared"
   ],
   "audit": {
     "source_units": 436,
     "fully_or_partially_reviewed": 433,
     "corrected_source_units": 350,
-    "completed_own_source_units": 317,
-    "unresolved_source_units": 119,
+    "completed_own_source_units": 344,
+    "unresolved_source_units": 92,
     "authored_english_message_entries": 5339,
     "complete": false
   },
   "remaining": [
-    "Continue119unresolved own/shared/class/generation/effect reviews",
-    "Build and verify next original pair including Cloak/Rose/Talisman; actual screenshots before publication",
-    "Keep owner-pending mechanic-specific panels; no new UI or mechanics",
-    "SPD audio symptom not reproduced in APD/physical speakers; no production fix claimed"
+    "Continue92unresolved own/shared/class/generation/effect reviews",
+    "Build next original pair with later artifact and Sandals crash correction; actual windows and hashes before publishing",
+    "Preserve owner-pending panels and no new UI/mechanics",
+    "SPD audio not reproduced in APD/physical speakers; no production audio change"
   ],
   "preservation": "All source pushed to codex/apd-phone-fixes-2026-10-09; published403 and priorreleases retained.405/406privateassets include completeAPK/source/tests;404rejectedarchivesretained. Raw local full suites and committed evidence ZIPs retained.",
   "physical_phone_or_acoustic_audio_verified": false,
