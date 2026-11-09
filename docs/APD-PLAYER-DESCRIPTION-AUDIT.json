@@ -5,8 +5,8 @@
   "source_units": 431,
   "message_entries": 2411,
   "reviewed_units": 428,
-  "corrected_units": 344,
-  "unresolved_units": 160,
+  "corrected_units": 345,
+  "unresolved_units": 148,
   "category_counts": {
     "apd": 1,
     "mechanics": 38,
@@ -319,13 +319,14 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/RingExplanation.java",
-      "sha256": "f4982b8c5d79330ff6e87bba0bb40e0d9d1a1280fc6720ffca82536c956d8b3e",
+      "sha256": "deb35654c26d40c2a8dd1f7db2a4dcd63dc3f75e4c87ad0edd65c63f2492d02d",
       "category": "mechanics",
       "status": "PARTIAL_REVIEW",
       "description_methods": [
         "details"
       ],
-      "review_notes": "All formula branches read; Force unknown-strength disclosure fixed and boilerplate reduced. Remaining mechanic-specific complex explanation prose still needs individual refinement."
+      "review_notes": "All formula branches read; Force unknown-strength disclosure fixed and boilerplate reduced. Remaining mechanic-specific complex explanation prose still needs individual refinement. Force/Tenacity retained branches now shorter, currentpercent less/more explicit, exact formulas and known-only values retained. No newpanel or balance changes. Other branches remain separately partial.",
+      "wording_corrected": true
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/RoseExplanation.java",
@@ -390,7 +391,8 @@
       "description_methods": [
         "details",
         "details"
-      ]
+      ],
+      "review_notes": ""
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/TalismanExplanation.java",
@@ -542,7 +544,8 @@
       "sha256": "08fe70140803870b6985a773164cb5d48197c37bc2fa3b45dfe524743de601ac",
       "category": "items",
       "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "description_methods": [],
+      "review_notes": ""
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/Gold.java",
@@ -697,11 +700,11 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/armor/ClassArmor.java",
       "sha256": "bcfc225ccfce6140a985a7e882df74ff531edde8fe7726cc1cc920e3c802e707",
       "category": "armor",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [
         "desc"
       ],
-      "review_notes": "Individual source read2026-11-09; normal Potion identity/color/actions/drink/throw/splash/crafting and exotic shared identity reviewed; Brew/Elixir abstract action/known states unchanged. Aqua now concise actual geyser/water/trap/fire/knockback warning including hero/allies, real shatter verifies flood/removes hidden trap/extinguishes fire/preserves wall. ClassArmor entire source transfer/seal/charge/conditional shortdesc and six sprite-only variants read; normal charge label now percent matching0\u2013100meter. Ability summary concise current cost, separate Warp placement restriction and Trinity variable effect cost retained. Existing specific advanced panels unchanged; full effects provider/inherited dependency reviews remain incomplete.3062core/457suites pass; actual new native windows pending next pair, not392.",
+      "review_notes": "Full conversion/tier/properties/knowledge/initial50charge, transfer seal/glyph/upgrade precedence, consumed selectedarmor and1turn, own ability desc/cost/Trinity variable exclusion, charger.2RingEnergy/regen/cap and save read. Existing own normal text matches; shared Armor/abilities providers separately tracked. Own-source completion only, not completion of separately tracked inherited, class, generator or secondary providers.",
       "wording_corrected": true
     },
     {
@@ -868,9 +871,9 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/armor/glyphs/Affection.java",
       "sha256": "f084cc97130012e8b06edf3406237acccc8eeafd0eba0c316220072f246e1f86",
       "category": "armor",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_UNCHANGED",
       "description_methods": [],
-      "review_notes": "Individually read proc and actual supporting paths: wand Chargers, projectile knockback, Charm recovery, Earthroot per-hit reserve, Stone copied accuracy/evasion modifiers and75%cap, Thorns alignment/bleeding, Viscosity after-armor tracker and1turn/10%remaining deferred ticks. Current concise ordinary provider values and conditions match inspected code; no new change needed here. Retained advanced panel/all cross-class variants remain under review."
+      "review_notes": "Entire charm chance/overflow duration/target identity read against Charm recovery; normal live chance/duration prose accurate. Own-source completion only, not completion of separately tracked inherited, class, generator or secondary providers."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/armor/glyphs/AntiMagic.java",
@@ -884,9 +887,9 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/armor/glyphs/Brimstone.java",
       "sha256": "1bc08b0a40fe75c331d392282b23b66e87f8342e17a49a3655b0676f7117a66a",
       "category": "armor",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_UNCHANGED",
       "description_methods": [],
-      "review_notes": "Individually re-read passive implementation and real external caller in Char.speed/stealth/damage/immunity, Mob detection, HighGrass/Burning as applicable. Current ordinary live-value provider checked: water/3-step enemy path/grass refresh/detection score/selected magical attacks/fire shielding cap. No new wording change needed here; full retained details and all modifiers/class variants remain under review."
+      "review_notes": "Own inert proc and actual Char.isImmune/Burning attempted-ignition shield gain/cap path read. Normal Burning-only protection and bounded Barrier wording accurate; no universal fire immunity promised. Own-source completion only, not completion of separately tracked inherited, class, generator or secondary providers."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/armor/glyphs/Camouflage.java",
@@ -900,9 +903,9 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/armor/glyphs/Entanglement.java",
       "sha256": "2602f0d4b3f5ef180fe03358f08ff2752647b8bbdbfa7e569f5084c7d51df59f",
       "category": "armor",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_UNCHANGED",
       "description_methods": [],
-      "review_notes": "Individually read proc and actual supporting paths: wand Chargers, projectile knockback, Charm recovery, Earthroot per-hit reserve, Stone copied accuracy/evasion modifiers and75%cap, Thorns alignment/bleeding, Viscosity after-armor tracker and1turn/10%remaining deferred ticks. Current concise ordinary provider values and conditions match inspected code; no new change needed here. Retained advanced panel/all cross-class variants remain under review."
+      "review_notes": "Actual quarter-power trigger/overflow reserve read against full Earthroot position/per-hit-cap/last-partial-reserve/max-refresh/save path. Normal reserve-or-more and move-break wording accurate. Own-source completion only, not completion of separately tracked inherited, class, generator or secondary providers."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/armor/glyphs/Flow.java",
@@ -924,25 +927,25 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/armor/glyphs/Potential.java",
       "sha256": "4fc766e080d06addb1a28a8d71294d296a891b872da5259f5ef12fb52226354c",
       "category": "armor",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_UNCHANGED",
       "description_methods": [],
-      "review_notes": "Individually read proc and actual supporting paths: wand Chargers, projectile knockback, Charm recovery, Earthroot per-hit reserve, Stone copied accuracy/evasion modifiers and75%cap, Thorns alignment/bleeding, Viscosity after-armor tracker and1turn/10%remaining deferred ticks. Current concise ordinary provider values and conditions match inspected code; no new change needed here. Retained advanced panel/all cross-class variants remain under review."
+      "review_notes": "Actual level chance/overflow1charge strength reconciled with Belongings.charge iterating all attached WandChargers and capacity rules. Normal per-wand wording accurate. Own-source completion only, not completion of separately tracked inherited, class, generator or secondary providers."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/armor/glyphs/Repulsion.java",
       "sha256": "693a8928e729fc4ea39e793664b52479de8f7e156883d39683fd9612aa10f615",
       "category": "armor",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_UNCHANGED",
       "description_methods": [],
-      "review_notes": "Individually read proc and actual supporting paths: wand Chargers, projectile knockback, Charm recovery, Earthroot per-hit reserve, Stone copied accuracy/evasion modifiers and75%cap, Thorns alignment/bleeding, Viscosity after-armor tracker and1turn/10%remaining deferred ticks. Current concise ordinary provider values and conditions match inspected code; no new change needed here. Retained advanced panel/all cross-class variants remain under review."
+      "review_notes": "Entire adjacency-before-RNG, level chance/overflow push and Ballistica/BlastWave collision path read; normal chance/up-to2tiles wording accurate. Own-source completion only, not completion of separately tracked inherited, class, generator or secondary providers."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/armor/glyphs/Stone.java",
       "sha256": "7a06e42130ab82587deff2dc80bc19e487dd09b14e5ce0fc1bc5927a11959159",
       "category": "armor",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_UNCHANGED",
       "description_methods": [],
-      "review_notes": "Individually read proc and actual supporting paths: wand Chargers, projectile knockback, Charm recovery, Earthroot per-hit reserve, Stone copied accuracy/evasion modifiers and75%cap, Thorns alignment/bleeding, Viscosity after-armor tracker and1turn/10%remaining deferred ticks. Current concise ordinary provider values and conditions match inspected code; no new change needed here. Retained advanced panel/all cross-class variants remain under review."
+      "review_notes": "Full alternate hit contest with Bless/Hex/Daze/champions/ascension/talent/Ferret/Arcana, clamped75%ceiling and upwarddamage rounding read against Hero testingEvasion bypass. Normal nofixedpersonal dodgepercentage accurate. Own-source completion only, not completion of separately tracked inherited, class, generator or secondary providers."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/armor/glyphs/Swiftness.java",
@@ -956,19 +959,19 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/armor/glyphs/Thorns.java",
       "sha256": "89ae3e2c7c95ea43078fcbe69262e4478e1d6ef8177480058c44360117c1bda4",
       "category": "armor",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_UNCHANGED",
       "description_methods": [],
-      "review_notes": "Individually read proc and actual supporting paths: wand Chargers, projectile knockback, Charm recovery, Earthroot per-hit reserve, Stone copied accuracy/evasion modifiers and75%cap, Thorns alignment/bleeding, Viscosity after-armor tracker and1turn/10%remaining deferred ticks. Current concise ordinary provider values and conditions match inspected code; no new change needed here. Retained advanced panel/all cross-class variants remain under review."
+      "review_notes": "Full opposing-alignment guard/chance/overflow bleed input read against Bleeding initial random reduction/attribution. Normal chance and strongerbleed prose avoids fixedtotalHP promise. Own-source completion only, not completion of separately tracked inherited, class, generator or secondary providers."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/armor/glyphs/Viscosity.java",
       "sha256": "8d664a6b1ab6f546e7afe3e0ab763ffb6713bb5874a320ffceca147b061dd4a1",
       "category": "armor",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_UNCHANGED",
       "description_methods": [
         "desc"
       ],
-      "review_notes": "Individually read proc and actual supporting paths: wand Chargers, projectile knockback, Charm recovery, Earthroot per-hit reserve, Stone copied accuracy/evasion modifiers and75%cap, Thorns alignment/bleeding, Viscosity after-armor tracker and1turn/10%remaining deferred ticks. Current concise ordinary provider values and conditions match inspected code; no new change needed here. Retained advanced panel/all cross-class variants remain under review."
+      "review_notes": "Full afterarmor tracker, IronStomach guard, percent<=1ceil versus>1roundreduceddeferral,1turndelay,10%minimum1ticks/death/save read against Char.attack consumer. Normal concise live fraction/ticks/lethality correct; no newpanel. Own-source completion only, not completion of separately tracked inherited, class, generator or secondary providers."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/artifacts/AlchemistsToolkit.java",
@@ -2267,11 +2270,11 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/rings/RingOfForce.java",
       "sha256": "a1fc9e53d15abbef65d2ff394bef899b4ac8f3852d9dfd14fb188d089a228334",
       "category": "rings",
-      "status": "REVIEWED_PENDING_DEPENDENCY",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [
         "info"
       ],
-      "review_notes": "Actual statsInfo, solo/combined bonus formulas and identification/cursing branches reviewed. Concise player-facing benefits and numeric labels. Combined descriptions now withhold unknown companion bonuses; no combat calculation changed. Force personal range and upgrade previews also guard unknown Strength; complex detail prose remains pending. Full own source and RingExplanation branches read2026-11-09. Reproduced Force known melee bonus4 instead of5 with EnhancedRings and unknown Strength companion; display now uses known buffed own bonus while withholding unarmed range. Combat unchanged, hidden-companion level invariance test passes. Tenacity existing upgrade row now explicitly says more/less damage instead of negative resistance; same formula, no new row or panel. Actual upgrade-window fixtures pending396. Existing specific panels retained pending owner review.",
+      "review_notes": "Entire own Strength tier/negativebonus endpoints/actualroll/Monk exclusion/SpiritForm/Brawler armed-unarmed/augment-enchant/normalandupgrade knowledgeguards/activation/unequip/50turnsave read. Existing normal accurate; shortened retained details verified with24actual seeded stance differences. Shared Ring/provider scope separate. Own-source completion only, not completion of separately tracked inherited, class, generator or secondary providers.",
       "tests": [
         "MechanicsExplanationTest.everyRingInspectionWithholdsUnknownCompanionLevels",
         "MechanicsExplanationTest.forceInspectionAndUpgradePreviewDoNotExposeUnknownStrengthRing",
@@ -2340,9 +2343,9 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/rings/RingOfTenacity.java",
       "sha256": "eb1b5d5884781c7e5490efb98d1a5a61ba9b231c7ef05abc9631fa7f694842dc",
       "category": "rings",
-      "status": "REVIEWED_PENDING_DEPENDENCY",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [],
-      "review_notes": "Normal protection/harm values now use less/more damage instead of negative-reduction jargon; hidden stats still use the labelled generic example. Actual formula unchanged. Specific existing nonlinear detail panel retained pending owner review; full review not claimed. Full own source and RingExplanation branches read2026-11-09. Reproduced Force known melee bonus4 instead of5 with EnhancedRings and unknown Strength companion; display now uses known buffed own bonus while withholding unarmed range. Combat unchanged, hidden-companion level invariance test passes. Tenacity existing upgrade row now explicitly says more/less damage instead of negative resistance; same formula, no new row or panel. Actual upgrade-window fixtures pending396. Existing specific panels retained pending owner review.",
+      "review_notes": "Entire own solo/combined/unknown stats, cursed upgrade sign, exact damageMultiplier read against actual Hero.damage upwardround stage. Shorter retained details explicitly currentpercent less/more and nearzeroHPmaximum.18health/curse/upgrade matrix matches actual multiplier. Shared Ring/provider scope separate. Own-source completion only, not completion of separately tracked inherited, class, generator or secondary providers.",
       "tests": [
         "MechanicsExplanationTest.everyRingInspectionWithholdsUnknownCompanionLevels",
         "MechanicsExplanationTest.forceInspectionAndUpgradePreviewDoNotExposeUnknownStrengthRing",
@@ -3114,7 +3117,8 @@
       "sha256": "2ad70a92be62cb6c873e14dc6577c1b7c9d5359643baaf69daed38f1def8e744",
       "category": "wands",
       "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "description_methods": [],
+      "review_notes": ""
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/wands/DamageWand.java",
@@ -3563,12 +3567,12 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/melee/Crossbow.java",
       "sha256": "e57d579f545d3f62f51347da2e3d05efc0c5cafa47c65e8a296b00d2eac412cd",
       "category": "weapon",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [
         "abilityInfo"
       ],
       "wording_corrected": true,
-      "review_notes": "Ordinary dart range and Charged Shot text checked against actual Crossbow/Dart/TippedDart code. Corrected display-only +3 to actual +4 base dart boost, distinct from +3 tip uses; upgrade row now accurately labels extra tip uses. Complex secondary dart/enchantment interactions remain pending. No combat changes."
+      "review_notes": "Entire own charged-shot activation/unequip/accuracy scheduledkillcheck/melee4tilepush, dart4+L..12+3L endpoints/ability known+0 and no-time charge read against Dart normal/charged arithmetic. Own concise prose accurate, Dart/shared source separately remains partial. Own-source completion only, not completion of separately tracked inherited, class, generator or secondary providers."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/melee/Cudgel.java",
@@ -4406,7 +4410,7 @@
       "review_notes": "Previously omitted directly edited spell/buff description source added to inventory. Full own cast/extension/remaining-time and actual Weapon/Armor/Hero proc consumers reconciled. Concise current known amount, Paladin retention/extension and unidentified-ring invariance, magic-immunity guards and attacker-dependent unarmored protection. Existing specific advanced panels retained unchanged; no gameplay/save/UI changes.3110core457pass, new Android windows pending404. Shared SpellExplanation provider remains partial."
     }
   ],
-  "completed_units": 271,
-  "latest_tests": "3110core/457suites no failures/errors/skips; actual Holy weapon/armor procs across ordinary/Paladin and Arcana0..3 match normal spell/buff numbers, hidden-ring invariance, unarmored and MagicImmune branches. Accepted raw evidence /workspace/apd404-holy-evidence-20261109/accepted-full. Android windows pending404; no whole-audit or physical audio claim.",
+  "completed_units": 283,
+  "latest_tests": "3112core/457suites, failures/errors/skips zero. Retained Force/Tenacity shortened;18current-health/curse/upgrade states match Tenacity actual multiplier and24seeded Force stance differences match current bonus. Existing unknownStrength, hidden rings, MagicImmune and state/RNG checks preserved. Raw full XML/log /workspace/apd405-ring-evidence-20261109/accepted-full. Eight new retained expanded/bottom captures pending405. Full audit unfinished.",
   "message_inventory_entries": 5339
 }

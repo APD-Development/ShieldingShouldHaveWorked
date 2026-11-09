@@ -189,3 +189,8 @@ All10weapon curses plus Gloves/Sai/Gauntlet/RoundShield/Greatshield individually
 ### APK403 published
 
 Published 2026-11-09T08:56:59Z at https://github.com/APD-Development/ShieldingShouldHaveWorked/releases/tag/apd-alpha-preview-403; original a4a471211973ba15f6f232b535ffe2323f08f053, build42587402851/stage42588615831SUCCESS.3109core457/12distinctAPI34 passed. Independent APK/source/sidecars/scan checks,20new actualcaptures across both variants manually reviewed. Live normal Blast/Monk wording included; later Holy work not included,404pending. No physical-phone/audio or whole-audit claim. Continue approved development through09:30UTC.
+
+
+### Retained Force/Tenacity detail correction and twelve more own-source reviews
+
+Existing retained panels shorter; Force Strength/endpoints/Brawler formulas and actualknownbonus preserved, cursedarmedloss phrased naturally,50turn recharge downside explicit. Tenacity currentless/moredamage and nearzeroHP maximum distinguished. No newpanel or gameplay/save edits.3112core457pass,18health/curse/upgrade multiplier states and24seeded actual stance differences, existing hiddenStrength/unknownring/MagicImmune/state tests retained. Eight new expanded/bottom Android captures prepared, pending405. Full raw evidence committed. Eight glyphs/ClassArmor/Crossbow/Force/Tenacity own-source reviews closed with consumers/save branches read, shared/class providers still separate.431units428full/partial345corrected283complete148unresolved,5339English entries. Whole audit unfinished; continue approved work.

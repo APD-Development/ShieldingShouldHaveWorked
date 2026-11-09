@@ -342,3 +342,8 @@ Existing English GameScene ability window replaces stale4tile/15–25/fixedstatu
 ### Fifteen further own-source reviews
 
 All10weapon curses plus Gloves/Sai/Gauntlet/RoundShield/Greatshield individually reconciled with proc/status/Geyser/Guard/ComboStrike consumers and save branches. Existing normal prose remains concise and accurate, so no gratuitous wording or gameplay edits. Own source reviews closed; shared effects/class/generation/ElementalStrike/CursedWand providers remain separate, not implicitly completed.431sourceunits,428full/partial344corrected271complete160unresolved;5339English entries.3110acceptedcore457raw retained. These15review closures are later than404producing source; no app changes. Whole audit unfinished.
+
+
+### Retained Force/Tenacity detail correction and twelve more own-source reviews
+
+Existing retained panels shorter; Force Strength/endpoints/Brawler formulas and actualknownbonus preserved, cursedarmedloss phrased naturally,50turn recharge downside explicit. Tenacity currentless/moredamage and nearzeroHP maximum distinguished. No newpanel or gameplay/save edits.3112core457pass,18health/curse/upgrade multiplier states and24seeded actual stance differences, existing hiddenStrength/unknownring/MagicImmune/state tests retained. Eight new expanded/bottom Android captures prepared, pending405. Full raw evidence committed. Eight glyphs/ClassArmor/Crossbow/Force/Tenacity own-source reviews closed with consumers/save branches read, shared/class providers still separate.431units428full/partial345corrected283complete148unresolved,5339English entries. Whole audit unfinished; continue approved work.

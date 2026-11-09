@@ -38,18 +38,24 @@ public final class RingExplanation {
         else if(ring instanceof RingOfMight)effect="Adds "+plain+" strength points. Maximum-HP factor = 1.035^bonus = × "+n(RingOfMight.HTMultiplier(b))+" before the maximum-HP calculation's integer rounding. Strength uses the ring's ordinary bonus; temporary effective-ring bonuses can affect HP separately. This does not heal the same amount as its percentage.";
         else if(ring instanceof RingOfSharpshooting)effect="Adds "+b+" effective upgrade levels to thrown-weapon damage calculations. Durability factor = 1.2^ordinary bonus = × "+n(RingOfSharpshooting.durabilityMultiplier(plain))+". This changes durability consumption, not damage by the same percentage; each thrown weapon's own rules and rounding still apply.";
         else if(ring instanceof RingOfTenacity){
-            effect="Supported incoming damage factor = 0.85^(bonus × fraction of HP missing). ";
-            if(Dungeon.hero!=null&&Dungeon.hero.HT>0){float missing=(Dungeon.hero.HT-Dungeon.hero.HP)/(float)Dungeon.hero.HT;effect+="At the current "+n(100*missing)+"% missing HP, this ring's factor is × "+n(RingOfTenacity.damageMultiplier(b,missing))+". ";}
-            else effect+="Inspect this ring during a run to see its protection at your current health. ";
-            effect+="At full HP the factor is one. The listed maximum reduction is a limit as missing HP approaches 100%, not your reduction on every hit. Defense order and rounding still affect final HP loss.";
+            effect="Protection grows as you lose HP. ";
+            if(Dungeon.hero!=null&&Dungeon.hero.HT>0){
+                float missing=(Dungeon.hero.HT-Dungeon.hero.HP)/(float)Dungeon.hero.HT;
+                float factor=RingOfTenacity.damageMultiplier(b,missing);
+                effect+="At your current health: _"+n(Math.abs(100*(1-factor)))+"% "+(factor>1?"more":"less")+" damage_ (× "+n(factor)+"). ";
+            } else effect+="Inspect during a run for the result at your current health. ";
+            effect+="Full health gives no reduction or increase. Cursed rings increase damage instead. The listed maximum is approached only near zero HP; it is not your reduction on every hit.\n\nDamage multiplier = 0.85^(ring value × fraction of HP missing). Other defenses and rounding still apply.";
         }
         else if(ring instanceof RingOfWealth)effect="Qualifying ordinary loot chance × 1.20^bonus = × "+n((float)Math.pow(1.20,b))+". This multiplies an eligible source's chance; it does not add that percentage to every drop. Special bonus-loot counters and their guarantees follow separate rules, and some sources ignore this ring.";
         else if(ring instanceof RingOfForce){
-            if(ArmorExplanation.knownStrength(Dungeon.hero)==null)effect="Unarmed damage depends on Strength. Identify your equipped rings before viewing a personal damage range. Strength gives tier = max(1, (strength − 8) / 2); above tier 5 only half of the excess is kept. A nonpositive ring bonus uses damage tier 1. Minimum = max(0, round(tier + bonus)); maximum = max(0, round(5 × (tier + 1) + bonus × (tier + 1))). Armed damage instead adds "+b+" damage points. Brawler’s Stance adds its own Strength-dependent damage bonus.";
-            else{
-            int strength=Dungeon.hero.STR();float tier=RingOfForce.unarmedTier(strength),damageTier=b<=0?1:tier;
-            effect="At your current "+strength+" strength points, this ring's unarmed base range is "+RingOfForce.unarmedMinimum(strength,b)+"–"+RingOfForce.unarmedMaximum(strength,b)+" damage points before target defenses, other effects and custom damage rules. Strength first gives tier = max(1, (strength − 8) / 2); above tier 5, only half of the excess is kept. Current tier: "+n(tier)+". For a nonpositive ring bonus the damage calculation uses tier 1 instead. Minimum = max(0, round(tier + bonus)); maximum = max(0, round(5 × (tier + 1) + bonus × (tier + 1))). Here the damage tier is "+n(damageTier)+". Armed damage instead adds "+b+" damage points, not a percentage. Brawler's Stance uses the unarmed calculation and adds round(3 + strength-based tier + bonus × (4 + 2 × strength-based tier) / 8) damage points; weapon augmentation and enchantment can apply separately.";
-            }
+            Integer strength=ArmorExplanation.knownStrength(Dungeon.hero);
+            if(strength==null)effect="Identify equipped rings to see your unarmed damage. ";
+            else effect="At _"+strength+" Strength_, this ring alone gives _"+RingOfForce.unarmedMinimum(strength,b)+"–"+RingOfForce.unarmedMaximum(strength,b)+" damage points_ unarmed. ";
+            effect+=(b<0?"With a melee weapon, it reduces damage by _"+(-b)+"_. ":"With a melee weapon, it adds _"+b+" damage_. ")+"These amounts are before other damage bonuses and defenses.\n\n";
+            effect+="For the formulas below, Strength gives T = max(1, (Strength − 8) / 2). Above T = 5, keep only half the excess. Use D = T for a positive ring value, or D = 1 otherwise. Unarmed minimum = max(0, round(D + ring value)); maximum = max(0, round((D + 1) × (5 + ring value))).\n\n";
+            effect+="Duelist’s Brawler’s Stance adds round(3 + T + ring value × (4 + 2T) / 8) damage";
+            if(strength!=null){float tier=RingOfForce.unarmedTier(strength);effect+=" — _"+Math.round(3+tier+b*(4+2*tier)/8f)+" extra damage_ at your known Strength";}
+            effect+=". The weapon’s augmentation and enchantment can still apply. Normal weapon-ability recharging is halved for at least 50 turns after activating the stance, even if you turn it off early.";
         }
         else return "";
         String state= Dungeon.hero!=null&&Dungeon.hero.buff(MagicImmune.class)!=null?"Magic immunity currently suppresses ring effects. These are identified equipment contributions, not active benefits.\n\n":"";

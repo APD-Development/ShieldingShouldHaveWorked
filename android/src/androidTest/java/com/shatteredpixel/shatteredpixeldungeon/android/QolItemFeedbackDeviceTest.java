@@ -547,6 +547,16 @@ public class QolItemFeedbackDeviceTest {
             TopScoresDeviceTest.render(() -> { for (com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff b : buffs) if (b != null) b.detach(); Dungeon.hero.subClass = oldSubclass; Dungeon.hero.belongings.armor = oldArmor; });
         }
     }
+    private static void conciseRetainedRingDetailsRender() throws Exception {
+        final int hp = Dungeon.hero.HP;
+        try {
+            TopScoresDeviceTest.render(() -> Dungeon.hero.HP = Math.max(1, Dungeon.hero.HT / 2));
+            calculationWindow(() -> { com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfForce ring = new com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfForce(); ring.anonymize(); ring.level(3); ring.levelKnown = ring.cursedKnown = true; return new WndInfoItem(ring); }, "extra damage", "qol-force-retained-clear.png");
+            for (boolean cursed : new boolean[]{false, true}) {
+                calculationWindow(() -> { com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfTenacity ring = new com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfTenacity(); ring.anonymize(); ring.level(3); ring.levelKnown = ring.cursedKnown = true; ring.cursed = cursed; return new WndInfoItem(ring); }, "fraction of HP missing", "qol-tenacity-retained-clear-" + cursed + ".png");
+            }
+        } finally { TopScoresDeviceTest.render(() -> Dungeon.hero.HP = hp); }
+    }
     private static void retainedMonkEnergyDetailsRender()throws Exception{
         final com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass heroClass=Dungeon.hero.heroClass;final com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass subclass=Dungeon.hero.subClass;
         final java.util.ArrayList<java.util.LinkedHashMap<com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent,Integer>> talents=Dungeon.hero.talents;
@@ -683,6 +693,7 @@ public class QolItemFeedbackDeviceTest {
         com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfForce force=new com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfForce();
         try{TopScoresDeviceTest.render(()->{for(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff buff:new java.util.ArrayList<>(Dungeon.hero.buffs(Ring.RingBuff.class)))buff.detach();force.anonymize();force.level(3);force.levelKnown=force.cursedKnown=true;Dungeon.hero.belongings.ring=force;force.activate(Dungeon.hero);com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfMight unknown=new com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfMight();unknown.level(9);unknown.levelKnown=false;Dungeon.hero.belongings.misc=unknown;com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff.affect(Dungeon.hero,com.shatteredpixel.shatteredpixeldungeon.actors.buffs.EnhancedRings.class);assertEquals(5,com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfForce.armedDamageBonus(Dungeon.hero));});
             showItem(force,"Melee weapon damage bonus: _5_","qol-force-known-bonus-unknown-strength.png",true,true);
+            calculationWindow(() -> new WndInfoItem(force), "Identify equipped rings", "qol-force-retained-unknown-strength.png");
         }finally{TopScoresDeviceTest.render(()->{for(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff buff:new java.util.ArrayList<>(Dungeon.hero.buffs(Ring.RingBuff.class)))buff.detach();if(!enhanced)com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff.detach(Dungeon.hero,com.shatteredpixel.shatteredpixeldungeon.actors.buffs.EnhancedRings.class);Dungeon.hero.belongings.ring=previous;Dungeon.hero.belongings.misc=misc;if(previous!=null)previous.activate(Dungeon.hero);if(misc instanceof Ring)misc.activate(Dungeon.hero);});}
     }
     private static void reviewedRunestoneTargetDescriptionsRender()throws Exception{
@@ -1277,6 +1288,7 @@ public class QolItemFeedbackDeviceTest {
             retainedThreeArtifactDetailsRender();
             retainedMonkEnergyDetailsRender();
             conciseHolyDescriptionsRender();
+            conciseRetainedRingDetailsRender();
             liveElementalBlastDescriptionsRender();
             gradualHealingNonStackDescriptionsRender();
             hiddenTwinUpgradeDescriptionsRender();

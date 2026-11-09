@@ -973,6 +973,18 @@ public class MechanicsExplanationTest {
   String full=RingExplanation.details(r);hero.HP=hero.HT/2;String half=RingExplanation.details(r);
   assertNotEquals(full,half);assertTrue(half,half.contains("× "+ObfuscationExplanation.number(RingOfTenacity.damageMultiplier(hero))));assertTrue(half.contains("not your reduction on every hit"));
  }
+ @Test public void tenacityRetainedDetailsShowCurrentProtectionOrCurseAcrossHealthAndBonuses(){
+  RingOfTenacity ring=new RingOfTenacity();ring.anonymize();ring.levelKnown=ring.cursedKnown=true;hero.belongings.ring=ring;ring.activate(hero);
+  for(boolean cursed:new boolean[]{false,true})for(int level:new int[]{0,3,8})for(int hp:new int[]{1,hero.HT/2,hero.HT}){
+   ring.cursed=cursed;ring.level(level);hero.HP=hp;String before=savedDescriptionHero(),text=RingExplanation.details(ring);float actual=RingOfTenacity.damageMultiplier(hero);String amount=ObfuscationExplanation.number(Math.abs(100*(1-actual)))+"% "+(actual>1?"more":"less")+" damage";assertTrue(text,text.contains(amount));assertTrue(text.contains("0.85^(ring value × fraction of HP missing)"));assertEquals(before,savedDescriptionHero());
+  }
+ }
+ @Test public void forceRetainedStanceBonusMatchesActualSeededDamageDifference(){
+  RingOfForce ring=new RingOfForce();ring.anonymize();ring.levelKnown=ring.cursedKnown=true;hero.belongings.ring=ring;ring.activate(hero);RingOfForce.BrawlersStance stance=Buff.affect(hero,RingOfForce.BrawlersStance.class);
+  for(int strength:new int[]{8,10,18,22})for(boolean cursed:new boolean[]{false,true})for(int level:new int[]{0,3,8}){
+   hero.STR=strength;ring.cursed=cursed;ring.level(level);stance.active=false;Random.pushGenerator(47);int ordinary;try{ordinary=RingOfForce.damageRoll(hero);}finally{Random.popGenerator();}stance.active=true;Random.pushGenerator(47);int boosted;try{boosted=RingOfForce.damageRoll(hero);}finally{Random.popGenerator();}String before=savedDescriptionHero(),text=RingExplanation.details(ring);assertTrue(text,text.contains("_"+(boosted-ordinary)+" extra damage_"));assertEquals(before,savedDescriptionHero());
+  }
+ }
  @Test public void magicImmuneRingDetailsDoNotClaimAnActiveBonus(){RingOfHaste r=new RingOfHaste();r.anonymize();r.levelKnown=r.cursedKnown=true;Buff.affect(hero,MagicImmune.class);assertTrue(RingExplanation.details(r).contains("not active benefits"));}
  @Test public void tinyPositiveMultipliersNeverDisplayAsZero(){assertNotEquals("0",ObfuscationExplanation.number(.00001f));assertFalse(ObfuscationExplanation.number(Float.POSITIVE_INFINITY).contains("Infinity"));}
  @Test public void forceKnownArmedBonusKeepsEnhancedRingsWhenUnknownStrengthWithholdsUnarmedRange(){
