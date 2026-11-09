@@ -4,8 +4,8 @@
   "counting": "Source units, not distinct item types. reviewed_units includes partial reviews; completed_units excludes partial/pending dependency. corrected_units counts source units with corrections, including incomplete reviews. Inventory/export/tests alone are not an individual review.",
   "source_units": 427,
   "message_entries": 2411,
-  "reviewed_units": 349,
-  "corrected_units": 308,
+  "reviewed_units": 357,
+  "corrected_units": 313,
   "unresolved_units": 267,
   "category_counts": {
     "apd": 1,
@@ -3329,10 +3329,12 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/enchantments/Blocking.java",
       "sha256": "874b1c0ddc4357ed52b4c2c7ccd78677fcc66d87c08c13145a721277bcea6754",
       "category": "weapon",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
+      "status": "PARTIAL_REVIEW",
       "description_methods": [
         "desc"
-      ]
+      ],
+      "review_notes": "Entire concrete enchantment source and relevant Char/Mob damage, loot or tracker paths read. Ordinary provider checked against actual effect, no gameplay change. Existing real proc/power/suppression/identification tests retained. Class-specific Elemental Strike/secondary scope remains open. Ordinary shield buff no longer uses baseline decay terminology; existing real HoldFast duration/save test unchanged.",
+      "wording_corrected": true
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/enchantments/Blooming.java",
@@ -3368,8 +3370,9 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/enchantments/Elastic.java",
       "sha256": "f44c7957df48ec699d621f4a3fa9786205eb5ae03c494c29a24366385075220b",
       "category": "weapon",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "PARTIAL_REVIEW",
+      "description_methods": [],
+      "review_notes": "Entire concrete enchantment source and relevant Char/Mob damage, loot or tracker paths read. Ordinary provider checked against actual effect, no gameplay change. Existing real proc/power/suppression/identification tests retained. Class-specific Elemental Strike/secondary scope remains open."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/enchantments/Eldritch.java",
@@ -3389,17 +3392,21 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/enchantments/Kinetic.java",
       "sha256": "96703a018cab0d40f0987a24e94554d9d280993362c3812e5d30e9af82a2a04f",
       "category": "weapon",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
+      "status": "PARTIAL_REVIEW",
       "description_methods": [
         "desc"
-      ]
+      ],
+      "review_notes": "Entire concrete enchantment source and relevant Char/Mob damage, loot or tracker paths read. Ordinary provider checked against actual effect, no gameplay change. Existing real proc/power/suppression/identification tests retained. Class-specific Elemental Strike/secondary scope remains open. Ordinary stored-damage buff identifies Kinetic/Unstable successful hits and fading rather than vague any attack. Actual Unstable consumption path read. Source storage/decay formulas unchanged; full shared chance/panel audit still open.",
+      "wording_corrected": true
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/enchantments/Lucky.java",
       "sha256": "fa6d37bc1e2edc970cfb26ddfc79d934fb816a32d28a0163aa92b6586e7bd906",
       "category": "weapon",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "PARTIAL_REVIEW",
+      "description_methods": [],
+      "review_notes": "Entire concrete enchantment source and relevant Char/Mob damage, loot or tracker paths read. Ordinary provider checked against actual effect, no gameplay change. Existing real proc/power/suppression/identification tests retained. Class-specific Elemental Strike/secondary scope remains open. Loot may include Gold, so normal/detailed text says extra loot, not only consumables. RingOfWealth generator and outlevelled Mob.rollToDropLoot guard read; existing actual Arcana intermediate-roll regression preserved.",
+      "wording_corrected": true
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/enchantments/Projecting.java",
@@ -3419,29 +3426,35 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/enchantments/Unstable.java",
       "sha256": "8141c891526d4aace75fb8b00afb016161fbe2b6da2934240ff681a4f045cb14",
       "category": "weapon",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "PARTIAL_REVIEW",
+      "description_methods": [],
+      "review_notes": "Entire concrete enchantment source and relevant Char/Mob damage, loot or tracker paths read. Ordinary provider checked against actual effect, no gameplay change. Existing real proc/power/suppression/identification tests retained. Class-specific Elemental Strike/secondary scope remains open."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/enchantments/Vampiric.java",
       "sha256": "f85fa4beb642d4caf6b5d69326f1c268432855512d0a3ffc289f880d30627bec",
       "category": "weapon",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "PARTIAL_REVIEW",
+      "description_methods": [],
+      "review_notes": "Entire concrete enchantment source and relevant Char/Mob damage, loot or tracker paths read. Ordinary provider checked against actual effect, no gameplay change. Existing real proc/power/suppression/identification tests retained. Class-specific Elemental Strike/secondary scope remains open. Normal warning when Healing0 even unknown upgrades; new real seeded proc checks actual no-heal on disabled rule with genuine successful rolls.",
+      "wording_corrected": true
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/enchantments/Venomous.java",
       "sha256": "d66060726db59a723600325c14fbd580d6f35b6ebd7f4bc468357757d1ec4fef",
       "category": "weapon",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "PARTIAL_REVIEW",
+      "description_methods": [],
+      "review_notes": "Entire concrete enchantment source and relevant Char/Mob damage, loot or tracker paths read. Ordinary provider checked against actual effect, no gameplay change. Existing real proc/power/suppression/identification tests retained. Class-specific Elemental Strike/secondary scope remains open."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/enchantments/Vorpal.java",
       "sha256": "888b19ec3c41c63618e605cddc910d36d973da0a0438eb2f6846e0d64cbe4ac1",
       "category": "weapon",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "PARTIAL_REVIEW",
+      "description_methods": [],
+      "review_notes": "Entire concrete enchantment source and relevant Char/Mob damage, loot or tracker paths read. Ordinary provider checked against actual effect, no gameplay change. Existing real proc/power/suppression/identification tests retained. Class-specific Elemental Strike/secondary scope remains open. Ordinary text correctly says replaces immediate damage with bleeding. New actual proc\u2192Char.damage test proves HP/shield unchanged for bleeding conversion and normal HP/shield loss for immune target; initial headless sprite-scale fixture failure preserved/corrected, no source damage change.",
+      "wording_corrected": true
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/melee/AssassinsBlade.java",
@@ -4255,14 +4268,14 @@
   ],
   "completed_units": 160,
   "latest_tests": {
-    "core_tests": 3047,
+    "core_tests": 3049,
     "suites": 457,
     "failures": 0,
     "errors": 0,
     "skipped": 0,
-    "log": "/workspace/apd-catalyst-transfer-evidence-20261109/apd-catalyst-forwarding-human-description-full.log",
+    "log": "/workspace/apd-post389-enchantment-evidence-20261109/apd-enchantment-replacement-loot-healing-corrected-full.log",
     "android_verified": false,
     "new_apk_built": false,
-    "scope": "Latest post388 Catalyst/Forwarding normal wording plus all later artifact/glyph/wand/herb changes. Actual new windows pending389; latest published388."
+    "scope": "Post389 Lucky/Vorpal/Vampiric/Blocking/Kinetic corrections, actual replacement/immunity and disabled healing.389 blocked by Android test compilation;388 remains published fallback. Corrected native compile wrappers prepared for390."
   }
 }
