@@ -163,8 +163,8 @@ public class QolItemFeedbackDeviceTest {
                 if(screenshot.contains("Shadows.png")||screenshot.contains("power-link-1.png")||screenshot.contains("power-link-2.png"))assertFalse("Special countdown must not claim ordinary expiry",text.text().contains("Duration remaining"));
             }
             boolean found=false;for(RenderedTextBlock text:TopScoresDeviceTest.find(window,RenderedTextBlock.class))if(text.text().contains(expected))found=true;assertTrue("Rendered calculation contains live explanation: "+expected,found);
+            if(screenshot.startsWith("qol-reviewed-spell-clear-ShieldOfLight")){boolean timings=false;for(RenderedTextBlock text:TopScoresDeviceTest.find(window,RenderedTextBlock.class))timings|=text.text().contains("Lasts 5 turns for you, or 4 turns for the linked ally");assertTrue("Shield of Light shows actual displayed hero/linked-ally timers",timings);}
             for(RenderedTextBlock text:TopScoresDeviceTest.find(window,RenderedTextBlock.class)){
-                if(screenshot.startsWith("qol-reviewed-spell-clear-ShieldOfLight"))assertTrue("Shield of Light shows the actual displayed hero/linked-ally timers",text.text().contains("Lasts 5 turns for you, or 4 turns for the linked ally"));
                 if(screenshot.startsWith("qol-existing-status-clear-")||screenshot.startsWith("qol-existing-power-link-")||screenshot.startsWith("qol-warrior-shield-"))assertFalse("Reviewed status windows avoid technical duration units",text.text().contains("game-time units"));
                 if(screenshot.startsWith("qol-twin-upgrades-existing-panel-")||screenshot.startsWith("qol-weapon-recharging-existing-panel-"))assertFalse("Reviewed talent windows avoid generic rank boilerplate",text.text().contains("rank-specific amounts"));
             }
