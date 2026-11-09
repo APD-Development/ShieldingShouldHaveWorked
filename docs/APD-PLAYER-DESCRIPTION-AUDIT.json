@@ -5,8 +5,8 @@
   "source_units": 436,
   "message_entries": 2432,
   "reviewed_units": 433,
-  "corrected_units": 316,
-  "unresolved_units": 63,
+  "corrected_units": 351,
+  "unresolved_units": 64,
   "category_counts": {
     "apd": 1,
     "mechanics": 38,
@@ -4467,7 +4467,7 @@
       "review_notes": "Previously omitted normal buff source added. Entire own duration/decay/save/icon path and actual Hero/Char hit/protection consumer read. Ordinary prose shorter; Bless/Hex/Daze percentages use live ROLL_FACTOR; other languages retain existing turn argument plus ignored extra argument. Existing optional panels unchanged. Real8combination\u00d7100seed\u00d72direction hit tests assert live percentages; actual defensive decay/save/read-only test passes.3113core457. New ordinary Android window pending406. Own-source completion, not all BuffExplanation/class providers."
     }
   ],
-  "completed_units": 373,
+  "completed_units": 372,
   "latest_tests": "3131 core/457 suites, zero failures/errors/skips. Actual zero-Healing dew consumption, Waterskin cost/time and Shielding Dew verified. Latest3130 Android source compile42606030280 passed before newest dew/native edits; newest native windows pending.409 twelve original-APK native cases passed; packaging recovery42607976456 passed, staging/manual review pending.408 latest published.",
   "message_inventory_entries": 5343,
   "message_inventory_counting": "Current authored English property entries across nine files;2432 item entries. Two concise zero-Healing dew/waterskin keys added. Exact Adult OFF/ON checks retained."
