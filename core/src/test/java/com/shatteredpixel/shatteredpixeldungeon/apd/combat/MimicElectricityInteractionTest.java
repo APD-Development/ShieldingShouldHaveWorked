@@ -123,6 +123,17 @@ public class MimicElectricityInteractionTest {
         throw new AssertionError("No deterministic curse seed found");
     }
 
+    @Test public void ordinaryShockingCanHitNeutralCreaturesButSparesCasterAlliesAndPrimary(){
+        Target primary=new Target(),ally=new Target(),neutral=new Target(),enemy=new Target();ally.pos=114;ally.alignment=Char.Alignment.ALLY;neutral.pos=115;neutral.alignment=Char.Alignment.NEUTRAL;enemy.pos=116;for(Char ch:new Char[]{primary,ally,neutral,enemy})Actor.add(ch);
+        com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Shocking shocking=new com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Shocking();weapon.enchant(shocking);weapon.levelKnown=weapon.cursedKnown=true;String description=com.shatteredpixel.shatteredpixeldungeon.apd.mechanics.EnchantmentExplanation.playerDescription(weapon,Dungeon.hero);assertTrue(description,description.contains("other nearby creatures"));
+        long seed=0;for(;seed<1000;seed++){Random.pushGenerator(seed);float roll=Random.Float();Random.popGenerator();if(roll<1/3f)break;}assertTrue(seed<1000);Random.pushGenerator(seed);try{assertEquals(20,shocking.proc(weapon,Dungeon.hero,primary,20));}finally{Random.popGenerator();}
+        assertEquals(1000,primary.HP);assertEquals(1000,ally.HP);assertEquals(1000,Dungeon.hero.HP);assertEquals(990,neutral.HP);assertEquals(990,enemy.HP);
+    }
+    @Test public void eldritchCanFrightenNeutralWitnessesButSparesAlliesAndPrimary(){
+        Target primary=new Target(),ally=new Target(),neutral=new Target(),enemy=new Target();ally.pos=114;ally.alignment=Char.Alignment.ALLY;neutral.pos=115;neutral.alignment=Char.Alignment.NEUTRAL;enemy.pos=116;for(Char ch:new Char[]{primary,ally,neutral,enemy}){ch.fieldOfView=new boolean[225];ch.fieldOfView[USER]=true;Actor.add(ch);}
+        com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Eldritch eldritch=new com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Eldritch();weapon.enchant(eldritch);weapon.levelKnown=weapon.cursedKnown=true;String description=com.shatteredpixel.shatteredpixeldungeon.apd.mechanics.EnchantmentExplanation.playerDescription(weapon,Dungeon.hero);assertTrue(description,description.contains("creatures that witness"));long seed=0;for(;seed<1000;seed++){Random.pushGenerator(seed);float roll=Random.Float();Random.popGenerator();if(roll<.2f)break;}assertTrue(seed<1000);Random.pushGenerator(seed);try{assertEquals(20,eldritch.proc(weapon,Dungeon.hero,primary,20));}finally{Random.popGenerator();}
+        assertNull(primary.buff(Terror.class));assertNull(ally.buff(Terror.class));assertNull(Dungeon.hero.buff(Terror.class));assertNotNull(neutral.buff(Terror.class));assertNotNull(enemy.buff(Terror.class));
+    }
     @Test public void actualWondrousLightningProcDoesNotConductAlongConnectedWater(){
         waterLine();Target target=new Target();Actor.add(target);
         Probe adjacent=mimic(USER-1),far=mimic(FAR);long seed=seedForProc(CursedWand.LightningBolt.class);

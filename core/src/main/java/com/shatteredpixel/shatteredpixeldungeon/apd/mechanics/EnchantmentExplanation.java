@@ -97,13 +97,13 @@ public final class EnchantmentExplanation {
         String chance=Float.isFinite(base)?playerChance(base,power,hero):"";
         switch(name){
             case "Elastic":return "Has a "+chance+" chance to knock an enemy back up to _"+Math.round(2*strength)+" tiles_. Walls and obstacles can shorten the push.";
-            case "Blazing":return "Has a "+chance+" chance to set enemies on fire. Hitting an enemy that is already burning deals extra fire damage.";
+            case "Blazing":return "Has a "+chance+" chance to ignite an enemy or deal extra fire damage if it is already burning.";
             case "Chilling":return "Has a "+chance+" chance to slow an enemy with _"+playerNumber(3*strength)+" turns_ of chill. Repeated hits build up to _"+playerNumber(6*strength)+" turns_.";
             case "Venomous":return "Has a "+chance+" chance to poison an enemy for _"+playerNumber((3+level/2f)*strength)+" turns_. Fresh poison starts after a _3-turn_ delay.";
             case "Blocking":return "Has a "+chance+" chance to grant _"+Math.max(0,Math.round((2+weapon.buffedLvl())*strength))+" shielding_. It normally lasts up to _5 turns_ unless used up by damage; Hold Fast can make it last longer.";
             case "Blooming":return "Has a "+chance+" chance to grow grass around the enemy. Higher weapon upgrades grow more grass, if space allows.";
-            case "Shocking":return "Has a "+chance+" chance to arc lightning to nearby enemies for _"+playerNumber(50*strength)+"%_ of the hit's damage. Water helps it spread; the enemy you struck does not take this extra lightning damage.";
-            case "Eldritch":return "Has a "+chance+" chance to frighten nearby enemies that witness the attack for _"+playerNumber(5*strength)+" turns_. It normally does not frighten the enemy you struck.";
+            case "Shocking":return "Has a "+chance+" chance to arc lightning to other nearby creatures for _"+playerNumber(50*strength)+"%_ of the hit's damage. Spares you, your allies and the target you struck. Water helps it spread.";
+            case "Eldritch":return "Has a "+chance+" chance to frighten creatures that witness the attack for _"+playerNumber(5*strength)+" turns_. Spares you and your allies; normally spares the target you struck.";
             case "Vorpal":return "Has a "+chance+" chance to replace a hit's immediate damage with bleeding. Harder hits cause heavier bleeding, which weakens over time.";
             case "Lucky":return "Has a "+chance+" chance to make a killing blow produce extra loot unless you have outlevelled that enemy."+(base*power>1?" At 100%, more enchantment power can improve the reward instead.":"");
             case "Corrupting":return "Has a "+chance+" chance to turn an enemy you kill into a corrupted ally. Some enemies cannot be corrupted."+(strength>1.1f?" The new ally also gains _"+Math.round(5*(strength-1))+" turns_ of adrenaline.":"");
@@ -115,8 +115,14 @@ public final class EnchantmentExplanation {
                 if(ArcanaInfoDisplay.hasKnownArcana(hero)&&Float.isFinite(without)&&Math.abs(power-without)>.00001f)amount+=" (_"+playerNumber(100*without)+"%_ without Arcana)";
                 return "Stores "+amount+" from killing blows for your next Kinetic hit. It fades over time. Stored bonus: _"+(stored==null?0:stored.damageBonus())+" damage_.";
             }
-            case "Projecting":return weapon instanceof MissileWeapon||weapon instanceof SpiritBow?"Lets shots pass through obstacles near their target, within _"+Math.round(4*power)+" tiles_.":"Extends this weapon's reach to _"+(weapon.RCH+Projecting.additionalReach(power,weapon.RCH))+" tiles_.";
-            case "Crystal":return "Deals an extra _"+playerNumber(25*power)+"%_ magic damage. The crystal wears down with use; a melee weapon can shatter unless repaired.";
+            case "Projecting":{
+                boolean ranged=weapon instanceof MissileWeapon||weapon instanceof SpiritBow;
+                int current=ranged?Math.round(4*power):Projecting.additionalReach(power,weapon.RCH);
+                float without=knownPowerWithoutArcana(hero);int baseReach=ranged?Math.round(4*without):Projecting.additionalReach(without,weapon.RCH);
+                String comparison=ArcanaInfoDisplay.hasKnownArcana(hero)&&Float.isFinite(without)&&current!=baseReach?" (_"+baseReach+" "+(baseReach==1?"tile":"tiles")+"_ without Arcana)":"";
+                return ranged?"Shots can pass through walls at targets within _"+current+" tiles_ of you"+comparison+".":"Adds up to _"+current+" "+(current==1?"tile":"tiles")+"_ to melee reach"+comparison+".";
+            }
+            case "Crystal":return "Deals an extra _"+playerNumber(25*power)+"%_ magic damage. "+(weapon instanceof MissileWeapon?"":"Can shatter if worn out; repairs slowly over time. ")+((Crystal)weapon.enchantment).conditionDescription();
             case "Grim":return "Can instantly kill an enemy weakened by your hit. It becomes more likely as the enemy loses health; some enemies resist or are immune.";
             case "Unstable":return "Uses a random enchantment on each attack. Each chosen enchantment works in its usual way.";
             default:return fallback;

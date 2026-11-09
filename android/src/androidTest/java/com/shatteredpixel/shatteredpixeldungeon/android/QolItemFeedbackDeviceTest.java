@@ -431,7 +431,7 @@ public class QolItemFeedbackDeviceTest {
             Thread.sleep(300);TopScoresDeviceTest.render(()->assertDescriptionViewport(shown.get()));TopScoresDeviceTest.screenshot(type==0?"qol-cloak-stealth-concise.png":"qol-cape-thorns-concise.png");TopScoresDeviceTest.render(()->shown.get().hide());
         }}finally{TopScoresDeviceTest.render(()->activeCape.get().detach());}
         com.watabou.utils.Bundle previousRules=new com.watabou.utils.Bundle();TopScoresDeviceTest.render(()->{Dungeon.apdStoreCustomRules(previousRules);com.watabou.utils.Bundle all=new com.watabou.utils.Bundle(),settings=new com.watabou.utils.Bundle();com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomDungeonRules.defaults().with(com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomDungeonRules.Slider.HEALING,0).store(settings);all.put("apd_custom_rules",settings);Dungeon.apdRestoreCustomRules(all);});
-        try{com.shatteredpixel.shatteredpixeldungeon.items.artifacts.ChaliceOfBlood chalice=new com.shatteredpixel.shatteredpixeldungeon.items.artifacts.ChaliceOfBlood();TopScoresDeviceTest.render(()->{chalice.level(10);chalice.levelKnown=chalice.cursedKnown=true;});showItem(chalice,"rules prevent natural healing","qol-chalice-healing-zero.png",true,true);}finally{TopScoresDeviceTest.render(()->Dungeon.apdRestoreCustomRules(previousRules));}
+        try{com.shatteredpixel.shatteredpixeldungeon.items.artifacts.ChaliceOfBlood chalice=new com.shatteredpixel.shatteredpixeldungeon.items.artifacts.ChaliceOfBlood();TopScoresDeviceTest.render(()->{chalice.level(10);chalice.levelKnown=chalice.cursedKnown=true;assertFalse(chalice.info().contains("upgrades the Chalice"));assertFalse(chalice.actions(Dungeon.hero).contains("PRICK"));});showItem(chalice,"rules prevent natural healing","qol-chalice-healing-zero.png",true,true);}finally{TopScoresDeviceTest.render(()->Dungeon.apdRestoreCustomRules(previousRules));}
     }
     private static void catalystAndTransferDescriptionsRender()throws Exception{
         com.shatteredpixel.shatteredpixeldungeon.items.trinkets.TrinketCatalyst catalyst=new com.shatteredpixel.shatteredpixeldungeon.items.trinkets.TrinketCatalyst();
@@ -456,6 +456,13 @@ public class QolItemFeedbackDeviceTest {
         }
         com.watabou.utils.Bundle previousRules=new com.watabou.utils.Bundle();TopScoresDeviceTest.render(()->{Dungeon.apdStoreCustomRules(previousRules);com.watabou.utils.Bundle all=new com.watabou.utils.Bundle(),settings=new com.watabou.utils.Bundle();com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomDungeonRules.defaults().with(com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomDungeonRules.Slider.HEALING,0).store(settings);all.put("apd_custom_rules",settings);Dungeon.apdRestoreCustomRules(all);});
         try{for(boolean known:new boolean[]{true,false}){Sword vampire=new Sword();TopScoresDeviceTest.render(()->{vampire.level(3);vampire.levelKnown=known;vampire.cursedKnown=true;vampire.enchant(new com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Vampiric());});showItem(vampire,"rules prevent this enchantment's healing","qol-vampiric-healing-zero-"+known+".png",true,known);}}finally{TopScoresDeviceTest.render(()->Dungeon.apdRestoreCustomRules(previousRules));}
+    }
+    private static void ordinaryEnchantmentCatalogRender()throws Exception{
+        for(String name:new String[]{"Blazing","Blocking","Blooming","Chilling","Corrupting","Crystal","Elastic","Eldritch","Grim","Kinetic","Lucky","Projecting","Shocking","Unstable","Vampiric","Venomous","Vorpal"}){
+            Sword sword=new Sword();TopScoresDeviceTest.render(()->{try{sword.level(3);sword.levelKnown=sword.cursedKnown=true;sword.enchant((com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon.Enchantment)Class.forName("com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments."+name).getDeclaredConstructor().newInstance());}catch(Exception e){throw new RuntimeException(e);}});
+            showItem(sword,name.equals("Crystal")?"perfect condition":name.equals("Shocking")?"other nearby creatures":name.equals("Eldritch")?"creatures that witness":name.equals("Projecting")?"to melee reach":"enchantment","qol-enchantment-"+name+"-normal.png",true,!name.equals("Elastic"));
+        }
+        Sword crystalSword=new Sword();TopScoresDeviceTest.render(()->{crystalSword.level(3);crystalSword.levelKnown=crystalSword.cursedKnown=true;com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Crystal crystal=new com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Crystal();crystal.setDurability(5);crystalSword.enchant(crystal);});showItem(crystalSword,"risk of permanently breaking","qol-crystal-cracked-warning.png",true,true);
     }
     private static void unidentifiedWandExamplesRender()throws Exception{
         for(String name:new String[]{"BlastWave","Corrosion","Corruption","Disintegration","Fireblast","Frost","Lightning","LivingEarth","MagicMissile","PrismaticLight","Regrowth","Transfusion","Warding"}){
@@ -780,6 +787,7 @@ public class QolItemFeedbackDeviceTest {
             artifactBuffsAndDisabledHealingRender();
             catalystAndTransferDescriptionsRender();
             correctedEnchantmentDescriptionsRender();
+            ordinaryEnchantmentCatalogRender();
             unidentifiedWandExamplesRender();
             inventoryOrderShowsAutomatically();
             prepareSearchableFloor();
