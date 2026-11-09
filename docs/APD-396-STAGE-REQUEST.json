@@ -1,5 +1,6 @@
 {
-  "run_id": 42565733012,
+  "run_id": 42567183633,
   "source_commit": "d19a99f8d48163c78673e31315a802b0b3f30c5d",
-  "scope": "Wait for complete acceptance. Stage immutable pair/source/evidence only; root independent hashes and actual screenshot review before publishing."
+  "scope": "Wait for complete corrected-fixture12case acceptance on unchanged original d19a99f8d APKs. Stage originals/source/evidence including first native failures and exact test-only patch; independent hashes and actual screenshots before publication.",
+  "original_application_build_run": 42565733012
 }
