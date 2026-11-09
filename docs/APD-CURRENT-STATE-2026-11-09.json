@@ -1,9 +1,9 @@
 {
-  "recorded_utc": "2026-11-09T13:20:39.312758+00:00",
+  "recorded_utc": "2026-11-09T14:07:17.084455+00:00",
   "authorization_end_utc": "2026-11-09T20:00:00Z",
-  "latest_verified_published_build": 414,
-  "release_url": "https://github.com/APD-Development/ShieldingShouldHaveWorked/releases/tag/apd-alpha-preview-414",
-  "source_fix_commit": "3b47da4be925c02abe2e796679dea58ce74601f7",
+  "latest_verified_published_build": 415,
+  "release_url": "https://github.com/APD-Development/ShieldingShouldHaveWorked/releases/tag/apd-alpha-preview-415",
+  "source_fix_commit": "a52bd33a8868875eb24fa2d0162ba41bdd099b0c",
   "local_full_core": {
     "tests": 3136,
     "suites": 457,
@@ -12,9 +12,9 @@
     "skipped": 0
   },
   "last_completed_android_source_compile": {
-    "commit": "f6780fa92",
-    "run": 42624056651,
-    "scope": "3136core and Androiddebug/release/instrumentationJava/desktop successful; before common footer correction"
+    "commit": "740197174",
+    "run": 42629732963,
+    "scope": "3136core, Androiddebug/release/instrumentationJava/desktop successful; noAPK.42base-status plusLightningCharge and6shield fixtures with ordinary screenshots."
   },
   "latest_source_compile": {
     "commit": "481d4ccfeb6d2ff456788b4380bc4b122c27138c",
@@ -24,12 +24,13 @@
   "held_private_builds": {
     "404": "Native fixture failed before-render camera check; original unacceptedAPKs/rawfailures preserved in explicitprivatearchives.",
     "405": "3112core/12nativepassed with test-only timingretry, independenthashes+4453sourcefilehashes,32manualcaptures. Rejected manual Tenacity zero-value prose; originals preserved.",
-    "406": "3113core/12nativepassed, independenthashes+4463sourcefilehashes,10newbuffcapturesreadable. Same bad Tenacity provider; originalpairheldprivate.",
-    "415": "Original42625074280 incomplete because Developer emulator transport closed after QoL/preferences. Alpha/build passed. Exact original source failurebranch preserved; private archive42628501288 succeeded. Retry42628501030 requires all12 fresh unmodified cases."
+    "406": "3113core/12nativepassed, independenthashes+4463sourcefilehashes,10newbuffcapturesreadable. Same bad Tenacity provider; originalpairheldprivate."
   },
   "newest_source_not_in_any_apk": [
-    "415 candidate:31 status/seal detail simplifications and six ordinary status descriptions",
-    "Shared duration footer/rank instructions/duplicate shield totals corrected in415candidate; verified414stillhasoldfooter"
+    "Protection/temporary ring/prismatic image wording",
+    "Freezing/flight/toxic/locked-floor and fractional gas release wording",
+    "Burning/Corrosion/Ooze prose with cached-roll privacy and depth1/8/23 tick coverage",
+    "Ordinary reviewed status/talent screenshot and viewport guards"
   ],
   "audit": {
     "source_units": 442,
@@ -46,10 +47,13 @@
   "preservation": "All source pushed to codex/apd-phone-fixes-2026-10-09; published403 and priorreleases retained.405/406privateassets include completeAPK/source/tests;404rejectedarchivesretained. Raw local full suites and committed evidence ZIPs retained.",
   "physical_phone_or_acoustic_audio_verified": false,
   "background_development_after_window_claimed": false,
-  "active_build": {
-    "number": 415,
-    "run": 42625074280,
-    "source_commit": "a52bd33a8868875eb24fa2d0162ba41bdd099b0c",
-    "status": "Original Developer emulator transport failed; no release. Fresh unchanged-app/test retry42628501030 pending."
+  "active_build": null,
+  "recovered_failed_attempts": {
+    "415": {
+      "original": "Original42625074280 incomplete because Developer emulator transport closed after QoL/preferences. Alpha/build passed. Exact original source failurebranch preserved; private archive42628501288 succeeded. Retry42628501030 requires all12 fresh unmodified cases.",
+      "accepted_retry": 42628501030,
+      "staging": 42629205720,
+      "original_and_accepted_apps_and_test_binary_unchanged": true
+    }
   }
 }
