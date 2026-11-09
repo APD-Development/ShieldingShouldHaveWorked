@@ -18,7 +18,7 @@
 """Scan actual source and reachable history, then record reviewed source-only findings."""
 import hashlib,json,pathlib,subprocess,tempfile,zipfile
 # Exact full-line hashes of inspected repeated audit prose; no blanket path exclusions.
-REVIEWED_PROSE_LINES={'.github/workflows/apd-scan377.yml': ['33a990e0ce87b4cc4a871702811a29549f408a757b908fc25ee373063d0a2012', '5d7b0e6e42b7aef0c105c7f90496cb61fe287ee5a4b07cba0fbd4f59cc59fdd1'], 'docs/APD-377-OWNER-DELIVERY-RECEIPT.json': ['c28b37bbbe77776e892b7424573a9d190e7db6ba9fec145000a05b0bc83bdfca'], 'docs/APD-377-SCAN-REQUEST.txt': ['037b3686b5aa04a105894f3fb6495e2db50c051dd9ab9549c0b8aa5214a57b65'], 'tools/apd_qol_source_scan.py': ['746956a73daf195d317d528b97a658b9856eda8bbfd838e0336a8d14161bec83', '90a5452a64febec9efe6d8e70ebb1d0b3bf025d49b81c8f587bccff63d47fdf8'], 'docs/WORK-COMPLETED-LEDGER.md': ['89a0d01c35dbd004ad460ea10fdf994ac16d1b53d60876d30761002f36d015c6']}
+REVIEWED_PROSE_LINES={'.github/workflows/apd-scan377.yml': ['33a990e0ce87b4cc4a871702811a29549f408a757b908fc25ee373063d0a2012', '5d7b0e6e42b7aef0c105c7f90496cb61fe287ee5a4b07cba0fbd4f59cc59fdd1'], 'docs/APD-377-OWNER-DELIVERY-RECEIPT.json': ['c28b37bbbe77776e892b7424573a9d190e7db6ba9fec145000a05b0bc83bdfca'], 'docs/APD-377-SCAN-REQUEST.txt': ['037b3686b5aa04a105894f3fb6495e2db50c051dd9ab9549c0b8aa5214a57b65'], 'tools/apd_qol_source_scan.py': ['746956a73daf195d317d528b97a658b9856eda8bbfd838e0336a8d14161bec83', '90a5452a64febec9efe6d8e70ebb1d0b3bf025d49b81c8f587bccff63d47fdf8'], 'docs/WORK-COMPLETED-LEDGER.md': ['89a0d01c35dbd004ad460ea10fdf994ac16d1b53d60876d30761002f36d015c6'], 'core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/MechanicsExplanationTest.java': ['fd62b5a96913d5a7ab2c8a6ed6ddf2a011f8f2899a9799c4cd05715c6fd4d4c2']}
 out=pathlib.Path('owner-delivery');source,=out.glob('APD-Source-*.zip');directory=pathlib.Path(tempfile.mkdtemp(prefix='apd-source-scan-'))
 with zipfile.ZipFile(source) as z:z.extractall(directory)
 root,=directory.iterdir();manifest=json.loads((root/'CORRESPONDING-SOURCE/manifest.json').read_text());hashes=set(manifest['files'].values())
@@ -46,7 +46,7 @@ for name,args in [('source',['dir',str(directory)]),('history',['git','.','--log
     item['disposition']='Exact reviewed audit prose false positive: keys reviewed, inventory5298.; no API credential. Entire line SHA256 pinned.'
    elif (a['RuleID']=='generic-api-key' and rel in REVIEWED_PROSE_LINES
          and hashlib.sha256(path.read_text().splitlines()[a['StartLine']-1].encode()).hexdigest() in REVIEWED_PROSE_LINES[rel]):
-    item['disposition']='Exact inspected repeated inventory-audit prose, not a credential; entire reviewed line hash pinned.'
+    item['disposition']='Exact inspected audit prose or Java test state assignment, not a credential; entire reviewed line hash pinned.'
    elif rel in ('.github/workflows/codex-android16-acceptance.yml','core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/WndKeyBindings.java','tools/apd_publish_gathering331.py','docs/HANDOFF.md'):
     item['disposition']='Previously inspected literal sound filename, integer keyboard fields, or pinned commit/checksum assertions; no new credentials introduced by this build'
    else:
