@@ -1,0 +1,5 @@
+{
+  "run_id": 42602974963,
+  "source_commit": "9fddee7ee05770375925106afe455723b6a2d93b",
+  "scope": "Stage only on successful original pair acceptance; keep draft until independent hashes and actual new artifact/Sandals/SkeletonKey windows reviewed."
+}
