@@ -1910,7 +1910,7 @@ public class MechanicsExplanationTest {
   String[] names={"WornShortsword","Shortsword","Sword","Longsword","Greatsword","Cudgel","HandAxe","Mace","BattleAxe","WarHammer","Greataxe","Rapier","Katana","Spear","Glaive","Sickle","WarScythe","Whip"};
   for(String name:names)for(com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon.Augment augment:com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon.Augment.values()){
    com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon weapon=(com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon)Class.forName("com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee."+name).getDeclaredConstructor().newInstance();weapon.augment=augment;String expected=weapon.upgradeAbilityStat(0);String first=null;
-   for(int hidden:new int[]{0,3,8}){weapon.level(hidden);weapon.levelKnown=false;String text=weapon.abilityInfo();assertTrue(name+" "+augment+" "+text,text.contains(expected));assertTrue(text.contains("Unupgraded example (+0)"));if(first!=null)assertEquals(first,text);first=text;}
+   for(int hidden:new int[]{0,3,8}){weapon.level(hidden);weapon.levelKnown=false;String text=weapon.abilityInfo();assertTrue(name+" "+augment+" "+text,text.contains(expected));assertTrue(text.contains("Unupgraded example (+0)"));assertTrue(name+" "+augment+" ordinary stats: "+weapon.info(),weapon.info().contains("_"+augment.damageFactor(weapon.min(0))+"-"+augment.damageFactor(weapon.max(0))+" damage_"));if(first!=null)assertEquals(first,text);first=text;}
   }
  }
  @Test public void cleaveAndHeavyBlowPreviewsRoundBaseAndBonusSeparately(){

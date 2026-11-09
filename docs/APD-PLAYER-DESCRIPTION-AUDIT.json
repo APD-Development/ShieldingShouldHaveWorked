@@ -3551,7 +3551,7 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/melee/MeleeWeapon.java",
-      "sha256": "87b127b8f50073a912a619ad56bf678742f77b8ab9994b2e659254a7f42b6906",
+      "sha256": "d99830587cf9f7122c24bc0a0e1067f166ba4201672b46d4053e5c508ca59959",
       "category": "weapon",
       "status": "PARTIAL_REVIEW",
       "description_methods": [
@@ -3559,7 +3559,7 @@
         "abilityInfo"
       ],
       "wording_corrected": true,
-      "review_notes": "Normal inherited/dynamic wording reviewed against current source. Changes use existing mechanics and known live values. Full source/variant and optional-panel review not complete. Current ordinary info paths also checked: knowledge-safe strength, ranged damage and wear estimates; real damage/accuracy/wear formulas untouched. Full inherited/class/secondary review remains partial."
+      "review_notes": "Normal inherited/dynamic wording reviewed against current source. Changes use existing mechanics and known live values. Full source/variant and optional-panel review not complete. Current ordinary info paths also checked: knowledge-safe strength, ranged damage and wear estimates; real damage/accuracy/wear formulas untouched. Full inherited/class/secondary review remains partial. Actual Sickle capture exposed unaugmented unknown base damage; fixed +0 main damage examples to use public augmentation, never hidden level. Eighteen melee ability/base examples tested across all augmentations and hidden levels. Future APK384, not382/383."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/melee/Quarterstaff.java",
@@ -3760,7 +3760,7 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/missiles/MissileWeapon.java",
-      "sha256": "045a81d68ce99121a1eca62c23f196a3ce2f227b82423eacb0d420218a54172d",
+      "sha256": "804c1d563f9e003f4c38acc12c9e42084cbcf6ffb1f2bab375937f8e21a1edbe",
       "category": "weapon",
       "status": "PARTIAL_REVIEW",
       "description_methods": [
@@ -3768,7 +3768,7 @@
         "info"
       ],
       "wording_corrected": true,
-      "review_notes": "Normal inherited/dynamic wording reviewed against current source. Changes use existing mechanics and known live values. Full source/variant and optional-panel review not complete. Current ordinary info paths also checked: knowledge-safe strength, ranged damage and wear estimates; real damage/accuracy/wear formulas untouched. Full inherited/class/secondary review remains partial. Duplicate generic distance instruction omitted when live range/adjacent accuracy is already displayed; retained for unknown stats. Avoid empty extra paragraphs. Source-only follow-up after383, not yet Android-verified."
+      "review_notes": "Normal inherited/dynamic wording reviewed against current source. Changes use existing mechanics and known live values. Full source/variant and optional-panel review not complete. Current ordinary info paths also checked: knowledge-safe strength, ranged damage and wear estimates; real damage/accuracy/wear formulas untouched. Full inherited/class/secondary review remains partial. Duplicate generic distance instruction omitted when live range/adjacent accuracy is already displayed; retained for unknown stats. Avoid empty extra paragraphs. Source-only follow-up after383, not yet Android-verified. Actual Sickle capture exposed unaugmented unknown base damage; fixed +0 main damage examples to use public augmentation, never hidden level. Eighteen melee ability/base examples tested across all augmentations and hidden levels. Future APK384, not382/383."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/missiles/Shuriken.java",

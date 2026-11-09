@@ -35,12 +35,12 @@
     {
       "run": 42536990071,
       "pair": 382,
-      "result": "PENDING complete acceptance and visual review"
+      "result": "SUCCESS: full item-window checks on both original APKs, combined with ten original successful native cases; prepare and source scan passed, screenshots reviewed, actual pair published."
     },
     {
       "run": 42536990078,
       "pair": 383,
-      "result": "PENDING complete acceptance and visual review"
+      "result": "SUCCESS: full item-window checks on both original APKs, combined with ten original successful native cases; prepare and source scan passed, screenshots reviewed, actual pair published."
     }
   ],
   "limits": "No original application APK rebuilt for these retries; production source and all acceptance assertions preserved. Failed native checks are not successful Android verification. APKs must remain drafts until completed acceptance and actual screenshot review."
