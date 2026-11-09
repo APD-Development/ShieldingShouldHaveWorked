@@ -471,6 +471,7 @@ public class QolItemFeedbackDeviceTest {
                 return new WndInfoArmorAbility(HeroClass.DUELIST,new com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.duelist.ElementalStrike());
             },bleeding?"Makes you and targets bleed":"full weapon durability","qol-elemental-strike-reviewed-"+(bleeding?"Sacrificial":"Crystal")+".png");
         }}finally{TopScoresDeviceTest.render(()->Dungeon.hero.belongings.weapon=beforeStrikeDetails[0]);}
+        calculationWindow(()->new WndInfoArmorAbility(HeroClass.WARRIOR,new com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.Ratmogrify()),"This is the rat’s action time","qol-reviewed-ability-charge-Ratmogrify.png");
         calculationWindow(()->new WndInfoArmorAbility(HeroClass.WARRIOR,new com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.HeroicLeap()),"Current cost:","qol-reviewed-ability-charge-HeroicLeap.png");
         calculationWindow(()->new WndInfoArmorAbility(HeroClass.CLERIC,new com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.cleric.Trinity()),"no single cost for Trinity","qol-reviewed-ability-charge-Trinity.png");
         final HeroClass[] beforeSpellClass=new HeroClass[1];
