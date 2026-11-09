@@ -244,8 +244,8 @@ public class QolItemFeedbackDeviceTest {
         }finally{TopScoresDeviceTest.render(()->{if(shown.get()!=null)shown.get().hide();Dungeon.hero.belongings.weapon=previous[0];});}
     }
     private static void calculationWindowsRenderAndRespond()throws Exception{
-        String[] statusNames={"Invisibility","Invulnerability","Cripple","Stamina","Blindness","Roots","PinCushion","Barkskin","ArcaneArmor","RevealedArea","GravityChaosTracker","SwarmIntelTracker","Drowsy","MagicalSleep","FireImbue","FrostImbue","Adrenaline","Fury","AdrenalineSurge"};
-        String[] statusText={"last known position","ordinary damage","twice as long","two thirds","normal scroll and tome reading","Teleportation","quantity: 3","3 turns apart","3 turns apart","3 × 3","pulse count: 11","visible monsters","Incoming damage","1 HP per turn","50% chance","3 turns of Chill","hero does not gain","health is above 50%","Added strength: 2"};
+        String[] statusNames={"Invisibility","Invulnerability","Cripple","Stamina","Blindness","Roots","PinCushion","Barkskin","ArcaneArmor","RevealedArea","GravityChaosTracker","SwarmIntelTracker","Drowsy","MagicalSleep","FireImbue","FrostImbue","Adrenaline","Fury","AdrenalineSurge","Healing","GreaterHaste","WellFed","PhysicalEmpower","WandEmpower"};
+        String[] statusText={"last known position","ordinary damage","twice as long","two thirds","normal scroll and tome reading","Teleportation","quantity: 3","3 turns apart","3 turns apart","3 × 3","pulse count: 11","visible monsters","Incoming damage","1 HP per turn","50% chance","3 turns of Chill","hero does not gain","health is above 50%","Added strength: 2","Healing reserve: 100 HP","haste units: 6","multiple of 18","Adds 3 damage","Adds 4 damage"};
         for(int i=0;i<statusNames.length;i++){
             final String name=statusNames[i];
             calculationWindow(()->{
@@ -256,6 +256,11 @@ public class QolItemFeedbackDeviceTest {
                 if(effect instanceof com.shatteredpixel.shatteredpixeldungeon.actors.buffs.GravityChaosTracker){((com.shatteredpixel.shatteredpixeldungeon.actors.buffs.GravityChaosTracker)effect).left=11;((com.shatteredpixel.shatteredpixeldungeon.actors.buffs.GravityChaosTracker)effect).positiveOnly=true;}
                 if(effect instanceof com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FireImbue)((com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FireImbue)effect).set(10);
                 if(effect instanceof com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AdrenalineSurge)((com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AdrenalineSurge)effect).reset(2,20);
+                if(effect instanceof com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Healing)((com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Healing)effect).setHeal(100,.25f,2);
+                if(effect instanceof com.shatteredpixel.shatteredpixeldungeon.actors.buffs.GreaterHaste)((com.shatteredpixel.shatteredpixeldungeon.actors.buffs.GreaterHaste)effect).set(6);
+                if(effect instanceof com.shatteredpixel.shatteredpixeldungeon.actors.buffs.WellFed)((com.shatteredpixel.shatteredpixeldungeon.actors.buffs.WellFed)effect).reset();
+                if(effect instanceof com.shatteredpixel.shatteredpixeldungeon.actors.buffs.PhysicalEmpower)((com.shatteredpixel.shatteredpixeldungeon.actors.buffs.PhysicalEmpower)effect).set(3,2);
+                if(effect instanceof com.shatteredpixel.shatteredpixeldungeon.actors.buffs.WandEmpower)((com.shatteredpixel.shatteredpixeldungeon.actors.buffs.WandEmpower)effect).set(4,3);
                 return new WndInfoBuff(effect);
             },statusText[i],"qol-existing-status-clear-"+name+".png");
         }
