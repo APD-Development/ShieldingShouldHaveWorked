@@ -318,6 +318,24 @@ public class QolItemFeedbackDeviceTest {
             showItem(staff,"Standing in water washes it off","qol-corrosion-battlemage-concise.png",true);
         }finally{TopScoresDeviceTest.render(()->{wand.stopCharging();Dungeon.hero.heroClass=previousClass;Dungeon.hero.subClass=previousSubclass;});}
     }
+    private static void disintegrationWandDescriptionsRender()throws Exception{
+        com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfDisintegration wand=new com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfDisintegration();
+        TopScoresDeviceTest.render(()->{wand.level(3);wand.levelKnown=wand.cursedKnown=wand.curChargeKnown=true;});showItem(wand,"Can hit allies too","qol-disintegration-wand-concise.png",true);
+        TopScoresDeviceTest.render(()->wand.levelKnown=false);showItem(wand,"Unupgraded example (+0)","qol-disintegration-wand-unknown.png",true);
+        HeroClass previousClass=Dungeon.hero.heroClass;com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass previousSubclass=Dungeon.hero.subClass;
+        com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff staff=new com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff();
+        try{
+            TopScoresDeviceTest.render(()->{try{Dungeon.hero.heroClass=HeroClass.MAGE;Dungeon.hero.subClass=com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass.BATTLEMAGE;wand.levelKnown=true;wand.charge(Dungeon.hero);staff.level(3);staff.levelKnown=staff.cursedKnown=true;java.lang.reflect.Field field=staff.getClass().getDeclaredField("wand");field.setAccessible(true);field.set(staff,wand);}catch(Exception e){throw new RuntimeException(e);}});
+            showItem(staff,"strike enemies farther away","qol-disintegration-battlemage-concise.png",true);
+        }finally{TopScoresDeviceTest.render(()->{wand.stopCharging();Dungeon.hero.heroClass=previousClass;Dungeon.hero.subClass=previousSubclass;});}
+    }
+    private static void unidentifiedWandExamplesRender()throws Exception{
+        for(String name:new String[]{"BlastWave","Corrosion","Corruption","Disintegration","Fireblast","Frost","Lightning","LivingEarth","MagicMissile","PrismaticLight","Regrowth","Transfusion","Warding"}){
+            com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand wand=(com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand)Class.forName("com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOf"+name).getDeclaredConstructor().newInstance();
+            TopScoresDeviceTest.render(()->{wand.level(7);wand.levelKnown=false;wand.cursedKnown=wand.curChargeKnown=true;wand.curCharges=2;});
+            showItem(wand,name.equals("Corruption")?"Attempts to turn an enemy":name.equals("Regrowth")?"charges":"Unupgraded example (+0)","qol-wand-zero-example-"+name+".png",true);
+        }
+    }
     private static void staffImbueConfirmationsRender()throws Exception{
         int[][] cases={{0,2,1,2},{3,3,1,4},{3,2,1,3},{3,8,0,3}};
         for(int index=0;index<cases.length;index++){
@@ -627,6 +645,8 @@ public class QolItemFeedbackDeviceTest {
             staffImbueConfirmationsRender();
             magicMissileDescriptionsRender();
             corrosionWandDescriptionsRender();
+            disintegrationWandDescriptionsRender();
+            unidentifiedWandExamplesRender();
             inventoryOrderShowsAutomatically();
             prepareSearchableFloor();
             final int[] center={0};

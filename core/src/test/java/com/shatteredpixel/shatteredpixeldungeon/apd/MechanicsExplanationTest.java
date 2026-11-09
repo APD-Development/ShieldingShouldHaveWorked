@@ -760,6 +760,17 @@ public class MechanicsExplanationTest {
    assertEquals(type.name().substring(0,1)+type.name().substring(1).toLowerCase(java.util.Locale.ROOT)+"Armor",converted.getClass().getSimpleName());assertEquals(com.shatteredpixel.shatteredpixeldungeon.items.armor.ClassArmor.initialUpgradeCharge(),converted.charge,0f);assertEquals(50f,converted.charge,0f);assertEquals(upgrade,converted.trueLevel());assertEquals(original.tier,converted.tier);assertSame(original.glyph,converted.glyph);assertEquals(original.augment,converted.augment);assertTrue(converted.glyphHardened);assertTrue(converted.masteryPotionBonus);assertEquals(cursed,converted.cursed);assertEquals(known,converted.levelKnown);assertTrue(converted.cursedKnown);cases++;
   }assertEquals(HeroClass.values().length*8,cases);
  }
+ @Test public void unidentifiedWandExamplesLabelPublicZeroStatsWithoutUsingHiddenLevels()throws Exception{
+  for(String name:new String[]{"BlastWave","Corrosion","Corruption","Disintegration","Fireblast","Frost","Lightning","LivingEarth","MagicMissile","PrismaticLight","Regrowth","Transfusion","Warding"}){
+   com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand wand=(com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand)Class.forName("com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOf"+name).getConstructor().newInstance();String baseline=null;
+   for(int hidden:new int[]{0,3,8}){
+    wand.level(hidden);wand.levelKnown=false;wand.cursedKnown=wand.curChargeKnown=true;wand.curCharges=2;com.watabou.utils.Bundle before=new com.watabou.utils.Bundle(),after=new com.watabou.utils.Bundle();wand.storeInBundle(before);String text=wand.info();wand.storeInBundle(after);assertEquals(name,before.toString(),after.toString());
+    assertEquals(name,!name.equals("Corruption")&&!name.equals("Regrowth"),text.contains("Unupgraded example (+0):"));if(baseline!=null)assertEquals(name+" hidden level must not affect example",baseline,text);baseline=text;
+   }
+   if(name.equals("Fireblast")){wand.curChargeKnown=false;assertFalse(wand.info().contains("Unupgraded example (+0):"));assertTrue(wand.info().contains("Identify this wand"));}
+   if(name.equals("Transfusion")){Dungeon.hero=null;try{assertFalse(wand.info().contains("Unupgraded example (+0):"));}finally{Dungeon.hero=hero;}}
+  }
+ }
  @Test public void everyWandStatDescriptionKeepsUnknownChargesPrivate() throws Exception {
   hero.heroClass=HeroClass.MAGE;Talent.initClassTalents(hero);hero.talents.get(1).put(Talent.DESPERATE_POWER,2);java.util.List<String> leaked=new java.util.ArrayList<>();
   for(String name:new String[]{"BlastWave","Corrosion","Corruption","Disintegration","Fireblast","Frost","Lightning","LivingEarth","MagicMissile","PrismaticLight","Regrowth","Transfusion","Warding"}){

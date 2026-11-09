@@ -300,7 +300,12 @@ public abstract class Wand extends Item {
 	public String info() {
 		String desc = super.info();
 
-		desc += "\n\n" + statsDesc();
+        // Label numeric +0 examples, not the charge-only or non-numeric descriptions.
+        boolean unupgradedExample = !levelKnown && ((this instanceof DamageWand
+                && !(this instanceof WandOfFireblast && !curChargeKnown)
+                && !(this instanceof WandOfTransfusion && Dungeon.hero == null))
+                || this instanceof WandOfCorrosion || this instanceof WandOfWarding);
+        desc += "\n\n" + (unupgradedExample ? Messages.get(Wand.class,"unupgraded_example") + " " : "") + statsDesc();
 
 		if (resinBonus == 1){
 			desc += "\n\n" + Messages.get(Wand.class, "resin_one");
