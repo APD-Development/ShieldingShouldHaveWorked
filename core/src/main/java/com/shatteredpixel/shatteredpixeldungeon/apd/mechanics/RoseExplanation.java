@@ -27,18 +27,19 @@ public final class RoseExplanation {
     public static int unarmedMaximum(DriedRose rose){return rose.isIdentified()?rose.ghostStrength()-8:-1;}
     public static String summary(DriedRose rose){
         if(!rose.isIdentified())return "";
-        return "After completing the Ghost's quest, equip the rose and fill its charge to summon him. His base stats are _"+maximumHealth(rose)+" HP_ and _"+rose.ghostStrength()+" strength_. While summoned, the rose's charge display shows his health and recharging heals him instead.";
+        return "After completing the Ghost's quest, equip the rose and fill its charge to summon him. His base stats are _"+maximumHealth(rose)+" HP_ and _"+rose.ghostStrength()+" strength_. While summoned, the rose's charge display shows his health and recharging heals him instead. Keep the Rose equipped; magic immunity also makes him fade.";
     }
     public static String details(DriedRose rose,Hero hero){
         if(!rose.isIdentified())return "";
-        return "_Ghost summon and base statistics_\n"+summary(rose)
-            +" Summoning also requires no Magic Immunity and a valid unoccupied neighboring passable or avoidable tile. It takes 1 base game-time unit, empties the full "+rose.maximumCharges()+"-point summoning meter and breaks the hero's invisibility. It does not summon a second ghost while one is already associated with the Rose. Inspection does not test hidden tiles or find that ghost."
-            +"\nBase maximum HP = 40 + 10 × Rose upgrade level = "+maximumHealth(rose)+" HP at the ghost's next statistics refresh. A fresh summon starts with that base health before later effects. Equipment strength = 13 + floor(Rose upgrade level / 2) = "+rose.ghostStrength()+" points. Strength gains 1 point every two Rose upgrades; it is not a damage percentage."
-            +"\nWhen unarmed, the base damage roll is 1–"+unarmedMaximum(rose)+" damage points, biased toward the middle, before defenses and other applicable rules. The maximum is ghost strength − 8. With a weapon, its own damage and effects replace that unarmed roll; excess ghost strength can add a separate roll from zero to (ghost strength − weapon strength requirement). Hidden gear levels are not read to predict that amount here."
-            +"\nBase attack accuracy = hero level + 9; base evasion = hero level + 4."
-            +(hero==null?" Current personal scores are withheld without a loaded hero.":" At your current level these inputs are "+(hero.lvl+9)+" accuracy points and "+(hero.lvl+4)+" evasion points before equipment, surprise and status rules.")
-            +" These are competing scores, not fixed hit/dodge percentages, and do not copy every modifier from the hero's own final scores. Rose upgrades do not directly enter these two base-score formulas."
-            +"\nGhost equipment is limited to supported melee weapons and armor. Unique items and armor with an attached seal are rejected. Gear must be known uncursed and meet the ghost's strength; unknown upgrades must also pass the ordinary +0 strength check. Giving equipment transfers that actual item, not a free copy. Armor protection/glyphs and weapon defense/enchantments follow their own supported ghost rules; no hidden gear properties are revealed by this preview."
-            +"\nRose upgrades increase base maximum HP by 10 at the next statistics refresh. The existing upgrade path can offer the living ghost 8 HP, capped by its maximum at that moment; it does not promise 10 HP of healing or a full heal. Maximum health and current HP are separate. Ordinary ghost healing and meter recharging use the separate rules below. Inspection does not summon, upgrade, heal, equip or spend a turn.";
+        int level=rose.level();
+        return "_Summoning_\nComplete the Ghost’s quest, wear an uncursed Rose and fill its _"+rose.maximumCharges()+"% charge_. You also need no Magic Immunity and an open neighboring tile. Summoning takes _1 turn_, empties the meter and ends your invisibility. Only one ghost can be summoned at a time."
+            +"\n\n_Base statistics_\nMaximum HP = 40 + 10 × Rose level = _"+maximumHealth(rose)+" HP_. Strength = 13 + floor(Rose level / 2) = _"+rose.ghostStrength()+"_. Unarmed damage: _1–"+unarmedMaximum(rose)+"_ (maximum = Strength − 8), with middle rolls more common. A weapon replaces that roll and can add 0 to (ghost Strength − weapon requirement) damage from excess Strength."
+            +"\nAccuracy = hero level + 9; evasion = hero level + 4."
+            +(hero==null?" Personal scores are withheld without a loaded hero.":" Current base scores: _"+(hero.lvl+9)+" accuracy_ and _"+(hero.lvl+4)+" evasion_.")
+            +" Equipment and statuses change these scores; they are not hit or dodge percentages."
+            +"\n\n_Equipment_\nGive him known-uncursed melee weapons or armor that his Strength supports. Unknown upgrades must also pass the +0 Strength check. Unique items and armor with an attached seal cannot be given. This transfers your actual gear."
+            +"\n\n_Petals and upkeep_\n"+(level>=rose.maximumUpgradeSteps()?"Maximum Rose upgrade reached. ":"Each upgrade adds 10 maximum HP at the ghost’s next stat refresh. It also heals up to 8 HP, limited by his maximum at that moment. ")
+            +"With a living ghost, recharge heals him instead of refilling the summoning meter. If the Rose is unequipped or you are magic-immune, he takes _1 damage before each action_.";
+
     }
 }

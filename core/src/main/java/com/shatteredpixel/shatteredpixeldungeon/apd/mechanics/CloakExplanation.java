@@ -31,20 +31,19 @@ public final class CloakExplanation {
     }
     public static String summary(CloakOfShadows cloak){
         if(!cloak.isIdentified())return "";
-        return "Activation takes _1 turn_; staying cloaked uses _1 charge every 4 turns_, starting on the first turn. Attacking or using magic can end invisibility early. The cloak does not recharge while active.";
+        return "Activation takes _1 turn_; staying cloaked uses _1 charge every 4 turns_, starting on the first turn. Attacking or using magic can end invisibility early. Natural recharge pauses while cloaked; recharge effects can still add charge.";
     }
     public static String details(CloakOfShadows cloak,Hero hero){
         if(!cloak.isIdentified())return "";
         int remaining=cloak.remainingStealthUpdates(),level=cloak.level();
-        String text="_Cloak stealth and charge use_\n"+summary(cloak)
-            +" Activation requires a charge, no curse and no Magic Immunity, and normally requires wearing the Cloak; Light Cloak permits carried use. The activation time still advances normal game consequences. Turning it off uses its existing no-extra-time path."
-            +"\nA fresh stealth effect starts with its first charge payment due on its first scheduled update. Each active update subtracts 1 from the countdown. When it reaches zero, 1 charge is spent and the countdown resets to 4 if that payment succeeds. When no charge remains at a due payment, stealth ends and interrupts the hero. The displayed charge count is not that many free attacks or real-world seconds."
-            +(remaining<0?"\nThis Cloak is not currently sustaining stealth.":remaining==0?"\nThe next scheduled stealth update requires a charge payment.":"\nCurrent countdown: "+remaining+" scheduled updates until the next charge payment.")
-            +"\nAn ordinary invisibility-breaking action dispels the effect. If a charge payment is already due and a charge is available, that dispel spends 1 charge; otherwise it does not add a separate charge cost. A separate source of invisibility can remain active. Manual deactivation and involuntary dispelling are separate paths."
-            +"\nSuccessful paid stealth updates provide Cloak upgrade progress, not hero XP. Target hero level = 1 + 2 × Cloak upgrade level, plus (upgrade level − 6) above step6. Difference = hero level − target. Progress per payment = round(10 × 1.1^difference) for nonnegative difference; otherwise round(10 × 0.75^(−difference))."
-            +(hero==null?" Current personal progress is withheld without a loaded hero.":" At your current level, a successful paid update offers "+experiencePerPayment(cloak,hero)+" Cloak progress points.")
-            +(level>=cloak.maximumUpgradeSteps()?" The Cloak is already at its maximum upgrade.":" The next upgrade threshold is (current upgrade level + 1) × 50 = "+((level+1)*50)+" progress points. A payment performs one upgrade check and retains the remainder.")
-            +" Upgrading increases charge capacity by 1, capped at 10; the actual saved capacity is displayed above. Capacity is not an immediate grant of that many charges. Ordinary and external recharging keep their separate eligibility, rate and capacity rules. Inspection does not spend charge, advance the countdown or earn progress.";
+        String text="_Stealth and charges_\n"+summary(cloak)
+            +" You need an uncursed Cloak, a charge and no Magic Immunity. Wear it unless Light Cloak permits carried use. Cancelling takes no extra time or charge."
+            +(remaining<0?"\nStealth is currently off.":remaining==0?"\nThe next stealth update needs 1 charge.":"\nNext charge payment in about _"+remaining+(remaining==1?" turn":" turns")+"_.")
+            +"\n\nThe first stealth update spends a charge; each successful payment resets the countdown to four turns. If a payment cannot be made, invisibility ends and interrupts you. An attack or spell that breaks invisibility also spends a charge if a payment was already due and a charge remains. Other invisibility sources can remain active."
+            +"\n\n_Upgrading_\nEach successful charge payment earns Cloak progress, not hero experience. Target hero level = 1 + 2 × Cloak level + max(0, Cloak level − 6). Let D = hero level − target. Progress = round(10 × 1.1^D) for D ≥ 0, or round(10 × 0.75^(−D)) for D < 0."
+            +(hero==null?" Personal progress is withheld without a loaded hero.":" Your current payment earns _"+experiencePerPayment(cloak,hero)+" Cloak progress points_.")
+            +(level>=cloak.maximumUpgradeSteps()?" Maximum upgrade reached; further use cannot upgrade it.":" Next upgrade: _"+((level+1)*50)+" progress points_ ((Cloak level + 1) × 50). A payment can award one upgrade and keeps leftover progress.")
+            +" Each upgrade adds one charge of capacity, up to 10, without filling it. Current capacity: _"+cloak.maximumCharges()+" charges_.";
         return text;
     }
 }

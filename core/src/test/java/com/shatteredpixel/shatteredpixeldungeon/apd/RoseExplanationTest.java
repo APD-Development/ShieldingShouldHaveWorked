@@ -95,6 +95,26 @@ public class RoseExplanationTest {
         }
     }
     private String descriptionOf(DriedRose rose){return RoseExplanation.details(rose,hero);}
+    public static class UpkeepProbe extends DriedRose.GhostHero {
+        int received;Object source;
+        UpkeepProbe(DriedRose rose){super(rose);}
+        @Override public void damage(int amount,Object src){received=amount;source=src;HP=0;}
+        boolean actOnce(){return act();}
+    }
+    @Test public void upkeepDescriptionMatchesActualUnequippedAndMagicImmuneGuard(){
+        for(boolean worn:new boolean[]{false,true})for(boolean immune:new boolean[]{false,true}){
+            Buff.detach(hero,MagicImmune.class);DriedRose rose=rose();hero.belongings.artifact=worn?rose:null;
+            if(immune)Buff.affect(hero,MagicImmune.class);
+            UpkeepProbe ghost=new UpkeepProbe(rose);boolean harms=!worn||immune;
+            // Stop before unrelated ally movement: the probe marks itself dead when offered damage.
+            // The no-damage control starts dead so the same actual guard still runs, then returns.
+            if(!harms)ghost.HP=0;
+            assertTrue(ghost.actOnce());assertEquals(harms?1:0,ghost.received);
+            if(harms)assertEquals(DriedRose.GhostHero.NoRoseDamage.class,ghost.source.getClass());
+            assertTrue(RoseExplanation.details(rose,hero).contains("1 damage before each action"));
+            assertTrue(RoseExplanation.summary(rose).contains("Keep the Rose equipped"));
+        }
+    }
     @Test public void unknownRoseAndNoHeroWithholdUnavailableValues(){
         for(int level:new int[]{0,3,10}){DriedRose rose=rose();for(int i=0;i<level;i++)rose.upgrade();rose.levelKnown=false;assertEquals("",RoseExplanation.summary(rose));assertEquals("",RoseExplanation.details(rose,hero));assertEquals(-1,RoseExplanation.maximumHealth(rose));assertEquals(-1,RoseExplanation.unarmedMaximum(rose));rose.levelKnown=true;assertTrue(RoseExplanation.details(rose,null).contains("withheld without a loaded hero"));}
     }

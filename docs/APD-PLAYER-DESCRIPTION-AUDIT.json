@@ -6,7 +6,7 @@
   "message_entries": 2411,
   "reviewed_units": 433,
   "corrected_units": 350,
-  "unresolved_units": 127,
+  "unresolved_units": 119,
   "category_counts": {
     "apd": 1,
     "mechanics": 38,
@@ -139,15 +139,15 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/CloakExplanation.java",
-      "sha256": "a0b9e26afb7cc3db7c280eb9d931122bd2761df871becb4c75c5878759c9cb36",
+      "sha256": "9ff9a3ea4ddf5ed16af9ccf7702fa56d8aceff536988f512b5960b35b584cc94",
       "category": "mechanics",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [
         "summary",
         "details"
       ],
       "wording_corrected": true,
-      "review_notes": "Current ordinary-description pass: concise live values, duplicate mathematical prose removed. Existing optional details and entire category variants remain under review; panel decisions pending. See APD-DESCRIPTION-CORRECTION-2026-11-08.md."
+      "review_notes": "Full own formatter and actual Cloak cast/collect/unequip/recharge/pay/dispelling/progress/cap/save paths individually reconciled. Existing retained detail shortened, exact targetlevel/progress formulas/current payment/capacity retained. Normal wording now specifies natural recharge pauses while cloaked, externalcharge stillworks. Existing actual first/fourthpayment/exhaustion/dispelling/24progressstates/recharge/save/hidden tests retained;3118core457pass. Own-source completion only, not blanket completion of inherited/class/secondary providers."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/CraftingEffectExplanation.java",
@@ -331,15 +331,15 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/RoseExplanation.java",
-      "sha256": "e9068d037664ee586e5514e013803ba722865256b80afcd621a01fd33b0eaeae",
+      "sha256": "cf15b6a940ca6b666ab9422c1eb220f02c3fac93b8b69bb9a47e990a20b447df",
       "category": "mechanics",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [
         "summary",
         "details"
       ],
       "wording_corrected": true,
-      "review_notes": "Current ordinary-description pass: concise live values, duplicate mathematical prose removed. Existing optional details and entire category variants remain under review; panel decisions pending. See APD-DESCRIPTION-CORRECTION-2026-11-08.md."
+      "review_notes": "Full own formatter and DriedRose quest/summon/direct/outfit/petal/recharge/upgrade/save/GhostHero complete stats/damage/evasion/DR/act/immunities/gear transfer paths read. Retained detail shorter; HP/Strength/unarmed/score/excessStrength/8HPoldcap/nextrefresh rules retained. Adds important unequipped/MagicImmune1damagebeforeeachGhostaction drawback. Fourstate actual guard probe verifies source/amount while avoiding unrelatedAI. Existing33basestat states/levelbounds/privategear/save/status tests retained;3118fullcorepass. Own-source completion only, not blanket completion of inherited/class/secondary providers."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/ScrollExplanation.java",
@@ -1022,23 +1022,23 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/artifacts/CloakOfShadows.java",
       "sha256": "def10f0836ccf9b7728a4c9c885ea46eff5a8053c508640be18df0273dfe5ea1",
       "category": "artifacts",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [
         "desc"
       ],
       "wording_corrected": true,
-      "review_notes": " All15 actual curse branches reviewed; concise conditional ordinary text,15type read-only regression, actual Horn/Chalice effects tested. Existing advanced panels retained pending owner review; full non-curse/class paths may remain incomplete. Entire use/charge/active countdown/level/save paths read; shorter normal flavor and active invisibility text correct false total enemy-safety claim, no duplicate initial summary sentence. Existing real first/every-fourth/exhaustion/dispelling/progress/recharge/save tests retained. New actual normal and active window fixtures pending389."
+      "review_notes": "Entire own activation/manualcancel/carryingLightCloak/unequip/collect/detach, direct/external/passivecharge/cap, activeupdate/XP/dispelling/save read. Shared explanation corrections only; gameplayclass unchanged. Existing actual effects/time/charge/save tests pass. SharedArtifact/classproviders remain separate. Own-source completion only, not blanket completion of inherited/class/secondary providers."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/artifacts/DriedRose.java",
       "sha256": "bf42ed69b0e5beb24057712246cf715f55843829a94537dd3e857d116e9664e3",
       "category": "artifacts",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [
         "desc"
       ],
       "wording_corrected": true,
-      "review_notes": " All15 actual curse branches reviewed; concise conditional ordinary text,15type read-only regression, actual Horn/Chalice effects tested. Existing advanced panels retained pending owner review; full non-curse/class paths may remain incomplete."
+      "review_notes": "Entire own class including Petal, GhostHero and WndGhostHero read individually. Knownuncursed +0unknownSTRchecks/no unique/seal/actualtransfer, refresh-before-upgrade and8HPoldcap, passive meter versus ghostheal, externalcharge, associatedID/stasis/save paths reconciled. Shareddescription changes only, no ghostmechanics/UI redesign. Inherited/effect providers tracked separately. Own-source completion only, not blanket completion of inherited/class/secondary providers."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/artifacts/EtherealChains.java",
@@ -1937,10 +1937,10 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/potions/exotic/PotionOfDragonsBreath.java",
       "sha256": "d8532b0398126b9de6f09ec2fe84f439a3fa571411ec62a1515b54fff00c7396",
       "category": "potions",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [],
       "wording_corrected": true,
-      "review_notes": "Ordinary description corrected after source review. Existing damage/cost/status logic retained; known live effects and challenge/hidden-state cases tested. Complete class variants, optional panels where applicable and Android rendering remain under review."
+      "review_notes": "Entire own identification-before-target/unknowncancelconfirmation/consume-onvalidselection, callback/capturedorigin,6tile60degreecone/solidsoft/doors/adjacentflammables/Burning+5Cripple/1turn/catalogtalent paths read. Existing concise cone/burn/cripple/terrain prose accurate; no newchanges. Own-source completion only, not blanket completion of inherited/class/secondary providers."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/potions/exotic/PotionOfEarthenArmor.java",
@@ -1973,28 +1973,28 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/potions/exotic/PotionOfShielding.java",
       "sha256": "5ed4e5094c53ec405bba885ad4a72eeb1276f1003a040258ca1da0f7aaa3f118",
       "category": "potions",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [],
       "wording_corrected": true,
-      "review_notes": "Ordinary description corrected after source review. Existing damage/cost/status logic retained; known live effects and challenge/hidden-state cases tested. Complete class variants, optional panels where applicable and Android rendering remain under review."
+      "review_notes": "Entire own apply/challenge/known/currentHero amount/nohero fallback read against actual Barrier.setShield and Pharmacophobia/customHealing0 tests. Existing concise normal22/70/currentmaximumHP and strongerBarrier/decay/poison descriptions accurate; no additional prose/mechanics changes. Own-source completion only, not blanket completion of inherited/class/secondary providers."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/potions/exotic/PotionOfShroudingFog.java",
       "sha256": "054ee5fe23627eebf22d8363732e418191c38b7e32b11ee074d543caad53f5dd",
       "category": "potions",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [],
       "wording_corrected": true,
-      "review_notes": "Ordinary description corrected after source review. Existing damage/cost/status logic retained; known live effects and challenge/hidden-state cases tested. Complete class variants, optional panels where applicable and Android rendering remain under review."
+      "review_notes": "Entire own3x3volume1620withsolidneighborredistribution read against SmokeScreen and actualLevel FOV ally/GnollGeomancer exception. Existing most-enemies versus you/allies wording accurate; no newchanges. Own-source completion only, not blanket completion of inherited/class/secondary providers."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/potions/exotic/PotionOfSnapFreeze.java",
       "sha256": "4c92509c3cda7ccd042dde7c635ae7a5e7b5335da03fc4b2e2a79c1c44242ee5",
       "category": "potions",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [],
       "wording_corrected": true,
-      "review_notes": "Ordinary description corrected after source review. Existing damage/cost/status logic retained; known live effects and challenge/hidden-state cases tested. Complete class variants, optional panels where applicable and Android rendering remain under review."
+      "review_notes": "Entire own shatter3x3nonsolid/visibleID/immediateFreezing.affect and doubledRoots path read against full legacyFreezing watertripleFrost/heapfireclear/immunity path and shareddrink-shatter dispatch. Existing concise freeze/root/center-on-drink text accurate; no newchanges. Own-source completion only, not blanket completion of inherited/class/secondary providers."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/potions/exotic/PotionOfStamina.java",
@@ -4466,7 +4466,7 @@
       "review_notes": "Previously omitted normal buff source added. Entire own duration/decay/save/icon path and actual Hero/Char hit/protection consumer read. Ordinary prose shorter; Bless/Hex/Daze percentages use live ROLL_FACTOR; other languages retain existing turn argument plus ignored extra argument. Existing optional panels unchanged. Real8combination\u00d7100seed\u00d72direction hit tests assert live percentages; actual defensive decay/save/read-only test passes.3113core457. New ordinary Android window pending406. Own-source completion, not all BuffExplanation/class providers."
     }
   ],
-  "completed_units": 309,
-  "latest_tests": "3117core457allfail/error/skipzero.27actualTalismanemptyfloorcasts and8warningstates, existing88range/state/hidden cases. Raw /workspace/apd408-talisman-evidence-20261109/accepted-full. Actualexpanded/bottom3/10Talismanwindows prepared; notrunyet.407originalnativepending. No gameplay/save/newpanel changes. Wholeaudit436units433reviewedpartial350corrected309complete127unresolved.",
+  "completed_units": 317,
+  "latest_tests": "3118core457allfail/error/skipzero. RetainedCloak/Rose shorter; actual charge/progress/dispelling/save/ghoststat tests retained, fourstate NoRoseDamage guard probe added. Talisman27actualcasts/8warnings and88range/unknowncases included. Sourceonlycompile3117at5a34d1d16passed42597979181beforelaterCloakRose. ExistingnativeCloak/Roseexpandedbottomcaptures prepared fornextbuild; notyetAndroidverified.407original3115/12passed, stagingpendingmanualreview. Wholeaudit436units433fullpartial350corrected317complete119unresolved.",
   "message_inventory_entries": 5339
 }

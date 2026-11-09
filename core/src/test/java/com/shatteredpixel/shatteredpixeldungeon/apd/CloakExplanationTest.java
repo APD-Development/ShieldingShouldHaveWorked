@@ -78,11 +78,11 @@ public class CloakExplanationTest {
         try{
             assertEquals(0,cloak.remainingStealthUpdates());assertEquals(3,cloak.currentCharges());
             String before=saved(cloak),heroBefore=saved(hero);Random.pushGenerator(812);int expected=Random.Int();Random.popGenerator();Random.pushGenerator(812);
-            try{for(int i=0;i<10;i++){assertTrue(ArtifactExplanation.details(cloak).contains("next scheduled stealth update requires"));assertFalse(ArtifactExplanation.summary(cloak).isEmpty());}assertEquals(expected,Random.Int());}finally{Random.popGenerator();}
+            try{for(int i=0;i<10;i++){assertTrue(ArtifactExplanation.details(cloak).contains("next stealth update needs"));assertFalse(ArtifactExplanation.summary(cloak).isEmpty());}assertEquals(expected,Random.Int());}finally{Random.popGenerator();}
             assertEquals(before,saved(cloak));assertEquals(heroBefore,saved(hero));
             stealth.act();assertEquals(2,cloak.currentCharges());assertEquals(4,cloak.remainingStealthUpdates());assertEquals(10,progress(cloak));
             for(int i=0;i<3;i++)stealth.act();assertEquals(2,cloak.currentCharges());assertEquals(1,cloak.remainingStealthUpdates());
-            assertTrue(CloakExplanation.details(cloak,hero).contains("1 scheduled updates"));stealth.act();assertEquals(1,cloak.currentCharges());assertEquals(4,cloak.remainingStealthUpdates());assertEquals(20,progress(cloak));assertEquals(time,hero.cooldown(),0);
+            assertTrue(CloakExplanation.details(cloak,hero).contains("about _1 turn_"));stealth.act();assertEquals(1,cloak.currentCharges());assertEquals(4,cloak.remainingStealthUpdates());assertEquals(20,progress(cloak));assertEquals(time,hero.cooldown(),0);
         }finally{stealth.detach();}
         assertEquals(-1,cloak.remainingStealthUpdates());assertEquals(0,hero.invisible);
     }
@@ -105,7 +105,7 @@ public class CloakExplanationTest {
     @Test public void actualCloakBundleRoundTripPreservesActiveCountdownWithoutInspectionMutations()throws Exception{
         CloakOfShadows original=cloak();CloakOfShadows.cloakStealth buff=stealth(original);buff.act();buff.act();assertEquals(3,original.remainingStealthUpdates());
         Bundle bundle=new Bundle();original.storeInBundle(bundle);ByteArrayOutputStream bytes=new ByteArrayOutputStream();assertTrue(Bundle.write(bundle,bytes));Bundle loaded=Bundle.read(new ByteArrayInputStream(bytes.toByteArray()));CloakOfShadows copy=cloak();copy.restoreFromBundle(loaded);
-        assertEquals(original.remainingStealthUpdates(),copy.remainingStealthUpdates());assertEquals(original.currentCharges(),copy.currentCharges());assertEquals(progress(original),progress(copy));String saved=saved(copy);assertTrue(CloakExplanation.details(copy,hero).contains("3 scheduled updates"));assertEquals(saved,saved(copy));buff.detach();
+        assertEquals(original.remainingStealthUpdates(),copy.remainingStealthUpdates());assertEquals(original.currentCharges(),copy.currentCharges());assertEquals(progress(original),progress(copy));String saved=saved(copy);assertTrue(CloakExplanation.details(copy,hero).contains("about _3 turns_"));assertEquals(saved,saved(copy));buff.detach();
     }
     @Test public void unknownCloakAndNoHeroWithholdUnavailablePersonalNumbers(){
         for(int level:new int[]{0,3,10}){CloakOfShadows cloak=cloak();for(int i=0;i<level;i++)cloak.upgrade();cloak.levelKnown=false;assertEquals("",CloakExplanation.summary(cloak));assertEquals("",CloakExplanation.details(cloak,hero));assertEquals(-1,CloakExplanation.experiencePerPayment(cloak,hero));cloak.levelKnown=true;assertTrue(CloakExplanation.details(cloak,null).contains("withheld without a loaded hero"));assertEquals(-1,CloakExplanation.experiencePerPayment(cloak,null));}
