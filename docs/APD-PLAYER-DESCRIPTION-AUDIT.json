@@ -925,7 +925,7 @@
         "desc"
       ],
       "wording_corrected": true,
-      "review_notes": " All15 actual curse branches reviewed; concise conditional ordinary text,15type read-only regression, actual Horn/Chalice effects tested. Existing advanced panels retained pending owner review; full non-curse/class paths may remain incomplete."
+      "review_notes": " All15 actual curse branches reviewed; concise conditional ordinary text,15type read-only regression, actual Horn/Chalice effects tested. Existing advanced panels retained pending owner review; full non-curse/class paths may remain incomplete. Actual Brew/warm-up/energy gain/Energize six-energy/max10/serialization read. Ordinary prose now explains practical use, unavailable warmup state and precise upgrade cost. Existing real artifact gain matrix retained; full3047core pass. Expanded ordinary native fixture pending389, advanced/complete scope stays open."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/artifacts/Artifact.java",
@@ -946,7 +946,7 @@
         "desc"
       ],
       "wording_corrected": true,
-      "review_notes": " All15 actual curse branches reviewed; concise conditional ordinary text,15type read-only regression, actual Horn/Chalice effects tested. Existing advanced panels retained pending owner review; full non-curse/class paths may remain incomplete."
+      "review_notes": " All15 actual curse branches reviewed; concise conditional ordinary text,15type read-only regression, actual Horn/Chalice effects tested. Existing advanced panels retained pending owner review; full non-curse/class paths may remain incomplete. Entire source and Hero.damage caller read; concise state/flavor/active tooltip. New real charged activation+deflection test over24seeds and adjacent/distant targets, no synthetic unsupported cooldown key. Initial fixture failure preserved; corrected to real charge(hero,25), no assertions weakened. Complete source advanced/legacy compatibility scope remains open; not claiming new gameplay fix."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/artifacts/ChaliceOfBlood.java",
@@ -957,7 +957,7 @@
         "desc"
       ],
       "wording_corrected": true,
-      "review_notes": " All15 actual curse branches reviewed; concise conditional ordinary text,15type read-only regression, actual Horn/Chalice effects tested. Existing advanced panels retained pending owner review; full non-curse/class paths may remain incomplete."
+      "review_notes": " All15 actual curse branches reviewed; concise conditional ordinary text,15type read-only regression, actual Horn/Chalice effects tested. Existing advanced panels retained pending owner review; full non-curse/class paths may remain incomplete. Worn progress states shortened; real prick preview preserved. New normal Healing0 warning in shared ArtifactExplanation tested against30actual Regeneration ticks with no HP gain. Dynamic lethal-prick preview/regen intervals unchanged. Full3047core pass, native disabled-healing fixture pending389; entire secondary/class scope remains open."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/artifacts/CloakOfShadows.java",
@@ -968,7 +968,7 @@
         "desc"
       ],
       "wording_corrected": true,
-      "review_notes": " All15 actual curse branches reviewed; concise conditional ordinary text,15type read-only regression, actual Horn/Chalice effects tested. Existing advanced panels retained pending owner review; full non-curse/class paths may remain incomplete."
+      "review_notes": " All15 actual curse branches reviewed; concise conditional ordinary text,15type read-only regression, actual Horn/Chalice effects tested. Existing advanced panels retained pending owner review; full non-curse/class paths may remain incomplete. Entire use/charge/active countdown/level/save paths read; shorter normal flavor and active invisibility text correct false total enemy-safety claim, no duplicate initial summary sentence. Existing real first/every-fourth/exhaustion/dispelling/progress/recharge/save tests retained. New actual normal and active window fixtures pending389."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/artifacts/DriedRose.java",
@@ -990,7 +990,7 @@
         "desc"
       ],
       "wording_corrected": true,
-      "review_notes": " All15 actual curse branches reviewed; concise conditional ordinary text,15type read-only regression, actual Horn/Chalice effects tested. Existing advanced panels retained pending owner review; full non-curse/class paths may remain incomplete."
+      "review_notes": " All15 actual curse branches reviewed; concise conditional ordinary text,15type read-only regression, actual Horn/Chalice effects tested. Existing advanced panels retained pending owner review; full non-curse/class paths may remain incomplete. Entire target/route/Mining exception/self root/terrain/grab/enemy placement/charge/recharge/save paths read. Normal text correctly charges tiles moved (including diagonals), explored-ground and path restriction; not misleading one charge per total cast distance. No projectile/movement code changed. Native normal fixture expanded, not yet run."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/artifacts/HolyTome.java",
@@ -999,7 +999,7 @@
       "status": "PARTIAL_REVIEW",
       "description_methods": [],
       "wording_corrected": true,
-      "review_notes": " All15 actual curse branches reviewed; concise conditional ordinary text,15type read-only regression, actual Horn/Chalice effects tested. Existing advanced panels retained pending owner review; full non-curse/class paths may remain incomplete."
+      "review_notes": " All15 actual curse branches reviewed; concise conditional ordinary text,15type read-only regression, actual Horn/Chalice effects tested. Existing advanced panels retained pending owner review; full non-curse/class paths may remain incomplete. Ordinary flavor shortened after reading cast eligibility/spend progression/capacity/recharge paths; no spell/balance change. Full dedicated cleric and real charge matrices retained. Expanded normal native pending389; complete spell/class/secondary scope stays open."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/artifacts/HornOfPlenty.java",
@@ -1021,7 +1021,7 @@
         "desc"
       ],
       "wording_corrected": true,
-      "review_notes": " All15 actual curse branches reviewed; concise conditional ordinary text,15type read-only regression, actual Horn/Chalice effects tested. Existing advanced panels retained pending owner review; full non-curse/class paths may remain incomplete."
+      "review_notes": " All15 actual curse branches reviewed; concise conditional ordinary text,15type read-only regression, actual Horn/Chalice effects tested. Existing advanced panels retained pending owner review; full non-curse/class paths may remain incomplete. Entire actions/use/zap destination/charge/return/save paths read; concise Set/Return/Zap restrictions and marked floor label, no teleport implementation change. Legacy adjacent occupancy/floors caveats not silently modified. Secondary formula and class scope remain open."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/artifacts/MasterThievesArmband.java",
@@ -1065,7 +1065,7 @@
         "desc"
       ],
       "wording_corrected": true,
-      "review_notes": " All15 actual curse branches reviewed; concise conditional ordinary text,15type read-only regression, actual Horn/Chalice effects tested. Existing advanced panels retained pending owner review; full non-curse/class paths may remain incomplete."
+      "review_notes": " All15 actual curse branches reviewed; concise conditional ordinary text,15type read-only regression, actual Horn/Chalice effects tested. Existing advanced panels retained pending owner review; full non-curse/class paths may remain incomplete. Ordinary flavor/worn text decluttered after reading passive FOV trap warning, charge and cone discovery paths; no actual hidden tile query added to description. Existing real Talisman tests retained. Native ordinary expanded next pair; full detailed scope remains open."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/artifacts/TimekeepersHourglass.java",
@@ -4245,14 +4245,14 @@
   ],
   "completed_units": 159,
   "latest_tests": {
-    "core_tests": 3045,
+    "core_tests": 3047,
     "suites": 457,
     "failures": 0,
     "errors": 0,
     "skipped": 0,
-    "log": "/workspace/apd-passive-glyph-comparison-evidence-20261109/apd-passive-glyph-arcana-comparisons-corrected-full.log",
+    "log": "/workspace/apd-eight-artifacts-human-evidence-20261109/apd-eight-artifacts-human-description-full.log",
     "android_verified": false,
     "new_apk_built": false,
-    "scope": "Post388 live passive glyph Arcana comparisons and later earth/prism/herb prose. New actual windows pending next pair.344reviewed306corrected159complete268unresolved."
+    "scope": "Post388 eight artifact ordinary corrections, real active Cape deflection and actual Chalice Healing0. Previous live passive glyph/earth/prism/herb changes retained. New Android windows pending389."
   }
 }

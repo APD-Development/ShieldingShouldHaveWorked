@@ -31,7 +31,7 @@ public final class CloakExplanation {
     }
     public static String summary(CloakOfShadows cloak){
         if(!cloak.isIdentified())return "";
-        return "Makes you invisible. Activation takes _1 turn_; staying cloaked uses _1 charge every 4 turns_, starting on the first turn. Attacking or using magic can end invisibility early. The cloak does not recharge while active.";
+        return "Activation takes _1 turn_; staying cloaked uses _1 charge every 4 turns_, starting on the first turn. Attacking or using magic can end invisibility early. The cloak does not recharge while active.";
     }
     public static String details(CloakOfShadows cloak,Hero hero){
         if(!cloak.isIdentified())return "";

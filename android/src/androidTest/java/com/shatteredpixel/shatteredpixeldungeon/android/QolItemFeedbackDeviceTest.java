@@ -294,9 +294,9 @@ public class QolItemFeedbackDeviceTest {
     private static void retainedArtifactDescriptionsRender()throws Exception{
         com.shatteredpixel.shatteredpixeldungeon.items.KindofMisc previous=Dungeon.hero.belongings.misc;
         Item[] items={new com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass(),new com.shatteredpixel.shatteredpixeldungeon.items.artifacts.UnstableSpellbook(),new com.shatteredpixel.shatteredpixeldungeon.items.artifacts.MasterThievesArmband(),new com.shatteredpixel.shatteredpixeldungeon.items.artifacts.SandalsOfNature(),new com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose(),new com.shatteredpixel.shatteredpixeldungeon.items.artifacts.EtherealChains(),new com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HornOfPlenty(),new com.shatteredpixel.shatteredpixeldungeon.items.artifacts.ChaliceOfBlood(),new com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TalismanOfForesight(),new com.shatteredpixel.shatteredpixeldungeon.items.artifacts.AlchemistsToolkit(),new com.shatteredpixel.shatteredpixeldungeon.items.artifacts.SkeletonKey(),new com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CloakOfShadows(),new com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HolyTome(),new com.shatteredpixel.shatteredpixeldungeon.items.artifacts.LloydsBeacon(),new com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CapeOfThorns()};
-        String[] expected={"makes you invulnerable","random scroll effect","one chance at loot","Trampling tall grass"};
+        String[] expected={"makes you invulnerable","random scroll effect","one chance at loot","Trampling tall grass","spiritual power","can pass through walls","normal ration","natural healing","Scrying searches","Portable alchemy","3 tile wide","Activation takes","Cleric spells","Set a return point","When active"};
         String[] curseExpected={"10% chance","except Remove Curse and Anti-Magic","20% chance","stops normal seed","hostile wraith","slow your movement","33% less filling","50% longer","Manual Search still works","alchemy pots","5 out of 6","Cannot activate","Cannot cast spells","teleport actions still work","deflection effects still work"};
-        try{for(int i=0;i<items.length;i++)for(boolean cursed:(i<4?new boolean[]{false,true}:new boolean[]{true}))for(boolean use:new boolean[]{false,true}){
+        try{for(int i=0;i<items.length;i++)for(boolean cursed:new boolean[]{false,true})for(boolean use:new boolean[]{false,true}){
             Item item=items[i];String required=cursed?curseExpected[i]:expected[i];AtomicReference<WndInfoItem> shown=new AtomicReference<>();
             TopScoresDeviceTest.render(()->{Dungeon.hero.belongings.misc=(com.shatteredpixel.shatteredpixeldungeon.items.KindofMisc)item;item.levelKnown=item.cursedKnown=true;item.cursed=cursed;assertTrue(item.info(),item.info().contains(required));assertFalse(item.info().contains("base action time"));WndInfoItem window=use?new WndUseItem(null,item):new WndInfoItem(item);GameScene.show(window);shown.set(window);});Thread.sleep(300);TopScoresDeviceTest.render(()->assertDescriptionViewport(shown.get()));
             if(use)TopScoresDeviceTest.screenshot("qol-retained-artifact-"+i+(cursed?"-cursed":"-normal")+"-description.png");
@@ -418,6 +418,19 @@ public class QolItemFeedbackDeviceTest {
                 showItem(armor,"without Arcana","qol-passive-glyph-"+name+"-arcana.png",true,true);
             }
         }finally{TopScoresDeviceTest.render(()->{for(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff buff:new java.util.ArrayList<>(Dungeon.hero.buffs(Ring.RingBuff.class)))buff.detach();Dungeon.hero.belongings.ring=(Ring)previous[0];Dungeon.hero.belongings.misc=previous[1];if(previous[0]!=null)previous[0].activate(Dungeon.hero);if(previous[1] instanceof Ring)previous[1].activate(Dungeon.hero);});}
+    }
+    private static void artifactBuffsAndDisabledHealingRender()throws Exception{
+        com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CloakOfShadows cloak=new com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CloakOfShadows();
+        com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CapeOfThorns cape=new com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CapeOfThorns();
+        AtomicReference<com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff> activeCape=new AtomicReference<>();
+        TopScoresDeviceTest.render(()->{cape.activate(Dungeon.hero);cape.charge(Dungeon.hero,25);activeCape.set(Dungeon.hero.buff(com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CapeOfThorns.Thorns.class));assertNotNull(activeCape.get());});
+        try{for(int kind=0;kind<2;kind++){
+            final int type=kind;AtomicReference<Window> shown=new AtomicReference<>();
+            TopScoresDeviceTest.render(()->{com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff buff=activeCape.get();if(type==0){buff=cloak.new cloakStealth();com.watabou.utils.Bundle state=new com.watabou.utils.Bundle();buff.storeInBundle(state);state.put("turnsToCost",3);buff.restoreFromBundle(state);assertTrue(buff.desc(),buff.desc().contains("last known position"));}else assertTrue(buff.desc(),buff.desc().contains("from none to all"));Window window=new WndInfoBuff(buff);GameScene.show(window);shown.set(window);});
+            Thread.sleep(300);TopScoresDeviceTest.render(()->assertDescriptionViewport(shown.get()));TopScoresDeviceTest.screenshot(type==0?"qol-cloak-stealth-concise.png":"qol-cape-thorns-concise.png");TopScoresDeviceTest.render(()->shown.get().hide());
+        }}finally{TopScoresDeviceTest.render(()->activeCape.get().detach());}
+        com.watabou.utils.Bundle previousRules=new com.watabou.utils.Bundle();TopScoresDeviceTest.render(()->{Dungeon.apdStoreCustomRules(previousRules);com.watabou.utils.Bundle all=new com.watabou.utils.Bundle(),settings=new com.watabou.utils.Bundle();com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomDungeonRules.defaults().with(com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomDungeonRules.Slider.HEALING,0).store(settings);all.put("apd_custom_rules",settings);Dungeon.apdRestoreCustomRules(all);});
+        try{com.shatteredpixel.shatteredpixeldungeon.items.artifacts.ChaliceOfBlood chalice=new com.shatteredpixel.shatteredpixeldungeon.items.artifacts.ChaliceOfBlood();TopScoresDeviceTest.render(()->{chalice.level(10);chalice.levelKnown=chalice.cursedKnown=true;});showItem(chalice,"rules prevent natural healing","qol-chalice-healing-zero.png",true,true);}finally{TopScoresDeviceTest.render(()->Dungeon.apdRestoreCustomRules(previousRules));}
     }
     private static void unidentifiedWandExamplesRender()throws Exception{
         for(String name:new String[]{"BlastWave","Corrosion","Corruption","Disintegration","Fireblast","Frost","Lightning","LivingEarth","MagicMissile","PrismaticLight","Regrowth","Transfusion","Warding"}){
@@ -739,6 +752,7 @@ public class QolItemFeedbackDeviceTest {
             lightningAndRegrowthDescriptionsRender();
             livingEarthAndPrismaticDescriptionsRender();
             passiveGlyphArcanaDescriptionsRender();
+            artifactBuffsAndDisabledHealingRender();
             unidentifiedWandExamplesRender();
             inventoryOrderShowsAutomatically();
             prepareSearchableFloor();

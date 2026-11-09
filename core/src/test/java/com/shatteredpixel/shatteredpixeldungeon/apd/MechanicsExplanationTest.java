@@ -1016,6 +1016,10 @@ public class MechanicsExplanationTest {
    regen.detach();hero.buff(com.shatteredpixel.shatteredpixeldungeon.items.artifacts.ChaliceOfBlood.chaliceRegen.class).detach();
   }
  }
+ @Test public void chaliceOrdinaryDescriptionWarnsWhenActualRegenerationIsDisabled()throws Exception{
+  hero.sprite=quietSprite();hero.HP=1;com.watabou.utils.Bundle all=new com.watabou.utils.Bundle(),rules=new com.watabou.utils.Bundle();com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomDungeonRules.defaults().with(com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomDungeonRules.Slider.HEALING,0).store(rules);all.put("apd_custom_rules",rules);Dungeon.apdRestoreCustomRules(all);
+  com.shatteredpixel.shatteredpixeldungeon.items.artifacts.ChaliceOfBlood chalice=new com.shatteredpixel.shatteredpixeldungeon.items.artifacts.ChaliceOfBlood();chalice.level(10);chalice.levelKnown=chalice.cursedKnown=true;hero.belongings.artifact=chalice;chalice.activate(hero);assertTrue(chalice.info(),chalice.info().contains("rules prevent natural healing"));Regeneration regen=Buff.affect(hero,Regeneration.class);for(int turn=0;turn<30;turn++)regen.act();assertEquals(1,hero.HP);regen.detach();hero.buff(com.shatteredpixel.shatteredpixeldungeon.items.artifacts.ChaliceOfBlood.chaliceRegen.class).detach();
+ }
  @Test public void hornExperienceChargeNumbersMatchActualRecharge(){
   com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HornOfPlenty horn=new com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HornOfPlenty();horn.levelKnown=horn.cursedKnown=true;hero.belongings.artifact=horn;horn.activate(hero);
   hero.buff(com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HornOfPlenty.hornRecharge.class).gainCharge(1);
@@ -1027,6 +1031,12 @@ public class MechanicsExplanationTest {
  }
  @Test public void capeChargeCoefficientMatchesActualProcWithoutAnActivation(){
   for(int level:new int[]{0,3,6}){com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CapeOfThorns cape=new com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CapeOfThorns();cape.level(level);cape.levelKnown=cape.cursedKnown=true;cape.activate(hero);com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CapeOfThorns.Thorns effect=hero.buff(com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CapeOfThorns.Thorns.class);assertEquals(10,effect.proc(10,null,hero));assertEquals((int)(10*(.5+level*.05)),cape.currentCharges());String details=ArtifactExplanation.details(cape);assertTrue(details,details.contains(ObfuscationExplanation.number(.5f+.05f*level)+" meter points per damage point"));effect.detach();}
+ }
+ @Test public void capePlainReflectionDescriptionMatchesActualAdjacentAndDistantProc(){
+  for(boolean adjacent:new boolean[]{false,true})for(int seed=0;seed<24;seed++){
+   com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CapeOfThorns cape=new com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CapeOfThorns();cape.level(10);cape.levelKnown=cape.cursedKnown=true;cape.activate(hero);cape.charge(hero,25f);assertTrue(cape.effectCountdown()>0);com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CapeOfThorns.Thorns thorns=hero.buff(com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CapeOfThorns.Thorns.class);LightningDamageTarget enemy=new LightningDamageTarget();enemy.pos=hero.pos+(adjacent?1:2);
+   Random.pushGenerator(seed);int blocked=Random.NormalIntRange(0,17);Random.popGenerator();Random.pushGenerator(seed);try{assertEquals(17-blocked,thorns.proc(17,enemy,hero));}finally{Random.popGenerator();}assertEquals(adjacent?blocked:0,enemy.received);assertTrue(thorns.desc(),thorns.desc().contains("from none to all"));assertTrue(thorns.desc(),thorns.desc().contains("attacker is adjacent"));thorns.detach();
+  }
  }
  @Test public void slowChillAndSpeedDetailsMatchActualActionTimeAndPriority(){
   Chill chill=Buff.affect(hero,Chill.class,3);float factor=chill.speedFactor(),start=hero.cooldown();String detail=MechanicsDetails.buff(chill,chill.desc());hero.spend(1);assertEquals(1/factor,hero.cooldown()-start,.00001f);assertTrue(detail.contains("Current factor: "+ObfuscationExplanation.number(factor)));

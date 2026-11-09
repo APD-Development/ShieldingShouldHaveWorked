@@ -32,6 +32,7 @@ public final class ArtifactExplanation {
         if(artifact.cursed){String curse=ArtifactEconomyExplanation.summary(artifact,Dungeon.hero);return curse.isEmpty()?"":"\n\n"+curse;}
         String effect="";
         if(artifact instanceof CapeOfThorns)effect="When active, absorbs a random amount of damage from each hit. If the attacker is adjacent, it takes the absorbed damage instead.";
+        else if(artifact instanceof ChaliceOfBlood&&com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomHealingHooks.disabled())effect="Your current rules prevent natural healing. Pricking still costs health and upgrades the Chalice.";
         else if(artifact instanceof ChaliceOfBlood)effect="When worn and active, this Chalice shortens natural healing's delay. Its current base delay is "+n(10f-(1.33f+artifact.level()*.667f))+" turns per HP before recharge, regeneration and healing modifiers. It does not heal through starvation or bypass rules that disable regeneration. Pricking upgrades it at the cost of potentially lethal damage.";
         else if(artifact instanceof HornOfPlenty){int nourishment=(int)(Hunger.STARVING/5f);if(Dungeon.isChallenged(Challenges.NO_FOOD))nourishment/=3;effect="Each charge provides _"+com.shatteredpixel.shatteredpixeldungeon.messages.Messages.decimalFormat("0.##",100f*nourishment/Hunger.HUNGRY)+"% of a normal ration_. Snack uses one charge; Eat uses as many as needed and available.";}
         if(artifact instanceof DriedRose)effect=RoseExplanation.summary((DriedRose)artifact);
