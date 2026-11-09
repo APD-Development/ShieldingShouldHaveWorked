@@ -6,7 +6,7 @@
   "message_entries": 2411,
   "reviewed_units": 411,
   "corrected_units": 336,
-  "unresolved_units": 242,
+  "unresolved_units": 239,
   "category_counts": {
     "apd": 1,
     "mechanics": 38,
@@ -1905,10 +1905,10 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/potions/exotic/PotionOfDivineInspiration.java",
       "sha256": "32362fc1c098f7e2d3589f2fa9f6e7d8c07e2a7a022c5e286b5b900989b02f38",
       "category": "potions",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [],
       "wording_corrected": true,
-      "review_notes": "Individually read use/select/shatter and tracker code, Corrosion/CorrosiveGas/StormCloud consequences and Level.setCellToWater; Mastery eligibility/2STR and Divine tier entitlement verified against real Weapon/Armor/Hero paths. Concise ordinary description retains practical limitations. Broader base potion identification, custom rule/class and legacy helper audit remains unfinished; no new panel or gameplay change."
+      "review_notes": "Individually read use/select/shatter and tracker code, Corrosion/CorrosiveGas/StormCloud consequences and Level.setCellToWater; Mastery eligibility/2STR and Divine tier entitlement verified against real Weapon/Armor/Hero paths. Concise ordinary description retains practical limitations. Broader base potion identification, custom rule/class and legacy helper audit remains unfinished; no new panel or gameplay change. Own source/normal text review complete2026-11-09 after actual Hero talent-point/unlock, Barkskin maximum/append and Level MagicalSight sensing handlers read. New Divine once-per-tier2point/gate/serialization regression across all4tiers passes. Existing real Barkskin stronger-precedence and MagicalSight sight-without-discovery tests pass. Existing concise text accurate; new actual normal/Divine4choice windows pending397, source completion does not claim new Android acceptance. No effects or new interface changed."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/potions/exotic/PotionOfDragonsBreath.java",
@@ -1923,19 +1923,19 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/potions/exotic/PotionOfEarthenArmor.java",
       "sha256": "5cf413bce6669b3b1d62f59ced09e731fe6041621db5bcf880401ebf61ddbb4f",
       "category": "potions",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [],
       "wording_corrected": true,
-      "review_notes": "Ordinary description corrected after source review. Existing damage/cost/status logic retained; known live effects and challenge/hidden-state cases tested. Complete class variants, optional panels where applicable and Android rendering remain under review."
+      "review_notes": "Ordinary description corrected after source review. Existing damage/cost/status logic retained; known live effects and challenge/hidden-state cases tested. Complete class variants, optional panels where applicable and Android rendering remain under review. Own source/normal text review complete2026-11-09 after actual Hero talent-point/unlock, Barkskin maximum/append and Level MagicalSight sensing handlers read. New Divine once-per-tier2point/gate/serialization regression across all4tiers passes. Existing real Barkskin stronger-precedence and MagicalSight sight-without-discovery tests pass. Existing concise text accurate; new actual normal/Divine4choice windows pending397, source completion does not claim new Android acceptance. No effects or new interface changed."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/potions/exotic/PotionOfMagicalSight.java",
       "sha256": "cdc3fe826f293cfda563d4f0e1508e954afaae3c551c5bea3712c0ac3690e0a5",
       "category": "potions",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [],
       "wording_corrected": true,
-      "review_notes": "Ordinary description corrected after source review. Existing damage/cost/status logic retained; known live effects and challenge/hidden-state cases tested. Complete class variants, optional panels where applicable and Android rendering remain under review."
+      "review_notes": "Ordinary description corrected after source review. Existing damage/cost/status logic retained; known live effects and challenge/hidden-state cases tested. Complete class variants, optional panels where applicable and Android rendering remain under review. Own source/normal text review complete2026-11-09 after actual Hero talent-point/unlock, Barkskin maximum/append and Level MagicalSight sensing handlers read. New Divine once-per-tier2point/gate/serialization regression across all4tiers passes. Existing real Barkskin stronger-precedence and MagicalSight sight-without-discovery tests pass. Existing concise text accurate; new actual normal/Divine4choice windows pending397, source completion does not claim new Android acceptance. No effects or new interface changed."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/potions/exotic/PotionOfMastery.java",
@@ -4340,16 +4340,16 @@
       "wording_corrected": true
     }
   ],
-  "completed_units": 185,
+  "completed_units": 188,
   "latest_tests": {
-    "core_tests": 3080,
+    "core_tests": 3081,
     "suites": 457,
     "failures": 0,
     "errors": 0,
     "skipped": 0,
-    "log": "/workspace/apd-aquatic-honey-evidence-20261109/accepted-full",
+    "log": "/workspace/apd-divine-source-evidence-20261109/accepted-full",
     "android_verified": false,
-    "scope": "396originalAPK acceptance rerun42567183633 after stale Ferret native fixture failure. Later Aquatic/Honey and imbue/Vial source5338English entries3080fullcorepass; new actual windows pending397."
+    "scope": "Post396 source5338messages: new Divine actual gates/save regression3081corepass; new actual Android item/buff/upgrade/choice helpers need platform compilation and397runtime. Original396pair retry still running;395published."
   },
   "message_inventory_entries": 5338
 }

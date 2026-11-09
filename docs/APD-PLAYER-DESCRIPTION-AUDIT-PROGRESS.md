@@ -238,3 +238,8 @@ All3080core457suites pass after expanded existing actual proc/expiry/healing-mat
 ### Aquatic reserve and Honeyed cures
 
 All3080core457suites pass. Aquatic buff now defines remaining reserve as HP before run adjustments and states full/dry/flying pauses. UnderHealing0, warns reserve is still spent while hurt and standing in water; actual2reserve debit and0health gain verified. Honeyed normal text includes common ailment cures, actual Weakness/Cripple and150hunger relief atHealing0 tested. Initial Poison headless visual dependency preserved; actual cure path remains tested with two other listed ailments. New normal/zero buff windows pending397. English inventory5338.396held for full12case retry after stale Ferret native flavor assertion; original APKs unchanged, failures and patch preserved.395published fallback.
+
+
+### Exotic potion source and real talent gates
+
+All3081core457suites pass. Divine grants exactly2once per tier, supports saving future-tier choices and waits for actual level/subclass/armor ability unlocks; new actual four-tier point and save checks verify existing concise description. EarthenArmor maximum Barkskin and MagicalSight sensing/no hidden-door discovery individually reconciled with handlers and existing actual tests. Three own-source reviews complete, new actual windows and Divine choice dialog pending397.411full/partial336corrected,188complete,239unresolved source units. New native helpers sent for source-only Android/desktop compilation before next APK; no Androidruntime claim for post396source.
