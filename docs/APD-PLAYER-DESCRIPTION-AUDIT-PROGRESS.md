@@ -203,3 +203,8 @@ Sungrass actual normal/Warden activation and six real healing ticks under HEALIN
 ###394 published / shared equipment and defensive weapon review
 
 394sourceb68cd4a96:3068core457suites,12targeted API34cases, changed real windows manually reviewed. Later source3070core full pass; native windows pending395. Cursed removal explains actual temporary magic-immunity exception; Champion choice concise; five passive-block weapons show one accurate strength-adjusted range instead of duplicate unadjusted text. No gameplay or panel rule changed. Reconciled nine individually reviewed source units after accepted393/394 actual windows; 402full/partial reviews,332corrected,170complete,257unresolved of427source units. Full audit remains unfinished.
+
+
+### Chalice maximum and shared source review
+
+Chalice normal interval concise, compared with actual Regeneration levels0/3/9/10; retained max-level details correctly state no next prick. All3070core457suites passed; new actual native windows pending395. Reviewed six sprite/flavor-only class armor subclasses, Artifact base, ItemStatusHandler and Recipe base individually; no own description corrections required. Inherited ability/provider review remains separate. 408full/partial source reviews,332corrected,179complete,248unresolved. Three legacy detail providers now partial, never counted complete just because not exposed in normal UI.

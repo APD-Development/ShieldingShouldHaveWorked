@@ -1080,10 +1080,10 @@ public class MechanicsExplanationTest {
  }
  @Test public void chaliceDescriptionDelayMatchesActualRegenerationAcrossLevels(){
   hero.HP=10;
-  for(int level:new int[]{0,3,9}){
+  for(int level:new int[]{0,3,9,10}){
    com.shatteredpixel.shatteredpixeldungeon.items.artifacts.ChaliceOfBlood chalice=new com.shatteredpixel.shatteredpixeldungeon.items.artifacts.ChaliceOfBlood();chalice.level(level);chalice.levelKnown=chalice.cursedKnown=true;hero.belongings.artifact=chalice;chalice.activate(hero);
    Regeneration regen=Buff.affect(hero,Regeneration.class);regen.act();com.watabou.utils.Bundle state=new com.watabou.utils.Bundle();regen.storeInBundle(state);float actualDelay=1/state.getFloat(Regeneration.PARTIAL_REGEN);
-   assertEquals(10f-(1.33f+level*.667f),actualDelay,.00001f);String detail=ArtifactExplanation.details(chalice);assertTrue(detail,detail.contains(ObfuscationExplanation.number(actualDelay)+" turns per HP"));
+   assertEquals(10f-(1.33f+level*.667f),actualDelay,.00001f);String detail=ArtifactExplanation.details(chalice);assertTrue(detail,detail.contains(ObfuscationExplanation.number(actualDelay)+" turns per HP"));String summary=ArtifactExplanation.summary(chalice);assertTrue(summary,summary.contains("1 HP every "+ObfuscationExplanation.number(actualDelay)+" turns"));assertTrue(summary.contains("Does not heal while starving"));assertFalse(summary.contains("Pricking upgrades"));assertEquals(level<10,detail.contains("next prick"));assertEquals(level==10,detail.contains("cannot be pricked again"));
    regen.detach();hero.buff(com.shatteredpixel.shatteredpixeldungeon.items.artifacts.ChaliceOfBlood.chaliceRegen.class).detach();
   }
  }

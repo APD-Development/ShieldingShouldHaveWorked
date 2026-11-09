@@ -346,7 +346,7 @@ public class QolItemFeedbackDeviceTest {
     private static void retainedArtifactDescriptionsRender()throws Exception{
         com.shatteredpixel.shatteredpixeldungeon.items.KindofMisc previous=Dungeon.hero.belongings.misc;
         Item[] items={new com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass(),new com.shatteredpixel.shatteredpixeldungeon.items.artifacts.UnstableSpellbook(),new com.shatteredpixel.shatteredpixeldungeon.items.artifacts.MasterThievesArmband(),new com.shatteredpixel.shatteredpixeldungeon.items.artifacts.SandalsOfNature(),new com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose(),new com.shatteredpixel.shatteredpixeldungeon.items.artifacts.EtherealChains(),new com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HornOfPlenty(),new com.shatteredpixel.shatteredpixeldungeon.items.artifacts.ChaliceOfBlood(),new com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TalismanOfForesight(),new com.shatteredpixel.shatteredpixeldungeon.items.artifacts.AlchemistsToolkit(),new com.shatteredpixel.shatteredpixeldungeon.items.artifacts.SkeletonKey(),new com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CloakOfShadows(),new com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HolyTome(),new com.shatteredpixel.shatteredpixeldungeon.items.artifacts.LloydsBeacon(),new com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CapeOfThorns()};
-        String[] expected={"makes you invulnerable","random scroll effect","one chance at loot","Trampling tall grass","spiritual power","can pass through walls","normal ration","natural healing","Scrying searches","Portable alchemy","3 tile wide","Activation takes","Cleric spells","Set a return point","When active"};
+        String[] expected={"makes you invulnerable","random scroll effect","one chance at loot","Trampling tall grass","spiritual power","can pass through walls","normal ration","1 HP every","Scrying searches","Portable alchemy","3 tile wide","Activation takes","Cleric spells","Set a return point","When active"};
         String[] curseExpected={"10% chance","except Remove Curse and Anti-Magic","20% chance","stops normal seed","hostile wraith","slow your movement","33% less filling","50% longer","Manual Search still works","alchemy pots","5 out of 6","Cannot activate","Cannot cast spells","teleport actions still work","deflection effects still work"};
         try{for(int i=0;i<items.length;i++)for(boolean cursed:new boolean[]{false,true})for(boolean use:new boolean[]{false,true}){
             Item item=items[i];String required=cursed?curseExpected[i]:expected[i];AtomicReference<WndInfoItem> shown=new AtomicReference<>();
@@ -470,6 +470,16 @@ public class QolItemFeedbackDeviceTest {
                 showItem(armor,"without Arcana","qol-passive-glyph-"+name+"-arcana.png",true,true);
             }
         }finally{TopScoresDeviceTest.render(()->{for(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff buff:new java.util.ArrayList<>(Dungeon.hero.buffs(Ring.RingBuff.class)))buff.detach();Dungeon.hero.belongings.ring=(Ring)previous[0];Dungeon.hero.belongings.misc=previous[1];if(previous[0]!=null)previous[0].activate(Dungeon.hero);if(previous[1] instanceof Ring)previous[1].activate(Dungeon.hero);});}
+    }
+    private static void chaliceNormalRatesRender()throws Exception{
+        com.watabou.utils.Bundle original=new com.watabou.utils.Bundle();
+        TopScoresDeviceTest.render(()->{Dungeon.apdStoreCustomRules(original);com.watabou.utils.Bundle all=new com.watabou.utils.Bundle(),rules=new com.watabou.utils.Bundle();com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomDungeonRules.defaults().with(com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomDungeonRules.Slider.HEALING,100).store(rules);all.put("apd_custom_rules",rules);Dungeon.apdRestoreCustomRules(all);});
+        try{for(int level:new int[]{0,3,10}){
+            com.shatteredpixel.shatteredpixeldungeon.items.artifacts.ChaliceOfBlood chalice=new com.shatteredpixel.shatteredpixeldungeon.items.artifacts.ChaliceOfBlood();
+            TopScoresDeviceTest.render(()->{chalice.level(level);chalice.levelKnown=chalice.cursedKnown=true;String text=chalice.info();assertFalse(text.contains("Pricking upgrades"));assertTrue(text,text.contains("Does not heal while starving"));});
+            showItem(chalice,"1 HP every "+com.shatteredpixel.shatteredpixeldungeon.apd.mechanics.ObfuscationExplanation.number(10f-(1.33f+level*.667f))+" turns","qol-chalice-concise-level-"+level+".png",false,true);
+            if(level==10)calculationWindow(()->new WndInfoItem(chalice),"cannot be pricked again","qol-chalice-max-upgrade-retained-detail.png");
+        }}finally{TopScoresDeviceTest.render(()->Dungeon.apdRestoreCustomRules(original));}
     }
     private static void artifactBuffsAndDisabledHealingRender()throws Exception{
         com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CloakOfShadows cloak=new com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CloakOfShadows();
@@ -1008,6 +1018,7 @@ public class QolItemFeedbackDeviceTest {
             lightningAndRegrowthDescriptionsRender();
             livingEarthAndPrismaticDescriptionsRender();
             passiveGlyphArcanaDescriptionsRender();
+            chaliceNormalRatesRender();
             artifactBuffsAndDisabledHealingRender();
             catalystAndTransferDescriptionsRender();
             correctedEnchantmentDescriptionsRender();
