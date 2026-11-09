@@ -252,8 +252,8 @@ public class QolItemFeedbackDeviceTest {
         }finally{TopScoresDeviceTest.render(()->{if(shown.get()!=null)shown.get().hide();Dungeon.hero.belongings.weapon=previous[0];});}
     }
     private static void calculationWindowsRenderAndRespond()throws Exception{
-        String[] statusNames={"Invisibility","Invulnerability","Cripple","Stamina","Blindness","Roots","PinCushion","Barkskin","ArcaneArmor","RevealedArea","GravityChaosTracker","SwarmIntelTracker","Drowsy","MagicalSleep","FireImbue","FrostImbue","Adrenaline","Fury","AdrenalineSurge","Healing","GreaterHaste","WellFed","PhysicalEmpower","WandEmpower","Amok","Charm","Terror","Dread","Vertigo","Light","LifeLink","MagicImmune","BlobImmunity","EnhancedRings","PrismaticGuard","Frost","Levitation","ToxicImbue","LockedFloor","Burning","Corrosion","Ooze"};
-        String[] statusText={"last known position","ordinary damage","twice as long","two thirds","normal scroll and tome reading","Teleportation","quantity: 3","3 turns apart","3 turns apart","3 × 3","pulse count: 11","visible monsters","Incoming damage","1 HP per turn","50% chance","3 turns of Chill","hero does not gain","health is above 50%","Added strength: 2","Healing reserve: 100 HP","haste units: 6","multiple of 18","Adds 3 damage","Adds 4 damage","visible hero","shortens the effect by 5 turns","regardless of damage amount","Remaining fear updates","eight neighboring directions","base sight","combined raw shares can exceed","Suppressed equipment","Burning and Poison","Might's strength bonus","Stored health: 5","Freezing belongings","sacrificial fire","Gas releases left: 2","Recovery grace","Base damage per turn","Base damage grows each turn","flying prevents water"};
+        String[] statusNames={"Invisibility","Invulnerability","Cripple","Stamina","Blindness","Roots","PinCushion","Barkskin","ArcaneArmor","RevealedArea","GravityChaosTracker","SwarmIntelTracker","Drowsy","MagicalSleep","FireImbue","FrostImbue","Adrenaline","Fury","AdrenalineSurge","Healing","GreaterHaste","WellFed","PhysicalEmpower","WandEmpower","Amok","Charm","Terror","Dread","Vertigo","Light","LifeLink","MagicImmune","BlobImmunity","EnhancedRings","PrismaticGuard","Frost","Levitation","ToxicImbue","LockedFloor","Burning","Corrosion","Ooze","ScrollEmpower","MagicalSight","MindVision","Shadows"};
+        String[] statusText={"last known position","ordinary damage","twice as long","two thirds","normal scroll and tome reading","Teleportation","quantity: 3","3 turns apart","3 turns apart","3 × 3","pulse count: 11","visible monsters","Incoming damage","1 HP per turn","50% chance","3 turns of Chill","hero does not gain","health is above 50%","Added strength: 2","Healing reserve: 100 HP","haste units: 6","multiple of 18","Adds 3 damage","Adds 4 damage","visible hero","shortens the effect by 5 turns","regardless of damage amount","Remaining fear updates","eight neighboring directions","base sight","combined raw shares can exceed","Suppressed equipment","Burning and Poison","Might's strength bonus","Stored health: 5","Freezing belongings","sacrificial fire","Gas releases left: 2","Recovery grace","Base damage per turn","Base damage grows each turn","flying prevents water","Wand casts left: 3","Sight through walls","within 1 tile","Refresh countdown: 2"};
         for(int i=0;i<statusNames.length;i++){
             final String name=statusNames[i];
             calculationWindow(()->{
@@ -274,12 +274,25 @@ public class QolItemFeedbackDeviceTest {
                 if(effect instanceof com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning){com.watabou.utils.Bundle data=new com.watabou.utils.Bundle();effect.storeInBundle(data);data.put("left",8f);effect.restoreFromBundle(data);}
                 if(effect instanceof com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Corrosion)((com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Corrosion)effect).set(8,2);
                 if(effect instanceof com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Ooze)((com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Ooze)effect).set(8);
+                if(effect instanceof com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ScrollEmpower)((com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ScrollEmpower)effect).reset(3);
+                if(effect instanceof com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Shadows)((com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Shadows)effect).prolong();
                 return new WndInfoBuff(effect);
             },statusText[i],"qol-existing-status-clear-"+name+".png");
         }
 
         calculationWindow(()->{com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CloakOfShadows cloak=new com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CloakOfShadows();cloak.levelKnown=cloak.cursedKnown=true;return new WndInfoItem(cloak);},"every 4 turns","qol-cloak-explanation-expanded.png");
         calculationWindow(()->{com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose rose=new com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose();rose.levelKnown=rose.cursedKnown=true;return new WndInfoItem(rose);},"the ghost’s health percentage","qol-rose-explanation-expanded.png");
+
+        final com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent holding=com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent.HOLD_FAST;
+        java.util.LinkedHashMap<com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent,Integer> holdTier=Dungeon.hero.talents.get(0);
+        for(java.util.LinkedHashMap<com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent,Integer> tier:Dungeon.hero.talents)if(tier.containsKey(holding)){holdTier=tier;break;}
+        final java.util.Map<com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent,Integer> holdValues=holdTier;final Integer priorHold=holdValues.get(holding);
+        try{
+            TopScoresDeviceTest.render(()->holdValues.put(holding,2));
+            for(boolean moved:new boolean[]{false,true})calculationWindow(()->{
+                com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HoldFast hold=new com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HoldFast();hold.target=Dungeon.hero;hold.pos=Dungeon.hero.pos+(moved?1:0);return new WndInfoBuff(hold);
+            },moved?"currently inactive":"currently active","qol-existing-status-clear-HoldFast-"+(moved?"moved":"holding")+".png");
+        }finally{TopScoresDeviceTest.render(()->{if(priorHold==null)holdValues.remove(holding);else holdValues.put(holding,priorHold);});}
 
         calculationWindow(()->new WndInfoBuff(new com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfLightning.LightningCharge()),"up to 2 tiles","qol-existing-status-clear-LightningCharge.png");
 
