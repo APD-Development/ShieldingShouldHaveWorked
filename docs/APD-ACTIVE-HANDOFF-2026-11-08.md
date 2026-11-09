@@ -214,3 +214,8 @@ Private rejected404draft retains both original unaccepted APKs in explicitly UNV
 ### Vampiric custom-healing description regression and seventeen own enchantment reviews
 
 Full17own source/trackers/condition/save paths individually read with actualChar/Mob/resource/effect consumers. Shared/class/legacy providers remain separate. Found Vampiric ordinary healpercent ignored nonzero customhealing setting; real25%rule regression showed50%. Corrected read-only nominalpercentage with about/HPcap wording for existing round/fractionalcredit mechanics.36actualactivations across25/50/100/200healing,Arcana0/3/12,damage5/12/20 pass and inspection preservescredit/state.3114core457allpass; initialfailure and acceptedfullXML/log preserved. Two actual25/200nativewindows prepared, NOT run; newestchange notin406. Source-only debug/release/testJava/desktop verification requested, no newAPK.436units433full/partial350corrected307complete129unresolved;5339Englishkeys. Wholeauditstillunfinished.
+
+
+### Live-percent translation compatibility
+
+Allconfigured Languages values×Bless/Hex/Daze actualdesc formatting passes, restoring original language afterward. Original translated turn placeholders remain valid with extra ignored numeric argument.3115fullcore457allpass, rawXML/log committed. Production unchanged since91a71abc0; source-only compile requested.405retry both variants all12success, packagingpending;406nativepending. Wholeaudit436units433full/partial350corrected307complete129unresolved.

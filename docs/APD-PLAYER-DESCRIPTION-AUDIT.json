@@ -4467,6 +4467,6 @@
     }
   ],
   "completed_units": 307,
-  "latest_tests": "3114core457 no failures/errors/skips. Vampiric nonzero customhealing normal-tooltip mismatch reproduced, corrected;36actual activations (4healing\u00d73Arcana\u00d73damage), credit/state preservation pass. All earlier combat/description/save tests retained. Fullraw /workspace/apd-vampiric-evidence-20261109/accepted-full. Source-only Android compilation requested; newest25/200nativewindows NOT yet run, not included in406. Wholeauditunfinished.",
+  "latest_tests": "3114core457 no failures/errors/skips. Vampiric nonzero customhealing normal-tooltip mismatch reproduced, corrected;36actual activations (4healing\u00d73Arcana\u00d73damage), credit/state preservation pass. All earlier combat/description/save tests retained. Fullraw /workspace/apd-vampiric-evidence-20261109/accepted-full. Source-only Android compilation requested; newest25/200nativewindows NOT yet run, not included in406. Wholeauditunfinished. Added all-configured-language formatting regression for three live-percent buffs;3115fullcore457pass, nofail/error/skip. No production changes since91a71abc0. Newest Vampire Android window runtime remains pending.",
   "message_inventory_entries": 5339
 }

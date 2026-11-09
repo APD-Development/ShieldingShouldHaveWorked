@@ -954,6 +954,13 @@ public class MechanicsExplanationTest {
    ArcaneArmor arcane=Buff.affect(hero,ArcaneArmor.class);arcane.set(9,interval);before=savedDescriptionHero();assertTrue(arcane.desc().contains("_0–9 damage_"));assertEquals(before,savedDescriptionHero());arcane.act();assertEquals(8,arcane.level());assertTrue(arcane.desc().contains("_0–8 damage_"));saved=new com.watabou.utils.Bundle();arcane.storeInBundle(saved);ArcaneArmor restored=new ArcaneArmor();restored.restoreFromBundle(saved);assertEquals(arcane.desc(),restored.desc());assertEquals(interval,restored.decayInterval());arcane.detach();
   }
  }
+ @Test public void liveContestPercentDescriptionsPreserveAllExistingTranslationPlaceholders(){
+  com.shatteredpixel.shatteredpixeldungeon.messages.Languages previous=com.shatteredpixel.shatteredpixeldungeon.messages.Messages.lang();
+  try{for(com.shatteredpixel.shatteredpixeldungeon.messages.Languages language:com.shatteredpixel.shatteredpixeldungeon.messages.Languages.values()){
+   com.shatteredpixel.shatteredpixeldungeon.messages.Messages.setup(language);
+   for(Buff buff:new Buff[]{new Bless(),new Hex(),new Daze()}){String text=buff.desc();assertFalse(language+" "+buff.getClass().getSimpleName()+": "+text,text.isEmpty()||text.contains(com.shatteredpixel.shatteredpixeldungeon.messages.Messages.NO_TEXT_FOUND)||text.contains("!!!")||text.contains("%1$s")||text.contains("%2$s"));}
+  }}finally{com.shatteredpixel.shatteredpixeldungeon.messages.Messages.setup(previous);}
+ }
  @Test public void blessHexAndDazeExplainScoresInsteadOfDirectHitProbability(){
   for(Buff buff:new Buff[]{new Bless(),new Hex(),new Daze()}){String desc=buff.desc();assertTrue(desc,desc.contains("accuracy and evasion"));assertTrue(desc,desc.contains("final chances depend on your enemy"));}
  }
