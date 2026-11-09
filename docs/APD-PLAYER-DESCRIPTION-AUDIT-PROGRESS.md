@@ -1,6 +1,6 @@
 ## Current status — November 9, 2026, active owner-authorized development
 
-Active authorization through16:00EST/21:00UTC. Audit unfinished:437sourceunits (one previously omitted ordinary plant window added),434full/partialreviewed,353corrected,398own-sourcecomplete,39unresolved;5343Englishentries/2432item entries. Units are not distinct items. Latestpublished409;410sourceccfbb85b6passes3131core and compilation, runtime acceptance in progress. Latestlater source3133core457allpass, including actual zero-Healing food benefits; thirty ordinary plant windows prepared to verify removed generic plant panel.3132 Android sourcecompile42609605936passed before latest food/plant changes. Historical notes below retain exact earlier cutoffs; no wholeaudit/physicalphone/audio claim.
+Active authorization through16:00EST/21:00UTC. Audit unfinished:437source units,435 fully/partially reviewed,354 corrected,420 own-source complete,17 unresolved;5343 English entries/2432 item entries. These are source-unit counts, not distinct items. Latest published410. Build411 has passed its12 native cases after a one-phrase test-only correction; source preparation and delivery review pending. Build412 Android checks pending. Latest later source3134core/457 suites all pass. No physical-phone or acoustic-audio verification claimed. Historical notes below retain exact prior cutoffs.
 
 ## Latest continuation — crafted spells, runestones and Duelist examples
 

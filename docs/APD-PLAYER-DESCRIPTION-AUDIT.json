@@ -6,7 +6,7 @@
   "message_entries": 2432,
   "reviewed_units": 435,
   "corrected_units": 354,
-  "unresolved_units": 26,
+  "unresolved_units": 17,
   "category_counts": {
     "apd": 1,
     "mechanics": 38,
@@ -120,11 +120,11 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/BombExplanation.java",
       "sha256": "4a23a9e2fa061d7d88be27d8cf223945fd845845e3d60c46dcb84cf5c9652ba7",
       "category": "mechanics",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_UNCHANGED",
       "description_methods": [
         "details"
       ],
-      "review_notes": "2026-11-09 read full bomb-effect provider, ordinary bomb descriptions, FlashBang full handler and Noisemaker full staged fuse/save/pickup handlers. Legacy export has no ordinary bomb calculations UI; no panel added. Existing actual occupancy/fuse/save/read-only tests retained. Remaining special detonation variants still require individual handler reconciliation."
+      "review_notes": "2026-11-09: Full legacy secondary provider read against the individually reviewed bomb source branches: fuse and range, armor versus Arcane, Holy/Flashbang independent rolls, fire/freezing/smoke volumes, Shrapnel LOS, Regrowth placements, sheep and Noisemaker. It is reachable only through the legacy MechanicsDetails.item API, which has no production callers. No ordinary bomb calculation panel is enabled or added; ordinary descriptions and actual blast tests remain authoritative."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/BuffExplanation.java",
@@ -153,19 +153,19 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/CraftingEffectExplanation.java",
       "sha256": "33cc45a85d4b76cb005d2b9429f3a29888b562f81426bb6d124856b90bcb6c66",
       "category": "mechanics",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_UNCHANGED",
       "description_methods": [
         "details"
       ],
-      "review_notes": "2026-11-09 full legacy Rune/alchemy provider read and actual caller inventory checked. Ordinary itemCalculations does not dispatch it; no expander restored. Own source/normal descriptions of concrete stones/spells reviewed elsewhere. Comprehensive secondary numerical/formula reconciliation still incomplete."
+      "review_notes": "2026-11-09: Full legacy secondary provider read against individually reviewed stone/spell sources: selection and knowledge, augmentation, bomb and shock, infusion, recharge, pickup timing, teleport, trap capture, beacon, recycle, alchemy and summons. Legacy MechanicsDetails.item has no production callers. Its technical text is not injected into normal descriptions or panels. No interface or gameplay changes."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/CurseExplanation.java",
       "sha256": "0bd8a15436dd837bc045d40c0f74348d10063a56d2faa3c00bd5d021804ee63f",
       "category": "mechanics",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_UNCHANGED",
       "description_methods": [],
-      "review_notes": "2026-11-09 full legacy curse provider read; live ordinary enchantment/glyph callers checked and Bulk/Metabolism/Sacrificial handlers individually read. Ordinary weapon/glyph descriptions use concise own fallback, not this legacy technical export. Bulk/Metabolism normal exceptions remain useful. Other secondary curse handler reconciliation still open; no panels added."
+      "review_notes": "2026-11-09: Full known curse provider read against reviewed10weapon/8armor curse sources: unknown guards, Arcana and aura, suppression, two Sacrificial checks, Polarized rounding, hidden Explosive meter, Wayward transition, Bulk, Metabolism hunger/healing, spawn/plant/gas. Existing tests compare actual outcomes, hidden-level independence and purity. Ordinary descriptions use the separately reviewed concise paths; no calculation panels added."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/DewExplanation.java",
@@ -249,11 +249,11 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/MissileExplanation.java",
       "sha256": "299b9d2a65076ff4f0f2c2fc5f57bdca86b175cb06187fbf4d30e30f716a798c",
       "category": "mechanics",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_UNCHANGED",
       "description_methods": [
         "details"
       ],
-      "review_notes": "2026-11-09 full provider source read; legacy details exported via MechanicsDetails.item/UtilityItemExplanation.details. No ordinary UI caller via itemCalculations, no expander restored. Underlying dew/metal/missile resource and all exceptional subclass details require further individual numerical review; not closed."
+      "review_notes": "2026-11-09: Full legacy provider and every dart branch read against individually reviewed thrown/dart effects: ordinary versus effective durability, unknown Sharpshooting guards, Tomahawk bleed, Piranha minimum, Shuriken timing, returning cell, ForceCube and charge/ally restrictions. This details provider is only referenced by the uncalled legacy MechanicsDetails.item API. No technical durability panel is enabled for ordinary thrown weapons; no changes to projectile mechanics."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/MonkAbilityExplanation.java",
@@ -293,23 +293,23 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/PlantExplanation.java",
       "sha256": "c2bfd916aec2d60815c253d58de131738cc6c74e1baf8d8d811b4267bc39bb59",
       "category": "mechanics",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_UNCHANGED",
       "description_methods": [
         "details"
       ],
-      "review_notes": "2026-11-09 read entire species provider and activation handlers for13 plants, including Warden replacements and special Rotberry/Blandfruit wither/drop handling. This legacy export is not returned by ordinary seed itemCalculations; no panel restored. Existing actual Sungrass/Earthroot/Sorrowmoss/TimeBubble and new Blindweed/Stormvine/Mageroyal tests cover actual effects. Other secondary species variants still open."
+      "review_notes": "2026-11-09: Full legacy provider read for all13 species and both Warden states, against already individually reviewed plant/Seed and buff mechanics. Existing generic plant panel has been removed using the existing plain window. This provider now has no production caller other than the uncalled legacy MechanicsDetails.item API. Ordinary species descriptions and thirty Android text/control/bounds checks remain separate; no generic panel reintroduced."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/PotionExplanation.java",
       "sha256": "b5dbea187193c527b7374f7a5bc59da64ce95f0d21af345417bb9a6cbffd59b0",
       "category": "mechanics",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [
         "details",
         "effect"
       ],
       "wording_corrected": true,
-      "review_notes": "Partial provider review2026-11-09: Might/Feather/Arcane cases individually compared with real handlers. Feather legacy effect text now shares live unchanged duration/fall-cost constants. Many other cases still require individual numerical reconciliation; not completed or exposed as new ordinary panels."
+      "review_notes": "2026-11-09: Full legacy provider including all ordinary/exotic/elixir/brew branches read against previously individually reviewed effect sources and actual cure/heal/shield/duration/cloud tests. Unknown type returns no effect; shared food delegates remain separately tracked. Legacy details are not dispatched to ordinary item windows, and no new panels or gameplay changes were introduced."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/PreparedShotExplanation.java",
@@ -466,12 +466,12 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/qol/RingItemEffects.java",
       "sha256": "f4902243e1ae106bba7122e9dbf46cf0d8d74c006f11995b9d01f7e9d1e3f1bb",
       "category": "qol",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [
         "describe"
       ],
       "wording_corrected": true,
-      "review_notes": "Read actual ring-effect provider and RotDart fixed wear override. Reproduced misleading generic durability row; suppress only that row for RotDart while retaining actual ring damage. Regression covers uncursed, harmful cursed and neutral upgraded cursed ring states and20wear independent of level, no save mutation. Other item-specific applicability continues under review. Followup2026-11-09: actual Item.info notes/rings/origin composition, unknown origin/range gates, both item window/action layouts and bounded panel source read. Source-specific decorated crossing/rows/patch and mine labels written after actual room subclasses read; classification/source/recovery rules untouched. Transmutation ordinary text no longer promises unsupported armor/glyph changes, reflects actual restrictions/property transfer; actual sword transfer/knowledge regression. WndInfoItem title color now uses read-only public level, preserving stale wand-infusion metadata; actual native checks pending. Empty Weapon summary no longer adds blank paragraphs, zero-wear missiles omit meaningless Sharpshooting durability multiplier. Full3064core457suites pass; new portrait/landscape native pending393, not392. Full inherited/secondary room-rule and shared variants remain open. Followup2026-11-09 reproduced Twin Upgrades hidden-companion disclosure: Sword known1damage4\u201324became11\u201352and Cleave10\u201330became24\u201365; Dart5\u201315became12\u201336. Existing thread-local weapon/crossbow inspection now excludes unknown companion upgrade contribution, clearly labels omission based solely on visible tier/talent/knowledge, covers normal/optional enchantment/passive-block/ring/legacy/staff queries. Raw combat still borrows actual8outside inspection and on another thread; knowledge change updates displayed values. Exception unwinding/pending crossbow state/read-only saved state retained. Four meaningful regressions pass, actual new owned Sword/Dart windows pending399. No gameplay, balance, saves, targeting or controls changed."
+      "review_notes": "2026-11-09: Full own source and English contribution strings reviewed: equipment and combined identified-ring guards, Spirit Form, Magic Immune, passive Berserk inspection, Dart context, bow versus missile damage, Rot wear exception, augmented Force damage, Might and current-HP Tenacity, Energy supported artifacts. Existing live-value, unknown-state, RNG/save purity and class tests pass. No formula or panel changes."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/Amulet.java",
@@ -508,13 +508,13 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/BrokenSeal.java",
       "sha256": "d15497f1578cfcd013f307c741c8547370c172023ca885ad22a97139ab8049c2",
       "category": "items",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [
         "info",
         "desc"
       ],
       "wording_corrected": true,
-      "review_notes": "Read seal affix/maxShield and all WarriorShield state/save/expiry/cooldown paths plus actual Char.damage activation/hunger exclusion. Normal item/buff text concise, recharge wait versus positive saved credit separate without altering stored negative value. Read-only6state save/load regression plus existing real threshold/hunger/expiry tests. Existing advanced panel remains pending owner review."
+      "review_notes": "2026-11-09: Full own source and ordinary item, glyph-choice and Warrior Shield strings reviewed against actual maxShield, half-health activation, starvation exclusion, cooldown, retained credit, enemy-free expiry, Hold Fast and old-save migration. Ordinary text now says it can carry one upgrade between armor pieces, without incorrectly implying direct seal upgrading is excluded. Existing actual shield activation/cooldown/recharge-credit/save-load tests retained; shared providers remain tracked."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/Dewdrop.java",
@@ -601,10 +601,10 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/KindOfWeapon.java",
       "sha256": "c71abbabb2fc4f0297055d82f0e3047b941f792158f22c7903cf58f2345be639",
       "category": "items",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [],
       "wording_corrected": true,
-      "review_notes": " Champion slot-choice text shortened after actual shared Charger and instant swap review; native dialog pending395. HolyIntuition early curse detection text retained because actual detection returns before equipping. Remaining special attack paths still open."
+      "review_notes": "2026-11-09: Full own source and Champion slot dialog reviewed against actual primary/secondary equip, shared charges, swift equip, curse checks, reach and attack paths. No additional numerical description is introduced; shared Weapon, ability and item providers remain separately tracked. Existing class, purity and weapon tests retained."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/KindofMisc.java",
@@ -4478,7 +4478,7 @@
       "review_notes": "2026-11-09 individually inspected previously omitted plant window. Removed universal plant calculations supplier/button, outside owner-retained mechanic-specific groups, keeping normal species/Warden descriptions and existing plain window. No new layout or effects. Thirty actual plant windows across NONE/WARDEN prepared to assert no expander, text screen bounds, pure save/time; Android pending next pair."
     }
   ],
-  "completed_units": 411,
+  "completed_units": 420,
   "latest_tests": "3134core457all0 after full Weapon/Melee/ability/timing/preparation own-provider reviews and two ordinary wording changes.412source8bd99c644build/core/compile passed, native in progress.411originalnative rejected stale exact Catalyst phrase; full original-APK test-only retry42613038722running, originals/sourcefailurebranch preserved.410 latestpublished.",
   "message_inventory_entries": 5343,
   "message_inventory_counting": "Current authored English property entries across nine files;2432 item entries. Two concise zero-Healing dew/waterskin keys added. Exact Adult OFF/ON checks retained."
