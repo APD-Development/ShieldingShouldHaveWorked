@@ -229,12 +229,12 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/MechanicsDetails.java",
-      "sha256": "b68c3b213d48a82b0d6afff3ced20cfc931c911cb58bc9b195f950e406fba46a",
+      "sha256": "53016ac5af7660b516b55c76d16c2fdceacf73f4e573b8e1c86c6e9c1aca6a7f",
       "category": "mechanics",
       "status": "PARTIAL_REVIEW",
       "description_methods": [],
       "wording_corrected": true,
-      "review_notes": "Current ordinary-description pass: concise live values, duplicate mathematical prose removed. Existing optional details and entire category variants remain under review; panel decisions pending. See APD-DESCRIPTION-CORRECTION-2026-11-08.md. Followup2026-11-09 existing Recharging detail uses same unchanged0.25 getter as actual charger and normal status, not a separate hardcoded value; no dispatcher/panel change. Followup2026-11-09 reproduced Twin Upgrades hidden-companion disclosure: Sword known1damage4\u201324became11\u201352and Cleave10\u201330became24\u201365; Dart5\u201315became12\u201336. Existing thread-local weapon/crossbow inspection now excludes unknown companion upgrade contribution, clearly labels omission based solely on visible tier/talent/knowledge, covers normal/optional enchantment/passive-block/ring/legacy/staff queries. Raw combat still borrows actual8outside inspection and on another thread; knowledge change updates displayed values. Exception unwinding/pending crossbow state/read-only saved state retained. Four meaningful regressions pass, actual new owned Sword/Dart windows pending399. No gameplay, balance, saves, targeting or controls changed."
+      "review_notes": "Current ordinary-description pass: concise live values, duplicate mathematical prose removed. Existing optional details and entire category variants remain under review; panel decisions pending. See APD-DESCRIPTION-CORRECTION-2026-11-08.md. Followup2026-11-09 existing Recharging detail uses same unchanged0.25 getter as actual charger and normal status, not a separate hardcoded value; no dispatcher/panel change. Followup2026-11-09 reproduced Twin Upgrades hidden-companion disclosure: Sword known1damage4\u201324became11\u201352and Cleave10\u201330became24\u201365; Dart5\u201315became12\u201336. Existing thread-local weapon/crossbow inspection now excludes unknown companion upgrade contribution, clearly labels omission based solely on visible tier/talent/knowledge, covers normal/optional enchantment/passive-block/ring/legacy/staff queries. Raw combat still borrows actual8outside inspection and on another thread; knowledge change updates displayed values. Exception unwinding/pending crossbow state/read-only saved state retained. Four meaningful regressions pass, actual new owned Sword/Dart windows pending399. No gameplay, balance, saves, targeting or controls changed. November9 actual414screens showed shared duration boilerplate remained technical. Replaced footer with live visual duration in turns, removed redundant generic rank instructions, excluded duplicate generic shield totals only for Seal/Ascended providers that already show their live shield. Other shield displays and panel availability preserved. Existing actualHaste speed/timer and seal current/credit/save/purity tests extended;3136core457all0. Rendered-text guards for31 reviewed status and6 shield/two talent windows prepared for415. Further complex cases remain open."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/MetalExplanation.java",
@@ -4533,7 +4533,7 @@
     }
   ],
   "completed_units": 434,
-  "latest_tests": "3136core457all0 after seven additional fear/sight/sharing explanation reviews; later source31 status windows pending Android.",
+  "latest_tests": "3136core457all0 after shared footer/rank/shield wording correction.415 native acceptance pending;414 published with its unfinished footer disclosed.",
   "message_inventory_entries": 5343,
   "message_inventory_counting": "Current authored English property entries across nine files;2432 item entries. Two concise zero-Healing dew/waterskin keys added. Exact Adult OFF/ON checks retained."
 }
