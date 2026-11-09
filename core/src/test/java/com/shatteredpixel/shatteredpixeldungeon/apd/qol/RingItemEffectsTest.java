@@ -48,6 +48,14 @@ public class RingItemEffectsTest {
     private <T extends Ring> T wear(T r,int level){r.anonymize();r.level(level);r.levelKnown=true;r.cursedKnown=true;hero.belongings.ring=r;r.activate(hero);return r;}
     private String formatted(float v){return Messages.decimalFormat("0.##",v);}
     @Test public void sharpshootingShowsActualKnifeDamageBeforeAndAfter(){wear(new RingOfSharpshooting(),2);String s=RingItemEffects.describe(knife);assertTrue(s,s.contains("2-6 → 5-12"));assertEquals(5,knife.min());assertEquals(12,knife.max());assertTrue(s,s.contains(formatted(RingOfSharpshooting.durabilityMultiplier(hero))));}
+    @Test public void rotDartShowsRingDamageButNeverAnInapplicableDurabilityBonus(){
+        RingOfSharpshooting ring=wear(new RingOfSharpshooting(),0);
+        com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.RotDart dart=new com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.RotDart();dart.levelKnown=dart.cursedKnown=true;
+        for(boolean cursed:new boolean[]{false,true})for(int level:new int[]{0,3,9}){
+            ring.level(level);ring.cursed=cursed;Bundle before=new Bundle(),after=new Bundle();dart.storeInBundle(before);float wear=dart.previewDurabilityPerUse(0);String text=RingItemEffects.describe(dart);dart.storeInBundle(after);
+            assertEquals(text,ring.soloBuffedBonus()!=0,text.contains("Sharpshooting damage"));assertFalse(text,text.contains("Sharpshooting durability"));assertEquals(20,wear,0);assertEquals(wear,dart.previewDurabilityPerUse(9),0);assertEquals(before.toString(),after.toString());
+        }
+    }
     @Test public void combinedAndEnhancedSharpshootingUseActualEffectiveBonus(){RingOfSharpshooting a=wear(new RingOfSharpshooting(),0);RingOfSharpshooting b=new RingOfSharpshooting();b.anonymize();b.levelKnown=true;b.cursedKnown=true;hero.belongings.misc=b;b.activate(hero);Buff.affect(hero,EnhancedRings.class);String s=RingItemEffects.describe(knife);int bonus=RingOfSharpshooting.levelDamageBonus(hero);assertEquals(4,bonus);assertTrue(s,s.contains("2-6 → "+knife.min()+"-"+knife.max()));assertTrue(s,s.contains(formatted(RingOfSharpshooting.durabilityMultiplier(hero))));}
     @Test public void cursedRingReductionMatchesActualDamageAndDoesNotGoNegative(){RingOfSharpshooting r=wear(new RingOfSharpshooting(),0);r.cursed=true;String s=RingItemEffects.describe(knife);assertTrue(s,s.contains("2-6 → "+knife.min()+"-"+knife.max()));assertEquals(0,knife.min());assertEquals(2,knife.max());}
     @Test public void weaponAugmentIsAppliedToBothRanges(){wear(new RingOfSharpshooting(),0);knife.augment=Weapon.Augment.DAMAGE;String s=RingItemEffects.describe(knife);assertTrue(s,s.contains(knife.augment.damageFactor(knife.min(0))+"-"+knife.augment.damageFactor(knife.max(0))+" → "+knife.augment.damageFactor(knife.min())+"-"+knife.augment.damageFactor(knife.max())));}

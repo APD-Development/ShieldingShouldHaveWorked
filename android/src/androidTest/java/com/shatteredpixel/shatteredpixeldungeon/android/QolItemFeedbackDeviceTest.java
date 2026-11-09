@@ -295,6 +295,16 @@ public class QolItemFeedbackDeviceTest {
             TopScoresDeviceTest.render(()->shown.get().hide());
         }}finally{TopScoresDeviceTest.render(()->Dungeon.hero.belongings.misc=previous);}
     }
+    private static void ordinaryFlailSpinDescriptionsRender()throws Exception{
+        for(int count=1;count<=3;count++){
+            final int spins=count;AtomicReference<Window> shown=new AtomicReference<>();
+            TopScoresDeviceTest.render(()->{
+                com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Flail.SpinAbilityTracker buff=new com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Flail.SpinAbilityTracker();buff.spins=spins;buff.spend(3);
+                assertTrue(buff.desc(),buff.desc().contains("Spins: "+spins+"/3"));Window window=new WndInfoBuff(buff);GameScene.show(window);shown.set(window);
+            });Thread.sleep(300);TopScoresDeviceTest.render(()->assertDescriptionViewport(shown.get()));
+            TopScoresDeviceTest.screenshot("qol-flail-spin-"+count+"-normal.png");TopScoresDeviceTest.render(()->shown.get().hide());
+        }
+    }
     private static void ordinaryWarriorShieldDescriptionsRender()throws Exception{
         for(int reserve:new int[]{0,12})for(int time:new int[]{-25,0,40}){
             AtomicReference<Window> shown=new AtomicReference<>();
@@ -327,7 +337,7 @@ public class QolItemFeedbackDeviceTest {
             Item item=(Item)Class.forName("com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts."+name).getDeclaredConstructor().newInstance();
             for(boolean use:new boolean[]{false,true}){
                 AtomicReference<WndInfoItem> shown=new AtomicReference<>();
-                TopScoresDeviceTest.render(()->{item.levelKnown=item.cursedKnown=true;WndInfoItem window=use?new WndUseItem(null,item):new WndInfoItem(item);GameScene.show(window);shown.set(window);assertFalse(item.info(),item.info().contains("scheduled units"));assertFalse(item.info().contains("scaling floor"));});
+                TopScoresDeviceTest.render(()->{item.levelKnown=item.cursedKnown=true;WndInfoItem window=use?new WndUseItem(null,item):new WndInfoItem(item);GameScene.show(window);shown.set(window);assertFalse(item.info(),item.info().contains("scheduled units"));assertFalse(item.info().contains("scaling floor"));if(name.equals("RotDart")){assertTrue(item.info(),item.info().contains("Sharpshooting damage"));assertFalse(item.info(),item.info().contains("Sharpshooting durability"));}});
                 Thread.sleep(300);TopScoresDeviceTest.render(()->assertDescriptionViewport(shown.get()));
                 if(use)TopScoresDeviceTest.screenshot("qol-ordinary-dart-"+name+"-description.png");
                 TopScoresDeviceTest.render(()->shown.get().hide());
@@ -338,8 +348,8 @@ public class QolItemFeedbackDeviceTest {
         HeroClass previous=Dungeon.hero.heroClass;
         try{
             TopScoresDeviceTest.render(()->Dungeon.hero.heroClass=HeroClass.DUELIST);
-            Item[] items={new com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Crossbow(),new com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sickle(),new com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WarScythe(),new com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Whip()};
-            String[] expected={"+7 base damage","base damage per turn","base damage per turn","every enemy within reach"};
+            Item[] items={new com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Crossbow(),new com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sickle(),new com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WarScythe(),new com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Whip(),new com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Dagger(),new com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Dirk(),new com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.AssassinsBlade(),new com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Flail(),new com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Gloves(),new com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sai(),new com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Gauntlet(),new com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Quarterstaff(),new com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.RoundShield(),new com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Greatshield(),new com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.RunicBlade(),new com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Scimitar() };
+            String[] expected={"+7 base damage","base damage per turn","base damage per turn","every enemy within reach","visible empty tile","visible empty tile","visible empty tile","first costs a charge","uses up the combo","uses up the combo","uses up the combo","triples your evasion","After blocking an attack","After blocking an attack","enchantment power","attack speed"};
             for(int i=0;i<items.length;i++){
                 Item item=items[i];TopScoresDeviceTest.render(()->{item.level(3);item.levelKnown=item.cursedKnown=true;});showItem(item,expected[i],"qol-duelist-"+i+"-concise.png",true);
                 TopScoresDeviceTest.render(()->{item.levelKnown=false;com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon weapon=(com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon)item;weapon.augment=com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon.Augment.DAMAGE;assertTrue(item.info(),item.info().contains("_"+weapon.augment.damageFactor(weapon.min(0))+"-"+weapon.augment.damageFactor(weapon.max(0))+" damage_"));});showItem(item,"Unupgraded example (+0)","qol-duelist-"+i+"-unknown-example.png",true);
@@ -567,6 +577,7 @@ public class QolItemFeedbackDeviceTest {
             ordinaryDartDescriptionsRender();
             ordinaryExoticPotionDescriptionsRender();
             ordinaryWarriorShieldDescriptionsRender();
+            ordinaryFlailSpinDescriptionsRender();
             inventoryOrderShowsAutomatically();
             prepareSearchableFloor();
             final int[] center={0};

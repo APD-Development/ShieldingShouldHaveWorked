@@ -429,12 +429,12 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/qol/RingItemEffects.java",
       "sha256": "aad0d8c7f8c5c361a512a440ee439fbdcf9779936b138f2ad471c476ef3d0ba2",
       "category": "qol",
-      "status": "PARTIAL_REVIEW",
+      "status": "PARTIAL",
       "description_methods": [
         "describe"
       ],
       "wording_corrected": true,
-      "review_notes": "Current ordinary-description pass: concise live values, duplicate mathematical prose removed. Existing optional details and entire category variants remain under review; panel decisions pending. See APD-DESCRIPTION-CORRECTION-2026-11-08.md."
+      "review_notes": "Read actual ring-effect provider and RotDart fixed wear override. Reproduced misleading generic durability row; suppress only that row for RotDart while retaining actual ring damage. Regression covers uncursed, harmful cursed and neutral upgraded cursed ring states and20wear independent of level, no save mutation. Other item-specific applicability continues under review."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/Amulet.java",
