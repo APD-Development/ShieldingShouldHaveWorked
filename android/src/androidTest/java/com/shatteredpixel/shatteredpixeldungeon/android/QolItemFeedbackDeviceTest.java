@@ -910,14 +910,16 @@ public class QolItemFeedbackDeviceTest {
     private static void ordinaryWarriorShieldDescriptionsRender()throws Exception{
         for(int reserve:new int[]{0,12})for(int time:new int[]{-25,0,40}){
             AtomicReference<Window> shown=new AtomicReference<>();
+            AtomicReference<com.shatteredpixel.shatteredpixeldungeon.items.BrokenSeal.WarriorShield> model=new AtomicReference<>();
             TopScoresDeviceTest.render(()->{try{
-                com.shatteredpixel.shatteredpixeldungeon.items.BrokenSeal.WarriorShield shield=new com.shatteredpixel.shatteredpixeldungeon.items.BrokenSeal.WarriorShield();shield.setShield(reserve);
+                com.shatteredpixel.shatteredpixeldungeon.items.BrokenSeal.WarriorShield shield=new com.shatteredpixel.shatteredpixeldungeon.items.BrokenSeal.WarriorShield();shield.setShield(reserve);model.set(shield);
                 java.lang.reflect.Field cooldown=shield.getClass().getDeclaredField("cooldown");cooldown.setAccessible(true);cooldown.setInt(shield,time);
                 assertFalse(shield.desc(),shield.desc().contains("game-time units"));Window window=new WndInfoBuff(shield);GameScene.show(window);shown.set(window);
             }catch(Exception e){throw new RuntimeException(e);}});
             Thread.sleep(300);TopScoresDeviceTest.render(()->assertDescriptionViewport(shown.get()));
             TopScoresDeviceTest.screenshot("qol-warrior-shield-"+reserve+"-"+time+"-normal.png");
             TopScoresDeviceTest.render(()->shown.get().hide());
+            calculationWindow(()->new WndInfoBuff(model.get()),"Enemy-free decay progress","qol-warrior-shield-"+reserve+"-"+time+"-details.png");
         }
     }
     private static void ordinaryExoticPotionDescriptionsRender()throws Exception{
