@@ -1,5 +1,5 @@
 {
-  "recorded_utc": "2026-11-09T17:49:17.814044+00:00",
+  "recorded_utc": "2026-11-09T17:54:19.784713+00:00",
   "authorization_end_utc": "2026-11-09T20:00:00Z",
   "latest_verified_published_build": 418,
   "release_url": "https://github.com/APD-Development/ShieldingShouldHaveWorked/releases/tag/apd-alpha-preview-418",
@@ -12,9 +12,9 @@
     "skipped": 0
   },
   "last_completed_android_source_compile": {
-    "commit": "5359247be4e7818e7316f470bf6d842812a70083",
-    "run": 42665918751,
-    "scope": "3153core plus Androiddebug/release/instrumentationJava/desktop allpassed. Includes latest nine spell branches, actual Priest attack, ten spell-window contexts."
+    "commit": "aa224a068",
+    "run": 42668339102,
+    "scope": "3153core and Androiddebug/release/instrumentationJava/desktop allpassed. Includes manually caught unsupportedglyph correction,14spellbranches/15actualspellcontexts with state restoration."
   },
   "latest_source_compile": {
     "commit": "7143d16bc481045b49ec4a60624128b0dcccc6b1",
@@ -63,15 +63,16 @@
   "physical_phone_or_acoustic_audio_verified": false,
   "background_development_after_window_claimed": false,
   "active_build": {
-    "number": 424,
-    "status": "Preparing after current3153source compilation/core pass. All12native and manualacceptance still required.",
+    "number": 425,
+    "status": "Preparing from latest verified3153source after actualfontfix. All12native/scans/independent/manual acceptance pending.",
     "previous_compiled_history": [
+      424,
       423,
       422,
       421,
       420
     ],
-    "source_parent": "f81a640a72904a498c99ccce8c5a93a679bd87ef"
+    "source_parent": "aa224a068"
   },
   "recovered_failed_attempts": {
     "415": {
