@@ -4,3 +4,5 @@
 After414cutoff: additional status prose and six ordinary descriptions shortened individually; no effect/panel availability changes.3136core457all0 raw evidence APD-415-status-description-source-review.zip. Nineteen detached effect inspection fixtures prepared; Android pending.414run42621170849 build succeeded, native still active.
 
 415source: five resource explanations shortened, mathematical Healing/Vial and stack rules preserved; Well Fed ordinary duration uses turns.3136core457all0, APD-415-resource-description-accepted.zip.24 actual existing status windows prepared, not yetAndroid verified.
+
+415source: fear/sight/link seven branches individually shortened; real behavior assertions retained,3136core457all0 with accepted raw ZIP.31 existing status windows prepared.414 original pair still in native acceptance.
