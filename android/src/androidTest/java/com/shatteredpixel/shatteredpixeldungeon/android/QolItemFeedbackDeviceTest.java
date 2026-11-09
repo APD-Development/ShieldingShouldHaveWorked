@@ -295,6 +295,27 @@ public class QolItemFeedbackDeviceTest {
             TopScoresDeviceTest.render(()->shown.get().hide());
         }}finally{TopScoresDeviceTest.render(()->Dungeon.hero.belongings.misc=previous);}
     }
+    private static void staffImbueConfirmationsRender()throws Exception{
+        int[][] cases={{0,2,1,2},{3,3,1,4},{3,2,1,3},{3,8,0,3}};
+        for(int index=0;index<cases.length;index++){
+            int[] values=cases[index];AtomicReference<WndOptions> shown=new AtomicReference<>();
+            TopScoresDeviceTest.render(()->{try{
+                com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff staff=new com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff();staff.level(values[0]);staff.levelKnown=staff.cursedKnown=true;
+                com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfMagicMissile wand=new com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfMagicMissile();wand.level(values[1]);wand.levelKnown=values[2]==1;wand.cursedKnown=wand.curChargeKnown=true;
+                com.watabou.utils.Bundle beforeStaff=new com.watabou.utils.Bundle(),beforeWand=new com.watabou.utils.Bundle();staff.storeInBundle(beforeStaff);wand.storeInBundle(beforeWand);
+                java.util.List<WndOptions> before=TopScoresDeviceTest.find(Game.scene(),WndOptions.class);
+                java.lang.reflect.Field selector=staff.getClass().getDeclaredField("itemSelector");selector.setAccessible(true);((WndBag.ItemSelector)selector.get(staff)).onSelect(wand);
+                java.util.List<WndOptions> created=TopScoresDeviceTest.find(Game.scene(),WndOptions.class);created.removeAll(before);assertEquals(1,created.size());WndOptions window=created.get(0);shown.set(window);
+                boolean found=false;for(RenderedTextBlock text:TopScoresDeviceTest.find(window,RenderedTextBlock.class))if(text.text().contains("Replace the staff")){
+                    assertTrue(text.text(),text.text().contains("if the staff was already upgraded"));assertTrue(text.text(),text.text().contains("+"+values[3]+" staff"));
+                    if(values[2]==0){assertTrue(text.text(),text.text().contains("at least"));assertFalse(text.text(),text.text().contains("+8"));assertFalse(text.text(),text.text().contains("+9"));}
+                    for(RedButton button:TopScoresDeviceTest.find(window,RedButton.class))assertTrue("Confirmation text does not overlap actions",text.bottom()<button.top());found=true;
+                }assertTrue("Actual imbue confirmation body is present",found);
+                com.watabou.utils.Bundle afterStaff=new com.watabou.utils.Bundle(),afterWand=new com.watabou.utils.Bundle();staff.storeInBundle(afterStaff);wand.storeInBundle(afterWand);assertEquals(beforeStaff.toString(),afterStaff.toString());assertEquals(beforeWand.toString(),afterWand.toString());
+            }catch(Exception e){throw new RuntimeException(e);}});
+            Thread.sleep(300);TopScoresDeviceTest.screenshot("qol-staff-imbue-confirmation-"+index+".png");TopScoresDeviceTest.render(()->shown.get().hide());
+        }
+    }
     private static void ordinaryFlailSpinDescriptionsRender()throws Exception{
         for(int count=1;count<=3;count++){
             final int spins=count;AtomicReference<Window> shown=new AtomicReference<>();
@@ -578,6 +599,7 @@ public class QolItemFeedbackDeviceTest {
             ordinaryExoticPotionDescriptionsRender();
             ordinaryWarriorShieldDescriptionsRender();
             ordinaryFlailSpinDescriptionsRender();
+            staffImbueConfirmationsRender();
             inventoryOrderShowsAutomatically();
             prepareSearchableFloor();
             final int[] center={0};
