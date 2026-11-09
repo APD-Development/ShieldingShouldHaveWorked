@@ -310,6 +310,22 @@ public class MechanicsExplanationTest {
    trinket.levelKnown=false;trinket.level(0);String zero=TrinketExplanation.details(trinket);trinket.level(3);assertEquals(type,zero,TrinketExplanation.details(trinket));
   }
  }
+ @Test public void trapMechanismDetailsMatchActualFloorWideRevealApportionment()throws Exception{
+  com.shatteredpixel.shatteredpixeldungeon.items.trinkets.TrapMechanism mechanism=new com.shatteredpixel.shatteredpixeldungeon.items.trinkets.TrapMechanism();mechanism.identify();hero.belongings.backpack.items.add(mechanism);
+  java.lang.reflect.Method paint=com.shatteredpixel.shatteredpixeldungeon.levels.painters.RegularPainter.class.getDeclaredMethod("paintTraps",com.shatteredpixel.shatteredpixeldungeon.levels.Level.class,java.util.ArrayList.class);paint.setAccessible(true);
+  for(int level=0;level<=3;level++)for(boolean themed:new boolean[]{false,true}){
+   mechanism.level(level);descriptionSightArena();for(int i=0;i<33;i++){Dungeon.level.map[i]=Dungeon.level.map[32*33+i]=Dungeon.level.map[i*33]=Dungeon.level.map[i*33+32]=com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.WALL;}Dungeon.level.buildFlagMaps();
+   Dungeon.level.feeling=themed?com.shatteredpixel.shatteredpixeldungeon.levels.Level.Feeling.TRAPS:com.shatteredpixel.shatteredpixeldungeon.levels.Level.Feeling.NONE;
+   com.shatteredpixel.shatteredpixeldungeon.levels.painters.SewerPainter painter=new com.shatteredpixel.shatteredpixeldungeon.levels.painters.SewerPainter();painter.setTraps(20,new Class<?>[]{com.shatteredpixel.shatteredpixeldungeon.levels.traps.ToxicTrap.class},new float[]{1});Random.pushGenerator(904+level);try{paint.invoke(painter,Dungeon.level,new java.util.ArrayList<>());}finally{Random.popGenerator();}
+   int visible=0;for(com.shatteredpixel.shatteredpixeldungeon.levels.traps.Trap trap:Dungeon.level.traps.valueList())if(trap.visible)visible++;
+   assertEquals(themed?100:20,Dungeon.level.traps.valueList().size());assertEquals((themed?80:0)+2*(level+1),visible);
+   String text=TrinketExplanation.details(mechanism);assertTrue(text,text.contains("spread across the floor"));assertTrue(text,text.contains("hidden-door searching are unchanged"));
+  }
+ }
+ @Test public void censerAndSpyglassDetailsRetainActualIntervalsAndWholePlusFractionCounts(){
+  com.shatteredpixel.shatteredpixeldungeon.items.trinkets.ChaoticCenser censer=new com.shatteredpixel.shatteredpixeldungeon.items.trinkets.ChaoticCenser();censer.identify();com.shatteredpixel.shatteredpixeldungeon.items.trinkets.CrackedSpyglass spyglass=new com.shatteredpixel.shatteredpixeldungeon.items.trinkets.CrackedSpyglass();spyglass.identify();
+  for(int level=0;level<=3;level++){censer.level(level);spyglass.level(level);assertTrue(TrinketExplanation.details(censer).contains("_"+com.shatteredpixel.shatteredpixeldungeon.items.trinkets.ChaoticCenser.averageTurnsUntilGas(level)+" turns_"));assertTrue(censer.statsDesc().contains("random gas"));censer.levelKnown=false;assertTrue(censer.statsDesc().startsWith("At +0:"));censer.levelKnown=true;float extra=com.shatteredpixel.shatteredpixeldungeon.items.trinkets.CrackedSpyglass.extraLootChance(level);String detail=TrinketExplanation.details(spyglass);assertTrue(detail.contains("_"+(int)extra+" hidden item"));assertTrue(detail.contains(ObfuscationExplanation.number(100*(extra-(int)extra))+"%"));}
+ }
  @Test public void eyeOfNewtDescriptionMatchesActualRoundedVisionRange(){
   descriptionSightArena();hero.viewDistance=8;com.shatteredpixel.shatteredpixeldungeon.items.trinkets.EyeOfNewt eye=new com.shatteredpixel.shatteredpixeldungeon.items.trinkets.EyeOfNewt();eye.cursedKnown=true;hero.belongings.backpack.items.add(eye);
   for(int level=0;level<=3;level++){eye.level(level);boolean[] fov=new boolean[Dungeon.level.length()];Dungeon.level.updateFieldOfView(hero,fov);int radius=Math.round(8*com.shatteredpixel.shatteredpixeldungeon.items.trinkets.EyeOfNewt.visionRangeMultiplier(level));assertTrue(fov[hero.pos+radius]);assertFalse(fov[hero.pos+radius+1]);assertTrue(TrinketExplanation.details(eye).contains("_"+(2+level)+" tiles_"));}

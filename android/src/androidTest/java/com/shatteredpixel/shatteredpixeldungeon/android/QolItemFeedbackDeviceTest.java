@@ -502,6 +502,15 @@ public class QolItemFeedbackDeviceTest {
         AtomicReference<Window> shown=new AtomicReference<>();TopScoresDeviceTest.render(()->{com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Healing healing=new com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Healing();healing.setHeal(100,.25f,0);assertTrue(healing.desc().contains("Next heal: up to 25 HP"));com.watabou.utils.Bundle before=new com.watabou.utils.Bundle();healing.storeInBundle(before);Window window=new WndInfoBuff(healing);GameScene.show(window);shown.set(window);com.watabou.utils.Bundle after=new com.watabou.utils.Bundle();healing.storeInBundle(after);assertEquals(before.toString(),after.toString());});
         try{Thread.sleep(300);TopScoresDeviceTest.render(()->assertDescriptionViewport(shown.get()));TopScoresDeviceTest.screenshot("qol-gradual-healing-concise-status.png");}finally{TopScoresDeviceTest.render(()->shown.get().hide());}
     }
+    private static void additionalTrinketDetailsRender()throws Exception{
+        String[] names={"ParchmentScrap","PetrifiedSeed","DimensionalSundial","CrackedSpyglass","MossyClump","TrapMechanism","ChaoticCenser"};
+        String[] expected={"curses checked first","Dew drops are unchanged","phone, enemies respawn","Search uncovers these items","would otherwise have no special theme","spread across the floor","Some clouds are helpful"};
+        for(int i=0;i<names.length;i++){
+            final com.shatteredpixel.shatteredpixeldungeon.items.trinkets.Trinket item=(com.shatteredpixel.shatteredpixeldungeon.items.trinkets.Trinket)Class.forName("com.shatteredpixel.shatteredpixeldungeon.items.trinkets."+names[i]).getDeclaredConstructor().newInstance();item.level(3);item.levelKnown=item.cursedKnown=true;
+            calculationWindow(()->new WndInfoItem(item),expected[i],"qol-existing-trinket-detail-"+names[i]+".png");
+        }
+        com.shatteredpixel.shatteredpixeldungeon.items.trinkets.ChaoticCenser unknown=new com.shatteredpixel.shatteredpixeldungeon.items.trinkets.ChaoticCenser();unknown.level(3);unknown.levelKnown=false;unknown.cursedKnown=true;showItem(unknown,"At +0:","qol-censer-unidentified-example.png",true);
+    }
     private static void retainedGrowthAndWardDescriptionsRender()throws Exception{
         com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfWarding ward=new com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfWarding();ward.level(3);ward.levelKnown=ward.cursedKnown=ward.curChargeKnown=true;
         calculationWindow(()->new WndInfoItem(ward),"supports 5 points of wards","qol-warding-existing-detail-clear.png");
@@ -1207,6 +1216,7 @@ public class QolItemFeedbackDeviceTest {
             retainedBlastScrollDescriptionsRender();
             sightHungerHealingTrinketDescriptionsRender();
             retainedGrowthAndWardDescriptionsRender();
+            additionalTrinketDetailsRender();
             gradualHealingNonStackDescriptionsRender();
             hiddenTwinUpgradeDescriptionsRender();
             divineInspirationChoiceDescriptionRenders();

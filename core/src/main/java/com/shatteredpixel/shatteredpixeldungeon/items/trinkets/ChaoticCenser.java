@@ -70,7 +70,7 @@ public class ChaoticCenser extends Trinket {
 		if (isIdentified()){
 			return Messages.get(this, "stats_desc", averageTurnsUntilGas(buffedLvl()));
 		} else {
-			return Messages.get(this, "stats_desc", averageTurnsUntilGas(0));
+			return Messages.get(this, "typical_stats_desc", averageTurnsUntilGas(0));
 		}
 	}
 

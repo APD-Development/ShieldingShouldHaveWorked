@@ -302,3 +302,8 @@ Read complete own five Sword-family sources and shared Cleave branch behavior. E
 ### Retained growth and ward details
 
 Warding/Regrowth existing panels shorter, no new controls. Capacity counts resin/curse infusion, excludes temporary casting levels; Regrowth whole-number exhaustion formula/saved counters preserved and +10 described as effectively disabled rather than2147483647charges. All3103core457suites passed. New expanded native windows pending400. Seven own HeavyBlow/Spike source reviews closed after individual source reconciliation; inherited/shared review remains separate.420full/partial338corrected218complete209unresolved,5338English. Whole audit unfinished.399published fallback; continue.
+
+
+### Seven additional trinket details and armor curse reconciliation
+
+Seven existing trinket panels individually shortened, with actual spawn timing, hidden-loot whole/fraction count, theme eligibility, grass seed/stone versus dew and distributed trap reveals. Censer can also make helpful gases; ordinary label corrected, unknown uses existing At+0 example. Real painter matrix verifies20normal/100trap-themed totals and2/4/6/8base reveals; no painter changes.3105core457suites pass; two unaccepted fixture mistakes preserved separately. Seven own trinket and eight own armor-curse reviews completed; provider/class reviews still separate. 420 reviewed_units, 338 corrected_units, 233 completed_units, 194 unresolved_units. New eight Android windows pending401;400in verification contains prior growth/ward changes only. No physical-phone/audio or whole-audit completion claim.
