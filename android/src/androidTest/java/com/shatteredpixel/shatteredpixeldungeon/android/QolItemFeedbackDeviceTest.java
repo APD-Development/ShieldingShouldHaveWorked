@@ -259,8 +259,8 @@ public class QolItemFeedbackDeviceTest {
         }finally{TopScoresDeviceTest.render(()->{if(shown.get()!=null)shown.get().hide();Dungeon.hero.belongings.weapon=previous[0];});}
     }
     private static void calculationWindowsRenderAndRespond()throws Exception{
-        String[] conciseBuffNames={"Haste","Slow","Speed","Chill","Weakness","Vulnerable","Recharging","ArtifactRecharge","Poison","Bleeding","Barrier","Combo"};
-        String[] conciseBuffExpected={"Walk three times as fast","Actions take twice as long","Actions take half their usual time","Current action speed:","Attacks deal 33% less","Attacks deal 33% more","Extra wand charging","Extra artifact charging","Next turn:","randomly weakens","Barrier gradually fades","Time left:"};
+        String[] conciseBuffNames={"Haste","Slow","Speed","Chill","Weakness","Vulnerable","Recharging","ArtifactRecharge","Poison","Bleeding","Barrier","Combo","Paralysis","Foresight","AscensionChallenge","Bless","Hex","Daze","ChampionEnemy$Growing","ChampionEnemy$AntiMagic"};
+        String[] conciseBuffExpected={"Walk three times as fast","Actions take twice as long","Actions take half their usual time","Current action speed:","Attacks deal 33% less","Attacks deal 33% more","Extra wand charging","Extra artifact charging","Next turn:","randomly weakens","Barrier gradually fades","Time left:","Escape check","Foresight-assisted searching","Amulet's curse","Strengthens attack and dodge rolls","Weakens attack and dodge rolls","Weakens attack and dodge rolls","1 percentage point every four turns","including Hex, Weakness, Charm and Magical Sleep"};
         for(int i=0;i<conciseBuffNames.length;i++){
             final String name=conciseBuffNames[i];
             calculationWindow(()->{
@@ -271,6 +271,7 @@ public class QolItemFeedbackDeviceTest {
                 if(effect instanceof com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bleeding){com.watabou.utils.Bundle b=new com.watabou.utils.Bundle();effect.storeInBundle(b);b.put("level",8f);effect.restoreFromBundle(b);}
                 if(effect instanceof com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier)((com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier)effect).setShield(10);
                 if(effect instanceof com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Combo){com.watabou.utils.Bundle b=new com.watabou.utils.Bundle();effect.storeInBundle(b);b.put("count",8);b.put("combotime",10f);effect.restoreFromBundle(b);}
+                if(effect instanceof com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge){com.watabou.utils.Bundle b=new com.watabou.utils.Bundle();effect.storeInBundle(b);b.put(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge.STACKS,8.5f);b.put(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge.DAMAGE,.5f);effect.restoreFromBundle(b);}
                 effect.target=Dungeon.hero;
                 return new WndInfoBuff(effect);
             },conciseBuffExpected[i],"qol-existing-status-clear-concise-"+name+".png");

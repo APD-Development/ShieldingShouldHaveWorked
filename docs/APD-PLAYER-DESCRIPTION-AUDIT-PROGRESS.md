@@ -433,3 +433,5 @@ November9 07:59EST:442 units fully/partially reviewed,434 own-sourcecomplete,356
 
 
 2026-11-09T18:34:45.455487+00:00: completed individual own-source review of all27current SpellExplanation branches and resources/class/talent mappings.3155core457all0;32realspellcontexts prepared (Priest,Paladin,MagicImmunity) withstate restoration.439own-sourcecomplete,6open,445units,359corrected;5353Englishentries/2432itemkeys. No gameplay/balance/save/UI availability changes. Native/manual stillpending;425usesolder14branch/font-correctedsource andis stagedprivate. No complete-project claim.
+
+November9 2026-11-09T19:08:00.182426+00:00: MechanicsDetails and BuffExplanation own-source review closed against actual handlers and tests.441/445 own-source units complete,359 corrected,4 unresolved. Existing mechanic panels retained pending owner review.3157core457allzero; newer428Androidsource/native and manual verification pending.426original native failure/fixture-only retry and427pre-assembly metadata failure preserved.425remains latestpublished at this checkpoint.

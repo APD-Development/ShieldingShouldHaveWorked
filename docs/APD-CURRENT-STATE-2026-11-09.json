@@ -1,5 +1,5 @@
 {
-  "recorded_utc": "2026-11-09T18:56:24.716368+00:00",
+  "recorded_utc": "2026-11-09T19:08:00.182426+00:00",
   "authorization_end_utc": "2026-11-09T20:00:00Z",
   "latest_verified_published_build": 425,
   "release_url": "https://github.com/APD-Development/ShieldingShouldHaveWorked/releases/tag/apd-alpha-preview-425",
@@ -12,9 +12,9 @@
     "skipped": 0
   },
   "last_completed_android_source_compile": {
-    "commit": "1b6d43d1e44886055cbfc8093eb85377dc5cdd9b",
-    "run": 42675254523,
-    "scope": "3155core plus Androiddebug/release/instrumentationJava/desktop allpassed. All27SpellExplanationbranches and32actualwindow contexts, including actual classFOV andmagic-immunity tests."
+    "commit": "3eb023205def8a2d8e13a218057df81ad7558318",
+    "run": 42678990585,
+    "scope": "3157core/457 and Androiddebug/release/instrumentationJava/desktop allpassed; latest427production and allfixture changes compiled."
   },
   "latest_source_compile": {
     "commit": "7143d16bc481045b49ec4a60624128b0dcccc6b1",
@@ -36,37 +36,29 @@
     "426": "Original native fixture expects old HolyWeapon sentence; both variants rejected. Originalsource/APKs/failure evidence retained. Test-only retry pending."
   },
   "newest_source_not_in_any_apk": [
-    "Shortened existing buff/talent wrapper details, no panel-availability changes;3157core passed; Android source/native pending"
+    "Shortened existing paralysis/ascent/Foresight/status contest/champion detail text;3157coregreen, native window fixtures prepared"
   ],
   "audit": {
     "source_units": 445,
-    "completed_units": 440,
-    "unresolved_units": 5,
+    "completed_units": 441,
+    "unresolved_units": 4,
     "corrected_units": 359,
     "message_inventory_entries": 5353
   },
   "remaining": [
-    "Finish5 individual source reviews: AbilityExplanation, BuffExplanation, TalentExplanation, CursedWand owner wording decision, Talent normal text",
-    "426 native tests/staging/independent byte and manual window acceptance pending",
-    "New427 wrapper native verification and publication pending",
-    "SPD-only audio: physical acoustic reproduction remains unverified; no proven APD fix"
+    "Finish4reviews: AbilityExplanation, TalentExplanation, Talent normal English, CursedWand owner wording decision",
+    "426/427native, staging, independentbytes and manualvisual acceptance beforepublication",
+    "428source/native verification pending; latest3157coregreen",
+    "SPD-only audio physical/acoustic reproduction unverified; no provenAPD audiofix"
   ],
   "preservation": "All source pushed to codex/apd-phone-fixes-2026-10-09; published403 and priorreleases retained.405/406privateassets include completeAPK/source/tests;404rejectedarchivesretained. Raw local full suites and committed evidence ZIPs retained.",
   "physical_phone_or_acoustic_audio_verified": false,
   "background_development_after_window_claimed": false,
   "active_build": {
-    "number": 426,
-    "status": "Original3155core and appbuild passed, native both failed staleHolyWeapon expected wording. Exacttestfixture-only retry, no newapps; draftprivate.",
-    "previous_compiled_history": [
-      425,
-      424,
-      423,
-      422,
-      421,
-      420
-    ],
-    "source_parent": "1b6d43d1e44886055cbfc8093eb85377dc5cdd9b",
-    "run": 42676677970
+    "number": 427,
+    "source": "209277bdabbb9520bba60717f3fa3927f80d5eb6",
+    "run": 42679430170,
+    "status": "Buildpassed; all12nativepending"
   },
   "recovered_failed_attempts": {
     "415": {
@@ -113,5 +105,18 @@
     "stage_run": 42674685237,
     "status": "PUBLISHED2026-11-09T18:39:38Z; core3153/all12native,4739sourcehashes,37selectedfullframesmanuallyreviewed,originalAPKsbyte-identical",
     "receipt": "docs/APD-425-DELIVERY-RECEIPT.json"
+  },
+  "active_builds": {
+    "426": {
+      "source": "1bd96affecc830ade14346d60842bcf3c9489e0e",
+      "original_failed_run": 42676677970,
+      "exact_app_native_retry": 42678990749,
+      "status": "Originalunchangedapps; full12native retryrunning; private"
+    },
+    "427": {
+      "source": "209277bdabbb9520bba60717f3fa3927f80d5eb6",
+      "run": 42679430170,
+      "status": "Buildpassed; nativebothrunning; private"
+    }
   }
 }
