@@ -24,7 +24,8 @@
   "held_private_builds": {
     "404": "Native fixture failed before-render camera check; original unacceptedAPKs/rawfailures preserved in explicitprivatearchives.",
     "405": "3112core/12nativepassed with test-only timingretry, independenthashes+4453sourcefilehashes,32manualcaptures. Rejected manual Tenacity zero-value prose; originals preserved.",
-    "406": "3113core/12nativepassed, independenthashes+4463sourcefilehashes,10newbuffcapturesreadable. Same bad Tenacity provider; originalpairheldprivate."
+    "406": "3113core/12nativepassed, independenthashes+4463sourcefilehashes,10newbuffcapturesreadable. Same bad Tenacity provider; originalpairheldprivate.",
+    "416": "3136core and all12native passed,4616sourcehashes checked,47inspection captures reviewed; rejected new ordinary Drowsy 1 turns copy. Full original APK/source/evidence remains draft and source branch preserved.415latestpublished."
   },
   "newest_source_not_in_any_apk": [
     "Protection/temporary ring/prismatic image wording",
@@ -47,12 +48,7 @@
   "preservation": "All source pushed to codex/apd-phone-fixes-2026-10-09; published403 and priorreleases retained.405/406privateassets include completeAPK/source/tests;404rejectedarchivesretained. Raw local full suites and committed evidence ZIPs retained.",
   "physical_phone_or_acoustic_audio_verified": false,
   "background_development_after_window_claimed": false,
-  "active_build": {
-    "number": 416,
-    "run": 42632353378,
-    "source_commit": "0211f03e26ef0b63365e11fe874f8932192fe530",
-    "status": "Build passed; native and visual acceptance pending."
-  },
+  "active_build": null,
   "recovered_failed_attempts": {
     "415": {
       "original": "Original42625074280 incomplete because Developer emulator transport closed after QoL/preferences. Alpha/build passed. Exact original source failurebranch preserved; private archive42628501288 succeeded. Retry42628501030 requires all12 fresh unmodified cases.",
@@ -60,5 +56,6 @@
       "staging": 42629205720,
       "original_and_accepted_apps_and_test_binary_unchanged": true
     }
-  }
+  },
+  "new_timer_regressions": "New Shadows/linkedPower false-expiry regression tests reproduced; red evidence and test patch preserved. Description-only correction underway."
 }
