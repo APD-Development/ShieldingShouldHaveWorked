@@ -50,6 +50,22 @@ public class MechanicsExplanationTest {
  @Test public void identifiedRegrowthDescriptionWithoutAHeroWithholdsDepletionInsteadOfCrashing(){
   com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfRegrowth wand=new com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfRegrowth();wand.levelKnown=wand.cursedKnown=wand.curChargeKnown=true;Dungeon.hero=null;try{String description=wand.statsDesc();assertNotNull(description);assertFalse(description.contains("After another"));assertFalse(wand.info().isEmpty());}finally{Dungeon.hero=hero;}
  }
+ @Test public void amuletDescriptionMatchesItsActualActionsBeforeAndDuringAscension(){
+  com.shatteredpixel.shatteredpixeldungeon.items.Amulet amulet=new com.shatteredpixel.shatteredpixeldungeon.items.Amulet();
+  assertTrue(amulet.actions(hero).contains("END"));assertTrue(amulet.desc(),amulet.desc().contains("claim victory now"));
+  Buff.affect(hero,com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge.class);
+  assertTrue(amulet.actions(hero).isEmpty());assertTrue(amulet.desc(),amulet.desc().contains("cannot activate or discard"));assertFalse(amulet.desc().contains("claim victory now"));
+  String before=savedDescriptionHero();amulet.info();assertEquals(before,savedDescriptionHero());
+ }
+ @Test public void dartTippingDescriptionsAllowRealMultipleUseCoatingsAndPlainDartsDoNotWearOut(){
+  com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.Dart dart=new com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.Dart();
+  com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.PoisonDart tip=new com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.PoisonDart();
+  assertEquals(0,dart.previewDurabilityPerUse(),0);assertTrue(dart.info(),dart.info().contains("do not wear out"));
+  hero.talents.get(2).put(Talent.DURABLE_TIPS,2);float wear=tip.previewDurabilityPerUse();assertTrue(wear>0&&wear<100);
+  String prompt=com.shatteredpixel.shatteredpixeldungeon.messages.Messages.get(dart,"tip_desc",tip.name());assertTrue(prompt.contains("up to two darts"));assertTrue(prompt.contains("last longer"));assertFalse(prompt.contains("single-use"));
+  for(java.util.Map<Talent,Integer> tier:hero.talents)tier.remove(Talent.DURABLE_TIPS);RingOfSharpshooting ring=new RingOfSharpshooting();ring.level(30);ring.anonymize();ring.levelKnown=ring.cursedKnown=true;hero.belongings.ring=ring;ring.activate(hero);
+  assertEquals(0,tip.previewDurabilityPerUse(),0);assertTrue(tip.info(),tip.info().contains("With your current bonuses, these tips do not wear out"));
+ }
  @Test public void allDartInspectorsUseTheEquippedBowAndWithholdItsUnknownLevel()throws Exception{
   java.lang.reflect.Field field=com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.Dart.class.getDeclaredField("bow");field.setAccessible(true);Object original=field.get(null);com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Crossbow pending=new com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Crossbow(),equipped=new com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Crossbow();pending.level(8);equipped.level(3);equipped.levelKnown=equipped.cursedKnown=true;hero.belongings.weapon=equipped;
   RingOfSharpshooting aim=new RingOfSharpshooting();aim.level(2);aim.anonymize();aim.levelKnown=aim.cursedKnown=true;hero.belongings.ring=aim;aim.activate(hero);Buff.affect(hero,com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Crossbow.ChargedShot.class);
