@@ -393,3 +393,6 @@ Seven Brew classes, Elixir/ExoticPotion bases, CorrosiveGas/StormClouds potions 
 
 ### Armband retained panel simplified and actual shop outcomes verified
 Fullownsource plus tradeconsumer read. Existing panel now distinguishes enemy/shoptheft, liveblind/cripple turns, basevaluechargebudget, success-onlycharge and failedshopflight. No new panel/effects. Existing9previewbudget cases plus288seededactualshopoutcomes, inspectionpurity/no-time/cap checks;3119core457pass, rawfullXML/log preserved. Nativeexpanded/bottomfixtureprepared fornextAPKafter408, notyetdeviceverified. Audit337complete99unresolved of436units;433full/partial350corrected,5339Englishentries.
+
+### Toolkit prompt/detail and Beacon own-source review
+Toolkit Energize prompt correctly names experience-generatedenergy; existing detail shortened with liveenergy/rate/warmup/max. Nine actualwarmup runs include initialsetup/partialprogress/+10 andsave, separatecurse/immunitypause;3121core457allpass, rawXML/log preserved. Two expanded/bottomnativefixturespendingnextAPK. Beacon fullownsource reviewed, conciseproseunchanged, legacy exceptions preserved. Audit339complete97unresolvedof436,433full/partial350corrected,5339Englishentries. No gameplay/save/newpanel changes.

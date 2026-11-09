@@ -6,7 +6,7 @@
   "message_entries": 2411,
   "reviewed_units": 433,
   "corrected_units": 350,
-  "unresolved_units": 99,
+  "unresolved_units": 97,
   "category_counts": {
     "apd": 1,
     "mechanics": 38,
@@ -978,12 +978,12 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/artifacts/AlchemistsToolkit.java",
       "sha256": "8a61e86d42104e47d79f902de6703672683c9ac67e58d7ba67c32ce6a8eabfab",
       "category": "artifacts",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [
         "desc"
       ],
       "wording_corrected": true,
-      "review_notes": " All15 actual curse branches reviewed; concise conditional ordinary text,15type read-only regression, actual Horn/Chalice effects tested. Existing advanced panels retained pending owner review; full non-curse/class paths may remain incomplete. Actual Brew/warm-up/energy gain/Energize six-energy/max10/serialization read. Ordinary prose now explains practical use, unavailable warmup state and precise upgrade cost. Existing real artifact gain matrix retained; full3047core pass. Expanded ordinary native fixture pending389, advanced/complete scope stays open."
+      "review_notes": " All15 actual curse branches reviewed; concise conditional ordinary text,15type read-only regression, actual Horn/Chalice effects tested. Existing advanced panels retained pending owner review; full non-curse/class paths may remain incomplete. Actual Brew/warm-up/energy gain/Energize six-energy/max10/serialization read. Ordinary prose now explains practical use, unavailable warmup state and precise upgrade cost. Existing real artifact gain matrix retained; full3047core pass. Expanded ordinary native fixture pending389, advanced/complete scope stays open. Individual own-source reviewNovember9. Fullownactions/energyfundedupgrades/warmup/save/charge andAlchemyScene energy use read. Energize prompt says experience instead of vague time. Retained detail shorter with currentenergy/rate/warmup/cap;9actualwarmup timings including savedpartialprogress and curse/immunitypause checked, existingexperience/externalcharge checks retained.3121core457pass; +5/+10nativeexpanded/bottom prepared, notyetdeviceverified. Own-source completion only; shared artifact/economy/class providers remain separately tracked."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/artifacts/Artifact.java",
@@ -1075,12 +1075,12 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/artifacts/LloydsBeacon.java",
       "sha256": "7fad1678021e0adfc533eaa3f9d0b3aeb7928fbd96edaa11d706518b7a068fc2",
       "category": "artifacts",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [
         "desc"
       ],
       "wording_corrected": true,
-      "review_notes": " All15 actual curse branches reviewed; concise conditional ordinary text,15type read-only regression, actual Horn/Chalice effects tested. Existing advanced panels retained pending owner review; full non-curse/class paths may remain incomplete. Entire actions/use/zap destination/charge/return/save paths read; concise Set/Return/Zap restrictions and marked floor label, no teleport implementation change. Legacy adjacent occupancy/floors caveats not silently modified. Secondary formula and class scope remain open."
+      "review_notes": " All15 actual curse branches reviewed; concise conditional ordinary text,15type read-only regression, actual Horn/Chalice effects tested. Existing advanced panels retained pending owner review; full non-curse/class paths may remain incomplete. Entire actions/use/zap destination/charge/return/save paths read; concise Set/Return/Zap restrictions and marked floor label, no teleport implementation change. Legacy adjacent occupancy/floors caveats not silently modified. Secondary formula and class scope remain open. Individual own-source reviewNovember9. Fullownmark/return/zap/callback/mobdisplacement/restrictions/charge/upgrade/save and ordinary/retained text read. Existing concise normal description accurate; legacyMagicImmunity/curse action exceptions preserved. Actual depth admission versus scalingdepth zap-debit distinction noted, no gameplay edits or universalartifactshutdown assumed. Own-source completion only; shared artifact/economy/class providers remain separately tracked."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/artifacts/MasterThievesArmband.java",

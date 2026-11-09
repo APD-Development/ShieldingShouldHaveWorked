@@ -1196,6 +1196,23 @@ public class MechanicsExplanationTest {
    int expected=0;float value=0;while(value<75&&expected<charges){value+=10+upgrade/2f;expected++;}assertEquals(expected,budget);assertEquals(Math.min(1f,expected*(10+upgrade/2f)/75),chance,0f);assertEquals(budget,effect.chargesToUse(wand));assertEquals(chance,effect.stealChance(wand),0f);assertFalse(wand.curseInfusionBonus);
   }
  }
+ @Test public void toolkitRetainedWarmupTextMatchesActualTimingAndSavedProgress()throws Exception{
+  for(int level:new int[]{0,5,10})for(float warm:new float[]{0,50,101}){
+   com.shatteredpixel.shatteredpixeldungeon.items.artifacts.AlchemistsToolkit kit=new com.shatteredpixel.shatteredpixeldungeon.items.artifacts.AlchemistsToolkit();kit.level(level);kit.levelKnown=kit.cursedKnown=true;
+   java.lang.reflect.Field remaining=kit.getClass().getDeclaredField("warmUpDelay");remaining.setAccessible(true);remaining.setFloat(kit,warm);
+   java.lang.reflect.Method factory=kit.getClass().getDeclaredMethod("passiveBuff");factory.setAccessible(true);Buff effect=(Buff)factory.invoke(kit);effect.target=hero;
+   com.watabou.utils.Bundle before=new com.watabou.utils.Bundle(),after=new com.watabou.utils.Bundle();kit.storeInBundle(before);String text=ArtifactExplanation.details(kit);kit.storeInBundle(after);assertEquals(before.toString(),after.toString());assertTrue(text,text.contains("provides 2 + Toolkit level = "+(2+level)));assertEquals(level==10,text.contains("Maximum upgrade reached"));
+   com.shatteredpixel.shatteredpixeldungeon.items.artifacts.AlchemistsToolkit restored=new com.shatteredpixel.shatteredpixeldungeon.items.artifacts.AlchemistsToolkit();restored.restoreFromBundle(before);assertEquals(warm,remaining.getFloat(restored),0);
+   int expected=warm==0?0:level==10?1:level==0?(warm==101?101:50):(warm==101?26:13),ticks=0;
+   while(remaining.getFloat(kit)>0&&ticks<102){effect.act();ticks++;}assertEquals("level="+level+" warm="+warm,expected,ticks);assertTrue(remaining.getFloat(kit)<=0);
+  }
+ }
+ @Test public void toolkitWarmupPausesUnderCurseAndMagicImmunityButKeepsSavedProgress()throws Exception{
+  com.shatteredpixel.shatteredpixeldungeon.items.artifacts.AlchemistsToolkit kit=new com.shatteredpixel.shatteredpixeldungeon.items.artifacts.AlchemistsToolkit();kit.level(5);kit.levelKnown=kit.cursedKnown=true;
+  java.lang.reflect.Field remaining=kit.getClass().getDeclaredField("warmUpDelay");remaining.setAccessible(true);remaining.setFloat(kit,50);
+  java.lang.reflect.Method factory=kit.getClass().getDeclaredMethod("passiveBuff");factory.setAccessible(true);Buff effect=(Buff)factory.invoke(kit);effect.target=hero;
+  kit.cursed=true;effect.act();assertEquals(50,remaining.getFloat(kit),0);kit.cursed=false;Buff.affect(hero,MagicImmune.class);effect.act();assertEquals(50,remaining.getFloat(kit),0);Buff.detach(hero,MagicImmune.class);effect.act();assertEquals(46,remaining.getFloat(kit),0);
+ }
  public static class ArmbandDescriptionValueItem extends com.shatteredpixel.shatteredpixeldungeon.items.Item {
   private final int price;
   ArmbandDescriptionValueItem(int price){this.price=price;}
