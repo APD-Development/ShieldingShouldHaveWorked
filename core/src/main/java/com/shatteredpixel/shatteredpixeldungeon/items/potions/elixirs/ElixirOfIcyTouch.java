@@ -47,7 +47,7 @@ public class ElixirOfIcyTouch extends Elixir {
 	
     @Override
     public String desc() {
-        return Messages.get(this, "desc", Messages.decimalFormat("0.##", FrostImbue.DURATION));
+        return Messages.get(this, "desc", Messages.decimalFormat("0.##", FrostImbue.DURATION), Messages.decimalFormat("0.##", FrostImbue.CHILL_DURATION));
     }
 
 	public static class Recipe extends com.shatteredpixel.shatteredpixeldungeon.items.Recipe.SimpleRecipe {

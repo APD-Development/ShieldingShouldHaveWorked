@@ -45,6 +45,7 @@ public class ToxicImbue extends Buff {
 	public static final float DURATION	= 50f;
 
 	public static final int GAS_PER_CELL = 6;
+    public static final float PROTECTION_AFTER_EMISSION = 5f;
 	protected float left;
 	public float emissionUpdatesLeft(){ return left; }
 
@@ -88,7 +89,7 @@ public class ToxicImbue extends Buff {
 
 		spend(TICK);
 		left -= TICK;
-		if (left <= -5){
+		if (left <= -PROTECTION_AFTER_EMISSION){
 			detach();
 		}
 
@@ -117,7 +118,7 @@ public class ToxicImbue extends Buff {
 
 	@Override
 	public String desc() {
-		return Messages.get(this, "desc", dispTurns(left));
+		return Messages.get(this, "desc", dispTurns(left), Messages.decimalFormat("0.##",PROTECTION_AFTER_EMISSION));
 	}
 
 	{

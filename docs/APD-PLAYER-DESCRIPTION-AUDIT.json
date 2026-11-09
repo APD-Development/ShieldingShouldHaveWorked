@@ -4,8 +4,8 @@
   "counting": "Source units, not distinct item types. reviewed_units includes partial reviews; completed_units excludes partial/pending dependency. corrected_units counts source units with corrections, including incomplete reviews. Inventory/export/tests alone are not an individual review.",
   "source_units": 427,
   "message_entries": 2411,
-  "reviewed_units": 410,
-  "corrected_units": 335,
+  "reviewed_units": 411,
+  "corrected_units": 336,
   "unresolved_units": 242,
   "category_counts": {
     "apd": 1,
@@ -124,10 +124,12 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/BuffExplanation.java",
       "sha256": "fc53c0587fdf6c85a59270c6d01e975fb81691a74d238f830356728cf676369e",
       "category": "mechanics",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
+      "status": "PARTIAL_REVIEW",
       "description_methods": [
         "details"
-      ]
+      ],
+      "wording_corrected": true,
+      "review_notes": "Partial2026-11-09 source review: exact Fire/Frost/Toxic cases reconciled with actual proc/duration/immunity/gas handlers; existing details now share unchanged constants. Many other individual buff cases remain open. No new panels or blanket completion claim."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/CloakExplanation.java",
@@ -1823,7 +1825,7 @@
       "status": "PARTIAL_REVIEW",
       "description_methods": [],
       "wording_corrected": true,
-      "review_notes": "Ordinary description corrected after source review. Existing damage/cost/status logic retained; known live effects and challenge/hidden-state cases tested. Complete class variants, optional panels where applicable and Android rendering remain under review."
+      "review_notes": "Ordinary description corrected after source review. Existing damage/cost/status logic retained; known live effects and challenge/hidden-state cases tested. Complete class variants, optional panels where applicable and Android rendering remain under review. Entire source/recipe and Fire/Frost/ToxicImbue, Char landed-hit and immunity handlers read2026-11-09. Normal text puts50turns first so not confused with burn/chill duration. Fire actual unchanged1-in2check, Frost3turnper-hit duration, Toxic5turngrace share unchanged named constants with plain item/buff text. Core existing actual seeded ignition, stacked chill and gas-volume/grace-expiry checks expanded. Buff source callers outside427item/provider inventory also corrected; no new UI/panel. Native actual windows pending397, not396."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/potions/elixirs/ElixirOfFeatherFall.java",
@@ -1850,7 +1852,7 @@
       "status": "PARTIAL_REVIEW",
       "description_methods": [],
       "wording_corrected": true,
-      "review_notes": "Ordinary description corrected after source review. Existing damage/cost/status logic retained; known live effects and challenge/hidden-state cases tested. Complete class variants, optional panels where applicable and Android rendering remain under review."
+      "review_notes": "Ordinary description corrected after source review. Existing damage/cost/status logic retained; known live effects and challenge/hidden-state cases tested. Complete class variants, optional panels where applicable and Android rendering remain under review. Entire source/recipe and Fire/Frost/ToxicImbue, Char landed-hit and immunity handlers read2026-11-09. Normal text puts50turns first so not confused with burn/chill duration. Fire actual unchanged1-in2check, Frost3turnper-hit duration, Toxic5turngrace share unchanged named constants with plain item/buff text. Core existing actual seeded ignition, stacked chill and gas-volume/grace-expiry checks expanded. Buff source callers outside427item/provider inventory also corrected; no new UI/panel. Native actual windows pending397, not396."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/potions/elixirs/ElixirOfMight.java",
@@ -1871,7 +1873,7 @@
       "status": "PARTIAL_REVIEW",
       "description_methods": [],
       "wording_corrected": true,
-      "review_notes": "Ordinary description corrected after source review. Existing damage/cost/status logic retained; known live effects and challenge/hidden-state cases tested. Complete class variants, optional panels where applicable and Android rendering remain under review."
+      "review_notes": "Ordinary description corrected after source review. Existing damage/cost/status logic retained; known live effects and challenge/hidden-state cases tested. Complete class variants, optional panels where applicable and Android rendering remain under review. Entire source/recipe and Fire/Frost/ToxicImbue, Char landed-hit and immunity handlers read2026-11-09. Normal text puts50turns first so not confused with burn/chill duration. Fire actual unchanged1-in2check, Frost3turnper-hit duration, Toxic5turngrace share unchanged named constants with plain item/buff text. Core existing actual seeded ignition, stacked chill and gas-volume/grace-expiry checks expanded. Buff source callers outside427item/provider inventory also corrected; no new UI/panel. Native actual windows pending397, not396."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/potions/exotic/ExoticPotion.java",
@@ -3075,7 +3077,7 @@
         "statsDesc"
       ],
       "wording_corrected": true,
-      "review_notes": "Normal inherited/dynamic wording reviewed against current source. Changes use existing mechanics and known live values. Full source/variant and optional-panel review not complete. Ordinary prose individually re-read against actual helpers/call sites: seed/runestone bonus excludes dew, floor-theme exclusions stated, vision/evasion/hidden-loot tradeoffs clear, Salt Cube slows hunger and regeneration. Vial ordinary cap includes actual healing rules without spending fraction credit; no-character catalog does not invent20HP. Existing optional panel retained pending review; broader source/secondary review remains partial. Native383 actual windows pending."
+      "review_notes": "Normal inherited/dynamic wording reviewed against current source. Changes use existing mechanics and known live values. Full source/variant and optional-panel review not complete. Ordinary prose individually re-read against actual helpers/call sites: seed/runestone bonus excludes dew, floor-theme exclusions stated, vision/evasion/hidden-loot tradeoffs clear, Salt Cube slows hunger and regeneration. Vial ordinary cap includes actual healing rules without spending fraction credit; no-character catalog does not invent20HP. Existing optional panel retained pending review; broader source/secondary review remains partial. Native383 actual windows pending. Full source, Healing per-tick limit and Dewdrop multi-drop allocation read. AtHealing0 normal stats state these healing effects are disabled rather than saying restores more health at0HP/turn. Existing actual healing matrix still verifies all levels0..3, HP20/85/140, Healing0..200 and fractional credit unchanged; catalog nohero/unknown privacy retained. Native zero-rule window pending397."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/trinkets/WondrousResin.java",
@@ -4345,9 +4347,9 @@
     "failures": 0,
     "errors": 0,
     "skipped": 0,
-    "log": "/workspace/apd-elixir-description-evidence-20261109/accepted-full",
+    "log": "/workspace/apd-imbue-vial-evidence-20261109/accepted-full",
     "android_verified": false,
-    "scope": "395published3070core/12targeted native. Later source3080core passed; new actual trinket/Horn/stone/ring upgrade/elixir/buff windows pending396. No new interface or calculation panel."
+    "scope": "396pipeline is earlier d19a99f8d source with5336messages. Later imbue/Vial source5337messages and expanded actual-handler assertions3080core pass; new native windows pending397. Original RNG bounds, effect duration, immunity/grace and save fields unchanged."
   },
-  "message_inventory_entries": 5336
+  "message_inventory_entries": 5337
 }

@@ -43,6 +43,7 @@ public class FireImbue extends Buff {
 	}
 
 	public static final float DURATION	= 50f;
+    public static final int IGNITION_ROLL_SIDES = 2;
 
 	protected float left;
 
@@ -88,7 +89,7 @@ public class FireImbue extends Buff {
 	}
 
 	public void proc(Char enemy){
-		if (Random.Int(2) == 0)
+		if (Random.Int(IGNITION_ROLL_SIDES) == 0)
 			Burning.affectAttributed(enemy, target);
 
 		enemy.sprite.emitter().burst( FlameParticle.FACTORY, 2 );
@@ -116,7 +117,7 @@ public class FireImbue extends Buff {
 
 	@Override
 	public String desc() {
-		return Messages.get(this, "desc", dispTurns(left));
+		return Messages.get(this, "desc", dispTurns(left), Messages.decimalFormat("0.##", 100f/IGNITION_ROLL_SIDES));
 	}
 
 	{

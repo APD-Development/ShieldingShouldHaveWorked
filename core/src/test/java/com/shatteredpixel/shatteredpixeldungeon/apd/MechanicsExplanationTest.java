@@ -1570,11 +1570,11 @@ public class MechanicsExplanationTest {
   PlainStatusTarget target=new PlainStatusTarget();target.HP=50;Fury fury=Buff.affect(target,Fury.class);fury.act();assertSame(fury,target.buff(Fury.class));assertTrue(MechanicsDetails.buff(fury,fury.desc()).contains("strictly above 50%"));target.HP=51;fury.act();assertNull(target.buff(Fury.class));assertFalse(fury.desc().contains("%%"));
  }
  @Test public void fireImbueDescriptionMatchesActualIgnitionChecksAndDuration()throws Exception{
-  FireImbue fire=Buff.affect(hero,FireImbue.class);fire.set(7);fire.extend(3);assertTrue(MechanicsDetails.buff(fire,fire.desc()).contains("duration: 10 turns"));
+  FireImbue fire=Buff.affect(hero,FireImbue.class);fire.set(7);fire.extend(3);assertTrue(fire.desc().contains("_50% chance_"));assertTrue(hero.isImmune(Burning.class));assertTrue(new com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfDragonsBlood().desc().startsWith("For _50 turns_"));assertTrue(MechanicsDetails.buff(fire,fire.desc()).contains("duration: 10 turns"));
   for(int seed=0;seed<20;seed++){PlainStatusTarget enemy=new PlainStatusTarget();enemy.sprite=quietSprite();Random.pushGenerator(seed);boolean expected=Random.Int(2)==0;Random.popGenerator();Random.pushGenerator(seed);try{fire.proc(enemy);}finally{Random.popGenerator();}assertEquals(expected,enemy.buff(Burning.class)!=null);}
  }
  @Test public void frostImbueDescriptionMatchesStackedChillAndActualImmunity()throws Exception{
-  PlainStatusTarget enemy=new PlainStatusTarget();enemy.sprite=quietSprite();FrostImbue frost=Buff.affect(hero,FrostImbue.class,8);frost.proc(enemy);float first=enemy.buff(Chill.class).cooldown();frost.proc(enemy);assertEquals(first+3,enemy.buff(Chill.class).cooldown(),.00001f);assertTrue(hero.isImmune(Chill.class));assertTrue(hero.isImmune(Frost.class));assertTrue(MechanicsDetails.buff(frost,frost.desc()).contains("three turns of Chill"));
+  PlainStatusTarget enemy=new PlainStatusTarget();enemy.sprite=quietSprite();FrostImbue frost=Buff.affect(hero,FrostImbue.class,8);frost.proc(enemy);float first=enemy.buff(Chill.class).cooldown();frost.proc(enemy);assertEquals(first+3,enemy.buff(Chill.class).cooldown(),.00001f);assertTrue(hero.isImmune(Chill.class));assertTrue(hero.isImmune(Frost.class));assertTrue(frost.desc().contains("_3 turns_"));assertTrue(new com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfIcyTouch().desc().startsWith("For _50 turns_"));assertTrue(MechanicsDetails.buff(frost,frost.desc()).contains("3 turns of Chill"));
  }
 
  @Test public void classArmorShowsCurrentMeterCostAndTrinityDoesNotPromiseOneFixedCost(){
@@ -2316,7 +2316,7 @@ public class MechanicsExplanationTest {
   for(int level=0;level<=3;level++)for(int maximum:new int[]{20,85,140})for(int percent=0;percent<=200;percent+=25){
    com.watabou.utils.Bundle all=new com.watabou.utils.Bundle(),settings=new com.watabou.utils.Bundle();com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomDungeonRules.defaults().with(com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomDungeonRules.Slider.HEALING,percent).store(settings);all.put("apd_custom_rules",settings);Dungeon.apdRestoreCustomRules(all);
    vial.level(level);hero.HT=maximum;hero.HP=1;hero.apdCustomHealingFraction=.999f;int cap=(int)Math.ceil((double)com.shatteredpixel.shatteredpixeldungeon.items.trinkets.VialOfBlood.maxHealPerTurn(level)*percent/100.0);
-   assertTrue(vial.statsDesc(),vial.statsDesc().contains("_"+cap+" HP per turn_"));assertEquals(.999f,hero.apdCustomHealingFraction,0);assertEquals(1,hero.HP);
+   if(percent==0){assertTrue(vial.statsDesc(),vial.statsDesc().contains("rules disable the healing"));assertFalse(vial.statsDesc().contains("more health"));}else assertTrue(vial.statsDesc(),vial.statsDesc().contains("_"+cap+" HP per turn_"));assertEquals(.999f,hero.apdCustomHealingFraction,0);assertEquals(1,hero.HP);
    Healing actual=new Healing();actual.target=hero;actual.setHeal(10000,1,0,true);actual.act();assertEquals(cap,hero.HP-1);
   }
   Dungeon.hero=null;try{String catalog=vial.statsDesc();assertTrue(catalog.contains("maximum health"));assertFalse(catalog.contains("HP per turn"));vial.levelKnown=false;String unknown=vial.statsDesc();vial.level(0);assertEquals(unknown,vial.statsDesc());}finally{Dungeon.hero=hero;}

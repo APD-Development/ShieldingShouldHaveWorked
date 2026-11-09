@@ -47,7 +47,7 @@ public class ElixirOfToxicEssence extends Elixir {
 	
     @Override
     public String desc() {
-        return Messages.get(this, "desc", Messages.decimalFormat("0.##", ToxicImbue.DURATION));
+        return Messages.get(this, "desc", Messages.decimalFormat("0.##", ToxicImbue.DURATION), Messages.decimalFormat("0.##", ToxicImbue.PROTECTION_AFTER_EMISSION));
     }
 
 	public static class Recipe extends com.shatteredpixel.shatteredpixeldungeon.items.Recipe.SimpleRecipe {

@@ -228,3 +228,8 @@ All3078core457suites passed. Aggression real Mob targeting regression confirms a
 ### Elixir stacking and fall protection source review
 
 All3080core457suites passed. Actual Chasm landing with FeatherFall preserves HP and prevents fall bleed/cripple, consumes10extra protection turns. Normal duration50/fall cost10 now share unchanged constants. Actual ArcaneArmor replacement shows why stronger-in-strength does not always stay; normal elixir says no stacking. Might buff uses concise base HP and remaining level-up labels, with existing decay/save checks. Full three elixir own sources/recipes and shared target handlers read; new normal/buff native windows pending396. 410full/partial source reviews,335corrected,185complete,242unresolved; source units are not item counts.395remains published3070source, none of later source claimed delivered.
+
+
+### Imbue durations and Vial Healing0
+
+All3080core457suites pass after expanded existing actual proc/expiry/healing-matrix assertions. Fire/Icy item wording separates50turn effect duration from50percent ignition chance/3turn Chill per hit. Toxic normal text states5turn protection grace and lingering gas risk. Actual unchanged RNG bound2, Chill3 and grace5 use named constants; no random sequence, balance or save field changed. Normal buff prose concise, existing specific details retained. Vial Healing0 warns clearly while actual108healing cases still verify all rates/caps and unchanged credit. Three buff callers outside427item/provider source inventory also corrected; not counted as additional reviewed item types. 411full/partial reviews,336corrected,185complete242unresolved. English messages5337. New windows pending397, not the396candidate already building.

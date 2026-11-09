@@ -481,6 +481,19 @@ public class QolItemFeedbackDeviceTest {
             }
         }finally{TopScoresDeviceTest.render(()->{for(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff buff:new java.util.ArrayList<>(Dungeon.hero.buffs(Ring.RingBuff.class)))buff.detach();Dungeon.hero.belongings.ring=(Ring)previous[0];Dungeon.hero.belongings.misc=previous[1];if(previous[0]!=null)previous[0].activate(Dungeon.hero);if(previous[1] instanceof Ring)previous[1].activate(Dungeon.hero);});}
     }
+    private static void imbueAndDisabledVialDescriptionsRender()throws Exception{
+        showItem(new com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfDragonsBlood(),"50% chance","qol-dragon-blood-duration-chance.png",true);
+        showItem(new com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfIcyTouch(),"3 turns","qol-icy-touch-duration-chill.png",true);
+        showItem(new com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfToxicEssence(),"5 turns","qol-toxic-essence-lingering-protection.png",true);
+        for(int index=0;index<3;index++){
+            final int kind=index;AtomicReference<com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff> effect=new AtomicReference<>();AtomicReference<Window> shown=new AtomicReference<>();String[] saved={null};float[] time={0};
+            TopScoresDeviceTest.render(()->{assertNull(Dungeon.hero.buff(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning.class));assertNull(Dungeon.hero.buff(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Poison.class));assertNull(Dungeon.hero.buff(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Chill.class));assertNull(Dungeon.hero.buff(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Frost.class));
+                com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff buff;if(kind==0){com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FireImbue fire=com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff.affect(Dungeon.hero,com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FireImbue.class);fire.set(7);buff=fire;}else if(kind==1)buff=com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff.prolong(Dungeon.hero,com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FrostImbue.class,8);else{com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ToxicImbue toxic=com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff.affect(Dungeon.hero,com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ToxicImbue.class);toxic.set(9);buff=toxic;}effect.set(buff);com.watabou.utils.Bundle before=new com.watabou.utils.Bundle();buff.storeInBundle(before);saved[0]=before.toString();time[0]=Dungeon.hero.cooldown();Window window=new WndInfoBuff(buff);GameScene.show(window);shown.set(window);});
+            try{Thread.sleep(300);TopScoresDeviceTest.render(()->{assertDescriptionViewport(shown.get());com.watabou.utils.Bundle after=new com.watabou.utils.Bundle();effect.get().storeInBundle(after);assertEquals(saved[0],after.toString());assertEquals(time[0],Dungeon.hero.cooldown(),0);});TopScoresDeviceTest.screenshot("qol-imbue-normal-buff-"+kind+".png");}finally{TopScoresDeviceTest.render(()->{shown.get().hide();effect.get().detach();});}
+        }
+        com.watabou.utils.Bundle original=new com.watabou.utils.Bundle();TopScoresDeviceTest.render(()->{Dungeon.apdStoreCustomRules(original);com.watabou.utils.Bundle all=new com.watabou.utils.Bundle(),rules=new com.watabou.utils.Bundle();com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomDungeonRules.defaults().with(com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomDungeonRules.Slider.HEALING,0).store(rules);all.put("apd_custom_rules",rules);Dungeon.apdRestoreCustomRules(all);});
+        try{com.shatteredpixel.shatteredpixeldungeon.items.trinkets.VialOfBlood vial=new com.shatteredpixel.shatteredpixeldungeon.items.trinkets.VialOfBlood();TopScoresDeviceTest.render(()->{vial.level(3);vial.levelKnown=vial.cursedKnown=true;});showItem(vial,"rules disable the healing","qol-blood-vial-disabled-healing.png",true,true);}finally{TopScoresDeviceTest.render(()->Dungeon.apdRestoreCustomRules(original));}
+    }
     private static void reviewedElixirDescriptionsRender()throws Exception{
         showItem(new com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfFeatherFall(),"10 extra turns","qol-feather-fall-extra-time.png",true);
         showItem(new com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfArcaneArmor(),"does not stack","qol-arcane-armor-no-stack.png",true);
@@ -1065,6 +1078,7 @@ public class QolItemFeedbackDeviceTest {
             lightningAndRegrowthDescriptionsRender();
             livingEarthAndPrismaticDescriptionsRender();
             passiveGlyphArcanaDescriptionsRender();
+            imbueAndDisabledVialDescriptionsRender();
             reviewedElixirDescriptionsRender();
             forceKnownBonusWithUnknownStrengthRender();
             reviewedRunestoneTargetDescriptionsRender();

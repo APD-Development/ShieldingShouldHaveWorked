@@ -50,7 +50,7 @@ public class ElixirOfDragonsBlood extends Elixir {
 	
     @Override
     public String desc() {
-        return Messages.get(this, "desc", Messages.decimalFormat("0.##", FireImbue.DURATION));
+        return Messages.get(this, "desc", Messages.decimalFormat("0.##", FireImbue.DURATION), Messages.decimalFormat("0.##", 100f/FireImbue.IGNITION_ROLL_SIDES));
     }
 
 	public static class Recipe extends com.shatteredpixel.shatteredpixeldungeon.items.Recipe.SimpleRecipe {

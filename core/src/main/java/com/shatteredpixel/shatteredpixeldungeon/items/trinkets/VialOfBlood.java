@@ -39,6 +39,7 @@ public class VialOfBlood extends Trinket {
 
 	@Override
 	public String statsDesc() {
+        if(Dungeon.hero!=null&&com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomHealingHooks.disabled())return Messages.get(this,"healing_disabled");
         if(Dungeon.hero==null){
             int level=isIdentified()?buffedLvl():0;
             return Messages.get(this,"stats_without_hero",isIdentified()?"":"At +0: ",Messages.decimalFormat("#.##",100*(totalHealMultiplier(level)-1f)));

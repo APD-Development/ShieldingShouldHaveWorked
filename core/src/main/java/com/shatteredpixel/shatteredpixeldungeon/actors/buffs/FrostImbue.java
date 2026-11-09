@@ -34,13 +34,16 @@ public class FrostImbue extends FlavourBuff {
 	}
 	
 	public static final float DURATION	= 50f;
+    public static final float CHILL_DURATION = 3f;
 	
 	public void proc(Char enemy){
-		Buff.affectAttributed(enemy, Chill.class, 3f,
+		Buff.affectAttributed(enemy, Chill.class, CHILL_DURATION,
 				com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin.capture(target, null));
 		enemy.sprite.emitter().burst( SnowParticle.FACTORY, 3 );
 	}
 	
+    @Override public String desc(){return com.shatteredpixel.shatteredpixeldungeon.messages.Messages.get(this,"desc",dispTurns(),com.shatteredpixel.shatteredpixeldungeon.messages.Messages.decimalFormat("0.##",CHILL_DURATION));}
+
 	@Override
 	public int icon() {
 		return BuffIndicator.IMBUE;
