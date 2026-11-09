@@ -12,9 +12,9 @@
     "skipped": 0
   },
   "last_completed_android_source_compile": {
-    "commit": "bc4d08bf2",
-    "run": 42615276565,
-    "scope": "3134core;Androiddebug/release/instrumentationJava and desktop all pass, noAPK assembled; before latest empty-staff wording"
+    "commit": "f6780fa92",
+    "run": 42624056651,
+    "scope": "3136core and Androiddebug/release/instrumentationJava/desktop successful; before common footer correction"
   },
   "latest_source_compile": {
     "commit": "481d4ccfeb6d2ff456788b4380bc4b122c27138c",
@@ -27,9 +27,8 @@
     "406": "3113core/12nativepassed, independenthashes+4463sourcefilehashes,10newbuffcapturesreadable. Same bad Tenacity provider; originalpairheldprivate."
   },
   "newest_source_not_in_any_apk": [
-    "Further31 status explanation and six ordinary buff wording changes",
-    "Seal shield detail simplification, six native state fixtures",
-    "Shared timed-status footer wording is still unfinished in414 and being corrected"
+    "415 candidate:31 status/seal detail simplifications and six ordinary status descriptions",
+    "Shared duration footer/rank instructions/duplicate shield totals corrected in415candidate; verified414stillhasoldfooter"
   ],
   "audit": {
     "source_units": 442,
@@ -46,5 +45,10 @@
   "preservation": "All source pushed to codex/apd-phone-fixes-2026-10-09; published403 and priorreleases retained.405/406privateassets include completeAPK/source/tests;404rejectedarchivesretained. Raw local full suites and committed evidence ZIPs retained.",
   "physical_phone_or_acoustic_audio_verified": false,
   "background_development_after_window_claimed": false,
-  "active_build": null
+  "active_build": {
+    "number": 415,
+    "run": 42625074280,
+    "source_commit": "a52bd33a8868875eb24fa2d0162ba41bdd099b0c",
+    "status": "building; acceptance and visual review pending"
+  }
 }
