@@ -131,7 +131,7 @@ public final class BuffExplanation {
         if(buff instanceof AdrenalineSurge){AdrenalineSurge surge=(AdrenalineSurge)buff;return "_Temporary strength_\nAdded strength: "+surge.boost()+". Loses 1 strength in "+n(Math.max(0,surge.visualcooldown()))+" turns, then another every "+n(surge.weakeningInterval())+" turns until the bonus is gone.";}
         if(buff instanceof com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.Endure.EndureTracker){
             com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.Endure.EndureTracker endure=(com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.Endure.EndureTracker)buff;
-            String state=endure.enduring?"Currently enduring: stored retaliation amount "+endure.damageBonus+" points before the conversion multipliers and per-hit division.":"Retaliation ready: +"+endure.damageBonus+" damage points on each of "+endure.hitsLeft+" remaining qualifying hits reaching the attack-damage step.";
+            String state=endure.enduring?"Stored retaliation: "+endure.damageBonus+" damage points. Your talents determine the final bonus per hit.":"Retaliation ready: +"+endure.damageBonus+" damage points on each of "+endure.hitsLeft+" remaining hits, before enemy defenses.";
             return "_Endure state_\n"+state+(buff.target instanceof com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero?AbilityExplanation.effects(new com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.Endure(),(com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero)buff.target):"");
         }
         if(buff instanceof com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.huntress.NaturesPower.naturesPowerTracker){

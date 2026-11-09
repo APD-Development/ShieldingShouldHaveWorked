@@ -260,7 +260,7 @@ public class QolItemFeedbackDeviceTest {
     }
     private static void calculationWindowsRenderAndRespond()throws Exception{
         String[] statusNames={"Invisibility","Invulnerability","Cripple","Stamina","Blindness","Roots","PinCushion","Barkskin","ArcaneArmor","RevealedArea","GravityChaosTracker","SwarmIntelTracker","Drowsy","MagicalSleep","FireImbue","FrostImbue","Adrenaline","Fury","AdrenalineSurge","Healing","GreaterHaste","WellFed","PhysicalEmpower","WandEmpower","Amok","Charm","Terror","Dread","Vertigo","Light","LifeLink","MagicImmune","BlobImmunity","EnhancedRings","PrismaticGuard","Frost","Levitation","ToxicImbue","LockedFloor","Burning","Corrosion","Ooze","ScrollEmpower","MagicalSight","MindVision","Shadows"};
-        String[] statusText={"last known position","ordinary damage","twice as long","two thirds","normal scroll and tome reading","Teleportation","quantity: 3","3 turns apart","3 turns apart","3 × 3","pulse count: 11","visible monsters","Incoming damage","1 HP per turn","50% chance","3 turns of Chill","hero does not gain","health is above 50%","Added strength: 2","Healing reserve: 100 HP","haste units: 6","multiple of 18","Adds 3 damage","Adds 4 damage","visible hero","shortens the effect by 5 turns","regardless of damage amount","Remaining fear updates","eight neighboring directions","base sight","combined raw shares can exceed","Suppressed equipment","Burning and Poison","Might's strength bonus","Stored health: 5","Freezing belongings","sacrificial fire","Gas releases left: 2","Recovery grace","Base damage per turn","Base damage grows each turn","flying prevents water","Wand casts left: 3","Sight through walls","within 1 tile","Refresh countdown: 2"};
+        String[] statusText={"last known position","ordinary damage","twice as long","two thirds","normal scroll and tome reading","Teleportation","quantity: 3","3 turns apart","3 turns apart","3 × 3","pulse count: 11","visible monsters","Incoming damage","1 HP per turn","50% chance","3 turns of Chill","hero does not gain","health is above 50%","Added strength: 2","Healing reserve: 100 HP","haste units: 6","multiple of 18","Adds 3 damage","Adds 4 damage","visible hero","shortens the effect by 5 turns","regardless of damage amount","Remaining fear updates","eight neighboring directions","base sight","combined raw shares can exceed","Suppressed equipment","Burning and Poison","Might's strength bonus","Stored health: 5","Freezing belongings","sacrificial fire","Gas releases left: 2","Recovery grace","Base damage per turn","Base damage grows each turn","flying prevents water","Wand casts left: 3","Sight through walls","within 2 tiles","Refresh countdown: 2"};
         for(int i=0;i<statusNames.length;i++){
             final String name=statusNames[i];
             calculationWindow(()->{
@@ -314,6 +314,10 @@ public class QolItemFeedbackDeviceTest {
                 },linked==0?"25% more damage":"keeps this effect active beyond its normal duration","qol-existing-power-link-"+linked+".png");
             }finally{TopScoresDeviceTest.render(()->{for(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff buff:new java.util.ArrayList<>(ally.buffs()))buff.detach();});}
         }
+
+        calculationWindow(()->{
+            com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.Endure.EndureTracker endured=new com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.Endure.EndureTracker();endured.target=Dungeon.hero;endured.enduring=false;endured.damageBonus=7;endured.hitsLeft=2;return new WndInfoBuff(endured);
+        },"Retaliation ready: +7 damage points on each of 2","qol-existing-status-clear-Endure-ready.png");
 
         calculationWindow(()->new WndInfoBuff(new com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfLightning.LightningCharge()),"up to 2 tiles","qol-existing-status-clear-LightningCharge.png");
 

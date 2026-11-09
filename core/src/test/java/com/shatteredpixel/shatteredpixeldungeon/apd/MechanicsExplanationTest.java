@@ -2258,7 +2258,29 @@ public class MechanicsExplanationTest {
  }
  @Test public void endureExplanationMatchesActualProtectionAndPerHitStorageTruncation(){
   com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.Endure ability=new com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.Endure();
-  for(int rank=0;rank<=4;rank++){hero.talents.get(3).put(Talent.SHRUG_IT_OFF,rank);com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.Endure.EndureTracker tracker=new com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.Endure.EndureTracker();tracker.target=hero;float factor=.5f*(float)Math.pow(.8f,rank);assertEquals(20*factor,tracker.adjustDamageTaken(20),.00001f);assertEquals(10,tracker.damageBonus);tracker.adjustDamageTaken(3);assertEquals(11,tracker.damageBonus);assertTrue(AbilityExplanation.effects(ability,hero).contains("current factor: "+ObfuscationExplanation.number(factor)));assertTrue(MechanicsDetails.buff(tracker,tracker.desc()).contains("stored retaliation amount 11 points"));}
+  for(int rank=0;rank<=4;rank++){hero.talents.get(3).put(Talent.SHRUG_IT_OFF,rank);com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.Endure.EndureTracker tracker=new com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.Endure.EndureTracker();tracker.target=hero;float factor=.5f*(float)Math.pow(.8f,rank);assertEquals(20*factor,tracker.adjustDamageTaken(20),.00001f);assertEquals(10,tracker.damageBonus);tracker.adjustDamageTaken(3);assertEquals(11,tracker.damageBonus);assertTrue(AbilityExplanation.effects(ability,hero).contains("reduced by _"+ObfuscationExplanation.number(100f*(1f-factor))+"%_"));assertTrue(MechanicsDetails.buff(tracker,tracker.desc()).contains("Stored retaliation: 11 damage points"));}
+ }
+ public static class EndureDescriptionSprite extends QuietMovementSprite {
+  @Override public com.watabou.noosa.particles.Emitter centerEmitter(){return new com.watabou.noosa.particles.Emitter();}
+ }
+ @Test public void endureBonusExplanationPreservesSequentialRoundingAndUnseenEnemyPrivacy()throws Exception{
+  descriptionSightArena();java.util.Arrays.fill(Dungeon.level.heroFOV,false);
+  java.lang.reflect.Field unsafeField=Class.forName("sun.misc.Unsafe").getDeclaredField("theUnsafe");unsafeField.setAccessible(true);Object unsafe=unsafeField.get(null);
+  hero.sprite=(EndureDescriptionSprite)unsafe.getClass().getMethod("allocateInstance",Class.class).invoke(unsafe,EndureDescriptionSprite.class);
+  hero.talents.get(3).put(Talent.SUSTAINED_RETRIBUTION,1);hero.talents.get(3).put(Talent.EVEN_THE_ODDS,3);
+  com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.Endure.EndureTracker tracker=Buff.affect(hero,com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.Endure.EndureTracker.class);
+  tracker.adjustDamageTaken(10);assertEquals(5,tracker.damageBonus);String before=MechanicsDetails.buff(tracker,tracker.desc());
+  java.util.ArrayList<PlainStatusTarget> neighbors=new java.util.ArrayList<>();
+  try{
+   for(int offset:new int[]{1,-1,33,3,-33}){PlainStatusTarget other=new PlainStatusTarget();other.pos=hero.pos+offset;other.alignment=offset==-33?com.shatteredpixel.shatteredpixeldungeon.actors.Char.Alignment.ALLY:com.shatteredpixel.shatteredpixeldungeon.actors.Char.Alignment.ENEMY;neighbors.add(other);com.shatteredpixel.shatteredpixeldungeon.actors.Actor.add(other);}
+   assertEquals("Inspection must not count unseen nearby enemies",before,MechanicsDetails.buff(tracker,tracker.desc()));
+   tracker.endEnduring();
+   // Stored5 becomes5 after the15% bonus, then7 after three nearby enemies'45%, then3 per hit.
+   // Combining the factors before rounding would incorrectly give4 per hit.
+   assertEquals(3,tracker.damageBonus);assertEquals(2,tracker.hitsLeft);assertFalse(tracker.enduring);
+   assertTrue(MechanicsDetails.buff(tracker,tracker.desc()).contains("Round down after each step"));
+   assertEquals(13,tracker.damageFactor(10),0);assertEquals(1,tracker.hitsLeft);assertEquals(13,tracker.damageFactor(10),0);assertNull(hero.buff(com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.Endure.EndureTracker.class));
+  }finally{for(PlainStatusTarget other:neighbors)com.shatteredpixel.shatteredpixeldungeon.actors.Actor.remove(other);}
  }
  @Test public void endureInspectorPreservesReadyDamageRollsAndSavedState(){
   com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.Endure.EndureTracker tracker=Buff.affect(hero,com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.Endure.EndureTracker.class);tracker.enduring=false;tracker.damageBonus=7;tracker.hitsLeft=2;com.watabou.utils.Bundle before=new com.watabou.utils.Bundle();tracker.storeInBundle(before);for(int i=0;i<30;i++){String text=MechanicsDetails.buff(tracker,tracker.desc());assertTrue(text.contains("+7 damage points on each of 2"));}com.watabou.utils.Bundle after=new com.watabou.utils.Bundle();tracker.storeInBundle(after);assertEquals(before.toString(),after.toString());assertEquals(17,tracker.damageFactor(10),0);assertEquals(1,tracker.hitsLeft);assertEquals(17,tracker.damageFactor(10),0);assertNull(hero.buff(com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.Endure.EndureTracker.class));
