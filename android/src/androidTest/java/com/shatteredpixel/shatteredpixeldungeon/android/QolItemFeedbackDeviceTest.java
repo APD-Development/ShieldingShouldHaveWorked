@@ -147,6 +147,10 @@ public class QolItemFeedbackDeviceTest {
             for(RenderedTextBlock text:TopScoresDeviceTest.find(window,RenderedTextBlock.class))plainHeight[0]=Math.max(plainHeight[0],text.height());
             assertNotNull("The actual information window offers calculations",expander.get());
         }catch(Exception e){throw new RuntimeException(e);}});
+        if(screenshot.startsWith("qol-existing-status-clear-")||screenshot.startsWith("qol-twin-upgrades-existing-panel-")||screenshot.startsWith("qol-weapon-recharging-existing-panel-")){
+            Thread.sleep(120);TopScoresDeviceTest.render(()->assertDescriptionViewport(window));
+            TopScoresDeviceTest.screenshot(screenshot.replace(".png","-normal.png"));
+        }
         touch(at[0]);TopScoresDeviceTest.render(()->{try{
             assertEquals("Pointer opens advanced explanation","Hide calculations",expander.get().text());
             boolean found=false;for(RenderedTextBlock text:TopScoresDeviceTest.find(window,RenderedTextBlock.class))if(text.text().contains(expected))found=true;assertTrue("Rendered calculation contains live explanation: "+expected,found);
