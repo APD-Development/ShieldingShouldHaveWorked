@@ -4091,7 +4091,7 @@
         "desc"
       ],
       "wording_corrected": true,
-      "review_notes": "Seed and plant normal descriptions checked against activation and Warden branches. Floor-one Fadeleaf, immunity limits and movement-ending effects distinguished. Earthroot/Sungrass/Swiftthistle buff details and shared Plant variants remain under review. Android acceptance pending."
+      "review_notes": "Seed and plant normal descriptions checked against activation and Warden branches. Floor-one Fadeleaf, immunity limits and movement-ending effects distinguished. Earthroot/Sungrass/Swiftthistle buff details and shared Plant variants remain under review. Android acceptance pending. Entire own buff act/absorb/boost/intercept/save paths read. Ordinary Sungrass stored-healing label and TimeBubble prose shortened; existing advanced buff explanations use player language with real formulas. Actual Hero.spend intercept tested with unchanged cooldown and5.75remaining time, save/load preserved. Actual herb next-heal/last-hit/rounding regressions retained. Full3044core pass, new native buff windows pending. Complete shared Plant/UI variants still separately open."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/plants/Fadeleaf.java",
@@ -4188,7 +4188,7 @@
         "desc"
       ],
       "wording_corrected": true,
-      "review_notes": "Seed and plant normal descriptions checked against activation and Warden branches. Floor-one Fadeleaf, immunity limits and movement-ending effects distinguished. Earthroot/Sungrass/Swiftthistle buff details and shared Plant variants remain under review. Android acceptance pending."
+      "review_notes": "Seed and plant normal descriptions checked against activation and Warden branches. Floor-one Fadeleaf, immunity limits and movement-ending effects distinguished. Earthroot/Sungrass/Swiftthistle buff details and shared Plant variants remain under review. Android acceptance pending. Entire own buff act/absorb/boost/intercept/save paths read. Ordinary Sungrass stored-healing label and TimeBubble prose shortened; existing advanced buff explanations use player language with real formulas. Actual Hero.spend intercept tested with unchanged cooldown and5.75remaining time, save/load preserved. Actual herb next-heal/last-hit/rounding regressions retained. Full3044core pass, new native buff windows pending. Complete shared Plant/UI variants still separately open."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/plants/Swiftthistle.java",
@@ -4199,7 +4199,7 @@
         "desc"
       ],
       "wording_corrected": true,
-      "review_notes": "Seed and plant normal descriptions checked against activation and Warden branches. Floor-one Fadeleaf, immunity limits and movement-ending effects distinguished. Earthroot/Sungrass/Swiftthistle buff details and shared Plant variants remain under review. Android acceptance pending."
+      "review_notes": "Seed and plant normal descriptions checked against activation and Warden branches. Floor-one Fadeleaf, immunity limits and movement-ending effects distinguished. Earthroot/Sungrass/Swiftthistle buff details and shared Plant variants remain under review. Android acceptance pending. Entire own buff act/absorb/boost/intercept/save paths read. Ordinary Sungrass stored-healing label and TimeBubble prose shortened; existing advanced buff explanations use player language with real formulas. Actual Hero.spend intercept tested with unchanged cooldown and5.75remaining time, save/load preserved. Actual herb next-heal/last-hit/rounding regressions retained. Full3044core pass, new native buff windows pending. Complete shared Plant/UI variants still separately open."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/MechanicsInfoPanel.java",
@@ -4250,9 +4250,9 @@
     "failures": 0,
     "errors": 0,
     "skipped": 0,
-    "log": "/workspace/apd-livingearth-prismatic-evidence-20261109/apd-livingearth-prismatic-behavior-full.log",
+    "log": "/workspace/apd-herbal-buff-human-evidence-20261109/apd-herbal-buff-human-description-actual-time-full.log",
     "android_verified": false,
     "new_apk_built": false,
-    "scope": "Post388 Living Earth/Prismatic prose plus real reserve/guardian/damage/blindness/staff behavior.388 original pair under native verification; latest published387."
+    "scope": "Post388 herbs/TimeBubble text and actual Hero.spend interception.344reviewed306corrected159complete268unresolved; no blanket completion."
   }
 }

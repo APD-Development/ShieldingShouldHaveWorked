@@ -128,3 +128,8 @@ Lightning and Regrowth continued: concise normal chaining/damage/ally rules back
 ### Living Earth and Prismatic Light normal descriptions
 
 Read entire two wand sources/supporting paths; normal text shortened and clarified. Living Earth states space restriction and guardian repair; RockArmor reserve/rounding and guardian return explained concisely. Prismatic states narrow secret/terrain reveal, dark-floor light, blind/bonus and staff slow without programmer language. Real staff reserve/guardian matrix and Prismatic actual target/property/controlled-blindness/staff tests pass; full3044core457suites zero failures/errors/skips. Evidence /workspace/apd-livingearth-prismatic-evidence-20261109.344reviewed source units,306corrected,159complete,268unresolved. Source-only after388; actual new Android windows pending. No formulas/mechanics/panels added or removed.
+
+
+### Herbal and Time Bubble secondary explanations
+
+Read own Earthroot/Sungrass/Swiftthistle buff mechanics and save paths. Short ordinary Sungrass store label removes false upper-cap implication; TimeBubble no redundant paragraph. Existing detailed herbal/rock/time sections use plain language while retaining actual formulas, final-heal/final-block quirks, ascension depth26 and custom healing limitations. Existing retained panels unchanged in scope. Actual Hero.spend intercept, fractional budget/save and herb/block mechanical assertions pass; full3044core457suites zero failures/errors/skips. Evidence /workspace/apd-herbal-buff-human-evidence-20261109. Actual later Android windows pending. Counts unchanged; shared Plant/complete variants remain open.
