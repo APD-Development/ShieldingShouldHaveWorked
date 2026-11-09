@@ -1,5 +1,5 @@
 {
-  "recorded_utc": "2026-11-09T19:54:14.309803+00:00",
+  "recorded_utc": "2026-11-09T19:58:50.810337+00:00",
   "authorization_end_utc": "2026-11-09T20:00:00Z",
   "latest_verified_published_build": 428,
   "release_url": "https://github.com/APD-Development/ShieldingShouldHaveWorked/releases/tag/apd-alpha-preview-428",
@@ -112,9 +112,9 @@
   },
   "followup_source_branch": {
     "branch": "codex/apd-description-followup-20261109T1933",
-    "commit": "02060b4ff0a5df050c8ec38c2bf974e11b90629a",
-    "source_check_run": 42685979663,
-    "status": "3159core/457 andAndroiddebug/release/instrumentationJava/desktopSUCCESS; normalSpeed/Poison/Bleeding/Priest plusShielddisplaytimers andspecificarmorchargewording. Not in426/427/428; actualnewnativeverificationpending.",
+    "commit": "cb75401789010dfbd84c8e7c8bc343fdbb0e6700",
+    "source_check_run": 42688225690,
+    "status": "Latest3160core/457 all0, actual BountyHunter24tier/rank/Wealth+guards; latestAndroidsourcecheckrunning. Prior02060b4ff3159core andAndroidsourcepassed42685979663. Actual newnativefollowup stillpending; not in428.",
     "english_entries": 5355,
     "new_features": false
   },
@@ -123,7 +123,8 @@
     "tests": 3158,
     "suites": 457,
     "native": 12,
-    "scope": "Exactpublished428source; later3159followup separatebranch"
+    "scope": "Exactpublished428source; later3159followup separatebranch",
+    "manifest_files": 4781
   },
   "delivery_427": {
     "published_utc": "2026-11-09T19:50:38Z",
@@ -131,5 +132,6 @@
     "native": 12,
     "manual_frames": 80,
     "source_manifest_files": 4770
-  }
+  },
+  "authorization_boundary": "2026-11-09T20:00:00Z = 15:00 Eastern. Do not claim active work afterward. Current phase preservation/finalverification; stopat boundary unless ownersteers."
 }
