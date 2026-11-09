@@ -481,6 +481,16 @@ public class QolItemFeedbackDeviceTest {
             }
         }finally{TopScoresDeviceTest.render(()->{for(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff buff:new java.util.ArrayList<>(Dungeon.hero.buffs(Ring.RingBuff.class)))buff.detach();Dungeon.hero.belongings.ring=(Ring)previous[0];Dungeon.hero.belongings.misc=previous[1];if(previous[0]!=null)previous[0].activate(Dungeon.hero);if(previous[1] instanceof Ring)previous[1].activate(Dungeon.hero);});}
     }
+    private static void cleansingStaminaMasteryDescriptionsRender()throws Exception{
+        com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfCleansing cleansing=new com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfCleansing();cleansing.anonymize();showItem(cleansing,"most harmful effects","qol-cleansing-known.png",true);
+        com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfStamina stamina=new com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfStamina();stamina.anonymize();showItem(stamina,"Does not speed up attacks","qol-stamina-known.png",true);
+        com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfMastery mastery=new com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfMastery();mastery.anonymize();showItem(mastery,"only once","qol-mastery-known.png",true);
+        for(int index=0;index<2;index++){
+            final int kind=index;AtomicReference<com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff> effect=new AtomicReference<>();AtomicReference<Window> shown=new AtomicReference<>();
+            TopScoresDeviceTest.render(()->{com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff buff;if(kind==0){assertNull(Dungeon.hero.buff(com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfCleansing.Cleanse.class));buff=com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff.prolong(Dungeon.hero,com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfCleansing.Cleanse.class,5);assertTrue(buff.desc().contains("most harmful"));}else{assertNull(Dungeon.hero.buff(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Stamina.class));buff=com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff.prolong(Dungeon.hero,com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Stamina.class,100);assertTrue(buff.desc().contains("50% faster"));}effect.set(buff);Window window=new WndInfoBuff(buff);GameScene.show(window);shown.set(window);});
+            try{Thread.sleep(300);TopScoresDeviceTest.render(()->assertDescriptionViewport(shown.get()));TopScoresDeviceTest.screenshot(kind==0?"qol-cleansed-most-effects.png":"qol-stamina-buff-concise.png");}finally{TopScoresDeviceTest.render(()->{shown.get().hide();effect.get().detach();});}
+        }
+    }
     private static void divineInspirationChoiceDescriptionRenders()throws Exception{
         com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfEarthenArmor earthen=new com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfEarthenArmor();earthen.anonymize();showItem(earthen,"Stronger Barkskin takes precedence","qol-earthen-armor-known.png",true);
         com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfMagicalSight sight=new com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfMagicalSight();sight.anonymize();showItem(sight,"see through walls","qol-magical-sight-known.png",true);
@@ -1093,6 +1103,7 @@ public class QolItemFeedbackDeviceTest {
             lightningAndRegrowthDescriptionsRender();
             livingEarthAndPrismaticDescriptionsRender();
             passiveGlyphArcanaDescriptionsRender();
+            cleansingStaminaMasteryDescriptionsRender();
             divineInspirationChoiceDescriptionRenders();
             imbueAndDisabledVialDescriptionsRender();
             reviewedElixirDescriptionsRender();

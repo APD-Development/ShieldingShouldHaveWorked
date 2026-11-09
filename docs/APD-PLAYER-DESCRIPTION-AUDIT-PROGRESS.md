@@ -243,3 +243,8 @@ All3080core457suites pass. Aquatic buff now defines remaining reserve as HP befo
 ### Exotic potion source and real talent gates
 
 All3081core457suites pass. Divine grants exactly2once per tier, supports saving future-tier choices and waits for actual level/subclass/armor ability unlocks; new actual four-tier point and save checks verify existing concise description. EarthenArmor maximum Barkskin and MagicalSight sensing/no hidden-door discovery individually reconciled with handlers and existing actual tests. Three own-source reviews complete, new actual windows and Divine choice dialog pending397.411full/partial336corrected,188complete,239unresolved source units. New native helpers sent for source-only Android/desktop compilation before next APK; no Androidruntime claim for post396source.
+
+
+### Cleansing, Stamina and Mastery source completion
+
+All3084core457suites passed. Real cleansing hunger relief begins at300hunger, removes listed ailments and rejects new negative status while preserving LostInventory and ally relationships. Normal Cleansed text correctly says most effects. Stamina normal status shortened; actual1.5movement and unchanged attack/action timing tested. Mastery actual selector and Sword/Dart/Armor2STR reduction plus saved flag checked; no success/cancel action timing changed or claimed. Own three source reviews completed; new actual windows pending397.411full/partial,336corrected,191complete,236unresolved.5338English entries.396passed all12native cases; official scannerAPI recovered repeated504 without removing checks or rebuilding APKs. Final release staging/review still required;395published.

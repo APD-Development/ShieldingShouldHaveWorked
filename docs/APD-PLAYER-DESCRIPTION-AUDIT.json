@@ -6,7 +6,7 @@
   "message_entries": 2411,
   "reviewed_units": 411,
   "corrected_units": 336,
-  "unresolved_units": 239,
+  "unresolved_units": 236,
   "category_counts": {
     "apd": 1,
     "mechanics": 38,
@@ -1887,10 +1887,10 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/potions/exotic/PotionOfCleansing.java",
       "sha256": "fbed990d004299827e01549ec3803f70677dc8fb7f67aece3ad267073d18cfae",
       "category": "potions",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [],
       "wording_corrected": true,
-      "review_notes": "Ordinary description corrected after source review. Existing damage/cost/status logic retained; known live effects and challenge/hidden-state cases tested. Complete class variants, optional panels where applicable and Android rendering remain under review."
+      "review_notes": "Ordinary description corrected after source review. Existing damage/cost/status logic retained; known live effects and challenge/hidden-state cases tested. Complete class variants, optional panels where applicable and Android rendering remain under review. Own source review complete2026-11-09 after actual cleanse and Char.add status gate, Char.speed and Mastery selector/STRReq/save paths read. Cleansed normal status says most, not all; real Hunger300to0, Weakness/Cripple removal, Daze rejection, LostInventory/ally-relation exceptions verified. Stamina normal buff concise; actual1.5movement with unchanged attack/ordinary action time verified. Mastery actual picker excludes bow/ring/wand and prior mastery; Sword/Dart/Armor\u22122STR and saved flag verified. No action-time, balance or selection rule changed. New actual item/buff windows pending397, source completion is not Android runtime acceptance."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/potions/exotic/PotionOfCorrosiveGas.java",
@@ -1941,10 +1941,10 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/potions/exotic/PotionOfMastery.java",
       "sha256": "be4e25cd6116affcdcbb5e461710587e3cc51d9617402dee08ae877a2bc790cc",
       "category": "potions",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [],
       "wording_corrected": true,
-      "review_notes": "Individually read use/select/shatter and tracker code, Corrosion/CorrosiveGas/StormCloud consequences and Level.setCellToWater; Mastery eligibility/2STR and Divine tier entitlement verified against real Weapon/Armor/Hero paths. Concise ordinary description retains practical limitations. Broader base potion identification, custom rule/class and legacy helper audit remains unfinished; no new panel or gameplay change."
+      "review_notes": "Individually read use/select/shatter and tracker code, Corrosion/CorrosiveGas/StormCloud consequences and Level.setCellToWater; Mastery eligibility/2STR and Divine tier entitlement verified against real Weapon/Armor/Hero paths. Concise ordinary description retains practical limitations. Broader base potion identification, custom rule/class and legacy helper audit remains unfinished; no new panel or gameplay change. Own source review complete2026-11-09 after actual cleanse and Char.add status gate, Char.speed and Mastery selector/STRReq/save paths read. Cleansed normal status says most, not all; real Hunger300to0, Weakness/Cripple removal, Daze rejection, LostInventory/ally-relation exceptions verified. Stamina normal buff concise; actual1.5movement with unchanged attack/ordinary action time verified. Mastery actual picker excludes bow/ring/wand and prior mastery; Sword/Dart/Armor\u22122STR and saved flag verified. No action-time, balance or selection rule changed. New actual item/buff windows pending397, source completion is not Android runtime acceptance."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/potions/exotic/PotionOfShielding.java",
@@ -1977,10 +1977,10 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/potions/exotic/PotionOfStamina.java",
       "sha256": "0a451eabe3e628b233b52d5ae15ed3aedfafc3c1b5abdfe7c072a728dd90ec24",
       "category": "potions",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [],
       "wording_corrected": true,
-      "review_notes": "Ordinary description corrected after source review. Existing damage/cost/status logic retained; known live effects and challenge/hidden-state cases tested. Complete class variants, optional panels where applicable and Android rendering remain under review."
+      "review_notes": "Ordinary description corrected after source review. Existing damage/cost/status logic retained; known live effects and challenge/hidden-state cases tested. Complete class variants, optional panels where applicable and Android rendering remain under review. Own source review complete2026-11-09 after actual cleanse and Char.add status gate, Char.speed and Mastery selector/STRReq/save paths read. Cleansed normal status says most, not all; real Hunger300to0, Weakness/Cripple removal, Daze rejection, LostInventory/ally-relation exceptions verified. Stamina normal buff concise; actual1.5movement with unchanged attack/ordinary action time verified. Mastery actual picker excludes bow/ring/wand and prior mastery; Sword/Dart/Armor\u22122STR and saved flag verified. No action-time, balance or selection rule changed. New actual item/buff windows pending397, source completion is not Android runtime acceptance."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/potions/exotic/PotionOfStormClouds.java",
@@ -4340,16 +4340,16 @@
       "wording_corrected": true
     }
   ],
-  "completed_units": 188,
+  "completed_units": 191,
   "latest_tests": {
-    "core_tests": 3081,
+    "core_tests": 3084,
     "suites": 457,
     "failures": 0,
     "errors": 0,
     "skipped": 0,
-    "log": "/workspace/apd-divine-source-evidence-20261109/accepted-full",
+    "log": "/workspace/apd-cleansing-stamina-mastery-evidence-20261109/accepted-full",
     "android_verified": false,
-    "scope": "Post396 source5338messages: new Divine actual gates/save regression3081corepass; new actual Android item/buff/upgrade/choice helpers need platform compilation and397runtime. Original396pair retry still running;395published."
+    "scope": "396immutable original APKs passed12native cases; scanner recovery42569117432passed, finalstage/review pending. Later source3084corepassed; latest native additions pending397. Earlier source-only Android/desktop compile42568229887on8ca9 passed3081, not proof of later runtime."
   },
   "message_inventory_entries": 5338
 }
