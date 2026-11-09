@@ -4,9 +4,9 @@
   "counting": "Source units, not distinct item types. reviewed_units includes partial reviews; completed_units excludes partial/pending dependency. corrected_units counts source units with corrections, including incomplete reviews. Inventory/export/tests alone are not an individual review.",
   "source_units": 427,
   "message_entries": 2411,
-  "reviewed_units": 418,
+  "reviewed_units": 419,
   "corrected_units": 337,
-  "unresolved_units": 221,
+  "unresolved_units": 216,
   "category_counts": {
     "apd": 1,
     "mechanics": 38,
@@ -431,10 +431,11 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/WeaponAbilityExplanation.java",
       "sha256": "6e5c074751948a5a3c871707e4a6c6f7f2471880c23eb0f6fe51385ac4007801",
       "category": "mechanics",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
+      "status": "PARTIAL_REVIEW",
       "description_methods": [
         "details"
-      ]
+      ],
+      "review_notes": "2026-11-09 read dispatch/knowledge guards, all bonus constants and first Cleave/HeavyBlow/Spike/Lunge/Combo branches; individually reconciled five Sword-family normal/preview and actual deferred input sources. Legacy helper is not a generic ordinary-item expander; no panel restored. Remaining individual branches/secondary wording still open."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/WeaponExplanation.java",
@@ -3663,12 +3664,12 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/melee/Greatsword.java",
       "sha256": "3b38f23f37e011d4fc7e982b597b3551d519f5230dba4c213dc5c729f6d94625",
       "category": "weapon",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [
         "abilityInfo"
       ],
       "wording_corrected": true,
-      "review_notes": "Normal curse wording or weapon ability display reviewed against implementation; full variants and existing optional panel review remain unfinished. See November 8 correction record."
+      "review_notes": "Normal curse wording or weapon ability display reviewed against implementation; full variants and existing optional panel review remain unfinished. See November 8 correction record. Own-source reconciliation2026-11-09: read all five tier/bonus/charge/abilityInfo/upgrade preview methods and shared Sword.cleaveAbility kill/free-followup/survivor branches. Existing concise descriptions already distinguish paid kill versus one free followup and zero-time kill. Existing18family actual deferred bonus inputs and15family augmentation/rounding/known/unknown previews retained; actual normal ability windows already captured by full native matrices. New Twin inspection privacy guards inherited output, actual new known/unknown companion windows pending399. Shared providers/inherited mechanisms tracked separately. Extra headless end-to-end Cleave accounting fixture requires real AttackIndicator and is preserved unaccepted; no runtime kill-turn-cost verification claim or mechanics change."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/melee/HandAxe.java",
@@ -3696,12 +3697,12 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/melee/Longsword.java",
       "sha256": "8918cd9db1920f85a042665a8b2aa878154d70ef0e617e3699c93b897c1737cf",
       "category": "weapon",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [
         "abilityInfo"
       ],
       "wording_corrected": true,
-      "review_notes": "Normal curse wording or weapon ability display reviewed against implementation; full variants and existing optional panel review remain unfinished. See November 8 correction record."
+      "review_notes": "Normal curse wording or weapon ability display reviewed against implementation; full variants and existing optional panel review remain unfinished. See November 8 correction record. Own-source reconciliation2026-11-09: read all five tier/bonus/charge/abilityInfo/upgrade preview methods and shared Sword.cleaveAbility kill/free-followup/survivor branches. Existing concise descriptions already distinguish paid kill versus one free followup and zero-time kill. Existing18family actual deferred bonus inputs and15family augmentation/rounding/known/unknown previews retained; actual normal ability windows already captured by full native matrices. New Twin inspection privacy guards inherited output, actual new known/unknown companion windows pending399. Shared providers/inherited mechanisms tracked separately. Extra headless end-to-end Cleave accounting fixture requires real AttackIndicator and is preserved unaccepted; no runtime kill-turn-cost verification claim or mechanics change."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/melee/Mace.java",
@@ -3808,12 +3809,12 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/melee/Shortsword.java",
       "sha256": "d24bc5edd90f6a428f49e9be35d88f5b3fdc2c8f925ab46aedc89e6cbe6c270f",
       "category": "weapon",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [
         "abilityInfo"
       ],
       "wording_corrected": true,
-      "review_notes": "Normal curse wording or weapon ability display reviewed against implementation; full variants and existing optional panel review remain unfinished. See November 8 correction record."
+      "review_notes": "Normal curse wording or weapon ability display reviewed against implementation; full variants and existing optional panel review remain unfinished. See November 8 correction record. Own-source reconciliation2026-11-09: read all five tier/bonus/charge/abilityInfo/upgrade preview methods and shared Sword.cleaveAbility kill/free-followup/survivor branches. Existing concise descriptions already distinguish paid kill versus one free followup and zero-time kill. Existing18family actual deferred bonus inputs and15family augmentation/rounding/known/unknown previews retained; actual normal ability windows already captured by full native matrices. New Twin inspection privacy guards inherited output, actual new known/unknown companion windows pending399. Shared providers/inherited mechanisms tracked separately. Extra headless end-to-end Cleave accounting fixture requires real AttackIndicator and is preserved unaccepted; no runtime kill-turn-cost verification claim or mechanics change."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/melee/Sickle.java",
@@ -3841,12 +3842,12 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/melee/Sword.java",
       "sha256": "bfa9cde91364612738e0a2661f99f27bb2ed5d9bb672db3be034cf067d613882",
       "category": "weapon",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [
         "abilityInfo"
       ],
       "wording_corrected": true,
-      "review_notes": "Normal curse wording or weapon ability display reviewed against implementation; full variants and existing optional panel review remain unfinished. See November 8 correction record."
+      "review_notes": "Normal curse wording or weapon ability display reviewed against implementation; full variants and existing optional panel review remain unfinished. See November 8 correction record. Own-source reconciliation2026-11-09: read all five tier/bonus/charge/abilityInfo/upgrade preview methods and shared Sword.cleaveAbility kill/free-followup/survivor branches. Existing concise descriptions already distinguish paid kill versus one free followup and zero-time kill. Existing18family actual deferred bonus inputs and15family augmentation/rounding/known/unknown previews retained; actual normal ability windows already captured by full native matrices. New Twin inspection privacy guards inherited output, actual new known/unknown companion windows pending399. Shared providers/inherited mechanisms tracked separately. Extra headless end-to-end Cleave accounting fixture requires real AttackIndicator and is preserved unaccepted; no runtime kill-turn-cost verification claim or mechanics change."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/melee/WarHammer.java",
@@ -3885,12 +3886,12 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/melee/WornShortsword.java",
       "sha256": "62e7665d401e049f51550c2d17bd0dde52138bdfcaa0df64e30060cb5f9415da",
       "category": "weapon",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [
         "abilityInfo"
       ],
       "wording_corrected": true,
-      "review_notes": "Normal curse wording or weapon ability display reviewed against implementation; full variants and existing optional panel review remain unfinished. See November 8 correction record."
+      "review_notes": "Normal curse wording or weapon ability display reviewed against implementation; full variants and existing optional panel review remain unfinished. See November 8 correction record. Own-source reconciliation2026-11-09: read all five tier/bonus/charge/abilityInfo/upgrade preview methods and shared Sword.cleaveAbility kill/free-followup/survivor branches. Existing concise descriptions already distinguish paid kill versus one free followup and zero-time kill. Existing18family actual deferred bonus inputs and15family augmentation/rounding/known/unknown previews retained; actual normal ability windows already captured by full native matrices. New Twin inspection privacy guards inherited output, actual new known/unknown companion windows pending399. Shared providers/inherited mechanisms tracked separately. Extra headless end-to-end Cleave accounting fixture requires real AttackIndicator and is preserved unaccepted; no runtime kill-turn-cost verification claim or mechanics change."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/missiles/Bolas.java",
@@ -4348,7 +4349,7 @@
       "wording_corrected": true
     }
   ],
-  "completed_units": 206,
+  "completed_units": 211,
   "latest_tests": "3103core/457suites no failures/errors/skips; Twin unknown-source preview invariance, known-source update, passive block/enchantment/legacy values, raw combat/other thread and exception cleanup. Full evidence /workspace/apd-twin-inspection-evidence-20261109/accepted-full. New native windows pending399. Earlier source-only compile42575862693passed ondd9eccc670ca7927c5ef44ad3d3a40c95958798f with3099tests; not later Twin source.",
   "message_inventory_entries": 5338
 }
