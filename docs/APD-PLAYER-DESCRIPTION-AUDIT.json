@@ -2,11 +2,11 @@
   "scope": "Every item category, inherited and generated descriptions, enchantments/glyphs/curses, class interactions and existing secondary panels. Inventory is not review completion.",
   "baseline_commit": "32f4f3beab4c23b404c3cb1d43bfa06a39165e70",
   "counting": "Source units, not distinct item types. reviewed_units includes partial reviews; completed_units excludes partial/pending dependency. corrected_units counts source units with corrections, including incomplete reviews. Inventory/export/tests alone are not an individual review.",
-  "source_units": 429,
+  "source_units": 431,
   "message_entries": 2411,
-  "reviewed_units": 426,
-  "corrected_units": 342,
-  "unresolved_units": 179,
+  "reviewed_units": 431,
+  "corrected_units": 344,
+  "unresolved_units": 175,
   "category_counts": {
     "apd": 1,
     "mechanics": 38,
@@ -32,7 +32,8 @@
     "plants": 14,
     "ui": 1,
     "windows": 3,
-    "abilities": 1
+    "abilities": 1,
+    "cleric_spells": 2
   },
   "entries": [
     {
@@ -3606,13 +3607,13 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/melee/Flail.java",
       "sha256": "b4ab982f118106f27c71302200ceccddcb04f75e32bb142eb33b7efb4144634e",
       "category": "weapon",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [
         "abilityInfo",
         "desc"
       ],
       "wording_corrected": true,
-      "review_notes": "Individually read normal damage, surprise/spin, ability and preview code. Concise Sneak destinations/root restriction, explicit labelled +0 examples; Spin describes per-spin damage and initial charge. Flail buff displays actual1\u20133spin count rather than a percentage labelled spins, preserving translated percentage argument. Full inherited/class/secondary interaction review remains unfinished."
+      "review_notes": "Individually read normal damage, surprise/spin, ability and preview code. Concise Sneak destinations/root restriction, explicit labelled +0 examples; Spin describes per-spin damage and initial charge. Flail buff displays actual1\u20133spin count rather than a percentage labelled spins, preserving translated percentage argument. Full inherited/class/secondary interaction review remains unfinished. Own source now reconciled in full against actual Spin consumed-hit/accuracy and flat damage, instant stance timing/3x evasion, Sword Dance speed/accuracy and scheduled display, or Runic Slash tracker/projecting/cleanup as applicable. Existing concise wording retained. Inherited and shared provider reviews remain separately tracked; this is not completion of those dependencies."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/melee/Gauntlet.java",
@@ -3751,12 +3752,12 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/melee/Quarterstaff.java",
       "sha256": "93a64a718a31160642a1c47387a9807b6cc1f2fc082e99ef23b18ce26f6f2410",
       "category": "weapon",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [
         "abilityInfo"
       ],
       "wording_corrected": true,
-      "review_notes": "Source-specific normal stat and ability paths read, common ability implementation and Hero/Buff interactions checked. Concise dynamic ability prose, +0 labels; combo explicitly consumed, guard end condition retained, real evasion/accuracy/speed and enchantment power preserved. Full inherited/class/secondary review remains incomplete."
+      "review_notes": "Source-specific normal stat and ability paths read, common ability implementation and Hero/Buff interactions checked. Concise dynamic ability prose, +0 labels; combo explicitly consumed, guard end condition retained, real evasion/accuracy/speed and enchantment power preserved. Full inherited/class/secondary review remains incomplete. Own source now reconciled in full against actual Spin consumed-hit/accuracy and flat damage, instant stance timing/3x evasion, Sword Dance speed/accuracy and scheduled display, or Runic Slash tracker/projecting/cleanup as applicable. Existing concise wording retained. Inherited and shared provider reviews remain separately tracked; this is not completion of those dependencies."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/melee/Rapier.java",
@@ -3784,12 +3785,12 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/melee/RunicBlade.java",
       "sha256": "0a5dfff6f05ee52272c2ab8b654d0fd13a07cb2ea6eb6030d6e2c317096b804c",
       "category": "weapon",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [
         "abilityInfo"
       ],
       "wording_corrected": true,
-      "review_notes": "Source-specific normal stat and ability paths read, common ability implementation and Hero/Buff interactions checked. Concise dynamic ability prose, +0 labels; combo explicitly consumed, guard end condition retained, real evasion/accuracy/speed and enchantment power preserved. Full inherited/class/secondary review remains incomplete."
+      "review_notes": "Source-specific normal stat and ability paths read, common ability implementation and Hero/Buff interactions checked. Concise dynamic ability prose, +0 labels; combo explicitly consumed, guard end condition retained, real evasion/accuracy/speed and enchantment power preserved. Full inherited/class/secondary review remains incomplete. Own source now reconciled in full against actual Spin consumed-hit/accuracy and flat damage, instant stance timing/3x evasion, Sword Dance speed/accuracy and scheduled display, or Runic Slash tracker/projecting/cleanup as applicable. Existing concise wording retained. Inherited and shared provider reviews remain separately tracked; this is not completion of those dependencies."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/melee/Sai.java",
@@ -3807,12 +3808,12 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/melee/Scimitar.java",
       "sha256": "aa3e221e4cb424455d2854c2eb58ad1b348e591d89d1d06333efda373ab79003",
       "category": "weapon",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [
         "abilityInfo"
       ],
       "wording_corrected": true,
-      "review_notes": "Source-specific normal stat and ability paths read, common ability implementation and Hero/Buff interactions checked. Concise dynamic ability prose, +0 labels; combo explicitly consumed, guard end condition retained, real evasion/accuracy/speed and enchantment power preserved. Full inherited/class/secondary review remains incomplete."
+      "review_notes": "Source-specific normal stat and ability paths read, common ability implementation and Hero/Buff interactions checked. Concise dynamic ability prose, +0 labels; combo explicitly consumed, guard end condition retained, real evasion/accuracy/speed and enchantment power preserved. Full inherited/class/secondary review remains incomplete. Own source now reconciled in full against actual Spin consumed-hit/accuracy and flat damage, instant stance timing/3x evasion, Sword Dance speed/accuracy and scheduled display, or Runic Slash tracker/projecting/cleanup as applicable. Existing concise wording retained. Inherited and shared provider reviews remain separately tracked; this is not completion of those dependencies."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/melee/Shortsword.java",
@@ -4379,9 +4380,33 @@
         "desc"
       ],
       "review_notes": "Previously omitted directly edited ability-description source added2026-11-09. Entire actual activation and normal desc branches read against effect type/damage tables/radius/talent multipliers/counts/self effects/armorcharge. English existing live GameScene description now uses public current values and no redundant unmodified35cost line because actual ability window already appends current talent-adjusted cost. Out-of-game/other-language descriptions unchanged. Gameplay methods/tables/casts untouched.65source cases and3109fullcorepass; native windows pending403."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/hero/spells/HolyWeapon.java",
+      "sha256": "43e2f045b6c2f286a35e818f9d05a154fa7fb90fbd5aca206e39dda84d7b5c79",
+      "category": "cleric_spells",
+      "status": "REVIEWED_CORRECTED",
+      "wording_corrected": true,
+      "description_methods": [
+        "desc",
+        "playerDescription"
+      ],
+      "review_notes": "Previously omitted directly edited spell/buff description source added to inventory. Full own cast/extension/remaining-time and actual Weapon/Armor/Hero proc consumers reconciled. Concise current known amount, Paladin retention/extension and unidentified-ring invariance, magic-immunity guards and attacker-dependent unarmored protection. Existing specific advanced panels retained unchanged; no gameplay/save/UI changes.3110core457pass, new Android windows pending404. Shared SpellExplanation provider remains partial."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/hero/spells/HolyWard.java",
+      "sha256": "fc98c91fbe0d4481a97d30a8c76d8eef65af770d9320aa8211e1660fec1fae31",
+      "category": "cleric_spells",
+      "status": "REVIEWED_CORRECTED",
+      "wording_corrected": true,
+      "description_methods": [
+        "desc",
+        "playerDescription"
+      ],
+      "review_notes": "Previously omitted directly edited spell/buff description source added to inventory. Full own cast/extension/remaining-time and actual Weapon/Armor/Hero proc consumers reconciled. Concise current known amount, Paladin retention/extension and unidentified-ring invariance, magic-immunity guards and attacker-dependent unarmored protection. Existing specific advanced panels retained unchanged; no gameplay/save/UI changes.3110core457pass, new Android windows pending404. Shared SpellExplanation provider remains partial."
     }
   ],
-  "completed_units": 250,
-  "latest_tests": "3103core/457suites no failures/errors/skips; Twin unknown-source preview invariance, known-source update, passive block/enchantment/legacy values, raw combat/other thread and exception cleanup. Full evidence /workspace/apd-twin-inspection-evidence-20261109/accepted-full. New native windows pending399. Earlier source-only compile42575862693passed ondd9eccc670ca7927c5ef44ad3d3a40c95958798f with3099tests; not later Twin source.",
+  "completed_units": 256,
+  "latest_tests": "3110core/457suites no failures/errors/skips; actual Holy weapon/armor procs across ordinary/Paladin and Arcana0..3 match normal spell/buff numbers, hidden-ring invariance, unarmored and MagicImmune branches. Accepted raw evidence /workspace/apd404-holy-evidence-20261109/accepted-full. Android windows pending404; no whole-audit or physical audio claim.",
   "message_inventory_entries": 5339
 }

@@ -514,6 +514,39 @@ public class QolItemFeedbackDeviceTest {
             try{Thread.sleep(250);TopScoresDeviceTest.render(()->assertDescriptionViewport(shown.get()));TopScoresDeviceTest.screenshot("qol-live-blast-"+name+"-rank"+rank+".png");}finally{TopScoresDeviceTest.render(()->shown.get().hide());}
         }}finally{TopScoresDeviceTest.render(()->{Dungeon.hero.belongings.weapon=weapon;Dungeon.hero.talents.get(3).clear();Dungeon.hero.talents.get(3).putAll(talents);});}
     }
+    private static void conciseHolyDescriptionsRender() throws Exception {
+        final com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass oldSubclass = Dungeon.hero.subClass;
+        final com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor oldArmor = Dungeon.hero.belongings.armor;
+        final com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff[] buffs = {null, null};
+        try {
+            TopScoresDeviceTest.render(() -> {
+                Dungeon.hero.belongings.armor = new com.shatteredpixel.shatteredpixeldungeon.items.armor.LeatherArmor();
+                buffs[0] = com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff.affect(Dungeon.hero, com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.HolyWeapon.HolyWepBuff.class, 50);
+                buffs[1] = com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff.affect(Dungeon.hero, com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.HolyWard.HolyArmBuff.class, 50);
+            });
+            for (boolean paladin : new boolean[]{false, true}) {
+                TopScoresDeviceTest.render(() -> Dungeon.hero.subClass = paladin ? com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass.PALADIN : com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass.NONE);
+                for (int index = 0; index < 2; index++) {
+                    final int which = index;
+                    final AtomicReference<Window> shown = new AtomicReference<>();
+                    TopScoresDeviceTest.render(() -> {
+                        com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.ClericSpell spell = which == 0 ? com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.HolyWeapon.INSTANCE : com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.HolyWard.INSTANCE;
+                        assertTrue(spell.desc(), spell.desc().contains("50 turns"));
+                        assertEquals(1, spell.desc().split("Charge cost:", -1).length - 1);
+                        Window w = new WndTitledMessage(new com.shatteredpixel.shatteredpixeldungeon.ui.HeroIcon(spell), com.shatteredpixel.shatteredpixeldungeon.messages.Messages.titleCase(spell.name()), spell.desc(), () -> com.shatteredpixel.shatteredpixeldungeon.apd.mechanics.SpellExplanation.details(spell, Dungeon.hero), 0);
+                        GameScene.show(w); shown.set(w); assertDescriptionViewport(w);
+                    });
+                    try { Thread.sleep(200); TopScoresDeviceTest.screenshot("qol-holy-" + index + "-paladin" + paladin + "-spell.png"); }
+                    finally { TopScoresDeviceTest.render(() -> shown.get().hide()); }
+                    TopScoresDeviceTest.render(() -> { assertTrue(buffs[which].desc().contains("Turns remaining:")); Window w = new WndInfoBuff(buffs[which]); GameScene.show(w); shown.set(w); assertDescriptionViewport(w); });
+                    try { Thread.sleep(200); TopScoresDeviceTest.screenshot("qol-holy-" + index + "-paladin" + paladin + "-buff.png"); }
+                    finally { TopScoresDeviceTest.render(() -> shown.get().hide()); }
+                }
+            }
+        } finally {
+            TopScoresDeviceTest.render(() -> { for (com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff b : buffs) if (b != null) b.detach(); Dungeon.hero.subClass = oldSubclass; Dungeon.hero.belongings.armor = oldArmor; });
+        }
+    }
     private static void retainedMonkEnergyDetailsRender()throws Exception{
         final com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass heroClass=Dungeon.hero.heroClass;final com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass subclass=Dungeon.hero.subClass;
         final java.util.ArrayList<java.util.LinkedHashMap<com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent,Integer>> talents=Dungeon.hero.talents;
@@ -1243,6 +1276,7 @@ public class QolItemFeedbackDeviceTest {
             additionalTrinketDetailsRender();
             retainedThreeArtifactDetailsRender();
             retainedMonkEnergyDetailsRender();
+            conciseHolyDescriptionsRender();
             liveElementalBlastDescriptionsRender();
             gradualHealingNonStackDescriptionsRender();
             hiddenTwinUpgradeDescriptionsRender();
