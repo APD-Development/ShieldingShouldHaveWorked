@@ -340,6 +340,8 @@ public class QolItemFeedbackDeviceTest {
         com.shatteredpixel.shatteredpixeldungeon.items.trinkets.RatSkull skull=new com.shatteredpixel.shatteredpixeldungeon.items.trinkets.RatSkull();TopScoresDeviceTest.render(()->{skull.level(3);skull.levelKnown=skull.cursedKnown=true;});
         showItem(skull,"bonus is halved","qol-rat-skull-half-bonus.png",true,true);
         calculationWindow(()->new WndInfoItem(skull),"only the increase above the ordinary chance is halved","qol-rat-skull-retained-half-bonus.png");
+        calculationWindow(()->{com.shatteredpixel.shatteredpixeldungeon.items.trinkets.FerretTuft tuft=new com.shatteredpixel.shatteredpixeldungeon.items.trinkets.FerretTuft();tuft.level(3);tuft.levelKnown=tuft.cursedKnown=true;return new WndInfoItem(tuft);},"actual dodge chance also depends","qol-ferret-existing-detail-clear.png");
+        calculationWindow(()->{com.shatteredpixel.shatteredpixeldungeon.items.trinkets.ThirteenLeafClover clover=new com.shatteredpixel.shatteredpixeldungeon.items.trinkets.ThirteenLeafClover();clover.level(3);clover.levelKnown=clover.cursedKnown=true;return new WndInfoItem(clover);},"other rolls are normal","qol-clover-existing-detail-clear.png");
         com.shatteredpixel.shatteredpixeldungeon.items.trinkets.MimicTooth tooth=new com.shatteredpixel.shatteredpixeldungeon.items.trinkets.MimicTooth();TopScoresDeviceTest.render(()->{tooth.level(3);tooth.levelKnown=tooth.cursedKnown=true;});showItem(tooth,"Ordinary floors","qol-mimic-tooth-ordinary-floors.png",true,true);
     }
     private static void retainedTrinketDescriptionsRender()throws Exception{

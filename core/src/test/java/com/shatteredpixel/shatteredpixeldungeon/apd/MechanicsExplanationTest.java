@@ -306,7 +306,7 @@ public class MechanicsExplanationTest {
  @Test public void trinketDetailsUseCurrentKnownLevelsWithoutAdvancingSelectorsOrRandomness()throws Exception{
   for(String type:new String[]{"EyeOfNewt","FerretTuft","SaltCube","VialOfBlood","ExoticCrystals","RatSkull","MimicTooth","ParchmentScrap","PetrifiedSeed","ThirteenLeafClover","DimensionalSundial","CrackedSpyglass","MossyClump","TrapMechanism","ChaoticCenser","WondrousResin","ShardOfOblivion"}){
    com.shatteredpixel.shatteredpixeldungeon.items.trinkets.Trinket trinket=(com.shatteredpixel.shatteredpixeldungeon.items.trinkets.Trinket)Class.forName("com.shatteredpixel.shatteredpixeldungeon.items.trinkets."+type).getDeclaredConstructor().newInstance();trinket.levelKnown=trinket.cursedKnown=true;
-   for(int level=0;level<=3;level++){trinket.level(level);String heroBefore=savedDescriptionHero();com.watabou.utils.Bundle before=new com.watabou.utils.Bundle(),after=new com.watabou.utils.Bundle();trinket.storeInBundle(before);Random.pushGenerator(721);int next=Random.Int();Random.popGenerator();Random.pushGenerator(721);try{String text=TrinketExplanation.details(trinket);assertTrue(type,text.contains("Known effective trinket level: "+level));assertEquals(type,next,Random.Int());}finally{Random.popGenerator();}trinket.storeInBundle(after);assertEquals(type,before.toString(),after.toString());assertEquals(type,heroBefore,savedDescriptionHero());}
+   for(int level=0;level<=3;level++){trinket.level(level);String heroBefore=savedDescriptionHero();com.watabou.utils.Bundle before=new com.watabou.utils.Bundle(),after=new com.watabou.utils.Bundle();trinket.storeInBundle(before);Random.pushGenerator(721);int next=Random.Int();Random.popGenerator();Random.pushGenerator(721);try{String text=TrinketExplanation.details(trinket);assertTrue(type,text.contains("Trinket level: "+level));assertEquals(type,next,Random.Int());}finally{Random.popGenerator();}trinket.storeInBundle(after);assertEquals(type,before.toString(),after.toString());assertEquals(type,heroBefore,savedDescriptionHero());}
    trinket.levelKnown=false;trinket.level(0);String zero=TrinketExplanation.details(trinket);trinket.level(3);assertEquals(type,zero,TrinketExplanation.details(trinket));
   }
  }
@@ -338,7 +338,7 @@ public class MechanicsExplanationTest {
   com.shatteredpixel.shatteredpixeldungeon.items.trinkets.FerretTuft tuft=new com.shatteredpixel.shatteredpixeldungeon.items.trinkets.FerretTuft();tuft.cursedKnown=true;hero.belongings.backpack.items.add(tuft);ContestScoreTarget attacker=new ContestScoreTarget(),defender=new ContestScoreTarget();
   for(int level=0;level<=3;level++){tuft.level(level);float factor=com.shatteredpixel.shatteredpixeldungeon.items.trinkets.FerretTuft.evasionMultiplier(level);
    for(int seed=0;seed<40;seed++){Random.pushGenerator(seed);float attack=Random.Float(attacker.attackSkill(defender)),defense=Random.Float(defender.defenseSkill(attacker))*factor;Random.popGenerator();Random.pushGenerator(seed);try{assertEquals(attack>=defense,com.shatteredpixel.shatteredpixeldungeon.actors.Char.hit(attacker,defender,1,false));}finally{Random.popGenerator();}}
-   assertTrue(TrinketExplanation.details(tuft).contains("including enemies"));
+   assertTrue(TrinketExplanation.details(tuft).contains("your allies and your enemies"));
   }
  }
  @Test public void inspectingTippedDartDoesNotConsumePendingImpactPosition()throws Exception{

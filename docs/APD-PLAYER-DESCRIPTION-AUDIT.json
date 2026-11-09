@@ -6,7 +6,7 @@
   "message_entries": 2411,
   "reviewed_units": 418,
   "corrected_units": 337,
-  "unresolved_units": 228,
+  "unresolved_units": 224,
   "category_counts": {
     "apd": 1,
     "mechanics": 38,
@@ -399,14 +399,14 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/TrinketExplanation.java",
-      "sha256": "134ed3e02e9be0ef3b88039569336c795db1d71f8c222ff47c9891aa7aad0628",
+      "sha256": "8cb06a8bbb250961b509f0344db54607cd7e34c4a8cce75c899ff8b93f1ae51f",
       "category": "mechanics",
       "status": "PARTIAL_REVIEW",
       "description_methods": [
         "details"
       ],
       "wording_corrected": true,
-      "review_notes": "Full provider read2026-11-09; actual Ferret defender contest, Clover hero damage rolls and RatSkull Statue/CrystalVault generation reviewed. RatSkull detail now explains half only of increase above baseline. Actual400 seeded Statue generations match factor; actual400 Clover roll outcomes and subsequent RNG match rules. Remaining trinket conditions/secondary providers still open; no full provider completion claim."
+      "review_notes": "Full provider read2026-11-09; actual Ferret defender contest, Clover hero damage rolls and RatSkull Statue/CrystalVault generation reviewed. RatSkull detail now explains half only of increase above baseline. Actual400 seeded Statue generations match factor; actual400 Clover roll outcomes and subsequent RNG match rules. Remaining trinket conditions/secondary providers still open; no full provider completion claim. Followup2026-11-09 four existing Ferret/Clover/RatSkull/MimicTooth panels shortened after individual actual handler/generation/contest review. Generic programmer-style level-indexed footer removed; current level label and all numerical/formula/unknown safeguards retained. No new panel/dispatcher change. Remaining individual secondary branches still open."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/UtilityItemExplanation.java",
@@ -2947,23 +2947,23 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/trinkets/FerretTuft.java",
       "sha256": "b4c9f198fc87e0e44e2be39509153b0a9b1f6748a11ade89207366995912730e",
       "category": "trinkets",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [
         "statsDesc"
       ],
       "wording_corrected": true,
-      "review_notes": "Normal inherited/dynamic wording reviewed against current source. Changes use existing mechanics and known live values. Full source/variant and optional-panel review not complete. Ordinary prose individually re-read against actual helpers/call sites: seed/runestone bonus excludes dew, floor-theme exclusions stated, vision/evasion/hidden-loot tradeoffs clear, Salt Cube slows hunger and regeneration. Vial ordinary cap includes actual healing rules without spending fraction credit; no-character catalog does not invent20HP. Existing optional panel retained pending review; broader source/secondary review remains partial. Native383 actual windows pending. Individual followup2026-11-09: full own source and actual call sites read. Clover normal distinguishes independent weapon/many magical damage rolls from full attack outcomes, flavor shortened; Ferret duplicated effect sentence removed. RatSkull crystal/statue half bonus verified in generation; MimicTooth ebony creation only on normal RegularLevel item-generation path, normal text no longer claims every floor. New actual Android windows pending396, later than395."
+      "review_notes": "Normal inherited/dynamic wording reviewed against current source. Changes use existing mechanics and known live values. Full source/variant and optional-panel review not complete. Ordinary prose individually re-read against actual helpers/call sites: seed/runestone bonus excludes dew, floor-theme exclusions stated, vision/evasion/hidden-loot tradeoffs clear, Salt Cube slows hunger and regeneration. Vial ordinary cap includes actual healing rules without spending fraction credit; no-character catalog does not invent20HP. Existing optional panel retained pending review; broader source/secondary review remains partial. Native383 actual windows pending. Individual followup2026-11-09: full own source and actual call sites read. Clover normal distinguishes independent weapon/many magical damage rolls from full attack outcomes, flavor shortened; Ferret duplicated effect sentence removed. RatSkull crystal/statue half bonus verified in generation; MimicTooth ebony creation only on normal RegularLevel item-generation path, normal text no longer claims every floor. New actual Android windows pending396, later than395. Followup2026-11-09 own source/legitimate0\u20133upgrade/energy/normal-known/typical and specific retained detail branches reconciled with actual Ferret contests,400Clover rolls and400Statue generations plus original generation callsites. Actual397captures for Clover/Ferret/MimicTooth normal and RatSkull expanded manually reviewed. Existing four detail paragraphs shortened; same formulas, no added buttons. Native new concise details pending398; panel-retention decision remains pending owner review separately. Shared provider remaining branches independently tracked."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/trinkets/MimicTooth.java",
       "sha256": "efa2f068fd3f35c8a6020c0d7e04adb614f40f88b48b0e760c70b503240d1d77",
       "category": "trinkets",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [
         "statsDesc"
       ],
       "wording_corrected": true,
-      "review_notes": "Normal inherited/dynamic wording reviewed against current source. Changes use existing mechanics and known live values. Full source/variant and optional-panel review not complete. Individual followup2026-11-09: full own source and actual call sites read. Clover normal distinguishes independent weapon/many magical damage rolls from full attack outcomes, flavor shortened; Ferret duplicated effect sentence removed. RatSkull crystal/statue half bonus verified in generation; MimicTooth ebony creation only on normal RegularLevel item-generation path, normal text no longer claims every floor. New actual Android windows pending396, later than395."
+      "review_notes": "Normal inherited/dynamic wording reviewed against current source. Changes use existing mechanics and known live values. Full source/variant and optional-panel review not complete. Individual followup2026-11-09: full own source and actual call sites read. Clover normal distinguishes independent weapon/many magical damage rolls from full attack outcomes, flavor shortened; Ferret duplicated effect sentence removed. RatSkull crystal/statue half bonus verified in generation; MimicTooth ebony creation only on normal RegularLevel item-generation path, normal text no longer claims every floor. New actual Android windows pending396, later than395. Followup2026-11-09 own source/legitimate0\u20133upgrade/energy/normal-known/typical and specific retained detail branches reconciled with actual Ferret contests,400Clover rolls and400Statue generations plus original generation callsites. Actual397captures for Clover/Ferret/MimicTooth normal and RatSkull expanded manually reviewed. Existing four detail paragraphs shortened; same formulas, no added buttons. Native new concise details pending398; panel-retention decision remains pending owner review separately. Shared provider remaining branches independently tracked."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/trinkets/MossyClump.java",
@@ -3002,12 +3002,12 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/trinkets/RatSkull.java",
       "sha256": "a09fe478c82c6313dbb3ea7194f946459aaa9bfc60b8347dfd2fb3464acb9650",
       "category": "trinkets",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [
         "statsDesc"
       ],
       "wording_corrected": true,
-      "review_notes": "Normal inherited/dynamic wording reviewed against current source. Changes use existing mechanics and known live values. Full source/variant and optional-panel review not complete. Individual followup2026-11-09: full own source and actual call sites read. Clover normal distinguishes independent weapon/many magical damage rolls from full attack outcomes, flavor shortened; Ferret duplicated effect sentence removed. RatSkull crystal/statue half bonus verified in generation; MimicTooth ebony creation only on normal RegularLevel item-generation path, normal text no longer claims every floor. New actual Android windows pending396, later than395."
+      "review_notes": "Normal inherited/dynamic wording reviewed against current source. Changes use existing mechanics and known live values. Full source/variant and optional-panel review not complete. Individual followup2026-11-09: full own source and actual call sites read. Clover normal distinguishes independent weapon/many magical damage rolls from full attack outcomes, flavor shortened; Ferret duplicated effect sentence removed. RatSkull crystal/statue half bonus verified in generation; MimicTooth ebony creation only on normal RegularLevel item-generation path, normal text no longer claims every floor. New actual Android windows pending396, later than395. Followup2026-11-09 own source/legitimate0\u20133upgrade/energy/normal-known/typical and specific retained detail branches reconciled with actual Ferret contests,400Clover rolls and400Statue generations plus original generation callsites. Actual397captures for Clover/Ferret/MimicTooth normal and RatSkull expanded manually reviewed. Existing four detail paragraphs shortened; same formulas, no added buttons. Native new concise details pending398; panel-retention decision remains pending owner review separately. Shared provider remaining branches independently tracked."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/trinkets/SaltCube.java",
@@ -3035,12 +3035,12 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/trinkets/ThirteenLeafClover.java",
       "sha256": "8ac436c41b0a6b879ebb76945fa18444090cbf636c1501a895a961680e509d29",
       "category": "trinkets",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [
         "statsDesc"
       ],
       "wording_corrected": true,
-      "review_notes": "Normal inherited/dynamic wording reviewed against current source. Changes use existing mechanics and known live values. Full source/variant and optional-panel review not complete. Individual followup2026-11-09: full own source and actual call sites read. Clover normal distinguishes independent weapon/many magical damage rolls from full attack outcomes, flavor shortened; Ferret duplicated effect sentence removed. RatSkull crystal/statue half bonus verified in generation; MimicTooth ebony creation only on normal RegularLevel item-generation path, normal text no longer claims every floor. New actual Android windows pending396, later than395."
+      "review_notes": "Normal inherited/dynamic wording reviewed against current source. Changes use existing mechanics and known live values. Full source/variant and optional-panel review not complete. Individual followup2026-11-09: full own source and actual call sites read. Clover normal distinguishes independent weapon/many magical damage rolls from full attack outcomes, flavor shortened; Ferret duplicated effect sentence removed. RatSkull crystal/statue half bonus verified in generation; MimicTooth ebony creation only on normal RegularLevel item-generation path, normal text no longer claims every floor. New actual Android windows pending396, later than395. Followup2026-11-09 own source/legitimate0\u20133upgrade/energy/normal-known/typical and specific retained detail branches reconciled with actual Ferret contests,400Clover rolls and400Statue generations plus original generation callsites. Actual397captures for Clover/Ferret/MimicTooth normal and RatSkull expanded manually reviewed. Existing four detail paragraphs shortened; same formulas, no added buttons. Native new concise details pending398; panel-retention decision remains pending owner review separately. Shared provider remaining branches independently tracked."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/trinkets/TrapMechanism.java",
@@ -4348,7 +4348,7 @@
       "wording_corrected": true
     }
   ],
-  "completed_units": 199,
-  "latest_tests": "3096core/457suites, no failures/errors/skips; actual blast-scroll handlers and hidden-count preview invariance. Full evidence /workspace/apd-blast-privacy-evidence-20261109/accepted-full. New native normal/expanded windows pending398;397published3089core/12native.",
+  "completed_units": 203,
+  "latest_tests": "3096core/457suites, no failures/errors/skips; four retained trinket paragraphs and shared frame clarified, actual known/unknown levels, contest/seeded roll/generation checks preserved. Full evidence /workspace/apd-four-trinket-details-evidence-20261109/accepted-full. New native windows pending398.",
   "message_inventory_entries": 5338
 }
