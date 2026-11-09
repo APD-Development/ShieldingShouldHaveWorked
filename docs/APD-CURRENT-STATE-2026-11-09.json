@@ -1,9 +1,9 @@
 {
-  "recorded_utc": "2026-11-09T15:42:10.223395+00:00",
+  "recorded_utc": "2026-11-09T15:49:03.617276+00:00",
   "authorization_end_utc": "2026-11-09T20:00:00Z",
-  "latest_verified_published_build": 415,
-  "release_url": "https://github.com/APD-Development/ShieldingShouldHaveWorked/releases/tag/apd-alpha-preview-415",
-  "source_fix_commit": "a52bd33a8868875eb24fa2d0162ba41bdd099b0c",
+  "latest_verified_published_build": 418,
+  "release_url": "https://github.com/APD-Development/ShieldingShouldHaveWorked/releases/tag/apd-alpha-preview-418",
+  "source_fix_commit": "8c2d5ca9f33154af69b782d6aa83ac181bd3c21d",
   "local_full_core": {
     "tests": 3142,
     "suites": 457,
@@ -27,7 +27,8 @@
     "406": "3113core/12nativepassed, independenthashes+4463sourcefilehashes,10newbuffcapturesreadable. Same bad Tenacity provider; originalpairheldprivate.",
     "416": "3136core and all12native passed,4616sourcehashes checked,47inspection captures reviewed; rejected new ordinary Drowsy 1 turns copy. Full original APK/source/evidence remains draft and source branch preserved.415latestpublished.",
     "417": "Android instrumentation compile failed from new grammar-test Java escapes, before any APK assembly. Original bcaade3 branch preserved; raw log committed. Corrected using escape-free character classes; next418.",
-    "418": "Original compile/core3140 passed; both QoL cases stopped at test-only MindVision expected1tile versus source default2/correct displayed2. Exact source branch preserved; originals archival running. All12 retry pending on unchanged APKs."
+    "418": "Original compile/core3140 passed; both QoL cases stopped at test-only MindVision expected1tile versus source default2/correct displayed2. Exact source branch preserved; originals archival running. All12 retry pending on unchanged APKs.",
+    "419": "Native popup-fixture Java compile failed (checked exception from UI reflection helper not caught). Production compilation and3142core passed; APK assembly not reached. Correcting test callback handling and will source-compile before next candidate."
   },
   "newest_source_not_in_any_apk": [
     "Drowsy grammar correction",
@@ -55,20 +56,21 @@
   "preservation": "All source pushed to codex/apd-phone-fixes-2026-10-09; published403 and priorreleases retained.405/406privateassets include completeAPK/source/tests;404rejectedarchivesretained. Raw local full suites and committed evidence ZIPs retained.",
   "physical_phone_or_acoustic_audio_verified": false,
   "background_development_after_window_claimed": false,
-  "active_build": {
-    "number": 418,
-    "source_commit": "8c2d5ca9f33154af69b782d6aa83ac181bd3c21d",
-    "original_run": 42642508263,
-    "retry_run": 42644420369,
-    "preservation_run": 42644420906,
-    "status": "Unchanged original app APKs; rebuild only instrumentation with one default-radius expectation correction; all12 native required. Private draft only."
-  },
+  "active_build": null,
   "recovered_failed_attempts": {
     "415": {
       "original": "Original42625074280 incomplete because Developer emulator transport closed after QoL/preferences. Alpha/build passed. Exact original source failurebranch preserved; private archive42628501288 succeeded. Retry42628501030 requires all12 fresh unmodified cases.",
       "accepted_retry": 42628501030,
       "staging": 42629205720,
       "original_and_accepted_apps_and_test_binary_unchanged": true
+    },
+    "418": {
+      "original": 42642508263,
+      "accepted_retry": 42644420369,
+      "staging": 42644551621,
+      "application_apks_unchanged": true,
+      "instrumentation_only_patch": "MindVision expected default radius2instead1",
+      "archive": 42644420906
     }
   },
   "new_timer_regressions": "Red evidence preserved; full3138 green. Description-only linked Power and Shadows timer fixes with actual attack/protection/expiry coverage; no engine changes."
