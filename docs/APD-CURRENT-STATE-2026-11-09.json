@@ -1,5 +1,5 @@
 {
-  "recorded_utc": "2026-11-09T19:29:26.945895+00:00",
+  "recorded_utc": "2026-11-09T19:47:06.933100+00:00",
   "authorization_end_utc": "2026-11-09T20:00:00Z",
   "latest_verified_published_build": 426,
   "release_url": "https://github.com/APD-Development/ShieldingShouldHaveWorked/releases/tag/apd-alpha-preview-426",
@@ -108,13 +108,13 @@
       "source": "209277bdabbb9520bba60717f3fa3927f80d5eb6",
       "original_run": 42679430170,
       "retry": 42683626942,
-      "status": "Developer6passed; Alpha initial900cap, exactsameapp/harness retryall6with1800cap. Private. PassedDevimagesstaging for manualreview."
+      "status": "All12 complete: originalDeveloper6 andunchangedAlpha6retry. Packaging running, manual80reviewed; independentbytespending."
     },
     "428": {
       "source": "28013435e236058ec9945ab5968ec258c4c380aa",
       "original_run": 42681930991,
       "retry": 42683625819,
-      "status": "Originalnative900caprunning; retrybothsameapps/harness1800budget dueexpandedUIworkload. Do not count limitedrunsuccesswithoutcompletion. Private."
+      "status": "OriginalDeveloper6passed, Alpha900capfailed; exactsameapp/harness retryboth1800running. Manualnew33reviewed; source3158green; no publication beforeall12/bytes."
     }
   },
   "latest_delivery": {
@@ -125,5 +125,14 @@
     "source_manifest_files": 4758,
     "published_utc": "2026-11-09T19:24:26Z",
     "original_apk_retry_created_apps": 0
-  }
+  },
+  "followup_source_branch": {
+    "branch": "codex/apd-description-followup-20261109T1933",
+    "commit": "02060b4ff0a5df050c8ec38c2bf974e11b90629a",
+    "source_check_run": 42685979663,
+    "status": "3159core/457 andAndroiddebug/release/instrumentationJava/desktopSUCCESS; normalSpeed/Poison/Bleeding/Priest plusShielddisplaytimers andspecificarmorchargewording. Not in426/427/428; actualnewnativeverificationpending.",
+    "english_entries": 5355,
+    "new_features": false
+  },
+  "normal_resource_followups": "Someexistingnormalmechanic wording remains in the comprehensiveaudit; latestnormalwording fixes on separate3159branch, not inAPKs426\u2013428."
 }
