@@ -1,6 +1,6 @@
 ## Current status — November 9, 2026, active owner-authorized development
 
-Active authorization runs through16:00EST/21:00UTC. Audit unfinished:436sourceunits,433fully/partiallyreviewed,350corrected,354completedown-source reviews,82unresolved;5340currentEnglishmessageentries across ninefiles (2429itementries). Sourceunits are not distinctitems. LatestpublishedAPK408;409originalpairundergoingAndroidacceptance. LatestlaterLullabycorrectionpasses3127core/457suites; actualnormal/zeroinspectionwindowsnotyetAndroidverified. PreviousfailedAPK/evidence/sourcebranchespreserved. Historicalnotesbelowretainoldcutoffs; own-source completion does not complete separately trackedshared/class/effectproviders.
+Active authorization runs through16:00EST/21:00UTC. Audit unfinished:436sourceunits,433fully/partiallyreviewed,350corrected,359completedown-source reviews,77unresolved;5341currentEnglishmessageentries across ninefiles (2430itementries). Sourceunits are not distinctitems. LatestpublishedAPK408;409originalpairundergoingAndroidacceptance. LatestlaterLullaby/Passagecorrectionspass3128core/457suites; newinspectionwindowsnotyetAndroidverified.409originalnativefailedwrongSandalsno-paneltestexpectation; originalAPKtest-onlyretryinprogress. PreviousfailedAPK/evidence/sourcebranchespreserved. Historicalnotesbelowretainoldcutoffs; own-source completion does not complete separately trackedshared/class/effectproviders.
 
 ## Latest continuation — crafted spells, runestones and Duelist examples
 
@@ -417,3 +417,6 @@ Known Lullaby nowstates currentrulespreventrestorativesleep; actualDrowsy heroen
 
 ### Remove Curse existing behavior clarified
 Fullownsource andTormentedSpiritconsumer reviewed. Ordinary text namesDegradecure andadjacent-spiritpriorityinstead ofimplyinggear-selectionalways.3127core457allpass, rawXML/logpreserved; knowninspectionwindowpending410. No mechanics/interface/newpanel change. Audit355complete81unresolvedof436,433partial/full350corrected,5340Englishkeys.
+
+### Teleport/Passage and shared scroll base reviews
+Regularteleporttext no longerclaims genericpathblocking throughlockeddoors/barricades; actual special/vaultlockedroomexclusion preserved. Passageknowntextshowsactualregionreturnfloor, exactoriginalformula sharedwithoutchange; explicit26floorboundarytable/realunknownidentity/nohero/inspectionpure verified. InitialunmappedanonymousExoticfixturefailurepreserved/correctedwithrealidentitytable. FullScroll/ExoticScrollbases/recipesread.3128core457allpass, rawXML/logretained. Audit359complete77unresolvedof436,433partial/full350corrected,5341Englishkeys2430itemkeys. Newactualwindowsnotin409.409failednativebothvariantsbecauseSandalsfixturesusedordinaryno-panelmode; exact2callpatchrequiresoneowner-retainedpanelwithallotherassertions unchanged. Original9fdsourceonfailurebranch; retryinstrumentation-only onexactoriginalAPKs, initialevidence/preservationrequested.408latestpublished; no409successclaim.

@@ -2804,6 +2804,14 @@ public class MechanicsExplanationTest {
   }finally{com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion.apdHandler(previous);}
  }
 
+ @Test public void passageDescriptionUsesTheExistingRegionBoundariesWithoutLeakingUnknownIdentity(){
+  int depth=Dungeon.depth;Object previousHandler=com.shatteredpixel.shatteredpixeldungeon.items.scrolls.Scroll.apdHandler();Random.pushGenerator(9109);try{com.shatteredpixel.shatteredpixeldungeon.items.scrolls.Scroll.initLabels();}finally{Random.popGenerator();}
+  try{com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfPassage known=new com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfPassage();known.anonymize();com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfPassage hidden=new com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfPassage();assertFalse(hidden.isKnown());
+   int[] expected={1,1,1,1,1,1,6,6,6,6,6,11,11,11,11,11,16,16,16,16,16,21,21,21,21,21};
+   for(int floor=1;floor<=26;floor++){Dungeon.depth=floor;String state=savedDescriptionHero();assertEquals(expected[floor-1],com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfPassage.destinationDepth(floor));assertTrue(known.desc(),known.desc().contains("Floor "+expected[floor-1]));assertFalse(hidden.desc().contains("Floor"));assertEquals(state,savedDescriptionHero());}
+   Dungeon.hero=null;assertFalse(known.desc().contains("Floor"));
+  }finally{Dungeon.depth=depth;Dungeon.hero=hero;com.shatteredpixel.shatteredpixeldungeon.items.scrolls.Scroll.apdHandler(previousHandler);}
+ }
  @Test public void lullabyZeroHealingDescriptionMatchesActualHeroAndAllySleep()throws Exception{
   hero.sprite=quietSprite();hero.HP=10;hero.HT=20;com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfLullaby scroll=new com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfLullaby();scroll.anonymize();assertFalse(scroll.desc().contains("prevent restorative sleep"));
   com.watabou.utils.Bundle all=new com.watabou.utils.Bundle(),rules=new com.watabou.utils.Bundle();com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomDungeonRules.defaults().with(com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomDungeonRules.Slider.HEALING,0).store(rules);all.put("apd_custom_rules",rules);Dungeon.apdRestoreCustomRules(all);

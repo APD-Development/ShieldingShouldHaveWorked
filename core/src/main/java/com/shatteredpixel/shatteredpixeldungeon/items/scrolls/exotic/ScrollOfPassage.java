@@ -36,6 +36,18 @@ public class ScrollOfPassage extends ExoticScroll {
 		icon = ItemSpriteSheet.Icons.SCROLL_PASSAGE;
 	}
 	
+    /** Same existing region-return rule, shared by reading and known-item prose. */
+    public static int destinationDepth(int depth) {
+        return Math.max(1, depth - 1 - (depth - 2)%5);
+    }
+
+    @Override
+    public String desc() {
+        return isKnown() && Dungeon.hero != null
+                ? Messages.get(this, "desc_current", destinationDepth(Dungeon.depth))
+                : super.desc();
+    }
+
 	@Override
 	public void doRead() {
 
@@ -52,7 +64,7 @@ public class ScrollOfPassage extends ExoticScroll {
 
 		Level.beforeTransition();
 		InterlevelScene.mode = InterlevelScene.Mode.RETURN;
-		InterlevelScene.returnDepth = Math.max(1, (Dungeon.depth - 1 - (Dungeon.depth-2)%5));
+		InterlevelScene.returnDepth = destinationDepth(Dungeon.depth);
 		InterlevelScene.returnBranch = 0;
 		InterlevelScene.returnPos = -1;
 		Game.switchScene( InterlevelScene.class );
