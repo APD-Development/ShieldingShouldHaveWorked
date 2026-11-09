@@ -326,6 +326,23 @@ public class QolItemFeedbackDeviceTest {
             com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfAquaticRejuvenation.AquaHealing healing=new com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfAquaticRejuvenation.AquaHealing();healing.target=Dungeon.hero;healing.set(148);return new WndInfoBuff(healing);
         },"Stored healing reserve: 148 HP","qol-existing-status-clear-AquaticHealing.png");
 
+        final com.shatteredpixel.shatteredpixeldungeon.ui.ActionIndicator.Action[] previousMomentumAction=new com.shatteredpixel.shatteredpixeldungeon.ui.ActionIndicator.Action[1];
+        TopScoresDeviceTest.render(()->previousMomentumAction[0]=com.shatteredpixel.shatteredpixeldungeon.ui.ActionIndicator.action);
+        try{
+        for(int state=0;state<3;state++){
+            final int momentumState=state;
+            calculationWindow(()->{
+                com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Momentum momentum=new com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Momentum();momentum.target=Dungeon.hero;
+                com.watabou.utils.Bundle data=new com.watabou.utils.Bundle();momentum.storeInBundle(data);data.put("stacks",momentumState==0?5:0);data.put("freerun_turns",momentumState==1?8:0);data.put("freerun_CD",momentumState==0?0:momentumState==1?20:12);momentum.restoreFromBundle(data);return new WndInfoBuff(momentum);
+            },"Recovery turns left:","qol-existing-status-clear-Momentum-"+state+".png");
+        }
+        }finally{TopScoresDeviceTest.render(()->com.shatteredpixel.shatteredpixeldungeon.ui.ActionIndicator.setAction(previousMomentumAction[0]));}
+
+        for(int hungerLevel:new int[]{300,450})calculationWindow(()->{
+            com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger hunger=new com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger();hunger.target=Dungeon.hero;
+            com.watabou.utils.Bundle data=new com.watabou.utils.Bundle();hunger.storeInBundle(data);data.put("level",(float)hungerLevel);data.put("partialDamage",.95f);hunger.restoreFromBundle(data);return new WndInfoBuff(hunger);
+        },"starving at 450 points","qol-existing-status-clear-Hunger-"+hungerLevel+".png");
+
         calculationWindow(()->new WndInfoBuff(new com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfLightning.LightningCharge()),"up to 2 tiles","qol-existing-status-clear-LightningCharge.png");
 
         RingOfArcana arcana=new RingOfArcana();
