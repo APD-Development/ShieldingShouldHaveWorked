@@ -4,8 +4,8 @@
   "counting": "Source units, not distinct item types. reviewed_units includes partial reviews; completed_units excludes partial/pending dependency. corrected_units counts source units with corrections, including incomplete reviews. Inventory/export/tests alone are not an individual review.",
   "source_units": 427,
   "message_entries": 2411,
-  "reviewed_units": 288,
-  "corrected_units": 280,
+  "reviewed_units": 292,
+  "corrected_units": 284,
   "unresolved_units": 286,
   "category_counts": {
     "apd": 1,
@@ -3392,10 +3392,12 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/melee/AssassinsBlade.java",
       "sha256": "22ffaff4b0d98251fdd8ba49fdd0e925e6b687fef01343cb1e7a591ea56639bc",
       "category": "weapon",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
+      "status": "PARTIAL",
       "description_methods": [
         "abilityInfo"
-      ]
+      ],
+      "wording_corrected": true,
+      "review_notes": "Individually read normal damage, surprise/spin, ability and preview code. Concise Sneak destinations/root restriction, explicit labelled +0 examples; Spin describes per-spin damage and initial charge. Flail buff displays actual1\u20133spin count rather than a percentage labelled spins, preserving translated percentage argument. Full inherited/class/secondary interaction review remains unfinished."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/melee/BattleAxe.java",
@@ -3434,29 +3436,35 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/melee/Dagger.java",
       "sha256": "bae342c90b940c591ad6e313f44ded3d071408a4e1b7ae6c885265b6271dcba2",
       "category": "weapon",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
+      "status": "PARTIAL",
       "description_methods": [
         "abilityInfo"
-      ]
+      ],
+      "wording_corrected": true,
+      "review_notes": "Individually read normal damage, surprise/spin, ability and preview code. Concise Sneak destinations/root restriction, explicit labelled +0 examples; Spin describes per-spin damage and initial charge. Flail buff displays actual1\u20133spin count rather than a percentage labelled spins, preserving translated percentage argument. Full inherited/class/secondary interaction review remains unfinished."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/melee/Dirk.java",
       "sha256": "7322a1c39911de09c8f8d87e8be48f7da628bc98ec576728e68610cbbd11e514",
       "category": "weapon",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
+      "status": "PARTIAL",
       "description_methods": [
         "abilityInfo"
-      ]
+      ],
+      "wording_corrected": true,
+      "review_notes": "Individually read normal damage, surprise/spin, ability and preview code. Concise Sneak destinations/root restriction, explicit labelled +0 examples; Spin describes per-spin damage and initial charge. Flail buff displays actual1\u20133spin count rather than a percentage labelled spins, preserving translated percentage argument. Full inherited/class/secondary interaction review remains unfinished."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/melee/Flail.java",
       "sha256": "751b49bdc236e05fac2605bf768e57b5e5d3e289fbdef11a98d828be4dea1203",
       "category": "weapon",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
+      "status": "PARTIAL",
       "description_methods": [
         "abilityInfo",
         "desc"
-      ]
+      ],
+      "wording_corrected": true,
+      "review_notes": "Individually read normal damage, surprise/spin, ability and preview code. Concise Sneak destinations/root restriction, explicit labelled +0 examples; Spin describes per-spin damage and initial charge. Flail buff displays actual1\u20133spin count rather than a percentage labelled spins, preserving translated percentage argument. Full inherited/class/secondary interaction review remains unfinished."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/melee/Gauntlet.java",

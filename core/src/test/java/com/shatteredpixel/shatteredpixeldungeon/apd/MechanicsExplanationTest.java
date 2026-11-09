@@ -1102,6 +1102,10 @@ public class MechanicsExplanationTest {
   com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass item=new com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass();item.cursed=item.levelKnown=item.cursedKnown=true;assertTrue(ArtifactEconomyExplanation.summary(item,hero).contains("10%"));java.lang.reflect.Method factory=item.getClass().getDeclaredMethod("passiveBuff");factory.setAccessible(true);Buff effect=(Buff)factory.invoke(item);effect.target=hero;
   for(int seed=0;seed<100;seed++){Random.pushGenerator(seed);boolean delay=Random.Int(10)==0;Random.popGenerator();float before=hero.cooldown();Random.pushGenerator(seed);try{effect.getClass().getMethod("act").invoke(effect);}finally{Random.popGenerator();}assertEquals(delay?1:0,hero.cooldown()-before,0);}
  }
+ @Test public void flailSpinDescriptionShowsActualCountWithoutChangingChargeOrSavedProgress(){
+  com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Flail.SpinAbilityTracker spin=Buff.affect(hero,com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Flail.SpinAbilityTracker.class,3);
+  for(int count=1;count<=3;count++){spin.spins=count;String before=savedDescriptionHero();String text=spin.desc();assertTrue(text,text.contains("Spins: "+count+"/3"));assertFalse(text,text.contains("%"));assertEquals(before,savedDescriptionHero());assertEquals(count,spin.spins);}
+ }
  @Test public void everyCursedArtifactHasSpecificReadOnlyOrdinaryText()throws Exception{
   com.watabou.noosa.Game previousGame=com.watabou.noosa.Game.instance;java.lang.reflect.Field unsafeField=Class.forName("sun.misc.Unsafe").getDeclaredField("theUnsafe");unsafeField.setAccessible(true);Object unsafe=unsafeField.get(null);com.watabou.noosa.Game.instance=(com.watabou.noosa.Game)unsafe.getClass().getMethod("allocateInstance",Class.class).invoke(unsafe,com.watabou.noosa.Game.class);try{
   String[] names={"TimekeepersHourglass","UnstableSpellbook","MasterThievesArmband","SandalsOfNature","DriedRose","EtherealChains","HornOfPlenty","ChaliceOfBlood","TalismanOfForesight","AlchemistsToolkit","SkeletonKey","CloakOfShadows","HolyTome","LloydsBeacon","CapeOfThorns"};
