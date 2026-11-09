@@ -1,20 +1,20 @@
 {
-  "recorded_utc": "2026-11-09T17:27:42.500917+00:00",
+  "recorded_utc": "2026-11-09T17:34:16.015319+00:00",
   "authorization_end_utc": "2026-11-09T20:00:00Z",
   "latest_verified_published_build": 418,
   "release_url": "https://github.com/APD-Development/ShieldingShouldHaveWorked/releases/tag/apd-alpha-preview-418",
   "source_fix_commit": "8c2d5ca9f33154af69b782d6aa83ac181bd3c21d",
   "local_full_core": {
-    "tests": 3152,
+    "tests": 3153,
     "suites": 457,
     "failures": 0,
     "errors": 0,
     "skipped": 0
   },
   "last_completed_android_source_compile": {
-    "commit": "9115182d6",
-    "run": 42663758281,
-    "scope": "3151core and Androiddebug/release/instrumentationJava/desktop allpassed. Later five Cleric windows/common copy and3152core now requested."
+    "commit": "5b17bd74da48dd4bdc58484c99477f630e21eed3",
+    "run": 42664848851,
+    "scope": "3152core plus Androiddebug/release/instrumentationJava/desktop allpassed. Later corrected Priest/successful actualattack and nine spell branches/ten native windows need3153 sourcecompile nowrequested."
   },
   "latest_source_compile": {
     "commit": "7143d16bc481045b49ec4a60624128b0dcccc6b1",
@@ -102,5 +102,5 @@
     "run": 42656324353,
     "report": "docs/APD-421-HELD-HISTORY-2026-11-09.json"
   },
-  "current_work": "3152core passed; first five existing spell explanations/common resources shortened with actual source/cap/charge/shield tests.438complete7open445units359corrected. Latest Androidcompile requested.423 native still running; stage request private pending independent+manual.418published."
+  "current_work": "3153core457all0. Nine existing spell branches revised, Priest actual attack verified; ten real inspection contexts prepared.7helper/sourcecases remain open, whole audit incomplete.423 native running; held422 source/artifacts staged successfully42664848867,418published."
 }

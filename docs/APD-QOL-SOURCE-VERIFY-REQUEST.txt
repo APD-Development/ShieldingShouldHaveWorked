@@ -1,2 +1,2 @@
-2026-11-09T17:27:42.500917+00:00
-Verify3152core plus Androiddebug/release/instrumentationJava/desktop for shorter existing common spell resources and first five spells, actual Paladin extension cap tests and five actual native spell windows. Preserve3151sourcecompile42663758281 success.423 native pair running,418published; stage422 privately as rejected historical build only.
+2026-11-09T17:34:16.015319+00:00
+Verify3153core plus Androiddebug/release/instrumentationJava/desktop. Nine spell detail branches individually corrected against actual handlers, plus actual Priest other-creature illumination attacks. Ten actual spell-window contexts including Priest; restore class/subclass/talents. Latest3152source42664848851passed. No APK here;423 runningall12 native and418published.
