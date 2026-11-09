@@ -688,6 +688,30 @@ public class QolItemFeedbackDeviceTest {
         String[] expected={"north, east, south and west","banishes its wraiths","returns your original equipment"};
         for(int i=0;i<items.length;i++)showItem(items[i],expected[i],"qol-quest-"+i+"-concise.png",true);
     }
+    private static void defensiveWeaponSingleBlockDescriptionsRender()throws Exception{
+        final int strength=Dungeon.hero.STR;
+        try{for(int currentStrength:new int[]{5,30})for(boolean known:new boolean[]{false,true})for(com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon weapon:new com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon[]{new com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Rapier(),new com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Quarterstaff(),new com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Katana(),new com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.RoundShield(),new com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Greatshield()}){
+            TopScoresDeviceTest.render(()->{Dungeon.hero.STR=currentStrength;weapon.level(3);weapon.levelKnown=known;weapon.cursedKnown=true;weapon.augment=com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon.Augment.DAMAGE;String text=weapon.info();assertEquals(1,text.split("while wielded normally",-1).length-1);assertFalse(text,text.contains("This weapon blocks"));assertFalse(text,text.contains("\n\n\n"));assertTrue(text,text.contains("augmented"));});
+            showItem(weapon,"while wielded normally","qol-defense-single-"+weapon.getClass().getSimpleName()+"-known-"+known+"-str-"+currentStrength+".png",true);
+        }}finally{TopScoresDeviceTest.render(()->Dungeon.hero.STR=strength);}
+    }
+    private static void cursedRemovalAndChampionSlotDescriptionsRender()throws Exception{
+        final com.shatteredpixel.shatteredpixeldungeon.items.KindOfWeapon[] weapons=new com.shatteredpixel.shatteredpixeldungeon.items.KindOfWeapon[2];final com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor[] armor={null};final Ring[] ring={null};final com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass kind=Dungeon.hero.subClass;final HeroClass heroClass=Dungeon.hero.heroClass;
+        TopScoresDeviceTest.render(()->{assertNull(Dungeon.hero.buff(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune.class));weapons[0]=Dungeon.hero.belongings.weapon;weapons[1]=Dungeon.hero.belongings.secondWep;armor[0]=Dungeon.hero.belongings.armor;ring[0]=Dungeon.hero.belongings.ring;});
+        try{
+            for(com.shatteredpixel.shatteredpixeldungeon.items.EquipableItem item:new com.shatteredpixel.shatteredpixeldungeon.items.EquipableItem[]{new Sword(),new com.shatteredpixel.shatteredpixeldungeon.items.armor.MailArmor(),new com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfHaste()}){
+                TopScoresDeviceTest.render(()->{item.levelKnown=item.cursedKnown=true;item.cursed=true;if(item instanceof com.shatteredpixel.shatteredpixeldungeon.items.KindOfWeapon)Dungeon.hero.belongings.weapon=(com.shatteredpixel.shatteredpixeldungeon.items.KindOfWeapon)item;else if(item instanceof com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor)Dungeon.hero.belongings.armor=(com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor)item;else{((Ring)item).anonymize();Dungeon.hero.belongings.ring=(Ring)item;}});
+                for(boolean immune:new boolean[]{false,true}){
+                    if(immune)TopScoresDeviceTest.render(()->com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff.affect(Dungeon.hero,com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune.class));
+                    try{showItem(item,"Magic immunity temporarily lets you take it off","qol-cursed-removal-"+item.getClass().getSimpleName()+"-immune-"+immune+".png",true);}
+                    finally{if(immune)TopScoresDeviceTest.render(()->com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff.detach(Dungeon.hero,com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune.class));}
+                }
+            }
+            AtomicReference<Window> shown=new AtomicReference<>();float[] time={0};
+            TopScoresDeviceTest.render(()->{Dungeon.hero.subClass=com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass.CHAMPION;Dungeon.hero.heroClass=HeroClass.DUELIST;Dungeon.hero.belongings.weapon=new Sword();Dungeon.hero.belongings.secondWep=new com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Dagger();time[0]=Dungeon.hero.cooldown();new com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Whip().execute(Dungeon.hero,"EQUIP");});
+            try{Thread.sleep(300);TopScoresDeviceTest.render(()->{try{java.util.List<com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions> windows=TopScoresDeviceTest.find(Game.scene(),com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions.class);assertEquals(1,windows.size());shown.set(windows.get(0));boolean found=false;for(RenderedTextBlock text:TopScoresDeviceTest.find(shown.get(),RenderedTextBlock.class))if(text.text().contains("Both share charges"))found=true;assertTrue(found);assertEquals(2,TopScoresDeviceTest.find(shown.get(),RedButton.class).size());assertEquals(time[0],Dungeon.hero.cooldown(),0);}catch(Exception e){throw new RuntimeException(e);}});TopScoresDeviceTest.screenshot("qol-champion-slot-choice-concise.png");}finally{TopScoresDeviceTest.render(()->{if(shown.get()!=null)shown.get().hide();});}
+        }finally{TopScoresDeviceTest.render(()->{Dungeon.hero.belongings.weapon=weapons[0];Dungeon.hero.belongings.secondWep=weapons[1];Dungeon.hero.belongings.armor=armor[0];Dungeon.hero.belongings.ring=ring[0];Dungeon.hero.subClass=kind;Dungeon.hero.heroClass=heroClass;});}
+    }
     private static void seedRuleDescriptionsAndDartPickerRender()throws Exception{
         final com.watabou.utils.Bundle rules=new com.watabou.utils.Bundle();final int challenges=Dungeon.challenges;final com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass kind=Dungeon.hero.subClass;
         TopScoresDeviceTest.render(()->Dungeon.apdStoreCustomRules(rules));
@@ -969,6 +993,8 @@ public class QolItemFeedbackDeviceTest {
             retainedTrinketDescriptionsRender();
             ordinaryDartDescriptionsRender();
             ordinaryExoticPotionDescriptionsRender();
+            defensiveWeaponSingleBlockDescriptionsRender();
+            cursedRemovalAndChampionSlotDescriptionsRender();
             seedRuleDescriptionsAndDartPickerRender();
             waywardBuffDescriptionRenders();
             inventoryScrollCancellationWarningRenders();

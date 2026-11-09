@@ -328,7 +328,9 @@ public class MeleeWeapon extends Weapon {
 			}
 		}
 
-		String statsInfo = statsInfo();
+		// These five weapons already have a strength-adjusted passive-block summary.
+        // Keep one accurate statement instead of appending the old unadjusted range again.
+        String statsInfo = com.shatteredpixel.shatteredpixeldungeon.apd.mechanics.WeaponExplanation.passiveBlockWeapon(this)?"":statsInfo();
 		if (!statsInfo.equals("")) info += "\n\n" + statsInfo;
 
 		switch (augment) {

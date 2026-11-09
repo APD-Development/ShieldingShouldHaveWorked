@@ -68,3 +68,8 @@ Exact producing source1bbb29fa20306a21cda2b6199e05653d29d18e2c, build42555889842
 ###393 delivered04:01UTC / continuing
 
 Exact source9d0f8db027a8cef4bf662b9f9d19ec33d1ae4bc5, build42557946280/stage42557993862.3064core457suites/12targeted API34cases passed including actual landscape preference, MirrorImage/Elastic/Viscosity/Warding scroll/action windows. Downloaded ten assets, independently checked app/source hashes/sidecars and scan supplemental flags; eleven capture selections manually read. Wands preserve expired-infusion save fields on opening; real gameplay cleanup remains intact. Receipt APD-393-DELIVERY-RECEIPT.json. Later scroll/Wayward/four retained detail prose and live ElementalStrike normal text3065core pass, new native windows pending394. One old exact-known-curse-wording assertion updated to require revealed name while exact all10hidden-curseequality/purity remains; failure log retained. Next valid pair target around04:31UTC; active authorization through09:30UTC, continue work.
+
+
+###394 delivered 2026-11-09T04:34:09Z / continuing
+
+Source b68cd4a96b355640c2a45355aa454dfdcd75d69f; build42560789608/stage42560840655.3068core457suites/12targeted API34 cases. Ten assets independently downloaded/hash checked; changed native captures manually reviewed before publication. Receipt APD-394-DELIVERY-RECEIPT.json. Later equipment binding/Champion/defensive single-block wording3070core full pass; Android pending395. Complete XML/log backed up /workspace/apd-defensive-weapon-evidence-20261109/accepted-full. Next pair target30minafter publication; continue through09:30UTC. Full individual audit remains unfinished.

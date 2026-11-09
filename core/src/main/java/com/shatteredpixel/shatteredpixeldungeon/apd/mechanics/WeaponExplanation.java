@@ -41,7 +41,7 @@ public final class WeaponExplanation {
         return base * (1f / speed);
     }
 
-    private static boolean passiveBlockWeapon(Weapon weapon){
+    public static boolean passiveBlockWeapon(Weapon weapon){
         return weapon instanceof com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Rapier
             ||weapon instanceof com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Quarterstaff
             ||weapon instanceof com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Katana
@@ -50,11 +50,13 @@ public final class WeaponExplanation {
     }
     public static String blockSummary(Weapon weapon,Hero hero){
         if(!passiveBlockWeapon(weapon))return "";
-        if(!weapon.levelKnown)return "Can block incoming attack damage while wielded normally.";
+        String upgrades=weapon instanceof com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.RoundShield
+                ||weapon instanceof com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Greatshield?" Upgrades improve this protection.":"";
+        if(!weapon.levelKnown)return "Can block incoming attack damage while wielded normally."+upgrades;
         Integer strength=ArmorExplanation.knownStrength(hero);
-        if(strength==null)return "Can block incoming attack damage while wielded normally.";
+        if(strength==null)return "Can block incoming attack damage while wielded normally."+upgrades;
         int maximum=weapon.defenseFactor(hero),missing=Math.max(0,weapon.STRReq()-strength);
-        return "Blocks _0–"+Math.max(0,maximum-2*missing)+" damage_ while wielded normally.";
+        return "Blocks _0–"+Math.max(0,maximum-2*missing)+" damage_ while wielded normally."+upgrades;
     }
     public static String blockDetails(Weapon weapon,Hero hero){
         if(!passiveBlockWeapon(weapon))return "";
@@ -70,7 +72,7 @@ public final class WeaponExplanation {
         Float delay = normalAttackDelay(weapon, hero);
         String time = delay == null ? "" : com.shatteredpixel.shatteredpixeldungeon.messages.Messages.decimalFormat("0.##",delay);
         String result = delay == null ? "" : "Attack time: _" + time + (time.equals("1") ? " turn" : " turns") + " per attack_.";
-        String block=blockSummary(weapon,hero);if(!block.isEmpty())result+="\n\n"+block;
+        String block=blockSummary(weapon,hero);if(!block.isEmpty())result+=(result.isEmpty()?"":" ")+block;
         return result;
     }
 
