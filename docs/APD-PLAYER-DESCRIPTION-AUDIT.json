@@ -4,7 +4,7 @@
   "counting": "Source units, not distinct item types. reviewed_units includes partial reviews; completed_units excludes partial/pending dependency. corrected_units counts source units with corrections, including incomplete reviews. Inventory/export/tests alone are not an individual review.",
   "source_units": 431,
   "message_entries": 2411,
-  "reviewed_units": 431,
+  "reviewed_units": 428,
   "corrected_units": 344,
   "unresolved_units": 175,
   "category_counts": {
