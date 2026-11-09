@@ -6,7 +6,7 @@
   "message_entries": 2411,
   "reviewed_units": 420,
   "corrected_units": 338,
-  "unresolved_units": 187,
+  "unresolved_units": 184,
   "category_counts": {
     "apd": 1,
     "mechanics": 38,
@@ -81,7 +81,7 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/ArtifactExplanation.java",
-      "sha256": "096b6b37ab0923c9b286faae75276354c36e890d7f29ba9346f8739115738e1e",
+      "sha256": "8aaa5e9670b7a52c8728539a046c4a408bd8d5dd5fcf3cc282614abc6af87214",
       "category": "mechanics",
       "status": "PARTIAL_REVIEW",
       "description_methods": [
@@ -89,7 +89,7 @@
         "details"
       ],
       "wording_corrected": true,
-      "review_notes": "Current ordinary-description pass: concise live values, duplicate mathematical prose removed. Existing optional details and entire category variants remain under review; panel decisions pending. See APD-DESCRIPTION-CORRECTION-2026-11-08.md. Concise normal interval checked against actual Regeneration at0/3/9/10; max-level retained details no longer describe unavailable next prick. No healing/prick effect changed; native levels0/3/10 and actual expanded cap window pending395. Horn full source read: EAT uses truncated whole-charge selection, can leave residual hunger; charged cursed Horn still permits EAT, only ordinary food penalty and recharge stopping described. Actual16 EAT cases across normal/OnDiet, cursed/normal, hunger reserves50/179/181/450 preserve resources and3turn cost. MagicImmune ordinary food exception tested through actual Food.satisfy. Store description explains capacity/experience benefit. New actual windows pending396; no mechanic changed."
+      "review_notes": "Current ordinary-description pass: concise live values, duplicate mathematical prose removed. Existing optional details and entire category variants remain under review; panel decisions pending. See APD-DESCRIPTION-CORRECTION-2026-11-08.md. Concise normal interval checked against actual Regeneration at0/3/9/10; max-level retained details no longer describe unavailable next prick. No healing/prick effect changed; native levels0/3/10 and actual expanded cap window pending395. Horn full source read: EAT uses truncated whole-charge selection, can leave residual hunger; charged cursed Horn still permits EAT, only ordinary food penalty and recharge stopping described. Actual16 EAT cases across normal/OnDiet, cursed/normal, hunger reserves50/179/181/450 preserve resources and3turn cost. MagicImmune ordinary food exception tested through actual Food.satisfy. Store description explains capacity/experience benefit. New actual windows pending396; no mechanic changed. Three direct owned Cape/Chalice/Horn details and common charge headers shortened2026-11-09, actual source and existing effect matrices reconciled,3106pass. All other artifact providers remain separately tracked; no new panels or gameplay."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/BlandfruitExplanation.java",
@@ -987,24 +987,24 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/artifacts/CapeOfThorns.java",
       "sha256": "3b409f5f6a5156fb3e5ba198fb3d0f47115923393f274cbdb93344030b01d60c",
       "category": "artifacts",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [
         "desc",
         "desc"
       ],
       "wording_corrected": true,
-      "review_notes": " All15 actual curse branches reviewed; concise conditional ordinary text,15type read-only regression, actual Horn/Chalice effects tested. Existing advanced panels retained pending owner review; full non-curse/class paths may remain incomplete. Entire source and Hero.damage caller read; concise state/flavor/active tooltip. New real charged activation+deflection test over24seeds and adjacent/distant targets, no synthetic unsupported cooldown key. Initial fixture failure preserved; corrected to real charge(hero,25), no assertions weakened. Complete source advanced/legacy compatibility scope remains open; not claiming new gameplay fix."
+      "review_notes": " All15 actual curse branches reviewed; concise conditional ordinary text,15type read-only regression, actual Horn/Chalice effects tested. Existing advanced panels retained pending owner review; full non-curse/class paths may remain incomplete. Entire source and Hero.damage caller read; concise state/flavor/active tooltip. New real charged activation+deflection test over24seeds and adjacent/distant targets, no synthetic unsupported cooldown key. Initial fixture failure preserved; corrected to real charge(hero,25), no assertions weakened. Complete source advanced/legacy compatibility scope remains open; not claiming new gameplay fix. Entire own source finally reconciled2026-11-09, including actual Cape charging/active absorption/adjacent retaliation/detach, Chalice prick/base preview/current defenses/death/upgrade/action/regen/external recharge and Horn charge/meal/store/action/experience/curse/save. Existing specific optional details shorter, all mathematical bounds/live coefficients unchanged. Existing actual reflection48cases, regen/Healing0/cap/experience/food/time and save/unknown regressions in3106core pass. Existing shared artifact header now concise count/percentage with Rose ghost-health distinction; updated wording assertion retains actual50%icon vs25/100resource and save-purity checks. Three new actual expanded Android windows/end-of-body viewport captures pending401. Other shared/class providers tracked separately."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/artifacts/ChaliceOfBlood.java",
       "sha256": "489f94d26d346bc1cac68afc7d5d2f6d49a2b602706ee46e5b69fb77531ecb97",
       "category": "artifacts",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [
         "desc"
       ],
       "wording_corrected": true,
-      "review_notes": " All15 actual curse branches reviewed; concise conditional ordinary text,15type read-only regression, actual Horn/Chalice effects tested. Existing advanced panels retained pending owner review; full non-curse/class paths may remain incomplete. Worn progress states shortened; real prick preview preserved. New normal Healing0 warning in shared ArtifactExplanation tested against30actual Regeneration ticks with no HP gain. Dynamic lethal-prick preview/regen intervals unchanged. Full3047core pass, native disabled-healing fixture pending389; entire secondary/class scope remains open. Manual390capture caught false upgrade promise at max10 while Healing0. Correct branch excludes upgrade sentence at cap. Existing real no-heal test expanded0/3/10 with actual PRICK availability; native assertion expanded.390 retained as unpublished candidate, no full acceptance claimed. Concise normal interval checked against actual Regeneration at0/3/9/10; max-level retained details no longer describe unavailable next prick. No healing/prick effect changed; native levels0/3/10 and actual expanded cap window pending395."
+      "review_notes": " All15 actual curse branches reviewed; concise conditional ordinary text,15type read-only regression, actual Horn/Chalice effects tested. Existing advanced panels retained pending owner review; full non-curse/class paths may remain incomplete. Worn progress states shortened; real prick preview preserved. New normal Healing0 warning in shared ArtifactExplanation tested against30actual Regeneration ticks with no HP gain. Dynamic lethal-prick preview/regen intervals unchanged. Full3047core pass, native disabled-healing fixture pending389; entire secondary/class scope remains open. Manual390capture caught false upgrade promise at max10 while Healing0. Correct branch excludes upgrade sentence at cap. Existing real no-heal test expanded0/3/10 with actual PRICK availability; native assertion expanded.390 retained as unpublished candidate, no full acceptance claimed. Concise normal interval checked against actual Regeneration at0/3/9/10; max-level retained details no longer describe unavailable next prick. No healing/prick effect changed; native levels0/3/10 and actual expanded cap window pending395. Entire own source finally reconciled2026-11-09, including actual Cape charging/active absorption/adjacent retaliation/detach, Chalice prick/base preview/current defenses/death/upgrade/action/regen/external recharge and Horn charge/meal/store/action/experience/curse/save. Existing specific optional details shorter, all mathematical bounds/live coefficients unchanged. Existing actual reflection48cases, regen/Healing0/cap/experience/food/time and save/unknown regressions in3106core pass. Existing shared artifact header now concise count/percentage with Rose ghost-health distinction; updated wording assertion retains actual50%icon vs25/100resource and save-purity checks. Three new actual expanded Android windows/end-of-body viewport captures pending401. Other shared/class providers tracked separately."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/artifacts/CloakOfShadows.java",
@@ -1052,12 +1052,12 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/artifacts/HornOfPlenty.java",
       "sha256": "a19082d3277f56d485d9c447c3d5596fbb1f83b94d1bb1b05071316770bfc130",
       "category": "artifacts",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [
         "desc"
       ],
       "wording_corrected": true,
-      "review_notes": " All15 actual curse branches reviewed; concise conditional ordinary text,15type read-only regression, actual Horn/Chalice effects tested. Existing advanced panels retained pending owner review; full non-curse/class paths may remain incomplete. Horn full source read: EAT uses truncated whole-charge selection, can leave residual hunger; charged cursed Horn still permits EAT, only ordinary food penalty and recharge stopping described. Actual16 EAT cases across normal/OnDiet, cursed/normal, hunger reserves50/179/181/450 preserve resources and3turn cost. MagicImmune ordinary food exception tested through actual Food.satisfy. Store description explains capacity/experience benefit. New actual windows pending396; no mechanic changed."
+      "review_notes": " All15 actual curse branches reviewed; concise conditional ordinary text,15type read-only regression, actual Horn/Chalice effects tested. Existing advanced panels retained pending owner review; full non-curse/class paths may remain incomplete. Horn full source read: EAT uses truncated whole-charge selection, can leave residual hunger; charged cursed Horn still permits EAT, only ordinary food penalty and recharge stopping described. Actual16 EAT cases across normal/OnDiet, cursed/normal, hunger reserves50/179/181/450 preserve resources and3turn cost. MagicImmune ordinary food exception tested through actual Food.satisfy. Store description explains capacity/experience benefit. New actual windows pending396; no mechanic changed. Entire own source finally reconciled2026-11-09, including actual Cape charging/active absorption/adjacent retaliation/detach, Chalice prick/base preview/current defenses/death/upgrade/action/regen/external recharge and Horn charge/meal/store/action/experience/curse/save. Existing specific optional details shorter, all mathematical bounds/live coefficients unchanged. Existing actual reflection48cases, regen/Healing0/cap/experience/food/time and save/unknown regressions in3106core pass. Existing shared artifact header now concise count/percentage with Rose ghost-health distinction; updated wording assertion retains actual50%icon vs25/100resource and save-purity checks. Three new actual expanded Android windows/end-of-body viewport captures pending401. Other shared/class providers tracked separately."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/artifacts/LloydsBeacon.java",
@@ -4351,7 +4351,7 @@
       "wording_corrected": true
     }
   ],
-  "completed_units": 240,
+  "completed_units": 243,
   "latest_tests": "3103core/457suites no failures/errors/skips; Twin unknown-source preview invariance, known-source update, passive block/enchantment/legacy values, raw combat/other thread and exception cleanup. Full evidence /workspace/apd-twin-inspection-evidence-20261109/accepted-full. New native windows pending399. Earlier source-only compile42575862693passed ondd9eccc670ca7927c5ef44ad3d3a40c95958798f with3099tests; not later Twin source.",
   "message_inventory_entries": 5338
 }

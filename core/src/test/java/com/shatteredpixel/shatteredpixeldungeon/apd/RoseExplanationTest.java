@@ -79,7 +79,7 @@ public class RoseExplanationTest {
     }
     @Test public void liveGhostIconIsHealthNotTheStoredSummoningMeter()throws Exception{
         DriedRose rose=rose();DriedRose.GhostHero ghost=new DriedRose.GhostHero(rose);associate(rose,ghost);ghost.HP=ghost.HT/2;Field charge=Artifact.class.getDeclaredField("charge");charge.setAccessible(true);charge.setInt(rose,25);
-        assertEquals("50%",rose.status());String before=saved(rose),ghostBefore=saved(ghost);String description=ArtifactExplanation.details(rose);assertTrue(description,description.contains("25 / 100 points"));assertTrue(description.contains("remaining health percentage instead of this meter"));assertFalse(description.contains("A percent on the icon is this meter's fullness"));assertEquals(before,saved(rose));assertEquals(ghostBefore,saved(ghost));
+        assertEquals("50%",rose.status());String before=saved(rose),ghostBefore=saved(ghost);String description=ArtifactExplanation.details(rose);assertTrue(description,description.contains("_25/100_"));assertTrue(description.contains("the ghost’s health percentage"));assertFalse(description.contains("A percent on the icon is this meter's fullness"));assertEquals(before,saved(rose));assertEquals(ghostBefore,saved(ghost));
     }
     @Test public void actualUpgradeHealingUsesExistingCapBeforeNextStatisticsRefresh()throws Exception{
         Method refresh=DriedRose.GhostHero.class.getDeclaredMethod("updateRose");refresh.setAccessible(true);

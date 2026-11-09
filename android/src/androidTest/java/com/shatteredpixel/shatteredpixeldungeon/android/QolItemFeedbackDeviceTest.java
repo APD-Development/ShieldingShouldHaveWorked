@@ -158,7 +158,9 @@ public class QolItemFeedbackDeviceTest {
         Point originalOffset=window.getOffset();TopScoresDeviceTest.render(()->window.offset(originalOffset.x+1,originalOffset.y+1));
         Thread.sleep(100);TopScoresDeviceTest.render(()->{assertDescriptionViewport(window);window.offset(originalOffset);});
         Thread.sleep(100);TopScoresDeviceTest.render(()->assertDescriptionViewport(window));
-        TopScoresDeviceTest.screenshot(screenshot);touch(at[0]);
+        TopScoresDeviceTest.screenshot(screenshot);
+        TopScoresDeviceTest.render(()->{ScrollPane scroll=TopScoresDeviceTest.find(window,ScrollPane.class).get(0);float bottom=Math.max(0,scroll.content().height()-scroll.height());scroll.scrollTo(0,bottom);assertEquals("Last description line remains reachable",bottom,scroll.content().camera.scroll.y,.001f);assertDescriptionViewport(window);});
+        Thread.sleep(100);TopScoresDeviceTest.screenshot(screenshot.replace(".png","-bottom.png"));touch(at[0]);
         TopScoresDeviceTest.render(()->{assertEquals("Pointer closes advanced explanation","Show calculations",expander.get().text());assertEquals(time[0],Dungeon.hero.cooldown(),0);assertEquals(hp[0],Dungeon.hero.HP);window.hide();});
     }
     private static void inventoryOrderShowsAutomatically()throws Exception{
@@ -501,6 +503,11 @@ public class QolItemFeedbackDeviceTest {
         com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing potion=new com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing();potion.anonymize();showItem(potion,"Repeated doses do not add","qol-healing-potion-no-stacking.png",true);
         AtomicReference<Window> shown=new AtomicReference<>();TopScoresDeviceTest.render(()->{com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Healing healing=new com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Healing();healing.setHeal(100,.25f,0);assertTrue(healing.desc().contains("Next heal: up to 25 HP"));com.watabou.utils.Bundle before=new com.watabou.utils.Bundle();healing.storeInBundle(before);Window window=new WndInfoBuff(healing);GameScene.show(window);shown.set(window);com.watabou.utils.Bundle after=new com.watabou.utils.Bundle();healing.storeInBundle(after);assertEquals(before.toString(),after.toString());});
         try{Thread.sleep(300);TopScoresDeviceTest.render(()->assertDescriptionViewport(shown.get()));TopScoresDeviceTest.screenshot("qol-gradual-healing-concise-status.png");}finally{TopScoresDeviceTest.render(()->shown.get().hide());}
+    }
+    private static void retainedThreeArtifactDetailsRender()throws Exception{
+        calculationWindow(()->{com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CapeOfThorns cape=new com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CapeOfThorns();cape.level(3);cape.levelKnown=cape.cursedKnown=true;return new WndInfoItem(cape);},"Charging and deflection","qol-cape-existing-detail-clear.png");
+        calculationWindow(()->{com.shatteredpixel.shatteredpixeldungeon.items.artifacts.ChaliceOfBlood chalice=new com.shatteredpixel.shatteredpixeldungeon.items.artifacts.ChaliceOfBlood();chalice.level(3);chalice.levelKnown=chalice.cursedKnown=true;return new WndInfoItem(chalice);},"this can kill you","qol-chalice-existing-detail-clear.png");
+        calculationWindow(()->{com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HornOfPlenty horn=new com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HornOfPlenty();horn.level(3);horn.levelKnown=horn.cursedKnown=true;return new WndInfoItem(horn);},"Experience recharges the Horn","qol-horn-existing-detail-clear.png");
     }
     private static void additionalTrinketDetailsRender()throws Exception{
         String[] names={"ParchmentScrap","PetrifiedSeed","DimensionalSundial","CrackedSpyglass","MossyClump","TrapMechanism","ChaoticCenser","ExoticCrystals","WondrousResin","ShardOfOblivion"};
@@ -1217,6 +1224,7 @@ public class QolItemFeedbackDeviceTest {
             sightHungerHealingTrinketDescriptionsRender();
             retainedGrowthAndWardDescriptionsRender();
             additionalTrinketDetailsRender();
+            retainedThreeArtifactDetailsRender();
             gradualHealingNonStackDescriptionsRender();
             hiddenTwinUpgradeDescriptionsRender();
             divineInspirationChoiceDescriptionRenders();

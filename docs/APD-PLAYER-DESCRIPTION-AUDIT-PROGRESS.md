@@ -312,3 +312,8 @@ Seven existing trinket panels individually shortened, with actual spawn timing, 
 ### Final trinket branches and Lunge limits
 
 All17existing TrinketExplanation branches individually reconciled; three final details shortened. Exotic explicitly retains current Healing0 override, Resin separate neutral/helpful and extra-zap chances, Shard actual capped/additive loot contribution and50turn use trackers. Real Mob.lootChance matrix36cases verifies cap and hidden-upgrade invariance;3106core457pass. Shard unknown uses existing At+0 key. Lunge normal fourstrings names rooted/landing and empty-space-charge limits; ownRapier/Katana/Greataxe reviews closed, shared/class scope separate.420full/partial338corrected240complete187unresolved,5338English. New source-only compilation requested; current400native checks remain pending. Continue approved work; whole audit unfinished.
+
+
+### Three retained artifact details
+
+Cape/Chalice/Horn optional math prose and common charge header shorter, preserving effect/bound formulas. Entire own source reconciled, actual existing reflection/regen/food/time/experience/Healing0/save tests pass in3106core457suites. Obsolete Rose-header wording assertion failure retained; corrected assertion preserves actual50%ghost health versus25/100summoning state and save purity. Three new expanded Android windows plus end-of-scroll camera assertion/bottom screenshots added to all existing calculation-window fixtures; runtime pending401.420full/partial338corrected243complete184unresolved,5338English. Whole audit unfinished.
