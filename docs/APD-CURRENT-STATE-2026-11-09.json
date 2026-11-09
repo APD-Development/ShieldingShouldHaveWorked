@@ -1,11 +1,11 @@
 {
-  "recorded_utc": "2026-11-09T11:22:28.974998+00:00",
+  "recorded_utc": "2026-11-09T11:45:08.916225+00:00",
   "authorization_end_utc": "2026-11-09T21:00:00Z",
-  "latest_verified_published_build": 409,
-  "release_url": "https://github.com/APD-Development/ShieldingShouldHaveWorked/releases/tag/apd-alpha-preview-409",
-  "source_fix_commit": "9fddee7ee05770375925106afe455723b6a2d93b",
+  "latest_verified_published_build": 410,
+  "release_url": "https://github.com/APD-Development/ShieldingShouldHaveWorked/releases/tag/apd-alpha-preview-410",
+  "source_fix_commit": "ccfbb85b69c96f00a4e6ae5e3d6c3aca81a10053",
   "local_full_core": {
-    "tests": 3131,
+    "tests": 3133,
     "suites": 457,
     "failures": 0,
     "errors": 0,
@@ -17,9 +17,9 @@
     "scope": "3115core, Androiddebug/release/instrumentationJava and desktop; no appAPK assembled; before latest Tenacity sourcefix"
   },
   "latest_source_compile": {
-    "commit": "0a71a6cd4",
-    "run": 42606030280,
-    "status": "3130 core and Android debug/release/instrumentation/desktop compile passed before newest dew changes"
+    "commit": "1f8f5e049",
+    "run": 42609605936,
+    "status": "3132core,Androiddebug/release/instrumentation/desktop passed; before latest food/ordinary plant panel changes"
   },
   "held_private_builds": {
     "404": "Native fixture failed before-render camera check; original unacceptedAPKs/rawfailures preserved in explicitprivatearchives.",
@@ -27,16 +27,16 @@
     "406": "3113core/12nativepassed, independenthashes+4463sourcefilehashes,10newbuffcapturesreadable. Same bad Tenacity provider; originalpairheldprivate."
   },
   "newest_source_not_in_any_apk": [
-    "Lullaby Healing0, RemoveCurse spirit priority, Teleport room restriction, live Passage destination",
-    "Enchantment replacement and Siren immunity wording",
-    "Shorter retained artifact details and natural versus direct food charge clarification",
-    "Dew/Waterskin zero-Healing warnings, actual consumption/turn/shield tests"
+    "Frost own-damage clarification and Regrowth plant reward/Corruption/portable alchemy prose",
+    "Zero-Healing Frozen/Phantom/MeatPie/Supply explanations, actual preserved benefits tests",
+    "Ordinary plant generic calculations removed;30native normal/Warden windows prepared",
+    "Cursed HealthTransfer floating-healing discrepancy reproduced; display-only correction in local verification"
   ],
   "audit": {
-    "source_units": 436,
-    "completed_units": 372,
-    "unresolved_units": 64,
-    "corrected_units": 351,
+    "source_units": 437,
+    "completed_units": 398,
+    "unresolved_units": 39,
+    "corrected_units": 353,
     "message_inventory_entries": 5343
   },
   "remaining": [
@@ -49,9 +49,9 @@
   "physical_phone_or_acoustic_audio_verified": false,
   "background_development_after_window_claimed": false,
   "active_build": {
-    "number": 410,
-    "run": 42608369809,
-    "source": "ccfbb85b6",
-    "status": "in progress; no success or publication claim"
+    "number": 411,
+    "run": 42611010791,
+    "source": "7e92a2b45",
+    "status": "in progress; not accepted/published"
   }
 }
