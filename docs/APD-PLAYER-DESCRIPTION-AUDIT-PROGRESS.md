@@ -118,3 +118,8 @@ Source-specific class/effect/staff and supporting gas/ooze/charge behavior read.
 ### Honest unidentified wand examples and Disintegration
 
 Unidentified numeric wand stats now labelled +0examples in existing description paragraph. No hidden level read; nonnumeric/charge-only Corruption/Regrowth, unknown-charge Fireblast and no-hero Transfusion excluded after reading each stats path. Regression across13types at hidden0/3/8 verifies same text, label applicability and serialized purity. One English key added (5331total). Disintegration prose checked against actual beam: wall/creature piercing, shared multi-target/wall bonus, finite upgrade-dependent range and ally risk; staff reach no longer equated with a Projecting enchantment. Full3041core/457suites pass. Actual13unknown-wand and Disintegration known/unknown/staff windows added for387, not yet run. Evidence `/workspace/apd-wand-zero-example-evidence-20261109`.341reviewed units,303corrected,156complete,271unresolved.
+
+
+### 2026-11-09 01:55UTC checkpoint
+
+Lightning and Regrowth continued: concise normal chaining/damage/ally rules backed by real onZap four-scenario regression; Fireblast/Regrowth charge-cost grammar, plant allowance, 3charge Lotus, staff Healing0 warning and Lotus Rot-dart exception corrected. Full3042core457suites pass, no failures/errors/skips. Evidence /workspace/apd-lightning-regrowth-evidence-20261109. Three remaining concrete dart units closed after original387 actual owned windows manually reviewed; shared providers stay open. 342reviewed source units, 304corrected, 159complete, 268unresolved. These later source changes not in387; new Android verification pending.

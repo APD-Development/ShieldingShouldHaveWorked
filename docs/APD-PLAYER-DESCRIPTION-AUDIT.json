@@ -4,9 +4,9 @@
   "counting": "Source units, not distinct item types. reviewed_units includes partial reviews; completed_units excludes partial/pending dependency. corrected_units counts source units with corrections, including incomplete reviews. Inventory/export/tests alone are not an individual review.",
   "source_units": 427,
   "message_entries": 2411,
-  "reviewed_units": 341,
-  "corrected_units": 303,
-  "unresolved_units": 271,
+  "reviewed_units": 342,
+  "corrected_units": 304,
+  "unresolved_units": 268,
   "category_counts": {
     "apd": 1,
     "mechanics": 38,
@@ -3124,8 +3124,10 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/wands/WandOfLightning.java",
       "sha256": "b33444b14c02642abef64b6b2adfc6df6a49a16b08df0ec0d2bd98dd03058a1d",
       "category": "wands",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "PARTIAL_REVIEW",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Entire normal onZap/arc/onHit/LightningCharge paths and supporting alignment/Shield/Water rules read. Concise normal text corrects direct ally targeting, multiple-target reduction, first target water exception, caster half damage and actual Wand Lightning immunity. New real onZap four-scenario damage/filter regression passes. Source-only after387; full class/secondary and actual new native windows remain open."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/wands/WandOfLivingEarth.java",
@@ -3163,7 +3165,7 @@
         "statsDesc"
       ],
       "wording_corrected": true,
-      "review_notes": "Ordinary description corrected after source review. Existing damage/cost/status logic retained; known live effects and challenge/hidden-state cases tested. Complete class variants, optional panels where applicable and Android rendering remain under review."
+      "review_notes": "Normal cone, charge cost, plants, allowance, Golden Lotus, seed return, tipped-dart rounding/Rot exception and grass staff healing read. Concise cost/allowance/staff/Lotus text; actual charge-limit assertions and two-rounding-step healing regression retained; new Healing0 proof and staff warning. Source-only after387, native pending. Existing advanced panel and complete class scope stay open."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/wands/WandOfTransfusion.java",
@@ -3956,10 +3958,10 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/missiles/darts/ChillingDart.java",
       "sha256": "7c0b4b9eb7a6f5b883740a1524e52b67b394c106e0b72c3f3c0d73080094dc32",
       "category": "weapon",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [],
       "wording_corrected": true,
-      "review_notes": "Entire source-specific class/effect and supporting status read; actual385 normal window reviewed. Later wording adds damage-breaking paralysis, Chill extinguishing Burning/all-action slowdown, and Displacing destination possibly bringing a distant enemy closer. Full3040core pass; later word changes await next Android capture. Shared dart infrastructure remains separate."
+      "review_notes": "Entire source-specific class/effect and supporting status read; actual385 normal window reviewed. Later wording adds damage-breaking paralysis, Chill extinguishing Burning/all-action slowdown, and Displacing destination possibly bringing a distant enemy closer. Full3040core pass; later word changes await next Android capture. Shared dart infrastructure remains separate. Entire source-specific proc/charged branches and normal limitations reviewed. Updated original387 owned native item windows manually read with action rows, text fits. Shared Dart/TippedDart/Missile providers remain separately open."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/missiles/darts/CleansingDart.java",
@@ -3983,10 +3985,10 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/missiles/darts/DisplacingDart.java",
       "sha256": "32dfff38f08c043bf86b7811d9c3c56015dbd5f7a9feea0bb17fe0f1ddb952d5",
       "category": "weapon",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [],
       "wording_corrected": true,
-      "review_notes": "Entire source-specific class/effect and supporting status read; actual385 normal window reviewed. Later wording adds damage-breaking paralysis, Chill extinguishing Burning/all-action slowdown, and Displacing destination possibly bringing a distant enemy closer. Full3040core pass; later word changes await next Android capture. Shared dart infrastructure remains separate."
+      "review_notes": "Entire source-specific class/effect and supporting status read; actual385 normal window reviewed. Later wording adds damage-breaking paralysis, Chill extinguishing Burning/all-action slowdown, and Displacing destination possibly bringing a distant enemy closer. Full3040core pass; later word changes await next Android capture. Shared dart infrastructure remains separate. Entire source-specific proc/charged branches and normal limitations reviewed. Updated original387 owned native item windows manually read with action rows, text fits. Shared Dart/TippedDart/Missile providers remain separately open."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/missiles/darts/HealingDart.java",
@@ -4019,10 +4021,10 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/missiles/darts/ParalyticDart.java",
       "sha256": "4b4329ab0b998da4cb9cf1c6391fb551895fe120c2e4efd6de792a8733cf59c9",
       "category": "weapon",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [],
       "wording_corrected": true,
-      "review_notes": "Entire source-specific class/effect and supporting status read; actual385 normal window reviewed. Later wording adds damage-breaking paralysis, Chill extinguishing Burning/all-action slowdown, and Displacing destination possibly bringing a distant enemy closer. Full3040core pass; later word changes await next Android capture. Shared dart infrastructure remains separate."
+      "review_notes": "Entire source-specific class/effect and supporting status read; actual385 normal window reviewed. Later wording adds damage-breaking paralysis, Chill extinguishing Burning/all-action slowdown, and Displacing destination possibly bringing a distant enemy closer. Full3040core pass; later word changes await next Android capture. Shared dart infrastructure remains separate. Entire source-specific proc/charged branches and normal limitations reviewed. Updated original387 owned native item windows manually read with action rows, text fits. Shared Dart/TippedDart/Missile providers remain separately open."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/missiles/darts/PoisonDart.java",
@@ -4237,16 +4239,16 @@
       "review_notes": "Added missing display provider to inventory. Reading its output is not a complete provenance/generation audit."
     }
   ],
-  "completed_units": 156,
+  "completed_units": 159,
   "latest_tests": {
-    "core_tests": 3041,
+    "core_tests": 3042,
     "suites": 457,
     "failures": 0,
     "errors": 0,
     "skipped": 0,
-    "log": "/workspace/apd-wand-zero-example-evidence-20261109/apd-wand-zero-example-full.log",
+    "log": "/workspace/apd-lightning-regrowth-evidence-20261109/apd-regrowth-fireblast-description-full.log",
     "android_verified": false,
     "new_apk_built": false,
-    "scope": "Latest post386 Disintegration and public+0wand labels;13types/threehiddenlevels/read-only save and exclusion cases. Native owned wand/staff/unknown windows pending387;386 remains published."
+    "scope": "Post387 Lightning actual-onZap regression and Regrowth/Fireblast/Healing0 prose. Native388 pending;387 published3041core/12targetedAndroid."
   }
 }

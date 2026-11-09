@@ -329,6 +329,37 @@ public class QolItemFeedbackDeviceTest {
             showItem(staff,"strike enemies farther away","qol-disintegration-battlemage-concise.png",true);
         }finally{TopScoresDeviceTest.render(()->{wand.stopCharging();Dungeon.hero.heroClass=previousClass;Dungeon.hero.subClass=previousSubclass;});}
     }
+    private static void lightningAndRegrowthDescriptionsRender()throws Exception{
+        com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfLightning lightning=new com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfLightning();
+        com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfRegrowth regrowth=new com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfRegrowth();
+        com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfFireblast fireblast=new com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfFireblast();
+        TopScoresDeviceTest.render(()->{for(com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand wand:new com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand[]{lightning,regrowth,fireblast}){wand.level(3);wand.levelKnown=wand.cursedKnown=wand.curChargeKnown=true;wand.curCharges=1;}});
+        showItem(lightning,"allies are safe unless directly targeted","qol-lightning-concise.png",true);
+        TopScoresDeviceTest.render(()->lightning.levelKnown=false);showItem(lightning,"Unupgraded example (+0)","qol-lightning-unknown.png",true);
+        showItem(fireblast,"Charge cost: _1_","qol-fireblast-one-charge.png",true);
+        showItem(regrowth,"Charge cost: _1_","qol-regrowth-one-charge.png",true);
+        TopScoresDeviceTest.render(()->regrowth.curCharges=7);showItem(regrowth,"Charge cost: _3_","qol-regrowth-three-charges.png",true);
+        HeroClass previousClass=Dungeon.hero.heroClass;com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass previousSubclass=Dungeon.hero.subClass;
+        com.watabou.utils.Bundle previousRules=new com.watabou.utils.Bundle();
+        TopScoresDeviceTest.render(()->Dungeon.apdStoreCustomRules(previousRules));
+        try{
+            TopScoresDeviceTest.render(()->{Dungeon.hero.heroClass=HeroClass.MAGE;Dungeon.hero.subClass=com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass.BATTLEMAGE;lightning.levelKnown=true;});
+            for(com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand wand:new com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand[]{lightning,regrowth}){
+                com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff staff=new com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff();
+                TopScoresDeviceTest.render(()->{try{wand.charge(Dungeon.hero);staff.level(3);staff.levelKnown=staff.cursedKnown=true;java.lang.reflect.Field field=staff.getClass().getDeclaredField("wand");field.setAccessible(true);field.set(staff,wand);}catch(Exception e){throw new RuntimeException(e);}});
+                try{
+                    showItem(staff,wand==lightning?"adds 1 tile":"Stay still","qol-"+(wand==lightning?"lightning":"regrowth")+"-battlemage.png",true);
+                    if(wand==regrowth){
+                        TopScoresDeviceTest.render(()->{com.watabou.utils.Bundle all=new com.watabou.utils.Bundle(),settings=new com.watabou.utils.Bundle();com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomDungeonRules.defaults().with(com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomDungeonRules.Slider.HEALING,0).store(settings);all.put("apd_custom_rules",settings);Dungeon.apdRestoreCustomRules(all);});
+                        showItem(staff,"rules prevent the Battlemage healing","qol-regrowth-battlemage-healing-zero.png",true);
+                    }
+                }finally{TopScoresDeviceTest.render(()->wand.stopCharging());}
+            }
+            AtomicReference<Window> shown=new AtomicReference<>();
+            TopScoresDeviceTest.render(()->{com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfLightning.LightningCharge buff=new com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfLightning.LightningCharge();Window window=new WndInfoBuff(buff);GameScene.show(window);shown.set(window);});
+            Thread.sleep(300);TopScoresDeviceTest.render(()->assertDescriptionViewport(shown.get()));TopScoresDeviceTest.screenshot("qol-lightning-charge-concise.png");TopScoresDeviceTest.render(()->shown.get().hide());
+        }finally{TopScoresDeviceTest.render(()->{Dungeon.apdRestoreCustomRules(previousRules);Dungeon.hero.heroClass=previousClass;Dungeon.hero.subClass=previousSubclass;});}
+    }
     private static void unidentifiedWandExamplesRender()throws Exception{
         for(String name:new String[]{"BlastWave","Corrosion","Corruption","Disintegration","Fireblast","Frost","Lightning","LivingEarth","MagicMissile","PrismaticLight","Regrowth","Transfusion","Warding"}){
             com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand wand=(com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand)Class.forName("com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOf"+name).getDeclaredConstructor().newInstance();
@@ -646,6 +677,7 @@ public class QolItemFeedbackDeviceTest {
             magicMissileDescriptionsRender();
             corrosionWandDescriptionsRender();
             disintegrationWandDescriptionsRender();
+            lightningAndRegrowthDescriptionsRender();
             unidentifiedWandExamplesRender();
             inventoryOrderShowsAutomatically();
             prepareSearchableFloor();

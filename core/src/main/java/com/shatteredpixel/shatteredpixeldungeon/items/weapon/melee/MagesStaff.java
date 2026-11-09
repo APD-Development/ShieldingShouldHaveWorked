@@ -361,7 +361,9 @@ public class MagesStaff extends MeleeWeapon {
 			else                                                    info += " " + Messages.get(this, "cursed_wand");
 
 			if (Dungeon.hero != null && Dungeon.hero.subClass == HeroSubClass.BATTLEMAGE){
-				info += "\n\n" + Messages.get(wand, "bmage_desc");
+				info += "\n\n" + Messages.get(wand, wand instanceof WandOfRegrowth
+                        && com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomHealingHooks.disabled()
+                        ? "bmage_desc_disabled" : "bmage_desc");
 			}
 		}
 
