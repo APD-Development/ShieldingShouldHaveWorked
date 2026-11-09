@@ -21,5 +21,13 @@
     "result": "both complete six-case matrices passed on unchanged original APKs",
     "packaging_failure": "HTTP504 downloading external gitleaks archive; source scan not completed, release held",
     "recovery": "prepare-only workflow retains original APK/native artifacts and retries scanner download with bounded retry"
+  },
+  "packaging_network_retry": {
+    "run": 42568740267,
+    "result": "direct scanner URL504 even after three retries",
+    "official_asset_api_id": 378332058,
+    "official_api_download_verified_locally": true,
+    "sha256": "551f6fc83ea457d62a0d98237cbad105af8d557003051f41f3e7ca7b3f2470eb",
+    "fallback": "same official asset via authenticated GitHub API, checksum unchanged, no scan bypass"
   }
 }
