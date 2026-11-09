@@ -1,11 +1,11 @@
 {
-  "recorded_utc": "2026-11-09T12:20:31.383599+00:00",
-  "authorization_end_utc": "2026-11-09T21:00:00Z",
-  "latest_verified_published_build": 412,
-  "release_url": "https://github.com/APD-Development/ShieldingShouldHaveWorked/releases/tag/apd-alpha-preview-412",
-  "source_fix_commit": "8bd99c644d5ce88cd824b9e698c25c92aaa28dab",
+  "recorded_utc": "2026-11-09T12:53:15.753720+00:00",
+  "authorization_end_utc": "2026-11-09T20:00:00Z",
+  "latest_verified_published_build": 413,
+  "release_url": "https://github.com/APD-Development/ShieldingShouldHaveWorked/releases/tag/apd-alpha-preview-413",
+  "source_fix_commit": "a0c2f60ec856cb3bb250b77a16bfcc2208973284",
   "local_full_core": {
-    "tests": 3135,
+    "tests": 3136,
     "suites": 457,
     "failures": 0,
     "errors": 0,
@@ -17,9 +17,9 @@
     "scope": "3134core;Androiddebug/release/instrumentationJava and desktop all pass, noAPK assembled; before latest empty-staff wording"
   },
   "latest_source_compile": {
-    "commit": "16214f40e",
-    "run": 42616522079,
-    "status": "running3135core/Androiddebug/release/instrumentationJava/desktop; noAPK"
+    "commit": "481d4ccfeb6d2ff456788b4380bc4b122c27138c",
+    "run": 42620050274,
+    "status": "success:3136core and Androiddebug/release/instrumentationJava/desktop; noAPK"
   },
   "held_private_builds": {
     "404": "Native fixture failed before-render camera check; original unacceptedAPKs/rawfailures preserved in explicitprivatearchives.",
@@ -27,28 +27,24 @@
     "406": "3113core/12nativepassed, independenthashes+4463sourcefilehashes,10newbuffcapturesreadable. Same bad Tenacity provider; originalpairheldprivate."
   },
   "newest_source_not_in_any_apk": [
-    "Latest melee/Seal wording and plant sprite fixture registration"
+    "Attached-seal readiness/half-health wording",
+    "Hearty Meal zero-healing floating-number correction",
+    "Alternate Weapon Recharging normal description and Lethal Momentum detail corrections; new native fixtures"
   ],
   "audit": {
-    "source_units": 437,
-    "completed_units": 427,
-    "unresolved_units": 10,
-    "corrected_units": 354,
+    "source_units": 442,
+    "completed_units": 434,
+    "unresolved_units": 8,
+    "corrected_units": 356,
     "message_inventory_entries": 5343
   },
   "remaining": [
-    "Continue10shared/base/class source reviews plus owner cursed-joke text decision",
-    "Latest empty-staff wording and Android window fixture in local verification; latest melee/Seal not in412",
-    "Latest melee/Seal wording and registered plant fixture not in411/412",
-    "Investigate and report SPD-only Prison/Tengu audio evidence; no acoustic fix claim"
+    "Complete8 individual description source reviews and pending panel scope decisions",
+    "Verify newest source in next APK including actual native Hearty Meal popup",
+    "Continue nonduplicative SPD-only audio investigation; physical acoustic reproduction unverified"
   ],
   "preservation": "All source pushed to codex/apd-phone-fixes-2026-10-09; published403 and priorreleases retained.405/406privateassets include completeAPK/source/tests;404rejectedarchivesretained. Raw local full suites and committed evidence ZIPs retained.",
   "physical_phone_or_acoustic_audio_verified": false,
   "background_development_after_window_claimed": false,
-  "active_build": {
-    "number": 413,
-    "run": 42616639575,
-    "source_commit": "a0c2f60ec856cb3bb250b77a16bfcc2208973284",
-    "status": "building; acceptance pending"
-  }
+  "active_build": null
 }
