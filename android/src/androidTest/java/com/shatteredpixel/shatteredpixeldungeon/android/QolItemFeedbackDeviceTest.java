@@ -331,7 +331,18 @@ public class QolItemFeedbackDeviceTest {
 
         calculationWindow(()->{
             com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.Endure.EndureTracker endured=new com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.Endure.EndureTracker();endured.target=Dungeon.hero;endured.enduring=false;endured.damageBonus=7;endured.hitsLeft=2;return new WndInfoBuff(endured);
-        },"Retaliation ready: +7 damage points on each of 2","qol-existing-status-clear-Endure-ready.png");
+        },"Hits remaining: _2_","qol-existing-status-clear-Endure-ready.png");
+
+        calculationWindow(()->{
+            com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.Endure.EndureTracker endured=new com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.Endure.EndureTracker();endured.target=Dungeon.hero;endured.enduring=false;endured.damageBonus=7;endured.hitsLeft=1;
+            assertFalse(endured.desc().contains("1 hits"));return new WndInfoBuff(endured);
+        },"Hits remaining: _1_","qol-existing-status-clear-Endure-ready-one-hit.png");
+        for(int negative=0;negative<2;negative++){
+            final int effect=negative;
+            calculationWindow(()->{
+                com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff buff=effect==0?new com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Doom():new com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Corruption();buff.target=new SoulMarkWindowTarget();return new WndInfoBuff(buff);
+            },negative==0?"67%":"1%","qol-existing-status-clear-"+(negative==0?"Doom":"Corruption")+".png");
+        }
 
         calculationWindow(()->{
             com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfMight.HTBoost boost=new com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfMight.HTBoost();boost.target=Dungeon.hero;boost.reset();return new WndInfoBuff(boost);
@@ -358,7 +369,7 @@ public class QolItemFeedbackDeviceTest {
         },"starving at 450 points","qol-existing-status-clear-Hunger-"+hungerLevel+".png");
 
         calculationWindow(()->{
-            com.shatteredpixel.shatteredpixeldungeon.actors.buffs.SoulMark mark=new com.shatteredpixel.shatteredpixeldungeon.actors.buffs.SoulMark();mark.target=new SoulMarkWindowTarget();return new WndInfoBuff(mark);
+            com.shatteredpixel.shatteredpixeldungeon.actors.buffs.SoulMark mark=new com.shatteredpixel.shatteredpixeldungeon.actors.buffs.SoulMark();mark.target=new SoulMarkWindowTarget();String normal=mark.desc();assertTrue(normal,normal.contains("40%"));assertFalse(normal,normal.contains("%s"));return new WndInfoBuff(mark);
         },"Soul Mark healing","qol-existing-status-clear-SoulMark.png");
 
         final com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor[] beforeRageArmor=new com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor[1];

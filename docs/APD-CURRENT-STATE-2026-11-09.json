@@ -1,5 +1,5 @@
 {
-  "recorded_utc": "2026-11-09T16:35:26.119866+00:00",
+  "recorded_utc": "2026-11-09T17:03:48.907616+00:00",
   "authorization_end_utc": "2026-11-09T20:00:00Z",
   "latest_verified_published_build": 418,
   "release_url": "https://github.com/APD-Development/ShieldingShouldHaveWorked/releases/tag/apd-alpha-preview-418",
@@ -29,7 +29,8 @@
     "417": "Android instrumentation compile failed from new grammar-test Java escapes, before any APK assembly. Original bcaade3 branch preserved; raw log committed. Corrected using escape-free character classes; next418.",
     "418": "Original compile/core3140 passed; both QoL cases stopped at test-only MindVision expected1tile versus source default2/correct displayed2. Exact source branch preserved; originals archival running. All12 retry pending on unchanged APKs.",
     "419": "Native popup-fixture Java compile failed (checked exception from UI reflection helper not caught). Production compilation and3142core passed; APK assembly not reached. Correcting test callback handling and will source-compile before next candidate.",
-    "420": "Original pair compile/core3143 passed; both native stopped at Might exact raw-string mismatch. Actual detailed text includes underscore highlighting around5of5. Parallel remote f350fb938 attempted prefix-only5 and failed; merging/preserving both. Corrected exact-marker retry prepared on unchanged55d8e9ad original apps. No publication."
+    "420": "3143core,12native,4671sourcehashes passed.46selectedfullframes manually viewed; rejected Endure stored-count/future-count contradiction plus 1 hits and SoulMark raw %s from unescaped40%. Assets remain private.",
+    "421": "3144core/all12native passed run42656324353. Inherits actual420 manual defects; stage evidence only, do NOT publish."
   },
   "newest_source_not_in_any_apk": [
     "Drowsy grammar correction",
@@ -86,5 +87,6 @@
   "metadata_erratum_418": {
     "run": 42654896450,
     "status": "success; actual418 MindVision patch SHA verified, erratum attached, copiedCatalyst wording corrected, everyoriginalasset IDretained"
-  }
+  },
+  "current_work": "Fix Endure/SoulMark actual native display defects; shorten Doom/Corruption/Degrade against actual mechanics; full3147core running and Android source compile requested. Latest published418 remains unchanged."
 }

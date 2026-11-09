@@ -1868,7 +1868,7 @@ public class MechanicsExplanationTest {
   heal.act();assertEquals(17,hero.HP);assertEquals(.25f,hero.apdCustomHealingFraction,0);assertEquals(73,heal.remainingHealingPool());assertEquals(20,heal.nextRequestedHealing());
  }
  @Test public void degradationExplanationMatchesActualCurveAndHidesUnidentifiedLevels(){
-  Degrade degrade=Buff.affect(hero,Degrade.class,20);armor.levelKnown=false;armor.level(0);String hidden=BuffExplanation.details(degrade);armor.level(9);assertEquals(hidden,BuffExplanation.details(degrade));armor.levelKnown=true;assertEquals(Degrade.reduceLevel(9),armor.buffedLvl());String known=BuffExplanation.details(degrade);assertTrue(known,known.contains("known level 9; degradation-only result "+armor.buffedLvl()));assertTrue(known.contains("square-root curve"));
+  Degrade degrade=Buff.affect(hero,Degrade.class,20);armor.levelKnown=false;armor.level(0);String hidden=BuffExplanation.details(degrade);armor.level(9);assertEquals(hidden,BuffExplanation.details(degrade));armor.levelKnown=true;assertEquals(Degrade.reduceLevel(9),armor.buffedLvl());String known=BuffExplanation.details(degrade);assertTrue(known,known.contains("+9 → +"+armor.buffedLvl()));assertTrue(known.contains("rounded to the nearest whole level"));
  }
  public static class StatusDamageObserver extends com.shatteredpixel.shatteredpixeldungeon.actors.Char {int received;public StatusDamageObserver(){HP=HT=100;}@Override public void damage(int amount,Object source){received=amount;}}
  @Test public void corrosionDisplayedBaseDamageTracksRealTickGrowth(){
@@ -1888,7 +1888,17 @@ public class MechanicsExplanationTest {
   com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfMagicMissile wand=new com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfMagicMissile();Random.pushGenerator(991);int base=wand.damageRoll(0);Random.popGenerator();WandEmpower empower=Buff.affect(hero,WandEmpower.class);empower.set(3,2);assertTrue(BuffExplanation.details(empower).contains("Adds 3 damage"));Random.pushGenerator(991);try{assertEquals(base+3,wand.damageRoll(0));}finally{Random.popGenerator();}assertEquals(1,empower.left);assertTrue(BuffExplanation.details(empower).contains("next 1 direct wand damage rolls"));
  }
  public static class PlainStatusTarget extends com.shatteredpixel.shatteredpixeldungeon.actors.Char {public PlainStatusTarget(){HP=HT=100;}}
- @Test public void doomDescriptionMatchesActualIncomingDamageFactor(){PlainStatusTarget target=new PlainStatusTarget();Doom doom=Buff.affect(target,Doom.class);target.damage(20,new Object());assertEquals(67,target.HP);assertTrue(BuffExplanation.details(doom).contains("1.67"));}
+ @Test public void corruptionDescriptionMatchesRealSmallAndFractionalHealthTicks(){
+  int[] health={20,100,250};int[][] hits={{0,0,0,0,1,0},{1,1,1,1},{2,3,2,3}};
+  for(int caseIndex=0;caseIndex<health.length;caseIndex++){
+   PlainStatusTarget target=new PlainStatusTarget();target.HP=target.HT=health[caseIndex];Corruption corruption=Buff.affect(target,Corruption.class);
+   try{assertEquals(com.shatteredpixel.shatteredpixeldungeon.actors.Char.Alignment.ALLY,target.alignment);String text=BuffExplanation.details(corruption);assertTrue(text.contains("_1% of maximum HP per turn_"));
+    for(int damage:hits[caseIndex]){int before=target.HP;float time=corruption.cooldown();corruption.act();assertEquals(damage,before-target.HP);assertEquals(1,corruption.cooldown()-time,0);}
+    com.watabou.utils.Bundle saved=new com.watabou.utils.Bundle(),after=new com.watabou.utils.Bundle();corruption.storeInBundle(saved);assertEquals(text,BuffExplanation.details(corruption));corruption.storeInBundle(after);assertEquals(saved.toString(),after.toString());
+   }finally{corruption.detach();}
+  }
+ }
+ @Test public void doomDescriptionMatchesActualIncomingDamageFactor(){PlainStatusTarget target=new PlainStatusTarget();Doom doom=Buff.affect(target,Doom.class);target.damage(20,new Object());assertEquals(67,target.HP);assertTrue(BuffExplanation.details(doom).contains("_67%_"));}
  @Test public void healingDetailsExposeActualVialLimitAndItsEffectOnNextHeal(){Healing heal=new Healing();heal.setHeal(100,.25f,2);com.watabou.utils.Bundle state=new com.watabou.utils.Bundle();heal.storeInBundle(state);state.put("vial_level",0);heal.restoreFromBundle(state);int limit=com.shatteredpixel.shatteredpixeldungeon.items.trinkets.VialOfBlood.maxHealPerTurn(0);assertEquals(Math.min(27,limit),heal.nextRequestedHealing());assertTrue(BuffExplanation.details(heal).contains("Blood Vial limits this to "+limit+" HP per turn"));}
 
  @Test public void liquidWillpowerExplanationMatchesActualPotionShieldAndMaximumHp()throws Exception{
@@ -2315,12 +2325,24 @@ public class MechanicsExplanationTest {
    // Stored5 becomes5 after the15% bonus, then7 after three nearby enemies'45%, then3 per hit.
    // Combining the factors before rounding would incorrectly give4 per hit.
    assertEquals(3,tracker.damageBonus);assertEquals(2,tracker.hitsLeft);assertFalse(tracker.enduring);
-   assertTrue(MechanicsDetails.buff(tracker,tracker.desc()).contains("Round down after each step"));
+   assertTrue(MechanicsDetails.buff(tracker,tracker.desc()).contains("Extra damage per hit: _3_"));
    assertEquals(13,tracker.damageFactor(10),0);assertEquals(1,tracker.hitsLeft);assertEquals(13,tracker.damageFactor(10),0);assertNull(hero.buff(com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.Endure.EndureTracker.class));
   }finally{for(PlainStatusTarget other:neighbors)com.shatteredpixel.shatteredpixeldungeon.actors.Actor.remove(other);}
  }
  @Test public void endureInspectorPreservesReadyDamageRollsAndSavedState(){
-  com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.Endure.EndureTracker tracker=Buff.affect(hero,com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.Endure.EndureTracker.class);tracker.enduring=false;tracker.damageBonus=7;tracker.hitsLeft=2;com.watabou.utils.Bundle before=new com.watabou.utils.Bundle();tracker.storeInBundle(before);for(int i=0;i<30;i++){String text=MechanicsDetails.buff(tracker,tracker.desc());assertTrue(text.contains("+7 damage points on each of 2"));}com.watabou.utils.Bundle after=new com.watabou.utils.Bundle();tracker.storeInBundle(after);assertEquals(before.toString(),after.toString());assertEquals(17,tracker.damageFactor(10),0);assertEquals(1,tracker.hitsLeft);assertEquals(17,tracker.damageFactor(10),0);assertNull(hero.buff(com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.Endure.EndureTracker.class));
+  com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.Endure.EndureTracker tracker=Buff.affect(hero,com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.Endure.EndureTracker.class);tracker.enduring=false;tracker.damageBonus=7;tracker.hitsLeft=2;com.watabou.utils.Bundle before=new com.watabou.utils.Bundle();tracker.storeInBundle(before);for(int i=0;i<30;i++){String text=MechanicsDetails.buff(tracker,tracker.desc());assertTrue(text.contains("Extra damage per hit: _7_"));assertTrue(text.contains("Hits remaining: _2_"));}com.watabou.utils.Bundle after=new com.watabou.utils.Bundle();tracker.storeInBundle(after);assertEquals(before.toString(),after.toString());assertEquals(17,tracker.damageFactor(10),0);assertEquals(1,tracker.hitsLeft);assertEquals(17,tracker.damageFactor(10),0);assertNull(hero.buff(com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.Endure.EndureTracker.class));
+ }
+ @Test public void readyEndureUsesStoredHitsAfterTalentChangesAndHandlesOneHit(){
+  com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.Endure.EndureTracker tracker=Buff.affect(hero,com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.Endure.EndureTracker.class);
+  tracker.enduring=false;tracker.damageBonus=7;tracker.hitsLeft=2;
+  String ready=MechanicsDetails.buff(tracker,tracker.desc());
+  for(int rank=0;rank<=4;rank++){hero.talents.get(3).put(Talent.SUSTAINED_RETRIBUTION,rank);assertEquals(ready,MechanicsDetails.buff(tracker,tracker.desc()));}
+  assertEquals(17,tracker.damageFactor(10),0);assertEquals(1,tracker.hitsLeft);
+  assertTrue(tracker.desc().contains("Hits remaining: _1_"));
+  String single=MechanicsDetails.buff(tracker,tracker.desc());assertTrue(single.contains("Hits remaining: _1_"));assertFalse(single.contains("1 hits"));assertFalse(single.contains("Bonus calculation"));
+  hero.talents.get(3).put(Talent.SUSTAINED_RETRIBUTION,0);
+  assertTrue(AbilityExplanation.effects(new com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.Endure(),hero).contains("next _1 hit_"));
+  assertEquals(17,tracker.damageFactor(10),0);
  }
  @Test public void shockwavePreviewUsesKnownStrengthAndTalentUnitsWithoutRevealingUnknownRings(){
   com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.Shockwave ability=new com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.Shockwave();hero.STR=14;hero.talents.get(3).put(Talent.SHOCK_FORCE,2);hero.talents.get(3).put(Talent.STRIKING_WAVE,4);hero.talents.get(3).put(Talent.EXPANDING_WAVE,3);String text=AbilityExplanation.effects(ability,hero);assertTrue(text.contains("8 tiles in a 105 degree cone"));assertTrue(text.contains("base roll 9–18 damage points"));assertTrue(text.contains("13–25 points"));assertTrue(text.contains("current chance 100%"));assertTrue(text.contains("= 50%"));RingOfMight ring=new RingOfMight();ring.levelKnown=ring.cursedKnown=true;ring.anonymize();hero.belongings.ring=ring;ring.activate(hero);ring.level(2);assertTrue(AbilityExplanation.effects(ability,hero).contains("strength "+hero.STR()));ring.levelKnown=false;String hidden=AbilityExplanation.effects(ability,hero);ring.level(9);assertEquals(hidden,AbilityExplanation.effects(ability,hero));assertTrue(hidden.contains("Identify equipped rings"));
@@ -2506,6 +2528,11 @@ public class MechanicsExplanationTest {
     assertEquals(100-25*hit,appetite.hungerPoints(),0);assertEquals(20,target.HP);assertEquals(5,target.shielding());assertEquals(time,hero.cooldown(),0);
    }
   }
+ }
+ @Test public void soulMarkNormalDescriptionFormatsPercentAndLiveDuration(){
+  PlainStatusTarget target=new PlainStatusTarget();SoulMark mark=Buff.affect(target,SoulMark.class,10);
+  String normal=mark.desc();assertTrue(normal,normal.contains("40%"));assertFalse(normal,normal.contains("%s"));assertFalse(normal,normal.contains("%%"));assertTrue(normal,normal.contains("Turns remaining: 11"));
+  SoulMark longer=Buff.affect(new PlainStatusTarget(),SoulMark.class,13);assertTrue(longer.desc(),longer.desc().contains("Turns remaining: 14"));
  }
  @Test public void soulMarkDescriptionMatchesActualRestorationAndNonHeroScaling()throws Exception{
   hero.sprite=quietSprite();hero.HT=100;hero.talents.get(2).put(Talent.SOUL_EATER,3);Hunger hunger=Buff.affect(hero,Hunger.class);hunger.affectHunger(-100);
