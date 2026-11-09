@@ -1,11 +1,11 @@
 {
-  "recorded_utc": "2026-11-09T11:45:08.916225+00:00",
+  "recorded_utc": "2026-11-09T12:17:00.181091+00:00",
   "authorization_end_utc": "2026-11-09T21:00:00Z",
-  "latest_verified_published_build": 410,
-  "release_url": "https://github.com/APD-Development/ShieldingShouldHaveWorked/releases/tag/apd-alpha-preview-410",
-  "source_fix_commit": "ccfbb85b69c96f00a4e6ae5e3d6c3aca81a10053",
+  "latest_verified_published_build": 411,
+  "release_url": "https://github.com/APD-Development/ShieldingShouldHaveWorked/releases/tag/apd-alpha-preview-411",
+  "source_fix_commit": "7e92a2b45d8d3aa8338fbabac6983dca37a80087",
   "local_full_core": {
-    "tests": 3133,
+    "tests": 3134,
     "suites": 457,
     "failures": 0,
     "errors": 0,
@@ -27,31 +27,28 @@
     "406": "3113core/12nativepassed, independenthashes+4463sourcefilehashes,10newbuffcapturesreadable. Same bad Tenacity provider; originalpairheldprivate."
   },
   "newest_source_not_in_any_apk": [
-    "Frost own-damage clarification and Regrowth plant reward/Corruption/portable alchemy prose",
-    "Zero-Healing Frozen/Phantom/MeatPie/Supply explanations, actual preserved benefits tests",
-    "Ordinary plant generic calculations removed;30native normal/Warden windows prepared",
-    "Cursed HealthTransfer floating-healing discrepancy reproduced; display-only correction in local verification"
+    "Latest melee/Seal wording and plant sprite fixture registration"
   ],
   "audit": {
     "source_units": 437,
-    "completed_units": 398,
-    "unresolved_units": 39,
-    "corrected_units": 353,
+    "completed_units": 420,
+    "unresolved_units": 17,
+    "corrected_units": 354,
     "message_inventory_entries": 5343
   },
   "remaining": [
-    "Continue92unresolved own/shared/class/generation/effect reviews",
-    "Build next original pair with later artifact and Sandals crash correction; actual windows and hashes before publishing",
-    "Preserve owner-pending panels and no new UI/mechanics",
-    "SPD audio not reproduced in APD/physical speakers; no production audio change"
+    "Continue17 shared/base/class description reviews and rare cursed-wand text owner decision",
+    "412 zero-healing popup Android checks and independent delivery review pending",
+    "Latest melee/Seal wording and registered plant fixture not in411/412",
+    "Investigate and report SPD-only Prison/Tengu audio evidence; no acoustic fix claim"
   ],
   "preservation": "All source pushed to codex/apd-phone-fixes-2026-10-09; published403 and priorreleases retained.405/406privateassets include completeAPK/source/tests;404rejectedarchivesretained. Raw local full suites and committed evidence ZIPs retained.",
   "physical_phone_or_acoustic_audio_verified": false,
   "background_development_after_window_claimed": false,
   "active_build": {
-    "number": 411,
-    "run": 42611010791,
-    "source": "7e92a2b45",
-    "status": "in progress; not accepted/published"
+    "number": 412,
+    "run": 42613354277,
+    "source_commit": "8bd99c644d5ce88cd824b9e698c25c92aaa28dab",
+    "status": "Android acceptance pending"
   }
 }
