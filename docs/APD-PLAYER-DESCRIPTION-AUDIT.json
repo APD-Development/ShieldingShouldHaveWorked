@@ -6,7 +6,7 @@
   "message_entries": 2411,
   "reviewed_units": 433,
   "corrected_units": 350,
-  "unresolved_units": 100,
+  "unresolved_units": 99,
   "category_counts": {
     "apd": 1,
     "mechanics": 38,
@@ -1086,12 +1086,12 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/artifacts/MasterThievesArmband.java",
       "sha256": "67c4780c0ba6dd6668601e27ad0a96896e4b4bf9ee6bed1cde494292d947156f",
       "category": "artifacts",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [
         "desc"
       ],
       "wording_corrected": true,
-      "review_notes": "Ordinary descriptions and important cursed states checked individually against real activation, charging, scroll talent suppression/exception, theft and grass/seed code. Clear normal uses and drawbacks replace vague flavor-only guidance; redundant technical cursed summary suppressed only for these four reviewed types when their own worn description already states it. Existing mechanic-specific panels retained pending review. Full variant/corner-case review still pending; native382 worn normal/cursed windows included, not yet run. All15 actual curse branches reviewed; concise conditional ordinary text,15type read-only regression, actual Horn/Chalice effects tested. Existing advanced panels retained pending owner review; full non-curse/class paths may remain incomplete."
+      "review_notes": "Ordinary descriptions and important cursed states checked individually against real activation, charging, scroll talent suppression/exception, theft and grass/seed code. Clear normal uses and drawbacks replace vague flavor-only guidance; redundant technical cursed summary suppressed only for these four reviewed types when their own worn description already states it. Existing mechanic-specific panels retained pending review. Full variant/corner-case review still pending; native382 worn normal/cursed windows included, not yet run. All15 actual curse branches reviewed; concise conditional ordinary text,15type read-only regression, actual Horn/Chalice effects tested. Existing advanced panels retained pending owner review; full non-curse/class paths may remain incomplete. Entire own actions/monster callback/shop formulas/recharge/curse/save readNovember9. Existing retained provider shortened into enemy versus shop theft; actual liveblind/cripple turns and base-value charge formula, one enemy attempt, no time, success-onlyshopcharge and failflee stated. Existing9pricepreview cases retained;288actual seeded shop outcomes prove success/failure costs/no time/inspectionpurity without levelup sideeffects.3119core457pass, actual expanded/bottomnative fixture prepared, no deviceclaimyet. Own-source completion only; shared artifact/economy/class providers remain tracked."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/artifacts/SandalsOfNature.java",

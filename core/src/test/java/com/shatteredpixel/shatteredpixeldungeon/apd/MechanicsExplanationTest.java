@@ -1196,6 +1196,24 @@ public class MechanicsExplanationTest {
    int expected=0;float value=0;while(value<75&&expected<charges){value+=10+upgrade/2f;expected++;}assertEquals(expected,budget);assertEquals(Math.min(1f,expected*(10+upgrade/2f)/75),chance,0f);assertEquals(budget,effect.chargesToUse(wand));assertEquals(chance,effect.stealChance(wand),0f);assertFalse(wand.curseInfusionBonus);
   }
  }
+ public static class ArmbandDescriptionValueItem extends com.shatteredpixel.shatteredpixeldungeon.items.Item {
+  private final int price;
+  ArmbandDescriptionValueItem(int price){this.price=price;}
+  @Override public int value(){return price;}
+ }
+ @Test public void armbandRetainedShopDescriptionMatchesActualSuccessAndFailureCosts()throws Exception{
+  int successes=0,failures=0;
+  for(int charges:new int[]{0,1,4})for(int price:new int[]{15,75,200})for(int seed=0;seed<32;seed++){
+   com.shatteredpixel.shatteredpixeldungeon.items.artifacts.MasterThievesArmband item=new com.shatteredpixel.shatteredpixeldungeon.items.artifacts.MasterThievesArmband();item.level(10);item.levelKnown=item.cursedKnown=true;
+   java.lang.reflect.Field meter=com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Artifact.class.getDeclaredField("charge");meter.setAccessible(true);meter.setInt(item,charges);
+   java.lang.reflect.Method factory=item.getClass().getDeclaredMethod("passiveBuff");factory.setAccessible(true);com.shatteredpixel.shatteredpixeldungeon.items.artifacts.MasterThievesArmband.Thievery effect=(com.shatteredpixel.shatteredpixeldungeon.items.artifacts.MasterThievesArmband.Thievery)factory.invoke(item);effect.target=hero;
+   ArmbandDescriptionValueItem loot=new ArmbandDescriptionValueItem(price);int used=effect.chargesToUse(loot);float chance=effect.stealChance(loot);float time=hero.cooldown();
+   com.watabou.utils.Bundle before=new com.watabou.utils.Bundle(),after=new com.watabou.utils.Bundle();item.storeInBundle(before);Random.pushGenerator(seed);float roll=Random.Float();Random.popGenerator();Random.pushGenerator(seed);
+   try{String text=ArtifactExplanation.details(item);assertTrue(text,text.contains("Charges are spent only on success"));assertTrue(text,text.contains("8 turns, or 10"));assertTrue(text,text.contains("× 2"));item.storeInBundle(after);assertEquals(before.toString(),after.toString());boolean result=effect.steal(loot);assertEquals(roll<=chance,result);assertEquals(charges-(result?used:0),item.currentCharges());if(result)successes++;else failures++;}finally{Random.popGenerator();}
+   assertEquals(time,hero.cooldown(),0);assertEquals(10,item.level());
+  }
+  assertTrue(successes>0);assertTrue(failures>0);
+ }
  @Test public void wandUiQuotesMatchRealTransactionsWithoutChangingItemOrRandomness() throws Exception {
   int previousDepth= Dungeon.depth;int comparisons=0;
   try { for(String name:new String[]{"BlastWave","Corrosion","Corruption","Disintegration","Fireblast","Frost","Lightning","LivingEarth","MagicMissile","PrismaticLight","Regrowth","Transfusion","Warding"})

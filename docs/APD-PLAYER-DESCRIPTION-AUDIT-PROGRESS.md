@@ -390,3 +390,6 @@ ArcaneArmor, DragonsBlood, IcyTouch, FeatherFall, AquaticRejuvenation, HoneyedHe
 
 ### Brew and exotic base/source reviews
 Seven Brew classes, Elixir/ExoticPotion bases, CorrosiveGas/StormClouds potions reviewed individually with actual cloud/status/terrain/recipe consumers. Current concise ordinary prose retained, no new panels, no gameplay changes. Existing Aqua actual flood/trap/fire and other relevant regression evidence preserved. Own-source completion only; shared Potion/provider reviews remain open. Audit436units433partial/full350corrected336complete100unresolved,5339Englishentries.408originalpairbuilding at77950dd132349381a70928bcc7c9180910ff9ea3.
+
+### Armband retained panel simplified and actual shop outcomes verified
+Fullownsource plus tradeconsumer read. Existing panel now distinguishes enemy/shoptheft, liveblind/cripple turns, basevaluechargebudget, success-onlycharge and failedshopflight. No new panel/effects. Existing9previewbudget cases plus288seededactualshopoutcomes, inspectionpurity/no-time/cap checks;3119core457pass, rawfullXML/log preserved. Nativeexpanded/bottomfixtureprepared fornextAPKafter408, notyetdeviceverified. Audit337complete99unresolved of436units;433full/partial350corrected,5339Englishentries.
