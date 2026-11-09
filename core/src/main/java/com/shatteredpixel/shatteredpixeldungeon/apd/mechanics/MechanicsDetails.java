@@ -46,7 +46,7 @@ public final class MechanicsDetails {
         if(text.contains("multiplier")||text.contains("×")||text.contains("1x"))out.append("_Added amounts and multiplied amounts_\nAn added bonus increases a score by that amount. A multiplier scales the stated quantity: a factor above one increases it, below one reduces it. Do not add two percentage bonuses together unless that effect's rule says to; different effects can combine at different stages. Caps and rounding belong to the particular effect.\n\n");
         return out.toString().trim();
     }
-    /** Owner-approved complex item effects; never the generic item/glossary dispatcher. */
+    /** Existing specific-effect panels retained for owner review; never the generic item/glossary dispatcher. */
     public static String itemCalculations(Item item){
         if(item instanceof com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfArcana)return "";
         if(item instanceof com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfForce
