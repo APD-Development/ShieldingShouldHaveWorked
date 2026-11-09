@@ -1,5 +1,5 @@
 {
-  "recorded_utc": "2026-11-09T16:35:26.119866+00:00",
+  "recorded_utc": "2026-11-09T16:59:42.310Z",
   "authorization_end_utc": "2026-11-09T20:00:00Z",
   "latest_verified_published_build": 418,
   "release_url": "https://github.com/APD-Development/ShieldingShouldHaveWorked/releases/tag/apd-alpha-preview-418",
@@ -29,7 +29,8 @@
     "417": "Android instrumentation compile failed from new grammar-test Java escapes, before any APK assembly. Original bcaade3 branch preserved; raw log committed. Corrected using escape-free character classes; next418.",
     "418": "Original compile/core3140 passed; both QoL cases stopped at test-only MindVision expected1tile versus source default2/correct displayed2. Exact source branch preserved; originals archival running. All12 retry pending on unchanged APKs.",
     "419": "Native popup-fixture Java compile failed (checked exception from UI reflection helper not caught). Production compilation and3142core passed; APK assembly not reached. Correcting test callback handling and will source-compile before next candidate.",
-    "420": "Original pair compile/core3143 passed; both native stopped at Might exact raw-string mismatch. Actual detailed text includes underscore highlighting around5of5. Parallel remote f350fb938 attempted prefix-only5 and failed; merging/preserving both. Corrected exact-marker retry prepared on unchanged55d8e9ad original apps. No publication."
+    "420": "Original pair compile/core3143 passed; both native stopped at Might exact raw-string mismatch. Actual detailed text includes underscore highlighting around5of5. Parallel remote f350fb938 attempted prefix-only5 and failed; merging/preserving both. Corrected exact-marker retry prepared on unchanged55d8e9ad original apps. No publication.",
+    "421": "3144core/457suites and all12 targeted API34 cases plus preparation passed, but compiled history used APD418 instead of immediate previous compiled APD420. Held; no manual visual acceptance/publication."
   },
   "newest_source_not_in_any_apk": [
     "Drowsy grammar correction",
@@ -59,12 +60,19 @@
   "physical_phone_or_acoustic_audio_verified": false,
   "background_development_after_window_claimed": false,
   "active_build": {
-    "number": 420,
-    "original_run": 42650360251,
-    "retry_run": 42654395502,
-    "preservation_run": 42654395387,
-    "source_commit": "55d8e9adfb05756e4b6a854e43d2b836748772fd",
-    "status": "Original APKs unchanged; exact Might highlighting expectation correction, instrumentation rebuilt; all12 native running."
+    "number": 422,
+    "status": "Intentional history-parent correction candidate; trigger pending in same lease-guarded commit.",
+    "previous_compiled_build": 420,
+    "previous_compiled_asset_id": 728202768,
+    "previous_compiled_developer_sha256": "1acebe7f2cecae471ccb0b2810fc31be74ca92ecf339e22edbd2145b1a240f33",
+    "source_parent": "0411dbb9e6dada3c91c9de930bfcc4708e3028cf",
+    "requires": [
+      "3144 core / 457 suites",
+      "Android debug/release/instrumentation Java and desktop compilation",
+      "12 targeted API34 cases per pair",
+      "exact signing/source/history checks",
+      "manual visual review before publication"
+    ]
   },
   "recovered_failed_attempts": {
     "415": {
@@ -85,6 +93,16 @@
   "new_timer_regressions": "Red evidence preserved; full3138 green. Description-only linked Power and Shadows timer fixes with actual attack/protection/expiry coverage; no engine changes.",
   "metadata_erratum_418": {
     "run": 42654896450,
-    "status": "success; actual418 MindVision patch SHA verified, erratum attached, copiedCatalyst wording corrected, everyoriginalasset IDretained"
+    "status": "success; live release notes corrected, original proof retained, APD-418-Verification-Erratum.json attached"
+  },
+  "apd420": {
+    "status": "automated native/preparation/staging passed; private draft unpublished; manual visual acceptance unclaimed",
+    "run": 42654395502,
+    "stage_run": 42654896218
+  },
+  "apd421": {
+    "status": "held after automated success because compiled history skipped immediate previous APD420",
+    "run": 42656324353,
+    "report": "docs/APD-421-HELD-HISTORY-2026-11-09.json"
   }
 }
