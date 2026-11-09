@@ -47,7 +47,7 @@ public final class AbilityExplanation {
         else if(ability instanceof com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.duelist.Challenge){discount=Talent.ELIMINATION_MATCH;discountName="Elimination Match";}
         else if(ability instanceof com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.rogue.DeathMark){discount=Talent.DOUBLE_MARK;discountBase=.707;discountName="Double Mark";}
         if(discount!=null&&hero.hasTalent(discount))result+="\n"+discountName+": while its follow-up is ready, uses "+n(100*(float)Math.pow(discountBase,hero.pointsInTalent(discount)))+"% of the otherwise required charge ("+discountBase+" raised to talent rank). Already included in the current cost when active.";
-        if(ability instanceof com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.huntress.SpiritHawk||ability instanceof com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.rogue.ShadowClone)result+=" Directing an existing summon is free; creating a replacement still spends charge.";
+        if(ability instanceof com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.huntress.SpiritHawk||ability instanceof com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.rogue.ShadowClone)result+=" Directing an existing summon costs no armor charge; creating a replacement still spends charge.";
         Integer energy=RingItemEffects.knownBonus(hero,RingOfEnergy.class,true);
         result+="\n\n_Armor recharge_\nCharge returns only while natural recovery is allowed, up to 100 points.";
         if(energy==null)result+=" Base recharge: 0.2 points per turn. Identify your rings to preview the combined recharge rate.";
