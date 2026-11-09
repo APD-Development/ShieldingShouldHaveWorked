@@ -47,6 +47,12 @@ public class Sungrass extends Plant {
 		seedClass = Seed.class;
 	}
 	
+    @Override
+    public String desc(){
+        return Dungeon.hero!=null&&com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomHealingHooks.disabled()
+                ?Messages.get(Sungrass.class,"desc_disabled_healing"):super.desc();
+    }
+
 	@Override
 	public void activate( Char ch ) {
 		
@@ -64,6 +70,10 @@ public class Sungrass extends Plant {
 	}
 	
 	public static class Seed extends Plant.Seed {
+        @Override public String desc(){
+            return Dungeon.hero!=null&&com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomHealingHooks.disabled()
+                    ?Messages.get(Sungrass.class,"desc_disabled_healing"):super.desc();
+        }
 		{
 			image = ItemSpriteSheet.SEED_SUNGRASS;
 
@@ -158,7 +168,8 @@ public class Sungrass extends Plant {
 
 		@Override
 		public String desc() {
-			return Messages.get(this, "desc", level);
+			return target!=null&&target==Dungeon.hero&&com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomHealingHooks.disabled()
+                    ?Messages.get(Sungrass.class,"desc_disabled_healing"):Messages.get(this, "desc", level);
 		}
 
 		private static final String POS	= "pos";

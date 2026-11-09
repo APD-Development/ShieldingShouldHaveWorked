@@ -286,7 +286,7 @@ public class Dart extends MissileWeapon {
 
 		@Override
 		public boolean itemSelectable(Item item) {
-			return item instanceof Plant.Seed;
+			return item instanceof Plant.Seed && TippedDart.types.containsKey(item.getClass());
 		}
 
 		@Override

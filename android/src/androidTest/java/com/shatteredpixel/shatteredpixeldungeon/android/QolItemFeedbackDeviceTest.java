@@ -688,6 +688,30 @@ public class QolItemFeedbackDeviceTest {
         String[] expected={"north, east, south and west","banishes its wraiths","returns your original equipment"};
         for(int i=0;i<items.length;i++)showItem(items[i],expected[i],"qol-quest-"+i+"-concise.png",true);
     }
+    private static void seedRuleDescriptionsAndDartPickerRender()throws Exception{
+        final com.watabou.utils.Bundle rules=new com.watabou.utils.Bundle();final int challenges=Dungeon.challenges;final com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass kind=Dungeon.hero.subClass;
+        TopScoresDeviceTest.render(()->Dungeon.apdStoreCustomRules(rules));
+        try{
+            for(boolean warden:new boolean[]{false,true})for(boolean disabled:new boolean[]{false,true}){
+                TopScoresDeviceTest.render(()->{Dungeon.hero.subClass=warden?com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass.WARDEN:com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass.NONE;com.watabou.utils.Bundle all=new com.watabou.utils.Bundle(),selected=new com.watabou.utils.Bundle();com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomDungeonRules.defaults().with(com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomDungeonRules.Slider.HEALING,disabled?0:100).store(selected);all.put("apd_custom_rules",selected);Dungeon.apdRestoreCustomRules(all);});
+                showItem(new com.shatteredpixel.shatteredpixeldungeon.plants.Sungrass.Seed(),disabled?"prevent Sungrass":warden?"keeps healing":"Gradually restores","qol-sungrass-warden-"+warden+"-disabled-"+disabled+".png",true);
+            }
+            TopScoresDeviceTest.render(()->Dungeon.challenges|=com.shatteredpixel.shatteredpixeldungeon.Challenges.NO_HERBALISM);
+            showItem(new com.shatteredpixel.shatteredpixeldungeon.plants.Earthroot.Seed(),"Barren Land prevents","qol-seed-barren-land-warning.png",true);
+        }finally{TopScoresDeviceTest.render(()->{Dungeon.apdRestoreCustomRules(rules);Dungeon.challenges=challenges;Dungeon.hero.subClass=kind;});}
+        final java.util.ArrayList<Item> original=new java.util.ArrayList<>();final AtomicReference<WndBag> picker=new AtomicReference<>();final AtomicReference<Window> prompt=new AtomicReference<>();
+        final com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.Dart dart=new com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.Dart();final com.shatteredpixel.shatteredpixeldungeon.plants.BlandfruitBush.Seed unsupported=new com.shatteredpixel.shatteredpixeldungeon.plants.BlandfruitBush.Seed();final com.shatteredpixel.shatteredpixeldungeon.plants.Sungrass.Seed supported=new com.shatteredpixel.shatteredpixeldungeon.plants.Sungrass.Seed();
+        final java.lang.reflect.Field user=Item.class.getDeclaredField("curUser"),current=Item.class.getDeclaredField("curItem");user.setAccessible(true);current.setAccessible(true);final Object[] oldContext=new Object[2];final float[] time={0};final Point[] at=new Point[2];
+        try{
+            TopScoresDeviceTest.render(()->{try{oldContext[0]=user.get(null);oldContext[1]=current.get(null);original.addAll(Dungeon.hero.belongings.backpack.items);Dungeon.hero.belongings.backpack.items.clear();dart.quantity(2);Dungeon.hero.belongings.backpack.items.add(dart);Dungeon.hero.belongings.backpack.items.add(unsupported);Dungeon.hero.belongings.backpack.items.add(supported);time[0]=Dungeon.hero.cooldown();dart.execute(Dungeon.hero,"TIP");}catch(Exception e){throw new RuntimeException(e);}});
+            Thread.sleep(300);TopScoresDeviceTest.render(()->{try{
+                java.util.List<WndBag> windows=TopScoresDeviceTest.find(Game.scene(),WndBag.class);assertEquals(1,windows.size());picker.set(windows.get(0));assertFalse(picker.get().getSelector().itemSelectable(unsupported));assertTrue(picker.get().getSelector().itemSelectable(supported));java.lang.reflect.Field field=ItemSlot.class.getDeclaredField("item");field.setAccessible(true);
+                for(InventorySlot slot:TopScoresDeviceTest.find(picker.get(),InventorySlot.class)){Object item=field.get(slot);if(item==unsupported){assertFalse("Unsupported seed is disabled in actual picker",slot.active);at[0]=slot.camera().cameraToScreen(slot.left()+slot.width()/2,slot.top()+slot.height()/2);}if(item==supported){assertTrue(slot.active);at[1]=slot.camera().cameraToScreen(slot.left()+slot.width()/2,slot.top()+slot.height()/2);}}assertNotNull(at[0]);assertNotNull(at[1]);
+            }catch(Exception e){throw new RuntimeException(e);}});
+            touch(at[0]);TopScoresDeviceTest.render(()->{assertNotNull(picker.get().parent);assertEquals(time[0],Dungeon.hero.cooldown(),0);});TopScoresDeviceTest.screenshot("qol-dart-picker-invalid-seed-disabled.png");
+            touch(at[1]);TopScoresDeviceTest.render(()->{try{java.util.List<com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions> windows=TopScoresDeviceTest.find(Game.scene(),com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions.class);assertEquals(1,windows.size());prompt.set(windows.get(0));boolean found=false;for(RenderedTextBlock text:TopScoresDeviceTest.find(prompt.get(),RenderedTextBlock.class))if(text.text().contains("The coating wears off with use"))found=true;assertTrue(found);assertEquals(2,dart.quantity());assertEquals(1,supported.quantity());assertEquals(time[0],Dungeon.hero.cooldown(),0);}catch(Exception e){throw new RuntimeException(e);}});TopScoresDeviceTest.screenshot("qol-dart-real-tipping-prompt.png");
+        }finally{TopScoresDeviceTest.render(()->{try{if(prompt.get()!=null)prompt.get().hide();if(picker.get()!=null)picker.get().hide();Dungeon.hero.belongings.backpack.items.clear();Dungeon.hero.belongings.backpack.items.addAll(original);user.set(null,oldContext[0]);current.set(null,oldContext[1]);}catch(Exception e){throw new RuntimeException(e);}});}
+    }
     private static void waywardBuffDescriptionRenders()throws Exception{
         final com.shatteredpixel.shatteredpixeldungeon.items.weapon.curses.Wayward.WaywardBuff[] buff={null};AtomicReference<Window> shown=new AtomicReference<>();String[] saved={null};
         TopScoresDeviceTest.render(()->{buff[0]=com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff.prolong(Dungeon.hero,com.shatteredpixel.shatteredpixeldungeon.items.weapon.curses.Wayward.WaywardBuff.class,10);com.watabou.utils.Bundle before=new com.watabou.utils.Bundle();buff[0].storeInBundle(before);saved[0]=before.toString();Window window=new WndInfoBuff(buff[0]);GameScene.show(window);shown.set(window);});
@@ -945,6 +969,7 @@ public class QolItemFeedbackDeviceTest {
             retainedTrinketDescriptionsRender();
             ordinaryDartDescriptionsRender();
             ordinaryExoticPotionDescriptionsRender();
+            seedRuleDescriptionsAndDartPickerRender();
             waywardBuffDescriptionRenders();
             inventoryScrollCancellationWarningRenders();
             landscapeItemWindowsFit(scenario);

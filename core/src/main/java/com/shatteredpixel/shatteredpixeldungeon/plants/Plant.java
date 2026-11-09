@@ -265,7 +265,7 @@ public abstract class Plant implements Bundlable {
 
 		@Override
 		public String info() {
-			return Messages.get( Seed.class, "info", super.info() );
+			return Messages.get( Seed.class, Dungeon.hero!=null&&Dungeon.isChallenged(Challenges.NO_HERBALISM)?"info_barren":"info", super.info() );
 		}
 		
 		public static class PlaceHolder extends Seed {

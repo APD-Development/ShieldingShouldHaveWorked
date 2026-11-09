@@ -4049,13 +4049,13 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/missiles/darts/Dart.java",
-      "sha256": "d6d39d82556d270d9d3b753d5086450ffd8b39c488c977cb1a3de1f435fd9d08",
+      "sha256": "ac3414aa28805035961d7ed358ad9479d7358b2014bcc1704f702bd5a608713c",
       "category": "weapon",
       "status": "PARTIAL_REVIEW",
       "description_methods": [
         "info"
       ],
-      "review_notes": "Individual normal source and English wording reviewed2026-11-09. Javelin/Spike/Trident own tier/base-wear and flavor checked unchanged; inherited missile paths remain separately partial. Dart/tipped prompt now permits actual preserved multiple-use tips, plain darts no wear, cleaning one turn, high-bonus no wear correctly attributed to bonuses; tests real wear and existing bow-preview/unknown-level guards. Amulet normal pre/ascent actions checked and text shortened; Dewdrop 5%/waterskin normal line reviewed unchanged against consumeDew and existing DewExplanation. Native actual new windows pending next pair; secondary/class/dependency review remains open.",
+      "review_notes": "Individual normal source and English wording reviewed2026-11-09. Javelin/Spike/Trident own tier/base-wear and flavor checked unchanged; inherited missile paths remain separately partial. Dart/tipped prompt now permits actual preserved multiple-use tips, plain darts no wear, cleaning one turn, high-bonus no wear correctly attributed to bonuses; tests real wear and existing bow-preview/unknown-level guards. Amulet normal pre/ascent actions checked and text shortened; Dewdrop 5%/waterskin normal line reviewed unchanged against consumeDew and existing DewExplanation. Native actual new windows pending next pair; secondary/class/dependency review remains open. Followup2026-11-09: actual Sungrass normal/Warden activation and ticks under HEALING0 tested, player-only warnings on plant/seed/herbal buff; NPC healing and no-hero preview preserved. BarrenLand seed wrapper now states original no-growth rule, actual Level.plant still returns null. Dart selector accepted Blandfruit seed with no recipe; reproduced then filtered by existing TippedDart.types, every real recipe remains selectable and creates expected quantity. No valid recipe, healing rule, challenge, turn cost or new interface changed. English inventory5334. Full3068core457suites pass; actual picker disabled-slot tap/valid prompt and seed states prepared for394, not393. Shared/dependent review remains partial.",
       "wording_corrected": true
     },
     {
@@ -4136,7 +4136,7 @@
       "category": "weapon",
       "status": "PARTIAL_REVIEW",
       "description_methods": [],
-      "review_notes": "Individual normal source and English wording reviewed2026-11-09. Javelin/Spike/Trident own tier/base-wear and flavor checked unchanged; inherited missile paths remain separately partial. Dart/tipped prompt now permits actual preserved multiple-use tips, plain darts no wear, cleaning one turn, high-bonus no wear correctly attributed to bonuses; tests real wear and existing bow-preview/unknown-level guards. Amulet normal pre/ascent actions checked and text shortened; Dewdrop 5%/waterskin normal line reviewed unchanged against consumeDew and existing DewExplanation. Native actual new windows pending next pair; secondary/class/dependency review remains open.",
+      "review_notes": "Individual normal source and English wording reviewed2026-11-09. Javelin/Spike/Trident own tier/base-wear and flavor checked unchanged; inherited missile paths remain separately partial. Dart/tipped prompt now permits actual preserved multiple-use tips, plain darts no wear, cleaning one turn, high-bonus no wear correctly attributed to bonuses; tests real wear and existing bow-preview/unknown-level guards. Amulet normal pre/ascent actions checked and text shortened; Dewdrop 5%/waterskin normal line reviewed unchanged against consumeDew and existing DewExplanation. Native actual new windows pending next pair; secondary/class/dependency review remains open. Followup2026-11-09: actual Sungrass normal/Warden activation and ticks under HEALING0 tested, player-only warnings on plant/seed/herbal buff; NPC healing and no-hero preview preserved. BarrenLand seed wrapper now states original no-growth rule, actual Level.plant still returns null. Dart selector accepted Blandfruit seed with no recipe; reproduced then filtered by existing TippedDart.types, every real recipe remains selectable and creates expected quantity. No valid recipe, healing rule, challenge, turn cost or new interface changed. English inventory5334. Full3068core457suites pass; actual picker disabled-slot tap/valid prompt and seed states prepared for394, not393. Shared/dependent review remains partial.",
       "wording_corrected": true
     },
     {
@@ -4206,7 +4206,7 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/plants/Plant.java",
-      "sha256": "cae62960adbf4789fc0a0bf92f391c37df261d2b7d9f476577d2bacce9cbf423",
+      "sha256": "ce756e02318659e2ec521fcb31538a36b397685898ecb35280aed7640c758ecc",
       "category": "plants",
       "status": "PARTIAL_REVIEW",
       "description_methods": [
@@ -4216,7 +4216,7 @@
         "info"
       ],
       "wording_corrected": true,
-      "review_notes": "Seed and plant normal descriptions checked against activation and Warden branches. Floor-one Fadeleaf, immunity limits and movement-ending effects distinguished. Earthroot/Sungrass/Swiftthistle buff details and shared Plant variants remain under review. Android acceptance pending."
+      "review_notes": "Seed and plant normal descriptions checked against activation and Warden branches. Floor-one Fadeleaf, immunity limits and movement-ending effects distinguished. Earthroot/Sungrass/Swiftthistle buff details and shared Plant variants remain under review. Android acceptance pending. Followup2026-11-09: actual Sungrass normal/Warden activation and ticks under HEALING0 tested, player-only warnings on plant/seed/herbal buff; NPC healing and no-hero preview preserved. BarrenLand seed wrapper now states original no-growth rule, actual Level.plant still returns null. Dart selector accepted Blandfruit seed with no recipe; reproduced then filtered by existing TippedDart.types, every real recipe remains selectable and creates expected quantity. No valid recipe, healing rule, challenge, turn cost or new interface changed. English inventory5334. Full3068core457suites pass; actual picker disabled-slot tap/valid prompt and seed states prepared for394, not393. Shared/dependent review remains partial."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/plants/Rotberry.java",
@@ -4256,14 +4256,14 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/plants/Sungrass.java",
-      "sha256": "3343cde8c9f56f58e126e7bba6eeaedf770996eb5ba706fa98630644b7ed67a0",
+      "sha256": "f321939c9d5577b59f7fbca666b6517d526cec83a98f901d4fe85f07bb197a7e",
       "category": "plants",
       "status": "PARTIAL_REVIEW",
       "description_methods": [
         "desc"
       ],
       "wording_corrected": true,
-      "review_notes": "Seed and plant normal descriptions checked against activation and Warden branches. Floor-one Fadeleaf, immunity limits and movement-ending effects distinguished. Earthroot/Sungrass/Swiftthistle buff details and shared Plant variants remain under review. Android acceptance pending. Entire own buff act/absorb/boost/intercept/save paths read. Ordinary Sungrass stored-healing label and TimeBubble prose shortened; existing advanced buff explanations use player language with real formulas. Actual Hero.spend intercept tested with unchanged cooldown and5.75remaining time, save/load preserved. Actual herb next-heal/last-hit/rounding regressions retained. Full3044core pass, new native buff windows pending. Complete shared Plant/UI variants still separately open."
+      "review_notes": "Seed and plant normal descriptions checked against activation and Warden branches. Floor-one Fadeleaf, immunity limits and movement-ending effects distinguished. Earthroot/Sungrass/Swiftthistle buff details and shared Plant variants remain under review. Android acceptance pending. Entire own buff act/absorb/boost/intercept/save paths read. Ordinary Sungrass stored-healing label and TimeBubble prose shortened; existing advanced buff explanations use player language with real formulas. Actual Hero.spend intercept tested with unchanged cooldown and5.75remaining time, save/load preserved. Actual herb next-heal/last-hit/rounding regressions retained. Full3044core pass, new native buff windows pending. Complete shared Plant/UI variants still separately open. Followup2026-11-09: actual Sungrass normal/Warden activation and ticks under HEALING0 tested, player-only warnings on plant/seed/herbal buff; NPC healing and no-hero preview preserved. BarrenLand seed wrapper now states original no-growth rule, actual Level.plant still returns null. Dart selector accepted Blandfruit seed with no recipe; reproduced then filtered by existing TippedDart.types, every real recipe remains selectable and creates expected quantity. No valid recipe, healing rule, challenge, turn cost or new interface changed. English inventory5334. Full3068core457suites pass; actual picker disabled-slot tap/valid prompt and seed states prepared for394, not393. Shared/dependent review remains partial."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/plants/Swiftthistle.java",
@@ -4325,13 +4325,13 @@
   ],
   "completed_units": 161,
   "latest_tests": {
-    "core_tests": 3065,
+    "core_tests": 3068,
     "suites": 457,
     "failures": 0,
     "errors": 0,
     "skipped": 0,
-    "log": "/workspace/apd-strike-live-description-evidence-20261109/accepted-matrix",
+    "log": "/workspace/apd-seed-rules-evidence-20261109/accepted-full",
     "android_verified": false,
-    "scope": "Post393 live ElementalStrike normal header/effect/privacy and real cone damage, plus earlier warning/detail prose.394native pending;393published."
+    "scope": "Post393 live ability, seed healing/challenge text, actual invalid tipping selector guard; real Android picker/normal windows pending394.393published."
   }
 }
