@@ -41,9 +41,9 @@ jobs:
           repo='APD-Development/ShieldingShouldHaveWorked'
           api=lambda p:json.loads(subprocess.check_output(['gh','api',p]));assert api('repos/'+repo)['private']
           pathlib.Path('evidence').mkdir();pathlib.Path('fallback').mkdir()
-          artifact=api('repos/'+repo+'/actions/artifacts/13700836890');assert artifact['name']=='apd426-built-pair' and artifact.get('digest')=='sha256:06cc796a1a5f96b778223843c86be0220b951b12a8936c486425a9edc145cdd4';assert artifact['workflow_run']['id']==42769136432
+          artifact=api('repos/'+repo+'/actions/artifacts/13700836890');assert artifact['name']=='apd426-built-pair' and artifact.get('digest')=='sha256:06cc796a1a5f96b778223843c86be0220b951b12a8936c486425a9edc145cdd4';assert artifact['workflow_run']['id']==42676677970
           pathlib.Path('evidence/previous-compiled426-artifact.json').write_text(json.dumps(artifact,indent=2))
-          subprocess.run(['gh','run','download','42769136432','--repo',repo,'--name','apd426-built-pair','--dir','fallback'],check=True)
+          subprocess.run(['gh','run','download','42676677970','--repo',repo,'--name','apd426-built-pair','--dir','fallback'],check=True)
           matches=list(pathlib.Path('fallback').rglob('APD-Developer-426.apk'));assert len(matches)==1
           pathlib.Path('evidence/previous-compiled426-apk.sha256').write_text(__import__('hashlib').sha256(matches[0].read_bytes()).hexdigest()+'  '+matches[0].name+'\n')
           merge_previous_apk(pathlib.Path.cwd(),matches[0],'Codex TEST 426')
