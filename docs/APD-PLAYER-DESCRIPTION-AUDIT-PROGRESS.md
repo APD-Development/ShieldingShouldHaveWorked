@@ -163,3 +163,8 @@ Actual Kinetic/Unstable/Char.damage path checked: Arcana scales newly created st
 ### Neutral effects, Crystal condition, Projecting contribution and manual Chalice cap
 
 Seven remaining concrete enchantment sources plus Crystal/Projecting reviewed individually. Actual Shocking/Eldritch proc tests confirm neutral creatures affected while allies/primary spared. Crystal ordinary provider had hidden its visible wear warning; read-only shared condition restores six states without revealing exact wear. Projecting describes contribution rather than a false total under Brawler/Ascend; actual four-state reach/purity verified. Initial local name-shadow compile and unknown-Force fixture failures preserved, fixed without weakening assertions.390passed3049core/12native but manual +10Chalice Healing0 window falsely promised further upgrade, so held unpublished; cap fix checked0/3/10 versus real action and30regen ticks each. Full3054core457suites zero failures/errors/skips. Evidence /workspace/apd-enchantment-final-pass-evidence-20261109.366reviewed/318corrected/160complete/267unresolved source units. New all17actual enchantment windows prepared; native391pending.
+
+
+### Intrinsic reach prose
+
+Spear/Glaive ordinary stats now state base2tiles; Whip base3tiles and concise flavor. These are their actual upgrade-independent constructor RCH values, distinguished from enchantment/spell bonuses. Known/unknown0/3/8 regression compares source RCH to info text, preserves all existing calculations. Full3055core457suites zero failures/errors/skips; evidence /workspace/apd-intrinsic-reach-evidence-20261109. Six native item windows prepared for next pair, not in391. Counts366reviewed318corrected160complete267unresolved unchanged.

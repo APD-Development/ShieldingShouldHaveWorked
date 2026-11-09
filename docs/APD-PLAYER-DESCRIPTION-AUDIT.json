@@ -3568,7 +3568,7 @@
         "abilityInfo"
       ],
       "wording_corrected": true,
-      "review_notes": "Normal curse wording or weapon ability display reviewed against implementation; full variants and existing optional panel review remain unfinished. See November 8 correction record."
+      "review_notes": "Normal curse wording or weapon ability display reviewed against implementation; full variants and existing optional panel review remain unfinished. See November 8 correction record. Ordinary intrinsic reach now explicit2/2/3tiles, replacing vague/duplicate slow prose; actual RCH is constant across upgrades. Regression uses actual RCH at known/unknown0/3/8; no mechanics or generic UI addition. Native six windows prepared, not yet run."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/melee/Gloves.java",
@@ -3779,7 +3779,7 @@
         "abilityInfo"
       ],
       "wording_corrected": true,
-      "review_notes": "Normal curse wording or weapon ability display reviewed against implementation; full variants and existing optional panel review remain unfinished. See November 8 correction record."
+      "review_notes": "Normal curse wording or weapon ability display reviewed against implementation; full variants and existing optional panel review remain unfinished. See November 8 correction record. Ordinary intrinsic reach now explicit2/2/3tiles, replacing vague/duplicate slow prose; actual RCH is constant across upgrades. Regression uses actual RCH at known/unknown0/3/8; no mechanics or generic UI addition. Native six windows prepared, not yet run."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/melee/Sword.java",
@@ -3823,7 +3823,7 @@
         "abilityInfo"
       ],
       "wording_corrected": true,
-      "review_notes": "Individually read ability/attack paths. Harvest explains initial bleed per turn and immune-target immediate damage; Lash explains all enemies within reach. Unknown +0 examples now include known augmentation without reading hidden levels. Existing damage and targeting unchanged. Native382 windows pending."
+      "review_notes": "Individually read ability/attack paths. Harvest explains initial bleed per turn and immune-target immediate damage; Lash explains all enemies within reach. Unknown +0 examples now include known augmentation without reading hidden levels. Existing damage and targeting unchanged. Native382 windows pending. Ordinary intrinsic reach now explicit2/2/3tiles, replacing vague/duplicate slow prose; actual RCH is constant across upgrades. Regression uses actual RCH at known/unknown0/3/8; no mechanics or generic UI addition. Native six windows prepared, not yet run."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/melee/WornShortsword.java",
@@ -4282,14 +4282,14 @@
   ],
   "completed_units": 160,
   "latest_tests": {
-    "core_tests": 3054,
+    "core_tests": 3055,
     "suites": 457,
     "failures": 0,
     "errors": 0,
     "skipped": 0,
-    "log": "/workspace/apd-enchantment-final-pass-evidence-20261109/apd-chalice-max-cap-manual-correction-full.log",
+    "log": "/workspace/apd-intrinsic-reach-evidence-20261109/apd-intrinsic-weapon-reach-description-full.log",
     "android_verified": false,
     "new_apk_built": false,
-    "scope": "Post390 neutral enchantment targets, visible Crystal condition, Projecting stance/ascension contribution and max-cap Chalice correction.390 passed3049/12native but held for manual false description.388 latest published fallback."
+    "scope": "Post391 Spear/Glaive/Whip base reach prose checked against actual public RCH at known/unknown upgrade0/3/8. Actual six windows pending next pair.391under native verification;388 latest published."
   }
 }

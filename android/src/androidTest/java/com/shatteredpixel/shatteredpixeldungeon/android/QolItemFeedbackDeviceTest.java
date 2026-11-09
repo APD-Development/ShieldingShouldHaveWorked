@@ -464,6 +464,11 @@ public class QolItemFeedbackDeviceTest {
         }
         Sword crystalSword=new Sword();TopScoresDeviceTest.render(()->{crystalSword.level(3);crystalSword.levelKnown=crystalSword.cursedKnown=true;com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Crystal crystal=new com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Crystal();crystal.setDurability(5);crystalSword.enchant(crystal);});showItem(crystalSword,"risk of permanently breaking","qol-crystal-cracked-warning.png",true,true);
     }
+    private static void intrinsicReachDescriptionsRender()throws Exception{
+        for(com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon weapon:new com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon[]{new com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Spear(),new com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Glaive(),new com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Whip()})for(boolean known:new boolean[]{false,true}){
+            TopScoresDeviceTest.render(()->{weapon.level(3);weapon.levelKnown=known;weapon.cursedKnown=true;});showItem(weapon,"Base reach: _"+weapon.RCH+" tiles_","qol-base-reach-"+weapon.getClass().getSimpleName()+"-"+known+".png",true);
+        }
+    }
     private static void unidentifiedWandExamplesRender()throws Exception{
         for(String name:new String[]{"BlastWave","Corrosion","Corruption","Disintegration","Fireblast","Frost","Lightning","LivingEarth","MagicMissile","PrismaticLight","Regrowth","Transfusion","Warding"}){
             com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand wand=(com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand)Class.forName("com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOf"+name).getDeclaredConstructor().newInstance();
@@ -788,6 +793,7 @@ public class QolItemFeedbackDeviceTest {
             catalystAndTransferDescriptionsRender();
             correctedEnchantmentDescriptionsRender();
             ordinaryEnchantmentCatalogRender();
+            intrinsicReachDescriptionsRender();
             unidentifiedWandExamplesRender();
             inventoryOrderShowsAutomatically();
             prepareSearchableFloor();
