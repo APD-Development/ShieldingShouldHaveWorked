@@ -5,8 +5,8 @@
   "source_units": 427,
   "message_entries": 2411,
   "reviewed_units": 336,
-  "corrected_units": 298,
-  "unresolved_units": 286,
+  "corrected_units": 299,
+  "unresolved_units": 272,
   "category_counts": {
     "apd": 1,
     "mechanics": 38,
@@ -453,7 +453,8 @@
       "description_methods": [
         "desc"
       ],
-      "review_notes": "Re-read normal/blessed descriptions against Hero.die, WndResurrect two retained items, InterlevelScene ordinary death position vs locked-floor regenerated backpack. Current wording remains correct, no new change. Full challenge/buff/save/UI interactions remain under review."
+      "review_notes": "Re-read normal/blessed descriptions against Hero.die, WndResurrect two retained items, InterlevelScene ordinary death position vs locked-floor regenerated backpack. Current wording remains correct, no new change. Full challenge/buff/save/UI interactions remain under review. Clarified up to two selected items, since WndResurrect permits fewer after warning;3040core pass. Later wording not in386.",
+      "wording_corrected": true
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/ArcaneResin.java",
@@ -666,9 +667,9 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/armor/ClothArmor.java",
       "sha256": "6bd5a9b0053b4047f6fb814359264b59dc5b797e459329bfa51d77f617e175ff",
       "category": "armor",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_UNCHANGED",
       "description_methods": [],
-      "review_notes": "Concrete tier/image class and individual base description read. Natural flavor wording matches armor type; no rewrite needed. Inherited live Armor/protection/strength/glyph/identification system tracked separately and not declared complete."
+      "review_notes": "This concrete source unit is fully reviewed: tier/image constructor plus individual flavor text. No own numerical/description branch beyond inherited Armor. Own wording is clear and unchanged. Shared Armor/glyph/ring/origin providers remain separately open; this is not a claim of complete armor-system review."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/armor/DuelistArmor.java",
@@ -688,9 +689,9 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/armor/LeatherArmor.java",
       "sha256": "0eb8559e270d7675db22a38882b7e6087de7d3f43218e70224d52b5744278dd9",
       "category": "armor",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_UNCHANGED",
       "description_methods": [],
-      "review_notes": "Concrete tier/image class and individual base description read. Natural flavor wording matches armor type; no rewrite needed. Inherited live Armor/protection/strength/glyph/identification system tracked separately and not declared complete."
+      "review_notes": "This concrete source unit is fully reviewed: tier/image constructor plus individual flavor text. No own numerical/description branch beyond inherited Armor. Own wording is clear and unchanged. Shared Armor/glyph/ring/origin providers remain separately open; this is not a claim of complete armor-system review."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/armor/MageArmor.java",
@@ -703,17 +704,17 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/armor/MailArmor.java",
       "sha256": "be0de4931403656e58b54a16cb0799b323e6f9f368e79dbb501159eb3045664e",
       "category": "armor",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_UNCHANGED",
       "description_methods": [],
-      "review_notes": "Concrete tier/image class and individual base description read. Natural flavor wording matches armor type; no rewrite needed. Inherited live Armor/protection/strength/glyph/identification system tracked separately and not declared complete."
+      "review_notes": "This concrete source unit is fully reviewed: tier/image constructor plus individual flavor text. No own numerical/description branch beyond inherited Armor. Own wording is clear and unchanged. Shared Armor/glyph/ring/origin providers remain separately open; this is not a claim of complete armor-system review."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/armor/PlateArmor.java",
       "sha256": "022c8a4c448d9e94bda5560b7c5003ac1e2df3942b980ce432dd8aca67bb7fc2",
       "category": "armor",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_UNCHANGED",
       "description_methods": [],
-      "review_notes": "Concrete tier/image class and individual base description read. Natural flavor wording matches armor type; no rewrite needed. Inherited live Armor/protection/strength/glyph/identification system tracked separately and not declared complete."
+      "review_notes": "This concrete source unit is fully reviewed: tier/image constructor plus individual flavor text. No own numerical/description branch beyond inherited Armor. Own wording is clear and unchanged. Shared Armor/glyph/ring/origin providers remain separately open; this is not a claim of complete armor-system review."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/armor/RogueArmor.java",
@@ -726,9 +727,9 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/armor/ScaleArmor.java",
       "sha256": "c4d963fa25a2125dda09e46b78bf39f97f5cce67af35102608e2315fbeb80dac",
       "category": "armor",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_UNCHANGED",
       "description_methods": [],
-      "review_notes": "Concrete tier/image class and individual base description read. Natural flavor wording matches armor type; no rewrite needed. Inherited live Armor/protection/strength/glyph/identification system tracked separately and not declared complete."
+      "review_notes": "This concrete source unit is fully reviewed: tier/image constructor plus individual flavor text. No own numerical/description branch beyond inherited Armor. Own wording is clear and unchanged. Shared Armor/glyph/ring/origin providers remain separately open; this is not a claim of complete armor-system review."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/armor/WarriorArmor.java",
@@ -3928,19 +3929,19 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/missiles/darts/AdrenalineDart.java",
       "sha256": "2556e4b6f37fc55817f367a40f0338c7adc0c213a0de547d2715b7b87012e0d8",
       "category": "weapon",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [],
       "wording_corrected": true,
-      "review_notes": "Ordinary tip description individually checked against proc, allied/enemy branches and status implementation; concise practical effects and drawbacks. Inherited stats/privacy tested separately. Charged Shot secondary interaction wording and full class-context coverage remain under review; legacy technical helper is not an active ordinary panel."
+      "review_notes": "Concrete source-specific normal description/effect fully reviewed: entire class/proc/allied/enemy/Charged Shot branches, supporting status/source as applicable, primary text and actual385 native window manually inspected. Rot fixed-use misleading ring row corrected separately09bc5c205 and awaiting386 owned-window acceptance. No universal calculation panel. Shared Dart/TippedDart/Missile and ring infrastructure remains separately open; this unit status is not complete thrown-system review."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/missiles/darts/BlindingDart.java",
       "sha256": "57dba7064558b7de5d58da1a6fc3c02d0f9eee713189d19e01c83828a1b957c6",
       "category": "weapon",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [],
       "wording_corrected": true,
-      "review_notes": "Ordinary tip description individually checked against proc, allied/enemy branches and status implementation; concise practical effects and drawbacks. Inherited stats/privacy tested separately. Charged Shot secondary interaction wording and full class-context coverage remain under review; legacy technical helper is not an active ordinary panel."
+      "review_notes": "Concrete source-specific normal description/effect fully reviewed: entire class/proc/allied/enemy/Charged Shot branches, supporting status/source as applicable, primary text and actual385 native window manually inspected. Rot fixed-use misleading ring row corrected separately09bc5c205 and awaiting386 owned-window acceptance. No universal calculation panel. Shared Dart/TippedDart/Missile and ring infrastructure remains separately open; this unit status is not complete thrown-system review."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/missiles/darts/ChillingDart.java",
@@ -3949,16 +3950,16 @@
       "status": "PARTIAL_REVIEW",
       "description_methods": [],
       "wording_corrected": true,
-      "review_notes": "Ordinary tip description individually checked against proc, allied/enemy branches and status implementation; concise practical effects and drawbacks. Inherited stats/privacy tested separately. Charged Shot secondary interaction wording and full class-context coverage remain under review; legacy technical helper is not an active ordinary panel."
+      "review_notes": "Entire source-specific class/effect and supporting status read; actual385 normal window reviewed. Later wording adds damage-breaking paralysis, Chill extinguishing Burning/all-action slowdown, and Displacing destination possibly bringing a distant enemy closer. Full3040core pass; later word changes await next Android capture. Shared dart infrastructure remains separate."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/missiles/darts/CleansingDart.java",
       "sha256": "8efdf199c44280d2de6c231060e81215e5f9020e36089ca194fec0872001bd94",
       "category": "weapon",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [],
       "wording_corrected": true,
-      "review_notes": "Ordinary tip description individually checked against proc, allied/enemy branches and status implementation; concise practical effects and drawbacks. Inherited stats/privacy tested separately. Charged Shot secondary interaction wording and full class-context coverage remain under review; legacy technical helper is not an active ordinary panel."
+      "review_notes": "Concrete source-specific normal description/effect fully reviewed: entire class/proc/allied/enemy/Charged Shot branches, supporting status/source as applicable, primary text and actual385 native window manually inspected. Rot fixed-use misleading ring row corrected separately09bc5c205 and awaiting386 owned-window acceptance. No universal calculation panel. Shared Dart/TippedDart/Missile and ring infrastructure remains separately open; this unit status is not complete thrown-system review."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/missiles/darts/Dart.java",
@@ -3976,34 +3977,34 @@
       "status": "PARTIAL_REVIEW",
       "description_methods": [],
       "wording_corrected": true,
-      "review_notes": "Ordinary tip description individually checked against proc, allied/enemy branches and status implementation; concise practical effects and drawbacks. Inherited stats/privacy tested separately. Charged Shot secondary interaction wording and full class-context coverage remain under review; legacy technical helper is not an active ordinary panel."
+      "review_notes": "Entire source-specific class/effect and supporting status read; actual385 normal window reviewed. Later wording adds damage-breaking paralysis, Chill extinguishing Burning/all-action slowdown, and Displacing destination possibly bringing a distant enemy closer. Full3040core pass; later word changes await next Android capture. Shared dart infrastructure remains separate."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/missiles/darts/HealingDart.java",
       "sha256": "9b5f090ac1ed3eb2b910af257dbf21e17bb0fc8b65f19b285ab7fb9f515932e1",
       "category": "weapon",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [],
       "wording_corrected": true,
-      "review_notes": "Ordinary tip description individually checked against proc, allied/enemy branches and status implementation; concise practical effects and drawbacks. Inherited stats/privacy tested separately. Charged Shot secondary interaction wording and full class-context coverage remain under review; legacy technical helper is not an active ordinary panel."
+      "review_notes": "Concrete source-specific normal description/effect fully reviewed: entire class/proc/allied/enemy/Charged Shot branches, supporting status/source as applicable, primary text and actual385 native window manually inspected. Rot fixed-use misleading ring row corrected separately09bc5c205 and awaiting386 owned-window acceptance. No universal calculation panel. Shared Dart/TippedDart/Missile and ring infrastructure remains separately open; this unit status is not complete thrown-system review."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/missiles/darts/HolyDart.java",
       "sha256": "932c6b7ae911f5d2de5453b53426e89e00bf3134b75f0d1d37097803741db12d",
       "category": "weapon",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [],
       "wording_corrected": true,
-      "review_notes": "Ordinary tip description individually checked against proc, allied/enemy branches and status implementation; concise practical effects and drawbacks. Inherited stats/privacy tested separately. Charged Shot secondary interaction wording and full class-context coverage remain under review; legacy technical helper is not an active ordinary panel."
+      "review_notes": "Concrete source-specific normal description/effect fully reviewed: entire class/proc/allied/enemy/Charged Shot branches, supporting status/source as applicable, primary text and actual385 native window manually inspected. Rot fixed-use misleading ring row corrected separately09bc5c205 and awaiting386 owned-window acceptance. No universal calculation panel. Shared Dart/TippedDart/Missile and ring infrastructure remains separately open; this unit status is not complete thrown-system review."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/missiles/darts/IncendiaryDart.java",
       "sha256": "6c32dd9156721e7335c64cc6dd11b57b7fbb783c8ab9850744d51ed637a30c3c",
       "category": "weapon",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [],
       "wording_corrected": true,
-      "review_notes": "Ordinary tip description individually checked against proc, allied/enemy branches and status implementation; concise practical effects and drawbacks. Inherited stats/privacy tested separately. Charged Shot secondary interaction wording and full class-context coverage remain under review; legacy technical helper is not an active ordinary panel."
+      "review_notes": "Concrete source-specific normal description/effect fully reviewed: entire class/proc/allied/enemy/Charged Shot branches, supporting status/source as applicable, primary text and actual385 native window manually inspected. Rot fixed-use misleading ring row corrected separately09bc5c205 and awaiting386 owned-window acceptance. No universal calculation panel. Shared Dart/TippedDart/Missile and ring infrastructure remains separately open; this unit status is not complete thrown-system review."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/missiles/darts/ParalyticDart.java",
@@ -4012,34 +4013,34 @@
       "status": "PARTIAL_REVIEW",
       "description_methods": [],
       "wording_corrected": true,
-      "review_notes": "Ordinary tip description individually checked against proc, allied/enemy branches and status implementation; concise practical effects and drawbacks. Inherited stats/privacy tested separately. Charged Shot secondary interaction wording and full class-context coverage remain under review; legacy technical helper is not an active ordinary panel."
+      "review_notes": "Entire source-specific class/effect and supporting status read; actual385 normal window reviewed. Later wording adds damage-breaking paralysis, Chill extinguishing Burning/all-action slowdown, and Displacing destination possibly bringing a distant enemy closer. Full3040core pass; later word changes await next Android capture. Shared dart infrastructure remains separate."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/missiles/darts/PoisonDart.java",
       "sha256": "8bc9aa820640b6cd398745618c2793e7c34fded637dcf6e73dd2742fa3b7e425",
       "category": "weapon",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [],
       "wording_corrected": true,
-      "review_notes": "Ordinary tip description individually checked against proc, allied/enemy branches and status implementation; concise practical effects and drawbacks. Inherited stats/privacy tested separately. Charged Shot secondary interaction wording and full class-context coverage remain under review; legacy technical helper is not an active ordinary panel."
+      "review_notes": "Concrete source-specific normal description/effect fully reviewed: entire class/proc/allied/enemy/Charged Shot branches, supporting status/source as applicable, primary text and actual385 native window manually inspected. Rot fixed-use misleading ring row corrected separately09bc5c205 and awaiting386 owned-window acceptance. No universal calculation panel. Shared Dart/TippedDart/Missile and ring infrastructure remains separately open; this unit status is not complete thrown-system review."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/missiles/darts/RotDart.java",
       "sha256": "0817a63ccbf38a8caa10ed677f757a2b2c415f7145d625055e92e0e300fe28a1",
       "category": "weapon",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [],
       "wording_corrected": true,
-      "review_notes": "Ordinary tip description individually checked against proc, allied/enemy branches and status implementation; concise practical effects and drawbacks. Inherited stats/privacy tested separately. Charged Shot secondary interaction wording and full class-context coverage remain under review; legacy technical helper is not an active ordinary panel."
+      "review_notes": "Concrete source-specific normal description/effect fully reviewed: entire class/proc/allied/enemy/Charged Shot branches, supporting status/source as applicable, primary text and actual385 native window manually inspected. Rot fixed-use misleading ring row corrected separately09bc5c205 and awaiting386 owned-window acceptance. No universal calculation panel. Shared Dart/TippedDart/Missile and ring infrastructure remains separately open; this unit status is not complete thrown-system review."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/missiles/darts/ShockingDart.java",
       "sha256": "585536b098651bad0107aee85a3f58a676ce8d5721a3caefbb0fd91fa0fea034",
       "category": "weapon",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [],
       "wording_corrected": true,
-      "review_notes": "Ordinary tip description individually checked against proc, allied/enemy branches and status implementation; concise practical effects and drawbacks. Inherited stats/privacy tested separately. Charged Shot secondary interaction wording and full class-context coverage remain under review; legacy technical helper is not an active ordinary panel."
+      "review_notes": "Concrete source-specific normal description/effect fully reviewed: entire class/proc/allied/enemy/Charged Shot branches, supporting status/source as applicable, primary text and actual385 native window manually inspected. Rot fixed-use misleading ring row corrected separately09bc5c205 and awaiting386 owned-window acceptance. No universal calculation panel. Shared Dart/TippedDart/Missile and ring infrastructure remains separately open; this unit status is not complete thrown-system review."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/missiles/darts/TippedDart.java",
@@ -4227,16 +4228,16 @@
       "review_notes": "Added missing display provider to inventory. Reading its output is not a complete provenance/generation audit."
     }
   ],
-  "completed_units": 141,
+  "completed_units": 155,
   "latest_tests": {
     "core_tests": 3040,
     "suites": 457,
     "failures": 0,
     "errors": 0,
     "skipped": 0,
-    "log": "/workspace/apd-shard-loot-wording-evidence-20261109/apd-shard-loot-wording-full.log",
+    "log": "/workspace/apd-dart-limitations-evidence-20261109/apd-dart-final-limitations-full.log",
     "android_verified": false,
     "new_apk_built": false,
-    "scope": "Latest post385 source: staff/four-potion/Warrior Shield prose, Rot fixed-wear row, Shard count/readiness. Native fixtures prepared; next pair pending. Last published385 separately passed3038core/12native."
+    "scope": "Latest post386 wording: three dart limitations and Ankh up-to-two.3040core/457suites pass.386 original12native passed; additional backpack-owned Qol checks pending on same APKs.385 remains last published."
   }
 }
