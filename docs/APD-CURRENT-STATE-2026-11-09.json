@@ -5,7 +5,7 @@
   "release_url": "https://github.com/APD-Development/ShieldingShouldHaveWorked/releases/tag/apd-alpha-preview-412",
   "source_fix_commit": "8bd99c644d5ce88cd824b9e698c25c92aaa28dab",
   "local_full_core": {
-    "tests": 3134,
+    "tests": 3135,
     "suites": 457,
     "failures": 0,
     "errors": 0,
@@ -17,9 +17,9 @@
     "scope": "3134core;Androiddebug/release/instrumentationJava and desktop all pass, noAPK assembled; before latest empty-staff wording"
   },
   "latest_source_compile": {
-    "commit": "1f8f5e049",
-    "run": 42609605936,
-    "status": "3132core,Androiddebug/release/instrumentation/desktop passed; before latest food/ordinary plant panel changes"
+    "commit": "16214f40e",
+    "run": 42616522079,
+    "status": "running3135core/Androiddebug/release/instrumentationJava/desktop; noAPK"
   },
   "held_private_builds": {
     "404": "Native fixture failed before-render camera check; original unacceptedAPKs/rawfailures preserved in explicitprivatearchives.",
@@ -31,13 +31,13 @@
   ],
   "audit": {
     "source_units": 437,
-    "completed_units": 420,
-    "unresolved_units": 17,
+    "completed_units": 427,
+    "unresolved_units": 10,
     "corrected_units": 354,
     "message_inventory_entries": 5343
   },
   "remaining": [
-    "Continue17 shared/base/class description reviews and rare cursed-wand text owner decision",
+    "Continue10shared/base/class source reviews plus owner cursed-joke text decision",
     "Latest empty-staff wording and Android window fixture in local verification; latest melee/Seal not in412",
     "Latest melee/Seal wording and registered plant fixture not in411/412",
     "Investigate and report SPD-only Prison/Tengu audio evidence; no acoustic fix claim"
@@ -46,9 +46,9 @@
   "physical_phone_or_acoustic_audio_verified": false,
   "background_development_after_window_claimed": false,
   "active_build": {
-    "number": 412,
-    "run": 42613354277,
-    "source_commit": "8bd99c644d5ce88cd824b9e698c25c92aaa28dab",
-    "status": "all acceptance passed, independently checked and published"
+    "number": 413,
+    "run": 42616639575,
+    "source_commit": "a0c2f60ec856cb3bb250b77a16bfcc2208973284",
+    "status": "building; acceptance pending"
   }
 }
