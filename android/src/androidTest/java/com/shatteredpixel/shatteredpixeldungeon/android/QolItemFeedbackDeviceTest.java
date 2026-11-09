@@ -475,6 +475,10 @@ public class QolItemFeedbackDeviceTest {
                 Window window=new WndInfoBuff(buff);GameScene.show(window);buffWindow.set(window);
             });Thread.sleep(300);TopScoresDeviceTest.render(()->assertDescriptionViewport(buffWindow.get()));TopScoresDeviceTest.screenshot("qol-herbal-time-buff-"+type+".png");TopScoresDeviceTest.render(()->buffWindow.get().hide());
         }
+        for(com.shatteredpixel.shatteredpixeldungeon.plants.Plant plant:new com.shatteredpixel.shatteredpixeldungeon.plants.Plant[]{new com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfRegrowth.Dewcatcher(),new com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfRegrowth.Seedpod()}){
+            AtomicReference<Window> plantWindow=new AtomicReference<>();float[] time={0};TopScoresDeviceTest.render(()->{plant.pos=Dungeon.hero.pos;time[0]=Dungeon.hero.cooldown();assertTrue(plant.desc(),plant.desc().contains("if there is room"));Window window=new com.shatteredpixel.shatteredpixeldungeon.windows.WndInfoPlant(plant);GameScene.show(window);plantWindow.set(window);});
+            try{Thread.sleep(300);TopScoresDeviceTest.render(()->{assertDescriptionViewport(plantWindow.get());assertEquals(time[0],Dungeon.hero.cooldown(),0);});TopScoresDeviceTest.screenshot(plant instanceof com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfRegrowth.Dewcatcher?"qol-dewcatcher-useful-description.png":"qol-seedpod-useful-description.png");}finally{TopScoresDeviceTest.render(()->plantWindow.get().hide());}
+        }
         com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfLivingEarth.EarthGuardian guardian=new com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfLivingEarth.EarthGuardian();
         com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfRegrowth.Lotus lotus=new com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfRegrowth.Lotus();
         TopScoresDeviceTest.render(()->{guardian.setInfo(Dungeon.hero,3,25);com.watabou.utils.Bundle state=new com.watabou.utils.Bundle();lotus.storeInBundle(state);state.put("wand_lvl",5);lotus.restoreFromBundle(state);lotus.HP=lotus.HT=40;});
@@ -830,7 +834,7 @@ public class QolItemFeedbackDeviceTest {
         for(String name:new String[]{"BlastWave","Corrosion","Corruption","Disintegration","Fireblast","Frost","Lightning","LivingEarth","MagicMissile","PrismaticLight","Regrowth","Transfusion","Warding"}){
             com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand wand=(com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand)Class.forName("com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOf"+name).getDeclaredConstructor().newInstance();
             TopScoresDeviceTest.render(()->{wand.level(7);wand.levelKnown=false;wand.cursedKnown=wand.curChargeKnown=true;wand.curCharges=2;});
-            showItem(wand,name.equals("Corruption")?"Attempts to turn an enemy":name.equals("Regrowth")?"charges":"Unupgraded example (+0)","qol-wand-zero-example-"+name+".png",true);
+            showItem(wand,name.equals("Corruption")?"A dark wand topped with a small decorative skull":name.equals("Regrowth")?"charges":"Unupgraded example (+0)","qol-wand-zero-example-"+name+".png",true);
             if(name.equals("Frost")){showItem(wand,"This wand deals less damage to chilled targets","qol-frost-specific-damage-unknown.png",true);TopScoresDeviceTest.render(()->{wand.levelKnown=true;});showItem(wand,"cannot harm frozen targets","qol-frost-specific-damage-known.png",true);}
         }
     }
