@@ -6,7 +6,7 @@
   "message_entries": 2411,
   "reviewed_units": 428,
   "corrected_units": 344,
-  "unresolved_units": 175,
+  "unresolved_units": 160,
   "category_counts": {
     "apd": 1,
     "mechanics": 38,
@@ -3297,93 +3297,93 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/curses/Annoying.java",
       "sha256": "bd75f253dc3b13ca110221d004d2c47100c7a995377a590ecfaf2051cfac3bbd",
       "category": "weapon",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [],
       "wording_corrected": true,
-      "review_notes": "Normal curse wording or weapon ability display reviewed against implementation; full variants and existing optional panel review remain unfinished. See November 8 correction record."
+      "review_notes": "Actual1/20 power roll beckons existing floor mobs, dispels invisibility and picks shout; normal concise prose accurate. Completed own-source review only. Existing shared effect/class/generator/ElementalStrike/description providers remain separately tracked; no new gameplay or wording changes in this closure."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/curses/Dazzling.java",
       "sha256": "82801009f866f2ea82a044c4abcacaca6701454335eb5ff3048c169ecec954bc",
       "category": "weapon",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [],
       "wording_corrected": true,
-      "review_notes": "Normal curse wording or weapon ability display reviewed against implementation; full variants and existing optional panel review remain unfinished. See November 8 correction record."
+      "review_notes": "Actual1/10 power roll blinds characters whose FOV includes target, attacker full and other witnesses half duration; allies not excluded. Concise normal prose accurate. Completed own-source review only. Existing shared effect/class/generator/ElementalStrike/description providers remain separately tracked; no new gameplay or wording changes in this closure."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/curses/Displacing.java",
       "sha256": "17e4f20c4cc6000a7aff0ccddcfb29d783c9bfad3db0a6b623a18643c3bd4dd1",
       "category": "weapon",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [],
       "wording_corrected": true,
-      "review_notes": "Normal curse wording or weapon ability display reviewed against implementation; full variants and existing optional panel review remain unfinished. See November 8 correction record."
+      "review_notes": "Actual1/12 power roll rejects immovable, attempts legal same-floor teleport, resets hunting mob only if success. Concise prose accurate. Completed own-source review only. Existing shared effect/class/generator/ElementalStrike/description providers remain separately tracked; no new gameplay or wording changes in this closure."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/curses/Explosive.java",
       "sha256": "2c395033152a9d86768e654eab6107de898fa8335eee2baacb4b23b9ea5e2058",
       "category": "weapon",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [
         "desc"
       ],
       "wording_corrected": true,
-      "review_notes": "Normal curse wording or weapon ability display reviewed against implementation; full variants and existing optional panel review remain unfinished. See November 8 correction record."
+      "review_notes": "Entire hidden durability progress, crossing warning precedence, closest adjacent detonation, missile parent/merge/reset/extra durability and saved state read. Normal descriptions show broad heat state without exact meter; accurate. Completed own-source review only. Existing shared effect/class/generator/ElementalStrike/description providers remain separately tracked; no new gameplay or wording changes in this closure."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/curses/Friendly.java",
       "sha256": "d8576d61ab6e61c50e30c97a771aa49e65a299b505ffe8f527e723b53f88a6eb",
       "category": "weapon",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [],
       "wording_corrected": true,
-      "review_notes": "Normal curse wording or weapon ability display reviewed against implementation; full variants and existing optional panel review remain unfinished. See November 8 correction record."
+      "review_notes": "Actual mutual Charm objects, half target duration, ignoreNextHit, existing charm zero damage and Charm.recover read. Concise normal prose accurate. Completed own-source review only. Existing shared effect/class/generator/ElementalStrike/description providers remain separately tracked; no new gameplay or wording changes in this closure."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/curses/Polarized.java",
       "sha256": "32bba91b2fd04d4fe86f91b5501eda24954ba21122d0a3f20c57b7f967d9d093",
       "category": "weapon",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [],
       "wording_corrected": true,
-      "review_notes": "Normal curse wording or weapon ability display reviewed against implementation; full variants and existing optional panel review remain unfinished. See November 8 correction record."
+      "review_notes": "Actual power-scaled half chance gives rounded1.5damage or0; ordinary50%damage boost accurate and real seeded matrix exists. Completed own-source review only. Existing shared effect/class/generator/ElementalStrike/description providers remain separately tracked; no new gameplay or wording changes in this closure."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/curses/Pressurized.java",
       "sha256": "eeb565ed340ab045182925d30cce3df04944fa615d672c03dc85d4e59e055b42",
       "category": "weapon",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [],
       "wording_corrected": true,
-      "review_notes": "Normal curse wording or weapon ability display reviewed against implementation; full variants and existing optional panel review remain unfinished. See November 8 correction record."
+      "review_notes": "Actual1/8 chance creates Geyser, melee directs central push; full Geyser water/fire/fierydamage/push consumers read. Normal burst and collateral knockback prose accurate. Completed own-source review only. Existing shared effect/class/generator/ElementalStrike/description providers remain separately tracked; no new gameplay or wording changes in this closure."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/curses/Sacrificial.java",
       "sha256": "99f7ece73e192001fbf974dbca04cb2999de54ae3bc8c6034b77d5a0cb0c2694",
       "category": "weapon",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [],
       "wording_corrected": true,
-      "review_notes": "Normal curse wording or weapon ability display reviewed against implementation; full variants and existing optional panel review remain unfinished. See November 8 correction record."
+      "review_notes": "Actual two independent rolls, currentHP-squared bleed input, minimum1 and Bleeding path already tested. Normal more-health risk/severity prose accurate. Completed own-source review only. Existing shared effect/class/generator/ElementalStrike/description providers remain separately tracked; no new gameplay or wording changes in this closure."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/curses/Wayward.java",
       "sha256": "46d907057a427ae874035387df626189c288ef693fd1f3079167cca6692e98ab",
       "category": "weapon",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [],
       "wording_corrected": true,
-      "review_notes": "Normal curse wording or weapon ability display reviewed against implementation; full variants and existing optional panel review remain unfinished. See November 8 correction record. Followup2026-11-09: read shared regular/exotic labels, identity/actions/recipe code and inventory cancellation flow. Human cancellation warning preserves original consumption; cursed book warning names both actual exceptions. Wayward buff text shortened after real proc/accuracy checks; no new chance/calculation. Four existing retained enchantment details now plain timer/neutral witnesses/direct-damage replacement; source Shocking/Eldritch/Vorpal/Block paths and existing actual proc tests unchanged. No panel/formula changes. Full3064core457suites pass. Actual warning/Wayward/expanded windows pending394, not393; shared full secondary review remains open."
+      "review_notes": "Existing buff clears without new RNG; otherwise quarter-power chance10turns. Weapon.accuracyFactor divides score by5; actual test proves removal/noRNG. Normal language accurate. Completed own-source review only. Existing shared effect/class/generator/ElementalStrike/description providers remain separately tracked; no new gameplay or wording changes in this closure."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/curses/Wondrous.java",
       "sha256": "11526fde7ef332d7e3e470c3bc2ee2eb390c54994c51e2efdec6a965edc86fb0",
       "category": "weapon",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [],
       "wording_corrected": true,
-      "review_notes": "Normal curse wording or weapon ability display reviewed against implementation; full variants and existing optional panel review remain unfinished. See November 8 correction record."
+      "review_notes": "Actual1/8 trigger passes Resin positivity selection to randomValidEffect, no fixed outcome promised. Own source complete; every underlying CursedWand effect remains a separate pending source, not claimed reviewed here. Completed own-source review only. Existing shared effect/class/generator/ElementalStrike/description providers remain separately tracked; no new gameplay or wording changes in this closure."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/enchantments/Blazing.java",
@@ -3619,12 +3619,12 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/melee/Gauntlet.java",
       "sha256": "a5ff922bc2ab6bf87b0e970a2384528c03f67feebce823e3989d750dffb72d86",
       "category": "weapon",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [
         "abilityInfo"
       ],
       "wording_corrected": true,
-      "review_notes": "Source-specific normal stat and ability paths read, common ability implementation and Hero/Buff interactions checked. Concise dynamic ability prose, +0 labels; combo explicitly consumed, guard end condition retained, real evasion/accuracy/speed and enchantment power preserved. Full inherited/class/secondary review remains incomplete."
+      "review_notes": "Entire own half-delay/tier5max/augment-scaled5+level ComboStrike, normal/unknown+0 preview reconciled with full Sai helper. Existing concise text accurate. Completed own-source review only. Existing shared effect/class/generator/ElementalStrike/description providers remain separately tracked; no new gameplay or wording changes in this closure."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/melee/Glaive.java",
@@ -3641,12 +3641,12 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/melee/Gloves.java",
       "sha256": "6ee8b9f5aeadc9974da74a2bad76113fb6b6b6fe96fdc605771e01a176d28e03",
       "category": "weapon",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [
         "abilityInfo"
       ],
       "wording_corrected": true,
-      "review_notes": "Source-specific normal stat and ability paths read, common ability implementation and Hero/Buff interactions checked. Concise dynamic ability prose, +0 labels; combo explicitly consumed, guard end condition retained, real evasion/accuracy/speed and enchantment power preserved. Full inherited/class/secondary review remains incomplete."
+      "review_notes": "Entire own half-delay/tier1max/augment-scaled3+level ComboStrike, normal/unknown+0 preview read against shared actual Sai and Hero hit paths. Existing concise text accurate. Completed own-source review only. Existing shared effect/class/generator/ElementalStrike/description providers remain separately tracked; no new gameplay or wording changes in this closure."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/melee/Greataxe.java",
@@ -3663,12 +3663,12 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/melee/Greatshield.java",
       "sha256": "7b3327c901a6927f9e96059fab2b35bc2fef43077800771f2e9401ee938163c8",
       "category": "weapon",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [
         "abilityInfo"
       ],
       "wording_corrected": true,
-      "review_notes": "Source-specific normal stat and ability paths read, common ability implementation and Hero/Buff interactions checked. Concise dynamic ability prose, +0 labels; combo explicitly consumed, guard end condition retained, real evasion/accuracy/speed and enchantment power preserved. Full inherited/class/secondary review remains incomplete."
+      "review_notes": "Entire passive6+2level maximum,3+level Guard helper, tier5damage and known/+0 description branches reconciled with RoundShield/Hero/dispel. Existing concise prose accurate. Completed own-source review only. Existing shared effect/class/generator/ElementalStrike/description providers remain separately tracked; no new gameplay or wording changes in this closure."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/melee/Greatsword.java",
@@ -3774,12 +3774,12 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/melee/RoundShield.java",
       "sha256": "64d4f46846b4245735429ce2e6752f51be18d0994a17b18eb41d7843257961a2",
       "category": "weapon",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [
         "abilityInfo"
       ],
       "wording_corrected": true,
-      "review_notes": "Source-specific normal stat and ability paths read, common ability implementation and Hero/Buff interactions checked. Concise dynamic ability prose, +0 labels; combo explicitly consumed, guard end condition retained, real evasion/accuracy/speed and enchantment power preserved. Full inherited/class/secondary review remains incomplete."
+      "review_notes": "Entire passive4+level roll maximum,5+level Guard, one-turn activation, timer/save/block flag read against Hero infiniteevasion/guarded flag and Invisibility.dispel conditional removal. Existing concise normal prose accurate. Completed own-source review only. Existing shared effect/class/generator/ElementalStrike/description providers remain separately tracked; no new gameplay or wording changes in this closure."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/melee/RunicBlade.java",
@@ -3796,13 +3796,13 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/melee/Sai.java",
       "sha256": "78e1310d11ef01353105defe8d0507b0ec3ed1acd03176e4e98d42700dcbc9ac",
       "category": "weapon",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [
         "abilityInfo",
         "desc"
       ],
       "wording_corrected": true,
-      "review_notes": "Source-specific normal stat and ability paths read, common ability implementation and Hero/Buff interactions checked. Concise dynamic ability prose, +0 labels; combo explicitly consumed, guard end condition retained, real evasion/accuracy/speed and enchantment power preserved. Full inherited/class/secondary review remains incomplete."
+      "review_notes": "Full ComboStrike target/FOV/range, guaranteed contest, consumed recent-hit tracker, flatbonus4+level, attack timing,5/15turn expiry, corruption kill case and save fields read against Hero normal/thrown hits. Existing concise text accurate. Completed own-source review only. Existing shared effect/class/generator/ElementalStrike/description providers remain separately tracked; no new gameplay or wording changes in this closure."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/melee/Scimitar.java",
@@ -4406,7 +4406,7 @@
       "review_notes": "Previously omitted directly edited spell/buff description source added to inventory. Full own cast/extension/remaining-time and actual Weapon/Armor/Hero proc consumers reconciled. Concise current known amount, Paladin retention/extension and unidentified-ring invariance, magic-immunity guards and attacker-dependent unarmored protection. Existing specific advanced panels retained unchanged; no gameplay/save/UI changes.3110core457pass, new Android windows pending404. Shared SpellExplanation provider remains partial."
     }
   ],
-  "completed_units": 256,
+  "completed_units": 271,
   "latest_tests": "3110core/457suites no failures/errors/skips; actual Holy weapon/armor procs across ordinary/Paladin and Arcana0..3 match normal spell/buff numbers, hidden-ring invariance, unarmored and MagicImmune branches. Accepted raw evidence /workspace/apd404-holy-evidence-20261109/accepted-full. Android windows pending404; no whole-audit or physical audio claim.",
   "message_inventory_entries": 5339
 }

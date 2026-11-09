@@ -179,3 +179,8 @@ Existing English GameScene ability window replaces stale4tile/15–25/fixedstatu
 ### Concise Holy Weapon and Holy Ward
 
 3110core457suites pass; full raw XML/log and initial String/float display-helper compile failure preserved. Existing normal English spell and active-buff descriptions now show current known magic damage/protection, duration, instant cast and original charge cost once. Paladin retention/extension, unknown-ring safeguards, unarmored attacker dependence and MagicImmune weapon/armor distinctions preserved. Actual combat proc matrix verifies numbers; existing advanced panels untouched. Eight actual normal spell/buff Android windows prepared, pending404. Added two omitted directly edited sources;431units,428full/partial344corrected256complete175unresolved;5339English keys. Four complete own melee reviews closed with existing concise prose unchanged; shared/class providers still separate. Whole audit incomplete; continue approved work.
+
+
+### Fifteen further own-source reviews
+
+All10weapon curses plus Gloves/Sai/Gauntlet/RoundShield/Greatshield individually reconciled with proc/status/Geyser/Guard/ComboStrike consumers and save branches. Existing normal prose remains concise and accurate, so no gratuitous wording or gameplay edits. Own source reviews closed; shared effects/class/generation/ElementalStrike/CursedWand providers remain separate, not implicitly completed.431sourceunits,428full/partial344corrected271complete160unresolved;5339English entries.3110acceptedcore457raw retained. These15review closures are later than404producing source; no app changes. Whole audit unfinished.
