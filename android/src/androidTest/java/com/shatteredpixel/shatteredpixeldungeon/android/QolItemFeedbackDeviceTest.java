@@ -347,6 +347,19 @@ public class QolItemFeedbackDeviceTest {
             com.shatteredpixel.shatteredpixeldungeon.actors.buffs.SoulMark mark=new com.shatteredpixel.shatteredpixeldungeon.actors.buffs.SoulMark();mark.target=new SoulMarkWindowTarget();return new WndInfoBuff(mark);
         },"Soul Mark healing","qol-existing-status-clear-SoulMark.png");
 
+        final com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor[] beforeRageArmor=new com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor[1];
+        TopScoresDeviceTest.render(()->beforeRageArmor[0]=Dungeon.hero.belongings.armor);
+        try{
+            for(int index=0;index<3;index++){
+                final int hiddenOrKnownLevel=index==1?9:index==2?3:0;final boolean knownArmor=index==2;
+                calculationWindow(()->{
+                    com.shatteredpixel.shatteredpixeldungeon.items.armor.MailArmor worn=new com.shatteredpixel.shatteredpixeldungeon.items.armor.MailArmor();worn.level(hiddenOrKnownLevel);worn.levelKnown=worn.cursedKnown=knownArmor;Dungeon.hero.belongings.armor=worn;
+                    com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Berserk rage=new com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Berserk();rage.target=Dungeon.hero;
+                    if(!knownArmor)assertFalse("Unidentified armor shielding withheld",rage.desc().contains("Berserk shield at current armor"));return new WndInfoBuff(rage);
+                },knownArmor?"Berserk shield at current armor":"Identify your armor","qol-existing-status-clear-Berserk-"+(knownArmor?"known":"unknown")+"-"+hiddenOrKnownLevel+".png");
+            }
+        }finally{TopScoresDeviceTest.render(()->Dungeon.hero.belongings.armor=beforeRageArmor[0]);}
+
         calculationWindow(()->new WndInfoBuff(new com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfLightning.LightningCharge()),"up to 2 tiles","qol-existing-status-clear-LightningCharge.png");
 
         RingOfArcana arcana=new RingOfArcana();

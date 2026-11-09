@@ -1,2 +1,2 @@
-2026-11-09 2026-11-09T15:49:55.106796+00:00
-Verify3142core plus Android debug/release/instrumentation Java anddesktop for419popup test checked-exception correction before any next numbered APK. Production tested source preserved;419failed8366b branch/rawlog retained.418latestpublished415fallback preserved. No APK assembly or publication in this verification.
+2026-11-09 2026-11-09T15:56:27.280384+00:00
+Verify3143core and Androiddebug/release/instrumentationJava/desktop for Berserk unknown-armor privacy with three native cases before next numbered APK. Previous popup-fixture compile correction passed42648615419; no repeat investigation.418published exact8c2d5ca9, all failures preserved. New core field/template changes and new inspection fixtures need current compilation. No APK assembly/publication.

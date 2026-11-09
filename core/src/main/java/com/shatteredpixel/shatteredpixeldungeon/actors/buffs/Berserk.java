@@ -381,6 +381,10 @@ public class Berserk extends ShieldBuff implements ActionIndicator.Action {
 		float dispDamage = ((int)damageFactor(10000) / 100f) - 100f;
 		switch (state){
 			case NORMAL: default:
+                if(target instanceof Hero && ((Hero)target).belongings.armor()!=null
+                        && !((Hero)target).belongings.armor().levelKnown){
+                    return Messages.get(this,"angered_desc_unknown_armor",Math.floor(power*100f),dispDamage);
+                }
 				return Messages.get(this, "angered_desc", Math.floor(power * 100f), dispDamage, previewShieldBoost());
 			case BERSERK:
 				return Messages.get(this, "berserk_desc", shielding());

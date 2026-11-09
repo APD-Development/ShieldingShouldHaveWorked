@@ -1,20 +1,20 @@
 {
-  "recorded_utc": "2026-11-09T15:49:03.617276+00:00",
+  "recorded_utc": "2026-11-09T15:56:27.280673+00:00",
   "authorization_end_utc": "2026-11-09T20:00:00Z",
   "latest_verified_published_build": 418,
   "release_url": "https://github.com/APD-Development/ShieldingShouldHaveWorked/releases/tag/apd-alpha-preview-418",
   "source_fix_commit": "8c2d5ca9f33154af69b782d6aa83ac181bd3c21d",
   "local_full_core": {
-    "tests": 3142,
+    "tests": 3143,
     "suites": 457,
     "failures": 0,
     "errors": 0,
     "skipped": 0
   },
   "last_completed_android_source_compile": {
-    "commit": "740197174",
-    "run": 42629732963,
-    "scope": "3136core, Androiddebug/release/instrumentationJava/desktop successful; noAPK.42base-status plusLightningCharge and6shield fixtures with ordinary screenshots."
+    "commit": "d2a06e7efac9cab21cd7b89f097710361c4af0dd",
+    "run": 42648615419,
+    "scope": "3142core and Androiddebug/release/instrumentationJava/desktop passed; noAPK.419popup checked-exception repair compiled. New Berserk changes excluded."
   },
   "latest_source_compile": {
     "commit": "481d4ccfeb6d2ff456788b4380bc4b122c27138c",
@@ -39,14 +39,15 @@
     "Shortened existing powered-ally detail panel",
     "Shortened Endure ready-state/details with actual sequential rounding/unseen-enemy test",
     "Temporary-health/aquatic/momentum/hunger detail simplifications and new native windows",
-    "SoulMark ordinary/detail simplification and existing-helper custom healing-number correction with reproduced zero-Healing regression"
+    "SoulMark ordinary/detail simplification and existing-helper custom healing-number correction with reproduced zero-Healing regression",
+    "Berserk unknown-armor shield-preview privacy and shorter normal text"
   ],
   "audit": {
-    "source_units": 443,
-    "completed_units": 435,
+    "source_units": 444,
+    "completed_units": 436,
     "unresolved_units": 8,
-    "corrected_units": 357,
-    "message_inventory_entries": 5346
+    "corrected_units": 358,
+    "message_inventory_entries": 5347
   },
   "remaining": [
     "Complete8 individual description source reviews and pending panel scope decisions",

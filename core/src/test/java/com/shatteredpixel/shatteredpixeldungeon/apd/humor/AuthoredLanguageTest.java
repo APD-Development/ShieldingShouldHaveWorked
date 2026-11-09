@@ -82,7 +82,8 @@ public class AuthoredLanguageTest {
   // Plus one known-Passage destination line using its existing floor rule.
   // Plus two neutral zero-Healing notices for dew and stored dew; no action changes.
   // Plus three neutral live Power of Many descriptions, including marked-target and linked-duration conditions.
-  assertEquals("Reviewed English message inventory",5346,values);
+  // Plus one neutral Berserk description which withholds an unidentified armor shield preview.
+  assertEquals("Reviewed English message inventory",5347,values);
  }
  @Test public void localizedAlternativesDoNotDamageInnocentWordsOrOtherLanguages(){
   for(String innocent:new String[]{"Hell","slut","kesialan","Verdammte Charaktere","dictionary","classic","Scunthorpe","Prick","Fan of Blades"})assertEquals(innocent,AuthoredLanguage.select(innocent,false));

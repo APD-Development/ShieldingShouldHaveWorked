@@ -1815,6 +1815,19 @@ public class MechanicsExplanationTest {
   for(int seed=0;seed<30;seed++){Buff.detach(hero,Barrier.class);Random.pushGenerator(seed);int offered=(int)gain+(Random.Float()<gain%1?1:0);Random.popGenerator();Random.pushGenerator(seed);try{new Burning().reignite(hero,4);}finally{Random.popGenerator();}assertEquals(Math.min(cap,offered),hero.buff(Barrier.class).shielding());}
   Barrier barrier=hero.buff(Barrier.class);barrier.setShield(cap+5);int before=barrier.shielding();assertEquals(0,GlyphExplanation.brimstoneExpectedGain(power,before),0);String description=GlyphExplanation.details(armor,hero);assertTrue(description,description.contains("per attempted Burning application"));new Burning().reignite(hero,4);assertEquals(before,barrier.shielding());
  }
+ @Test public void berserkInspectorDoesNotExposeUnknownArmorLevelsOrActivateRage(){
+  Berserk rage=Buff.affect(hero,Berserk.class);armor.levelKnown=false;armor.cursedKnown=false;armor.level(0);
+  String normal=rage.desc(),expanded=MechanicsDetails.buff(rage,normal);
+  for(int hiddenLevel:new int[]{-3,1,3,9}){
+   armor.level(hiddenLevel);com.watabou.utils.Bundle before=new com.watabou.utils.Bundle();rage.storeInBundle(before);
+   assertEquals("Normal rage text must not disclose an unidentified armor level",normal,rage.desc());
+   assertEquals("Expanded rage text must not disclose an unidentified armor level",expanded,MechanicsDetails.buff(rage,rage.desc()));
+   com.watabou.utils.Bundle after=new com.watabou.utils.Bundle();rage.storeInBundle(after);assertEquals(before.toString(),after.toString());assertFalse(rage.activeForInspection());
+  }
+  assertTrue(normal,normal.contains("Identify your armor"));
+  armor.levelKnown=true;assertTrue(rage.desc().contains("_"+rage.previewShieldBoost()+"_"));
+  hero.belongings.armor=null;assertTrue(rage.desc().contains("_"+rage.previewShieldBoost()+"_"));
+ }
  @Test public void berserkDescriptionIsReadOnlyWhileActivationKeepsItsRecoveryScaling()throws Exception{
   Berserk rage=Buff.affect(hero,Berserk.class);java.lang.reflect.Field power=Berserk.class.getDeclaredField("power"),levels=Berserk.class.getDeclaredField("levelRecovery"),turns=Berserk.class.getDeclaredField("turnRecovery");for(java.lang.reflect.Field field:new java.lang.reflect.Field[]{power,levels,turns})field.setAccessible(true);power.setFloat(rage,1.3334f);levels.setFloat(rage,2);turns.setInt(rage,100);com.watabou.utils.Bundle before=new com.watabou.utils.Bundle();rage.storeInBundle(before);
   int preview=rage.previewShieldBoost();assertTrue(MechanicsDetails.buff(rage,rage.desc()).contains("Rage and damage"));for(int i=0;i<100;i++)rage.desc();com.watabou.utils.Bundle after=new com.watabou.utils.Bundle();rage.storeInBundle(after);assertEquals(before.toString(),after.toString());assertEquals(preview,rage.currentShieldBoost());assertEquals(2*(2-1.3334f),levels.getFloat(rage),.00001f);assertEquals((int)(100*(2-1.3334f)),turns.getInt(rage));
