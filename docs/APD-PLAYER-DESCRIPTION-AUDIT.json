@@ -6,7 +6,7 @@
   "message_entries": 2432,
   "reviewed_units": 435,
   "corrected_units": 354,
-  "unresolved_units": 31,
+  "unresolved_units": 26,
   "category_counts": {
     "apd": 1,
     "mechanics": 38,
@@ -315,9 +315,9 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/PreparedShotExplanation.java",
       "sha256": "f2a425200d01f8024a68fe39022cf3da65dea189f310713e5d8de7cab490be00",
       "category": "mechanics",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_UNCHANGED",
       "description_methods": [],
-      "review_notes": "2026-11-09 full existing Preparation/Sniper provider read. Existing real best-of-rolls, strict thresholds, saved source knowledge and firing-delay tests retained. It is specific buff detail, explicitly retained pending owner review, not a universal item panel. Full interaction review still open."
+      "review_notes": "2026-11-09: Full own provider read: Preparation update thresholds, best-of damage rolls/strict HP execution threshold/boss fraction and blink; Sniper recorded-known bonus with separate per-mode rounding/time and knownFuror/current modifiers. Existing actual tier/roll/boss boundary and shot/save/purity tests retained. Owner-retained existing buff-specific explanations unchanged pending review; no hidden target lookup or new panel."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/RingExplanation.java",
@@ -444,23 +444,23 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/WeaponAbilityExplanation.java",
       "sha256": "6e5c074751948a5a3c871707e4a6c6f7f2471880c23eb0f6fe51385ac4007801",
       "category": "mechanics",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_UNCHANGED",
       "description_methods": [
         "details"
       ],
-      "review_notes": "2026-11-09 read dispatch/knowledge guards, all bonus constants and first Cleave/HeavyBlow/Spike/Lunge/Combo branches; individually reconciled five Sword-family normal/preview and actual deferred input sources. Legacy helper is not a generic ordinary-item expander; no panel restored. Remaining individual branches/secondary wording still open."
+      "review_notes": "2026-11-09: Full own provider read: all supported weapon ability cases, rounded versus unrounded added inputs, conditional surprise/HP/reach, kill/free-time versus charge rules, invisibility/stance/duration and charge sharing. Known curse/level/ring/Twin guards preserved. Existing actual class ability tests match these formula stages; ordinary item text continues to use concise abilityInfo, no new ability calculation panel. Shared hero/class scopes tracked separately."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/WeaponExplanation.java",
       "sha256": "4f5cc490586c68277d0fc1e3044f679215e462ec4b353e948e262d4f04fcce4a",
       "category": "mechanics",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [
         "summary",
         "details"
       ],
       "wording_corrected": true,
-      "review_notes": "Current ordinary-description pass: concise live values, duplicate mathematical prose removed. Existing optional details and entire category variants remain under review; panel decisions pending. See APD-DESCRIPTION-CORRECTION-2026-11-08.md. Five passive-block types now display one strength-adjusted range, preserving shield upgrade benefit. Core known/unknown levels0/3/9 and low strength tests pass; twenty native windows pending395. Followup2026-11-09 reproduced Twin Upgrades hidden-companion disclosure: Sword known1damage4\u201324became11\u201352and Cleave10\u201330became24\u201365; Dart5\u201315became12\u201336. Existing thread-local weapon/crossbow inspection now excludes unknown companion upgrade contribution, clearly labels omission based solely on visible tier/talent/knowledge, covers normal/optional enchantment/passive-block/ring/legacy/staff queries. Raw combat still borrows actual8outside inspection and on another thread; knowledge change updates displayed values. Exception unwinding/pending crossbow state/read-only saved state retained. Four meaningful regressions pass, actual new owned Sword/Dart windows pending399. No gameplay, balance, saves, targeting or controls changed."
+      "review_notes": "2026-11-09: Full own provider read against current Weapon and melee sources: augmentation/delay/missing strength, known Fury/Might guards, SwordDance additive speed, bow exclusions, five passive-block maxima and strength-adjusted bounds. Ordinary summary remains short and omits routine100percent accuracy; legacy detailed export not reattached as universal panel. Actual timing/block/unknown Twin tests retained."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/qol/RingItemEffects.java",
@@ -3293,13 +3293,13 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/Weapon.java",
       "sha256": "c1c207f0e72c2af4826756e61dba58004e757fea986f2d6f219a88017c3cdf96",
       "category": "weapon",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [
         "info",
         "desc"
       ],
       "wording_corrected": true,
-      "review_notes": "Normal inherited/dynamic wording reviewed against current source. Changes use existing mechanics and known live values. Full source/variant and optional-panel review not complete. Current ordinary info paths also checked: knowledge-safe strength, ranged damage and wear estimates; real damage/accuracy/wear formulas untouched. Full inherited/class/secondary review remains partial. Followup2026-11-09: actual Item.info notes/rings/origin composition, unknown origin/range gates, both item window/action layouts and bounded panel source read. Source-specific decorated crossing/rows/patch and mine labels written after actual room subclasses read; classification/source/recovery rules untouched. Transmutation ordinary text no longer promises unsupported armor/glyph changes, reflects actual restrictions/property transfer; actual sword transfer/knowledge regression. WndInfoItem title color now uses read-only public level, preserving stale wand-infusion metadata; actual native checks pending. Empty Weapon summary no longer adds blank paragraphs, zero-wear missiles omit meaningless Sharpshooting durability multiplier. Full3064core457suites pass; new portrait/landscape native pending393, not392. Full inherited/secondary room-rule and shared variants remain open."
+      "review_notes": "2026-11-09: Full own source and nested Enchantment reviewed: proc order/Holy/Body/Smite, ID thresholds/save, preview strength/accuracy/time/reach, infusion/upgrade/hardening, RNG baseline and subtype pools, curse visibility and all read-only versus consuming power contributions. Current short normal description matches actual values and exceptions; known/unknown/temporary-buff purity/combat tests pass. No chance, generation, upgrade or balance changes."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/curses/Annoying.java",
@@ -3748,13 +3748,13 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/melee/MeleeWeapon.java",
       "sha256": "ebd369e8ec4f819c2594baf9490d4b288ebd9549adecab40f60691911eb94a8c",
       "category": "weapon",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [
         "info",
         "abilityInfo"
       ],
       "wording_corrected": true,
-      "review_notes": "Normal inherited/dynamic wording reviewed against current source. Changes use existing mechanics and known live values. Full source/variant and optional-panel review not complete. Current ordinary info paths also checked: knowledge-safe strength, ranged damage and wear estimates; real damage/accuracy/wear formulas untouched. Full inherited/class/secondary review remains partial. Actual Sickle capture exposed unaugmented unknown base damage; fixed +0 main damage examples to use public augmentation, never hidden level. Eighteen melee ability/base examples tested across all augmentations and hidden levels. Future APK384, not382/383. Five passive-block types now display one strength-adjusted range, preserving shield upgrade benefit. Core known/unknown levels0/3/9 and low strength tests pass; twenty native windows pending395. Followup2026-11-09 reproduced Twin Upgrades hidden-companion disclosure: Sword known1damage4\u201324became11\u201352and Cleave10\u201330became24\u201365; Dart5\u201315became12\u201336. Existing thread-local weapon/crossbow inspection now excludes unknown companion upgrade contribution, clearly labels omission based solely on visible tier/talent/knowledge, covers normal/optional enchantment/passive-block/ring/legacy/staff queries. Raw combat still borrows actual8outside inspection and on another thread; knowledge change updates displayed values. Exception unwinding/pending crossbow state/read-only saved state retained. Four meaningful regressions pass, actual new owned Sword/Dart windows pending399. No gameplay, balance, saves, targeting or controls changed."
+      "review_notes": "2026-11-09: Full own source including Charger read: Duelist access/equip/strength/cost, ability hooks/talents, ordinary damage/augmentation/excess strength, Twin tier eligibility and unknown-source suppression, short info/enchantment/curses/ability text, prices and charge/cap/save/swap. Corrected ambiguous energy to weapon charge and awkward unidentified weight warning to may be too heavy. No timing/charging/talent mechanics changed; actual catalog/Twin/ability/knowledge tests pass."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/melee/Quarterstaff.java",
@@ -4478,8 +4478,8 @@
       "review_notes": "2026-11-09 individually inspected previously omitted plant window. Removed universal plant calculations supplier/button, outside owner-retained mechanic-specific groups, keeping normal species/Warden descriptions and existing plain window. No new layout or effects. Thirty actual plant windows across NONE/WARDEN prepared to assert no expander, text screen bounds, pure save/time; Android pending next pair."
     }
   ],
-  "completed_units": 406,
-  "latest_tests": "3134core457all0 after six individual scroll/pickaxe/provider reviews; existing actual transfer/upgrade/transmutation/modifier guards retained. Latest Android source compile42611911248passed at305acf839 before latest scroll text and live-popup pooled-object fixture correction;411native still in progress.410latestpublished.",
+  "completed_units": 411,
+  "latest_tests": "3134core457all0 after full Weapon/Melee/ability/timing/preparation own-provider reviews and two ordinary wording changes.412source8bd99c644build/core/compile passed, native in progress.411originalnative rejected stale exact Catalyst phrase; full original-APK test-only retry42613038722running, originals/sourcefailurebranch preserved.410 latestpublished.",
   "message_inventory_entries": 5343,
   "message_inventory_counting": "Current authored English property entries across nine files;2432 item entries. Two concise zero-Healing dew/waterskin keys added. Exact Adult OFF/ON checks retained."
 }
