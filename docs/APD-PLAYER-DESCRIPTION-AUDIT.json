@@ -1807,7 +1807,7 @@
         "desc"
       ],
       "wording_corrected": true,
-      "review_notes": "Ordinary description corrected after source review. Existing damage/cost/status logic retained; known live effects and challenge/hidden-state cases tested. Complete class variants, optional panels where applicable and Android rendering remain under review. Normal zero-Healing rule notice now matches actual hero healing behavior; Shielding remains unaffected."
+      "review_notes": "Ordinary description corrected after source review. Existing damage/cost/status logic retained; known live effects and challenge/hidden-state cases tested. Complete class variants, optional panels where applicable and Android rendering remain under review. Normal zero-Healing rule notice now matches actual hero healing behavior; Shielding remains unaffected. Entire own sources/recipes and active AquaHealing/Healing.cure/hunger/bee branches read2026-11-09. Aqua normal buff labels stored HP and flying/full/dry pauses; Healing0 warns that reserve still spent while hurt and standing in water. Actual0HPgain and2resource spent verified, save/restore remains. Honey text names common ailment cures; actual Weakness/Cripple cure and150hunger relief preserved atHealing0. Initial new Poison fixture required absent visual CellEmitter; switched to two other actual cure targets, preserved log. Native Aqua normal/zero windows pending397; no effects or recipes changed."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/potions/elixirs/ElixirOfArcaneArmor.java",
@@ -1843,7 +1843,7 @@
       "status": "PARTIAL_REVIEW",
       "description_methods": [],
       "wording_corrected": true,
-      "review_notes": "Ordinary description corrected after source review. Existing damage/cost/status logic retained; known live effects and challenge/hidden-state cases tested. Complete class variants, optional panels where applicable and Android rendering remain under review. Normal zero-Healing rule notice now matches actual hero healing behavior; Shielding remains unaffected."
+      "review_notes": "Ordinary description corrected after source review. Existing damage/cost/status logic retained; known live effects and challenge/hidden-state cases tested. Complete class variants, optional panels where applicable and Android rendering remain under review. Normal zero-Healing rule notice now matches actual hero healing behavior; Shielding remains unaffected. Entire own sources/recipes and active AquaHealing/Healing.cure/hunger/bee branches read2026-11-09. Aqua normal buff labels stored HP and flying/full/dry pauses; Healing0 warns that reserve still spent while hurt and standing in water. Actual0HPgain and2resource spent verified, save/restore remains. Honey text names common ailment cures; actual Weakness/Cripple cure and150hunger relief preserved atHealing0. Initial new Poison fixture required absent visual CellEmitter; switched to two other actual cure targets, preserved log. Native Aqua normal/zero windows pending397; no effects or recipes changed."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/potions/elixirs/ElixirOfIcyTouch.java",
@@ -4347,9 +4347,9 @@
     "failures": 0,
     "errors": 0,
     "skipped": 0,
-    "log": "/workspace/apd-imbue-vial-evidence-20261109/accepted-full",
+    "log": "/workspace/apd-aquatic-honey-evidence-20261109/accepted-full",
     "android_verified": false,
-    "scope": "396pipeline is earlier d19a99f8d source with5336messages. Later imbue/Vial source5337messages and expanded actual-handler assertions3080core pass; new native windows pending397. Original RNG bounds, effect duration, immunity/grace and save fields unchanged."
+    "scope": "396originalAPK acceptance rerun42567183633 after stale Ferret native fixture failure. Later Aquatic/Honey and imbue/Vial source5338English entries3080fullcorepass; new actual windows pending397."
   },
-  "message_inventory_entries": 5337
+  "message_inventory_entries": 5338
 }

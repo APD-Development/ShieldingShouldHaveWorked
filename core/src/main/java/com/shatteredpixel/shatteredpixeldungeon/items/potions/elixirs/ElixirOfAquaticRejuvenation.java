@@ -139,7 +139,7 @@ public class ElixirOfAquaticRejuvenation extends Elixir {
 		
 		@Override
 		public String desc() {
-			return Messages.get(this, "desc", left);
+			return Messages.get(this, target instanceof Hero && target == Dungeon.hero && com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomHealingHooks.disabled() ? "desc_disabled" : "desc", left);
 		}
 		
 		private static final String LEFT = "left";

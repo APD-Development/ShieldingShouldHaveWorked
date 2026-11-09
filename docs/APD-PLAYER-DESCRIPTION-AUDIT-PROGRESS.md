@@ -233,3 +233,8 @@ All3080core457suites passed. Actual Chasm landing with FeatherFall preserves HP 
 ### Imbue durations and Vial Healing0
 
 All3080core457suites pass after expanded existing actual proc/expiry/healing-matrix assertions. Fire/Icy item wording separates50turn effect duration from50percent ignition chance/3turn Chill per hit. Toxic normal text states5turn protection grace and lingering gas risk. Actual unchanged RNG bound2, Chill3 and grace5 use named constants; no random sequence, balance or save field changed. Normal buff prose concise, existing specific details retained. Vial Healing0 warns clearly while actual108healing cases still verify all rates/caps and unchanged credit. Three buff callers outside427item/provider source inventory also corrected; not counted as additional reviewed item types. 411full/partial reviews,336corrected,185complete242unresolved. English messages5337. New windows pending397, not the396candidate already building.
+
+
+### Aquatic reserve and Honeyed cures
+
+All3080core457suites pass. Aquatic buff now defines remaining reserve as HP before run adjustments and states full/dry/flying pauses. UnderHealing0, warns reserve is still spent while hurt and standing in water; actual2reserve debit and0health gain verified. Honeyed normal text includes common ailment cures, actual Weakness/Cripple and150hunger relief atHealing0 tested. Initial Poison headless visual dependency preserved; actual cure path remains tested with two other listed ailments. New normal/zero buff windows pending397. English inventory5338.396held for full12case retry after stale Ferret native flavor assertion; original APKs unchanged, failures and patch preserved.395published fallback.
