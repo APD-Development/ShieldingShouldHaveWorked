@@ -352,3 +352,8 @@ Existing retained panels shorter; Force Strength/endpoints/Brawler formulas and 
 ### Five ordinary defensive/status buff descriptions
 
 Barkskin/ArcaneArmor ordinary text shorter with live range and next weakening; no repeated nonpercentage/permanent-upgrade disclaimers. Bless/Hex/Daze ordinary text shorter and displayed percentages derive from actual ROLL_FACTOR rather than literal25/20/50. Real8mask×100seed×2direction hit-contest matrix now checks normal displayed percentages alongside existing exact outcomes. Actual decay/save/read-only test at1/5intervals added.3113core457pass, rawfull retained. Existing detailed panels/otherlanguages/gameplay/save formulas unchanged. Five previously omitted buff sources added:436units433full/partial350corrected288complete148unresolved;5339English keys. Five ordinary nativewindows pending406.404failed prematurecamera assertion preserved;405retry changes only timing, identical assertion on originalAPKs.403published fallback. Continue approved work.
+
+
+### Dart and coating own-source closure
+
+Full Dart/TippedDart own paths individually reconciled: crossbow cache/knowledge/thread isolation, charged damage versus tipuses/AOE, coating2perseed/1turn, wear and source/target Lotus/DurableTips/100usecap, cleaning/impactconversion/merge waste/seedmap. Existing concise prose correct; no additional gameplay or wording changes. Individual tips, MissileWeapon and shared effects remain separately tracked.436units433full/partial350corrected290complete146unresolved;5339English keys. Later than406producing source; review closures only.

@@ -6,7 +6,7 @@
   "message_entries": 2411,
   "reviewed_units": 433,
   "corrected_units": 350,
-  "unresolved_units": 148,
+  "unresolved_units": 146,
   "category_counts": {
     "apd": 1,
     "mechanics": 38,
@@ -4092,11 +4092,11 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/missiles/darts/Dart.java",
       "sha256": "ae0d43f035ac2113b2d36fcece00175b3a7f89863405e31ff1c4add77efaf9d7",
       "category": "weapon",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [
         "info"
       ],
-      "review_notes": "Individual normal source and English wording reviewed2026-11-09. Javelin/Spike/Trident own tier/base-wear and flavor checked unchanged; inherited missile paths remain separately partial. Dart/tipped prompt now permits actual preserved multiple-use tips, plain darts no wear, cleaning one turn, high-bonus no wear correctly attributed to bonuses; tests real wear and existing bow-preview/unknown-level guards. Amulet normal pre/ascent actions checked and text shortened; Dewdrop 5%/waterskin normal line reviewed unchanged against consumeDew and existing DewExplanation. Native actual new windows pending next pair; secondary/class/dependency review remains open. Followup2026-11-09: actual Sungrass normal/Warden activation and ticks under HEALING0 tested, player-only warnings on plant/seed/herbal buff; NPC healing and no-hero preview preserved. BarrenLand seed wrapper now states original no-growth rule, actual Level.plant still returns null. Dart selector accepted Blandfruit seed with no recipe; reproduced then filtered by existing TippedDart.types, every real recipe remains selectable and creates expected quantity. No valid recipe, healing rule, challenge, turn cost or new interface changed. English inventory5334. Full3068core457suites pass; actual picker disabled-slot tap/valid prompt and seed states prepared for394, not393. Shared/dependent review remains partial. Followup2026-11-09 reproduced Twin Upgrades hidden-companion disclosure: Sword known1damage4\u201324became11\u201352and Cleave10\u201330became24\u201365; Dart5\u201315became12\u201336. Existing thread-local weapon/crossbow inspection now excludes unknown companion upgrade contribution, clearly labels omission based solely on visible tier/talent/knowledge, covers normal/optional enchantment/passive-block/ring/legacy/staff queries. Raw combat still borrows actual8outside inspection and on another thread; knowledge change updates displayed values. Exception unwinding/pending crossbow state/read-only saved state retained. Four meaningful regressions pass, actual new owned Sword/Dart windows pending399. No gameplay, balance, saves, targeting or controls changed.",
+      "review_notes": "Full own damage/crossbow readcontext/equippedunknown+0 placeholder, threadlocal exception cleanup, live proc/charged AOE/target snapshot/RNG/scheduledkill/throw cache/durability reset, seed selection/coating quantities/one-turn/drop fallback and info paths individually read. Normal seed-to-two/coating/reuse wording accurate. Existing actual crossbow/unknown/Twin/thread/RNG tests retained. Shared MissileWeapon and effects remain separate. Own-source closure only, no additional code/wording/balance/save edit.",
       "wording_corrected": true
     },
     {
@@ -4175,9 +4175,9 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/missiles/darts/TippedDart.java",
       "sha256": "f9866c3c07187dfbf3dd7b918686681f703645731b3e7721f197c92d06989bb6",
       "category": "weapon",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [],
-      "review_notes": "Individual normal source and English wording reviewed2026-11-09. Javelin/Spike/Trident own tier/base-wear and flavor checked unchanged; inherited missile paths remain separately partial. Dart/tipped prompt now permits actual preserved multiple-use tips, plain darts no wear, cleaning one turn, high-bonus no wear correctly attributed to bonuses; tests real wear and existing bow-preview/unknown-level guards. Amulet normal pre/ascent actions checked and text shortened; Dewdrop 5%/waterskin normal line reviewed unchanged against consumeDew and existing DewExplanation. Native actual new windows pending next pair; secondary/class/dependency review remains open. Followup2026-11-09: actual Sungrass normal/Warden activation and ticks under HEALING0 tested, player-only warnings on plant/seed/herbal buff; NPC healing and no-hero preview preserved. BarrenLand seed wrapper now states original no-growth rule, actual Level.plant still returns null. Dart selector accepted Blandfruit seed with no recipe; reproduced then filtered by existing TippedDart.types, every real recipe remains selectable and creates expected quantity. No valid recipe, healing rule, challenge, turn cost or new interface changed. English inventory5334. Full3068core457suites pass; actual picker disabled-slot tap/valid prompt and seed states prepared for394, not393. Shared/dependent review remains partial.",
+      "review_notes": "Full own clean1turn/detach/fallback, impact conversion to plain darts/pincushion/drop, merge waste, durability no-round calculation/DurableTips/source+target Lotus max preservation,100usecap/charged3+Lusebonus and preview nonconsumption, all12seedmap/randomfilter/creator boundary read. Normal concise coating/clean/use text accurate. Individual tip effects already tracked separately; inherited MissileWeapon remains separate. Own-source closure only, no additional code/wording/balance/save edit.",
       "wording_corrected": true
     },
     {
@@ -4466,7 +4466,7 @@
       "review_notes": "Previously omitted normal buff source added. Entire own duration/decay/save/icon path and actual Hero/Char hit/protection consumer read. Ordinary prose shorter; Bless/Hex/Daze percentages use live ROLL_FACTOR; other languages retain existing turn argument plus ignored extra argument. Existing optional panels unchanged. Real8combination\u00d7100seed\u00d72direction hit tests assert live percentages; actual defensive decay/save/read-only test passes.3113core457. New ordinary Android window pending406. Own-source completion, not all BuffExplanation/class providers."
     }
   ],
-  "completed_units": 288,
+  "completed_units": 290,
   "latest_tests": "3113core/457suites all fail/error/skip zero. Five concise ordinary buff descriptions; live Bless/Hex/Daze percentages checked alongside real8mask\u00d7100seed\u00d72direction hit-contest executions. Barkskin/ArcaneArmor actual decay, save/reload and read-only current values at two intervals pass. Full raw XML/log /workspace/apd406-defensive-evidence-20261109/accepted-full. Five ordinary Android windows pending406; no newpanels/gameplay/save changes.405test-only original-app retry pending.",
   "message_inventory_entries": 5339
 }
