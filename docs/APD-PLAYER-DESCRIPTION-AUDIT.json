@@ -4,8 +4,8 @@
   "counting": "Source units, not distinct item types. reviewed_units includes partial reviews; completed_units excludes partial/pending dependency. corrected_units counts source units with corrections, including incomplete reviews. Inventory/export/tests alone are not an individual review.",
   "source_units": 427,
   "message_entries": 2411,
-  "reviewed_units": 316,
-  "corrected_units": 297,
+  "reviewed_units": 329,
+  "corrected_units": 298,
   "unresolved_units": 286,
   "category_counts": {
     "apd": 1,
@@ -449,10 +449,11 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/Ankh.java",
       "sha256": "4e2b7b9fe1959e71e5db87675371edd6f310fdd6f5c8d599f65c513abd30cf11",
       "category": "items",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
+      "status": "PARTIAL",
       "description_methods": [
         "desc"
-      ]
+      ],
+      "review_notes": "Re-read normal/blessed descriptions against Hero.die, WndResurrect two retained items, InterlevelScene ordinary death position vs locked-floor regenerated backpack. Current wording remains correct, no new change. Full challenge/buff/save/UI interactions remain under review."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/ArcaneResin.java",
@@ -467,11 +468,13 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/BrokenSeal.java",
       "sha256": "91f45629af0cf1ed61ec67b459a0501c7ff0080ded93dc2cc8d6e04dfa460b9d",
       "category": "items",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
+      "status": "PARTIAL",
       "description_methods": [
         "info",
         "desc"
-      ]
+      ],
+      "wording_corrected": true,
+      "review_notes": "Read seal affix/maxShield and all WarriorShield state/save/expiry/cooldown paths plus actual Char.damage activation/hunger exclusion. Normal item/buff text concise, recharge wait versus positive saved credit separate without altering stored negative value. Read-only6state save/load regression plus existing real threshold/hunger/expiry tests. Existing advanced panel remains pending owner review."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/Dewdrop.java",
@@ -663,8 +666,9 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/armor/ClothArmor.java",
       "sha256": "6bd5a9b0053b4047f6fb814359264b59dc5b797e459329bfa51d77f617e175ff",
       "category": "armor",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "PARTIAL",
+      "description_methods": [],
+      "review_notes": "Concrete tier/image class and individual base description read. Natural flavor wording matches armor type; no rewrite needed. Inherited live Armor/protection/strength/glyph/identification system tracked separately and not declared complete."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/armor/DuelistArmor.java",
@@ -684,8 +688,9 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/armor/LeatherArmor.java",
       "sha256": "0eb8559e270d7675db22a38882b7e6087de7d3f43218e70224d52b5744278dd9",
       "category": "armor",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "PARTIAL",
+      "description_methods": [],
+      "review_notes": "Concrete tier/image class and individual base description read. Natural flavor wording matches armor type; no rewrite needed. Inherited live Armor/protection/strength/glyph/identification system tracked separately and not declared complete."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/armor/MageArmor.java",
@@ -698,15 +703,17 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/armor/MailArmor.java",
       "sha256": "be0de4931403656e58b54a16cb0799b323e6f9f368e79dbb501159eb3045664e",
       "category": "armor",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "PARTIAL",
+      "description_methods": [],
+      "review_notes": "Concrete tier/image class and individual base description read. Natural flavor wording matches armor type; no rewrite needed. Inherited live Armor/protection/strength/glyph/identification system tracked separately and not declared complete."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/armor/PlateArmor.java",
       "sha256": "022c8a4c448d9e94bda5560b7c5003ac1e2df3942b980ce432dd8aca67bb7fc2",
       "category": "armor",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "PARTIAL",
+      "description_methods": [],
+      "review_notes": "Concrete tier/image class and individual base description read. Natural flavor wording matches armor type; no rewrite needed. Inherited live Armor/protection/strength/glyph/identification system tracked separately and not declared complete."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/armor/RogueArmor.java",
@@ -719,8 +726,9 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/armor/ScaleArmor.java",
       "sha256": "c4d963fa25a2125dda09e46b78bf39f97f5cce67af35102608e2315fbeb80dac",
       "category": "armor",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "PARTIAL",
+      "description_methods": [],
+      "review_notes": "Concrete tier/image class and individual base description read. Natural flavor wording matches armor type; no rewrite needed. Inherited live Armor/protection/strength/glyph/identification system tracked separately and not declared complete."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/armor/WarriorArmor.java",
@@ -812,22 +820,25 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/armor/glyphs/AntiMagic.java",
       "sha256": "d22f4145b475c99bb2386e2f5a381a6a0dcf7aeca596c7e871091f650282edf2",
       "category": "armor",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "PARTIAL",
+      "description_methods": [],
+      "review_notes": "Individually re-read passive implementation and real external caller in Char.speed/stealth/damage/immunity, Mob detection, HighGrass/Burning as applicable. Current ordinary live-value provider checked: water/3-step enemy path/grass refresh/detection score/selected magical attacks/fire shielding cap. No new wording change needed here; full retained details and all modifiers/class variants remain under review."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/armor/glyphs/Brimstone.java",
       "sha256": "1bc08b0a40fe75c331d392282b23b66e87f8342e17a49a3655b0676f7117a66a",
       "category": "armor",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "PARTIAL",
+      "description_methods": [],
+      "review_notes": "Individually re-read passive implementation and real external caller in Char.speed/stealth/damage/immunity, Mob detection, HighGrass/Burning as applicable. Current ordinary live-value provider checked: water/3-step enemy path/grass refresh/detection score/selected magical attacks/fire shielding cap. No new wording change needed here; full retained details and all modifiers/class variants remain under review."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/armor/glyphs/Camouflage.java",
       "sha256": "591a3f2657629c8c6c7a826879430b6001aaa9b33818f8eac3b17ac93d51f2a0",
       "category": "armor",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "PARTIAL",
+      "description_methods": [],
+      "review_notes": "Individually re-read passive implementation and real external caller in Char.speed/stealth/damage/immunity, Mob detection, HighGrass/Burning as applicable. Current ordinary live-value provider checked: water/3-step enemy path/grass refresh/detection score/selected magical attacks/fire shielding cap. No new wording change needed here; full retained details and all modifiers/class variants remain under review."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/armor/glyphs/Entanglement.java",
@@ -840,15 +851,17 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/armor/glyphs/Flow.java",
       "sha256": "c1e110c0960108059c0aa3e87f94bee4df43dadfd54e8ecff1f6f5e1d581555e",
       "category": "armor",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "PARTIAL",
+      "description_methods": [],
+      "review_notes": "Individually re-read passive implementation and real external caller in Char.speed/stealth/damage/immunity, Mob detection, HighGrass/Burning as applicable. Current ordinary live-value provider checked: water/3-step enemy path/grass refresh/detection score/selected magical attacks/fire shielding cap. No new wording change needed here; full retained details and all modifiers/class variants remain under review."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/armor/glyphs/Obfuscation.java",
       "sha256": "ddc25431e8a9fab83b411e2fc99bf97abf63b007716eacf4ad27611d873315da",
       "category": "armor",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "PARTIAL",
+      "description_methods": [],
+      "review_notes": "Individually re-read passive implementation and real external caller in Char.speed/stealth/damage/immunity, Mob detection, HighGrass/Burning as applicable. Current ordinary live-value provider checked: water/3-step enemy path/grass refresh/detection score/selected magical attacks/fire shielding cap. No new wording change needed here; full retained details and all modifiers/class variants remain under review."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/armor/glyphs/Potential.java",
@@ -875,8 +888,9 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/armor/glyphs/Swiftness.java",
       "sha256": "c06760c19c68dc739b5a60674665e9a0fe66d112b992c37dacf3ea5cd2a0a0ad",
       "category": "armor",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "PARTIAL",
+      "description_methods": [],
+      "review_notes": "Individually re-read passive implementation and real external caller in Char.speed/stealth/damage/immunity, Mob detection, HighGrass/Burning as applicable. Current ordinary live-value provider checked: water/3-step enemy path/grass refresh/detection score/selected magical attacks/fire shielding cap. No new wording change needed here; full retained details and all modifiers/class variants remain under review."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/armor/glyphs/Thorns.java",

@@ -295,6 +295,19 @@ public class QolItemFeedbackDeviceTest {
             TopScoresDeviceTest.render(()->shown.get().hide());
         }}finally{TopScoresDeviceTest.render(()->Dungeon.hero.belongings.misc=previous);}
     }
+    private static void ordinaryWarriorShieldDescriptionsRender()throws Exception{
+        for(int reserve:new int[]{0,12})for(int time:new int[]{-25,0,40}){
+            AtomicReference<Window> shown=new AtomicReference<>();
+            TopScoresDeviceTest.render(()->{try{
+                com.shatteredpixel.shatteredpixeldungeon.items.BrokenSeal.WarriorShield shield=new com.shatteredpixel.shatteredpixeldungeon.items.BrokenSeal.WarriorShield();shield.setShield(reserve);
+                java.lang.reflect.Field cooldown=shield.getClass().getDeclaredField("cooldown");cooldown.setAccessible(true);cooldown.setInt(shield,time);
+                assertFalse(shield.desc(),shield.desc().contains("game-time units"));Window window=new WndInfoBuff(shield);GameScene.show(window);shown.set(window);
+            }catch(Exception e){throw new RuntimeException(e);}});
+            Thread.sleep(300);TopScoresDeviceTest.render(()->assertDescriptionViewport(shown.get()));
+            TopScoresDeviceTest.screenshot("qol-warrior-shield-"+reserve+"-"+time+"-normal.png");
+            TopScoresDeviceTest.render(()->shown.get().hide());
+        }
+    }
     private static void ordinaryExoticPotionDescriptionsRender()throws Exception{
         String[] names={"PotionOfCorrosiveGas","PotionOfDivineInspiration","PotionOfMastery","PotionOfStormClouds"};
         for(String name:names){
@@ -553,6 +566,7 @@ public class QolItemFeedbackDeviceTest {
             retainedTrinketDescriptionsRender();
             ordinaryDartDescriptionsRender();
             ordinaryExoticPotionDescriptionsRender();
+            ordinaryWarriorShieldDescriptionsRender();
             inventoryOrderShowsAutomatically();
             prepareSearchableFloor();
             final int[] center={0};

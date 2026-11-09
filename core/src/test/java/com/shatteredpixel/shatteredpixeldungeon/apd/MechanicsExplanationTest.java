@@ -791,10 +791,10 @@ public class MechanicsExplanationTest {
  }
  @Test public void sealShieldDefaultTooltipDistinguishesReadyWaitingAndSavedCredit(){
   com.shatteredpixel.shatteredpixeldungeon.items.BrokenSeal.WarriorShield shield=new com.shatteredpixel.shatteredpixeldungeon.items.BrokenSeal.WarriorShield();shield.target=hero;
-  String ready=shield.desc();assertTrue(ready,ready.contains("cooldown is ready"));assertFalse(ready,ready.contains("recharging"));
-  com.watabou.utils.Bundle saved=new com.watabou.utils.Bundle();shield.storeInBundle(saved);saved.put("cooldown",37);shield.restoreFromBundle(saved);String waiting=shield.desc();assertTrue(waiting,waiting.contains("37 game-time units"));assertTrue(waiting,waiting.contains("recharging"));
-  saved.put("cooldown",-37);shield.restoreFromBundle(saved);String credit=shield.desc();assertTrue(credit,credit.contains("-37 game-time units"));assertTrue(credit,credit.contains("saved credit, not time still to wait"));
-  saved.put("cooldown",37);shield.restoreFromBundle(saved);shield.incShield(2);String active=shield.desc();assertTrue(active,active.contains("2 protection points"));assertTrue(active,active.contains("37 game-time units"));assertFalse(active,active.contains("max of 50"));
+  String ready=shield.desc();assertTrue(ready,ready.startsWith("Ready."));assertFalse(ready,ready.contains("recharging"));
+  com.watabou.utils.Bundle saved=new com.watabou.utils.Bundle();shield.storeInBundle(saved);saved.put("cooldown",37);shield.restoreFromBundle(saved);String waiting=shield.desc();assertTrue(waiting,waiting.contains("37 turns"));assertTrue(waiting,waiting.contains("Recharging"));
+  saved.put("cooldown",-37);shield.restoreFromBundle(saved);String credit=shield.desc();assertTrue(credit,credit.contains("37 turns"));assertTrue(credit,credit.contains("next recharge is shortened"));
+  saved.put("cooldown",37);shield.restoreFromBundle(saved);shield.incShield(2);String active=shield.desc();assertTrue(active,active.contains("Shield remaining: 2"));assertTrue(active,active.contains("Recharge time left: 37 turns"));assertFalse(active,active.contains("max of 50"));
  }
  @Test public void sealShieldActivationExplanationMatchesOddHpThresholdAndHungerExclusion() throws Exception {
   hero.sprite=quietSprite();hero.damageInterrupt=false;hero.heroClass=HeroClass.ROGUE;hero.talents.get(0).put(Talent.IRON_WILL,2);hero.HT=21;
@@ -1101,6 +1101,17 @@ public class MechanicsExplanationTest {
  @Test public void cursedHourglassDescriptionMatchesExtraTimeChance()throws Exception{
   com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass item=new com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass();item.cursed=item.levelKnown=item.cursedKnown=true;assertTrue(ArtifactEconomyExplanation.summary(item,hero).contains("10%"));java.lang.reflect.Method factory=item.getClass().getDeclaredMethod("passiveBuff");factory.setAccessible(true);Buff effect=(Buff)factory.invoke(item);effect.target=hero;
   for(int seed=0;seed<100;seed++){Random.pushGenerator(seed);boolean delay=Random.Int(10)==0;Random.popGenerator();float before=hero.cooldown();Random.pushGenerator(seed);try{effect.getClass().getMethod("act").invoke(effect);}finally{Random.popGenerator();}assertEquals(delay?1:0,hero.cooldown()-before,0);}
+ }
+ @Test public void warriorShieldOrdinaryDescriptionKeepsLiveRechargeAndCreditSeparateAcrossSaveLoad()throws Exception{
+  com.shatteredpixel.shatteredpixeldungeon.items.BrokenSeal.WarriorShield shield=Buff.affect(hero,com.shatteredpixel.shatteredpixeldungeon.items.BrokenSeal.WarriorShield.class);
+  java.lang.reflect.Field cooldown=shield.getClass().getDeclaredField("cooldown");cooldown.setAccessible(true);
+  for(int reserve:new int[]{0,12})for(int time:new int[]{-25,0,40}){
+   shield.setShield(reserve);cooldown.setInt(shield,time);com.watabou.utils.Bundle before=new com.watabou.utils.Bundle(),after=new com.watabou.utils.Bundle();shield.storeInBundle(before);String text=shield.desc();shield.storeInBundle(after);assertEquals(before.toString(),after.toString());assertEquals(time,shield.remainingCooldown());
+   assertFalse(text,text.contains("game-time units"));assertFalse(text,text.contains("Signed cooldown"));
+   if(reserve>0){assertTrue(text,text.contains("Shield remaining: 12"));assertTrue(text,text.contains("Recharge time left: "+Math.max(0,time)+" turns"));assertTrue(text,text.contains("Saved recharge reduction: "+Math.max(0,-time)+" turns"));}
+   else if(time<0)assertTrue(text,text.contains("25 turns"));else if(time>0)assertTrue(text,text.contains("40 turns"));else assertTrue(text,text.startsWith("Ready."));
+   com.shatteredpixel.shatteredpixeldungeon.items.BrokenSeal.WarriorShield loaded=new com.shatteredpixel.shatteredpixeldungeon.items.BrokenSeal.WarriorShield();loaded.restoreFromBundle(before);assertEquals(text,loaded.desc());
+  }
  }
  @Test public void flailSpinDescriptionShowsActualCountWithoutChangingChargeOrSavedProgress(){
   com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Flail.SpinAbilityTracker spin=Buff.affect(hero,com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Flail.SpinAbilityTracker.class,3);

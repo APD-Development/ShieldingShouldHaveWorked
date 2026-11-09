@@ -88,3 +88,8 @@ Gloves/Sai/Gauntlet, Quarterstaff, both shields, Runic Blade and Scimitar source
 ### Staff imbue and four exotic potions
 
 Read staff selection/newlevel and existing dynamic result/unknown-bound/wand-loss paths. Confirmation corrects +0staff exception without changing imbue behavior. Four exotic potion ordinary descriptions individually checked: CorrosiveGas damaging exposure/Corrosion, Divine tier bonus/availability, Mastery eligibility/2STRflag, StormCloud water/fire/trap removal. Concise one-paragraph descriptions retain restrictions. Full3038core/457suites pass; source/evidence `/workspace/apd-exotic-potion-staff-evidence-20261109`. Actual four-potion inspection windows added for next Android pair, not yet run;385 does not include these later edits.316source units reviewed fully/partially,297corrected,141complete,286unresolved.
+
+
+### Warrior Shield normal text and unchanged passive sources
+
+Normal seal/buff prose shortened, no new interface. Positive wait and positive saved reduction displayed separately; old signed cooldown argument retained for existing translations. Ready/waiting/credit/active states and read-only6state serialization covered;3039core/457suites pass. Old text-specific assertions updated to new wait/credit language, actual mechanism assertions preserved. Existing advanced buff panel remains pending review. Native6normal-state windows prepared for next pair, not yet run. Evidence `/workspace/apd-warrior-shield-evidence-20261109`. Six passive glyphs checked against actual callers/formulas; five basic armor classes/flavor and Ankh resurrection descriptions checked unchanged. These remain partial due inherited/secondary/class scope.329units reviewed fully/partially,298corrected,141complete,286unresolved.

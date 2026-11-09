@@ -309,9 +309,9 @@ public class BrokenSeal extends Item {
 		@Override
 		public String desc() {
 			if (shielding() > 0) {
-				return Messages.get(this, "desc_active", shielding(), cooldown);
+				return Messages.get(this, "desc_active", shielding(), cooldown, Math.max(0,cooldown), Math.max(0,-cooldown));
 			} else if (cooldown < 0) {
-				return Messages.get(this, "desc_negative_cooldown", cooldown);
+				return Messages.get(this, "desc_negative_cooldown", cooldown, -cooldown);
 			} else if (cooldown > 0) {
 				return Messages.get(this, "desc_cooldown", cooldown);
 			} else {
