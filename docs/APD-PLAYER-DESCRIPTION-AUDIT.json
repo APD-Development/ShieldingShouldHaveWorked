@@ -6,7 +6,7 @@
   "message_entries": 2432,
   "reviewed_units": 435,
   "corrected_units": 354,
-  "unresolved_units": 33,
+  "unresolved_units": 31,
   "category_counts": {
     "apd": 1,
     "mechanics": 38,
@@ -323,11 +323,11 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/RingExplanation.java",
       "sha256": "c9edfacdddc8ea5c4b77a5324b9ba79319daff6e1905e9654c2e0feda7e2df88",
       "category": "mechanics",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [
         "details"
       ],
-      "review_notes": "All formula branches read; Force unknown-strength disclosure fixed and boilerplate reduced. Remaining mechanic-specific complex explanation prose still needs individual refinement. Force/Tenacity retained branches now shorter, currentpercent less/more explicit, exact formulas and known-only values retained. No newpanel or balance changes. Other branches remain separately partial. Manual405screens found0-valuecursedTenacity contradiction despite correct0%number. Latestsource differentiates positive/negative/zero opening and omitsnearzeroHPmaximum claim atzero. Existing18stateactualmultiplier test now validates these conditionals.3115fullpass.405/406heldprivate; correction notinAPK.",
+      "review_notes": "2026-11-09 full own provider read against individually reviewed ring pure functions and combat. Force known-strength/incomplete ring withholding, Tenacity positive/zero/negative missing-HP values, ordinary versus buffed bonuses and Arcana percentage delegation reviewed. Actual combat/stat/modifier/unknown regressions pass; only existing owner-retained Force/Tenacity detailed panels reachable, not universal ring panels. No formula or panel changes.",
       "wording_corrected": true
     },
     {
@@ -368,11 +368,11 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/StaffExplanation.java",
       "sha256": "18e1b5a7c21a341df2ce2a0fd4574b3928c759720b99636aac2455b44d1420d6",
       "category": "mechanics",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_UNCHANGED",
       "description_methods": [
         "details"
       ],
-      "review_notes": "2026-11-09 read entire staff-effect provider and corresponding13 wand onHit/reach/charge/EmpoweredStrike paths. This legacy export is not returned by ordinary itemCalculations for a plain staff; no panel restored. Live Corruption/Regrowth/Prismatic/Earth tests retained, new Transfusion ownership and Warding repair checks added. Complete secondary variants still open."
+      "review_notes": "2026-11-09 full own provider read against all thirteen individually reviewed wand onHit implementations and MagesStaff proc. Known-level/WildMagic range/EmpoweredStrike, chance-versus-strength, two-rounding Regrowth, Warding tier repairs, Transfusion health-only exemption and direct charge semantics match existing actual regressions. Legacy staff details are not reattached as a universal item panel; ordinary staff uses concise Battlemage text. Shared MagesStaff source separately tracked; no new code or panels."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/StrikeExplanation.java",
@@ -4478,7 +4478,7 @@
       "review_notes": "2026-11-09 individually inspected previously omitted plant window. Removed universal plant calculations supplier/button, outside owner-retained mechanic-specific groups, keeping normal species/Warden descriptions and existing plain window. No new layout or effects. Thirty actual plant windows across NONE/WARDEN prepared to assert no expander, text screen bounds, pure save/time; Android pending next pair."
     }
   ],
-  "completed_units": 404,
+  "completed_units": 406,
   "latest_tests": "3134core457all0 after six individual scroll/pickaxe/provider reviews; existing actual transfer/upgrade/transmutation/modifier guards retained. Latest Android source compile42611911248passed at305acf839 before latest scroll text and live-popup pooled-object fixture correction;411native still in progress.410latestpublished.",
   "message_inventory_entries": 5343,
   "message_inventory_counting": "Current authored English property entries across nine files;2432 item entries. Two concise zero-Healing dew/waterskin keys added. Exact Adult OFF/ON checks retained."
