@@ -96,6 +96,9 @@ public final class ArtifactEconomyExplanation {
         return recharge;
     }
     private static String cursed(Artifact item){
+        if(item instanceof CloakOfShadows||item instanceof HolyTome||item instanceof TalismanOfForesight
+                ||item instanceof AlchemistsToolkit||item instanceof SkeletonKey||item instanceof LloydsBeacon)
+            return com.shatteredpixel.shatteredpixeldungeon.messages.Messages.get(item,"desc_cursed");
         if(item instanceof DriedRose)return "While this cursed Rose's passive effect is equipped, each normal tick has a 1% chance to try spawning a wraith on a valid adjacent tile. No valid tile means no spawn. Normal uncursed recharge is disabled.";
         if(item instanceof EtherealChains)return "While these cursed Chains' passive effect is equipped, each normal tick has a 1% chance to offer 10 turns of Cripple, before resistance. Normal uncursed charging is disabled.";
         if(item instanceof TimekeepersHourglass)return "While this cursed Hourglass's passive effect is equipped, each normal tick has a 10% chance to make the hero spend an extra unit of base action time. Slow/Speed can modify that time; normal uncursed recharge is disabled.";
@@ -111,7 +114,7 @@ public final class ArtifactEconomyExplanation {
         if(!item.isIdentified())return "";if(item.cursed)return cursed(item);
         int level=item.level(),missing=item.maximumCharges()-item.currentCharges();String extra="";
         if(item instanceof AlchemistsToolkit)extra="Stores "+item.currentCharges()+" alchemy energy. A full hero-level of experience provides 2 + Toolkit level = "+(2+level)+" energy before recharge bonuses. Energize spends 6 energy per upgrade, up to +10.\n\n"+(level==10?"Maximum upgrade reached: it becomes ready on the next warm-up update.":"Equipping starts a warm-up. After its first setup update, a full warm-up takes (10 − Toolkit level)² = "+((10-level)*(10-level))+" turns at this level. Partial warm-up progress is kept if you upgrade it. The icon's percentage shows warm-up progress, not stored energy.");
-        else if(item instanceof EtherealChains)extra="Stored chain charges: "+item.currentCharges()+". Soft recharge target = 5 + 2 × upgrade steps = "+(5+2*level)+" charges. Passive base gain = 1 / (40 − 2 × (target − current charges)) per tick while below that target. Experience can add 6 × hero-level fraction charges; above the target, that experience gain is multiplied by target / current charges. External recharge stops being accepted at twice the soft target. These are distinct limits, not a single hard capacity.";
+        else if(item instanceof EtherealChains)extra="Natural recharge fills up to "+(5+2*level)+" charges (5 + 2 × growth stage). Below that limit, base gain = 1 / (40 − 2 × missing charges) per turn. A full hero-level of experience adds 6 charges; above the natural limit, multiply that gain by limit / current charges. Recharge effects stop being accepted at twice the natural recharge limit, but a large effect accepted just below it can exceed that amount.";
         else if(item instanceof CloakOfShadows||item instanceof HolyTome)extra="Base turns per new charge = 45 − missing whole charges − extra high-level bonus, where the extra bonus is 5 × (upgrade steps − 7) / 3 above step7 and zero otherwise. Current base interval: "+n(1/baseGain(item))+" turns. Recharge bonuses divide this interval. "+(item instanceof CloakOfShadows?"The Cloak passively recharges only when not cloaked. Unworn Light Cloak charging multiplies gain by 0.75 × talent rank / 3. Invisibility normally uses a charge every four cloak ticks and can end early on attacks or magic.":"Unworn Light Reading charging multiplies gain by 0.75 × talent rank / 3. Each spell has its own eligibility, charge cost and effect; recharge does not reduce those costs.");
         else if(item instanceof TimekeepersHourglass)extra="Natural recharge takes 90 − 3 × missing charges = "+n(90f-3*missing)+" turns per charge before recharge bonuses.\n\n_Stasis_\nSpends up to 2 charges for 5 turns each. You cannot act or be harmed while the world continues.\n\n_Time Freeze_\nEach charge pays for 2 turns of your actions; partial time carries over between actions. Faster actions fit more uses into that time. Attacking or using magic ends it early. Traps and plants stepped on during the freeze activate when it ends.";
         else if(item instanceof UnstableSpellbook)extra="Natural recharge takes 120 − 5 × missing charges = "+n(120f-5*missing)+" turns per charge before recharge bonuses. A regular reading costs 1 charge and rolls a random scroll effect; Transmutation is excluded. If that type has been added, you can spend 1 more charge to choose its exotic effect instead. Adding one of the requested scrolls consumes it, takes 2 turns and upgrades the book.";
@@ -124,13 +127,16 @@ public final class ArtifactEconomyExplanation {
         else if(item instanceof CapeOfThorns)extra="External artifact-recharge power adds round(4 × power) meter points while inactive. The Cape's own incoming-damage charging and active-duration rules above remain separate.";
         else if(item instanceof ChaliceOfBlood)extra="External artifact-recharge power can offer base healing of 5 × supplied power / current uncursed healing delay, with fractional amounts randomly rounded and normal missing-HP/healing rules applied. It does not bypass starvation.";
         String external="";
-        if(item instanceof AlchemistsToolkit||item instanceof CloakOfShadows||item instanceof HolyTome||item instanceof HornOfPlenty||item instanceof TimekeepersHourglass||item instanceof LloydsBeacon)external="0.25 charge/energy unit";
-        else if(item instanceof UnstableSpellbook||item instanceof MasterThievesArmband)external="0.1 charge unit";
-        else if(item instanceof SkeletonKey)external="0.133 charge unit";
-        else if(item instanceof EtherealChains)external="0.5 chain charge";
-        else if(item instanceof SandalsOfNature||item instanceof TalismanOfForesight)external="2 meter points";
-        else if(item instanceof DriedRose)external="4 meter points when no ghost is active; with a living ghost, round((1 + upgrade steps / 3) × supplied power) HP instead";
-        String value=summary(item,hero);if(!external.isEmpty())extra+="\n\nOne unit of external artifact-recharge power offers "+external+", subject to that artifact's eligibility and resource limits. Cloak/Tome unworn talent modifiers also apply to their external recharge. This is not a universal one-charge-per-turn effect.";
-        return ("_Resource and recharge calculation_\n"+value+"\n\n"+extra+"\n\nUpgrade steps used by these formulas: "+level+" / "+item.maximumUpgradeSteps()+"; the normalized displayed equipment level is +"+item.visiblyUpgraded()+". A full meter and disabled regeneration/activation conditions can pause the applicable path.").trim();
+        if(item instanceof AlchemistsToolkit)external="0.25 alchemy energy";
+        else if(item instanceof CloakOfShadows||item instanceof HolyTome||item instanceof HornOfPlenty||item instanceof TimekeepersHourglass||item instanceof LloydsBeacon)external="0.25 charge";
+        else if(item instanceof UnstableSpellbook||item instanceof MasterThievesArmband)external="0.1 charge";
+        else if(item instanceof SkeletonKey)external="0.133 charge";
+        else if(item instanceof EtherealChains)external="0.5 charge";
+        else if(item instanceof SandalsOfNature||item instanceof TalismanOfForesight)external="2% charge";
+        else if(item instanceof DriedRose)external="4% charge without a summoned ghost; otherwise, "+n(1+level/3f)+" × recharge power HP for the ghost, rounded and limited by its missing health";
+        if(!external.isEmpty())extra+="\n\nRecharge effects add "+external+" per point of recharge power.";
+        if(item instanceof CloakOfShadows||item instanceof HolyTome)extra+=" The unworn "+(item instanceof CloakOfShadows?"Light Cloak":"Light Reading")+" modifier also applies.";
+        String growth=item.maximumUpgradeSteps()==10?"":"\n\nGrowth stage: "+level+" of "+item.maximumUpgradeSteps()+", displayed as +"+item.visiblyUpgraded()+". These formulas use the growth stage.";
+        return ("_Resource and recharge calculation_\n"+summary(item,hero)+"\n\n"+extra+growth).trim();
     }
 }

@@ -6,7 +6,7 @@
   "message_entries": 2430,
   "reviewed_units": 433,
   "corrected_units": 350,
-  "unresolved_units": 77,
+  "unresolved_units": 70,
   "category_counts": {
     "apd": 1,
     "mechanics": 38,
@@ -72,27 +72,27 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/ArtifactEconomyExplanation.java",
-      "sha256": "52506b951965a01f6fb962b9424e3df832ec011732426e0f5c0ba7b9326282d3",
+      "sha256": "b1ad87b853d5d10e19ee5589b61dc0e2469829720bde855f96ffd32c9db22774",
       "category": "mechanics",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [
         "summary",
         "details"
       ],
       "wording_corrected": true,
-      "review_notes": "Current ordinary-description pass: concise live values, duplicate mathematical prose removed. Existing optional details and entire category variants remain under review; panel decisions pending. See APD-DESCRIPTION-CORRECTION-2026-11-08.md. Talisman retained resource branch now onlypassiveformula/charge meaning; detailedrange/warning lives once in TalismanExplanation. Other artifact branches stillpartial."
+      "review_notes": "Current ordinary-description pass: concise live values, duplicate mathematical prose removed. Existing optional details and entire category variants remain under review; panel decisions pending. See APD-DESCRIPTION-CORRECTION-2026-11-08.md. Talisman retained resource branch now onlypassiveformula/charge meaning; detailedrange/warning lives once in TalismanExplanation. Other artifact branches stillpartial. IndividualownsourceNovember9. Full base/knownGain/unknownring/LightCloak/LightReading/fullmeter/curse/resources/externalrates reviewed with allartifact sources and RingOfEnergy actualfactor. NormalCloak/Tomecurse now says normally because SupplyRation/EnlighteningMeal directcharge stillworks, actualfoodpaths undercurse andMagicImmune verified while ordinarychargeblocked. Existingretaineddetail removes irrelevant cross-artifact boilerplate and duplicate normalized-level footer for10stageitems; growthstage/displayalias retained forothercaps. Allnumericrates/formulas/limits retained. Chains natural/XP/external limits prose clearer; actualmaxstage15->21->25XP and29->34externalovershoot/refusal verifylimitsnotonehardcap. Sixformerlygenericcursedpanelbodies reuseexistingprecisecurseprose. Existingpanelsretained, no availability/rate/cost/save/balancechange.3130core457pass; newactualChains/cursedCloakTomewindows preparednotyetAndroidverified. Other inherited/shared/class providers remain separatelytracked."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/ArtifactExplanation.java",
       "sha256": "8aaa5e9670b7a52c8728539a046c4a408bd8d5dd5fcf3cc282614abc6af87214",
       "category": "mechanics",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [
         "summary",
         "details"
       ],
       "wording_corrected": true,
-      "review_notes": "Current ordinary-description pass: concise live values, duplicate mathematical prose removed. Existing optional details and entire category variants remain under review; panel decisions pending. See APD-DESCRIPTION-CORRECTION-2026-11-08.md. Concise normal interval checked against actual Regeneration at0/3/9/10; max-level retained details no longer describe unavailable next prick. No healing/prick effect changed; native levels0/3/10 and actual expanded cap window pending395. Horn full source read: EAT uses truncated whole-charge selection, can leave residual hunger; charged cursed Horn still permits EAT, only ordinary food penalty and recharge stopping described. Actual16 EAT cases across normal/OnDiet, cursed/normal, hunger reserves50/179/181/450 preserve resources and3turn cost. MagicImmune ordinary food exception tested through actual Food.satisfy. Store description explains capacity/experience benefit. New actual windows pending396; no mechanic changed. Three direct owned Cape/Chalice/Horn details and common charge headers shortened2026-11-09, actual source and existing effect matrices reconciled,3106pass. All other artifact providers remain separately tracked; no new panels or gameplay."
+      "review_notes": "Current ordinary-description pass: concise live values, duplicate mathematical prose removed. Existing optional details and entire category variants remain under review; panel decisions pending. See APD-DESCRIPTION-CORRECTION-2026-11-08.md. Concise normal interval checked against actual Regeneration at0/3/9/10; max-level retained details no longer describe unavailable next prick. No healing/prick effect changed; native levels0/3/10 and actual expanded cap window pending395. Horn full source read: EAT uses truncated whole-charge selection, can leave residual hunger; charged cursed Horn still permits EAT, only ordinary food penalty and recharge stopping described. Actual16 EAT cases across normal/OnDiet, cursed/normal, hunger reserves50/179/181/450 preserve resources and3turn cost. MagicImmune ordinary food exception tested through actual Food.satisfy. Store description explains capacity/experience benefit. New actual windows pending396; no mechanic changed. Three direct owned Cape/Chalice/Horn details and common charge headers shortened2026-11-09, actual source and existing effect matrices reconciled,3106pass. All other artifact providers remain separately tracked; no new panels or gameplay. IndividualownsourceNovember9. Full summary/details/knowncurse/chargeheader andall15artifact own source/actualconsumer bodies individually reviewed acrosscontinuations. Cape/Chalice/Horn numericalbranches, Cloak/Rose/Talisman delegates andretainedconditionalpanels verifiedagainstactualeffects. Existingbuttonsretainedpendingownerreview; no genericitemdispatcher/panelsadded. Ownprovidercomplete; separatelytrackedclass/generation/buff providersremainopen. Other inherited/shared/class providers remain separatelytracked."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/BlandfruitExplanation.java",
@@ -2544,10 +2544,10 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/scrolls/exotic/ScrollOfDivination.java",
       "sha256": "7b23e1c29b34807d3d3353f689e9160fc2f3edbe7a607c02f2f5fd3d1a81c577",
       "category": "scrolls",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [],
       "wording_corrected": true,
-      "review_notes": "Normal scroll wording checked against current APD effect/targeting code. Live constants where shown; hidden identities preserved. Existing complicated panels and complete class/secondary-window review remain pending. Identify/Shards and Metamorphosis use actual APD behavior."
+      "review_notes": "Normal scroll wording checked against current APD effect/targeting code. Live constants where shown; hidden identities preserved. Existing complicated panels and complete class/secondary-window review remain pending. Identify/Shards and Metamorphosis use actual APD behavior. IndividualownsourceNovember9. Entire own weightedcategory/unknownsets/up-to4selection/typesknowledge/resultswindow/read path read. Current concise up-to4unknownpotion-scroll-ringtypes, notinventoryitems, accurateunchanged. No newreward/allknownfallback. Other inherited/shared/class providers remain separatelytracked."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/scrolls/exotic/ScrollOfDread.java",
@@ -2562,10 +2562,10 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/scrolls/exotic/ScrollOfEnchantment.java",
       "sha256": "f07d9638425925ce9f5265fc91c0dd4f2d626b25de96d4f0ce8847ea46c08be8",
       "category": "scrolls",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [],
       "wording_corrected": true,
-      "review_notes": "Normal scroll wording checked against current APD effect/targeting code. Live constants where shown; hidden identities preserved. Existing complicated panels and complete class/secondary-window review remain pending. Identify/Shards and Metamorphosis use actual APD behavior."
+      "review_notes": "Normal scroll wording checked against current APD effect/targeting code. Live constants where shown; hidden identities preserved. Existing complicated panels and complete class/secondary-window review remain pending. Identify/Shards and Metamorphosis use actual APD behavior. IndividualownsourceNovember9. Entire own eligibility/known-cancel/threecommon-uncommon-randomchoices/existingeffectexclusion/selection/glyph/info/cancelrestore paths read. Normaltext nowstates currenteffectisreplaced; no impliedstacking. Nativeknownnormalfixtureprepared. Other inherited/shared/class providers remain separatelytracked."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/scrolls/exotic/ScrollOfForesight.java",
@@ -2591,10 +2591,10 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/scrolls/exotic/ScrollOfMetamorphosis.java",
       "sha256": "1df4f61c747b7fca8a882f44ec9e8541c95c24c3d95cc3f398ab7cc4d34058e8",
       "category": "scrolls",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [],
       "wording_corrected": true,
-      "review_notes": "Normal scroll wording checked against current APD effect/targeting code. Live constants where shown; hidden identities preserved. Existing complicated panels and complete class/secondary-window review remain pending. Identify/Shards and Metamorphosis use actual APD behavior."
+      "review_notes": "Normal scroll wording checked against current APD effect/targeting code. Live constants where shown; hidden identities preserved. Existing complicated panels and complete class/secondary-window review remain pending. Identify/Shards and Metamorphosis use actual APD behavior. IndividualownsourceNovember9. Entire own classchoose/replace/cancel/restore/onmetamorph and fullMetamorphosisChoices sameposition/otherclasses/duplicate/tier1-3/spentpoints/aliastransfer/apply read. Existing concise same-slotclass talentprose accurate; subclass/armortalentexclusions retained. Other inherited/shared/class providers remain separatelytracked."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/scrolls/exotic/ScrollOfMysticalEnergy.java",
@@ -2618,10 +2618,10 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/scrolls/exotic/ScrollOfPrismaticImage.java",
       "sha256": "dda9e45999eed86005bc24f69e8b69d8b8ef880977b0ab73b114540088671107",
       "category": "scrolls",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [],
       "wording_corrected": true,
-      "review_notes": "Normal scroll wording checked against current APD effect/targeting code. Live constants where shown; hidden identities preserved. Existing complicated panels and complete class/secondary-window review remain pending. Identify/Shards and Metamorphosis use actual APD behavior."
+      "review_notes": "Normal scroll wording checked against current APD effect/targeting code. Live constants where shown; hidden identities preserved. Existing complicated panels and complete class/secondary-window review remain pending. Identify/Shards and Metamorphosis use actual APD behavior. IndividualownsourceNovember9. Fullown existingguardian/stasisallyheal/PrismaticGuard reserve paths read with fullPrismaticGuard/PrismaticImage consumers:threat<5tiles/adjacentfreespace/HPreserve/regeneration/armor-glyph/accuracy/evasion/damage/delayeddeath/recovery/save. Current concise guardian-threat/armor/fullheal prose accurateunchanged. Other inherited/shared/class providers remain separatelytracked."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/scrolls/exotic/ScrollOfPsionicBlast.java",
@@ -2636,10 +2636,10 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/scrolls/exotic/ScrollOfSirensSong.java",
       "sha256": "2c6a105c8384832fb426efda5f60a504f9be997361ebf49d56ff46875520974b",
       "category": "scrolls",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [],
       "wording_corrected": true,
-      "review_notes": "Normal scroll wording checked against current APD effect/targeting code. Live constants where shown; hidden identities preserved. Existing complicated panels and complete class/secondary-window review remain pending. Identify/Shards and Metamorphosis use actual APD behavior."
+      "review_notes": "Normal scroll wording checked against current APD effect/targeting code. Live constants where shown; hidden identities preserved. Existing complicated panels and complete class/secondary-window review remain pending. Identify/Shards and Metamorphosis use actual APD behavior. IndividualownsourceNovember9. Entire ownknown-cancel/target/nonally/FOVcharms/Enthralledimmunity/AllyBuff-and-loot/read and fullAllyBuff consumer read. Replaced false guaranteedcharmafterconversionimmunity with maybecharmed; other charmimmunitycanpreventit. No targeting/status/alignment/time rules changed. Other inherited/shared/class providers remain separatelytracked."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/spells/Alchemize.java",
@@ -4466,8 +4466,8 @@
       "review_notes": "Previously omitted normal buff source added. Entire own duration/decay/save/icon path and actual Hero/Char hit/protection consumer read. Ordinary prose shorter; Bless/Hex/Daze percentages use live ROLL_FACTOR; other languages retain existing turn argument plus ignored extra argument. Existing optional panels unchanged. Real8combination\u00d7100seed\u00d72direction hit tests assert live percentages; actual defensive decay/save/read-only test passes.3113core457. New ordinary Android window pending406. Own-source completion, not all BuffExplanation/class providers."
     }
   ],
-  "completed_units": 359,
-  "latest_tests": "3128core457allpass. Lullaby currentrule/unknown/actualHeroAlly sleep and26Passageboundary/realunknownidentity/inspection cases. Nativewindowsfor410prepared.409original3126corepassedbutSandalsfixturefailedwrongno-panelassertion; exacttwo-calltest-onlyoriginalAPKretryrequested, no gameAPKrebuilt.408latestpublished.",
+  "completed_units": 366,
+  "latest_tests": "3130core457zero failures/errors/skips. Actualcursedfoodcharge/ordinarychargeblock andChainsXP/externaloverflow regressions pass; existingall13rechargerate/unknownring/save guardsretained. Sourcecompile3128at8d26f7f79passed42604879507beforelatestsecondarywording/nativefixtures.409originalAPKtestonlyretry42604779534pending, originalsourcefailurebranch/rawprivateassetsretained;408latestpublished.",
   "message_inventory_entries": 5341,
   "message_inventory_counting": "Current authored English property entries across nine files;2430itementries. Prior5339 inventory grew by known LullabyHealing0 and live Passage destination keys. ExactAdultOFF/ON checks retained."
 }

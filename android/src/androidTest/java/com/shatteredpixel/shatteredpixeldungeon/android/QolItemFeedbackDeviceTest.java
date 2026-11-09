@@ -359,6 +359,10 @@ public class QolItemFeedbackDeviceTest {
         }
     }
     private static void retainedArtifactDescriptionsRender()throws Exception{
+        calculationWindow(()->{com.shatteredpixel.shatteredpixeldungeon.items.artifacts.EtherealChains item=new com.shatteredpixel.shatteredpixeldungeon.items.artifacts.EtherealChains();item.level(5);item.levelKnown=item.cursedKnown=true;return new WndInfoItem(item);},"twice the natural recharge limit","qol-chains-distinct-charge-limits.png");
+        calculationWindow(()->{com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CloakOfShadows item=new com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CloakOfShadows();item.levelKnown=item.cursedKnown=item.cursed=true;return new WndInfoItem(item);},"recharge normally","qol-cloak-cursed-existing-detail.png");
+        calculationWindow(()->{com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HolyTome item=new com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HolyTome();item.levelKnown=item.cursedKnown=item.cursed=true;return new WndInfoItem(item);},"recharge normally","qol-tome-cursed-existing-detail.png");
+
         com.shatteredpixel.shatteredpixeldungeon.items.artifacts.SandalsOfNature sandals=new com.shatteredpixel.shatteredpixeldungeon.items.artifacts.SandalsOfNature();TopScoresDeviceTest.render(()->{sandals.level(1);sandals.levelKnown=sandals.cursedKnown=true;sandals.seeds.add(com.shatteredpixel.shatteredpixeldungeon.plants.Earthroot.Seed.class);sandals.curSeedEffect=com.shatteredpixel.shatteredpixeldungeon.plants.Firebloom.Seed.class;});showItem(sandals,"1 of 6 different seed types","qol-sandals-current-ability-growth.png",true,true);
         calculationWindow(()->{com.shatteredpixel.shatteredpixeldungeon.items.artifacts.UnstableSpellbook item=new com.shatteredpixel.shatteredpixeldungeon.items.artifacts.UnstableSpellbook();item.level(3);item.levelKnown=item.cursedKnown=true;return new WndInfoItem(item);},"spend 1 more charge","qol-spellbook-retained-clear.png");
         calculationWindow(()->{com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass item=new com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass();item.levelKnown=item.cursedKnown=true;return new WndInfoItem(item);},"Each charge pays for 2 turns","qol-hourglass-retained-clear.png");
@@ -1066,6 +1070,9 @@ public class QolItemFeedbackDeviceTest {
         }finally{TopScoresDeviceTest.render(()->{shown.get().hide();buff[0].detach();});}
     }
     private static void inventoryScrollCancellationWarningRenders()throws Exception{
+        com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfEnchantment enchant=new com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfEnchantment();TopScoresDeviceTest.render(enchant::anonymize);showItem(enchant,"replacing its current effect","qol-enchantment-replaces-effect.png",true);
+        com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfSirensSong siren=new com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfSirensSong();TopScoresDeviceTest.render(siren::anonymize);showItem(siren,"may be charmed instead","qol-siren-immunity-limit.png",true);
+
         com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation teleport=new com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation();TopScoresDeviceTest.render(teleport::anonymize);showItem(teleport,"Locked treasure rooms are excluded","qol-teleport-room-limit-description.png",true);
         com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfPassage passage=new com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfPassage();TopScoresDeviceTest.render(passage::anonymize);showItem(passage,"Floor "+com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfPassage.destinationDepth(Dungeon.depth),"qol-passage-live-destination.png",true);
 

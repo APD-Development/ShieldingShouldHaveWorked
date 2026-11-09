@@ -1636,6 +1636,21 @@ public class MechanicsExplanationTest {
    bonus.detach();Buff.detach(hero,MagicImmune.class);wand.stopCharging();
   }
  }
+ public static class DescriptionSupplyRation extends com.shatteredpixel.shatteredpixeldungeon.items.food.SupplyRation {public void satisfyNow(Hero target){super.satisfy(target);}}
+ @Test public void cursedCloakAndTomeTextAllowsExistingDirectFoodChargeButNotOrdinaryRecharge()throws Exception{
+  hero.sprite=quietSprite();java.lang.reflect.Field meter=com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Artifact.class.getDeclaredField("charge");meter.setAccessible(true);
+  for(boolean immune:new boolean[]{false,true}){
+   if(immune)Buff.affect(hero,MagicImmune.class);
+   com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CloakOfShadows cloak=new com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CloakOfShadows();cloak.levelKnown=cloak.cursedKnown=cloak.cursed=true;hero.belongings.artifact=cloak;meter.setInt(cloak,0);assertTrue(cloak.info(),cloak.info().contains("recharge normally"));cloak.charge(hero,4);assertEquals(0,cloak.currentCharges());new DescriptionSupplyRation().satisfyNow(hero);assertEquals(1,cloak.currentCharges());assertFalse(cloak.actions(hero).contains("STEALTH"));
+   hero.heroClass=HeroClass.CLERIC;hero.talents.get(0).put(Talent.ENLIGHTENING_MEAL,2);com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HolyTome tome=new com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HolyTome();tome.levelKnown=tome.cursedKnown=tome.cursed=true;hero.belongings.artifact=tome;meter.setInt(tome,0);assertTrue(tome.info(),tome.info().contains("recharge normally"));tome.charge(hero,4);assertEquals(0,tome.currentCharges());Talent.onFoodEaten(hero,1,null);assertEquals(1,tome.currentCharges());assertFalse(tome.actions(hero).contains("CAST"));Buff.detach(hero,MagicImmune.class);hero.heroClass=HeroClass.WARRIOR;hero.talents.get(0).remove(Talent.ENLIGHTENING_MEAL);
+  }
+ }
+ @Test public void chainsRetainedLimitsMatchRealExperienceOverflowAndExternalRecharge()throws Exception{
+  com.shatteredpixel.shatteredpixeldungeon.items.artifacts.EtherealChains item=new com.shatteredpixel.shatteredpixeldungeon.items.artifacts.EtherealChains();item.level(5);item.levelKnown=item.cursedKnown=true;hero.belongings.artifact=item;
+  java.lang.reflect.Field charge=com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Artifact.class.getDeclaredField("charge"),partial=com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Artifact.class.getDeclaredField("partialCharge");charge.setAccessible(true);partial.setAccessible(true);charge.setInt(item,15);partial.setFloat(item,0);
+  java.lang.reflect.Method factory=item.getClass().getDeclaredMethod("passiveBuff");factory.setAccessible(true);com.shatteredpixel.shatteredpixeldungeon.items.artifacts.EtherealChains.chainsRecharge effect=(com.shatteredpixel.shatteredpixeldungeon.items.artifacts.EtherealChains.chainsRecharge)factory.invoke(item);effect.target=hero;effect.act();assertEquals(15,item.currentCharges());effect.gainExp(1);effect.act();assertEquals(21,item.currentCharges());effect.gainExp(1);effect.act();assertEquals(25,item.currentCharges());assertTrue(partial.getFloat(item)>0);
+  charge.setInt(item,29);partial.setFloat(item,0);item.charge(hero,10);assertEquals(34,item.currentCharges());item.charge(hero,10);assertEquals(34,item.currentCharges());String detail=ArtifactExplanation.details(item);assertTrue(detail,detail.contains("large effect accepted just below it can exceed"));assertTrue(detail,detail.contains("Growth stage: 5 of 5, displayed as +10"));assertFalse(detail.contains("normalized displayed"));
+ }
  @Test public void artifactRechargeRatesMatchRealPassiveAndEventHandlers()throws Exception{
   RingOfEnergy energy=new RingOfEnergy();energy.anonymize();energy.level(2);energy.levelKnown=energy.cursedKnown=true;hero.belongings.ring=energy;energy.activate(hero);
   java.lang.reflect.Field charge=com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Artifact.class.getDeclaredField("charge"),partial=com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Artifact.class.getDeclaredField("partialCharge");charge.setAccessible(true);partial.setAccessible(true);
@@ -2454,7 +2469,7 @@ public class MechanicsExplanationTest {
   com.shatteredpixel.shatteredpixeldungeon.items.artifacts.ChaliceOfBlood chalice=new com.shatteredpixel.shatteredpixeldungeon.items.artifacts.ChaliceOfBlood();chalice.levelKnown=chalice.cursedKnown=true;String text=MechanicsDetails.itemCalculations(chalice);assertTrue(text,text.contains("level²"));assertTrue(text.contains("healing"));
  }
  @Test public void complexArtifactTimeBudgetResourceLimitsAndConeGeometryRemainAvailable(){
-  com.shatteredpixel.shatteredpixeldungeon.items.artifacts.EtherealChains chains=new com.shatteredpixel.shatteredpixeldungeon.items.artifacts.EtherealChains();chains.levelKnown=chains.cursedKnown=true;assertTrue(MechanicsDetails.itemCalculations(chains).contains("twice the soft target"));
+  com.shatteredpixel.shatteredpixeldungeon.items.artifacts.EtherealChains chains=new com.shatteredpixel.shatteredpixeldungeon.items.artifacts.EtherealChains();chains.levelKnown=chains.cursedKnown=true;assertTrue(MechanicsDetails.itemCalculations(chains).contains("twice the natural recharge limit"));
   com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass hourglass=new com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass();hourglass.levelKnown=hourglass.cursedKnown=true;assertTrue(MechanicsDetails.itemCalculations(hourglass).contains("Each charge pays for 2 turns"));
   com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TalismanOfForesight talisman=new com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TalismanOfForesight();talisman.levelKnown=talisman.cursedKnown=true;assertTrue(MechanicsDetails.itemCalculations(talisman).contains("0.92^d"));
  }
