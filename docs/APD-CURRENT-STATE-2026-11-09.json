@@ -1,11 +1,11 @@
 {
-  "recorded_utc": "2026-11-09T18:09:35.755041+00:00",
+  "recorded_utc": "2026-11-09T18:34:45.455487+00:00",
   "authorization_end_utc": "2026-11-09T20:00:00Z",
   "latest_verified_published_build": 418,
   "release_url": "https://github.com/APD-Development/ShieldingShouldHaveWorked/releases/tag/apd-alpha-preview-418",
   "source_fix_commit": "8c2d5ca9f33154af69b782d6aa83ac181bd3c21d",
   "local_full_core": {
-    "tests": 3154,
+    "tests": 3155,
     "suites": 457,
     "failures": 0,
     "errors": 0,
@@ -107,7 +107,7 @@
     "run": 42656324353,
     "report": "docs/APD-421-HELD-HISTORY-2026-11-09.json"
   },
-  "current_work": "3154core457all0.21of27spellbranches reviewed with actual DivineSense classrange/artifact FOV regression;22nativecontexts prepared. Latest Androidsourcecompile requested.425older3153/14branch/fontfix running, source758096097;423/424held,418published. Wholeaudit438complete7open.",
+  "current_work": "3155core457all0. Full SpellExplanation ownreview complete,27branches/32nativecontexts. Wholeaudit439complete6open. Latest Androidsourceverification requested; older3154runfailedbeforeanyjob.425correctedfont staged after successful packaging-onlyrecovery;manualpending.418published.",
   "apd423": {
     "source": "2a98ed3e4d050d2eaa1c34a54a2ca09facde08d9",
     "original_run": 42662501545,
@@ -115,5 +115,14 @@
     "packaging_only_recovery_run": 42666702358,
     "recovery_result": "success, no application/instrumentation rebuild or native rerun; require all420421422 entries",
     "status": "MANUAL HOLD:28fullframes viewed; unsupported SharedUpgrades fraction glyph.4714sourcehashes and originalAPKbytechecks passed, but do not publish."
+  },
+  "apd425": {
+    "source": "75809609745851368fe81f2dced1b69eb63cdfdf",
+    "original_run": 42669136432,
+    "original_results": "build/core3153 andall12native passed; no prepare jobstarted, failed-onlyrerunrefused, causeunresolved",
+    "packaging_only_recovery_run": 42673560388,
+    "recovery": "success; exact original apps/evidence reused, no assembly/native rerun",
+    "stage_run": 42674685237,
+    "status": "stagedprivate; independentchecks/manual underway"
   }
 }

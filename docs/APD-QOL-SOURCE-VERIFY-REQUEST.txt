@@ -1,2 +1,2 @@
-2026-11-09T18:09:35.755041+00:00
-Verify3154core plus Androiddebug/release/instrumentationJava/desktop.21of27existingSpellDetailsbranches revised,22actualspellcontexts; actual DivineSense artifacttrigger and blindFOV ranges at bothranks/classes, earlier actualarea/Barrier/wall/Mnemonic tests unchanged. No mechanics or panelchanges.425 earlierfontfix source758096097 remainsrunningnative; final6spellbranches stillopen.
+2026-11-09T18:34:45.455487+00:00
+Verify3155core plus Androiddebug/release/instrumentationJava/desktop. All27SpellExplanationbranches individually reviewed;32actualcontexts including Priest/Paladin/immunity restoreclass/subclass/talents/ability/armor/HP.439complete6open445units359corrected. Prior3154source42671531873failedwithjobs[]andemptyfailedlog, not an established codefailure; preserve and verifylatestsource.425packaging-onlyrecovery42673560388 andstage42674685237passed;manualpending.
