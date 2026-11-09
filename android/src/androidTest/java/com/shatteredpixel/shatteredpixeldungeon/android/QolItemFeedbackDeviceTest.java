@@ -248,6 +248,11 @@ public class QolItemFeedbackDeviceTest {
         Sword kinetic=new Sword();TopScoresDeviceTest.render(()->{kinetic.levelKnown=kinetic.cursedKnown=true;kinetic.enchant(new com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Kinetic());});showItem(kinetic,"_190.61%_","qol-kinetic-arcana-storage.png",true,true);
         calculationWindow(()->{com.shatteredpixel.shatteredpixeldungeon.items.armor.MailArmor armor=new com.shatteredpixel.shatteredpixeldungeon.items.armor.MailArmor();armor.level(3);armor.levelKnown=armor.cursedKnown=true;armor.glyph=new com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Obfuscation();return new WndInfoItem(armor);},"stealth","qol-obfuscation-calculations-retained.png");
 
+        String[] retainedNames={"Blocking","Shocking","Eldritch","Vorpal"},retainedText={"5-turn timer","including neutral creatures","hero witnesses","Replaces immediate hit damage"};
+        for(int index=0;index<retainedNames.length;index++){
+            final String name=retainedNames[index];
+            calculationWindow(()->{Sword blade=new Sword();blade.level(3);blade.levelKnown=blade.cursedKnown=true;blade.enchant((com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon.Enchantment)Class.forName("com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments."+name).getDeclaredConstructor().newInstance());return new WndInfoItem(blade);},retainedText[index],"qol-retained-"+name+"-clear-details.png");
+        }
         calculationWindow(()->{com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier b=new com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier();b.setShield(17);return new WndInfoBuff(b);},"17 shield points","qol-mechanics-buff-expanded.png");
         calculationWindow(()->new WndInfoTalent(com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent.ENHANCED_RINGS,1,null),"= 3 turns","qol-mechanics-talent-expanded.png");
         calculationWindow(()->new WndInfoArmorAbility(HeroClass.WARRIOR,new com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.HeroicLeap()),"Actual current ability cost:","qol-mechanics-ability-expanded.png");
@@ -667,6 +672,27 @@ public class QolItemFeedbackDeviceTest {
         String[] expected={"north, east, south and west","banishes its wraiths","returns your original equipment"};
         for(int i=0;i<items.length;i++)showItem(items[i],expected[i],"qol-quest-"+i+"-concise.png",true);
     }
+    private static void waywardBuffDescriptionRenders()throws Exception{
+        final com.shatteredpixel.shatteredpixeldungeon.items.weapon.curses.Wayward.WaywardBuff[] buff={null};AtomicReference<Window> shown=new AtomicReference<>();String[] saved={null};
+        TopScoresDeviceTest.render(()->{buff[0]=com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff.prolong(Dungeon.hero,com.shatteredpixel.shatteredpixeldungeon.items.weapon.curses.Wayward.WaywardBuff.class,10);com.watabou.utils.Bundle before=new com.watabou.utils.Bundle();buff[0].storeInBundle(before);saved[0]=before.toString();Window window=new WndInfoBuff(buff[0]);GameScene.show(window);shown.set(window);});
+        try{
+            Thread.sleep(300);TopScoresDeviceTest.render(()->{assertTrue(buff[0].desc(),buff[0].desc().contains("Hitting with it ends this effect"));assertDescriptionViewport(shown.get());com.watabou.utils.Bundle after=new com.watabou.utils.Bundle();buff[0].storeInBundle(after);assertEquals(saved[0],after.toString());});
+            TopScoresDeviceTest.screenshot("qol-wayward-buff-concise.png");
+        }finally{TopScoresDeviceTest.render(()->{shown.get().hide();buff[0].detach();});}
+    }
+    private static void inventoryScrollCancellationWarningRenders()throws Exception{
+        AtomicReference<Window> shown=new AtomicReference<>();float[] time={0};
+        com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfIdentify scroll=new com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfIdentify();
+        TopScoresDeviceTest.render(()->{scroll.anonymize();time[0]=Dungeon.hero.cooldown();Window window=scroll.new WndConfirmCancel();GameScene.show(window);shown.set(window);});
+        try{
+            Thread.sleep(300);TopScoresDeviceTest.render(()->{try{
+                boolean found=false;for(RenderedTextBlock text:TopScoresDeviceTest.find(shown.get(),RenderedTextBlock.class))if(text.text().contains("Reading identified this scroll"))found=true;assertTrue(found);
+                assertEquals("Viewing a warning does not itself spend a turn",time[0],Dungeon.hero.cooldown(),0);assertEquals(1,scroll.quantity());
+                assertEquals("Only the two existing choices appear",2,TopScoresDeviceTest.find(shown.get(),RedButton.class).size());
+            }catch(Exception e){throw new RuntimeException(e);}});
+            TopScoresDeviceTest.screenshot("qol-inventory-scroll-cancellation-warning.png");
+        }finally{TopScoresDeviceTest.render(()->shown.get().hide());}
+    }
     private static void landscapeItemWindowsFit(ActivityScenario<AndroidLauncher> scenario)throws Exception{
         final boolean original=SPDSettings.landscape();
         scenario.onActivity(activity->SPDSettings.landscape(true));
@@ -902,6 +928,8 @@ public class QolItemFeedbackDeviceTest {
             retainedTrinketDescriptionsRender();
             ordinaryDartDescriptionsRender();
             ordinaryExoticPotionDescriptionsRender();
+            waywardBuffDescriptionRenders();
+            inventoryScrollCancellationWarningRenders();
             landscapeItemWindowsFit(scenario);
             ordinaryWarriorShieldDescriptionsRender();
             ordinaryFlailSpinDescriptionsRender();

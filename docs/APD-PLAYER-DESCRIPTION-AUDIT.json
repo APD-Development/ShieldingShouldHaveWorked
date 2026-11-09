@@ -4,8 +4,8 @@
   "counting": "Source units, not distinct item types. reviewed_units includes partial reviews; completed_units excludes partial/pending dependency. corrected_units counts source units with corrections, including incomplete reviews. Inventory/export/tests alone are not an individual review.",
   "source_units": 427,
   "message_entries": 2411,
-  "reviewed_units": 395,
-  "corrected_units": 327,
+  "reviewed_units": 398,
+  "corrected_units": 329,
   "unresolved_units": 266,
   "category_counts": {
     "apd": 1,
@@ -168,14 +168,14 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/EnchantmentExplanation.java",
-      "sha256": "4d952ebaa8eae99b9765eb6e63796430000b164dca0bd0a2b775de47046578e6",
+      "sha256": "dc581649f09d8ce6745d9bc046db8de5781c22d5a5971c3f8a9371501ee75b7f",
       "category": "mechanics",
       "status": "PARTIAL_REVIEW",
       "description_methods": [
         "describe"
       ],
       "wording_corrected": true,
-      "review_notes": "Current ordinary-description pass: concise live values, duplicate mathematical prose removed. Existing optional details and entire category variants remain under review; panel decisions pending. See APD-DESCRIPTION-CORRECTION-2026-11-08.md."
+      "review_notes": "Current ordinary-description pass: concise live values, duplicate mathematical prose removed. Existing optional details and entire category variants remain under review; panel decisions pending. See APD-DESCRIPTION-CORRECTION-2026-11-08.md. Followup2026-11-09: read shared regular/exotic labels, identity/actions/recipe code and inventory cancellation flow. Human cancellation warning preserves original consumption; cursed book warning names both actual exceptions. Wayward buff text shortened after real proc/accuracy checks; no new chance/calculation. Four existing retained enchantment details now plain timer/neutral witnesses/direct-damage replacement; source Shocking/Eldritch/Vorpal/Block paths and existing actual proc tests unchanged. No panel/formula changes. Full3064core457suites pass. Actual warning/Wayward/expanded windows pending394, not393; shared full secondary review remains open."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/FoodExplanation.java",
@@ -2331,19 +2331,23 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/scrolls/InventoryScroll.java",
       "sha256": "b3092d2337d555a0efd973414d966090480bc3f81be8cfb5ac4e326c96331442",
       "category": "scrolls",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "PARTIAL_REVIEW",
+      "description_methods": [],
+      "review_notes": " Followup2026-11-09: read shared regular/exotic labels, identity/actions/recipe code and inventory cancellation flow. Human cancellation warning preserves original consumption; cursed book warning names both actual exceptions. Wayward buff text shortened after real proc/accuracy checks; no new chance/calculation. Four existing retained enchantment details now plain timer/neutral witnesses/direct-damage replacement; source Shocking/Eldritch/Vorpal/Block paths and existing actual proc tests unchanged. No panel/formula changes. Full3064core457suites pass. Actual warning/Wayward/expanded windows pending394, not393; shared full secondary review remains open.",
+      "wording_corrected": true
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/scrolls/Scroll.java",
       "sha256": "8dd994e920c4f321c6791b445002794f0eae9b74a8112682a7c5a1cbd39d1c28",
       "category": "scrolls",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
+      "status": "PARTIAL_REVIEW",
       "description_methods": [
         "info",
         "desc",
         "info"
-      ]
+      ],
+      "review_notes": " Followup2026-11-09: read shared regular/exotic labels, identity/actions/recipe code and inventory cancellation flow. Human cancellation warning preserves original consumption; cursed book warning names both actual exceptions. Wayward buff text shortened after real proc/accuracy checks; no new chance/calculation. Four existing retained enchantment details now plain timer/neutral witnesses/direct-damage replacement; source Shocking/Eldritch/Vorpal/Block paths and existing actual proc tests unchanged. No panel/formula changes. Full3064core457suites pass. Actual warning/Wayward/expanded windows pending394, not393; shared full secondary review remains open.",
+      "wording_corrected": true
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/scrolls/ScrollOfGathering.java",
@@ -2470,8 +2474,9 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/scrolls/exotic/ExoticScroll.java",
       "sha256": "3b89911d9539ff5621e3efaa0566d4b7521b3c290d5baeb4b993ce072c096547",
       "category": "scrolls",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "PARTIAL_REVIEW",
+      "description_methods": [],
+      "review_notes": " Followup2026-11-09: read shared regular/exotic labels, identity/actions/recipe code and inventory cancellation flow. Human cancellation warning preserves original consumption; cursed book warning names both actual exceptions. Wayward buff text shortened after real proc/accuracy checks; no new chance/calculation. Four existing retained enchantment details now plain timer/neutral witnesses/direct-damage replacement; source Shocking/Eldritch/Vorpal/Block paths and existing actual proc tests unchanged. No panel/formula changes. Full3064core457suites pass. Actual warning/Wayward/expanded windows pending394, not393; shared full secondary review remains open."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/scrolls/exotic/ScrollOfAntiMagic.java",
@@ -3331,7 +3336,7 @@
       "status": "PARTIAL_REVIEW",
       "description_methods": [],
       "wording_corrected": true,
-      "review_notes": "Normal curse wording or weapon ability display reviewed against implementation; full variants and existing optional panel review remain unfinished. See November 8 correction record."
+      "review_notes": "Normal curse wording or weapon ability display reviewed against implementation; full variants and existing optional panel review remain unfinished. See November 8 correction record. Followup2026-11-09: read shared regular/exotic labels, identity/actions/recipe code and inventory cancellation flow. Human cancellation warning preserves original consumption; cursed book warning names both actual exceptions. Wayward buff text shortened after real proc/accuracy checks; no new chance/calculation. Four existing retained enchantment details now plain timer/neutral witnesses/direct-damage replacement; source Shocking/Eldritch/Vorpal/Block paths and existing actual proc tests unchanged. No panel/formula changes. Full3064core457suites pass. Actual warning/Wayward/expanded windows pending394, not393; shared full secondary review remains open."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/curses/Wondrous.java",
@@ -4323,8 +4328,8 @@
     "failures": 0,
     "errors": 0,
     "skipped": 0,
-    "log": "/workspace/apd-weapon-spacing-unlimited-durability-evidence-20261109",
+    "log": "/workspace/apd-scroll-retained-detail-evidence-20261109",
     "android_verified": false,
-    "scope": "Post392 actual Transmutation/flood, concise meter/Trinity, source-label prose, empty summary/zero-wear row, read-only wand window color.393native pending;392 published."
+    "scope": "Post393 scroll warning, Wayward normal buff and four retained detail prose only. Actual windows pending394;393native running and392published."
   }
 }
