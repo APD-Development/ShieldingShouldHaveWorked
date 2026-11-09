@@ -1,3 +1,7 @@
+## Current status — November 9, 2026, end of authorized window
+
+The audit is unfinished:436sourceunits,433fully/partiallyreviewed,350withcorrections,307completedown-source reviews,129unresolved;5339Englishmessageentries. Source units are not distinct items. LatestpublishedAPK403.405/406passed automated checks but remain private after manual Tenacity wording rejection. Latestsourcefixespassed3115core/457suites; no correctedAPK yet. See [current state](APD-CURRENT-STATE-2026-11-09.json) for exact commits, evidence and remaining work. Historical notes below retain earlier counts/statuses.
+
 ## Latest continuation — crafted spells, runestones and Duelist examples
 
 223 source units have full or partial reviews; 210 have corrections and 95 source reviews are complete. 332 remain unresolved. All 3,030 core tests / 457 suites passed. The source audit is unfinished. New Summon Elemental variant windows are staged for380 Android checks. Existing379 is delivered; no physical-phone or Prison/Tengu audio-fix claim.

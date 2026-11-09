@@ -1,0 +1,51 @@
+{
+  "recorded_utc": "2026-11-09T09:29:00Z",
+  "authorization_end_utc": "2026-11-09T09:30:00Z",
+  "latest_verified_published_build": 403,
+  "release_url": "https://github.com/APD-Development/ShieldingShouldHaveWorked/releases/tag/apd-alpha-preview-403",
+  "source_fix_commit": "5e23d687c44e71d46454f3574b4bdbfba8a64a8e",
+  "local_full_core": {
+    "tests": 3115,
+    "suites": 457,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "last_completed_android_source_compile": {
+    "commit": "f161c9e6e",
+    "run": 42592740397,
+    "scope": "3115core, Androiddebug/release/instrumentationJava and desktop; no appAPK assembled; before latest Tenacity sourcefix"
+  },
+  "latest_source_compile": {
+    "commit": "5e23d687c44e71d46454f3574b4bdbfba8a64a8e",
+    "run": 42593449057,
+    "status": "running; inspect actual GitHub result, not claimed passed"
+  },
+  "held_private_builds": {
+    "404": "Native fixture failed before-render camera check; original unacceptedAPKs/rawfailures preserved in explicitprivatearchives.",
+    "405": "3112core/12nativepassed with test-only timingretry, independenthashes+4453sourcefilehashes,32manualcaptures. Rejected manual Tenacity zero-value prose; originals preserved.",
+    "406": "3113core/12nativepassed, independenthashes+4463sourcefilehashes,10newbuffcapturesreadable. Same bad Tenacity provider; originalpairheldprivate."
+  },
+  "newest_source_not_in_any_apk": [
+    "Vampiric current nonzero custom-healing percentage;36actual activation cases and hiddencredit/state guard; native25/200windows prepared but NOT run.",
+    "Tenacity positive/negative/zero conditional prose and no false nearzeroHP maximum forzero; strengthened actual18state multiplier regression."
+  ],
+  "audit": {
+    "source_units": 436,
+    "fully_or_partially_reviewed": 433,
+    "corrected_source_units": 350,
+    "completed_own_source_units": 307,
+    "unresolved_source_units": 129,
+    "authored_english_message_entries": 5339,
+    "complete": false
+  },
+  "remaining": [
+    "Build and verify a NEW pair from correctedsource; actual Tenacity positive/negative/zero and Vampiric25/200inspection checks before publishing. Do not publish held405/406originals.",
+    "Continue129unresolved shared/class/generation/effect/secondary source reviews; counts are sourceunits, not distinctitemtypes.",
+    "Retain owner-pending mechanic-specific panels; no universalpanels/newUI or balancechanges.",
+    "SPD audio symptom not reproduced in APD/physical speakers; no production audiofix claimed."
+  ],
+  "preservation": "All source pushed to codex/apd-phone-fixes-2026-10-09; published403 and priorreleases retained.405/406privateassets include completeAPK/source/tests;404rejectedarchivesretained. Raw local full suites and committed evidence ZIPs retained.",
+  "physical_phone_or_acoustic_audio_verified": false,
+  "background_development_after_window_claimed": false
+}
