@@ -359,6 +359,7 @@ public class QolItemFeedbackDeviceTest {
         }
     }
     private static void retainedArtifactDescriptionsRender()throws Exception{
+        calculationWindow(()->{com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass item=new com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass();item.levelKnown=item.cursedKnown=true;return new WndInfoItem(item);},"Each charge pays for 2 turns","qol-hourglass-retained-clear.png");
         for(int level:new int[]{5,10})calculationWindow(()->{com.shatteredpixel.shatteredpixeldungeon.items.artifacts.AlchemistsToolkit kit=new com.shatteredpixel.shatteredpixeldungeon.items.artifacts.AlchemistsToolkit();kit.level(level);kit.levelKnown=kit.cursedKnown=true;return new WndInfoItem(kit);},level==10?"Maximum upgrade reached":"25 turns at this level","qol-toolkit-retained-clear-"+level+".png");
         calculationWindow(()->{com.shatteredpixel.shatteredpixeldungeon.items.artifacts.MasterThievesArmband item=new com.shatteredpixel.shatteredpixeldungeon.items.artifacts.MasterThievesArmband();item.level(10);item.levelKnown=item.cursedKnown=true;return new WndInfoItem(item);},"Charges are spent only on success","qol-armband-retained-clear.png");
         com.shatteredpixel.shatteredpixeldungeon.items.KindofMisc previous=Dungeon.hero.belongings.misc;

@@ -6,7 +6,7 @@
   "message_entries": 2411,
   "reviewed_units": 433,
   "corrected_units": 350,
-  "unresolved_units": 97,
+  "unresolved_units": 95,
   "category_counts": {
     "apd": 1,
     "mechanics": 38,
@@ -1044,12 +1044,12 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/artifacts/EtherealChains.java",
       "sha256": "4132242fed0dc6f836556b33ff0b2228b9e6a93dc14847ad87a19a209c6e09f8",
       "category": "artifacts",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [
         "desc"
       ],
       "wording_corrected": true,
-      "review_notes": " All15 actual curse branches reviewed; concise conditional ordinary text,15type read-only regression, actual Horn/Chalice effects tested. Existing advanced panels retained pending owner review; full non-curse/class paths may remain incomplete. Entire target/route/Mining exception/self root/terrain/grab/enemy placement/charge/recharge/save paths read. Normal text correctly charges tiles moved (including diagonals), explored-ground and path restriction; not misleading one charge per total cast distance. No projectile/movement code changed. Native normal fixture expanded, not yet run."
+      "review_notes": " All15 actual curse branches reviewed; concise conditional ordinary text,15type read-only regression, actual Horn/Chalice effects tested. Existing advanced panels retained pending owner review; full non-curse/class paths may remain incomplete. Entire target/route/Mining exception/self root/terrain/grab/enemy placement/charge/recharge/save paths read. Normal text correctly charges tiles moved (including diagonals), explored-ground and path restriction; not misleading one charge per total cast distance. No projectile/movement code changed. Native normal fixture expanded, not yet run. Individualownsource reviewedNovember9. Fullowntargeter/connectivity/Miningexception/pullcallbacks/landingoccupy/charge/experience/curse and currentnormal/retainedprose read. OnechargeperChebyshev-distance tile/diagonal,1turnuse,rooted/immovable/terrainlimits, naturalsofttarget versusexperience/externalovershoot checked. Existingconciseordinaryprose unchanged; no newpanel/teleport orcollisionrules. Own-source completion only; inherited Artifact/shared economy/class providers remain tracked."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/artifacts/HolyTome.java",
@@ -1130,13 +1130,13 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/artifacts/TimekeepersHourglass.java",
       "sha256": "2dfcbcb3b8bdc3b0e19dbeb0269c902e91ffdfaa8cc4e3dd22b544ae71885390",
       "category": "artifacts",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [
         "desc",
         "desc"
       ],
       "wording_corrected": true,
-      "review_notes": "Ordinary descriptions and important cursed states checked individually against real activation, charging, scroll talent suppression/exception, theft and grass/seed code. Clear normal uses and drawbacks replace vague flavor-only guidance; redundant technical cursed summary suppressed only for these four reviewed types when their own worn description already states it. Existing mechanic-specific panels retained pending review. Full variant/corner-case review still pending; native382 worn normal/cursed windows included, not yet run. All15 actual curse branches reviewed; concise conditional ordinary text,15type read-only regression, actual Horn/Chalice effects tested. Existing advanced panels retained pending owner review; full non-curse/class paths may remain incomplete."
+      "review_notes": "Ordinary descriptions and important cursed states checked individually against real activation, charging, scroll talent suppression/exception, theft and grass/seed code. Clear normal uses and drawbacks replace vague flavor-only guidance; redundant technical cursed summary suppressed only for these four reviewed types when their own worn description already states it. Existing mechanic-specific panels retained pending review. Full variant/corner-case review still pending; native382 worn normal/cursed windows included, not yet run. All15 actual curse branches reviewed; concise conditional ordinary text,15type read-only regression, actual Horn/Chalice effects tested. Existing advanced panels retained pending owner review; full non-curse/class paths may remain incomplete. Individualownsource reviewedNovember9. Fullownactivate/stasis/freeze/deferredpress/disarm/sandbag/charge/cursed/save and Char/Hero/Invisibility consumers read. Retained detail now explains5turnstasis/twochargecap,2turnactionbudget/partialcarryover/attackmagicbreak/deferredtraps instead of implementation rounding jargon. Ten actualpartialtime sequences including original.001toleranceboundary andsavecontinuation verified;3122core457pass. Existingretainedpanel kept; nativeexpanded/bottomfixturepending. Own-source completion only; inherited Artifact/shared economy/class providers remain tracked."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/artifacts/UnstableSpellbook.java",

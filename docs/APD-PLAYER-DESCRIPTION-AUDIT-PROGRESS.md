@@ -396,3 +396,6 @@ Fullownsource plus tradeconsumer read. Existing panel now distinguishes enemy/sh
 
 ### Toolkit prompt/detail and Beacon own-source review
 Toolkit Energize prompt correctly names experience-generatedenergy; existing detail shortened with liveenergy/rate/warmup/max. Nine actualwarmup runs include initialsetup/partialprogress/+10 andsave, separatecurse/immunitypause;3121core457allpass, rawXML/log preserved. Two expanded/bottomnativefixturespendingnextAPK. Beacon fullownsource reviewed, conciseproseunchanged, legacy exceptions preserved. Audit339complete97unresolvedof436,433full/partial350corrected,5339Englishentries. No gameplay/save/newpanel changes.
+
+### Hourglass retained detail and Chains own-source review
+Hourglass existingpanel gives5turnstasis/2chargecap and2turnactionbudget/partialcarry/deferredhazards, removing implementationroundingjargon. Ten actualbudgetsequences includeprecisionboundary andsavecontinuation;3122core457allpass, rawXML/log preserved. Nativeexpanded/bottompending. Chainsfullownsource/currentprose reviewed, no rewrite needed. Audit341complete95unresolvedof436units,433partial/full350corrected,5339Englishentries. Sharedprovidersremainopen.

@@ -1196,6 +1196,19 @@ public class MechanicsExplanationTest {
    int expected=0;float value=0;while(value<75&&expected<charges){value+=10+upgrade/2f;expected++;}assertEquals(expected,budget);assertEquals(Math.min(1f,expected*(10+upgrade/2f)/75),chance,0f);assertEquals(budget,effect.chargesToUse(wand));assertEquals(chance,effect.stealChance(wand),0f);assertFalse(wand.curseInfusionBonus);
   }
  }
+ @Test public void hourglassRetainedActionBudgetMatchesActualPartialCostsAndSave()throws Exception{
+  float[][] sequences={{0},{1},{1,1},{1,1,.5f},{.5f,.5f,.5f,.5f,.5f},{2.0005f},{2.01f},{4},{4,.5f},{8}};
+  int[] expectedCharges={6,6,6,5,5,6,5,5,4,3};
+  for(int i=0;i<sequences.length;i++){
+   com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass item=new com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass();item.levelKnown=item.cursedKnown=true;
+   java.lang.reflect.Field charge=com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Artifact.class.getDeclaredField("charge");charge.setAccessible(true);charge.setInt(item,6);
+   com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass.timeFreeze freeze=item.new timeFreeze();freeze.target=hero;
+   com.watabou.utils.Bundle before=new com.watabou.utils.Bundle(),after=new com.watabou.utils.Bundle();item.storeInBundle(before);String text=MechanicsDetails.itemCalculations(item);item.storeInBundle(after);assertEquals(before.toString(),after.toString());assertTrue(text,text.contains("partial time carries over"));assertTrue(text,text.contains("Traps and plants"));assertFalse(text.contains("rounding tolerance"));
+   for(float time:sequences[i])freeze.processTime(time);assertEquals("sequence="+i,expectedCharges[i],item.currentCharges());
+   com.watabou.utils.Bundle saved=new com.watabou.utils.Bundle();freeze.storeInBundle(saved);com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass.timeFreeze restored=item.new timeFreeze();restored.restoreFromBundle(saved);restored.target=hero;assertEquals(freeze.desc(),restored.desc());assertEquals(freeze.iconTextDisplay(),restored.iconTextDisplay());
+   int afterFirst=item.currentCharges();freeze.processTime(.25f);int originalCost=afterFirst-item.currentCharges();charge.setInt(item,afterFirst);restored.processTime(.25f);assertEquals(originalCost,afterFirst-item.currentCharges());
+  }
+ }
  @Test public void toolkitRetainedWarmupTextMatchesActualTimingAndSavedProgress()throws Exception{
   for(int level:new int[]{0,5,10})for(float warm:new float[]{0,50,101}){
    com.shatteredpixel.shatteredpixeldungeon.items.artifacts.AlchemistsToolkit kit=new com.shatteredpixel.shatteredpixeldungeon.items.artifacts.AlchemistsToolkit();kit.level(level);kit.levelKnown=kit.cursedKnown=true;
@@ -2398,7 +2411,7 @@ public class MechanicsExplanationTest {
  }
  @Test public void complexArtifactTimeBudgetResourceLimitsAndConeGeometryRemainAvailable(){
   com.shatteredpixel.shatteredpixeldungeon.items.artifacts.EtherealChains chains=new com.shatteredpixel.shatteredpixeldungeon.items.artifacts.EtherealChains();chains.levelKnown=chains.cursedKnown=true;assertTrue(MechanicsDetails.itemCalculations(chains).contains("twice the soft target"));
-  com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass hourglass=new com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass();hourglass.levelKnown=hourglass.cursedKnown=true;assertTrue(MechanicsDetails.itemCalculations(hourglass).contains("0.001"));
+  com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass hourglass=new com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass();hourglass.levelKnown=hourglass.cursedKnown=true;assertTrue(MechanicsDetails.itemCalculations(hourglass).contains("Each charge pays for 2 turns"));
   com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TalismanOfForesight talisman=new com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TalismanOfForesight();talisman.levelKnown=talisman.cursedKnown=true;assertTrue(MechanicsDetails.itemCalculations(talisman).contains("0.92^d"));
  }
  @Test public void ownerRetainedArtifactAndTrinketPanelsStaySpecificPendingReview(){
