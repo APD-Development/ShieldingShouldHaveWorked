@@ -46,5 +46,10 @@
   "preservation": "All source pushed to codex/apd-phone-fixes-2026-10-09; published403 and priorreleases retained.405/406privateassets include completeAPK/source/tests;404rejectedarchivesretained. Raw local full suites and committed evidence ZIPs retained.",
   "physical_phone_or_acoustic_audio_verified": false,
   "background_development_after_window_claimed": false,
-  "active_build": null
+  "active_build": {
+    "number": 414,
+    "run": 42621170849,
+    "source_commit": "3b47da4be925c02abe2e796679dea58ce74601f7",
+    "status": "building; acceptance pending"
+  }
 }
