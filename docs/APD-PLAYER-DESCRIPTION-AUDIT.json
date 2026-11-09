@@ -6,7 +6,7 @@
   "message_entries": 2411,
   "reviewed_units": 433,
   "corrected_units": 350,
-  "unresolved_units": 94,
+  "unresolved_units": 92,
   "category_counts": {
     "apd": 1,
     "mechanics": 38,
@@ -1055,10 +1055,10 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/artifacts/HolyTome.java",
       "sha256": "2c50135839e0d44e47165bf77c3b1e7334c827d805e638e17938501af9f1773d",
       "category": "artifacts",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [],
       "wording_corrected": true,
-      "review_notes": " All15 actual curse branches reviewed; concise conditional ordinary text,15type read-only regression, actual Horn/Chalice effects tested. Existing advanced panels retained pending owner review; full non-curse/class paths may remain incomplete. Ordinary flavor shortened after reading cast eligibility/spend progression/capacity/recharge paths; no spell/balance change. Full dedicated cleric and real charge matrices retained. Expanded normal native pending389; complete spell/class/secondary scope stays open."
+      "review_notes": " All15 actual curse branches reviewed; concise conditional ordinary text,15type read-only regression, actual Horn/Chalice effects tested. Existing advanced panels retained pending owner review; full non-curse/class paths may remain incomplete. Ordinary flavor shortened after reading cast eligibility/spend progression/capacity/recharge paths; no spell/balance change. Full dedicated cleric and real charge matrices retained. Expanded normal native pending389; complete spell/class/secondary scope stays open. FullownclassNovember9review:action/LightReadingcarry/targeting/quickspell/cost/upgradecapacity10/experience/directpassiveexternalrecharge/save andcurrentnormal/retainedprose read. Existingconciseownprose accurate, unchanged. Specific Clericspells/SpellExplanation/classproviders remain separatelytracked; own-source completion only."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/artifacts/HornOfPlenty.java",
@@ -1095,14 +1095,14 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/artifacts/SandalsOfNature.java",
-      "sha256": "773f3cf91b4af83f9e41d180e6a2865b0f89dee189918aef3b9ee9be538267c8",
+      "sha256": "9ce65761ca1db81d8f5a4edba13201eac73a1585f22534cd8ec9ed09909a3fc2",
       "category": "artifacts",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [
         "desc"
       ],
       "wording_corrected": true,
-      "review_notes": "Ordinary descriptions and important cursed states checked individually against real activation, charging, scroll talent suppression/exception, theft and grass/seed code. Clear normal uses and drawbacks replace vague flavor-only guidance; redundant technical cursed summary suppressed only for these four reviewed types when their own worn description already states it. Existing mechanic-specific panels retained pending review. Full variant/corner-case review still pending; native382 worn normal/cursed windows included, not yet run. All15 actual curse branches reviewed; concise conditional ordinary text,15type read-only regression, actual Horn/Chalice effects tested. Existing advanced panels retained pending owner review; full non-curse/class paths may remain incomplete. Fullownsource readNovember9; normalability text namesvisibletile/3tilerange, livegrowthcount nowhave/required andno nextgrowthpromiseatcap. Actual18seedfeedsverifyconsumption,1turn,distincttypes,3growththresholdsandfinalform.3123core457pass. Remains partial: unsupportedBlandfruitseed accepted despite noability/color/cost mapping; investigate and reproduce before any gameplay change. Nativecurrenteffect/progressfixturepending."
+      "review_notes": "Ordinary descriptions and important cursed states checked individually against real activation, charging, scroll talent suppression/exception, theft and grass/seed code. Clear normal uses and drawbacks replace vague flavor-only guidance; redundant technical cursed summary suppressed only for these four reviewed types when their own worn description already states it. Existing mechanic-specific panels retained pending review. Full variant/corner-case review still pending; native382 worn normal/cursed windows included, not yet run. All15 actual curse branches reviewed; concise conditional ordinary text,15type read-only regression, actual Horn/Chalice effects tested. Existing advanced panels retained pending owner review; full non-curse/class paths may remain incomplete. Fullownsource readNovember9; normalability text namesvisibletile/3tilerange, livegrowthcount nowhave/required andno nextgrowthpromiseatcap. Actual18seedfeedsverifyconsumption,1turn,distincttypes,3growththresholdsandfinalform.3123core457pass. Remains partial: unsupportedBlandfruitseed accepted despite noability/color/cost mapping; investigate and reproduce before any gameplay change. Nativecurrenteffect/progressfixturepending. Unsupportedseed issue reproduced: Blandfruit accepted andlegacyactions null-unboxed missingcost. Guard existingabilitymaps inselector/callback/action/description/glow. Preservelegacyserializedselection/list, allowvalidreplacement, rejectinvalidfeedwithoutfood/timeconsumption; all12supportedseedtypes and18actualvalidfeedsretained. Initialtestcompileaccesserror corrected; intermediateoverlappingfullruns invalidatedandmisseddescguardfixed, finalfresh--rerun-tasks3125core457allpass. Nativelegacysavewindowprepared, notyetdeviceverified. Own-source complete; sharedprovidersremainopen."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/artifacts/SkeletonKey.java",
