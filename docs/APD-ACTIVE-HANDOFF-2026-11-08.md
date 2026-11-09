@@ -53,3 +53,8 @@ APK387 published2026-11-09T01:41:54Z; sourcefc2d64b91, build42545546958/stage425
 ### APK388 delivered02:09:36UTC / continuing
 
 Original source13e5fc1cc, build42547894100, native-only corrected full12-case acceptance42548247427, stage42548915906. Both original signed APKs/source/hashes downloaded and independently checked, six actual capture selections manually read. Complete test XML/logs and initial rejected Regrowth-helper attempt persist as release asset. Original attempt rejected owner-retained Regrowth expander incorrectly; corrected fixture expects exactly one only in those known retained windows, preserves ordinary no-panel/action/save/time/viewport checks. Three-charge fixture uses legitimate level5capacity7. Receipt APD-388-DELIVERY-RECEIPT.json. No physical-phone/audio/full audit claim. Later source LivingEarth/Prismatic/herb/passiveArcana has3045core457suites pass; next native windows prepared. Next valid pair target around02:40UTC; active authorization ends09:30UTC.
+
+
+###391 delivered03:13UTC / continuing
+
+Exact source e3e7e63059c7edd3ac2f088e254eb93a8d62ee5d; build42553271879/stage42553383469.3054core/457suites and12targeted API34cases. Both signed variants/source/hashes/evidence published, independently hash checked and seven changed capture selections manually read.389compile rejection and390manual max-Chalice rejection preserved private, no rejected APK published. Full audit unfinished366reviewed318corrected160complete267unresolved. Later intrinsic reach and narrow ElementalStrike unknown-curse prose privacyfix have3056full core pass, Android pending. Next valid pair target around03:43UTC; continue until09:30UTC.

@@ -663,7 +663,8 @@ public class ElementalStrike extends ArmorAbility {
 		String desc = Messages.get(this, "desc");
 		if (Game.scene() instanceof GameScene){
 			KindOfWeapon w = Dungeon.hero.belongings.weapon();
-			if (w instanceof MeleeWeapon && ((MeleeWeapon) w).enchantment != null){
+			if (w instanceof MeleeWeapon && ((MeleeWeapon) w).enchantment != null
+                    && (w.cursedKnown || !((MeleeWeapon) w).enchantment.curse())){
 				desc += "\n\n" + Messages.get(((MeleeWeapon) w).enchantment, "elestrike_desc");
 			} else {
 				desc += "\n\n" + Messages.get(this, "generic_desc");
