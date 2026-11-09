@@ -1,9 +1,9 @@
 {
-  "recorded_utc": "2026-11-09T19:13:07.926067+00:00",
+  "recorded_utc": "2026-11-09T19:29:26.945895+00:00",
   "authorization_end_utc": "2026-11-09T20:00:00Z",
-  "latest_verified_published_build": 425,
-  "release_url": "https://github.com/APD-Development/ShieldingShouldHaveWorked/releases/tag/apd-alpha-preview-425",
-  "source_fix_commit": "75809609745851368fe81f2dced1b69eb63cdfdf",
+  "latest_verified_published_build": 426,
+  "release_url": "https://github.com/APD-Development/ShieldingShouldHaveWorked/releases/tag/apd-alpha-preview-426",
+  "source_fix_commit": "1bd96affecc830ade14346d60842bcf3c9489e0e",
   "local_full_core": {
     "tests": 3158,
     "suites": 457,
@@ -12,9 +12,9 @@
     "skipped": 0
   },
   "last_completed_android_source_compile": {
-    "commit": "3eb023205def8a2d8e13a218057df81ad7558318",
-    "run": 42678990585,
-    "scope": "3157core/457 and Androiddebug/release/instrumentationJava/desktop allpassed; latest427production and allfixture changes compiled."
+    "commit": "a9e1ecf6f",
+    "run": 42681249224,
+    "scope": "3158core/debug/release/instrumentation/desktoppassed; later Rat copy/native factory included in428appbuildcompiledbeforeassembly."
   },
   "latest_source_compile": {
     "commit": "7143d16bc481045b49ec4a60624128b0dcccc6b1",
@@ -35,10 +35,7 @@
     "424": "Inherits unsupported fraction glyph from423; originalpair running42667109736. Preserve all results/assets privately even if automated checks pass.",
     "426": "Original native fixture expects old HolyWeapon sentence; both variants rejected. Originalsource/APKs/failure evidence retained. Test-only retry pending."
   },
-  "newest_source_not_in_any_apk": [
-    "Shortened existing paralysis/ascent/Foresight/status contest/champion detail text;3157coregreen, native window fixtures prepared",
-    "Common armor-ability charge/recharge shortened; Trinity no universalcost; actual3158corepassed; source/nativepending"
-  ],
+  "newest_source_not_in_any_apk": [],
   "audit": {
     "source_units": 445,
     "completed_units": 441,
@@ -47,19 +44,18 @@
     "message_inventory_entries": 5353
   },
   "remaining": [
-    "Finish4reviews: AbilityExplanation, TalentExplanation, Talent normal English, CursedWand owner wording decision",
-    "426/427native, staging, independentbytes and manualvisual acceptance beforepublication",
-    "428source/native verification pending; latest3157coregreen",
-    "SPD-only audio physical/acoustic reproduction unverified; no provenAPD audiofix"
+    "427/428complete native, bytes/scans/manualvisual acceptance beforepublication",
+    "Four incomplete reviews: AbilityExplanation remainingeffects,TalentExplanation,Talentnormaltext,CursedWandownerwordingdecision",
+    "Observed old normalPriest grammar and ShieldOfLight advancedtimer wording followups",
+    "SPD-only acoustic audio reproduction remains unverified; no proved APDfix"
   ],
   "preservation": "All source pushed to codex/apd-phone-fixes-2026-10-09; published403 and priorreleases retained.405/406privateassets include completeAPK/source/tests;404rejectedarchivesretained. Raw local full suites and committed evidence ZIPs retained.",
   "physical_phone_or_acoustic_audio_verified": false,
   "background_development_after_window_claimed": false,
   "active_build": {
-    "number": 427,
-    "source": "209277bdabbb9520bba60717f3fa3927f80d5eb6",
-    "run": 42679430170,
-    "status": "Buildpassed; all12nativepending"
+    "number": 428,
+    "source": "28013435e236058ec9945ab5968ec258c4c380aa",
+    "status": "Bothnativechecks pending; source3158coregreen and appbuildpassed"
   },
   "recovered_failed_attempts": {
     "415": {
@@ -108,16 +104,26 @@
     "receipt": "docs/APD-425-DELIVERY-RECEIPT.json"
   },
   "active_builds": {
-    "426": {
-      "source": "1bd96affecc830ade14346d60842bcf3c9489e0e",
-      "original_failed_run": 42676677970,
-      "exact_app_native_retry": 42678990749,
-      "status": "Originalunchangedapps; full12native retryrunning; private"
-    },
     "427": {
       "source": "209277bdabbb9520bba60717f3fa3927f80d5eb6",
-      "run": 42679430170,
-      "status": "Buildpassed; nativebothrunning; private"
+      "original_run": 42679430170,
+      "retry": 42683626942,
+      "status": "Developer6passed; Alpha initial900cap, exactsameapp/harness retryall6with1800cap. Private. PassedDevimagesstaging for manualreview."
+    },
+    "428": {
+      "source": "28013435e236058ec9945ab5968ec258c4c380aa",
+      "original_run": 42681930991,
+      "retry": 42683625819,
+      "status": "Originalnative900caprunning; retrybothsameapps/harness1800budget dueexpandedUIworkload. Do not count limitedrunsuccesswithoutcompletion. Private."
     }
+  },
+  "latest_delivery": {
+    "number": 426,
+    "core_tests": 3155,
+    "native_tests": 12,
+    "manual_Developer_frames": 64,
+    "source_manifest_files": 4758,
+    "published_utc": "2026-11-09T19:24:26Z",
+    "original_apk_retry_created_apps": 0
   }
 }
