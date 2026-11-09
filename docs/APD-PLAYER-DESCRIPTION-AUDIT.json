@@ -4,9 +4,9 @@
   "counting": "Source units, not distinct item types. reviewed_units includes partial reviews; completed_units excludes partial/pending dependency. corrected_units counts source units with corrections, including incomplete reviews. Inventory/export/tests alone are not an individual review.",
   "source_units": 427,
   "message_entries": 2411,
-  "reviewed_units": 387,
-  "corrected_units": 324,
-  "unresolved_units": 267,
+  "reviewed_units": 395,
+  "corrected_units": 327,
+  "unresolved_units": 266,
   "category_counts": {
     "apd": 1,
     "mechanics": 38,
@@ -60,11 +60,12 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/ArmorExplanation.java",
       "sha256": "c7de19f8756457d3e312846bd687c64a5c742fa1a1f5a5166ea9f73fe906da4e",
       "category": "mechanics",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
+      "status": "REVIEWED_UNCHANGED",
       "description_methods": [
         "summary",
         "details"
-      ]
+      ],
+      "review_notes": "Complete provider reviewed against actual Armor DRMin/Max, augment, STRReq, speed and evasion functions. Known Strength uses guarded public ring bonus. Existing known/unknown/challenge/augment and ready-buff tests retained. Generic armor mathematics is not attached to ordinary item windows; no new panel or normal paragraph added."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/ArtifactEconomyExplanation.java",
@@ -430,14 +431,14 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/qol/RingItemEffects.java",
-      "sha256": "aad0d8c7f8c5c361a512a440ee439fbdcf9779936b138f2ad471c476ef3d0ba2",
+      "sha256": "f1bf5fc43b263e4a109beb48683dab354bf46f2b71c3c19ed0f08da568498826",
       "category": "qol",
       "status": "PARTIAL_REVIEW",
       "description_methods": [
         "describe"
       ],
       "wording_corrected": true,
-      "review_notes": "Read actual ring-effect provider and RotDart fixed wear override. Reproduced misleading generic durability row; suppress only that row for RotDart while retaining actual ring damage. Regression covers uncursed, harmful cursed and neutral upgraded cursed ring states and20wear independent of level, no save mutation. Other item-specific applicability continues under review."
+      "review_notes": "Read actual ring-effect provider and RotDart fixed wear override. Reproduced misleading generic durability row; suppress only that row for RotDart while retaining actual ring damage. Regression covers uncursed, harmful cursed and neutral upgraded cursed ring states and20wear independent of level, no save mutation. Other item-specific applicability continues under review. Followup2026-11-09: actual Item.info notes/rings/origin composition, unknown origin/range gates, both item window/action layouts and bounded panel source read. Source-specific decorated crossing/rows/patch and mine labels written after actual room subclasses read; classification/source/recovery rules untouched. Transmutation ordinary text no longer promises unsupported armor/glyph changes, reflects actual restrictions/property transfer; actual sword transfer/knowledge regression. WndInfoItem title color now uses read-only public level, preserving stale wand-infusion metadata; actual native checks pending. Empty Weapon summary no longer adds blank paragraphs, zero-wear missiles omit meaningless Sharpshooting durability multiplier. Full3064core457suites pass; new portrait/landscape native pending393, not392. Full inherited/secondary room-rule and shared variants remain open."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/Amulet.java",
@@ -544,11 +545,12 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/Item.java",
       "sha256": "39b729cc3c92af7daa281825673cd0959209b7a5bfa6a5b7cb209ad647cb8112",
       "category": "items",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
+      "status": "PARTIAL_REVIEW",
       "description_methods": [
         "info",
         "desc"
-      ]
+      ],
+      "review_notes": " Followup2026-11-09: actual Item.info notes/rings/origin composition, unknown origin/range gates, both item window/action layouts and bounded panel source read. Source-specific decorated crossing/rows/patch and mine labels written after actual room subclasses read; classification/source/recovery rules untouched. Transmutation ordinary text no longer promises unsupported armor/glyph changes, reflects actual restrictions/property transfer; actual sword transfer/knowledge regression. WndInfoItem title color now uses read-only public level, preserving stale wand-infusion metadata; actual native checks pending. Empty Weapon summary no longer adds blank paragraphs, zero-wear missiles omit meaningless Sharpshooting durability multiplier. Full3064core457suites pass; new portrait/landscape native pending393, not392. Full inherited/secondary room-rule and shared variants remain open."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/ItemStatusHandler.java",
@@ -2448,8 +2450,10 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/scrolls/ScrollOfTransmutation.java",
       "sha256": "f8c20c4c39092fac1ef321150b9e1288b0f04c472d8a7ed1360ad188980d3e78",
       "category": "scrolls",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "PARTIAL_REVIEW",
+      "description_methods": [],
+      "review_notes": " Followup2026-11-09: actual Item.info notes/rings/origin composition, unknown origin/range gates, both item window/action layouts and bounded panel source read. Source-specific decorated crossing/rows/patch and mine labels written after actual room subclasses read; classification/source/recovery rules untouched. Transmutation ordinary text no longer promises unsupported armor/glyph changes, reflects actual restrictions/property transfer; actual sword transfer/knowledge regression. WndInfoItem title color now uses read-only public level, preserving stale wand-infusion metadata; actual native checks pending. Empty Weapon summary no longer adds blank paragraphs, zero-wear missiles omit meaningless Sharpshooting durability multiplier. Full3064core457suites pass; new portrait/landscape native pending393, not392. Full inherited/secondary room-rule and shared variants remain open.",
+      "wording_corrected": true
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/scrolls/ScrollOfUpgrade.java",
@@ -3236,7 +3240,7 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/Weapon.java",
-      "sha256": "db1ce8bf57b10886f8beb0822011b5b0895d53a9ab1c3ddbaf42de94856a63d6",
+      "sha256": "c1c207f0e72c2af4826756e61dba58004e757fea986f2d6f219a88017c3cdf96",
       "category": "weapon",
       "status": "PARTIAL_REVIEW",
       "description_methods": [
@@ -3244,7 +3248,7 @@
         "desc"
       ],
       "wording_corrected": true,
-      "review_notes": "Normal inherited/dynamic wording reviewed against current source. Changes use existing mechanics and known live values. Full source/variant and optional-panel review not complete. Current ordinary info paths also checked: knowledge-safe strength, ranged damage and wear estimates; real damage/accuracy/wear formulas untouched. Full inherited/class/secondary review remains partial."
+      "review_notes": "Normal inherited/dynamic wording reviewed against current source. Changes use existing mechanics and known live values. Full source/variant and optional-panel review not complete. Current ordinary info paths also checked: knowledge-safe strength, ranged damage and wear estimates; real damage/accuracy/wear formulas untouched. Full inherited/class/secondary review remains partial. Followup2026-11-09: actual Item.info notes/rings/origin composition, unknown origin/range gates, both item window/action layouts and bounded panel source read. Source-specific decorated crossing/rows/patch and mine labels written after actual room subclasses read; classification/source/recovery rules untouched. Transmutation ordinary text no longer promises unsupported armor/glyph changes, reflects actual restrictions/property transfer; actual sword transfer/knowledge regression. WndInfoItem title color now uses read-only public level, preserving stale wand-infusion metadata; actual native checks pending. Empty Weapon summary no longer adds blank paragraphs, zero-wear missiles omit meaningless Sharpshooting durability multiplier. Full3064core457suites pass; new portrait/landscape native pending393, not392. Full inherited/secondary room-rule and shared variants remain open."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/curses/Annoying.java",
@@ -4269,53 +4273,58 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/MechanicsInfoPanel.java",
       "sha256": "25f67aab0285371a49e8613acfc0f868cbab8c1dafae4480161013adbe6b90a9",
       "category": "ui",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "PARTIAL_REVIEW",
+      "description_methods": [],
+      "review_notes": " Followup2026-11-09: actual Item.info notes/rings/origin composition, unknown origin/range gates, both item window/action layouts and bounded panel source read. Source-specific decorated crossing/rows/patch and mine labels written after actual room subclasses read; classification/source/recovery rules untouched. Transmutation ordinary text no longer promises unsupported armor/glyph changes, reflects actual restrictions/property transfer; actual sword transfer/knowledge regression. WndInfoItem title color now uses read-only public level, preserving stale wand-infusion metadata; actual native checks pending. Empty Weapon summary no longer adds blank paragraphs, zero-wear missiles omit meaningless Sharpshooting durability multiplier. Full3064core457suites pass; new portrait/landscape native pending393, not392. Full inherited/secondary room-rule and shared variants remain open."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/WndInfoItem.java",
-      "sha256": "50af313a4dc1ae759b91e6a7c91e767c5f00a2ee420f379c2bff1c55935a215a",
+      "sha256": "efda3d68c166ed551947094a539fa96bbb21a21cfef2559ad6c48c469a6427b7",
       "category": "windows",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "PARTIAL_REVIEW",
+      "description_methods": [],
+      "review_notes": " Followup2026-11-09: actual Item.info notes/rings/origin composition, unknown origin/range gates, both item window/action layouts and bounded panel source read. Source-specific decorated crossing/rows/patch and mine labels written after actual room subclasses read; classification/source/recovery rules untouched. Transmutation ordinary text no longer promises unsupported armor/glyph changes, reflects actual restrictions/property transfer; actual sword transfer/knowledge regression. WndInfoItem title color now uses read-only public level, preserving stale wand-infusion metadata; actual native checks pending. Empty Weapon summary no longer adds blank paragraphs, zero-wear missiles omit meaningless Sharpshooting durability multiplier. Full3064core457suites pass; new portrait/landscape native pending393, not392. Full inherited/secondary room-rule and shared variants remain open."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/WndUseItem.java",
       "sha256": "baa92479e1e3d2b5b7d94e5554c28201c17252ea645936596bc3569a9dca33ea",
       "category": "windows",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "PARTIAL_REVIEW",
+      "description_methods": [],
+      "review_notes": " Followup2026-11-09: actual Item.info notes/rings/origin composition, unknown origin/range gates, both item window/action layouts and bounded panel source read. Source-specific decorated crossing/rows/patch and mine labels written after actual room subclasses read; classification/source/recovery rules untouched. Transmutation ordinary text no longer promises unsupported armor/glyph changes, reflects actual restrictions/property transfer; actual sword transfer/knowledge regression. WndInfoItem title color now uses read-only public level, preserving stale wand-infusion metadata; actual native checks pending. Empty Weapon summary no longer adds blank paragraphs, zero-wear missiles omit meaningless Sharpshooting durability multiplier. Full3064core457suites pass; new portrait/landscape native pending393, not392. Full inherited/secondary room-rule and shared variants remain open."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/qol/ItemOrigins.java",
       "sha256": "b27aa65626855e174aa01b9328412cca45a9622288c92e8e01f41e0e3670ed38",
       "category": "qol",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
+      "status": "PARTIAL_REVIEW",
       "description_methods": [
         "describe"
       ],
-      "review_notes": "Added missing display provider to inventory. Reading its output is not a complete provenance/generation audit."
+      "review_notes": "Added missing display provider to inventory. Reading its output is not a complete provenance/generation audit. Followup2026-11-09: actual Item.info notes/rings/origin composition, unknown origin/range gates, both item window/action layouts and bounded panel source read. Source-specific decorated crossing/rows/patch and mine labels written after actual room subclasses read; classification/source/recovery rules untouched. Transmutation ordinary text no longer promises unsupported armor/glyph changes, reflects actual restrictions/property transfer; actual sword transfer/knowledge regression. WndInfoItem title color now uses read-only public level, preserving stale wand-infusion metadata; actual native checks pending. Empty Weapon summary no longer adds blank paragraphs, zero-wear missiles omit meaningless Sharpshooting durability multiplier. Full3064core457suites pass; new portrait/landscape native pending393, not392. Full inherited/secondary room-rule and shared variants remain open.",
+      "wording_corrected": true
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/qol/GenerationUpgradeRanges.java",
       "sha256": "29479b2d63e9ccee80eadb2a5d1a67fb3936226118b8442a302af783285df3be",
       "category": "qol",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
+      "status": "PARTIAL_REVIEW",
       "description_methods": [
         "describe"
       ],
-      "review_notes": "Added missing display provider to inventory. Reading its output is not a complete provenance/generation audit."
+      "review_notes": "Added missing display provider to inventory. Reading its output is not a complete provenance/generation audit. Followup2026-11-09: actual Item.info notes/rings/origin composition, unknown origin/range gates, both item window/action layouts and bounded panel source read. Source-specific decorated crossing/rows/patch and mine labels written after actual room subclasses read; classification/source/recovery rules untouched. Transmutation ordinary text no longer promises unsupported armor/glyph changes, reflects actual restrictions/property transfer; actual sword transfer/knowledge regression. WndInfoItem title color now uses read-only public level, preserving stale wand-infusion metadata; actual native checks pending. Empty Weapon summary no longer adds blank paragraphs, zero-wear missiles omit meaningless Sharpshooting durability multiplier. Full3064core457suites pass; new portrait/landscape native pending393, not392. Full inherited/secondary room-rule and shared variants remain open.",
+      "wording_corrected": true
     }
   ],
-  "completed_units": 160,
+  "completed_units": 161,
   "latest_tests": {
-    "core_tests": 3062,
+    "core_tests": 3064,
     "suites": 457,
     "failures": 0,
     "errors": 0,
     "skipped": 0,
-    "log": "/workspace/apd-class-armor-aqua-evidence-20261109",
+    "log": "/workspace/apd-weapon-spacing-unlimited-durability-evidence-20261109",
     "android_verified": false,
-    "scope": "Post392 Aqua real shatter, classarmor meter cost and variable Trinity summary.392native running;391published."
+    "scope": "Post392 actual Transmutation/flood, concise meter/Trinity, source-label prose, empty summary/zero-wear row, read-only wand window color.393native pending;392 published."
   }
 }

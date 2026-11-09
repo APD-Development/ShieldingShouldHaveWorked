@@ -12,5 +12,5 @@
   "authorization_window_end_eastern": "2026-11-09 04:30 EST",
   "prior_daily_limit": "10 APKs total per New York day, five Developer and five Alpha. A maximum, not a build target.",
   "preserve_all_previous_builds": true,
-  "latest_published_build": 391
+  "latest_published_build": 392
 }

@@ -601,7 +601,7 @@ public class QolItemFeedbackDeviceTest {
             });
             for(com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon.Enchantment effect:new com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon.Enchantment[]{new com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Elastic(),new com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Lucky(),new com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Projecting(),new com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Vorpal()}){
                 com.shatteredpixel.shatteredpixeldungeon.items.weapon.SpiritBow bow=new com.shatteredpixel.shatteredpixeldungeon.items.weapon.SpiritBow();
-                TopScoresDeviceTest.render(()->{bow.levelKnown=bow.cursedKnown=true;bow.enchant(effect);assertFalse(bow.info(),bow.info().contains("Arcana changes:"));assertFalse(bow.info(),bow.info().contains("Arcana: "));});
+                TopScoresDeviceTest.render(()->{bow.levelKnown=bow.cursedKnown=true;bow.enchant(effect);assertFalse(bow.info(),bow.info().contains("Arcana changes:"));assertFalse(bow.info(),bow.info().contains("Arcana: "));assertFalse("No blank summary paragraph",bow.info().contains("\n\n\n"));});
                 showItem(bow,effect instanceof com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Projecting?"Shots can pass through walls":"chance","qol-spirit-bow-"+effect.getClass().getSimpleName()+"-concise.png",true,!(effect instanceof com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Elastic));
             }
         }finally{TopScoresDeviceTest.render(()->{
@@ -617,7 +617,7 @@ public class QolItemFeedbackDeviceTest {
             TopScoresDeviceTest.render(()->item.levelKnown=false);
             showItem(item,"Unupgraded example (+0)","qol-basic-thrown-"+item.getClass().getSimpleName()+"-unknown.png",true);
         }
-        showItem(new com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.Dart(),"do not wear out","qol-plain-dart-reusable.png",true);
+        com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.Dart dart=new com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.Dart();TopScoresDeviceTest.render(()->assertFalse(dart.info(),dart.info().contains("Sharpshooting durability")));showItem(dart,"do not wear out","qol-plain-dart-reusable.png",true);
     }
     private static void missileEffectDescriptionsRender()throws Exception{
         Item[] items={new com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Shuriken(),new com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Bolas(),new com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ForceCube(),new com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.HeavyBoomerang(),new com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.FishingSpear()};
@@ -667,6 +667,36 @@ public class QolItemFeedbackDeviceTest {
         String[] expected={"north, east, south and west","banishes its wraiths","returns your original equipment"};
         for(int i=0;i<items.length;i++)showItem(items[i],expected[i],"qol-quest-"+i+"-concise.png",true);
     }
+    private static void landscapeItemWindowsFit(ActivityScenario<AndroidLauncher> scenario)throws Exception{
+        final boolean original=SPDSettings.landscape();
+        scenario.onActivity(activity->SPDSettings.landscape(true));
+        try{
+            waitFor(()->Game.width>Game.height&&Game.scene() instanceof GameScene&&!Game.switchingScene());Thread.sleep(500);
+            com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfMirrorImage mirror=new com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfMirrorImage();
+            com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Whip whip=new com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Whip();
+            com.shatteredpixel.shatteredpixeldungeon.items.armor.LeatherArmor armor=new com.shatteredpixel.shatteredpixeldungeon.items.armor.LeatherArmor();
+            com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfWarding ward=new com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfWarding();
+            TopScoresDeviceTest.render(()->{mirror.anonymize();mirror.quantity(2);whip.level(3);whip.levelKnown=whip.cursedKnown=true;whip.enchant(new com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Elastic());armor.level(2);armor.levelKnown=armor.cursedKnown=true;armor.glyph=new com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Viscosity();ward.level(3);ward.levelKnown=ward.cursedKnown=ward.curChargeKnown=true;});
+            showItem(mirror,"disappear when damaged","qol-landscape-mirror-full-text.png",true);
+            showItem(whip,"elastic enchantment","qol-landscape-elastic-whip.png",true);
+            showItem(armor,"glyph of viscosity","qol-landscape-viscosity-armor.png",true);
+            showItem(ward,"","qol-landscape-warding-retained-panel.png",true,true);
+        }finally{
+            scenario.onActivity(activity->{SPDSettings.landscape(original);if(!original)activity.setRequestedOrientation(android.content.pm.ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);});
+            waitFor(()->(original?Game.width>Game.height:Game.height>Game.width)&&Game.scene() instanceof GameScene&&!Game.switchingScene());Thread.sleep(500);
+            if(!original)scenario.onActivity(activity->activity.setRequestedOrientation(android.content.pm.ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED));
+        }
+    }
+    private static void openingWandWindowsDoesNotCleanUpInfusion()throws Exception{
+        for(com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand wand:new com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand[]{new com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfMagicMissile(),new com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfRegrowth(),new com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfWarding()}){
+            TopScoresDeviceTest.render(()->{wand.cursed=true;wand.curseInfusionBonus=true;wand.level(5);wand.levelKnown=wand.cursedKnown=wand.curChargeKnown=true;wand.cursed=false;});
+            showItem(wand,"","qol-wand-open-preserves-infusion-"+wand.getClass().getSimpleName()+".png",true,!(wand instanceof com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfMagicMissile));
+            TopScoresDeviceTest.render(()->{
+                assertTrue("Inspection does not run gameplay cleanup",wand.curseInfusionBonus);
+                assertEquals("Actual later gameplay query still clears expired infusion",5,wand.level());assertFalse(wand.curseInfusionBonus);
+            });
+        }
+    }
     private static void classArmorCostsAndAquaRender()throws Exception{
         final com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.ArmorAbility[] previous={null};
         try{
@@ -683,6 +713,7 @@ public class QolItemFeedbackDeviceTest {
             TopScoresDeviceTest.screenshot("qol-trinity-effect-specific-cost-normal.png");TopScoresDeviceTest.render(()->shown.get().hide());
         }finally{TopScoresDeviceTest.render(()->Dungeon.hero.armorAbility=previous[0]);}
         showItem(new com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.AquaBrew(),"including you and allies","qol-aqua-brew-knockback-warning.png",true);
+        com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTransmutation transmute=new com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTransmutation();TopScoresDeviceTest.render(transmute::anonymize);showItem(transmute,"Armor, plain darts, brews, elixirs and unique artifacts cannot be changed","qol-transmutation-actual-restrictions.png",true);
     }
     private static void amuletChoicesRender()throws Exception{
         com.shatteredpixel.shatteredpixeldungeon.items.Amulet amulet=new com.shatteredpixel.shatteredpixeldungeon.items.Amulet();
@@ -856,6 +887,7 @@ public class QolItemFeedbackDeviceTest {
             ordinaryConsumableDescriptionsRender();
             craftedSpellVariantsRender();
             remainsAndLoreDescriptionsRender();
+            openingWandWindowsDoesNotCleanUpInfusion();
             classArmorCostsAndAquaRender();
             amuletChoicesRender();
             utilityDescriptionsRender();
@@ -870,6 +902,7 @@ public class QolItemFeedbackDeviceTest {
             retainedTrinketDescriptionsRender();
             ordinaryDartDescriptionsRender();
             ordinaryExoticPotionDescriptionsRender();
+            landscapeItemWindowsFit(scenario);
             ordinaryWarriorShieldDescriptionsRender();
             ordinaryFlailSpinDescriptionsRender();
             staffImbueConfirmationsRender();

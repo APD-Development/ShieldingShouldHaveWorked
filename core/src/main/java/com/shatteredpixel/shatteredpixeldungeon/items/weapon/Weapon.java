@@ -310,7 +310,8 @@ abstract public class Weapon extends KindOfWeapon {
 
     @Override
     public String info() {
-        return super.info() + "\n\n" + com.shatteredpixel.shatteredpixeldungeon.apd.mechanics.WeaponExplanation.summary(this, Dungeon.hero);
+        String summary=com.shatteredpixel.shatteredpixeldungeon.apd.mechanics.WeaponExplanation.summary(this, Dungeon.hero);
+        return super.info() + (summary.isEmpty()?"":"\n\n"+summary);
     }
 
 	protected String accuracyDescription() {

@@ -58,3 +58,8 @@ Original source13e5fc1cc, build42547894100, native-only corrected full12-case ac
 ###391 delivered03:13UTC / continuing
 
 Exact source e3e7e63059c7edd3ac2f088e254eb93a8d62ee5d; build42553271879/stage42553383469.3054core/457suites and12targeted API34cases. Both signed variants/source/hashes/evidence published, independently hash checked and seven changed capture selections manually read.389compile rejection and390manual max-Chalice rejection preserved private, no rejected APK published. Full audit unfinished366reviewed318corrected160complete267unresolved. Later intrinsic reach and narrow ElementalStrike unknown-curse prose privacyfix have3056full core pass, Android pending. Next valid pair target around03:43UTC; continue until09:30UTC.
+
+
+###392 delivered03:36UTC / continuing
+
+Exact producing source1bbb29fa20306a21cda2b6199e05653d29d18e2c, build42555889842/stage42555948582.3060core457suites/12targeted API34cases. Both signed APKs/source/sidecars/evidence published after independent hashes and source scan supplemental check. Nine capture selections manually read across variants: curse ability normal/expanded, Elastic/Lucky/Projecting bow, Amulet before/ascent, plain Dart, Spear/Whip. No phone/audio/full audit claim. Later source3063corepass Aqua/classarmor/Trinity, origin labels, Transmutation restriction and wand-window state purity awaiting Android. Manual392found pre-existing empty weapon summary blank spacing and meaningless unlimited-dart durability row, fixing next. Next valid pair due around04:06UTC; active window ends09:30UTC.

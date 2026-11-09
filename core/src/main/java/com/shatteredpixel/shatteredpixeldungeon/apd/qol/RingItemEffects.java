@@ -95,7 +95,8 @@ public final class RingItemEffects {
                         weapon.augment.damageFactor(Math.max(0,weapon.min(level+aim))),
                         weapon.augment.damageFactor(Math.max(0,weapon.max(level+aim)))));
                 // Rot tips override the ordinary wear calculation: always five uses.
-                if(!(weapon instanceof com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.RotDart))
+                if(!(weapon instanceof com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.RotDart)
+                        && ((MissileWeapon)weapon).previewDurabilityPerUse()>0)
                     multiplier(out,"durability",RingOfSharpshooting.durabilityMultiplier(bonus(hero,RingOfSharpshooting.class,false)));
             } else if(aim!=0 && weapon instanceof SpiritBow){
                 // Bow scaling differs from missile levels; use its own pure damage projection.

@@ -93,9 +93,12 @@ public class WndInfoItem extends Window {
         displayedItem=item;
 		
 		int color = TITLE_COLOR;
-		if (item.levelKnown && item.level() > 0) {
+        // Use the same public, read-only value as the item title and inventory slot.
+        // Wand.level() performs gameplay curse-infusion cleanup and must not run just to color text.
+        int visibleLevel = item.visiblyUpgraded();
+		if (item.levelKnown && visibleLevel > 0) {
 			color = ItemSlot.UPGRADED;
-		} else if (item.levelKnown && item.level() < 0) {
+		} else if (item.levelKnown && visibleLevel < 0) {
 			color = ItemSlot.DEGRADED;
 		}
 
