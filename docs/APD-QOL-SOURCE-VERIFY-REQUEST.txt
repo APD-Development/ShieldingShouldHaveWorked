@@ -1,2 +1,2 @@
-2026-11-09T20:46:16.478232+00:00
-All19 armor ability explanation branches individually reviewed; retained existing panels only. Full3160 core/457 zero failures/errors/skips. Compile Android debug/release/instrumentationJava/desktop, including new actual19ability window coverage. NoAPK in this check.
+2026-11-09T20:55:09.071340+00:00
+Existing7talent explanation branches simplified.3163core/457all0. Newactual SwiftEquip equip/time/cursed/save test, VariedCharge different/sametypepairs andactual SearingLight damage/AggressiveBarrier HPthreshold/preservation. Nativewindowcoverage adds7contexts includingDuelist/alternate recharge. Androidsourcecompile only, noAPK.

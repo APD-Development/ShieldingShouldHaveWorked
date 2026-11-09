@@ -36,6 +36,40 @@ public class MechanicsExplanationTest {
  @After public void restore()throws Exception{for(java.util.Map.Entry<java.lang.reflect.Field,Object> e:badgeState.entrySet())e.getKey().set(null,e.getValue());Dungeon.hero=oldHero;Dungeon.level=oldLevel;Dungeon.challenges=oldChallenges;Dungeon.apdRestoreCustomRules(oldRules);java.lang.reflect.Field notes=com.shatteredpixel.shatteredpixeldungeon.journal.Notes.class.getDeclaredField("records");notes.setAccessible(true);notes.set(null,oldNotes);}
  private RingOfArcana ring(int level){RingOfArcana ring=new RingOfArcana();ring.level(level);ring.anonymize();ring.levelKnown=ring.cursedKnown=true;hero.belongings.ring=ring;ring.activate(hero);return ring;}
  public static class BountyLootProbe extends com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob {public BountyLootProbe(float chance){lootChance=chance;}}
+ @Test public void swiftEquipExplanationMatchesActualFreeUsesCooldownSaveAndCursedBlock()throws Exception{
+  hero.sprite=quietSprite();java.util.Set<com.shatteredpixel.shatteredpixeldungeon.actors.Actor> original=new java.util.HashSet<>(com.shatteredpixel.shatteredpixeldungeon.actors.Actor.all());
+  try{for(int rank=1;rank<=2;rank++){
+   Buff.detach(hero,Talent.SwiftEquipCooldown.class);hero.talents.get(1).put(Talent.SWIFT_EQUIP,rank);hero.belongings.weapon=null;hero.belongings.backpack.items.clear();
+   com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sword first=new com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sword(),second=new com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sword(),third=new com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sword();
+   first.identify();second.identify();third.identify();hero.belongings.backpack.items.add(first);hero.belongings.backpack.items.add(second);hero.belongings.backpack.items.add(third);
+   float before=hero.cooldown();assertTrue(first.doEquip(hero));assertEquals(before,hero.cooldown(),0);Talent.SwiftEquipCooldown cooldown=hero.buff(Talent.SwiftEquipCooldown.class);assertNotNull(cooldown);assertEquals(20,cooldown.visualcooldown(),0);assertEquals(rank==2,cooldown.hasSecondUse());
+   com.watabou.utils.Bundle saved=new com.watabou.utils.Bundle();cooldown.storeInBundle(saved);Talent.SwiftEquipCooldown loaded=new Talent.SwiftEquipCooldown();loaded.restoreFromBundle(saved);assertEquals(cooldown.visualcooldown(),loaded.visualcooldown(),0);assertEquals(cooldown.hasSecondUse(),loaded.hasSecondUse());
+   String text=TalentExplanation.details(Talent.SWIFT_EQUIP,rank);assertTrue(text,text.contains("20 turns"));assertFalse(text.contains("19-unit"));for(int i=0;i<20;i++)assertEquals(text,TalentExplanation.details(Talent.SWIFT_EQUIP,rank));assertEquals(rank==2,cooldown.hasSecondUse());
+   first.cursed=true;assertFalse(second.doEquip(hero));assertSame(first,hero.belongings.weapon);assertEquals(before,hero.cooldown(),0);assertEquals(rank==2,cooldown.hasSecondUse());first.cursed=false;
+   assertTrue(second.doEquip(hero));float afterSecond=hero.cooldown();assertEquals(rank==2?before:before+2,afterSecond,0);assertFalse(cooldown.hasSecondUse());
+   assertTrue(third.doEquip(hero));assertEquals(afterSecond+2,hero.cooldown(),0);assertSame(cooldown,hero.buff(Talent.SwiftEquipCooldown.class));cooldown.act();assertNull(hero.buff(Talent.SwiftEquipCooldown.class));
+  }}finally{for(com.shatteredpixel.shatteredpixeldungeon.actors.Actor actor:new java.util.ArrayList<>(com.shatteredpixel.shatteredpixeldungeon.actors.Actor.all()))if(!original.contains(actor))com.shatteredpixel.shatteredpixeldungeon.actors.Actor.remove(actor);}
+ }
+ @Test public void variedChargeExplanationMatchesActualDifferentTypePairsAndSameTypeCopies()throws Exception{
+  hero.sprite=quietSprite();java.lang.reflect.Method used=com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon.class.getDeclaredMethod("afterAbilityUsed",Hero.class);used.setAccessible(true);
+  com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sword sword=new com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sword(),copy=new com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sword();com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.HandAxe axe=new com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.HandAxe();
+  com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon.Charger charger=Buff.affect(hero,com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon.Charger.class);
+  for(int rank=1;rank<=3;rank++){Buff.detach(hero,Talent.VariedChargeTracker.class);hero.talents.get(2).put(Talent.VARIED_CHARGE,rank);charger.charges=0;charger.partialCharge=0;
+   used.invoke(sword,hero);used.invoke(copy,hero);assertEquals(0,charger.charges+charger.partialCharge,0);assertNotNull(hero.buff(Talent.VariedChargeTracker.class));used.invoke(axe,hero);assertEquals(rank/6f,charger.charges+charger.partialCharge,.00001f);assertNull(hero.buff(Talent.VariedChargeTracker.class));
+   used.invoke(sword,hero);assertEquals(rank/6f,charger.charges+charger.partialCharge,.00001f);assertNotNull(hero.buff(Talent.VariedChargeTracker.class));assertTrue(TalentExplanation.details(Talent.VARIED_CHARGE,rank).contains("_"+ObfuscationExplanation.number(rank/6f)+" weapon-ability charges_"));
+  }
+ }
+ @Test public void searingLightAndAggressiveBarrierDescriptionsMatchRealAttackAndAbilityHandlers()throws Exception{
+  hero.sprite=quietSprite();hero.STR=20;hero.belongings.weapon=new com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sword();java.util.Arrays.fill(Dungeon.level.heroFOV,false);
+  for(int rank=1;rank<=2;rank++)for(int seed=0;seed<20;seed++){
+   PlainStatusTarget target=new PlainStatusTarget(){@Override public int defenseSkill(com.shatteredpixel.shatteredpixeldungeon.actors.Char enemy){return 0;}};target.HP=target.HT=1000;target.pos=hero.pos+1;target.alignment=com.shatteredpixel.shatteredpixeldungeon.actors.Char.Alignment.ENEMY;
+   hero.talents.get(0).put(Talent.SEARING_LIGHT,0);Buff.affect(target,com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.GuidingLight.Illuminated.class);Random.pushGenerator(seed);try{assertTrue(hero.attack(target));}finally{Random.popGenerator();}int base=1000-target.HP;assertNull(target.buff(com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.GuidingLight.Illuminated.class));
+   target.HP=1000;hero.talents.get(0).put(Talent.SEARING_LIGHT,rank);Buff.affect(target,com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.GuidingLight.Illuminated.class);Random.pushGenerator(seed);try{assertTrue(hero.attack(target));}finally{Random.popGenerator();}assertEquals(base+1+2*rank,1000-target.HP);assertTrue(TalentExplanation.details(Talent.SEARING_LIGHT,rank).contains("_"+(1+2*rank)+" damage_"));
+  }
+  hero.heroClass=HeroClass.DUELIST;java.lang.reflect.Method before=com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon.class.getDeclaredMethod("beforeAbilityUsed",Hero.class,com.shatteredpixel.shatteredpixeldungeon.actors.Char.class);before.setAccessible(true);
+  for(int rank=1;rank<=2;rank++)for(int health:new int[]{9,10,11}){Buff.detach(hero,Barrier.class);hero.HP=health;hero.HT=20;hero.talents.get(0).put(Talent.AGGRESSIVE_BARRIER,rank);before.invoke(hero.belongings.weapon,hero,null);assertEquals(health<=10?1+2*rank:0,hero.shielding());if(health<=10){hero.buff(Barrier.class).setShield(20);before.invoke(hero.belongings.weapon,hero,null);assertEquals(20,hero.shielding());}assertTrue(TalentExplanation.details(Talent.AGGRESSIVE_BARRIER,rank).contains("_"+(1+2*rank)+" shield points_"));}
+  hero.belongings.abilityWeapon=null;
+ }
  @Test public void bountyHunterDetailsMatchActualAdditiveLootBonusAndPreparationBoundaries(){
   com.shatteredpixel.shatteredpixeldungeon.items.rings.Ring previous=hero.belongings.ring;
   try{for(boolean withWealth:new boolean[]{false,true}){

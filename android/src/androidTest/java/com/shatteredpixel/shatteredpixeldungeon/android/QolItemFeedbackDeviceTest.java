@@ -472,19 +472,22 @@ public class QolItemFeedbackDeviceTest {
             calculationWindow(()->{Sword blade=new Sword();blade.level(3);blade.levelKnown=blade.cursedKnown=true;blade.enchant((com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon.Enchantment)Class.forName("com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments."+name).getDeclaredConstructor().newInstance());return new WndInfoItem(blade);},retainedText[index],"qol-retained-"+name+"-clear-details.png");
         }
         calculationWindow(()->{com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier b=new com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier();b.setShield(17);return new WndInfoBuff(b);},"17 shield points","qol-mechanics-buff-expanded.png");
-        String[] reviewedTalentNames={"BARKSKIN","NATURES_AID","PROJECTILE_MOMENTUM","FOLLOWUP_STRIKE","SHARED_UPGRADES","SHARED_ENCHANTMENT","BOUNTY_HUNTER"};
-        String[] reviewedTalentText={"Barkskin protection","Barkskin from a visible plant","Thrown weapons while freerunning","Follow-up hit","about 16.67% damage","Borrowing the bow's enchantment","normal item-drop chance"};
+        String[] reviewedTalentNames={"BARKSKIN","NATURES_AID","PROJECTILE_MOMENTUM","FOLLOWUP_STRIKE","SHARED_UPGRADES","SHARED_ENCHANTMENT","BOUNTY_HUNTER","SHIELDING_DEW","SEARING_LIGHT","AGGRESSIVE_BARRIER","SWIFT_EQUIP","VARIED_CHARGE"};
+        String[] reviewedTalentText={"Barkskin protection","Barkskin from a visible plant","Thrown weapons while freerunning","Follow-up hit","about 16.67% damage","Borrowing the bow's enchantment","normal item-drop chance","Shielding cap =","once per Illumination","50% health or less","20 turns","start another pair"};
         for(int index=0;index<reviewedTalentNames.length;index++){
             final String name=reviewedTalentNames[index];
             calculationWindow(()->new WndInfoTalent(com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent.valueOf(name),2,null),reviewedTalentText[index],"qol-reviewed-talent-clear-"+name+".png");
         }
+        final HeroClass[] beforeRechargeClass=new HeroClass[1];TopScoresDeviceTest.render(()->{beforeRechargeClass[0]=Dungeon.hero.heroClass;Dungeon.hero.heroClass=HeroClass.DUELIST;});
+        try{calculationWindow(()->new WndInfoTalent(com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent.WEAPON_RECHARGING,2,null),"1 extra weapon-ability charge every 10 turns","qol-reviewed-talent-clear-WEAPON_RECHARGING-duelist.png");}
+        finally{TopScoresDeviceTest.render(()->Dungeon.hero.heroClass=beforeRechargeClass[0]);}
         final int[] beforeBarkskinLevel=new int[1];TopScoresDeviceTest.render(()->{beforeBarkskinLevel[0]=Dungeon.hero.lvl;Dungeon.hero.lvl=12;});
         try{calculationWindow(()->new WndInfoTalent(com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent.BARKSKIN,2,null),"0–8 damage protection","qol-reviewed-talent-clear-BARKSKIN-positive.png");}
         finally{TopScoresDeviceTest.render(()->Dungeon.hero.lvl=beforeBarkskinLevel[0]);}
         calculationWindow(()->new WndInfoTalent(com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent.ENHANCED_RINGS,1,null),"for 3 turns","qol-reviewed-talent-clear-ENHANCED_RINGS.png");
         calculationWindow(()->new WndInfoTalent(com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent.PROTECTIVE_SHADOWS,2,null),"up to 5 shield points","qol-reviewed-talent-clear-PROTECTIVE_SHADOWS.png");
         calculationWindow(()->new WndInfoTalent(com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent.SILENT_STEPS,2,null),"2 or more tiles away","qol-reviewed-talent-clear-SILENT_STEPS.png");
-        calculationWindow(()->new WndInfoTalent(com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent.TWIN_UPGRADES,3,null),"Other level bonuses still apply","qol-twin-upgrades-existing-panel-clear.png");
+        calculationWindow(()->new WndInfoTalent(com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent.TWIN_UPGRADES,3,null),"weapons of the same tier can share","qol-twin-upgrades-existing-panel-clear.png");
         java.util.LinkedHashMap<com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent,com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent> priorMetamorphs=new java.util.LinkedHashMap<>(Dungeon.hero.metamorphedTalents);
         try{
             TopScoresDeviceTest.render(()->Dungeon.hero.metamorphedTalents.put(com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent.HEARTY_MEAL,com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent.WEAPON_RECHARGING));
