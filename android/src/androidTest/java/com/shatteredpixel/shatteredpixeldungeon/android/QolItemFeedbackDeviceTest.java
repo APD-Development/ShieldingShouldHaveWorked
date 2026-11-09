@@ -503,8 +503,8 @@ public class QolItemFeedbackDeviceTest {
         try{Thread.sleep(300);TopScoresDeviceTest.render(()->assertDescriptionViewport(shown.get()));TopScoresDeviceTest.screenshot("qol-gradual-healing-concise-status.png");}finally{TopScoresDeviceTest.render(()->shown.get().hide());}
     }
     private static void additionalTrinketDetailsRender()throws Exception{
-        String[] names={"ParchmentScrap","PetrifiedSeed","DimensionalSundial","CrackedSpyglass","MossyClump","TrapMechanism","ChaoticCenser"};
-        String[] expected={"curses checked first","Dew drops are unchanged","phone, enemies respawn","Search uncovers these items","would otherwise have no special theme","spread across the floor","Some clouds are helpful"};
+        String[] names={"ParchmentScrap","PetrifiedSeed","DimensionalSundial","CrackedSpyglass","MossyClump","TrapMechanism","ChaoticCenser","ExoticCrystals","WondrousResin","ShardOfOblivion"};
+        String[] expected={"curses checked first","Dew drops are unchanged","phone, enemies respawn","Search uncovers these items","would otherwise have no special theme","spread across the floor","Some clouds are helpful","even with these crystals","does not remove a wand","Your current Shard bonus"};
         for(int i=0;i<names.length;i++){
             final com.shatteredpixel.shatteredpixeldungeon.items.trinkets.Trinket item=(com.shatteredpixel.shatteredpixeldungeon.items.trinkets.Trinket)Class.forName("com.shatteredpixel.shatteredpixeldungeon.items.trinkets."+names[i]).getDeclaredConstructor().newInstance();item.level(3);item.levelKnown=item.cursedKnown=true;
             calculationWindow(()->new WndInfoItem(item),expected[i],"qol-existing-trinket-detail-"+names[i]+".png");

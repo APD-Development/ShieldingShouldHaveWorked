@@ -143,3 +143,8 @@ Retained WandExplanation shared header and Warding/Regrowth sections shortened; 
 ### Seven additional trinket details and armor curse reconciliation
 
 Seven existing trinket panels individually shortened, with actual spawn timing, hidden-loot whole/fraction count, theme eligibility, grass seed/stone versus dew and distributed trap reveals. Censer can also make helpful gases; ordinary label corrected, unknown uses existing At+0 example. Real painter matrix verifies20normal/100trap-themed totals and2/4/6/8base reveals; no painter changes.3105core457suites pass; two unaccepted fixture mistakes preserved separately. Seven own trinket and eight own armor-curse reviews completed; provider/class reviews still separate. 420 reviewed_units, 338 corrected_units, 233 completed_units, 194 unresolved_units. New eight Android windows pending401;400in verification contains prior growth/ward changes only. No physical-phone/audio or whole-audit completion claim.
+
+
+### Final trinket branches and Lunge limits
+
+All17existing TrinketExplanation branches individually reconciled; three final details shortened. Exotic explicitly retains current Healing0 override, Resin separate neutral/helpful and extra-zap chances, Shard actual capped/additive loot contribution and50turn use trackers. Real Mob.lootChance matrix36cases verifies cap and hidden-upgrade invariance;3106core457pass. Shard unknown uses existing At+0 key. Lunge normal fourstrings names rooted/landing and empty-space-charge limits; ownRapier/Katana/Greataxe reviews closed, shared/class scope separate.420full/partial338corrected240complete187unresolved,5338English. New source-only compilation requested; current400native checks remain pending. Continue approved work; whole audit unfinished.

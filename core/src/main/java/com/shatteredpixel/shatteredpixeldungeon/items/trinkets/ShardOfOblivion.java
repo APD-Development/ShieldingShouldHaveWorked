@@ -63,7 +63,7 @@ public class ShardOfOblivion extends Trinket {
 		if (isIdentified()){
 			return Messages.get(this, "stats_desc", buffedLvl()+1);
 		} else {
-			return Messages.get(this, "stats_desc", 1);
+			return Messages.get(this, "typical_stats_desc", 1);
 		}
 	}
 
