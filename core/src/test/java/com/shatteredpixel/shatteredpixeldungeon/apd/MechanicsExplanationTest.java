@@ -2021,7 +2021,11 @@ public class MechanicsExplanationTest {
  }
  @Test public void shardDescriptionExplainsManualIdentificationAndScrollReadiness(){
   com.shatteredpixel.shatteredpixeldungeon.items.trinkets.ShardOfOblivion shard=new com.shatteredpixel.shatteredpixeldungeon.items.trinkets.ShardOfOblivion();shard.identify();
-  for(int level=0;level<=3;level++){shard.level(level);String text=shard.statsDesc();assertTrue(text,text.contains("counting up to _"+(level+1)+"_"));assertTrue(text.contains("use the shard"));assertTrue(text.contains("scroll of identify makes equipment ready"));assertFalse(text.contains("item(s)"));}
+  for(int level=0;level<=3;level++){shard.level(level);String text=shard.statsDesc();assertTrue(text,text.contains("counting up to _"+(level+1)+"_"));assertTrue(text.contains("use the shard"));assertTrue(text.contains("Identify scroll makes selected gear ready"));assertFalse(text.contains("item(s)"));}
+  hero.belongings.weapon=new com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sword();hero.belongings.weapon.levelKnown=false;armor.levelKnown=false;hero.belongings.ring=new RingOfMight();hero.belongings.ring.levelKnown=false;
+  Class<com.shatteredpixel.shatteredpixeldungeon.items.trinkets.ShardOfOblivion.WandUseTracker> wand=com.shatteredpixel.shatteredpixeldungeon.items.trinkets.ShardOfOblivion.WandUseTracker.class;Class<com.shatteredpixel.shatteredpixeldungeon.items.trinkets.ShardOfOblivion.ThrownUseTracker> thrown=com.shatteredpixel.shatteredpixeldungeon.items.trinkets.ShardOfOblivion.ThrownUseTracker.class;
+  assertEquals(1.6f,com.shatteredpixel.shatteredpixeldungeon.items.trinkets.ShardOfOblivion.lootChanceMultiplier(3),.00001f);Buff.affect(hero,wand);assertEquals(1.8f,com.shatteredpixel.shatteredpixeldungeon.items.trinkets.ShardOfOblivion.lootChanceMultiplier(3),.00001f);Buff.affect(hero,wand);assertEquals(1.8f,com.shatteredpixel.shatteredpixeldungeon.items.trinkets.ShardOfOblivion.lootChanceMultiplier(3),.00001f);Buff.affect(hero,thrown);
+  for(int level=0;level<=3;level++)assertEquals(1+.2f*(level+1),com.shatteredpixel.shatteredpixeldungeon.items.trinkets.ShardOfOblivion.lootChanceMultiplier(level),.00001f);
  }
 
  @Test public void petrifiedSeedOmitsZeroBonusAndHidesUnknownUpgrades(){

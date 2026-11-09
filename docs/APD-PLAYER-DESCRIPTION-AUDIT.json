@@ -4,7 +4,7 @@
   "counting": "Source units, not distinct item types. reviewed_units includes partial reviews; completed_units excludes partial/pending dependency. corrected_units counts source units with corrections, including incomplete reviews. Inventory/export/tests alone are not an individual review.",
   "source_units": 427,
   "message_entries": 2411,
-  "reviewed_units": 329,
+  "reviewed_units": 336,
   "corrected_units": 298,
   "unresolved_units": 286,
   "category_counts": {
@@ -429,7 +429,7 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/qol/RingItemEffects.java",
       "sha256": "aad0d8c7f8c5c361a512a440ee439fbdcf9779936b138f2ad471c476ef3d0ba2",
       "category": "qol",
-      "status": "PARTIAL",
+      "status": "PARTIAL_REVIEW",
       "description_methods": [
         "describe"
       ],
@@ -449,7 +449,7 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/Ankh.java",
       "sha256": "4e2b7b9fe1959e71e5db87675371edd6f310fdd6f5c8d599f65c513abd30cf11",
       "category": "items",
-      "status": "PARTIAL",
+      "status": "PARTIAL_REVIEW",
       "description_methods": [
         "desc"
       ],
@@ -468,7 +468,7 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/BrokenSeal.java",
       "sha256": "91f45629af0cf1ed61ec67b459a0501c7ff0080ded93dc2cc8d6e04dfa460b9d",
       "category": "items",
-      "status": "PARTIAL",
+      "status": "PARTIAL_REVIEW",
       "description_methods": [
         "info",
         "desc"
@@ -666,7 +666,7 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/armor/ClothArmor.java",
       "sha256": "6bd5a9b0053b4047f6fb814359264b59dc5b797e459329bfa51d77f617e175ff",
       "category": "armor",
-      "status": "PARTIAL",
+      "status": "PARTIAL_REVIEW",
       "description_methods": [],
       "review_notes": "Concrete tier/image class and individual base description read. Natural flavor wording matches armor type; no rewrite needed. Inherited live Armor/protection/strength/glyph/identification system tracked separately and not declared complete."
     },
@@ -688,7 +688,7 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/armor/LeatherArmor.java",
       "sha256": "0eb8559e270d7675db22a38882b7e6087de7d3f43218e70224d52b5744278dd9",
       "category": "armor",
-      "status": "PARTIAL",
+      "status": "PARTIAL_REVIEW",
       "description_methods": [],
       "review_notes": "Concrete tier/image class and individual base description read. Natural flavor wording matches armor type; no rewrite needed. Inherited live Armor/protection/strength/glyph/identification system tracked separately and not declared complete."
     },
@@ -703,7 +703,7 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/armor/MailArmor.java",
       "sha256": "be0de4931403656e58b54a16cb0799b323e6f9f368e79dbb501159eb3045664e",
       "category": "armor",
-      "status": "PARTIAL",
+      "status": "PARTIAL_REVIEW",
       "description_methods": [],
       "review_notes": "Concrete tier/image class and individual base description read. Natural flavor wording matches armor type; no rewrite needed. Inherited live Armor/protection/strength/glyph/identification system tracked separately and not declared complete."
     },
@@ -711,7 +711,7 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/armor/PlateArmor.java",
       "sha256": "022c8a4c448d9e94bda5560b7c5003ac1e2df3942b980ce432dd8aca67bb7fc2",
       "category": "armor",
-      "status": "PARTIAL",
+      "status": "PARTIAL_REVIEW",
       "description_methods": [],
       "review_notes": "Concrete tier/image class and individual base description read. Natural flavor wording matches armor type; no rewrite needed. Inherited live Armor/protection/strength/glyph/identification system tracked separately and not declared complete."
     },
@@ -726,7 +726,7 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/armor/ScaleArmor.java",
       "sha256": "c4d963fa25a2125dda09e46b78bf39f97f5cce67af35102608e2315fbeb80dac",
       "category": "armor",
-      "status": "PARTIAL",
+      "status": "PARTIAL_REVIEW",
       "description_methods": [],
       "review_notes": "Concrete tier/image class and individual base description read. Natural flavor wording matches armor type; no rewrite needed. Inherited live Armor/protection/strength/glyph/identification system tracked separately and not declared complete."
     },
@@ -813,14 +813,15 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/armor/glyphs/Affection.java",
       "sha256": "f084cc97130012e8b06edf3406237acccc8eeafd0eba0c316220072f246e1f86",
       "category": "armor",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "PARTIAL_REVIEW",
+      "description_methods": [],
+      "review_notes": "Individually read proc and actual supporting paths: wand Chargers, projectile knockback, Charm recovery, Earthroot per-hit reserve, Stone copied accuracy/evasion modifiers and75%cap, Thorns alignment/bleeding, Viscosity after-armor tracker and1turn/10%remaining deferred ticks. Current concise ordinary provider values and conditions match inspected code; no new change needed here. Retained advanced panel/all cross-class variants remain under review."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/armor/glyphs/AntiMagic.java",
       "sha256": "d22f4145b475c99bb2386e2f5a381a6a0dcf7aeca596c7e871091f650282edf2",
       "category": "armor",
-      "status": "PARTIAL",
+      "status": "PARTIAL_REVIEW",
       "description_methods": [],
       "review_notes": "Individually re-read passive implementation and real external caller in Char.speed/stealth/damage/immunity, Mob detection, HighGrass/Burning as applicable. Current ordinary live-value provider checked: water/3-step enemy path/grass refresh/detection score/selected magical attacks/fire shielding cap. No new wording change needed here; full retained details and all modifiers/class variants remain under review."
     },
@@ -828,7 +829,7 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/armor/glyphs/Brimstone.java",
       "sha256": "1bc08b0a40fe75c331d392282b23b66e87f8342e17a49a3655b0676f7117a66a",
       "category": "armor",
-      "status": "PARTIAL",
+      "status": "PARTIAL_REVIEW",
       "description_methods": [],
       "review_notes": "Individually re-read passive implementation and real external caller in Char.speed/stealth/damage/immunity, Mob detection, HighGrass/Burning as applicable. Current ordinary live-value provider checked: water/3-step enemy path/grass refresh/detection score/selected magical attacks/fire shielding cap. No new wording change needed here; full retained details and all modifiers/class variants remain under review."
     },
@@ -836,7 +837,7 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/armor/glyphs/Camouflage.java",
       "sha256": "591a3f2657629c8c6c7a826879430b6001aaa9b33818f8eac3b17ac93d51f2a0",
       "category": "armor",
-      "status": "PARTIAL",
+      "status": "PARTIAL_REVIEW",
       "description_methods": [],
       "review_notes": "Individually re-read passive implementation and real external caller in Char.speed/stealth/damage/immunity, Mob detection, HighGrass/Burning as applicable. Current ordinary live-value provider checked: water/3-step enemy path/grass refresh/detection score/selected magical attacks/fire shielding cap. No new wording change needed here; full retained details and all modifiers/class variants remain under review."
     },
@@ -844,14 +845,15 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/armor/glyphs/Entanglement.java",
       "sha256": "2602f0d4b3f5ef180fe03358f08ff2752647b8bbdbfa7e569f5084c7d51df59f",
       "category": "armor",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "PARTIAL_REVIEW",
+      "description_methods": [],
+      "review_notes": "Individually read proc and actual supporting paths: wand Chargers, projectile knockback, Charm recovery, Earthroot per-hit reserve, Stone copied accuracy/evasion modifiers and75%cap, Thorns alignment/bleeding, Viscosity after-armor tracker and1turn/10%remaining deferred ticks. Current concise ordinary provider values and conditions match inspected code; no new change needed here. Retained advanced panel/all cross-class variants remain under review."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/armor/glyphs/Flow.java",
       "sha256": "c1e110c0960108059c0aa3e87f94bee4df43dadfd54e8ecff1f6f5e1d581555e",
       "category": "armor",
-      "status": "PARTIAL",
+      "status": "PARTIAL_REVIEW",
       "description_methods": [],
       "review_notes": "Individually re-read passive implementation and real external caller in Char.speed/stealth/damage/immunity, Mob detection, HighGrass/Burning as applicable. Current ordinary live-value provider checked: water/3-step enemy path/grass refresh/detection score/selected magical attacks/fire shielding cap. No new wording change needed here; full retained details and all modifiers/class variants remain under review."
     },
@@ -859,7 +861,7 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/armor/glyphs/Obfuscation.java",
       "sha256": "ddc25431e8a9fab83b411e2fc99bf97abf63b007716eacf4ad27611d873315da",
       "category": "armor",
-      "status": "PARTIAL",
+      "status": "PARTIAL_REVIEW",
       "description_methods": [],
       "review_notes": "Individually re-read passive implementation and real external caller in Char.speed/stealth/damage/immunity, Mob detection, HighGrass/Burning as applicable. Current ordinary live-value provider checked: water/3-step enemy path/grass refresh/detection score/selected magical attacks/fire shielding cap. No new wording change needed here; full retained details and all modifiers/class variants remain under review."
     },
@@ -867,28 +869,31 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/armor/glyphs/Potential.java",
       "sha256": "4fc766e080d06addb1a28a8d71294d296a891b872da5259f5ef12fb52226354c",
       "category": "armor",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "PARTIAL_REVIEW",
+      "description_methods": [],
+      "review_notes": "Individually read proc and actual supporting paths: wand Chargers, projectile knockback, Charm recovery, Earthroot per-hit reserve, Stone copied accuracy/evasion modifiers and75%cap, Thorns alignment/bleeding, Viscosity after-armor tracker and1turn/10%remaining deferred ticks. Current concise ordinary provider values and conditions match inspected code; no new change needed here. Retained advanced panel/all cross-class variants remain under review."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/armor/glyphs/Repulsion.java",
       "sha256": "693a8928e729fc4ea39e793664b52479de8f7e156883d39683fd9612aa10f615",
       "category": "armor",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "PARTIAL_REVIEW",
+      "description_methods": [],
+      "review_notes": "Individually read proc and actual supporting paths: wand Chargers, projectile knockback, Charm recovery, Earthroot per-hit reserve, Stone copied accuracy/evasion modifiers and75%cap, Thorns alignment/bleeding, Viscosity after-armor tracker and1turn/10%remaining deferred ticks. Current concise ordinary provider values and conditions match inspected code; no new change needed here. Retained advanced panel/all cross-class variants remain under review."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/armor/glyphs/Stone.java",
       "sha256": "7a06e42130ab82587deff2dc80bc19e487dd09b14e5ce0fc1bc5927a11959159",
       "category": "armor",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "PARTIAL_REVIEW",
+      "description_methods": [],
+      "review_notes": "Individually read proc and actual supporting paths: wand Chargers, projectile knockback, Charm recovery, Earthroot per-hit reserve, Stone copied accuracy/evasion modifiers and75%cap, Thorns alignment/bleeding, Viscosity after-armor tracker and1turn/10%remaining deferred ticks. Current concise ordinary provider values and conditions match inspected code; no new change needed here. Retained advanced panel/all cross-class variants remain under review."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/armor/glyphs/Swiftness.java",
       "sha256": "c06760c19c68dc739b5a60674665e9a0fe66d112b992c37dacf3ea5cd2a0a0ad",
       "category": "armor",
-      "status": "PARTIAL",
+      "status": "PARTIAL_REVIEW",
       "description_methods": [],
       "review_notes": "Individually re-read passive implementation and real external caller in Char.speed/stealth/damage/immunity, Mob detection, HighGrass/Burning as applicable. Current ordinary live-value provider checked: water/3-step enemy path/grass refresh/detection score/selected magical attacks/fire shielding cap. No new wording change needed here; full retained details and all modifiers/class variants remain under review."
     },
@@ -896,23 +901,25 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/armor/glyphs/Thorns.java",
       "sha256": "89ae3e2c7c95ea43078fcbe69262e4478e1d6ef8177480058c44360117c1bda4",
       "category": "armor",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "PARTIAL_REVIEW",
+      "description_methods": [],
+      "review_notes": "Individually read proc and actual supporting paths: wand Chargers, projectile knockback, Charm recovery, Earthroot per-hit reserve, Stone copied accuracy/evasion modifiers and75%cap, Thorns alignment/bleeding, Viscosity after-armor tracker and1turn/10%remaining deferred ticks. Current concise ordinary provider values and conditions match inspected code; no new change needed here. Retained advanced panel/all cross-class variants remain under review."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/armor/glyphs/Viscosity.java",
       "sha256": "8d664a6b1ab6f546e7afe3e0ab763ffb6713bb5874a320ffceca147b061dd4a1",
       "category": "armor",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
+      "status": "PARTIAL_REVIEW",
       "description_methods": [
         "desc"
-      ]
+      ],
+      "review_notes": "Individually read proc and actual supporting paths: wand Chargers, projectile knockback, Charm recovery, Earthroot per-hit reserve, Stone copied accuracy/evasion modifiers and75%cap, Thorns alignment/bleeding, Viscosity after-armor tracker and1turn/10%remaining deferred ticks. Current concise ordinary provider values and conditions match inspected code; no new change needed here. Retained advanced panel/all cross-class variants remain under review."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/artifacts/AlchemistsToolkit.java",
       "sha256": "8a61e86d42104e47d79f902de6703672683c9ac67e58d7ba67c32ce6a8eabfab",
       "category": "artifacts",
-      "status": "PARTIAL",
+      "status": "PARTIAL_REVIEW",
       "description_methods": [
         "desc"
       ],
@@ -932,7 +939,7 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/artifacts/CapeOfThorns.java",
       "sha256": "3b409f5f6a5156fb3e5ba198fb3d0f47115923393f274cbdb93344030b01d60c",
       "category": "artifacts",
-      "status": "PARTIAL",
+      "status": "PARTIAL_REVIEW",
       "description_methods": [
         "desc",
         "desc"
@@ -944,7 +951,7 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/artifacts/ChaliceOfBlood.java",
       "sha256": "489f94d26d346bc1cac68afc7d5d2f6d49a2b602706ee46e5b69fb77531ecb97",
       "category": "artifacts",
-      "status": "PARTIAL",
+      "status": "PARTIAL_REVIEW",
       "description_methods": [
         "desc"
       ],
@@ -955,7 +962,7 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/artifacts/CloakOfShadows.java",
       "sha256": "def10f0836ccf9b7728a4c9c885ea46eff5a8053c508640be18df0273dfe5ea1",
       "category": "artifacts",
-      "status": "PARTIAL",
+      "status": "PARTIAL_REVIEW",
       "description_methods": [
         "desc"
       ],
@@ -966,7 +973,7 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/artifacts/DriedRose.java",
       "sha256": "5872598870678087478d947ec8cafb7130ea86c3d6caa4b0390099c876a94562",
       "category": "artifacts",
-      "status": "PARTIAL",
+      "status": "PARTIAL_REVIEW",
       "description_methods": [
         "desc"
       ],
@@ -977,7 +984,7 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/artifacts/EtherealChains.java",
       "sha256": "4132242fed0dc6f836556b33ff0b2228b9e6a93dc14847ad87a19a209c6e09f8",
       "category": "artifacts",
-      "status": "PARTIAL",
+      "status": "PARTIAL_REVIEW",
       "description_methods": [
         "desc"
       ],
@@ -988,7 +995,7 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/artifacts/HolyTome.java",
       "sha256": "2c50135839e0d44e47165bf77c3b1e7334c827d805e638e17938501af9f1773d",
       "category": "artifacts",
-      "status": "PARTIAL",
+      "status": "PARTIAL_REVIEW",
       "description_methods": [],
       "wording_corrected": true,
       "review_notes": " All15 actual curse branches reviewed; concise conditional ordinary text,15type read-only regression, actual Horn/Chalice effects tested. Existing advanced panels retained pending owner review; full non-curse/class paths may remain incomplete."
@@ -997,7 +1004,7 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/artifacts/HornOfPlenty.java",
       "sha256": "a19082d3277f56d485d9c447c3d5596fbb1f83b94d1bb1b05071316770bfc130",
       "category": "artifacts",
-      "status": "PARTIAL",
+      "status": "PARTIAL_REVIEW",
       "description_methods": [
         "desc"
       ],
@@ -1008,7 +1015,7 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/artifacts/LloydsBeacon.java",
       "sha256": "7fad1678021e0adfc533eaa3f9d0b3aeb7928fbd96edaa11d706518b7a068fc2",
       "category": "artifacts",
-      "status": "PARTIAL",
+      "status": "PARTIAL_REVIEW",
       "description_methods": [
         "desc"
       ],
@@ -1041,7 +1048,7 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/artifacts/SkeletonKey.java",
       "sha256": "ed0a1565b5f34c81f94bdd2f3143d6f6f1945705c8ee148199b064ee004be406",
       "category": "artifacts",
-      "status": "PARTIAL",
+      "status": "PARTIAL_REVIEW",
       "description_methods": [
         "desc"
       ],
@@ -1052,7 +1059,7 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/artifacts/TalismanOfForesight.java",
       "sha256": "30179e55ad8f08753b4237227b5ea74ed8d19417c305e9bc1b95f53bc33c8304",
       "category": "artifacts",
-      "status": "PARTIAL",
+      "status": "PARTIAL_REVIEW",
       "description_methods": [
         "desc"
       ],
@@ -1846,7 +1853,7 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/potions/exotic/PotionOfCorrosiveGas.java",
       "sha256": "901c85757d190d002ef94fa8766a203afb2c27079001669679971a947f85b4d8",
       "category": "potions",
-      "status": "PARTIAL",
+      "status": "PARTIAL_REVIEW",
       "description_methods": [],
       "wording_corrected": true,
       "review_notes": "Individually read use/select/shatter and tracker code, Corrosion/CorrosiveGas/StormCloud consequences and Level.setCellToWater; Mastery eligibility/2STR and Divine tier entitlement verified against real Weapon/Armor/Hero paths. Concise ordinary description retains practical limitations. Broader base potion identification, custom rule/class and legacy helper audit remains unfinished; no new panel or gameplay change."
@@ -1855,7 +1862,7 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/potions/exotic/PotionOfDivineInspiration.java",
       "sha256": "32362fc1c098f7e2d3589f2fa9f6e7d8c07e2a7a022c5e286b5b900989b02f38",
       "category": "potions",
-      "status": "PARTIAL",
+      "status": "PARTIAL_REVIEW",
       "description_methods": [],
       "wording_corrected": true,
       "review_notes": "Individually read use/select/shatter and tracker code, Corrosion/CorrosiveGas/StormCloud consequences and Level.setCellToWater; Mastery eligibility/2STR and Divine tier entitlement verified against real Weapon/Armor/Hero paths. Concise ordinary description retains practical limitations. Broader base potion identification, custom rule/class and legacy helper audit remains unfinished; no new panel or gameplay change."
@@ -1891,7 +1898,7 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/potions/exotic/PotionOfMastery.java",
       "sha256": "be4e25cd6116affcdcbb5e461710587e3cc51d9617402dee08ae877a2bc790cc",
       "category": "potions",
-      "status": "PARTIAL",
+      "status": "PARTIAL_REVIEW",
       "description_methods": [],
       "wording_corrected": true,
       "review_notes": "Individually read use/select/shatter and tracker code, Corrosion/CorrosiveGas/StormCloud consequences and Level.setCellToWater; Mastery eligibility/2STR and Divine tier entitlement verified against real Weapon/Armor/Hero paths. Concise ordinary description retains practical limitations. Broader base potion identification, custom rule/class and legacy helper audit remains unfinished; no new panel or gameplay change."
@@ -1936,7 +1943,7 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/potions/exotic/PotionOfStormClouds.java",
       "sha256": "84b1459c60f2f7a252a4d70616bd6a44542653406105465a4aed41c2b1d023e2",
       "category": "potions",
-      "status": "PARTIAL",
+      "status": "PARTIAL_REVIEW",
       "description_methods": [],
       "wording_corrected": true,
       "review_notes": "Individually read use/select/shatter and tracker code, Corrosion/CorrosiveGas/StormCloud consequences and Level.setCellToWater; Mastery eligibility/2STR and Divine tier entitlement verified against real Weapon/Armor/Hero paths. Concise ordinary description retains practical limitations. Broader base potion identification, custom rule/class and legacy helper audit remains unfinished; no new panel or gameplay change."
@@ -2959,7 +2966,7 @@
         "statsDesc"
       ],
       "wording_corrected": true,
-      "review_notes": "Normal inherited/dynamic wording reviewed against current source. Changes use existing mechanics and known live values. Full source/variant and optional-panel review not complete."
+      "review_notes": "Read loot count/cap, actual Mob drop bonus addition, Wand and Missile hit trackers, item selector/readiness and ScrollOfIdentify branch. Concise ordinary text distinguishes equipped unknown items and one temporary wand/throwable use per type; thrown contribution needs hit. Manual identification/readiness pronoun clarified; flavor/trackers shortened. Existing regression extended with real cap/one-tracker semantics across0..3levels. Retained advanced panel/class variants remain under review."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/trinkets/ThirteenLeafClover.java",
@@ -3414,7 +3421,7 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/melee/AssassinsBlade.java",
       "sha256": "22ffaff4b0d98251fdd8ba49fdd0e925e6b687fef01343cb1e7a591ea56639bc",
       "category": "weapon",
-      "status": "PARTIAL",
+      "status": "PARTIAL_REVIEW",
       "description_methods": [
         "abilityInfo"
       ],
@@ -3458,7 +3465,7 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/melee/Dagger.java",
       "sha256": "bae342c90b940c591ad6e313f44ded3d071408a4e1b7ae6c885265b6271dcba2",
       "category": "weapon",
-      "status": "PARTIAL",
+      "status": "PARTIAL_REVIEW",
       "description_methods": [
         "abilityInfo"
       ],
@@ -3469,7 +3476,7 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/melee/Dirk.java",
       "sha256": "7322a1c39911de09c8f8d87e8be48f7da628bc98ec576728e68610cbbd11e514",
       "category": "weapon",
-      "status": "PARTIAL",
+      "status": "PARTIAL_REVIEW",
       "description_methods": [
         "abilityInfo"
       ],
@@ -3480,7 +3487,7 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/melee/Flail.java",
       "sha256": "751b49bdc236e05fac2605bf768e57b5e5d3e289fbdef11a98d828be4dea1203",
       "category": "weapon",
-      "status": "PARTIAL",
+      "status": "PARTIAL_REVIEW",
       "description_methods": [
         "abilityInfo",
         "desc"
@@ -3492,7 +3499,7 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/melee/Gauntlet.java",
       "sha256": "a5ff922bc2ab6bf87b0e970a2384528c03f67feebce823e3989d750dffb72d86",
       "category": "weapon",
-      "status": "PARTIAL",
+      "status": "PARTIAL_REVIEW",
       "description_methods": [
         "abilityInfo"
       ],
@@ -3514,7 +3521,7 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/melee/Gloves.java",
       "sha256": "6ee8b9f5aeadc9974da74a2bad76113fb6b6b6fe96fdc605771e01a176d28e03",
       "category": "weapon",
-      "status": "PARTIAL",
+      "status": "PARTIAL_REVIEW",
       "description_methods": [
         "abilityInfo"
       ],
@@ -3536,7 +3543,7 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/melee/Greatshield.java",
       "sha256": "7b3327c901a6927f9e96059fab2b35bc2fef43077800771f2e9401ee938163c8",
       "category": "weapon",
-      "status": "PARTIAL",
+      "status": "PARTIAL_REVIEW",
       "description_methods": [
         "abilityInfo"
       ],
@@ -3602,7 +3609,7 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/melee/MagesStaff.java",
       "sha256": "4048c90d775c0dff919b5dcb65ce8dd25dc421aecb13f49edf36ae2a5a085a33",
       "category": "weapon",
-      "status": "PARTIAL",
+      "status": "PARTIAL_REVIEW",
       "description_methods": [
         "info"
       ],
@@ -3625,7 +3632,7 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/melee/Quarterstaff.java",
       "sha256": "93a64a718a31160642a1c47387a9807b6cc1f2fc082e99ef23b18ce26f6f2410",
       "category": "weapon",
-      "status": "PARTIAL",
+      "status": "PARTIAL_REVIEW",
       "description_methods": [
         "abilityInfo"
       ],
@@ -3647,7 +3654,7 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/melee/RoundShield.java",
       "sha256": "64d4f46846b4245735429ce2e6752f51be18d0994a17b18eb41d7843257961a2",
       "category": "weapon",
-      "status": "PARTIAL",
+      "status": "PARTIAL_REVIEW",
       "description_methods": [
         "abilityInfo"
       ],
@@ -3658,7 +3665,7 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/melee/RunicBlade.java",
       "sha256": "0a5dfff6f05ee52272c2ab8b654d0fd13a07cb2ea6eb6030d6e2c317096b804c",
       "category": "weapon",
-      "status": "PARTIAL",
+      "status": "PARTIAL_REVIEW",
       "description_methods": [
         "abilityInfo"
       ],
@@ -3669,7 +3676,7 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/melee/Sai.java",
       "sha256": "78e1310d11ef01353105defe8d0507b0ec3ed1acd03176e4e98d42700dcbc9ac",
       "category": "weapon",
-      "status": "PARTIAL",
+      "status": "PARTIAL_REVIEW",
       "description_methods": [
         "abilityInfo",
         "desc"
@@ -3681,7 +3688,7 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/melee/Scimitar.java",
       "sha256": "aa3e221e4cb424455d2854c2eb58ad1b348e591d89d1d06333efda373ab79003",
       "category": "weapon",
-      "status": "PARTIAL",
+      "status": "PARTIAL_REVIEW",
       "description_methods": [
         "abilityInfo"
       ],
@@ -3921,7 +3928,7 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/missiles/darts/AdrenalineDart.java",
       "sha256": "2556e4b6f37fc55817f367a40f0338c7adc0c213a0de547d2715b7b87012e0d8",
       "category": "weapon",
-      "status": "PARTIAL",
+      "status": "PARTIAL_REVIEW",
       "description_methods": [],
       "wording_corrected": true,
       "review_notes": "Ordinary tip description individually checked against proc, allied/enemy branches and status implementation; concise practical effects and drawbacks. Inherited stats/privacy tested separately. Charged Shot secondary interaction wording and full class-context coverage remain under review; legacy technical helper is not an active ordinary panel."
@@ -3930,7 +3937,7 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/missiles/darts/BlindingDart.java",
       "sha256": "57dba7064558b7de5d58da1a6fc3c02d0f9eee713189d19e01c83828a1b957c6",
       "category": "weapon",
-      "status": "PARTIAL",
+      "status": "PARTIAL_REVIEW",
       "description_methods": [],
       "wording_corrected": true,
       "review_notes": "Ordinary tip description individually checked against proc, allied/enemy branches and status implementation; concise practical effects and drawbacks. Inherited stats/privacy tested separately. Charged Shot secondary interaction wording and full class-context coverage remain under review; legacy technical helper is not an active ordinary panel."
@@ -3939,7 +3946,7 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/missiles/darts/ChillingDart.java",
       "sha256": "7c0b4b9eb7a6f5b883740a1524e52b67b394c106e0b72c3f3c0d73080094dc32",
       "category": "weapon",
-      "status": "PARTIAL",
+      "status": "PARTIAL_REVIEW",
       "description_methods": [],
       "wording_corrected": true,
       "review_notes": "Ordinary tip description individually checked against proc, allied/enemy branches and status implementation; concise practical effects and drawbacks. Inherited stats/privacy tested separately. Charged Shot secondary interaction wording and full class-context coverage remain under review; legacy technical helper is not an active ordinary panel."
@@ -3948,7 +3955,7 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/missiles/darts/CleansingDart.java",
       "sha256": "8efdf199c44280d2de6c231060e81215e5f9020e36089ca194fec0872001bd94",
       "category": "weapon",
-      "status": "PARTIAL",
+      "status": "PARTIAL_REVIEW",
       "description_methods": [],
       "wording_corrected": true,
       "review_notes": "Ordinary tip description individually checked against proc, allied/enemy branches and status implementation; concise practical effects and drawbacks. Inherited stats/privacy tested separately. Charged Shot secondary interaction wording and full class-context coverage remain under review; legacy technical helper is not an active ordinary panel."
@@ -3966,7 +3973,7 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/missiles/darts/DisplacingDart.java",
       "sha256": "32dfff38f08c043bf86b7811d9c3c56015dbd5f7a9feea0bb17fe0f1ddb952d5",
       "category": "weapon",
-      "status": "PARTIAL",
+      "status": "PARTIAL_REVIEW",
       "description_methods": [],
       "wording_corrected": true,
       "review_notes": "Ordinary tip description individually checked against proc, allied/enemy branches and status implementation; concise practical effects and drawbacks. Inherited stats/privacy tested separately. Charged Shot secondary interaction wording and full class-context coverage remain under review; legacy technical helper is not an active ordinary panel."
@@ -3975,7 +3982,7 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/missiles/darts/HealingDart.java",
       "sha256": "9b5f090ac1ed3eb2b910af257dbf21e17bb0fc8b65f19b285ab7fb9f515932e1",
       "category": "weapon",
-      "status": "PARTIAL",
+      "status": "PARTIAL_REVIEW",
       "description_methods": [],
       "wording_corrected": true,
       "review_notes": "Ordinary tip description individually checked against proc, allied/enemy branches and status implementation; concise practical effects and drawbacks. Inherited stats/privacy tested separately. Charged Shot secondary interaction wording and full class-context coverage remain under review; legacy technical helper is not an active ordinary panel."
@@ -3984,7 +3991,7 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/missiles/darts/HolyDart.java",
       "sha256": "932c6b7ae911f5d2de5453b53426e89e00bf3134b75f0d1d37097803741db12d",
       "category": "weapon",
-      "status": "PARTIAL",
+      "status": "PARTIAL_REVIEW",
       "description_methods": [],
       "wording_corrected": true,
       "review_notes": "Ordinary tip description individually checked against proc, allied/enemy branches and status implementation; concise practical effects and drawbacks. Inherited stats/privacy tested separately. Charged Shot secondary interaction wording and full class-context coverage remain under review; legacy technical helper is not an active ordinary panel."
@@ -3993,7 +4000,7 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/missiles/darts/IncendiaryDart.java",
       "sha256": "6c32dd9156721e7335c64cc6dd11b57b7fbb783c8ab9850744d51ed637a30c3c",
       "category": "weapon",
-      "status": "PARTIAL",
+      "status": "PARTIAL_REVIEW",
       "description_methods": [],
       "wording_corrected": true,
       "review_notes": "Ordinary tip description individually checked against proc, allied/enemy branches and status implementation; concise practical effects and drawbacks. Inherited stats/privacy tested separately. Charged Shot secondary interaction wording and full class-context coverage remain under review; legacy technical helper is not an active ordinary panel."
@@ -4002,7 +4009,7 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/missiles/darts/ParalyticDart.java",
       "sha256": "4b4329ab0b998da4cb9cf1c6391fb551895fe120c2e4efd6de792a8733cf59c9",
       "category": "weapon",
-      "status": "PARTIAL",
+      "status": "PARTIAL_REVIEW",
       "description_methods": [],
       "wording_corrected": true,
       "review_notes": "Ordinary tip description individually checked against proc, allied/enemy branches and status implementation; concise practical effects and drawbacks. Inherited stats/privacy tested separately. Charged Shot secondary interaction wording and full class-context coverage remain under review; legacy technical helper is not an active ordinary panel."
@@ -4011,7 +4018,7 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/missiles/darts/PoisonDart.java",
       "sha256": "8bc9aa820640b6cd398745618c2793e7c34fded637dcf6e73dd2742fa3b7e425",
       "category": "weapon",
-      "status": "PARTIAL",
+      "status": "PARTIAL_REVIEW",
       "description_methods": [],
       "wording_corrected": true,
       "review_notes": "Ordinary tip description individually checked against proc, allied/enemy branches and status implementation; concise practical effects and drawbacks. Inherited stats/privacy tested separately. Charged Shot secondary interaction wording and full class-context coverage remain under review; legacy technical helper is not an active ordinary panel."
@@ -4020,7 +4027,7 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/missiles/darts/RotDart.java",
       "sha256": "0817a63ccbf38a8caa10ed677f757a2b2c415f7145d625055e92e0e300fe28a1",
       "category": "weapon",
-      "status": "PARTIAL",
+      "status": "PARTIAL_REVIEW",
       "description_methods": [],
       "wording_corrected": true,
       "review_notes": "Ordinary tip description individually checked against proc, allied/enemy branches and status implementation; concise practical effects and drawbacks. Inherited stats/privacy tested separately. Charged Shot secondary interaction wording and full class-context coverage remain under review; legacy technical helper is not an active ordinary panel."
@@ -4029,7 +4036,7 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/missiles/darts/ShockingDart.java",
       "sha256": "585536b098651bad0107aee85a3f58a676ce8d5721a3caefbb0fd91fa0fea034",
       "category": "weapon",
-      "status": "PARTIAL",
+      "status": "PARTIAL_REVIEW",
       "description_methods": [],
       "wording_corrected": true,
       "review_notes": "Ordinary tip description individually checked against proc, allied/enemy branches and status implementation; concise practical effects and drawbacks. Inherited stats/privacy tested separately. Charged Shot secondary interaction wording and full class-context coverage remain under review; legacy technical helper is not an active ordinary panel."
@@ -4222,14 +4229,14 @@
   ],
   "completed_units": 141,
   "latest_tests": {
-    "core_tests": 3030,
+    "core_tests": 3040,
     "suites": 457,
     "failures": 0,
     "errors": 0,
     "skipped": 0,
-    "log": "/workspace/apd-runes-spells-ability-evidence-20261108/full.log",
+    "log": "/workspace/apd-shard-loot-wording-evidence-20261109/apd-shard-loot-wording-full.log",
     "android_verified": false,
     "new_apk_built": false,
-    "scope": "Rune/spell wording; actual Detect Magic curse/upgrade knowledge, saved Summon Elemental variants and public-augmentation-only unknown ability examples. New source pending380 Android verification."
+    "scope": "Latest post385 source: staff/four-potion/Warrior Shield prose, Rot fixed-wear row, Shard count/readiness. Native fixtures prepared; next pair pending. Last published385 separately passed3038core/12native."
   }
 }
