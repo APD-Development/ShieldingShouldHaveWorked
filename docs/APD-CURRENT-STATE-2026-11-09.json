@@ -47,5 +47,6 @@
   ],
   "preservation": "All source pushed to codex/apd-phone-fixes-2026-10-09; published403 and priorreleases retained.405/406privateassets include completeAPK/source/tests;404rejectedarchivesretained. Raw local full suites and committed evidence ZIPs retained.",
   "physical_phone_or_acoustic_audio_verified": false,
-  "background_development_after_window_claimed": false
+  "background_development_after_window_claimed": false,
+  "prepared_followup_instrumentation": "Existing retained Tenacity helper now requests positive/negative/zero effective-value actual windows with correct semantic assertions, alongside prepared Vampiric25/200. This newest test-only fixture has NOT been Android-compiled/run in the window; production unchanged since5e23d687c."
 }

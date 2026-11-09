@@ -552,8 +552,11 @@ public class QolItemFeedbackDeviceTest {
         try {
             TopScoresDeviceTest.render(() -> Dungeon.hero.HP = Math.max(1, Dungeon.hero.HT / 2));
             calculationWindow(() -> { com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfForce ring = new com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfForce(); ring.anonymize(); ring.level(3); ring.levelKnown = ring.cursedKnown = true; return new WndInfoItem(ring); }, "extra damage", "qol-force-retained-clear.png");
-            for (boolean cursed : new boolean[]{false, true}) {
-                calculationWindow(() -> { com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfTenacity ring = new com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfTenacity(); ring.anonymize(); ring.level(3); ring.levelKnown = ring.cursedKnown = true; ring.cursed = cursed; return new WndInfoItem(ring); }, "fraction of HP missing", "qol-tenacity-retained-clear-" + cursed + ".png");
+            for (int state = 0; state < 3; state++) {
+                final boolean cursed = state > 0;
+                final int level = state == 1 ? 0 : 3;
+                String expected = state == 0 ? "Damage reduction grows" : state == 1 ? "Extra damage taken grows" : "currently has no effect on damage";
+                calculationWindow(() -> { com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfTenacity ring = new com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfTenacity(); ring.anonymize(); ring.level(level); ring.levelKnown = ring.cursedKnown = true; ring.cursed = cursed; return new WndInfoItem(ring); }, expected, "qol-tenacity-positive-negative-zero-" + state + ".png");
             }
         } finally { TopScoresDeviceTest.render(() -> Dungeon.hero.HP = hp); }
     }

@@ -229,3 +229,6 @@ Allconfigured Languages values×Bless/Hex/Daze actualdesc formatting passes, res
 ### End-window current state index
 
 Read docs/APD-CURRENT-STATE-2026-11-09.json first. Latestpublished403;404native-rejected,405/406manualcontent-rejected PRIVATE.406passed3113core/12API34 and independenthashes/all4463sourcefilehashes;10newordinarybuffcapturesreadable. Same bad Tenacity provider preventspublication. Latestcorrectedsource5e23d687c passed3115fullcore457local; Androidsourcecompile42593449057pendingatrecording. VampiricnonzerohealingandTenacityzero-statecorrectionsNOTinAPK.436units433fullpartial350corrected307complete129unresolved. Need NEWcorrectedpair+actualnewwindowchecks, thencontinueaudit. No physicalspeaker/wholeauditcompletion or codingafterwindowclaim. All progress/evidence preserved.
+
+
+Finaltest-onlypreparation: existingTenacitynativehelper now coverspositive/negative/zeroeffectivevalueswithsemanticassertions,instead of onlygenericformulatext. NOTyetAndroidcompiled/run; productionunchangedsince5e23d687c. NextexecutionmustcompileandrunthepreparedTenacityandVampiricwindowsbeforeanycorrectedAPKpublication. No deliveryclaim.
