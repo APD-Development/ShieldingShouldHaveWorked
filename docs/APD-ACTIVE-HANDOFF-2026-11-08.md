@@ -232,3 +232,6 @@ Read docs/APD-CURRENT-STATE-2026-11-09.json first. Latestpublished403;404native-
 
 
 Finaltest-onlypreparation: existingTenacitynativehelper now coverspositive/negative/zeroeffectivevalueswithsemanticassertions,instead of onlygenericformulatext. NOTyetAndroidcompiled/run; productionunchangedsince5e23d687c. NextexecutionmustcompileandrunthepreparedTenacityandVampiricwindowsbeforeanycorrectedAPKpublication. No deliveryclaim.
+
+
+09:30UTCcutoff: source-only42593449057SUCCESSon5e23d687c:3115core457+Androiddebug/release/instrumentationJava+desktopcompile, noAPK/runtimeclaim. Later1fd09c436test-onlythree-statefixtureuncompiled/unrun. Allsource/evidencepushed,403latestpublished,405/406confirmedPRIVATEheld. Endauthorizedwindow; no backgroundcodingclaim.
