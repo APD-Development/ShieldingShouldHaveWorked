@@ -432,6 +432,20 @@ public class QolItemFeedbackDeviceTest {
         com.watabou.utils.Bundle previousRules=new com.watabou.utils.Bundle();TopScoresDeviceTest.render(()->{Dungeon.apdStoreCustomRules(previousRules);com.watabou.utils.Bundle all=new com.watabou.utils.Bundle(),settings=new com.watabou.utils.Bundle();com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomDungeonRules.defaults().with(com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomDungeonRules.Slider.HEALING,0).store(settings);all.put("apd_custom_rules",settings);Dungeon.apdRestoreCustomRules(all);});
         try{com.shatteredpixel.shatteredpixeldungeon.items.artifacts.ChaliceOfBlood chalice=new com.shatteredpixel.shatteredpixeldungeon.items.artifacts.ChaliceOfBlood();TopScoresDeviceTest.render(()->{chalice.level(10);chalice.levelKnown=chalice.cursedKnown=true;});showItem(chalice,"rules prevent natural healing","qol-chalice-healing-zero.png",true,true);}finally{TopScoresDeviceTest.render(()->Dungeon.apdRestoreCustomRules(previousRules));}
     }
+    private static void catalystAndTransferDescriptionsRender()throws Exception{
+        com.shatteredpixel.shatteredpixeldungeon.items.trinkets.TrinketCatalyst catalyst=new com.shatteredpixel.shatteredpixeldungeon.items.trinkets.TrinketCatalyst();
+        showItem(catalyst,"6 energy","qol-catalyst-concise.png",true);
+        showItem(new com.shatteredpixel.shatteredpixeldungeon.items.LiquidMetal(),"Repairs worn thrown weapons","qol-liquid-metal-reviewed.png",true);
+        showItem(new com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfGathering(),"beside the downstairs","qol-gathering-reviewed.png",true);
+        showItem(new com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfForwarding(),"Nothing is sold","qol-forwarding-concise.png",true);
+        AtomicReference<Window> shown=new AtomicReference<>();
+        TopScoresDeviceTest.render(()->{
+            java.util.ArrayList<com.shatteredpixel.shatteredpixeldungeon.items.trinkets.Trinket> choices=new java.util.ArrayList<>();choices.add(new com.shatteredpixel.shatteredpixeldungeon.items.trinkets.PetrifiedSeed());choices.add(new com.shatteredpixel.shatteredpixeldungeon.items.trinkets.MossyClump());choices.add(new com.shatteredpixel.shatteredpixeldungeon.items.trinkets.ExoticCrystals());choices.add(new com.shatteredpixel.shatteredpixeldungeon.items.trinkets.FerretTuft());for(Item item:choices)item.levelKnown=item.cursedKnown=true;
+            com.watabou.utils.Bundle state=new com.watabou.utils.Bundle();catalyst.storeInBundle(state);state.put("rolled_trinkets",choices);catalyst.restoreFromBundle(state);Window window=new com.shatteredpixel.shatteredpixeldungeon.items.trinkets.TrinketCatalyst.WndTrinket(catalyst);GameScene.show(window);shown.set(window);
+        });Thread.sleep(300);
+        TopScoresDeviceTest.render(()->{assertEquals("Actual existing catalyst selection offers four choices",4,TopScoresDeviceTest.find(shown.get(),com.shatteredpixel.shatteredpixeldungeon.ui.ItemButton.class).size());for(RenderedTextBlock text:TopScoresDeviceTest.find(shown.get(),RenderedTextBlock.class)){Point a=text.camera().cameraToScreen(text.left(),text.top()),b=text.camera().cameraToScreen(text.right(),text.bottom());assertTrue("Catalyst choice text fits",a.x>=0&&a.y>=0&&b.x<=Game.width&&b.y<=Game.height);}});
+        TopScoresDeviceTest.screenshot("qol-catalyst-four-choices.png");TopScoresDeviceTest.render(()->shown.get().hide());
+    }
     private static void unidentifiedWandExamplesRender()throws Exception{
         for(String name:new String[]{"BlastWave","Corrosion","Corruption","Disintegration","Fireblast","Frost","Lightning","LivingEarth","MagicMissile","PrismaticLight","Regrowth","Transfusion","Warding"}){
             com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand wand=(com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand)Class.forName("com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOf"+name).getDeclaredConstructor().newInstance();
@@ -753,6 +767,7 @@ public class QolItemFeedbackDeviceTest {
             livingEarthAndPrismaticDescriptionsRender();
             passiveGlyphArcanaDescriptionsRender();
             artifactBuffsAndDisabledHealingRender();
+            catalystAndTransferDescriptionsRender();
             unidentifiedWandExamplesRender();
             inventoryOrderShowsAutomatically();
             prepareSearchableFloor();

@@ -16,11 +16,11 @@ public class ScrollOfForwarding extends ExoticScroll {
     @Override public void setKnown() { }
     @Override public String name() { return "Scroll of Forwarding"; }
     @Override public String desc() {
-        return "Sends loose ground loot to one ordinary pile immediately outside the next region's shop entrance. "
-                + "The current region's shop is skipped; on floor 20 or later the destination is the Imp's floor-20 shop. "
-                + "Items wait safely if the shop is not open or its approach is blocked. Nothing is sold. "
-                + "Unopened containers, shop stock, carried items, keys, quest items and a Lost Backpack stay put. "
-                + "Armed bombs prevent casting.";
+        return "Sends loose ground items to a pile outside the next region's shop. "
+                + "On Floor 20 or later, uses the Imp's Floor-20 shop. Nothing is sold. "
+                + "If the shop is closed or blocked, the items wait for a safe delivery spot. "
+                + "Leaves unopened containers, shop stock, carried items, keys, quest items and Lost Backpacks in place. "
+                + "An armed bomb among the loot prevents casting without consuming the scroll.";
     }
     @Override public void doRead() {
         if (curUser == null || (!anonymous && !curUser.belongings.backpack.contains(this)) || quantity() < 1) return;

@@ -4,9 +4,9 @@
   "counting": "Source units, not distinct item types. reviewed_units includes partial reviews; completed_units excludes partial/pending dependency. corrected_units counts source units with corrections, including incomplete reviews. Inventory/export/tests alone are not an individual review.",
   "source_units": 427,
   "message_entries": 2411,
-  "reviewed_units": 344,
-  "corrected_units": 306,
-  "unresolved_units": 268,
+  "reviewed_units": 349,
+  "corrected_units": 308,
+  "unresolved_units": 267,
   "category_counts": {
     "apd": 1,
     "mechanics": 38,
@@ -578,8 +578,10 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/LiquidMetal.java",
       "sha256": "d3d74b873e3111071f4249bdfd3fcac1be38ac33616245087b75f32ef083c01b",
       "category": "items",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "PARTIAL_REVIEW",
+      "description_methods": [],
+      "review_notes": "Entire repair and recycle source/recipe/unknown-upgrade sample and save-free UI read. Existing concise normal text consistent with actual Dart exclusion, missing-set branch, partial-material repair and uncursed recipe requirement; no wording change needed this pass. Existing actual recipe/repair scale tests retained. New actual native normal window pending389; complete shared missile/class interaction scope remains open.",
+      "wording_corrected": false
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/LostBackpack.java",
@@ -2325,10 +2327,12 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/scrolls/ScrollOfGathering.java",
       "sha256": "15d4bb83a8f065aaa8685f7e28f4a0cf1687a8b1b1bc1c8ef0f68407e77e98ee",
       "category": "scrolls",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
+      "status": "PARTIAL_REVIEW",
       "description_methods": [
         "desc"
-      ]
+      ],
+      "review_notes": "Entire own fixed-known/no-rune source and shared GroundLootPlan/LootTransfers validation/transaction read. Existing concise downstairs/exclusion/nonconsumption wording consistent; no rewrite needed. Existing real transactional/route/exclusion tests pass; new actual ordinary native window pending389. Full shared scroll/prototype integration separately open.",
+      "wording_corrected": false
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/scrolls/ScrollOfIdentify.java",
@@ -2505,10 +2509,12 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/scrolls/exotic/ScrollOfForwarding.java",
       "sha256": "d831d83c96bd0dd06eca44e9f35c5b91d947461153e7c913e8aa68a65f4c94d6",
       "category": "scrolls",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
+      "status": "PARTIAL_REVIEW",
       "description_methods": [
         "desc"
-      ]
+      ],
+      "review_notes": "Entire own fixed-known source, LootTransfers eligibility/armed-bomb/delayed delivery and actual destinationDepth policy read. Concise normal text preserves next-region/Imp20 exception, no sale, delayed safe delivery and all exclusions. Armed bomb refers only to the gathered loose loot; failure does not consume scroll. Existing actual transaction/routing tests retained; new ordinary Android window pending389.",
+      "wording_corrected": true
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/scrolls/exotic/ScrollOfMetamorphosis.java",
@@ -2995,20 +3001,24 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/trinkets/Trinket.java",
       "sha256": "188c4c786b97ddcdbfb91b51489049132c5b37378ecb4dd9fe1ac233b9c485de",
       "category": "trinkets",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
+      "status": "REVIEWED_UNCHANGED",
       "description_methods": [
         "info",
         "statsDesc",
         "info",
         "statsDesc"
-      ]
+      ],
+      "review_notes": "Entire abstract source, constructor/old-save identification flags, inherited stats appending, placeholder and upgrade recipe read. Own source-specific ordinary behavior requires no correction; actual nine trinket normal windows already manually reviewed in386/387 cover shared info rendering. Recipe supports upgrades below3 only. Concrete trinket and advanced providers remain separately open.",
+      "wording_corrected": false
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/trinkets/TrinketCatalyst.java",
       "sha256": "babe59b91eb0c9a791e2a1b9f77a1d68767f2c55d653ea31f77610165b7d7354",
       "category": "trinkets",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "PARTIAL_REVIEW",
+      "description_methods": [],
+      "review_notes": "Entire recipe, six-energy cost, four saved choices, confirmation/consumption and save paths read. Normal text and existing choice-window text shortened with cost/four options/carried effect/+3cap; RandomTrinket legacy preview concise. No selection/RNG/recipe behavior change. Actual four preloaded choices and item windows prepared for389; not yet Androidverified.",
+      "wording_corrected": true
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/trinkets/VialOfBlood.java",
@@ -4243,16 +4253,16 @@
       "review_notes": "Added missing display provider to inventory. Reading its output is not a complete provenance/generation audit."
     }
   ],
-  "completed_units": 159,
+  "completed_units": 160,
   "latest_tests": {
     "core_tests": 3047,
     "suites": 457,
     "failures": 0,
     "errors": 0,
     "skipped": 0,
-    "log": "/workspace/apd-eight-artifacts-human-evidence-20261109/apd-eight-artifacts-human-description-full.log",
+    "log": "/workspace/apd-catalyst-transfer-evidence-20261109/apd-catalyst-forwarding-human-description-full.log",
     "android_verified": false,
     "new_apk_built": false,
-    "scope": "Post388 eight artifact ordinary corrections, real active Cape deflection and actual Chalice Healing0. Previous live passive glyph/earth/prism/herb changes retained. New Android windows pending389."
+    "scope": "Latest post388 Catalyst/Forwarding normal wording plus all later artifact/glyph/wand/herb changes. Actual new windows pending389; latest published388."
   }
 }
