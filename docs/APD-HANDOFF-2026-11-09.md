@@ -12,3 +12,5 @@ After414cutoff: additional status prose and six ordinary descriptions shortened 
 415 candidate sourcea52bd33a8868875eb24fa2d0162ba41bdd099b0c run42625074280.3136core457all0 before cutoff; common duration footer now clear turns, rank boilerplate/duplicate specific shield totals removed.31 existing status plus6 shield states and rendered forbidden-prose guards require actual native acceptance. Draft only, not delivered.414latestpublished13:19:16UTC. Sourcecompilef6780fa9242624056651succeeded before commonfooter. Ownerdeadline20UTC.
 
 After415cutoff:5 protection/ring/image branches and2 ordinary descriptions simplified;3136core457all0 preservedAPD-416-protection-ring-image-accepted.zip. Native35base-status plus separateLightningCharge fixtures prepared.415run42625074280native active;414latestpublished.
+
+416source: Frost/Levitation/Toxic/LockedFloor text and3 normal entries corrected; Toxic real act tested0.5/2/2.5 releases, gas conservation and5extra protectionupdates.3136core457all0 rawZIPpreserved.39base+LightningCharge native models prepared, no deviceclaim.415native still running.
