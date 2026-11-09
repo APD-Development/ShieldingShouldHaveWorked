@@ -1,9 +1,16 @@
 {
   "active": false,
-  "owner_instruction": "2026-11-08: Send an APK to GitHub every 30 minutes; finish approved work by 7 p.m. EST.",
+  "owner_instruction": "Explicit owner authorization received during2026-11-09UTC execution: continue active approved development until approximately4:30AM Eastern November9,2026; verified GitHub APK about every30minutes whenever valid, regular source pushes, preserve all prior work.",
   "recorded_date": "2026-11-07",
   "scope": "Remaining approved work, including description audit and verification. Continue implementation/tests/backups without routine approval.",
   "preserve_delivered_build": 369,
-  "additional_apk_delivery": "Latest cadence instruction authorizes incremental Developer/Alpha pairs through 2026-11-09 00:00 UTC, with unfinished work disclosed. It supersedes the previous hold until the whole audit completes and conflicting prior cadence limits during this window. No recurring delivery beyond this deadline is configured.",
-  "daily_limit_when_delivery_resumes": "10 APKs total per New York day, five Developer and five Alpha. A maximum, not a build target."
+  "additional_apk_delivery": "Active execution cadence extended through09:30UTC by latest owner instruction. Overrides earlier conflicting hold/deadline/cadence limits in this window. Original Developer+Alpha pairs only when verified; preserve failures and continue repairs. No unattended ongoing development or publication is claimed if execution/usage stops.",
+  "daily_limit_when_delivery_resumes": "Latest explicit timed30minute authorization governs this active window, superseding the conflicting older10APK cap. No new recurring authorization after09:30UTC.",
+  "prior_owner_instruction": "2026-11-08: Send an APK to GitHub every 30 minutes; finish approved work by 7 p.m. EST.",
+  "prior_additional_apk_delivery": "Latest cadence instruction authorizes incremental Developer/Alpha pairs through 2026-11-09 00:00 UTC, with unfinished work disclosed. It supersedes the previous hold until the whole audit completes and conflicting prior cadence limits during this window. No recurring delivery beyond this deadline is configured.",
+  "authorization_window_end_utc": "2026-11-09T09:30:00Z",
+  "authorization_window_end_eastern": "2026-11-09 04:30 EST",
+  "prior_daily_limit": "10 APKs total per New York day, five Developer and five Alpha. A maximum, not a build target.",
+  "preserve_all_previous_builds": true,
+  "latest_published_build": 386
 }
