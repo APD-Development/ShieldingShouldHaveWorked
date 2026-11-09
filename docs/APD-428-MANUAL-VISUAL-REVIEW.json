@@ -143,6 +143,8 @@
   ],
   "scope": "Eight new status/champion and three ability contexts, each normal-expanded-bottom. Earlier427 wrappers80 and426spell64frames reviewed separately; unchangedpriorpanels not claimednewmanualchecks.",
   "assessment": "Accepted revisedtext, livepercentages, timers, variableTrinitycost, Ratmogrifytiming/conditionaltalents, scroll endpoints, pinnedcontrols and retainedtalentgrid. No newblocking layout/font defect observed in these33frames. Wholeaudit remainsunfinished; dormantSpeed baseline messagegap alreadydiagnosed427 and fixedonlyonfuturebranch.",
-  "publication_gate": "All12completednative outputs and independentAPK/source/scan checks stillrequired; selectedearlyDeveloper PNG hashes must match finalbundle.",
-  "physical_or_acoustic_phone_verified": false
+  "publication_gate": "All12 exact-app retrycasespassed, independentAPK/source/sidecars/scan/4781manifesthashes verified. All33 manuallyviewedoriginalpassedDeveloperPNGhashes match finalbundle. RetryDeveloperimages maydifferduecapturetiming and are notclaimedmanualreviewed.",
+  "physical_or_acoustic_phone_verified": false,
+  "final_bundle_matches_all_33_selected_original_passed_Developer_frames": true,
+  "final_evidence_frame_folder": "evidence/initial-limited/Developer/Developer-visuals"
 }

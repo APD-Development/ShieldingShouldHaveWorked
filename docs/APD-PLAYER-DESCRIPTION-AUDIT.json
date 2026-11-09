@@ -4574,12 +4574,14 @@
   ],
   "completed_units": 441,
   "latest_tests": {
+    "main_published_build": 428,
     "core": 3158,
     "suites": 457,
+    "native_targeted": 12,
     "failures": 0,
     "errors": 0,
     "skipped": 0,
-    "native_new_work": "pending"
+    "separate_followup": "02060b4ff3159core+Androidsourcepassed; nativepending; notin428"
   },
   "message_inventory_entries": 5353,
   "message_inventory_counting": "Current authored English property entries across nine files;2432 item entries. Two concise zero-Healing dew/waterskin keys added. Exact Adult OFF/ON checks retained."

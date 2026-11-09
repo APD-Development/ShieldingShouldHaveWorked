@@ -331,7 +331,8 @@
   ],
   "scope": "13buff fixtures/3talent contexts normal-expanded-bottom48frames plus32spell normalframes. Spell expanded/bottom64frames reviewed426; spell source unchanged427.",
   "assessment": "Production-facing layouts/scrolling/pinned controls and live amounts accepted. Existing dormantSpeed basefixture shows preexistingNO_TEXT_FOUND; no defaulticon/productioncreationpath found, so not a new regular-gameplay window defect. Explicitwordingfix preserved02060b4ff on separatebranch, not in427/428. NormalPoison/Bleeding/Priest furtherwording improvements also separate and pendingnative. Wholeauditunfinished.",
-  "publication_gate": "Still requires exact completedAlpha/12caseproof, independentAPK/source/scans and comparisonofallselectedearlyPNGhashestofinalnativeZIP.",
+  "publication_gate": "All12 strict cases complete; independent APK/source/sidecars/scan and4770source hashes checked;80selectedmanualPNGhashes match finalbundle.",
   "known_test_only_Speed_gap": true,
-  "physical_phone_or_acoustic_verified": false
+  "physical_phone_or_acoustic_verified": false,
+  "final_bundle_matches_all_80_selected_early_frames": true
 }

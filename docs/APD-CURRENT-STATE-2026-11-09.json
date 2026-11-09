@@ -1,9 +1,9 @@
 {
-  "recorded_utc": "2026-11-09T19:47:06.933100+00:00",
+  "recorded_utc": "2026-11-09T19:54:14.309803+00:00",
   "authorization_end_utc": "2026-11-09T20:00:00Z",
-  "latest_verified_published_build": 426,
-  "release_url": "https://github.com/APD-Development/ShieldingShouldHaveWorked/releases/tag/apd-alpha-preview-426",
-  "source_fix_commit": "1bd96affecc830ade14346d60842bcf3c9489e0e",
+  "latest_verified_published_build": 428,
+  "release_url": "https://github.com/APD-Development/ShieldingShouldHaveWorked/releases/tag/apd-alpha-preview-428",
+  "source_fix_commit": "28013435e236058ec9945ab5968ec258c4c380aa",
   "local_full_core": {
     "tests": 3158,
     "suites": 457,
@@ -44,19 +44,15 @@
     "message_inventory_entries": 5353
   },
   "remaining": [
-    "427/428complete native, bytes/scans/manualvisual acceptance beforepublication",
-    "Four incomplete reviews: AbilityExplanation remainingeffects,TalentExplanation,Talentnormaltext,CursedWandownerwordingdecision",
-    "Observed old normalPriest grammar and ShieldOfLight advancedtimer wording followups",
-    "SPD-only acoustic audio reproduction remains unverified; no proved APDfix"
+    "Four own-source reviews still incomplete: AbilityExplanation remainingeffects,TalentExplanation,TalentnormalEnglish,CursedWandownerwordingdecision",
+    "Normalwordingfollowup02060b4ff/3159core+Androidsourcepassed stillneeds actualnativeverification; absent428",
+    "Furthernormalmechanicresource wording audit remains; nofullitemauditcompletionclaimed",
+    "SPD-only audio physical/acoustic reproduction remainsunverified; no provedAPDfix"
   ],
   "preservation": "All source pushed to codex/apd-phone-fixes-2026-10-09; published403 and priorreleases retained.405/406privateassets include completeAPK/source/tests;404rejectedarchivesretained. Raw local full suites and committed evidence ZIPs retained.",
   "physical_phone_or_acoustic_audio_verified": false,
   "background_development_after_window_claimed": false,
-  "active_build": {
-    "number": 428,
-    "source": "28013435e236058ec9945ab5968ec258c4c380aa",
-    "status": "Bothnativechecks pending; source3158coregreen and appbuildpassed"
-  },
+  "active_build": {},
   "recovered_failed_attempts": {
     "415": {
       "original": "Original42625074280 incomplete because Developer emulator transport closed after QoL/preferences. Alpha/build passed. Exact original source failurebranch preserved; private archive42628501288 succeeded. Retry42628501030 requires all12 fresh unmodified cases.",
@@ -103,28 +99,16 @@
     "status": "PUBLISHED2026-11-09T18:39:38Z; core3153/all12native,4739sourcehashes,37selectedfullframesmanuallyreviewed,originalAPKsbyte-identical",
     "receipt": "docs/APD-425-DELIVERY-RECEIPT.json"
   },
-  "active_builds": {
-    "427": {
-      "source": "209277bdabbb9520bba60717f3fa3927f80d5eb6",
-      "original_run": 42679430170,
-      "retry": 42683626942,
-      "status": "All12 complete: originalDeveloper6 andunchangedAlpha6retry. Packaging running, manual80reviewed; independentbytespending."
-    },
-    "428": {
-      "source": "28013435e236058ec9945ab5968ec258c4c380aa",
-      "original_run": 42681930991,
-      "retry": 42683625819,
-      "status": "OriginalDeveloper6passed, Alpha900capfailed; exactsameapp/harness retryboth1800running. Manualnew33reviewed; source3158green; no publication beforeall12/bytes."
-    }
-  },
+  "active_builds": {},
   "latest_delivery": {
-    "number": 426,
-    "core_tests": 3155,
+    "number": 428,
+    "core_tests": 3158,
+    "core_suites": 457,
     "native_tests": 12,
-    "manual_Developer_frames": 64,
-    "source_manifest_files": 4758,
-    "published_utc": "2026-11-09T19:24:26Z",
-    "original_apk_retry_created_apps": 0
+    "manual_new_Developer_frames": 33,
+    "source_manifest_files": 4781,
+    "published_utc": "2026-11-09T19:53:13Z",
+    "original_apps_rebuilt_in_retry": 0
   },
   "followup_source_branch": {
     "branch": "codex/apd-description-followup-20261109T1933",
@@ -134,5 +118,18 @@
     "english_entries": 5355,
     "new_features": false
   },
-  "normal_resource_followups": "Someexistingnormalmechanic wording remains in the comprehensiveaudit; latestnormalwording fixes on separate3159branch, not inAPKs426\u2013428."
+  "normal_resource_followups": "Someexistingnormalmechanic wording remains in the comprehensiveaudit; latestnormalwording fixes on separate3159branch, not inAPKs426\u2013428.",
+  "latest_main_source_verification": {
+    "tests": 3158,
+    "suites": 457,
+    "native": 12,
+    "scope": "Exactpublished428source; later3159followup separatebranch"
+  },
+  "delivery_427": {
+    "published_utc": "2026-11-09T19:50:38Z",
+    "core": 3157,
+    "native": 12,
+    "manual_frames": 80,
+    "source_manifest_files": 4770
+  }
 }
