@@ -198,3 +198,8 @@ Source normal ability quoted base4tile/65degree and fixed rank-sensitive effects
 ### Seed rule wording and unsupported dart target
 
 Sungrass actual normal/Warden activation and six real healing ticks under HEALING0 preserve20HP; player plant/seed/herbal text warns, NPC still heals and no-hero preview stays generic. BarrenLand existing no-growth behavior tested and seed wrapper now warns. Actual Dart item selector offered Blandfruit seed despite no TippedDart.types mapping, leading to missing-result path. Reproduced acceptance, now selector filters supported mapping only; all existing recipes still create expected class/quantity. No recipe/gameplay balance/turn changes. Full3068core/457suites pass; English inventory5334 includes two new rule notices. Reproduction and initial checked-exception fixture error preserved in docs/evidence/APD-394-seed-selector-reproduction.zip. Android actual disabled-slot tap/valid tip prompt and four Sungrass/oneBarren seed windows pending394. Full audit remains unfinished.
+
+
+###394 published / shared equipment and defensive weapon review
+
+394sourceb68cd4a96:3068core457suites,12targeted API34cases, changed real windows manually reviewed. Later source3070core full pass; native windows pending395. Cursed removal explains actual temporary magic-immunity exception; Champion choice concise; five passive-block weapons show one accurate strength-adjusted range instead of duplicate unadjusted text. No gameplay or panel rule changed. Reconciled nine individually reviewed source units after accepted393/394 actual windows; 402full/partial reviews,332corrected,170complete,257unresolved of427source units. Full audit remains unfinished.

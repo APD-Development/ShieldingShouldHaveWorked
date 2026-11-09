@@ -4,9 +4,9 @@
   "counting": "Source units, not distinct item types. reviewed_units includes partial reviews; completed_units excludes partial/pending dependency. corrected_units counts source units with corrections, including incomplete reviews. Inventory/export/tests alone are not an individual review.",
   "source_units": 427,
   "message_entries": 2411,
-  "reviewed_units": 399,
-  "corrected_units": 330,
-  "unresolved_units": 266,
+  "reviewed_units": 402,
+  "corrected_units": 332,
+  "unresolved_units": 257,
   "category_counts": {
     "apd": 1,
     "mechanics": 38,
@@ -429,7 +429,7 @@
         "details"
       ],
       "wording_corrected": true,
-      "review_notes": "Current ordinary-description pass: concise live values, duplicate mathematical prose removed. Existing optional details and entire category variants remain under review; panel decisions pending. See APD-DESCRIPTION-CORRECTION-2026-11-08.md."
+      "review_notes": "Current ordinary-description pass: concise live values, duplicate mathematical prose removed. Existing optional details and entire category variants remain under review; panel decisions pending. See APD-DESCRIPTION-CORRECTION-2026-11-08.md. Five passive-block types now display one strength-adjusted range, preserving shield upgrade benefit. Core known/unknown levels0/3/9 and low strength tests pass; twenty native windows pending395."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/qol/RingItemEffects.java",
@@ -506,8 +506,9 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/EquipableItem.java",
       "sha256": "449f823bb1e442f8d01ac6c60d6cd5352f7e3a2150dc9222a6a7336f27c85b65",
       "category": "items",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "REVIEWED_UNCHANGED",
+      "description_methods": [],
+      "review_notes": " Individual source review completed2026-11-09 after real393/394 portrait/landscape action, scrolling, hidden-state and saved-state native checks. Constructor/flavor sources checked independently; inherited mechanisms tracked separately. Missile damage/STR/accuracy, wear/merge/parent state and knowledge gates read against actual handlers. Equipment removal exception checked by actual Sword/Armor/Ring unequip regression with MagicImmune. Existing selective panel availability unchanged; no new control. This closes this source unit, not every subclass or the full audit."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/Generator.java",
@@ -565,15 +566,18 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/KindOfWeapon.java",
       "sha256": "c71abbabb2fc4f0297055d82f0e3047b941f792158f22c7903cf58f2345be639",
       "category": "items",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "PARTIAL_REVIEW",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": " Champion slot-choice text shortened after actual shared Charger and instant swap review; native dialog pending395. HolyIntuition early curse detection text retained because actual detection returns before equipping. Remaining special attack paths still open."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/KindofMisc.java",
       "sha256": "bce90c78637d44bb081695acf8b92754a0194eef362272593c3c62e3e5b8e514",
       "category": "items",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "REVIEWED_UNCHANGED",
+      "description_methods": [],
+      "review_notes": " Individual source review completed2026-11-09 after real393/394 portrait/landscape action, scrolling, hidden-state and saved-state native checks. Constructor/flavor sources checked independently; inherited mechanisms tracked separately. Missile damage/STR/accuracy, wear/merge/parent state and knowledge gates read against actual handlers. Equipment removal exception checked by actual Sword/Armor/Ring unequip regression with MagicImmune. Existing selective panel availability unchanged; no new control. This closes this source unit, not every subclass or the full audit."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/KingsCrown.java",
@@ -3710,7 +3714,7 @@
         "abilityInfo"
       ],
       "wording_corrected": true,
-      "review_notes": "Normal inherited/dynamic wording reviewed against current source. Changes use existing mechanics and known live values. Full source/variant and optional-panel review not complete. Current ordinary info paths also checked: knowledge-safe strength, ranged damage and wear estimates; real damage/accuracy/wear formulas untouched. Full inherited/class/secondary review remains partial. Actual Sickle capture exposed unaugmented unknown base damage; fixed +0 main damage examples to use public augmentation, never hidden level. Eighteen melee ability/base examples tested across all augmentations and hidden levels. Future APK384, not382/383."
+      "review_notes": "Normal inherited/dynamic wording reviewed against current source. Changes use existing mechanics and known live values. Full source/variant and optional-panel review not complete. Current ordinary info paths also checked: knowledge-safe strength, ranged damage and wear estimates; real damage/accuracy/wear formulas untouched. Full inherited/class/secondary review remains partial. Actual Sickle capture exposed unaugmented unknown base damage; fixed +0 main damage examples to use public augmentation, never hidden level. Eighteen melee ability/base examples tested across all augmentations and hidden levels. Future APK384, not382/383. Five passive-block types now display one strength-adjusted range, preserving shield upgrade benefit. Core known/unknown levels0/3/9 and low strength tests pass; twenty native windows pending395."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/melee/Quarterstaff.java",
@@ -3907,9 +3911,9 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/missiles/Javelin.java",
       "sha256": "7a26fe89ea0392c45de278c1f38b9480bf31725205b0e7313ef4fdcfa5f5764e",
       "category": "weapon",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_UNCHANGED",
       "description_methods": [],
-      "review_notes": "Individual normal source and English wording reviewed2026-11-09. Javelin/Spike/Trident own tier/base-wear and flavor checked unchanged; inherited missile paths remain separately partial. Dart/tipped prompt now permits actual preserved multiple-use tips, plain darts no wear, cleaning one turn, high-bonus no wear correctly attributed to bonuses; tests real wear and existing bow-preview/unknown-level guards. Amulet normal pre/ascent actions checked and text shortened; Dewdrop 5%/waterskin normal line reviewed unchanged against consumeDew and existing DewExplanation. Native actual new windows pending next pair; secondary/class/dependency review remains open."
+      "review_notes": "Individual normal source and English wording reviewed2026-11-09. Javelin/Spike/Trident own tier/base-wear and flavor checked unchanged; inherited missile paths remain separately partial. Dart/tipped prompt now permits actual preserved multiple-use tips, plain darts no wear, cleaning one turn, high-bonus no wear correctly attributed to bonuses; tests real wear and existing bow-preview/unknown-level guards. Amulet normal pre/ascent actions checked and text shortened; Dewdrop 5%/waterskin normal line reviewed unchanged against consumeDew and existing DewExplanation. Native actual new windows pending next pair; secondary/class/dependency review remains open. Individual source review completed2026-11-09 after real393/394 portrait/landscape action, scrolling, hidden-state and saved-state native checks. Constructor/flavor sources checked independently; inherited mechanisms tracked separately. Missile damage/STR/accuracy, wear/merge/parent state and knowledge gates read against actual handlers. Equipment removal exception checked by actual Sword/Armor/Ring unequip regression with MagicImmune. Existing selective panel availability unchanged; no new control. This closes this source unit, not every subclass or the full audit."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/missiles/Kunai.java",
@@ -3924,13 +3928,13 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/missiles/MissileWeapon.java",
       "sha256": "804c1d563f9e003f4c38acc12c9e42084cbcf6ffb1f2bab375937f8e21a1edbe",
       "category": "weapon",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [
         "info",
         "info"
       ],
       "wording_corrected": true,
-      "review_notes": "Normal inherited/dynamic wording reviewed against current source. Changes use existing mechanics and known live values. Full source/variant and optional-panel review not complete. Current ordinary info paths also checked: knowledge-safe strength, ranged damage and wear estimates; real damage/accuracy/wear formulas untouched. Full inherited/class/secondary review remains partial. Duplicate generic distance instruction omitted when live range/adjacent accuracy is already displayed; retained for unknown stats. Avoid empty extra paragraphs. Source-only follow-up after383, not yet Android-verified. Actual Sickle capture exposed unaugmented unknown base damage; fixed +0 main damage examples to use public augmentation, never hidden level. Eighteen melee ability/base examples tested across all augmentations and hidden levels. Future APK384, not382/383."
+      "review_notes": "Normal inherited/dynamic wording reviewed against current source. Changes use existing mechanics and known live values. Full source/variant and optional-panel review not complete. Current ordinary info paths also checked: knowledge-safe strength, ranged damage and wear estimates; real damage/accuracy/wear formulas untouched. Full inherited/class/secondary review remains partial. Duplicate generic distance instruction omitted when live range/adjacent accuracy is already displayed; retained for unknown stats. Avoid empty extra paragraphs. Source-only follow-up after383, not yet Android-verified. Actual Sickle capture exposed unaugmented unknown base damage; fixed +0 main damage examples to use public augmentation, never hidden level. Eighteen melee ability/base examples tested across all augmentations and hidden levels. Future APK384, not382/383. Individual source review completed2026-11-09 after real393/394 portrait/landscape action, scrolling, hidden-state and saved-state native checks. Constructor/flavor sources checked independently; inherited mechanisms tracked separately. Missile damage/STR/accuracy, wear/merge/parent state and knowledge gates read against actual handlers. Equipment removal exception checked by actual Sword/Armor/Ring unequip regression with MagicImmune. Existing selective panel availability unchanged; no new control. This closes this source unit, not every subclass or the full audit."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/missiles/Shuriken.java",
@@ -3981,9 +3985,9 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/missiles/ThrowingSpike.java",
       "sha256": "3ccbc7bca20147cde42435b27d8fcbbd14e01778bc88c803bdec03a155acc4da",
       "category": "weapon",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_UNCHANGED",
       "description_methods": [],
-      "review_notes": "Individual normal source and English wording reviewed2026-11-09. Javelin/Spike/Trident own tier/base-wear and flavor checked unchanged; inherited missile paths remain separately partial. Dart/tipped prompt now permits actual preserved multiple-use tips, plain darts no wear, cleaning one turn, high-bonus no wear correctly attributed to bonuses; tests real wear and existing bow-preview/unknown-level guards. Amulet normal pre/ascent actions checked and text shortened; Dewdrop 5%/waterskin normal line reviewed unchanged against consumeDew and existing DewExplanation. Native actual new windows pending next pair; secondary/class/dependency review remains open."
+      "review_notes": "Individual normal source and English wording reviewed2026-11-09. Javelin/Spike/Trident own tier/base-wear and flavor checked unchanged; inherited missile paths remain separately partial. Dart/tipped prompt now permits actual preserved multiple-use tips, plain darts no wear, cleaning one turn, high-bonus no wear correctly attributed to bonuses; tests real wear and existing bow-preview/unknown-level guards. Amulet normal pre/ascent actions checked and text shortened; Dewdrop 5%/waterskin normal line reviewed unchanged against consumeDew and existing DewExplanation. Native actual new windows pending next pair; secondary/class/dependency review remains open. Individual source review completed2026-11-09 after real393/394 portrait/landscape action, scrolling, hidden-state and saved-state native checks. Constructor/flavor sources checked independently; inherited mechanisms tracked separately. Missile damage/STR/accuracy, wear/merge/parent state and knowledge gates read against actual handlers. Equipment removal exception checked by actual Sword/Armor/Ring unequip regression with MagicImmune. Existing selective panel availability unchanged; no new control. This closes this source unit, not every subclass or the full audit."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/missiles/ThrowingStone.java",
@@ -4007,9 +4011,9 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/missiles/Trident.java",
       "sha256": "433d58878f822ca5f75190642c2c66e65dadbf72f9a423480544a032bdc933f1",
       "category": "weapon",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_UNCHANGED",
       "description_methods": [],
-      "review_notes": "Individual normal source and English wording reviewed2026-11-09. Javelin/Spike/Trident own tier/base-wear and flavor checked unchanged; inherited missile paths remain separately partial. Dart/tipped prompt now permits actual preserved multiple-use tips, plain darts no wear, cleaning one turn, high-bonus no wear correctly attributed to bonuses; tests real wear and existing bow-preview/unknown-level guards. Amulet normal pre/ascent actions checked and text shortened; Dewdrop 5%/waterskin normal line reviewed unchanged against consumeDew and existing DewExplanation. Native actual new windows pending next pair; secondary/class/dependency review remains open."
+      "review_notes": "Individual normal source and English wording reviewed2026-11-09. Javelin/Spike/Trident own tier/base-wear and flavor checked unchanged; inherited missile paths remain separately partial. Dart/tipped prompt now permits actual preserved multiple-use tips, plain darts no wear, cleaning one turn, high-bonus no wear correctly attributed to bonuses; tests real wear and existing bow-preview/unknown-level guards. Amulet normal pre/ascent actions checked and text shortened; Dewdrop 5%/waterskin normal line reviewed unchanged against consumeDew and existing DewExplanation. Native actual new windows pending next pair; secondary/class/dependency review remains open. Individual source review completed2026-11-09 after real393/394 portrait/landscape action, scrolling, hidden-state and saved-state native checks. Constructor/flavor sources checked independently; inherited mechanisms tracked separately. Missile damage/STR/accuracy, wear/merge/parent state and knowledge gates read against actual handlers. Equipment removal exception checked by actual Sword/Armor/Ring unequip regression with MagicImmune. Existing selective panel availability unchanged; no new control. This closes this source unit, not every subclass or the full audit."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/missiles/darts/AdrenalineDart.java",
@@ -4280,25 +4284,25 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/MechanicsInfoPanel.java",
       "sha256": "25f67aab0285371a49e8613acfc0f868cbab8c1dafae4480161013adbe6b90a9",
       "category": "ui",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_UNCHANGED",
       "description_methods": [],
-      "review_notes": " Followup2026-11-09: actual Item.info notes/rings/origin composition, unknown origin/range gates, both item window/action layouts and bounded panel source read. Source-specific decorated crossing/rows/patch and mine labels written after actual room subclasses read; classification/source/recovery rules untouched. Transmutation ordinary text no longer promises unsupported armor/glyph changes, reflects actual restrictions/property transfer; actual sword transfer/knowledge regression. WndInfoItem title color now uses read-only public level, preserving stale wand-infusion metadata; actual native checks pending. Empty Weapon summary no longer adds blank paragraphs, zero-wear missiles omit meaningless Sharpshooting durability multiplier. Full3064core457suites pass; new portrait/landscape native pending393, not392. Full inherited/secondary room-rule and shared variants remain open."
+      "review_notes": " Followup2026-11-09: actual Item.info notes/rings/origin composition, unknown origin/range gates, both item window/action layouts and bounded panel source read. Source-specific decorated crossing/rows/patch and mine labels written after actual room subclasses read; classification/source/recovery rules untouched. Transmutation ordinary text no longer promises unsupported armor/glyph changes, reflects actual restrictions/property transfer; actual sword transfer/knowledge regression. WndInfoItem title color now uses read-only public level, preserving stale wand-infusion metadata; actual native checks pending. Empty Weapon summary no longer adds blank paragraphs, zero-wear missiles omit meaningless Sharpshooting durability multiplier. Full3064core457suites pass; new portrait/landscape native pending393, not392. Full inherited/secondary room-rule and shared variants remain open. Individual source review completed2026-11-09 after real393/394 portrait/landscape action, scrolling, hidden-state and saved-state native checks. Constructor/flavor sources checked independently; inherited mechanisms tracked separately. Missile damage/STR/accuracy, wear/merge/parent state and knowledge gates read against actual handlers. Equipment removal exception checked by actual Sword/Armor/Ring unequip regression with MagicImmune. Existing selective panel availability unchanged; no new control. This closes this source unit, not every subclass or the full audit."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/WndInfoItem.java",
       "sha256": "efda3d68c166ed551947094a539fa96bbb21a21cfef2559ad6c48c469a6427b7",
       "category": "windows",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [],
-      "review_notes": " Followup2026-11-09: actual Item.info notes/rings/origin composition, unknown origin/range gates, both item window/action layouts and bounded panel source read. Source-specific decorated crossing/rows/patch and mine labels written after actual room subclasses read; classification/source/recovery rules untouched. Transmutation ordinary text no longer promises unsupported armor/glyph changes, reflects actual restrictions/property transfer; actual sword transfer/knowledge regression. WndInfoItem title color now uses read-only public level, preserving stale wand-infusion metadata; actual native checks pending. Empty Weapon summary no longer adds blank paragraphs, zero-wear missiles omit meaningless Sharpshooting durability multiplier. Full3064core457suites pass; new portrait/landscape native pending393, not392. Full inherited/secondary room-rule and shared variants remain open."
+      "review_notes": " Followup2026-11-09: actual Item.info notes/rings/origin composition, unknown origin/range gates, both item window/action layouts and bounded panel source read. Source-specific decorated crossing/rows/patch and mine labels written after actual room subclasses read; classification/source/recovery rules untouched. Transmutation ordinary text no longer promises unsupported armor/glyph changes, reflects actual restrictions/property transfer; actual sword transfer/knowledge regression. WndInfoItem title color now uses read-only public level, preserving stale wand-infusion metadata; actual native checks pending. Empty Weapon summary no longer adds blank paragraphs, zero-wear missiles omit meaningless Sharpshooting durability multiplier. Full3064core457suites pass; new portrait/landscape native pending393, not392. Full inherited/secondary room-rule and shared variants remain open. Individual source review completed2026-11-09 after real393/394 portrait/landscape action, scrolling, hidden-state and saved-state native checks. Constructor/flavor sources checked independently; inherited mechanisms tracked separately. Missile damage/STR/accuracy, wear/merge/parent state and knowledge gates read against actual handlers. Equipment removal exception checked by actual Sword/Armor/Ring unequip regression with MagicImmune. Existing selective panel availability unchanged; no new control. This closes this source unit, not every subclass or the full audit."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/WndUseItem.java",
       "sha256": "baa92479e1e3d2b5b7d94e5554c28201c17252ea645936596bc3569a9dca33ea",
       "category": "windows",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_UNCHANGED",
       "description_methods": [],
-      "review_notes": " Followup2026-11-09: actual Item.info notes/rings/origin composition, unknown origin/range gates, both item window/action layouts and bounded panel source read. Source-specific decorated crossing/rows/patch and mine labels written after actual room subclasses read; classification/source/recovery rules untouched. Transmutation ordinary text no longer promises unsupported armor/glyph changes, reflects actual restrictions/property transfer; actual sword transfer/knowledge regression. WndInfoItem title color now uses read-only public level, preserving stale wand-infusion metadata; actual native checks pending. Empty Weapon summary no longer adds blank paragraphs, zero-wear missiles omit meaningless Sharpshooting durability multiplier. Full3064core457suites pass; new portrait/landscape native pending393, not392. Full inherited/secondary room-rule and shared variants remain open."
+      "review_notes": " Followup2026-11-09: actual Item.info notes/rings/origin composition, unknown origin/range gates, both item window/action layouts and bounded panel source read. Source-specific decorated crossing/rows/patch and mine labels written after actual room subclasses read; classification/source/recovery rules untouched. Transmutation ordinary text no longer promises unsupported armor/glyph changes, reflects actual restrictions/property transfer; actual sword transfer/knowledge regression. WndInfoItem title color now uses read-only public level, preserving stale wand-infusion metadata; actual native checks pending. Empty Weapon summary no longer adds blank paragraphs, zero-wear missiles omit meaningless Sharpshooting durability multiplier. Full3064core457suites pass; new portrait/landscape native pending393, not392. Full inherited/secondary room-rule and shared variants remain open. Individual source review completed2026-11-09 after real393/394 portrait/landscape action, scrolling, hidden-state and saved-state native checks. Constructor/flavor sources checked independently; inherited mechanisms tracked separately. Missile damage/STR/accuracy, wear/merge/parent state and knowledge gates read against actual handlers. Equipment removal exception checked by actual Sword/Armor/Ring unequip regression with MagicImmune. Existing selective panel availability unchanged; no new control. This closes this source unit, not every subclass or the full audit."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/qol/ItemOrigins.java",
@@ -4323,15 +4327,15 @@
       "wording_corrected": true
     }
   ],
-  "completed_units": 161,
+  "completed_units": 170,
   "latest_tests": {
-    "core_tests": 3068,
+    "core_tests": 3070,
     "suites": 457,
     "failures": 0,
     "errors": 0,
     "skipped": 0,
-    "log": "/workspace/apd-seed-rules-evidence-20261109/accepted-full",
+    "log": "/workspace/apd-defensive-weapon-evidence-20261109/accepted-full",
     "android_verified": false,
-    "scope": "Post393 live ability, seed healing/challenge text, actual invalid tipping selector guard; real Android picker/normal windows pending394.393published."
+    "scope": "394published3068core/12targeted native; later binding/Champion/passiveblock3070core passed; new Android cases pending395."
   }
 }
