@@ -6,7 +6,7 @@
   "message_entries": 2432,
   "reviewed_units": 436,
   "corrected_units": 354,
-  "unresolved_units": 10,
+  "unresolved_units": 7,
   "category_counts": {
     "apd": 1,
     "mechanics": 38,
@@ -563,11 +563,11 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/Heap.java",
       "sha256": "affeb3a2729ddf90dbe90a5229c15650d39dc5f6cda9e3608289f56eb981400a",
       "category": "items",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_UNCHANGED",
       "description_methods": [
         "info"
       ],
-      "review_notes": "Read actual info dispatcher2026-11-09 and matching English chest/GoldenKey/CrystalKey/tomb/skeleton/remains text. Crystal chest intentionally discloses artifact/wand/ring category only; ordinary heap delegates original item.info and its knowledge guards. Current prose clear, no change warranted. Full opening/explosion/haunting/serialization interactions remain unreviewed here, so not complete."
+      "review_notes": "2026-11-09: Full476line own source and chest/key/tomb/remains/shop descriptions read: open/source capture, stack merge, fire/frost/bomb loot effects, public Crystal chest category, pure shop preview and save filtering. General descriptions remain short and do not expose unopened hidden levels or curses. Existing origin/container/recovery and preview purity tests pass. No changes."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/Honeypot.java",
@@ -582,12 +582,12 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/Item.java",
       "sha256": "39b729cc3c92af7daa281825673cd0959209b7a5bfa6a5b7cb209ad647cb8112",
       "category": "items",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_UNCHANGED",
       "description_methods": [
         "info",
         "desc"
       ],
-      "review_notes": " Followup2026-11-09: actual Item.info notes/rings/origin composition, unknown origin/range gates, both item window/action layouts and bounded panel source read. Source-specific decorated crossing/rows/patch and mine labels written after actual room subclasses read; classification/source/recovery rules untouched. Transmutation ordinary text no longer promises unsupported armor/glyph changes, reflects actual restrictions/property transfer; actual sword transfer/knowledge regression. WndInfoItem title color now uses read-only public level, preserving stale wand-infusion metadata; actual native checks pending. Empty Weapon summary no longer adds blank paragraphs, zero-wear missiles omit meaningless Sharpshooting durability multiplier. Full3064core457suites pass; new portrait/landscape native pending393, not392. Full inherited/secondary room-rule and shared variants remain open."
+      "review_notes": "2026-11-09: Full802line own source read: action/pickup/drop/collection, immutable origin/range propagation through stack split/merge/copy, saved identity and note handling, visible versus true levels, identification and title, common info suffixes, persistence, quickslot validation and projectile callback timing. Public info never calls generic MechanicsDetails.item; unknown origin/ranges and ring values guarded by reviewed providers. Existing all-category purity, knowledge, save, sorting and projectile tests pass; no changes."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/ItemStatusHandler.java",
@@ -691,13 +691,13 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/armor/Armor.java",
       "sha256": "071416bf430630f529fbae28a7a6cf03ad0aabd10b4af055f28832f89063425a",
       "category": "armor",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [
         "info",
         "desc"
       ],
       "wording_corrected": true,
-      "review_notes": "Normal inherited/dynamic wording reviewed against current source. Changes use existing mechanics and known live values. Full source/variant and optional-panel review not complete. Current ordinary info paths also checked: knowledge-safe strength, ranged damage and wear estimates; real damage/accuracy/wear formulas untouched. Full inherited/class/secondary review remains partial."
+      "review_notes": "2026-11-09: Full924line own source and every English armor field reviewed: min/max/strength/augment/encumbrance, seal transfer and cooldown, identification, curse/glyph/Holy Ward/Body Form/aura overrides, generation probabilities, item values and saves. Short unidentified-weight warning; attached seal now accurately states ready condition, half-health inclusive threshold and starvation exclusion. Existing actual odd-HP activation/hunger test now also checks ordinary armor text. All3135core457pass. Future actual sealed-armor inspection fixture added, not in413 cutoff."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/armor/ClassArmor.java",
@@ -4478,7 +4478,7 @@
       "review_notes": "2026-11-09 individually inspected previously omitted plant window. Removed universal plant calculations supplier/button, outside owner-retained mechanic-specific groups, keeping normal species/Warden descriptions and existing plain window. No new layout or effects. Thirty actual plant windows across NONE/WARDEN prepared to assert no expander, text screen bounds, pure save/time; Android pending next pair."
     }
   ],
-  "completed_units": 427,
+  "completed_units": 430,
   "latest_tests": "3134core457all0 after full Weapon/Melee/ability/timing/preparation own-provider reviews and two ordinary wording changes.412source8bd99c644build/core/compile passed, native in progress.411originalnative rejected stale exact Catalyst phrase; full original-APK test-only retry42613038722running, originals/sourcefailurebranch preserved.410 latestpublished.",
   "message_inventory_entries": 5343,
   "message_inventory_counting": "Current authored English property entries across nine files;2432 item entries. Two concise zero-Healing dew/waterskin keys added. Exact Adult OFF/ON checks retained."

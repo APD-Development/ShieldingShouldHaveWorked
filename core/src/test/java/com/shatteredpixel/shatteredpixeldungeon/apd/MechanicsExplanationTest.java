@@ -1160,7 +1160,7 @@ public class MechanicsExplanationTest {
   saved.put("cooldown",37);shield.restoreFromBundle(saved);shield.incShield(2);String active=shield.desc();assertTrue(active,active.contains("Shield remaining: 2"));assertTrue(active,active.contains("Recharge time left: 37 turns"));assertFalse(active,active.contains("max of 50"));
  }
  @Test public void sealShieldActivationExplanationMatchesOddHpThresholdAndHungerExclusion() throws Exception {
-  hero.sprite=quietSprite();hero.damageInterrupt=false;hero.heroClass=HeroClass.ROGUE;hero.talents.get(0).put(Talent.IRON_WILL,2);hero.HT=21;
+  hero.sprite=quietSprite();hero.damageInterrupt=false;hero.heroClass=HeroClass.ROGUE;hero.talents.get(0).put(Talent.IRON_WILL,2);hero.HT=21;armor.affixSeal(new com.shatteredpixel.shatteredpixeldungeon.items.BrokenSeal());String ordinary=armor.info();assertTrue(ordinary,ordinary.contains("When ready, the attached seal grants _"+armor.checkSeal().maxShield(armor.tier,armor.level())+" shielding_"));assertTrue(ordinary,ordinary.contains("half health or lower"));assertTrue(ordinary,ordinary.contains("Starvation does not trigger it"));
   for(int startingHp:new int[]{10,11,12})for(boolean hunger:new boolean[]{false,true}){
    Buff.detach(hero,com.shatteredpixel.shatteredpixeldungeon.items.BrokenSeal.WarriorShield.class);hero.HP=startingHp;com.shatteredpixel.shatteredpixeldungeon.items.BrokenSeal.WarriorShield shield=Buff.affect(hero,com.shatteredpixel.shatteredpixeldungeon.items.BrokenSeal.WarriorShield.class);
    String text=BuffExplanation.details(shield);assertTrue(text,text.contains("floor(maximum HP / 2)"));assertTrue(text,text.contains("non-hunger damage"));assertEquals(0,shield.remainingCooldown());
