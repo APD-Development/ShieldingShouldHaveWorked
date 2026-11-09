@@ -1113,6 +1113,11 @@ public class MechanicsExplanationTest {
    com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Artifact item=(com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Artifact)Class.forName("com.shatteredpixel.shatteredpixeldungeon.items.artifacts."+name).getDeclaredConstructor().newInstance();item.levelKnown=item.cursedKnown=item.cursed=true;hero.belongings.artifact=item;
    com.watabou.utils.Bundle before=new com.watabou.utils.Bundle(),after=new com.watabou.utils.Bundle();item.storeInBundle(before);String heroBefore=savedDescriptionHero();Random.pushGenerator(513);int next=Random.Int();Random.popGenerator();Random.pushGenerator(513);String text;
    try{text=item.info();assertEquals(name,next,Random.Int());}finally{Random.popGenerator();}
+   if(name.equals("DriedRose")){
+    java.lang.reflect.Field scene=com.watabou.noosa.Game.class.getDeclaredField("scene");scene.setAccessible(true);Object previous=scene.get(com.watabou.noosa.Game.instance);Object gameScene=unsafe.getClass().getMethod("allocateInstance",Class.class).invoke(unsafe,com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene.class);
+    java.lang.reflect.Field spawned=com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Ghost.Quest.class.getDeclaredField("spawned");spawned.setAccessible(true);boolean oldSpawned=spawned.getBoolean(null);
+    try{spawned.setBoolean(null,false);scene.set(com.watabou.noosa.Game.instance,gameScene);assertTrue(item.info(),item.info().contains("hostile wraith"));}finally{spawned.setBoolean(null,oldSpawned);scene.set(com.watabou.noosa.Game.instance,previous);}
+   }
    item.storeInBundle(after);assertEquals(name,before.toString(),after.toString());assertEquals(name,heroBefore,savedDescriptionHero());
    for(String jargon:new String[]{"passive effect is equipped","base action time","no universal cursed-artifact"})assertFalse(name+" "+text,text.contains(jargon));
    if(name.equals("LloydsBeacon")){assertTrue(text.contains("teleport actions still work"));assertTrue(item.actions(hero).contains("ZAP"));assertTrue(item.actions(hero).contains("SET"));}

@@ -4,8 +4,8 @@
   "counting": "Source units, not distinct item types. reviewed_units includes partial reviews; completed_units excludes partial/pending dependency. corrected_units counts source units with corrections, including incomplete reviews. Inventory/export/tests alone are not an individual review.",
   "source_units": 427,
   "message_entries": 2411,
-  "reviewed_units": 292,
-  "corrected_units": 284,
+  "reviewed_units": 311,
+  "corrected_units": 292,
   "unresolved_units": 286,
   "category_counts": {
     "apd": 1,
@@ -898,7 +898,7 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/artifacts/AlchemistsToolkit.java",
       "sha256": "8a61e86d42104e47d79f902de6703672683c9ac67e58d7ba67c32ce6a8eabfab",
       "category": "artifacts",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
+      "status": "PARTIAL",
       "description_methods": [
         "desc"
       ],
@@ -918,7 +918,7 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/artifacts/CapeOfThorns.java",
       "sha256": "3b409f5f6a5156fb3e5ba198fb3d0f47115923393f274cbdb93344030b01d60c",
       "category": "artifacts",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
+      "status": "PARTIAL",
       "description_methods": [
         "desc",
         "desc"
@@ -930,7 +930,7 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/artifacts/ChaliceOfBlood.java",
       "sha256": "489f94d26d346bc1cac68afc7d5d2f6d49a2b602706ee46e5b69fb77531ecb97",
       "category": "artifacts",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
+      "status": "PARTIAL",
       "description_methods": [
         "desc"
       ],
@@ -941,7 +941,7 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/artifacts/CloakOfShadows.java",
       "sha256": "def10f0836ccf9b7728a4c9c885ea46eff5a8053c508640be18df0273dfe5ea1",
       "category": "artifacts",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
+      "status": "PARTIAL",
       "description_methods": [
         "desc"
       ],
@@ -952,7 +952,7 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/artifacts/DriedRose.java",
       "sha256": "5872598870678087478d947ec8cafb7130ea86c3d6caa4b0390099c876a94562",
       "category": "artifacts",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
+      "status": "PARTIAL",
       "description_methods": [
         "desc"
       ],
@@ -963,7 +963,7 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/artifacts/EtherealChains.java",
       "sha256": "4132242fed0dc6f836556b33ff0b2228b9e6a93dc14847ad87a19a209c6e09f8",
       "category": "artifacts",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
+      "status": "PARTIAL",
       "description_methods": [
         "desc"
       ],
@@ -974,7 +974,7 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/artifacts/HolyTome.java",
       "sha256": "2c50135839e0d44e47165bf77c3b1e7334c827d805e638e17938501af9f1773d",
       "category": "artifacts",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
+      "status": "PARTIAL",
       "description_methods": [],
       "wording_corrected": true,
       "review_notes": " All15 actual curse branches reviewed; concise conditional ordinary text,15type read-only regression, actual Horn/Chalice effects tested. Existing advanced panels retained pending owner review; full non-curse/class paths may remain incomplete."
@@ -983,7 +983,7 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/artifacts/HornOfPlenty.java",
       "sha256": "a19082d3277f56d485d9c447c3d5596fbb1f83b94d1bb1b05071316770bfc130",
       "category": "artifacts",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
+      "status": "PARTIAL",
       "description_methods": [
         "desc"
       ],
@@ -994,7 +994,7 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/artifacts/LloydsBeacon.java",
       "sha256": "7fad1678021e0adfc533eaa3f9d0b3aeb7928fbd96edaa11d706518b7a068fc2",
       "category": "artifacts",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
+      "status": "PARTIAL",
       "description_methods": [
         "desc"
       ],
@@ -1027,7 +1027,7 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/artifacts/SkeletonKey.java",
       "sha256": "ed0a1565b5f34c81f94bdd2f3143d6f6f1945705c8ee148199b064ee004be406",
       "category": "artifacts",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
+      "status": "PARTIAL",
       "description_methods": [
         "desc"
       ],
@@ -1038,7 +1038,7 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/artifacts/TalismanOfForesight.java",
       "sha256": "30179e55ad8f08753b4237227b5ea74ed8d19417c305e9bc1b95f53bc33c8304",
       "category": "artifacts",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
+      "status": "PARTIAL",
       "description_methods": [
         "desc"
       ],
@@ -3470,10 +3470,12 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/melee/Gauntlet.java",
       "sha256": "a5ff922bc2ab6bf87b0e970a2384528c03f67feebce823e3989d750dffb72d86",
       "category": "weapon",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
+      "status": "PARTIAL",
       "description_methods": [
         "abilityInfo"
-      ]
+      ],
+      "wording_corrected": true,
+      "review_notes": "Source-specific normal stat and ability paths read, common ability implementation and Hero/Buff interactions checked. Concise dynamic ability prose, +0 labels; combo explicitly consumed, guard end condition retained, real evasion/accuracy/speed and enchantment power preserved. Full inherited/class/secondary review remains incomplete."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/melee/Glaive.java",
@@ -3490,10 +3492,12 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/melee/Gloves.java",
       "sha256": "6ee8b9f5aeadc9974da74a2bad76113fb6b6b6fe96fdc605771e01a176d28e03",
       "category": "weapon",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
+      "status": "PARTIAL",
       "description_methods": [
         "abilityInfo"
-      ]
+      ],
+      "wording_corrected": true,
+      "review_notes": "Source-specific normal stat and ability paths read, common ability implementation and Hero/Buff interactions checked. Concise dynamic ability prose, +0 labels; combo explicitly consumed, guard end condition retained, real evasion/accuracy/speed and enchantment power preserved. Full inherited/class/secondary review remains incomplete."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/melee/Greataxe.java",
@@ -3510,10 +3514,12 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/melee/Greatshield.java",
       "sha256": "7b3327c901a6927f9e96059fab2b35bc2fef43077800771f2e9401ee938163c8",
       "category": "weapon",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
+      "status": "PARTIAL",
       "description_methods": [
         "abilityInfo"
-      ]
+      ],
+      "wording_corrected": true,
+      "review_notes": "Source-specific normal stat and ability paths read, common ability implementation and Hero/Buff interactions checked. Concise dynamic ability prose, +0 labels; combo explicitly consumed, guard end condition retained, real evasion/accuracy/speed and enchantment power preserved. Full inherited/class/secondary review remains incomplete."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/melee/Greatsword.java",
@@ -3595,10 +3601,12 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/melee/Quarterstaff.java",
       "sha256": "93a64a718a31160642a1c47387a9807b6cc1f2fc082e99ef23b18ce26f6f2410",
       "category": "weapon",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
+      "status": "PARTIAL",
       "description_methods": [
         "abilityInfo"
-      ]
+      ],
+      "wording_corrected": true,
+      "review_notes": "Source-specific normal stat and ability paths read, common ability implementation and Hero/Buff interactions checked. Concise dynamic ability prose, +0 labels; combo explicitly consumed, guard end condition retained, real evasion/accuracy/speed and enchantment power preserved. Full inherited/class/secondary review remains incomplete."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/melee/Rapier.java",
@@ -3615,38 +3623,46 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/melee/RoundShield.java",
       "sha256": "64d4f46846b4245735429ce2e6752f51be18d0994a17b18eb41d7843257961a2",
       "category": "weapon",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
+      "status": "PARTIAL",
       "description_methods": [
         "abilityInfo"
-      ]
+      ],
+      "wording_corrected": true,
+      "review_notes": "Source-specific normal stat and ability paths read, common ability implementation and Hero/Buff interactions checked. Concise dynamic ability prose, +0 labels; combo explicitly consumed, guard end condition retained, real evasion/accuracy/speed and enchantment power preserved. Full inherited/class/secondary review remains incomplete."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/melee/RunicBlade.java",
       "sha256": "0a5dfff6f05ee52272c2ab8b654d0fd13a07cb2ea6eb6030d6e2c317096b804c",
       "category": "weapon",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
+      "status": "PARTIAL",
       "description_methods": [
         "abilityInfo"
-      ]
+      ],
+      "wording_corrected": true,
+      "review_notes": "Source-specific normal stat and ability paths read, common ability implementation and Hero/Buff interactions checked. Concise dynamic ability prose, +0 labels; combo explicitly consumed, guard end condition retained, real evasion/accuracy/speed and enchantment power preserved. Full inherited/class/secondary review remains incomplete."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/melee/Sai.java",
       "sha256": "78e1310d11ef01353105defe8d0507b0ec3ed1acd03176e4e98d42700dcbc9ac",
       "category": "weapon",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
+      "status": "PARTIAL",
       "description_methods": [
         "abilityInfo",
         "desc"
-      ]
+      ],
+      "wording_corrected": true,
+      "review_notes": "Source-specific normal stat and ability paths read, common ability implementation and Hero/Buff interactions checked. Concise dynamic ability prose, +0 labels; combo explicitly consumed, guard end condition retained, real evasion/accuracy/speed and enchantment power preserved. Full inherited/class/secondary review remains incomplete."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/melee/Scimitar.java",
       "sha256": "aa3e221e4cb424455d2854c2eb58ad1b348e591d89d1d06333efda373ab79003",
       "category": "weapon",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
+      "status": "PARTIAL",
       "description_methods": [
         "abilityInfo"
-      ]
+      ],
+      "wording_corrected": true,
+      "review_notes": "Source-specific normal stat and ability paths read, common ability implementation and Hero/Buff interactions checked. Concise dynamic ability prose, +0 labels; combo explicitly consumed, guard end condition retained, real evasion/accuracy/speed and enchantment power preserved. Full inherited/class/secondary review remains incomplete."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/melee/Shortsword.java",

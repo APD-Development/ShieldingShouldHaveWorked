@@ -241,7 +241,9 @@ public class DriedRose extends Artifact {
 	public String desc() {
 		if (!Ghost.Quest.completed()
 				&& (ShatteredPixelDungeon.scene() instanceof GameScene || ShatteredPixelDungeon.scene() instanceof AlchemyScene)){
-			return Messages.get(this, "desc_no_quest");
+			String description = Messages.get(this, "desc_no_quest");
+            if (isEquipped(Dungeon.hero) && cursed) description += "\n\n" + Messages.get(this, "desc_cursed");
+            return description;
 		}
 		
 		String desc = super.desc();
