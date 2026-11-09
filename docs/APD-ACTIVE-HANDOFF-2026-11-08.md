@@ -204,3 +204,8 @@ Barkskin/ArcaneArmor ordinary text shorter with live range and next weakening; n
 ### Dart and coating own-source closure
 
 Full Dart/TippedDart own paths individually reconciled: crossbow cache/knowledge/thread isolation, charged damage versus tipuses/AOE, coating2perseed/1turn, wear and source/target Lotus/DurableTips/100usecap, cleaning/impactconversion/merge waste/seedmap. Existing concise prose correct; no additional gameplay or wording changes. Individual tips, MissileWeapon and shared effects remain separately tracked.436units433full/partial350corrected290complete146unresolved;5339English keys. Later than406producing source; review closures only.
+
+
+### Rejected404 preserved independently of later retry
+
+Private rejected404draft retains both original unaccepted APKs in explicitly UNVERIFIED archive plus raw both-variant rejected evidence; preservation42591322817SUCCESS. No release publication, no accepted-runtime claim and no rebuild. Original source3b247dec53962815ff9895998285d268b28eaaad preserved.405test-only retry42590603308 compiled corrected instrumentation only and now runs all12cases on immutable original405pair; sourceb5495528fcc772d2f37c0dcb625feaab0a6ecbb3.406build42591183228pending; latestverified403.
