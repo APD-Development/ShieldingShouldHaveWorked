@@ -1660,7 +1660,7 @@
         "info"
       ],
       "wording_corrected": true,
-      "review_notes": "Regular potion source/effect and known/unknown normal description reviewed. Unknown type preserved for all 24 regular/exotic types, durations sourced from actual buffs, existing counters retained, challenge warning applies only to known Healing. Source review complete; Android render verification remains pending. Normal zero-Healing rule notice now matches actual hero healing behavior; Shielding remains unaffected."
+      "review_notes": "Regular potion source/effect and known/unknown normal description reviewed. Unknown type preserved for all 24 regular/exotic types, durations sourced from actual buffs, existing counters retained, challenge warning applies only to known Healing. Source review complete; Android render verification remains pending. Normal zero-Healing rule notice now matches actual hero healing behavior; Shielding remains unaffected. Followup2026-11-09 normal potion text names nonstacking healing; actual PotionOfHealing.heal after a tick replaces smaller remainder rather than adding totals. Actual setHeal keeps largest pool and strongest rate/flat values, matching concise normal Healing status. Original effect, parameters and save fields unchanged. Buff text outside427catalog not counted as another item; actual new item/status windows pending399."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/potions/PotionOfInvisibility.java",
@@ -4349,6 +4349,6 @@
     }
   ],
   "completed_units": 206,
-  "latest_tests": "3098core/457suites, no failures/errors/skips; actual Eye wall sensing/range/Mimic exclusion and Salt hunger/locked regeneration. Vial108case matrix also verifies retained Healing0 details. Full evidence /workspace/apd-sight-hunger-healing-evidence-20261109/accepted-full. New native windows pending399.",
+  "latest_tests": "3099core/457suites, no failures/errors/skips; actual repeated healing potion and best-property merge checks. Full evidence /workspace/apd-healing-nonstack-evidence-20261109/accepted-full. New normal item/status native windows pending399;398passed3096core/12native, staging.",
   "message_inventory_entries": 5338
 }

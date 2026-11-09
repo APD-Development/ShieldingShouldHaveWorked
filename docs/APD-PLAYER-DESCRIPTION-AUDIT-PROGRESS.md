@@ -280,3 +280,8 @@ All3096core457suites pass. Existing Ferret/Clover/RatSkull/MimicTooth detail par
 ### Sight, hunger and healing trinkets
 
 All3098core457suites pass. Eye normal description names stealthy-Mimic sensing exclusion; actual walls/inside/outside range verified at0–3. Salt real hunger and regeneration rates checked including locked-floor exception; existing detail now states it too. Vial108real healing cases also verify clear zero-Healing detail and base cap, preserve fraction credit; no invented no-hero HP. Three existing detail paragraphs shortened and actual normal/expanded/zeroHealing window fixtures prepared for399, not398alreadybuilding.418full/partial337corrected206complete221unresolved,5338English entries.398sourceb7829a700bcfa396487a62f9985863d81208543f build42574111089, stage request committed;397published fallback. Continue audit while398native runs.
+
+
+### Gradual healing nonstacking warning
+
+All3099core457suites pass. Normal Potion of Healing warns repeated doses do not add their healing together; normal Healing status concise, original two base HP amounts retained with clear before-bonus/penalty label. Actual potion.heal after tick restores larger remaining pool, not sum; independent rate/flat strongest-property merge checked. No actual healing or calculation logic changed. Counts418full/partial337corrected206complete221unresolved,5338English. New actual item/status windows pending399; source-only Android/desktop/instrumentation compilation requested for latestsource.398build42574111089 passed3096core/full12API34, stage42574157508uploading. Need rootdownload hashes/source scan and manual new scroll/status/trinket expanded captures then publish398. Target06:53:50cadence;397fallbackpublished. Continue audit.
