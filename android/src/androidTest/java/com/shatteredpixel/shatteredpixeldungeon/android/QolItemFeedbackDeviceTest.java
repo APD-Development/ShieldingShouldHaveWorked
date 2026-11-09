@@ -483,6 +483,17 @@ public class QolItemFeedbackDeviceTest {
             }
         }finally{TopScoresDeviceTest.render(()->{for(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff buff:new java.util.ArrayList<>(Dungeon.hero.buffs(Ring.RingBuff.class)))buff.detach();Dungeon.hero.belongings.ring=(Ring)previous[0];Dungeon.hero.belongings.misc=previous[1];if(previous[0]!=null)previous[0].activate(Dungeon.hero);if(previous[1] instanceof Ring)previous[1].activate(Dungeon.hero);});}
     }
+    private static void sightHungerHealingTrinketDescriptionsRender()throws Exception{
+        com.shatteredpixel.shatteredpixeldungeon.items.trinkets.EyeOfNewt eye=new com.shatteredpixel.shatteredpixeldungeon.items.trinkets.EyeOfNewt();eye.level(3);eye.levelKnown=eye.cursedKnown=true;showItem(eye,"Stealthy mimics evade this sensing","qol-eye-of-newt-known-sensing-limit.png",true,true);
+        calculationWindow(()->new WndInfoItem(eye),"sight factor = 0.875","qol-eye-of-newt-existing-detail-clear.png");
+        com.shatteredpixel.shatteredpixeldungeon.items.trinkets.SaltCube salt=new com.shatteredpixel.shatteredpixeldungeon.items.trinkets.SaltCube();salt.level(3);salt.levelKnown=salt.cursedKnown=true;showItem(salt,"penalty pauses on locked floors","qol-salt-cube-known-locked-limit.png",true,true);
+        calculationWindow(()->new WndInfoItem(salt),"penalty pauses on locked floors","qol-salt-cube-existing-detail-clear.png");
+        com.shatteredpixel.shatteredpixeldungeon.items.trinkets.VialOfBlood vial=new com.shatteredpixel.shatteredpixeldungeon.items.trinkets.VialOfBlood();vial.level(3);vial.levelKnown=vial.cursedKnown=true;
+        calculationWindow(()->new WndInfoItem(vial),"base limit is","qol-vial-existing-detail-clear.png");
+        final com.watabou.utils.Bundle rules=new com.watabou.utils.Bundle();TopScoresDeviceTest.render(()->Dungeon.apdStoreCustomRules(rules));
+        try{TopScoresDeviceTest.render(()->{com.watabou.utils.Bundle all=new com.watabou.utils.Bundle(),values=new com.watabou.utils.Bundle();com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomDungeonRules.defaults().with(com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomDungeonRules.Slider.HEALING,0).store(values);all.put("apd_custom_rules",values);Dungeon.apdRestoreCustomRules(all);});calculationWindow(()->new WndInfoItem(vial),"Your current rules prevent health restoration","qol-vial-existing-detail-healing-zero.png");}finally{TopScoresDeviceTest.render(()->Dungeon.apdRestoreCustomRules(rules));}
+
+    }
     private static void retainedBlastScrollDescriptionsRender()throws Exception{
         com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRetribution retribution=new com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRetribution();retribution.anonymize();showItem(retribution,"including allies","qol-retribution-normal-retained.png",true,true);
         calculationWindow(()->new WndInfoItem(retribution),"At your current health","qol-retribution-existing-detail-clear.png");
@@ -1168,6 +1179,7 @@ public class QolItemFeedbackDeviceTest {
             conciseScrollStatusDescriptionsRender();
             conciseRechargeDescriptionsRender();
             retainedBlastScrollDescriptionsRender();
+            sightHungerHealingTrinketDescriptionsRender();
             divineInspirationChoiceDescriptionRenders();
             imbueAndDisabledVialDescriptionsRender();
             reviewedElixirDescriptionsRender();

@@ -275,3 +275,8 @@ All3096core457suites pass. Reproduced hidden-count leak in existing optional Psi
 ### Four trinket secondary explanations
 
 All3096core457suites pass. Existing Ferret/Clover/RatSkull/MimicTooth detail paragraphs shortened with formulas and meaningful limits kept. Current level label plain; shared redundant level-indexed footer removed. Unknown guards/RNG/save checks retained. Four own legitimate0–3source reviews complete after actual combat/roll/generation handlers and manually viewed397normal/expanded captures; shared remaining provider branches partial. Existing controls retained pending owner review, no new panels.418full/partial337corrected203complete224unresolved,5338English entries. New concise expanded windows pending398; queue next pair from current verified source around06:37–06:39 for06:53:50cadence while continuing audit.397published fallback.
+
+
+### Sight, hunger and healing trinkets
+
+All3098core457suites pass. Eye normal description names stealthy-Mimic sensing exclusion; actual walls/inside/outside range verified at0–3. Salt real hunger and regeneration rates checked including locked-floor exception; existing detail now states it too. Vial108real healing cases also verify clear zero-Healing detail and base cap, preserve fraction credit; no invented no-hero HP. Three existing detail paragraphs shortened and actual normal/expanded/zeroHealing window fixtures prepared for399, not398alreadybuilding.418full/partial337corrected206complete221unresolved,5338English entries.398sourceb7829a700bcfa396487a62f9985863d81208543f build42574111089, stage request committed;397published fallback. Continue audit while398native runs.
