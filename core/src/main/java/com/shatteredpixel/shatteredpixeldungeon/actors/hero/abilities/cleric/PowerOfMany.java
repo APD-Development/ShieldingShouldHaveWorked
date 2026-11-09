@@ -207,6 +207,25 @@ public class PowerOfMany extends ArmorAbility {
 			announced = true;
 		}
 
+        /** Description-only state; does not advance or extend the effect. */
+        public boolean isDurationExtendedByLink(){
+            return target!=null&&(target.buff(BeamingRay.BeamingRayBoost.class)!=null
+                    ||target.buff(LifeLinkSpell.LifeLinkSpellBuff.class)!=null);
+        }
+
+        @Override
+        public String desc(){
+            if(Messages.lang()!=com.shatteredpixel.shatteredpixeldungeon.messages.Languages.ENGLISH)return super.desc();
+            boolean ray=target!=null&&target.buff(BeamingRay.BeamingRayBoost.class)!=null;
+            boolean link=target!=null&&target.buff(LifeLinkSpell.LifeLinkSpellBuff.class)!=null;
+            int rayRank=Dungeon.hero==null?0:Dungeon.hero.pointsInTalent(Talent.BEAMING_RAY);
+            int linkRank=Dungeon.hero==null?0:Dungeon.hero.pointsInTalent(Talent.LIFE_LINK);
+            float reduction=link?100f*(1f-(.70f-.05f*linkRank)):25f;
+            String marked=ray?Messages.get(this,"desc_beaming_apd",Messages.decimalFormat("0.##",100f*((1.3f+.05f*rayRank)-1f)))+" ":"";
+            String extended=isDurationExtendedByLink()?Messages.get(this,"desc_linked_apd")+" ":"";
+            return Messages.get(this,"desc_apd",Messages.decimalFormat("0.##",reduction),marked,extended,dispTurns());
+        }
+
 		@Override
 		public int icon() {
 			return BuffIndicator.MANY_POWER;

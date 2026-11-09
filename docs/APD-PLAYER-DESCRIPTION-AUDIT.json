@@ -2,10 +2,10 @@
   "scope": "Every item category, inherited and generated descriptions, enchantments/glyphs/curses, class interactions and existing secondary panels. Inventory is not review completion.",
   "baseline_commit": "32f4f3beab4c23b404c3cb1d43bfa06a39165e70",
   "counting": "Source units, not distinct item types. reviewed_units includes partial reviews; completed_units excludes partial/pending dependency. corrected_units counts source units with corrections, including incomplete reviews. Inventory/export/tests alone are not an individual review.",
-  "source_units": 442,
+  "source_units": 443,
   "message_entries": 2432,
-  "reviewed_units": 442,
-  "corrected_units": 356,
+  "reviewed_units": 443,
+  "corrected_units": 357,
   "unresolved_units": 8,
   "category_counts": {
     "apd": 1,
@@ -32,7 +32,7 @@
     "plants": 14,
     "ui": 1,
     "windows": 8,
-    "abilities": 1,
+    "abilities": 2,
     "cleric_spells": 2,
     "buffs": 5,
     "talents": 1
@@ -229,7 +229,7 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/MechanicsDetails.java",
-      "sha256": "53016ac5af7660b516b55c76d16c2fdceacf73f4e573b8e1c86c6e9c1aca6a7f",
+      "sha256": "7142cfef064c0a2b0801e56b7954203fe996a95c0923a85fa5fc0c5a2acea1a4",
       "category": "mechanics",
       "status": "PARTIAL_REVIEW",
       "description_methods": [],
@@ -4530,10 +4530,22 @@
       ],
       "review_notes": "2026-11-09: Full own source read; normal English rank/metamorph text cross-check continues. Fixed Hearty Meal display-only raw4versusactual0 feedback using existing CustomHealingHooks.display; actual0/25/100/200 by2ranks andHP10/33/34 tests preserve other meal benefit, food quantity and handler time. Corrected normal alternate Weapon Recharging overstated5/7.5percent text to existing2.5percent scaling plus small rank-dependent addition/whole-damage rounding; actual damage formula unchanged and seeded real damage tests retained. Removed irrelevant recursion/balance implementation prose from existing detail and clarified Lethal Momentum can remove killing-action time; actual attackDelay consumption test.3136core457all0. Actual new Hearty popup, Twin and metamorphed recharging windows prepared but not yetAndroid verified. Comprehensive text review remains open.",
       "wording_corrected": true
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/hero/abilities/cleric/PowerOfMany.java",
+      "sha256": "e88fa6838b4fd08922b6484aba83f507e43d272a25b76d7df0d94a00aa29a3a5",
+      "category": "abilities",
+      "status": "REVIEWED_CORRECTED",
+      "description_methods": [
+        "PowerBuff.desc",
+        "PowerBuff.isDurationExtendedByLink"
+      ],
+      "wording_corrected": true,
+      "review_notes": "Full existing own source and actual Char attack/damage/expiry rules reviewed. Description-only English live protection and marked-target attack wording; no actual buff, attack, expiry or generation rule changes. Matching conditions remain identical for different marked-target IDs in inspection. Targeted tests pass actual attacks and protection across ranks0\u20134, both target states and linked expiry. Android ordinary/expanded three-state coverage prepared; native acceptance pending."
     }
   ],
-  "completed_units": 434,
-  "latest_tests": "3136core457all0 after Burning/Corrosion/Ooze wording; cached random damage privacy and actual multi-depth damage progression retained.416source native pending.415original emulatordisconnect; fresh unchanged-binary all12retry running.",
-  "message_inventory_entries": 5343,
+  "completed_units": 435,
+  "latest_tests": "3138core457suites all0 after real linked-power attacks/protection/expiry, Shadowmeld special countdown and singular wording. Three new neutral message keys reconciled to5346 after raw stale-count failure preserved.417native pending;416held visual grammar error fixed;415latestpublished.",
+  "message_inventory_entries": 5346,
   "message_inventory_counting": "Current authored English property entries across nine files;2432 item entries. Two concise zero-Healing dew/waterskin keys added. Exact Adult OFF/ON checks retained."
 }

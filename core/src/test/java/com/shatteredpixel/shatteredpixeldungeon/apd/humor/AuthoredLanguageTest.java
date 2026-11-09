@@ -81,7 +81,8 @@ public class AuthoredLanguageTest {
   // Plus one neutral known-Lullaby description for the existing zero-Healing sleep rule.
   // Plus one known-Passage destination line using its existing floor rule.
   // Plus two neutral zero-Healing notices for dew and stored dew; no action changes.
-  assertEquals("Reviewed English message inventory",5343,values);
+  // Plus three neutral live Power of Many descriptions, including marked-target and linked-duration conditions.
+  assertEquals("Reviewed English message inventory",5346,values);
  }
  @Test public void localizedAlternativesDoNotDamageInnocentWordsOrOtherLanguages(){
   for(String innocent:new String[]{"Hell","slut","kesialan","Verdammte Charaktere","dictionary","classic","Scunthorpe","Prick","Fan of Blades"})assertEquals(innocent,AuthoredLanguage.select(innocent,false));

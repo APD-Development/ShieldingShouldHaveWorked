@@ -148,7 +148,13 @@ public final class MechanicsDetails {
             float rate=Math.min(1f,barrier.shielding()/20f)*factor;
             extra+="_Barrier decay_\nEach normal barrier tick adds min(1, current shield / 20) × the active Hold Fast factor toward losing one shield point. With the current state, that is "+ObfuscationExplanation.number(rate)+" per tick. Progress toward the next point lost is currently "+ObfuscationExplanation.number(100*barrier.decayProgress())+"%. At one whole point of progress, one shield point is removed and that progress resets. Incoming damage can also consume shielding.\n\n";
         }
-        if(buff instanceof FlavourBuff&&!extra.isEmpty()){float duration=Math.max(0,buff.visualcooldown());extra+="_Duration remaining_\n"+ObfuscationExplanation.number(duration)+(duration==1?" turn.":" turns.")+" Faster or slower actions can use part of a turn or several turns.\n\n";}
+        boolean linkedPower=buff instanceof com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.cleric.PowerOfMany.PowerBuff
+                &&((com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.cleric.PowerOfMany.PowerBuff)buff).isDurationExtendedByLink();
+        if(linkedPower)extra+="_Extended by a link_\nBeaming Ray or Life Link keeps this effect active beyond its normal duration. Turns on its normal timer: "+ObfuscationExplanation.number(Math.max(0,buff.visualcooldown()))+".\n\n";
+        if(buff instanceof FlavourBuff && !(buff instanceof Shadows) && !linkedPower && !extra.isEmpty()){
+            String duration=ObfuscationExplanation.number(Math.max(0,buff.visualcooldown()));
+            extra+="_Duration remaining_\n"+duration+(duration.equals("1")?" turn.":" turns.")+" Faster or slower actions can use part of a turn or several turns.\n\n";
+        }
         return extra.trim();
     }
     public static String talent(Talent talent,int points,String visibleDescription){

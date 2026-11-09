@@ -1,3 +1,5 @@
+Latest verified source:443source units,443full/partialreviewed,357corrected,435own-sourcecomplete,8open;5346Englishentries/2432itemkeys. Full3138core457all0.415latestpublished;416held after actual Drowsy grammar defect, corrected in417source. Native417 pending. Counts are source units, not distinct items or complete Android coverage.
+
 ## Current status — November 9, 2026, active owner-authorized development
 
 Active authorization through16:00EST/21:00UTC. Audit unfinished:442source units,441 fully/partially reviewed,354 corrected,434 own-source complete,8 unresolved;5343 English entries/2432 item entries. Five previously omitted direct talent/secondary-window sources are now explicit: four window sources fully read, actual Talent source partially read. These source-unit counts do not mean distinct items or whole-game Android coverage. Latest published412 (3134core/12targetedAndroid), later source3135core/457suites all pass.413sourcea0c2f60ec building42616639575; later armor seal wording excluded from that cutoff. No physical-phone/acoustic verification. Historical notes below retain exact prior cutoffs.

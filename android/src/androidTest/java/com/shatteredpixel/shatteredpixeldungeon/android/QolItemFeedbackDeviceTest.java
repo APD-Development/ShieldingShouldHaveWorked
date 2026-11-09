@@ -144,15 +144,22 @@ public class QolItemFeedbackDeviceTest {
                 if(button instanceof RedButton&&((RedButton)button).text().equals("Show calculations")){expander.set((RedButton)button);at[0]=button.camera().cameraToScreen(button.left()+button.width()/2,button.top()+button.height()/2);}
                 else controls.put(button,new float[]{button.left(),button.top(),button.width(),button.height()});
             }
-            for(RenderedTextBlock text:TopScoresDeviceTest.find(window,RenderedTextBlock.class))plainHeight[0]=Math.max(plainHeight[0],text.height());
+            for(RenderedTextBlock text:TopScoresDeviceTest.find(window,RenderedTextBlock.class)){
+                plainHeight[0]=Math.max(plainHeight[0],text.height());
+                assertFalse("No singular duration with a plural unit",java.util.regex.Pattern.compile("(?<![\d.])1 turns\b").matcher(text.text()).find());
+            }
             assertNotNull("The actual information window offers calculations",expander.get());
         }catch(Exception e){throw new RuntimeException(e);}});
-        if(screenshot.startsWith("qol-existing-status-clear-")||screenshot.startsWith("qol-twin-upgrades-existing-panel-")||screenshot.startsWith("qol-weapon-recharging-existing-panel-")){
+        if(screenshot.startsWith("qol-existing-status-clear-")||screenshot.startsWith("qol-existing-power-link-")||screenshot.startsWith("qol-twin-upgrades-existing-panel-")||screenshot.startsWith("qol-weapon-recharging-existing-panel-")){
             Thread.sleep(120);TopScoresDeviceTest.render(()->assertDescriptionViewport(window));
             TopScoresDeviceTest.screenshot(screenshot.replace(".png","-normal.png"));
         }
         touch(at[0]);TopScoresDeviceTest.render(()->{try{
             assertEquals("Pointer opens advanced explanation","Hide calculations",expander.get().text());
+            for(RenderedTextBlock text:TopScoresDeviceTest.find(window,RenderedTextBlock.class)){
+                assertFalse("No singular duration with a plural unit",java.util.regex.Pattern.compile("(?<![\d.])1 turns\b").matcher(text.text()).find());
+                if(screenshot.contains("Shadows.png")||screenshot.contains("power-link-1.png")||screenshot.contains("power-link-2.png"))assertFalse("Special countdown must not claim ordinary expiry",text.text().contains("Duration remaining"));
+            }
             boolean found=false;for(RenderedTextBlock text:TopScoresDeviceTest.find(window,RenderedTextBlock.class))if(text.text().contains(expected))found=true;assertTrue("Rendered calculation contains live explanation: "+expected,found);
             for(RenderedTextBlock text:TopScoresDeviceTest.find(window,RenderedTextBlock.class)){
                 if(screenshot.startsWith("qol-existing-status-clear-")||screenshot.startsWith("qol-warrior-shield-"))assertFalse("Reviewed status windows avoid technical duration units",text.text().contains("game-time units"));
@@ -293,6 +300,20 @@ public class QolItemFeedbackDeviceTest {
                 com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HoldFast hold=new com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HoldFast();hold.target=Dungeon.hero;hold.pos=Dungeon.hero.pos+(moved?1:0);return new WndInfoBuff(hold);
             },moved?"currently inactive":"currently active","qol-existing-status-clear-HoldFast-"+(moved?"moved":"holding")+".png");
         }finally{TopScoresDeviceTest.render(()->{if(priorHold==null)holdValues.remove(holding);else holdValues.put(holding,priorHold);});}
+
+        for(int linked=0;linked<3;linked++){
+            final int linkState=linked;
+            final com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Rat ally=new com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Rat();
+            try{
+                calculationWindow(()->{
+                    ally.alignment=com.shatteredpixel.shatteredpixeldungeon.actors.Char.Alignment.ALLY;ally.pos=Dungeon.hero.pos+1;
+                    if(linkState==1)com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff.affect(ally,com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.BeamingRay.BeamingRayBoost.class,5);
+                    if(linkState==2)com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff.affect(ally,com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.LifeLinkSpell.LifeLinkSpellBuff.class,5);
+                    com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.cleric.PowerOfMany.PowerBuff power=new com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.cleric.PowerOfMany.PowerBuff();power.target=ally;
+                    return new WndInfoBuff(power);
+                },linked==0?"25% more damage":"keeps this effect active beyond its normal duration","qol-existing-power-link-"+linked+".png");
+            }finally{TopScoresDeviceTest.render(()->{for(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff buff:new java.util.ArrayList<>(ally.buffs()))buff.detach();});}
+        }
 
         calculationWindow(()->new WndInfoBuff(new com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfLightning.LightningCharge()),"up to 2 tiles","qol-existing-status-clear-LightningCharge.png");
 
