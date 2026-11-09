@@ -343,6 +343,10 @@ public class QolItemFeedbackDeviceTest {
             com.watabou.utils.Bundle data=new com.watabou.utils.Bundle();hunger.storeInBundle(data);data.put("level",(float)hungerLevel);data.put("partialDamage",.95f);hunger.restoreFromBundle(data);return new WndInfoBuff(hunger);
         },"starving at 450 points","qol-existing-status-clear-Hunger-"+hungerLevel+".png");
 
+        calculationWindow(()->{
+            com.shatteredpixel.shatteredpixeldungeon.actors.buffs.SoulMark mark=new com.shatteredpixel.shatteredpixeldungeon.actors.buffs.SoulMark();mark.target=new SoulMarkWindowTarget();return new WndInfoBuff(mark);
+        },"Soul Mark healing","qol-existing-status-clear-SoulMark.png");
+
         calculationWindow(()->new WndInfoBuff(new com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfLightning.LightningCharge()),"up to 2 tiles","qol-existing-status-clear-LightningCharge.png");
 
         RingOfArcana arcana=new RingOfArcana();
@@ -1206,6 +1210,34 @@ public class QolItemFeedbackDeviceTest {
             Thread.sleep(120);TopScoresDeviceTest.render(()->{try{boolean found=false;for(com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText text:TopScoresDeviceTest.find(Game.scene(),com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText.class))if(!prior.contains(text)&&text.alive&&"0".equals(text.text()))found=true;assertTrue("Actual zero healing popup is rendered",found);assertEquals(time[0],Dungeon.hero.cooldown(),0);}catch(Exception e){throw new RuntimeException(e);}});TopScoresDeviceTest.screenshot("qol-cursed-transfer-zero-healing-popup.png");
         }finally{TopScoresDeviceTest.render(()->{rat.destroy();if(rat.sprite!=null)rat.sprite.killAndErase();Dungeon.hero.HP=hp[0];Dungeon.hero.apdCustomHealingFraction=fraction[0];});}
     }
+    public static class SoulMarkWindowTarget extends com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob {
+        public SoulMarkWindowTarget(){HP=HT=20;state=HUNTING;}
+        @Override public boolean surprisedBy(com.shatteredpixel.shatteredpixeldungeon.actors.Char attacker,boolean attacking){return false;}
+    }
+    private static void zeroHealingSoulMarkPopupRenders()throws Exception{
+        int[] hp={0};float[] fraction={0},time={0};
+        AtomicReference<SoulMarkWindowTarget> victim=new AtomicReference<>();
+        AtomicReference<com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger> appetite=new AtomicReference<>();
+        com.watabou.utils.Bundle savedHunger=new com.watabou.utils.Bundle();boolean[] hadHunger={false};
+        java.util.Set<com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText> prior=java.util.Collections.newSetFromMap(new java.util.IdentityHashMap<>());
+        try{
+            TopScoresDeviceTest.render(()->{
+                hp[0]=Dungeon.hero.HP;fraction[0]=Dungeon.hero.apdCustomHealingFraction;time[0]=Dungeon.hero.cooldown();Dungeon.hero.HP=Math.max(1,Dungeon.hero.HT/4);
+                appetite.set(Dungeon.hero.buff(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger.class));hadHunger[0]=appetite.get()!=null;if(hadHunger[0])appetite.get().storeInBundle(savedHunger);
+                for(com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText text:TopScoresDeviceTest.find(Game.scene(),com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText.class))if(text.alive)prior.add(text);
+                SoulMarkWindowTarget target=new SoulMarkWindowTarget();target.pos=Dungeon.hero.pos+1;victim.set(target);com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff.affect(target,com.shatteredpixel.shatteredpixeldungeon.actors.buffs.SoulMark.class,10);
+                target.defenseProc(Dungeon.hero,10);assertEquals(Math.max(1,Dungeon.hero.HT/4),Dungeon.hero.HP);
+            });
+            Thread.sleep(120);TopScoresDeviceTest.render(()->{
+                boolean found=false;for(com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText text:TopScoresDeviceTest.find(Game.scene(),com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText.class))if(!prior.contains(text)&&text.alive&&"0".equals(text.text()))found=true;
+                assertTrue("Actual zero-Healing Soul Mark popup is rendered",found);assertEquals(time[0],Dungeon.hero.cooldown(),0);
+            });TopScoresDeviceTest.screenshot("qol-soulmark-zero-healing-popup.png");
+        }finally{TopScoresDeviceTest.render(()->{
+            Dungeon.hero.HP=hp[0];Dungeon.hero.apdCustomHealingFraction=fraction[0];
+            if(hadHunger[0])appetite.get().restoreFromBundle(savedHunger);else{com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger added=Dungeon.hero.buff(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger.class);if(added!=null)added.detach();}
+            if(victim.get()!=null)for(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff buff:new java.util.ArrayList<>(victim.get().buffs()))buff.detach();
+        });}
+    }
     private static void zeroHealingHeartyMealPopupRenders()throws Exception{
         int[] hp={0};float[] fraction={0},time={0};Integer[] oldRank={null};java.util.Set<com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText> prior=java.util.Collections.newSetFromMap(new java.util.IdentityHashMap<>());
         try{
@@ -1233,7 +1265,7 @@ public class QolItemFeedbackDeviceTest {
         com.shatteredpixel.shatteredpixeldungeon.items.Dewdrop dew=new com.shatteredpixel.shatteredpixeldungeon.items.Dewdrop();com.shatteredpixel.shatteredpixeldungeon.items.Waterskin skin=new com.shatteredpixel.shatteredpixeldungeon.items.Waterskin();TopScoresDeviceTest.render(()->{for(int drop=0;drop<5;drop++)skin.collectDew(new com.shatteredpixel.shatteredpixeldungeon.items.Dewdrop());});
         try{
             TopScoresDeviceTest.render(()->{lullaby.anonymize();Dungeon.apdRestoreCustomRules(new com.watabou.utils.Bundle());});showItem(lullaby,"allies recover health","qol-lullaby-normal-healing.png",true);showItem(dew,"normally restores about 5%","qol-dew-normal-healing.png",true);showItem(skin,"Each drop normally heals","qol-waterskin-normal-healing.png",true);
-            TopScoresDeviceTest.render(()->{com.watabou.utils.Bundle all=new com.watabou.utils.Bundle(),rules=new com.watabou.utils.Bundle();com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomDungeonRules.defaults().with(com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomDungeonRules.Slider.HEALING,0).store(rules);all.put("apd_custom_rules",rules);Dungeon.apdRestoreCustomRules(all);});showItem(lullaby,"prevent restorative sleep for you","qol-lullaby-zero-healing.png",true);showItem(dew,"prevent dew from healing","qol-dew-zero-healing.png",true);showItem(skin,"prevent dew healing","qol-waterskin-zero-healing.png",true);zeroHealingWaterskinConfirmationRenders(skin);zeroHealingCursedTransferPopupRenders();for(com.shatteredpixel.shatteredpixeldungeon.items.food.Food meal:new com.shatteredpixel.shatteredpixeldungeon.items.food.Food[]{new com.shatteredpixel.shatteredpixeldungeon.items.food.FrozenCarpaccio(),new com.shatteredpixel.shatteredpixeldungeon.items.food.PhantomMeat(),new com.shatteredpixel.shatteredpixeldungeon.items.food.MeatPie(),new com.shatteredpixel.shatteredpixeldungeon.items.food.SupplyRation()})showItem(meal,"rules","qol-zero-healing-food-"+meal.getClass().getSimpleName()+".png",true);zeroHealingHeartyMealPopupRenders();
+            TopScoresDeviceTest.render(()->{com.watabou.utils.Bundle all=new com.watabou.utils.Bundle(),rules=new com.watabou.utils.Bundle();com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomDungeonRules.defaults().with(com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomDungeonRules.Slider.HEALING,0).store(rules);all.put("apd_custom_rules",rules);Dungeon.apdRestoreCustomRules(all);});showItem(lullaby,"prevent restorative sleep for you","qol-lullaby-zero-healing.png",true);showItem(dew,"prevent dew from healing","qol-dew-zero-healing.png",true);showItem(skin,"prevent dew healing","qol-waterskin-zero-healing.png",true);zeroHealingWaterskinConfirmationRenders(skin);zeroHealingCursedTransferPopupRenders();for(com.shatteredpixel.shatteredpixeldungeon.items.food.Food meal:new com.shatteredpixel.shatteredpixeldungeon.items.food.Food[]{new com.shatteredpixel.shatteredpixeldungeon.items.food.FrozenCarpaccio(),new com.shatteredpixel.shatteredpixeldungeon.items.food.PhantomMeat(),new com.shatteredpixel.shatteredpixeldungeon.items.food.MeatPie(),new com.shatteredpixel.shatteredpixeldungeon.items.food.SupplyRation()})showItem(meal,"rules","qol-zero-healing-food-"+meal.getClass().getSimpleName()+".png",true);zeroHealingHeartyMealPopupRenders();zeroHealingSoulMarkPopupRenders();
         }finally{TopScoresDeviceTest.render(()->Dungeon.apdRestoreCustomRules(savedRules));}
 
         AtomicReference<Window> shown=new AtomicReference<>();float[] time={0};

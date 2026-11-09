@@ -1,11 +1,11 @@
 {
-  "recorded_utc": "2026-11-09T15:25:33.375475+00:00",
+  "recorded_utc": "2026-11-09T15:42:10.223395+00:00",
   "authorization_end_utc": "2026-11-09T20:00:00Z",
   "latest_verified_published_build": 415,
   "release_url": "https://github.com/APD-Development/ShieldingShouldHaveWorked/releases/tag/apd-alpha-preview-415",
   "source_fix_commit": "a52bd33a8868875eb24fa2d0162ba41bdd099b0c",
   "local_full_core": {
-    "tests": 3141,
+    "tests": 3142,
     "suites": 457,
     "failures": 0,
     "errors": 0,
@@ -36,7 +36,9 @@
     "Shadows own countdown and linked Power live protection/marked-target descriptions",
     "Concise four talent ordinary/existingpanel descriptions with real plant/followup tests",
     "Shortened existing powered-ally detail panel",
-    "Shortened Endure ready-state/details with actual sequential rounding/unseen-enemy test"
+    "Shortened Endure ready-state/details with actual sequential rounding/unseen-enemy test",
+    "Temporary-health/aquatic/momentum/hunger detail simplifications and new native windows",
+    "SoulMark ordinary/detail simplification and existing-helper custom healing-number correction with reproduced zero-Healing regression"
   ],
   "audit": {
     "source_units": 443,

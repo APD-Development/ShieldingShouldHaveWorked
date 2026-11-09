@@ -2454,9 +2454,25 @@ public class MechanicsExplanationTest {
   }finally{com.shatteredpixel.shatteredpixeldungeon.actors.Actor.remove(first);com.shatteredpixel.shatteredpixeldungeon.actors.Actor.remove(second);com.shatteredpixel.shatteredpixeldungeon.actors.Actor.remove(third);}
  }
  public static class SoulMarkProbe extends com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob {public SoulMarkProbe(){HP=HT=100;state=HUNTING;}@Override public boolean surprisedBy(com.shatteredpixel.shatteredpixeldungeon.actors.Char enemy,boolean attacking){return false;}}
+ @Test public void soulMarkHealingNumberHonorsHealingRuleWithoutChangingRestoration()throws Exception{
+  java.lang.reflect.Field field=Class.forName("sun.misc.Unsafe").getDeclaredField("theUnsafe");field.setAccessible(true);Object unsafe=field.get(null);
+  CursedHealingDisplaySprite sprite=(CursedHealingDisplaySprite)unsafe.getClass().getMethod("allocateInstance",Class.class).invoke(unsafe,CursedHealingDisplaySprite.class);hero.sprite=sprite;hero.HT=100;hero.talents.get(2).put(Talent.SOUL_EATER,3);
+  for(int percent:new int[]{0,25,100,200}){
+   com.watabou.utils.Bundle all=new com.watabou.utils.Bundle(),rules=new com.watabou.utils.Bundle();com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomDungeonRules.defaults().with(com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomDungeonRules.Slider.HEALING,percent).store(rules);all.put("apd_custom_rules",rules);Dungeon.apdRestoreCustomRules(all);
+   hero.HP=10;hero.apdCustomHealingFraction=0;Hunger appetite=Buff.affect(hero,Hunger.class);com.watabou.utils.Bundle hungerState=new com.watabou.utils.Bundle();appetite.storeInBundle(hungerState);hungerState.put("level",100f);appetite.restoreFromBundle(hungerState);
+   SoulMarkProbe target=new SoulMarkProbe();target.HP=20;Buff.affect(target,Barrier.class).setShield(5);Buff.affect(target,SoulMark.class,10);
+   float time=hero.cooldown();
+   for(int hit=1;hit<=2;hit++){
+    int before=hero.HP;target.defenseProc(hero,99);
+    assertEquals("Displayed healing at rule"+percent+" hit"+hit,Integer.toString(hero.HP-before),sprite.healing);
+    assertEquals(10+(int)Math.floor(hit*10*percent/100f),hero.HP);
+    assertEquals(100-25*hit,appetite.hungerPoints(),0);assertEquals(20,target.HP);assertEquals(5,target.shielding());assertEquals(time,hero.cooldown(),0);
+   }
+  }
+ }
  @Test public void soulMarkDescriptionMatchesActualRestorationAndNonHeroScaling()throws Exception{
   hero.sprite=quietSprite();hero.HT=100;hero.talents.get(2).put(Talent.SOUL_EATER,3);Hunger hunger=Buff.affect(hero,Hunger.class);hunger.affectHunger(-100);
-  for(int rank=0;rank<=3;rank++){hero.talents.get(2).put(Talent.SOUL_SIPHON,rank);hero.HP=20;SoulMarkProbe target=new SoulMarkProbe();target.HP=20;Buff.affect(target,Barrier.class).setShield(5);SoulMark mark=Buff.affect(target,SoulMark.class,10);target.defenseProc(hero,99);assertEquals(30,hero.HP);hero.HP=20;target.defenseProc(new PlainStatusTarget(),99);int restoration=Math.round(25*.4f*rank/3f);assertEquals(20+(int)Math.ceil(restoration*.4f),hero.HP);String text=MechanicsDetails.buff(mark,mark.desc());assertTrue(text.contains("current factor: "+ObfuscationExplanation.number(.4f*rank/3f)));assertTrue(text.contains("ceil(restoration × 0.4)"));}
+  for(int rank=0;rank<=3;rank++){hero.talents.get(2).put(Talent.SOUL_SIPHON,rank);hero.HP=20;SoulMarkProbe target=new SoulMarkProbe();target.HP=20;Buff.affect(target,Barrier.class).setShield(5);SoulMark mark=Buff.affect(target,SoulMark.class,10);target.defenseProc(hero,99);assertEquals(30,hero.HP);hero.HP=20;target.defenseProc(new PlainStatusTarget(),99);int restoration=Math.round(25*.4f*rank/3f);assertEquals(20+(int)Math.ceil(restoration*.4f),hero.HP);String text=MechanicsDetails.buff(mark,mark.desc());assertTrue(text.contains("count at _"+ObfuscationExplanation.number(100f*.4f*rank/3f)+"%_"));assertTrue(text.contains("restore _40%_ of the counted damage as HP, rounded up"));}
  }
  @Test public void warlockMarkChanceExplanationMatchesActualSeededWandProcs()throws Exception{
   hero.subClass=com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass.WARLOCK;java.lang.reflect.Method proc=com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand.class.getDeclaredMethod("wandProc",com.shatteredpixel.shatteredpixeldungeon.actors.Char.class,int.class,int.class);proc.setAccessible(true);

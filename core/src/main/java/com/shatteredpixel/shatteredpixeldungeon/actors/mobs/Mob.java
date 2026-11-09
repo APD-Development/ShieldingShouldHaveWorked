@@ -866,7 +866,7 @@ public abstract class Mob extends Char {
 					int apdHpBefore = Dungeon.hero.HP;
 					Dungeon.hero.HP = Math.min(Dungeon.hero.HT, Dungeon.hero.HP + com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomHealingHooks.amount(Dungeon.hero, heal));
 					ApdCombat.onHeal( Dungeon.hero, apdHpBefore, ApdCombat.HEAL_SKILL_SOUL_SIPHON, heal );
-					Dungeon.hero.sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(heal), FloatingText.HEALING);
+					Dungeon.hero.sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomHealingHooks.display(Dungeon.hero, apdHpBefore, heal)), FloatingText.HEALING);
 				}
 			}
 		}
