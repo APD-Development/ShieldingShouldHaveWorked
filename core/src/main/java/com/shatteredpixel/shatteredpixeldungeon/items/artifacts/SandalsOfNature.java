@@ -214,8 +214,8 @@ public class SandalsOfNature extends Artifact {
 					seedChargeReqs.get(curSeedEffect));
 		}
 
-		if (!seeds.isEmpty()){
-			desc += "\n\n" + Messages.get(this, "desc_seeds", seeds.size());
+		if (!seeds.isEmpty() && level() < levelCap){
+			desc += "\n\n" + Messages.get(this, "desc_seeds", seeds.size(), 3 + level()*3);
 		}
 
 		return desc;

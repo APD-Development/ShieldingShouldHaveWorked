@@ -1196,6 +1196,21 @@ public class MechanicsExplanationTest {
    int expected=0;float value=0;while(value<75&&expected<charges){value+=10+upgrade/2f;expected++;}assertEquals(expected,budget);assertEquals(Math.min(1f,expected*(10+upgrade/2f)/75),chance,0f);assertEquals(budget,effect.chargesToUse(wand));assertEquals(chance,effect.stealChance(wand),0f);assertFalse(wand.curseInfusionBonus);
   }
  }
+ @Test public void sandalsGrowthDescriptionMatchesActualSeedConsumptionAndFinalForm()throws Exception{
+  hero.sprite=quietSprite();com.shatteredpixel.shatteredpixeldungeon.items.artifacts.SandalsOfNature sandals=new com.shatteredpixel.shatteredpixeldungeon.items.artifacts.SandalsOfNature();sandals.levelKnown=sandals.cursedKnown=true;hero.belongings.misc=sandals;
+  java.lang.reflect.Field field=sandals.getClass().getDeclaredField("itemSelector");field.setAccessible(true);com.shatteredpixel.shatteredpixeldungeon.windows.WndBag.ItemSelector selector=(com.shatteredpixel.shatteredpixeldungeon.windows.WndBag.ItemSelector)field.get(sandals);
+  String[] kinds={"Blindweed","Earthroot","Fadeleaf","Firebloom","Icecap","Mageroyal","Sorrowmoss","Starflower","Stormvine"};int consumed=0;
+  for(int stage=0;stage<3;stage++){
+   int needed=3+3*stage;
+   for(int i=0;i<needed;i++){
+    com.shatteredpixel.shatteredpixeldungeon.plants.Plant.Seed seed=(com.shatteredpixel.shatteredpixeldungeon.plants.Plant.Seed)Class.forName("com.shatteredpixel.shatteredpixeldungeon.plants."+kinds[i]+"$Seed").getDeclaredConstructor().newInstance();assertTrue(selector.itemSelectable(seed));assertTrue(seed.collect());float before=hero.cooldown();selector.onSelect(seed);consumed++;assertEquals(1,hero.cooldown()-before,0);assertFalse(hero.belongings.contains(seed));assertSame(seed.getClass(),sandals.curSeedEffect);
+    if(i+1<needed){assertEquals(stage,sandals.level());assertTrue(sandals.desc(),sandals.desc().contains((i+1)+" of "+needed+" different seed types"));assertFalse(selector.itemSelectable(seed));}else{assertEquals(stage+1,sandals.level());assertTrue(sandals.seeds.isEmpty());assertFalse(sandals.desc().contains("Fed _"));}
+   }
+  }
+  assertEquals(18,consumed);assertTrue(sandals.desc(),sandals.desc().contains("final form"));assertTrue(sandals.desc().contains("visible tile"));
+  sandals.seeds.add(com.shatteredpixel.shatteredpixeldungeon.plants.Firebloom.Seed.class);assertFalse("A legacy extra seed list cannot promise another growth at the cap",sandals.desc().contains("next growth"));
+  com.watabou.utils.Bundle before=new com.watabou.utils.Bundle(),after=new com.watabou.utils.Bundle();sandals.storeInBundle(before);sandals.info();sandals.storeInBundle(after);assertEquals(before.toString(),after.toString());
+ }
  @Test public void hourglassRetainedActionBudgetMatchesActualPartialCostsAndSave()throws Exception{
   float[][] sequences={{0},{1},{1,1},{1,1,.5f},{.5f,.5f,.5f,.5f,.5f},{2.0005f},{2.01f},{4},{4,.5f},{8}};
   int[] expectedCharges={6,6,6,5,5,6,5,5,4,3};

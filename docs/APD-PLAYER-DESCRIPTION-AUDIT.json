@@ -6,7 +6,7 @@
   "message_entries": 2411,
   "reviewed_units": 433,
   "corrected_units": 350,
-  "unresolved_units": 95,
+  "unresolved_units": 94,
   "category_counts": {
     "apd": 1,
     "mechanics": 38,
@@ -1095,14 +1095,14 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/artifacts/SandalsOfNature.java",
-      "sha256": "60136b1b4b7823a8723729d74d49ff1a79096677c53399dead036a2a5f44321c",
+      "sha256": "773f3cf91b4af83f9e41d180e6a2865b0f89dee189918aef3b9ee9be538267c8",
       "category": "artifacts",
       "status": "PARTIAL_REVIEW",
       "description_methods": [
         "desc"
       ],
       "wording_corrected": true,
-      "review_notes": "Ordinary descriptions and important cursed states checked individually against real activation, charging, scroll talent suppression/exception, theft and grass/seed code. Clear normal uses and drawbacks replace vague flavor-only guidance; redundant technical cursed summary suppressed only for these four reviewed types when their own worn description already states it. Existing mechanic-specific panels retained pending review. Full variant/corner-case review still pending; native382 worn normal/cursed windows included, not yet run. All15 actual curse branches reviewed; concise conditional ordinary text,15type read-only regression, actual Horn/Chalice effects tested. Existing advanced panels retained pending owner review; full non-curse/class paths may remain incomplete."
+      "review_notes": "Ordinary descriptions and important cursed states checked individually against real activation, charging, scroll talent suppression/exception, theft and grass/seed code. Clear normal uses and drawbacks replace vague flavor-only guidance; redundant technical cursed summary suppressed only for these four reviewed types when their own worn description already states it. Existing mechanic-specific panels retained pending review. Full variant/corner-case review still pending; native382 worn normal/cursed windows included, not yet run. All15 actual curse branches reviewed; concise conditional ordinary text,15type read-only regression, actual Horn/Chalice effects tested. Existing advanced panels retained pending owner review; full non-curse/class paths may remain incomplete. Fullownsource readNovember9; normalability text namesvisibletile/3tilerange, livegrowthcount nowhave/required andno nextgrowthpromiseatcap. Actual18seedfeedsverifyconsumption,1turn,distincttypes,3growththresholdsandfinalform.3123core457pass. Remains partial: unsupportedBlandfruitseed accepted despite noability/color/cost mapping; investigate and reproduce before any gameplay change. Nativecurrenteffect/progressfixturepending."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/artifacts/SkeletonKey.java",
@@ -1142,12 +1142,12 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/artifacts/UnstableSpellbook.java",
       "sha256": "d76ee2ed3dee3f1a1ddd6fd02cce2cc4d892df0f9fd8d540d5e728fd6324f20b",
       "category": "artifacts",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [
         "desc"
       ],
       "wording_corrected": true,
-      "review_notes": "Ordinary descriptions and important cursed states checked individually against real activation, charging, scroll talent suppression/exception, theft and grass/seed code. Clear normal uses and drawbacks replace vague flavor-only guidance; redundant technical cursed summary suppressed only for these four reviewed types when their own worn description already states it. Existing mechanic-specific panels retained pending review. Full variant/corner-case review still pending; native382 worn normal/cursed windows included, not yet run. All15 actual curse branches reviewed; concise conditional ordinary text,15type read-only regression, actual Horn/Chalice effects tested. Existing advanced panels retained pending owner review; full non-curse/class paths may remain incomplete."
+      "review_notes": "Ordinary descriptions and important cursed states checked individually against real activation, charging, scroll talent suppression/exception, theft and grass/seed code. Clear normal uses and drawbacks replace vague flavor-only guidance; redundant technical cursed summary suppressed only for these four reviewed types when their own worn description already states it. Existing mechanic-specific panels retained pending review. Full variant/corner-case review still pending; native382 worn normal/cursed windows included, not yet run. All15 actual curse branches reviewed; concise conditional ordinary text,15type read-only regression, actual Horn/Chalice effects tested. Existing advanced panels retained pending owner review; full non-curse/class paths may remain incomplete. Fullownsource requestedscrollorder/randomreading/exoticchoice/exploitresume/selection/upgrade/charge/curse/save reviewedNovember9. Existing retained panel now distinguishes randomregular1charge from extra1chargeexoticchoice foraddedtypes, exclusionofTransmutation and2turnconsumedscrollupgrade. No newpanel/rules. Existing charge/knowledge/save safeguards retained; actualexpanded/bottomfixturepending. Own-source completion only; sharedArtifact/economy/Scroll/class providers remain tracked."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/bags/Bag.java",

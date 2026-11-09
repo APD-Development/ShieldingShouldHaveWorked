@@ -399,3 +399,6 @@ Toolkit Energize prompt correctly names experience-generatedenergy; existing det
 
 ### Hourglass retained detail and Chains own-source review
 Hourglass existingpanel gives5turnstasis/2chargecap and2turnactionbudget/partialcarry/deferredhazards, removing implementationroundingjargon. Ten actualbudgetsequences includeprecisionboundary andsavecontinuation;3122core457allpass, rawXML/log preserved. Nativeexpanded/bottompending. Chainsfullownsource/currentprose reviewed, no rewrite needed. Audit341complete95unresolvedof436units,433partial/full350corrected,5339Englishentries. Sharedprovidersremainopen.
+
+### Spellbook and Sandals description followup
+Existing Spellbook detail shorter, correctrandom1charge/extra1exoticchoice and2turnscrollfeed. Sandals ordinaryability namesvisibletile/3tilerange andlivefed/requiredcounts, hidesnextgrowthclaimatcap.18actualfeedsverify3/6/9thresholds,consumption/1turn/finalform;3123core457allpass, rawfullXML/log preserved. Newactualwindows pending. Audit342complete94unresolvedof436units; Sandalsremainspartialpendingunsupportedseedinvestigation, no gameplayfixclaimyet.
