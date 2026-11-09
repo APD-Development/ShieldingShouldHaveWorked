@@ -263,5 +263,12 @@
     "codex-test-97\tCodex TEST 97\t2026-10-12\tAPK change record",
     "codex-test-99\tCodex TEST 99\t2026-10-12\tAPK change record"
   ],
-  "scope": "Existing tested merge helper recovers exact compiled history records from independently verified previous owner APKs. Existing reviewed source corrections win. No old Java/source/gameplay replaced. Prior APKs/releases untouched."
+  "scope": "Existing tested merge helper recovers exact compiled history records from independently verified previous owner APKs. Existing reviewed source corrections win. No old Java/source/gameplay replaced. Prior APKs/releases untouched.",
+  "held_411_history": {
+    "apk_sha256": "467901df1546d42b92035de2362bb0ca732dca4a713bf88a5bc5d2a4aff4e531",
+    "status": "Original411native-heldAPK. Only its actual compiled change-history record recovered; not a release/acceptance claim.",
+    "rows": [
+      "codex-test-411\tCodex TEST 411\t2026-11-09\tAPK change record"
+    ]
+  }
 }
