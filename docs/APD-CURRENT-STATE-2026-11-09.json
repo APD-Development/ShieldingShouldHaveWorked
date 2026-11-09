@@ -1,9 +1,9 @@
 {
-  "recorded_utc": "2026-11-09T12:53:15.753720+00:00",
+  "recorded_utc": "2026-11-09T13:20:39.312758+00:00",
   "authorization_end_utc": "2026-11-09T20:00:00Z",
-  "latest_verified_published_build": 413,
-  "release_url": "https://github.com/APD-Development/ShieldingShouldHaveWorked/releases/tag/apd-alpha-preview-413",
-  "source_fix_commit": "a0c2f60ec856cb3bb250b77a16bfcc2208973284",
+  "latest_verified_published_build": 414,
+  "release_url": "https://github.com/APD-Development/ShieldingShouldHaveWorked/releases/tag/apd-alpha-preview-414",
+  "source_fix_commit": "3b47da4be925c02abe2e796679dea58ce74601f7",
   "local_full_core": {
     "tests": 3136,
     "suites": 457,
@@ -27,9 +27,9 @@
     "406": "3113core/12nativepassed, independenthashes+4463sourcefilehashes,10newbuffcapturesreadable. Same bad Tenacity provider; originalpairheldprivate."
   },
   "newest_source_not_in_any_apk": [
-    "Attached-seal readiness/half-health wording",
-    "Hearty Meal zero-healing floating-number correction",
-    "Alternate Weapon Recharging normal description and Lethal Momentum detail corrections; new native fixtures"
+    "Further31 status explanation and six ordinary buff wording changes",
+    "Seal shield detail simplification, six native state fixtures",
+    "Shared timed-status footer wording is still unfinished in414 and being corrected"
   ],
   "audit": {
     "source_units": 442,
@@ -46,10 +46,5 @@
   "preservation": "All source pushed to codex/apd-phone-fixes-2026-10-09; published403 and priorreleases retained.405/406privateassets include completeAPK/source/tests;404rejectedarchivesretained. Raw local full suites and committed evidence ZIPs retained.",
   "physical_phone_or_acoustic_audio_verified": false,
   "background_development_after_window_claimed": false,
-  "active_build": {
-    "number": 414,
-    "run": 42621170849,
-    "source_commit": "3b47da4be925c02abe2e796679dea58ce74601f7",
-    "status": "building; acceptance pending"
-  }
+  "active_build": null
 }
