@@ -1,2 +1,2 @@
-2026-11-09T19:08:00.182426+00:00
-3157core/457 plus Androiddebug/release/instrumentationJava/desktop. Shorten existing specificstatus details; actual probability, damage, timers, caps, immunities and known-only gates unchanged. Existing1600rolls/paralysis/ascent/Foresight/champion tests preserved. Addedactual newstatus windows; no newpanels.441own-sourcecomplete4open, not completedwholeaudit.
+2026-11-09T19:13:07.926067+00:00
+3158core/457 plus Androiddebug/release/instrumentationJava/desktop. Existing status-copy changes plus concise common ability charge/recharge and correct variableTrinity costs. Actual distincteffectcosts at5ranks/recharge/cap/unknown privacy/ready state tested. No gameplay/panel changes; prepare nativewindows21buff/3talent/2chargecontexts and normalspell captures.441complete4open; not wholeaudit.

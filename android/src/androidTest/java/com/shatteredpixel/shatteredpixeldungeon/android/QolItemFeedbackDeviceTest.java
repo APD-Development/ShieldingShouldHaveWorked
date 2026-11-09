@@ -150,7 +150,7 @@ public class QolItemFeedbackDeviceTest {
             }
             assertNotNull("The actual information window offers calculations",expander.get());
         }catch(Exception e){throw new RuntimeException(e);}});
-        if(screenshot.startsWith("qol-existing-status-clear-")||screenshot.startsWith("qol-existing-power-link-")||screenshot.startsWith("qol-reviewed-talent-clear-")||screenshot.startsWith("qol-twin-upgrades-existing-panel-")||screenshot.startsWith("qol-weapon-recharging-existing-panel-")||screenshot.startsWith("qol-reviewed-spell-clear-")||screenshot.startsWith("qol-reviewed-spell-magic-")||screenshot.startsWith("qol-elemental-strike-reviewed-")){
+        if(screenshot.startsWith("qol-existing-status-clear-")||screenshot.startsWith("qol-existing-power-link-")||screenshot.startsWith("qol-reviewed-talent-clear-")||screenshot.startsWith("qol-twin-upgrades-existing-panel-")||screenshot.startsWith("qol-weapon-recharging-existing-panel-")||screenshot.startsWith("qol-reviewed-spell-clear-")||screenshot.startsWith("qol-reviewed-spell-magic-")||screenshot.startsWith("qol-elemental-strike-reviewed-")||screenshot.startsWith("qol-reviewed-ability-charge-")){
             Thread.sleep(120);TopScoresDeviceTest.render(()->assertDescriptionViewport(window));
             TopScoresDeviceTest.screenshot(screenshot.replace(".png","-normal.png"));
         }
@@ -471,7 +471,8 @@ public class QolItemFeedbackDeviceTest {
                 return new WndInfoArmorAbility(HeroClass.DUELIST,new com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.duelist.ElementalStrike());
             },bleeding?"Makes you and targets bleed":"full weapon durability","qol-elemental-strike-reviewed-"+(bleeding?"Sacrificial":"Crystal")+".png");
         }}finally{TopScoresDeviceTest.render(()->Dungeon.hero.belongings.weapon=beforeStrikeDetails[0]);}
-        calculationWindow(()->new WndInfoArmorAbility(HeroClass.WARRIOR,new com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.HeroicLeap()),"Actual current ability cost:","qol-mechanics-ability-expanded.png");
+        calculationWindow(()->new WndInfoArmorAbility(HeroClass.WARRIOR,new com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.HeroicLeap()),"Current cost:","qol-reviewed-ability-charge-HeroicLeap.png");
+        calculationWindow(()->new WndInfoArmorAbility(HeroClass.CLERIC,new com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.cleric.Trinity()),"no single cost for Trinity","qol-reviewed-ability-charge-Trinity.png");
         final HeroClass[] beforeSpellClass=new HeroClass[1];
         final com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.ArmorAbility[] beforeSpellAbility=new com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.ArmorAbility[1];
         final com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass[] beforeSpellSubclass=new com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass[1];

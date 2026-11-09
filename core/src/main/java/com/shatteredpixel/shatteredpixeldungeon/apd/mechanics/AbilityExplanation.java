@@ -36,16 +36,22 @@ public final class AbilityExplanation {
         return (hero==null?"Base cost: ":"Current cost: ")+n(cost)+" charge points out of 100.";
     }
     public static String details(ArmorAbility ability, Hero hero) {
-        String result="_Armor ability charge_\n"+(ability instanceof com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.mage.WarpBeacon?"Base return costs ":"Base use costs ")+n(ability.baseChargePoints())
-            +" points from a 100-point charge meter. Heroic Energy multiplies that cost by 0.88, 0.77, 0.68 or 0.6 at ranks one through four; without it the factor is 1. These are alternative rank factors, not four reductions added or multiplied together. Other conditional ability discounts multiply at their own step.";
+        boolean trinity=ability instanceof com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.cleric.Trinity;
+        String result="_Armor charge_\n"+(trinity?"Each stored effect shows its own charge cost; there is no single cost for Trinity.":"Base cost: "+n(ability.baseChargePoints())+" charge points out of 100.");
         if(hero==null)return result;
         int rank=hero.pointsInTalent(Talent.HEROIC_ENERGY);
-        result+="\nCurrent Heroic Energy rank: "+rank+". Actual current ability cost: "+n(ability.chargeUse(hero))+" charge points.";
-        result+="\nDouble Jump and Elimination Match apply 0.84 raised to their talent rank while their ready effects exist; Shadow Step uses the same factor while invisible. Double Mark instead uses 0.707 raised to its rank while ready. Summon commands such as directing an existing hawk or clone can cost zero; that does not make creating a replacement free.";
+        if(rank>0)result+=" Heroic Energy reduces the cost by "+n(100*(1-ArmorAbility.heroicEnergyFactor(rank)))+"% at rank "+rank+".";
+        if(!trinity)result+="\nCurrent cost: "+n(ability.chargeUse(hero))+" charge points, including active ability discounts.";
+        Talent discount=null;double discountBase=.84;String discountName="";
+        if(ability instanceof com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.HeroicLeap){discount=Talent.DOUBLE_JUMP;discountName="Double Jump";}
+        else if(ability instanceof com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.duelist.Challenge){discount=Talent.ELIMINATION_MATCH;discountName="Elimination Match";}
+        else if(ability instanceof com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.rogue.DeathMark){discount=Talent.DOUBLE_MARK;discountBase=.707;discountName="Double Mark";}
+        if(discount!=null&&hero.hasTalent(discount))result+="\n"+discountName+": while its follow-up is ready, uses "+n(100*(float)Math.pow(discountBase,hero.pointsInTalent(discount)))+"% of the otherwise required charge ("+discountBase+" raised to talent rank). Already included in the current cost when active.";
+        if(ability instanceof com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.huntress.SpiritHawk||ability instanceof com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.rogue.ShadowClone)result+=" Directing an existing summon is free; creating a replacement still spends charge.";
         Integer energy=RingItemEffects.knownBonus(hero,RingOfEnergy.class,true);
-        result+="\n\n_Armor recharge_\nWhen normal regeneration is allowed, each eligible one-turn armor charger update adds 0.2 × its Energy recharge factor, capped at 100 charge points. At factor 1, an empty meter takes 500 eligible updates to fill. Time when regeneration is blocked does not count as eligible charging time.";
-        if(energy==null)result+=" Identify equipped rings before the combined Energy factor is shown.";
-        else result+=" Current known Energy factor: "+n(RingOfEnergy.ringChargeMultiplier(energy))+"; contribution per eligible update: "+n(.2f*RingOfEnergy.ringChargeMultiplier(energy))+" charge points before the meter cap.";
+        result+="\n\n_Armor recharge_\nCharge returns only while natural recovery is allowed, up to 100 points.";
+        if(energy==null)result+=" Base recharge: 0.2 points per turn. Identify your rings to preview the combined recharge rate.";
+        else result+=" Current recharge: "+n(.2f*RingOfEnergy.ringChargeMultiplier(energy))+" charge points per turn, including known Energy bonuses.";
         return result+effects(ability,hero);
     }
     public static String effects(ArmorAbility ability,Hero hero){

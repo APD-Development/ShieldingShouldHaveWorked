@@ -1,11 +1,11 @@
 {
-  "recorded_utc": "2026-11-09T19:08:00.182426+00:00",
+  "recorded_utc": "2026-11-09T19:13:07.926067+00:00",
   "authorization_end_utc": "2026-11-09T20:00:00Z",
   "latest_verified_published_build": 425,
   "release_url": "https://github.com/APD-Development/ShieldingShouldHaveWorked/releases/tag/apd-alpha-preview-425",
   "source_fix_commit": "75809609745851368fe81f2dced1b69eb63cdfdf",
   "local_full_core": {
-    "tests": 3157,
+    "tests": 3158,
     "suites": 457,
     "failures": 0,
     "errors": 0,
@@ -36,7 +36,8 @@
     "426": "Original native fixture expects old HolyWeapon sentence; both variants rejected. Originalsource/APKs/failure evidence retained. Test-only retry pending."
   },
   "newest_source_not_in_any_apk": [
-    "Shortened existing paralysis/ascent/Foresight/status contest/champion detail text;3157coregreen, native window fixtures prepared"
+    "Shortened existing paralysis/ascent/Foresight/status contest/champion detail text;3157coregreen, native window fixtures prepared",
+    "Common armor-ability charge/recharge shortened; Trinity no universalcost; actual3158corepassed; source/nativepending"
   ],
   "audit": {
     "source_units": 445,
