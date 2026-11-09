@@ -6,7 +6,7 @@
   "message_entries": 2432,
   "reviewed_units": 435,
   "corrected_units": 354,
-  "unresolved_units": 39,
+  "unresolved_units": 33,
   "category_counts": {
     "apd": 1,
     "mechanics": 38,
@@ -344,14 +344,14 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/ScrollExplanation.java",
-      "sha256": "bde61bb26ddac815a2f3cd4ec9a521f95a496eb903b1c13c8e40a9f5718c0835",
+      "sha256": "1506d7fc47ac6fe340146c5fb399e7305bee09fb3a63a79813ea04ffc2f3187a",
       "category": "mechanics",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [
         "details"
       ],
       "wording_corrected": true,
-      "review_notes": "2026-11-09 full provider read; retained Retribution/Psionic branches rewritten as human explanation plus existing formulas/aftereffects, no new panels. Reproduced hidden creature count leak: invisible Rat changed0/50to1/45 and disguised Mimic could count as creature. Preview now counts only apparent creatures, always reports upper bound rather than exact hidden cast count; hidden-present/absent output invariant. Actual scroll doRead tests retain invisible targets, ally damage, self-cost and original formulas. Other legacy known scroll branches need remaining full individual numerical reconciliation; no ordinary scroll expanders restored."
+      "review_notes": "2026-11-09: Full provider reviewed against individually read scroll implementations and actual effect/transfer consumers. Only owner-retained Retribution/PsionicBlast current UI panels retained; other descriptions remain legacy dispatcher exports. Actual live-health power/visible-count lower bound/hidden mimic safeguards and base-versus-defenses rules verified by existing tests. Corrected legacy Gathering versus Forwarding armed-bomb distinction; no new panels or loot behavior."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/SpellExplanation.java",
@@ -2103,12 +2103,12 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/quest/Pickaxe.java",
       "sha256": "3f80dc0a0158ee7b683228f9c537b7b5ed3ab8c09a61dcb5a819a840db068871",
       "category": "quest",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [
         "abilityInfo"
       ],
       "wording_corrected": true,
-      "review_notes": "Normal curse wording or weapon ability display reviewed against implementation; full variants and existing optional panel review remain unfinished. See November 8 correction record."
+      "review_notes": "2026-11-09: Full own source reviewed: tier2 damage/tier3 strength, mining retain/no drop/throw, legal visible Pierce target, added damage for inorganic/listed creatures, guaranteed accuracy and survivor Vulnerable duration, augmentation/live/unknown ability preview. Existing concise ordinary weapon/mining/Pierce text accurate; actual target-bonus/upgrade tests retained. Shared melee/ability providers separate, no changes."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/quest/VaultBeacon.java",
@@ -2397,11 +2397,11 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/scrolls/ScrollOfGathering.java",
       "sha256": "15d4bb83a8f065aaa8685f7e28f4a0cf1687a8b1b1bc1c8ef0f68407e77e98ee",
       "category": "scrolls",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_UNCHANGED",
       "description_methods": [
         "desc"
       ],
-      "review_notes": "Entire own fixed-known/no-rune source and shared GroundLootPlan/LootTransfers validation/transaction read. Existing concise downstairs/exclusion/nonconsumption wording consistent; no rewrite needed. Existing real transactional/route/exclusion tests pass; new actual ordinary native window pending389. Full shared scroll/prototype integration separately open.",
+      "review_notes": "2026-11-09: Full own source and actual LootTransfers/GroundLootPlan/LootScrollRules consumers reviewed: fixed identity, anonymous/ownership consume guards, safe downstairs destination, only ordinary ground heaps and progression exclusions, transactional read/save/visuals and failures. Current ordinary text accurate unchanged. Gathering can move armed bombs; only Forwarding rejects them. Corrected legacy secondary provider, not normal gameplay. Existing actual transfer/journal/pile tests retained.",
       "wording_corrected": false
     },
     {
@@ -2498,21 +2498,21 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/scrolls/ScrollOfTransmutation.java",
       "sha256": "f8c20c4c39092fac1ef321150b9e1288b0f04c472d8a7ed1360ad188980d3e78",
       "category": "scrolls",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [],
-      "review_notes": " Followup2026-11-09: actual Item.info notes/rings/origin composition, unknown origin/range gates, both item window/action layouts and bounded panel source read. Source-specific decorated crossing/rows/patch and mine labels written after actual room subclasses read; classification/source/recovery rules untouched. Transmutation ordinary text no longer promises unsupported armor/glyph changes, reflects actual restrictions/property transfer; actual sword transfer/knowledge regression. WndInfoItem title color now uses read-only public level, preserving stale wand-infusion metadata; actual native checks pending. Empty Weapon summary no longer adds blank paragraphs, zero-wear missiles omit meaningless Sharpshooting durability multiplier. Full3064core457suites pass; new portrait/landscape native pending393, not392. Full inherited/secondary room-rule and shared variants remain open.",
+      "review_notes": "2026-11-09: Full own source and every category replacement read: eligibility, same-tier weapons/enchantments/permanent levels, retained knowledge/curses, wand resin/charge/infusion, staff imbuing, tipped darts, scroll/potion regular/exotic maps, artifact history/ring fallback, trinkets and seed/stone replacement, equipped/secondary/quickslots/time handling. Existing ordinary description accurately covers categories and exceptions. Existing actual replacement/save/knowledge tests retained; no generation changes.",
       "wording_corrected": true
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/scrolls/ScrollOfUpgrade.java",
       "sha256": "618f90651014f40f89536ddcec7091f9c10ea0f8e1f7d3557e0882473c6d6139",
       "category": "scrolls",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [
         "info"
       ],
       "wording_corrected": true,
-      "review_notes": "Normal scroll wording checked against current APD effect/targeting code. Live constants where shown; hidden identities preserved. Existing complicated panels and complete class/secondary-window review remain pending. Identify/Shards and Metamorphosis use actual APD behavior."
+      "review_notes": "2026-11-09: Full own source reviewed: eligibility/selection, upgrade callback, curse/enchant/hardening messages, repair through item upgrade, Degrade cleanup, progression pickups and known-only resource values. Current concise ordinary one-step/throwing-stack repair/risk text accurate. Existing upgrade/unknown/equipment/source tests retained; shared item/weapon/armor rules remain separately open."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/scrolls/exotic/ExoticScroll.java",
@@ -2582,11 +2582,11 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/scrolls/exotic/ScrollOfForwarding.java",
       "sha256": "560ec5ef1dfcd13d81b14431d6a875a91e6497d3bde478ee93a88ab0fae9b737",
       "category": "scrolls",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [
         "desc"
       ],
-      "review_notes": "Entire own fixed-known source, LootTransfers eligibility/armed-bomb/delayed delivery and actual destinationDepth policy read. Concise normal text preserves next-region/Imp20 exception, no sale, delayed safe delivery and all exclusions. Armed bomb refers only to the gathered loose loot; failure does not consume scroll. Existing actual transaction/routing tests retained; new ordinary Android window pending389.",
+      "review_notes": "2026-11-09: Full own source plus actual transfer/routing consumers reviewed: fixed identity/reset, independent known state, destination6/11/16/20 including late casts, safe pending delivery and exclusions, armed bomb precheck before consumption. Existing concise normal description matches source, no routing/time/ownership changes. Actual transfer/recovery tests retained.",
       "wording_corrected": true
     },
     {
@@ -4478,8 +4478,8 @@
       "review_notes": "2026-11-09 individually inspected previously omitted plant window. Removed universal plant calculations supplier/button, outside owner-retained mechanic-specific groups, keeping normal species/Warden descriptions and existing plain window. No new layout or effects. Thirty actual plant windows across NONE/WARDEN prepared to assert no expander, text screen bounds, pure save/time; Android pending next pair."
     }
   ],
-  "completed_units": 398,
-  "latest_tests": "3134core457all0, including red-reproduced cursed health-transfer popup mismatch and actual0/25/100/200HP/damage outcomes; only presentation fixed. New real Android popup fixture prepared, not yet run.411source7e92a2b45build/core3133/compilation passed, native cases in progress.410latestpublished after12native/45manualcaptures.",
+  "completed_units": 404,
+  "latest_tests": "3134core457all0 after six individual scroll/pickaxe/provider reviews; existing actual transfer/upgrade/transmutation/modifier guards retained. Latest Android source compile42611911248passed at305acf839 before latest scroll text and live-popup pooled-object fixture correction;411native still in progress.410latestpublished.",
   "message_inventory_entries": 5343,
   "message_inventory_counting": "Current authored English property entries across nine files;2432 item entries. Two concise zero-Healing dew/waterskin keys added. Exact Adult OFF/ON checks retained."
 }
