@@ -1,0 +1,14 @@
+{
+  "source_commit": "d19a99f8d48163c78673e31315a802b0b3f30c5d",
+  "original_build_run": 42565733012,
+  "core_tests": 3080,
+  "core_suites": 457,
+  "application_builds": "both assembled, compilation/core passed",
+  "native_result": "both Qol cases rejected stale removed Ferret flavor expectation; remaining five cases per variant not reached",
+  "expected_removed_phrase": "harder to hit",
+  "actual_retained_effect": "Increases evasion by50percent for you, your allies and enemies",
+  "correction": "test-only expectation and explicit numerical/actor-group assertions; rerun complete12case matrix on original immutable APKs",
+  "published": false,
+  "latest_published": 395,
+  "original_evidence_preserved": true
+}
