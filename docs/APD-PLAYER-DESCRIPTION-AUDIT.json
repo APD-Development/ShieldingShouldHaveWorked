@@ -4,9 +4,9 @@
   "counting": "Source units, not distinct item types. reviewed_units includes partial reviews; completed_units excludes partial/pending dependency. corrected_units counts source units with corrections, including incomplete reviews. Inventory/export/tests alone are not an individual review.",
   "source_units": 427,
   "message_entries": 2411,
-  "reviewed_units": 336,
-  "corrected_units": 299,
-  "unresolved_units": 272,
+  "reviewed_units": 340,
+  "corrected_units": 302,
+  "unresolved_units": 271,
   "category_counts": {
     "apd": 1,
     "mechanics": 38,
@@ -3043,21 +3043,24 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/wands/DamageWand.java",
       "sha256": "cc640d79a3422565f2e2032b0bb6c6d05a19dcd13d43c6c8c48c96dc4e22a218",
       "category": "wands",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
+      "status": "REVIEWED_UNCHANGED",
       "description_methods": [
         "statsDesc"
-      ]
+      ],
+      "review_notes": "Own abstract source fully read: numeric min/max/upgrade-stat wrappers, action-only RNG/WandEmpower consumption, and statsDesc known pure preview vs unknown+0. Inspection does not call damageRoll. No own wording change. Parent Wand preview/knowledge and derived effect classes tracked separately; completion of this unit does not complete wand-system audit."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/wands/Wand.java",
       "sha256": "8039a4603992213c22bd512ae216740b49ed4b9c57088e42c454d467d6b3a779",
       "category": "wands",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
+      "status": "PARTIAL_REVIEW",
       "description_methods": [
         "info",
         "statsDesc",
         "info"
-      ]
+      ],
+      "wording_corrected": true,
+      "review_notes": "Read conditional preview, unknown-charge union, Degrade/Infusion/Resin/Scroll Empower/Wild Power/MagicCharge and real consuming wandUsed branches. Shortened existing uncertainty note to possible wand-power levels; no guard/value/bonus changed. Full13wand unknown-charge privacy/core tests pass. Rest of large base/class/cursed/UI source remains open."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/wands/WandOfBlastWave.java",
@@ -3072,10 +3075,12 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/wands/WandOfCorrosion.java",
       "sha256": "68250a00fbafab678bf4ee615d8301aa457be0c45220420ccd607163f62fd519",
       "category": "wands",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
+      "status": "PARTIAL_REVIEW",
       "description_methods": [
         "statsDesc"
-      ]
+      ],
+      "wording_corrected": true,
+      "review_notes": "Entire onZap gas strength/volume, onHit ooze chance/duration and stats preview read; gas/status/Ooze water washing checked. Normal text gives base starting damage per turn and ally/self risk; Battlemage text explains damaging ooze/water. Full3040core pass, native known/unknown/staff windows prepared for387. Retained secondary panels/cross-class scope remain open."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/wands/WandOfCorruption.java",
@@ -3133,10 +3138,12 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/wands/WandOfMagicMissile.java",
       "sha256": "6c0ba4849e828ff9ab0382002f35cd5459f346922995d3621f515542bfe70aae",
       "category": "wands",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
+      "status": "PARTIAL_REVIEW",
       "description_methods": [
         "desc"
-      ]
+      ],
+      "wording_corrected": true,
+      "review_notes": "Entire source onZap creature-hit condition, shared MagicCharge setup/max/time/save and single benefiting-zap consumption plus staff charge path read. Normal flavor/stats/buff/Battlemage text concise; damage explicitly base. Existing real consumption regression now also checks public+7 with Scroll Empower2 and description purity, preserving marker. Full3040core pass; new native windows pending387. Retained staff panels/complete class variants remain open."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/wands/WandOfPrismaticLight.java",
@@ -4228,16 +4235,16 @@
       "review_notes": "Added missing display provider to inventory. Reading its output is not a complete provenance/generation audit."
     }
   ],
-  "completed_units": 155,
+  "completed_units": 156,
   "latest_tests": {
     "core_tests": 3040,
     "suites": 457,
     "failures": 0,
     "errors": 0,
     "skipped": 0,
-    "log": "/workspace/apd-dart-limitations-evidence-20261109/apd-dart-final-limitations-full.log",
+    "log": "/workspace/apd-magic-corrosion-wording-evidence-20261109/apd-magic-corrosion-wand-wording-full.log",
     "android_verified": false,
     "new_apk_built": false,
-    "scope": "Latest post386 wording: three dart limitations and Ankh up-to-two.3040core/457suites pass.386 original12native passed; additional backpack-owned Qol checks pending on same APKs.385 remains last published."
+    "scope": "Latest post386 Magic Missile/Corrosion/Battlemage/MagicCharge/uncertainty prose.3040core457suites pass. New native windows pending387.386 separately accepted/published,12distinct+2repeated owned-Qolcases."
   }
 }
