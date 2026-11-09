@@ -481,6 +481,18 @@ public class QolItemFeedbackDeviceTest {
             }
         }finally{TopScoresDeviceTest.render(()->{for(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff buff:new java.util.ArrayList<>(Dungeon.hero.buffs(Ring.RingBuff.class)))buff.detach();Dungeon.hero.belongings.ring=(Ring)previous[0];Dungeon.hero.belongings.misc=previous[1];if(previous[0]!=null)previous[0].activate(Dungeon.hero);if(previous[1] instanceof Ring)previous[1].activate(Dungeon.hero);});}
     }
+    private static void forceKnownBonusWithUnknownStrengthRender()throws Exception{
+        Ring previous=Dungeon.hero.belongings.ring;com.shatteredpixel.shatteredpixeldungeon.items.KindofMisc misc=Dungeon.hero.belongings.misc;boolean enhanced=Dungeon.hero.buff(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.EnhancedRings.class)!=null;
+        com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfForce force=new com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfForce();
+        try{TopScoresDeviceTest.render(()->{for(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff buff:new java.util.ArrayList<>(Dungeon.hero.buffs(Ring.RingBuff.class)))buff.detach();force.anonymize();force.level(3);force.levelKnown=force.cursedKnown=true;Dungeon.hero.belongings.ring=force;force.activate(Dungeon.hero);com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfMight unknown=new com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfMight();unknown.level(9);unknown.levelKnown=false;Dungeon.hero.belongings.misc=unknown;com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff.affect(Dungeon.hero,com.shatteredpixel.shatteredpixeldungeon.actors.buffs.EnhancedRings.class);assertEquals(5,com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfForce.armedDamageBonus(Dungeon.hero));});
+            showItem(force,"Melee weapon damage bonus: _5_","qol-force-known-bonus-unknown-strength.png",true,true);
+        }finally{TopScoresDeviceTest.render(()->{for(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff buff:new java.util.ArrayList<>(Dungeon.hero.buffs(Ring.RingBuff.class)))buff.detach();if(!enhanced)com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff.detach(Dungeon.hero,com.shatteredpixel.shatteredpixeldungeon.actors.buffs.EnhancedRings.class);Dungeon.hero.belongings.ring=previous;Dungeon.hero.belongings.misc=misc;if(previous!=null)previous.activate(Dungeon.hero);if(misc instanceof Ring)misc.activate(Dungeon.hero);});}
+    }
+    private static void reviewedRunestoneTargetDescriptionsRender()throws Exception{
+        showItem(new com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfAggression(),"alert enemies","qol-aggression-alert-enemies.png",true);
+        showItem(new com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfDeepSleep(),"another creature","qol-deep-sleep-targets.png",true);
+        showItem(new com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfFear(),"no effect on allies","qol-fear-targets.png",true);
+    }
     private static void hornMealDescriptionsRender()throws Exception{
         com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Artifact previous=Dungeon.hero.belongings.artifact;
         try{for(boolean cursed:new boolean[]{false,true})for(int charges:new int[]{0,2}){
@@ -686,6 +698,13 @@ public class QolItemFeedbackDeviceTest {
             TopScoresDeviceTest.render(()->unknown.levelKnown=unknown.cursedKnown=true);
             showItem(axe,"damage per turn","qol-tomahawk-known-ring.png",true);
         }finally{TopScoresDeviceTest.render(()->{for(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff buff:Dungeon.hero.buffs())if(!before.contains(buff)&&buff instanceof com.shatteredpixel.shatteredpixeldungeon.items.rings.Ring.RingBuff)buff.detach();Dungeon.hero.belongings.ring=old;});}
+    }
+    private static void tenacityUpgradePreviewsRender()throws Exception{
+        for(boolean cursed:new boolean[]{false,true}){
+            AtomicReference<Window> shown=new AtomicReference<>();float[] time={0};String[] saved={null};com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfTenacity ring=new com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfTenacity();
+            TopScoresDeviceTest.render(()->{ring.anonymize();ring.levelKnown=ring.cursedKnown=true;ring.cursed=cursed;ring.level(0);time[0]=Dungeon.hero.cooldown();com.watabou.utils.Bundle before=new com.watabou.utils.Bundle();ring.storeInBundle(before);saved[0]=before.toString();Window window=new com.shatteredpixel.shatteredpixeldungeon.windows.WndUpgrade(new com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfUpgrade(),ring,false);GameScene.show(window);shown.set(window);});
+            try{Thread.sleep(300);TopScoresDeviceTest.render(()->{try{boolean found=false;for(RenderedTextBlock text:TopScoresDeviceTest.find(shown.get(),RenderedTextBlock.class)){if(text.text().contains(cursed?"more":"less"))found=true;Point a=text.camera().cameraToScreen(text.left(),text.top()),z=text.camera().cameraToScreen(text.right(),text.bottom());assertTrue("Upgrade explanation fits",a.x>=0&&a.y>=0&&z.x<=Game.width&&z.y<=Game.height);}assertTrue(found);com.watabou.utils.Bundle after=new com.watabou.utils.Bundle();ring.storeInBundle(after);assertEquals(saved[0],after.toString());assertEquals(time[0],Dungeon.hero.cooldown(),0);}catch(Exception e){throw new RuntimeException(e);}});TopScoresDeviceTest.screenshot("qol-tenacity-upgrade-"+cursed+".png");}finally{TopScoresDeviceTest.render(()->shown.get().hide());}
+        }
     }
     private static void tenacityDescriptionsRender()throws Exception{
         com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfTenacity ring=new com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfTenacity();
@@ -1010,6 +1029,7 @@ public class QolItemFeedbackDeviceTest {
             amuletChoicesRender();
             utilityDescriptionsRender();
             questDescriptionsRender();
+            tenacityUpgradePreviewsRender();
             tenacityDescriptionsRender();
             unknownRingMissileDescriptionsRender();
             spiritBowConciseEnchantmentsRender();
@@ -1036,6 +1056,8 @@ public class QolItemFeedbackDeviceTest {
             lightningAndRegrowthDescriptionsRender();
             livingEarthAndPrismaticDescriptionsRender();
             passiveGlyphArcanaDescriptionsRender();
+            forceKnownBonusWithUnknownStrengthRender();
+            reviewedRunestoneTargetDescriptionsRender();
             hornMealDescriptionsRender();
             chaliceNormalRatesRender();
             artifactBuffsAndDisabledHealingRender();

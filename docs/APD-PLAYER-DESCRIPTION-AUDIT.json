@@ -5,7 +5,7 @@
   "source_units": 427,
   "message_entries": 2411,
   "reviewed_units": 409,
-  "corrected_units": 333,
+  "corrected_units": 334,
   "unresolved_units": 242,
   "category_counts": {
     "apd": 1,
@@ -2248,13 +2248,14 @@
       "description_methods": [
         "info"
       ],
-      "review_notes": "Actual statsInfo, solo/combined bonus formulas and identification/cursing branches reviewed. Concise player-facing benefits and numeric labels. Combined descriptions now withhold unknown companion bonuses; no combat calculation changed. Force personal range and upgrade previews also guard unknown Strength; complex detail prose remains pending.",
+      "review_notes": "Actual statsInfo, solo/combined bonus formulas and identification/cursing branches reviewed. Concise player-facing benefits and numeric labels. Combined descriptions now withhold unknown companion bonuses; no combat calculation changed. Force personal range and upgrade previews also guard unknown Strength; complex detail prose remains pending. Full own source and RingExplanation branches read2026-11-09. Reproduced Force known melee bonus4 instead of5 with EnhancedRings and unknown Strength companion; display now uses known buffed own bonus while withholding unarmed range. Combat unchanged, hidden-companion level invariance test passes. Tenacity existing upgrade row now explicitly says more/less damage instead of negative resistance; same formula, no new row or panel. Actual upgrade-window fixtures pending396. Existing specific panels retained pending owner review.",
       "tests": [
         "MechanicsExplanationTest.everyRingInspectionWithholdsUnknownCompanionLevels",
         "MechanicsExplanationTest.forceInspectionAndUpgradePreviewDoNotExposeUnknownStrengthRing",
         "MechanicsExplanationTest.arcanaUpgradePreviewCannotRevealAnUnknownCurse",
         "MechanicsExplanationTest.identifiedRingSummariesRemainBriefAndLabelSuppressedEffects"
-      ]
+      ],
+      "wording_corrected": true
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/rings/RingOfFuror.java",
@@ -2318,7 +2319,7 @@
       "category": "rings",
       "status": "REVIEWED_PENDING_DEPENDENCY",
       "description_methods": [],
-      "review_notes": "Normal protection/harm values now use less/more damage instead of negative-reduction jargon; hidden stats still use the labelled generic example. Actual formula unchanged. Specific existing nonlinear detail panel retained pending owner review; full review not claimed.",
+      "review_notes": "Normal protection/harm values now use less/more damage instead of negative-reduction jargon; hidden stats still use the labelled generic example. Actual formula unchanged. Specific existing nonlinear detail panel retained pending owner review; full review not claimed. Full own source and RingExplanation branches read2026-11-09. Reproduced Force known melee bonus4 instead of5 with EnhancedRings and unknown Strength companion; display now uses known buffed own bonus while withholding unarmed range. Combat unchanged, hidden-companion level invariance test passes. Tenacity existing upgrade row now explicitly says more/less damage instead of negative resistance; same formula, no new row or panel. Actual upgrade-window fixtures pending396. Existing specific panels retained pending owner review.",
       "tests": [
         "MechanicsExplanationTest.everyRingInspectionWithholdsUnknownCompanionLevels",
         "MechanicsExplanationTest.forceInspectionAndUpgradePreviewDoNotExposeUnknownStrengthRing",
@@ -2772,7 +2773,7 @@
       "status": "REVIEWED_CORRECTED",
       "description_methods": [],
       "wording_corrected": true,
-      "review_notes": "Individually checked normal descriptions against actual selection/cast/activation and saved variant rules. Summon variants, hostile effects, Intuition consumption, Detect Magic knowledge and augmentation trade-offs distinguished. No new panels or gameplay changes. Native crafted-spell windows staged for380."
+      "review_notes": "Individually checked normal descriptions against actual selection/cast/activation and saved variant rules. Summon variants, hostile effects, Intuition consumption, Detect Magic knowledge and augmentation trade-offs distinguished. No new panels or gameplay changes. Native crafted-spell windows staged for380. Full own source, Runestone activation gate and actual Terror/MagicalSleep/Mob targeting read2026-11-09. Aggression normal/buff wording accurately describes alert enemies instead of all nearby enemies; real sleeping/wandering/visibility AI test passes. DeepSleep says another creature, excluding self without excluding supported NPCs. Fear ally restriction and hit-shortened duration retained. Actual new windows pending396; no effects changed."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/stones/StoneOfAugmentation.java",
@@ -2817,7 +2818,7 @@
       "status": "REVIEWED_CORRECTED",
       "description_methods": [],
       "wording_corrected": true,
-      "review_notes": "Individually checked normal descriptions against actual selection/cast/activation and saved variant rules. Summon variants, hostile effects, Intuition consumption, Detect Magic knowledge and augmentation trade-offs distinguished. No new panels or gameplay changes. Native crafted-spell windows staged for380."
+      "review_notes": "Individually checked normal descriptions against actual selection/cast/activation and saved variant rules. Summon variants, hostile effects, Intuition consumption, Detect Magic knowledge and augmentation trade-offs distinguished. No new panels or gameplay changes. Native crafted-spell windows staged for380. Full own source, Runestone activation gate and actual Terror/MagicalSleep/Mob targeting read2026-11-09. Aggression normal/buff wording accurately describes alert enemies instead of all nearby enemies; real sleeping/wandering/visibility AI test passes. DeepSleep says another creature, excluding self without excluding supported NPCs. Fear ally restriction and hit-shortened duration retained. Actual new windows pending396; no effects changed."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/stones/StoneOfDetectMagic.java",
@@ -2844,7 +2845,7 @@
       "status": "REVIEWED_CORRECTED",
       "description_methods": [],
       "wording_corrected": true,
-      "review_notes": "Individually checked normal descriptions against actual selection/cast/activation and saved variant rules. Summon variants, hostile effects, Intuition consumption, Detect Magic knowledge and augmentation trade-offs distinguished. No new panels or gameplay changes. Native crafted-spell windows staged for380."
+      "review_notes": "Individually checked normal descriptions against actual selection/cast/activation and saved variant rules. Summon variants, hostile effects, Intuition consumption, Detect Magic knowledge and augmentation trade-offs distinguished. No new panels or gameplay changes. Native crafted-spell windows staged for380. Full own source, Runestone activation gate and actual Terror/MagicalSleep/Mob targeting read2026-11-09. Aggression normal/buff wording accurately describes alert enemies instead of all nearby enemies; real sleeping/wandering/visibility AI test passes. DeepSleep says another creature, excluding self without excluding supported NPCs. Fear ally restriction and hit-shortened duration retained. Actual new windows pending396; no effects changed."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/stones/StoneOfFlock.java",
@@ -4337,13 +4338,14 @@
   ],
   "completed_units": 185,
   "latest_tests": {
-    "core_tests": 3075,
+    "core_tests": 3078,
     "suites": 457,
     "failures": 0,
     "errors": 0,
     "skipped": 0,
-    "log": "/workspace/apd-horn-description-evidence-20261109/accepted-full",
+    "log": "/workspace/apd-tenacity-preview-evidence-20261109/accepted-full",
     "android_verified": false,
-    "scope": "395earlier3070source passed targeted native; later trinket/Swiftness/Horn source3075corepass, real new windows pending396. Final Store hint is wording-only after same handlers reviewed."
-  }
+    "scope": "395published3070core/12targeted API34; later trinket/Horn/runestone/ring source3078fullcore pass. New actual windows/upgrade rows pending396. No combat/source-generation/turn formulas changed."
+  },
+  "message_inventory_entries": 5336
 }

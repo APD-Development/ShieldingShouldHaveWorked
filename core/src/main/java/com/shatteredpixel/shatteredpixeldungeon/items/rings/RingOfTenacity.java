@@ -55,7 +55,8 @@ public class RingOfTenacity extends Ring {
 
 	public String upgradeStat1(int level){
 		if (cursed && cursedKnown) level = Math.min(-1, level-3);
-		return Messages.decimalFormat("#.##", 100f * (1f - Math.pow(0.85f, level+1))) + "%";
+		double reduction=100f*(1f-Math.pow(0.85f,level+1));
+        return Messages.get(this,reduction<0?"upgrade_more":"upgrade_less",Messages.decimalFormat("#.##",Math.abs(reduction)));
 	}
 
 	@Override

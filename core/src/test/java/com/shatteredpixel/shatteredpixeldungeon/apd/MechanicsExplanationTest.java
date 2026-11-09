@@ -523,7 +523,15 @@ public class MechanicsExplanationTest {
   MindVision sense=Buff.affect(hero,MindVision.class,8);sense.distance=3;int secret=hero.pos+2;com.shatteredpixel.shatteredpixeldungeon.levels.Level.set(secret,com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.SECRET_DOOR);Dungeon.level.updateFieldOfView(hero,view);assertTrue(view[hero.pos+3]);assertFalse(view[hero.pos+5]);assertEquals(com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.SECRET_DOOR,Dungeon.level.map[secret]);
   assertTrue(MechanicsDetails.buff(blind,blind.desc()).contains("maximum, not adding"));assertSame(blind,hero.buff(Blindness.class));assertEquals(3,sense.distance);
  }
- public static class DescriptionAmokedRat extends com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Rat {public com.shatteredpixel.shatteredpixeldungeon.actors.Char chooseNow(){return chooseEnemy();}}
+ public static class DescriptionAmokedRat extends com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Rat {public com.shatteredpixel.shatteredpixeldungeon.actors.Char chooseNow(){return chooseEnemy();}public void rememberEnemy(com.shatteredpixel.shatteredpixeldungeon.actors.Char target){enemy=target;}}
+ @Test public void aggressionDescriptionMatchesActualAlertVisibilityAndSleepingRules(){
+  descriptionSightArena();DescriptionAmokedRat subject=new DescriptionAmokedRat();subject.pos=hero.pos+1;subject.fieldOfView=new boolean[Dungeon.level.length()];java.util.Arrays.fill(subject.fieldOfView,true);com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Rat marked=new com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Rat();marked.pos=hero.pos+3;Dungeon.level.mobs.add(subject);Dungeon.level.mobs.add(marked);com.shatteredpixel.shatteredpixeldungeon.actors.Actor.add(marked);
+  com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfAggression.Aggression status=Buff.affect(marked,com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfAggression.Aggression.class,20);
+  try{
+   subject.state=subject.SLEEPING;assertSame(hero,subject.chooseNow());assertSame(subject.SLEEPING,subject.state);subject.rememberEnemy(null);subject.state=subject.WANDERING;assertSame(marked,subject.chooseNow());assertSame(subject.HUNTING,subject.state);
+   subject.rememberEnemy(null);subject.state=subject.WANDERING;subject.fieldOfView[marked.pos]=false;assertSame(hero,subject.chooseNow());assertTrue(new com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfAggression().info().contains("alert enemies"));assertTrue(status.desc().contains("Alert enemies"));
+  }finally{status.detach();com.shatteredpixel.shatteredpixeldungeon.actors.Actor.remove(marked);}
+ }
  @Test public void amokExplanationMatchesActualTargetGroupPriorityAndVisibility(){
   descriptionSightArena();int center=hero.pos;hero.pos=center+2;DescriptionAmokedRat subject=new DescriptionAmokedRat();subject.pos=center;subject.fieldOfView=new boolean[Dungeon.level.length()];java.util.Arrays.fill(subject.fieldOfView,true);Dungeon.level.mobs.add(subject);
   com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Rat enemy=new com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Rat();enemy.pos=center+8;Dungeon.level.mobs.add(enemy);
@@ -809,6 +817,12 @@ public class MechanicsExplanationTest {
   Ring[] rings={new RingOfAccuracy(),new RingOfArcana(),new RingOfForce(),new RingOfTenacity()};String expected=null;
   for(Ring r:rings){r.levelKnown=false;for(int level:new int[]{0,3,9}){r.level(level);String actual=RingExplanation.details(r);if(expected==null)expected=actual;assertEquals(expected,actual);}}
  }
+ @Test public void tenacityUpgradePreviewStatesMoreOrLessDamageInsteadOfNegativeResistance(){
+  RingOfTenacity ring=new RingOfTenacity();ring.anonymize();ring.levelKnown=ring.cursedKnown=true;
+  for(boolean cursed:new boolean[]{false,true})for(int level:new int[]{0,1,3,6}){
+   ring.cursed=cursed;ring.level(level);int bonus=ring.soloBonus();float factor=RingOfTenacity.damageMultiplier(bonus,1);String preview=ring.upgradeStat1(level);String amount=com.shatteredpixel.shatteredpixeldungeon.messages.Messages.decimalFormat("#.##",Math.abs(100*(1-factor)));assertEquals(amount+"% "+(factor>1?"more":"less"),preview);assertFalse(preview.startsWith("-"));
+  }
+ }
  @Test public void tenacityDetailsUseCurrentHealthAndDoNotTreatMaximumAsCurrent(){
   RingOfTenacity r=new RingOfTenacity();r.anonymize();r.levelKnown=r.cursedKnown=true;r.level(3);hero.belongings.ring=r;r.activate(hero);hero.HP=hero.HT;
   String full=RingExplanation.details(r);hero.HP=hero.HT/2;String half=RingExplanation.details(r);
@@ -816,6 +830,10 @@ public class MechanicsExplanationTest {
  }
  @Test public void magicImmuneRingDetailsDoNotClaimAnActiveBonus(){RingOfHaste r=new RingOfHaste();r.anonymize();r.levelKnown=r.cursedKnown=true;Buff.affect(hero,MagicImmune.class);assertTrue(RingExplanation.details(r).contains("not active benefits"));}
  @Test public void tinyPositiveMultipliersNeverDisplayAsZero(){assertNotEquals("0",ObfuscationExplanation.number(.00001f));assertFalse(ObfuscationExplanation.number(Float.POSITIVE_INFINITY).contains("Infinity"));}
+ @Test public void forceKnownArmedBonusKeepsEnhancedRingsWhenUnknownStrengthWithholdsUnarmedRange(){
+  RingOfForce force=new RingOfForce();force.anonymize();force.level(3);force.levelKnown=force.cursedKnown=true;hero.belongings.ring=force;force.activate(hero);RingOfMight unknown=new RingOfMight();unknown.levelKnown=false;hero.belongings.misc=unknown;Buff.affect(hero,EnhancedRings.class);
+  String text=force.info();assertTrue(text,text.contains("Melee weapon damage bonus: _"+RingOfForce.armedDamageBonus(hero)+"_."));assertTrue(text.contains("Identify your equipped rings to see unarmed damage"));unknown.level(9);assertEquals(text,force.info());assertEquals(5,RingOfForce.armedDamageBonus(hero));
+ }
  @Test public void forceDetailsUseActualStrengthTierAndCombatEndpointsWithoutRolling(){
   RingOfForce r=new RingOfForce();r.anonymize();r.levelKnown=r.cursedKnown=true;r.level(3);hero.belongings.ring=r;r.activate(hero);
   for(int strength:new int[]{8,10,18,22}){hero.STR=strength;String detail=RingExplanation.details(r);int b=r.soloBuffedBonus();assertTrue(detail,detail.contains(RingOfForce.unarmedMinimum(hero.STR(),b)+"–"+RingOfForce.unarmedMaximum(hero.STR(),b)+" damage points"));

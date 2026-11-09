@@ -73,3 +73,8 @@ Exact source9d0f8db027a8cef4bf662b9f9d19ec33d1ae4bc5, build42557946280/stage4255
 ###394 delivered 2026-11-09T04:34:09Z / continuing
 
 Source b68cd4a96b355640c2a45355aa454dfdcd75d69f; build42560789608/stage42560840655.3068core457suites/12targeted API34 cases. Ten assets independently downloaded/hash checked; changed native captures manually reviewed before publication. Receipt APD-394-DELIVERY-RECEIPT.json. Later equipment binding/Champion/defensive single-block wording3070core full pass; Android pending395. Complete XML/log backed up /workspace/apd-defensive-weapon-evidence-20261109/accepted-full. Next pair target30minafter publication; continue through09:30UTC. Full individual audit remains unfinished.
+
+
+###395 published 2026-11-09T04:57:16Z / continuing
+
+Source94a7b237968d9490f78e0f0e26738936b74497a2; build42563129175/stage42563161822.3070core457suites/12targeted API34 cases. Both signed APKs and source hashes independently checked after downloading ten assets; supplemental scan findings checked; seven real changed capture selections manually read. No new panel or gameplay rule. Receipt APD-395-DELIVERY-RECEIPT.json. Later trinket/detection/generation/Swiftness/Horn3075corepass, new native fixtures pending396; runestone target descriptions/AI test in progress. Complete raw core evidence and failed fixtures preserved. Next valid pair target30minafter actual395publication, continue until09:30UTC. Full audit unfinished409full/partial333corrected185complete242unresolved; no phone/audio fix claim.

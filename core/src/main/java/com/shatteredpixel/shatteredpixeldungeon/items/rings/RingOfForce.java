@@ -136,8 +136,8 @@ public class RingOfForce extends Ring {
 
 	@Override
 	public String statsInfo() {
-        if(com.shatteredpixel.shatteredpixeldungeon.apd.mechanics.ArmorExplanation.knownStrength(Dungeon.hero)==null)return "Unarmed damage depends on your Strength. Its damage range is unavailable while ring effects are unknown or suppressed. "
-                +(isIdentified()?"This ring’s melee weapon damage bonus is "+soloBonus()+".":"Identify the ring to see its exact bonus.");
+        if(com.shatteredpixel.shatteredpixeldungeon.apd.mechanics.ArmorExplanation.knownStrength(Dungeon.hero)==null)return (Dungeon.hero==null?"Unarmed damage depends on your Strength.":"Identify your equipped rings to see unarmed damage.")
+                +(isIdentified()?" Melee weapon damage bonus: _"+soloBuffedBonus()+"_.":" Identify this ring to see its damage bonus.");
 		float tier = tier(Dungeon.hero.STR());
 		if (isIdentified()) {
 			int level = soloBuffedBonus();
