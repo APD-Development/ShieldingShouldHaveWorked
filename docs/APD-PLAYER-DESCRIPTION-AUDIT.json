@@ -4,8 +4,8 @@
   "counting": "Source units, not distinct item types. reviewed_units includes partial reviews; completed_units excludes partial/pending dependency. corrected_units counts source units with corrections, including incomplete reviews. Inventory/export/tests alone are not an individual review.",
   "source_units": 437,
   "message_entries": 2432,
-  "reviewed_units": 434,
-  "corrected_units": 353,
+  "reviewed_units": 435,
+  "corrected_units": 354,
   "unresolved_units": 39,
   "category_counts": {
     "apd": 1,
@@ -3117,11 +3117,12 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/wands/CursedWand.java",
-      "sha256": "2ad70a92be62cb6c873e14dc6577c1b7c9d5359643baaf69daed38f1def8e744",
+      "sha256": "204bbb22464063d2d57f3c36f34499071b07d40158fc255179b73d32eacdf6e6",
       "category": "wands",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
+      "status": "PARTIAL_REVIEW",
       "description_methods": [],
-      "review_notes": ""
+      "review_notes": "2026-11-09 entire32-effect source individually read: category/valid/positive-only filters, callbacks, attribution, health transfer, traps/clouds, transformations and rare messages. Reproduced floating healing10 while actual0 under Healing0; display-only correction uses existing CustomHealingHooks.display. Actual0/25/100/200 healing/damage tests pass, native real popup fixture prepared, not yet run. Original fake-error/save/exit joke text is ambiguous presentation; owner asked whether to clarify, behavior remains unchanged. Keep unresolved pending that answer and rare-effect UI coverage; no universal cursed effect panel added.",
+      "wording_corrected": true
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/wands/DamageWand.java",
@@ -4478,7 +4479,7 @@
     }
   ],
   "completed_units": 398,
-  "latest_tests": "3133 core457 all0 after actual zero-Healing food benefits and removal of ordinary plant universal panel. Thirty actual plant windows plus four zero-Healing foods/Frost windows prepared, not yet run.3132 Android source compile42609605936passed before latest food/plant changes.4103131pair runtime in progress;409latestpublished.",
+  "latest_tests": "3134core457all0, including red-reproduced cursed health-transfer popup mismatch and actual0/25/100/200HP/damage outcomes; only presentation fixed. New real Android popup fixture prepared, not yet run.411source7e92a2b45build/core3133/compilation passed, native cases in progress.410latestpublished after12native/45manualcaptures.",
   "message_inventory_entries": 5343,
   "message_inventory_counting": "Current authored English property entries across nine files;2432 item entries. Two concise zero-Healing dew/waterskin keys added. Exact Adult OFF/ON checks retained."
 }

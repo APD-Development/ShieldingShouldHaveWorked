@@ -495,7 +495,7 @@ public class CursedWand {
 				toHeal.HP = Math.min(toHeal.HT, toHeal.HP + com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomHealingHooks.amount(toHeal, damage/2));
 				ApdCombat.onHeal( toHeal, apdHpBefore, ApdCombat.HEAL_WAND_CURSED, damage/2 );
 				toHeal.sprite.emitter().burst(Speck.factory(Speck.HEALING), 3);
-				toHeal.sprite.showStatusWithIcon( CharSprite.POSITIVE, Integer.toString(damage/2), FloatingText.HEALING );
+				toHeal.sprite.showStatusWithIcon( CharSprite.POSITIVE, Integer.toString(com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomHealingHooks.display(toHeal, apdHpBefore, damage/2)), FloatingText.HEALING );
 
 				com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomOffensiveHooks.raw(toDamage,damage,new CursedWand(),user);
 				toDamage.sprite.emitter().start(ShadowParticle.UP, 0.05f, 10);
