@@ -388,14 +388,14 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/TalentExplanation.java",
-      "sha256": "a23384284f3eb8ecbe73d0b20e1c21a123bbd115eb09867cdeab22f13e150158",
+      "sha256": "2b4ce1d77bd3475e5363ef57d81c7abd1884b356ab8f2017f594f8ea862970c6",
       "category": "mechanics",
       "status": "PARTIAL_REVIEW",
       "description_methods": [
         "details",
         "details"
       ],
-      "review_notes": "2026-11-09: Full own source read; normal English rank/metamorph text cross-check continues. Fixed Hearty Meal display-only raw4versusactual0 feedback using existing CustomHealingHooks.display; actual0/25/100/200 by2ranks andHP10/33/34 tests preserve other meal benefit, food quantity and handler time. Corrected normal alternate Weapon Recharging overstated5/7.5percent text to existing2.5percent scaling plus small rank-dependent addition/whole-damage rounding; actual damage formula unchanged and seeded real damage tests retained. Removed irrelevant recursion/balance implementation prose from existing detail and clarified Lethal Momentum can remove killing-action time; actual attackDelay consumption test.3136core457all0. Actual new Hearty popup, Twin and metamorphed recharging windows prepared but not yetAndroid verified. Comprehensive text review remains open.",
+      "review_notes": "2026-11-09: Full own source read; normal English rank/metamorph text cross-check continues. Fixed Hearty Meal display-only raw4versusactual0 feedback using existing CustomHealingHooks.display; actual0/25/100/200 by2ranks andHP10/33/34 tests preserve other meal benefit, food quantity and handler time. Corrected normal alternate Weapon Recharging overstated5/7.5percent text to existing2.5percent scaling plus small rank-dependent addition/whole-damage rounding; actual damage formula unchanged and seeded real damage tests retained. Removed irrelevant recursion/balance implementation prose from existing detail and clarified Lethal Momentum can remove killing-action time; actual attackDelay consumption test.3136core457all0. Actual new Hearty popup, Twin and metamorphed recharging windows prepared but not yetAndroid verified. Comprehensive text review remains open. 2026-11-09 continued individual normal/detailed Barkskin, Natures Aid, Projectile Momentum and Followup Strike review: plain protection/fading, active freerunning accuracy/damage and five-turn one-hit target-switch descriptions. Existing talent panels retained pending owner decision. Real plant triggers/protection/decay and followup attack target-switch/one-use checks pass; full3140/native418 pending. No gameplay changes.",
       "wording_corrected": true
     },
     {
@@ -4528,7 +4528,7 @@
         "desc",
         "title"
       ],
-      "review_notes": "2026-11-09: Full own source read; normal English rank/metamorph text cross-check continues. Fixed Hearty Meal display-only raw4versusactual0 feedback using existing CustomHealingHooks.display; actual0/25/100/200 by2ranks andHP10/33/34 tests preserve other meal benefit, food quantity and handler time. Corrected normal alternate Weapon Recharging overstated5/7.5percent text to existing2.5percent scaling plus small rank-dependent addition/whole-damage rounding; actual damage formula unchanged and seeded real damage tests retained. Removed irrelevant recursion/balance implementation prose from existing detail and clarified Lethal Momentum can remove killing-action time; actual attackDelay consumption test.3136core457all0. Actual new Hearty popup, Twin and metamorphed recharging windows prepared but not yetAndroid verified. Comprehensive text review remains open.",
+      "review_notes": "2026-11-09: Full own source read; normal English rank/metamorph text cross-check continues. Fixed Hearty Meal display-only raw4versusactual0 feedback using existing CustomHealingHooks.display; actual0/25/100/200 by2ranks andHP10/33/34 tests preserve other meal benefit, food quantity and handler time. Corrected normal alternate Weapon Recharging overstated5/7.5percent text to existing2.5percent scaling plus small rank-dependent addition/whole-damage rounding; actual damage formula unchanged and seeded real damage tests retained. Removed irrelevant recursion/balance implementation prose from existing detail and clarified Lethal Momentum can remove killing-action time; actual attackDelay consumption test.3136core457all0. Actual new Hearty popup, Twin and metamorphed recharging windows prepared but not yetAndroid verified. Comprehensive text review remains open. 2026-11-09 continued individual normal/detailed Barkskin, Natures Aid, Projectile Momentum and Followup Strike review: plain protection/fading, active freerunning accuracy/damage and five-turn one-hit target-switch descriptions. Existing talent panels retained pending owner decision. Real plant triggers/protection/decay and followup attack target-switch/one-use checks pass; full3140/native418 pending. No gameplay changes.",
       "wording_corrected": true
     },
     {
@@ -4545,7 +4545,7 @@
     }
   ],
   "completed_units": 435,
-  "latest_tests": "3138core457suites all0 after real linked-power attacks/protection/expiry, Shadowmeld special countdown and singular wording. Three new neutral message keys reconciled to5346 after raw stale-count failure preserved.417native pending;416held visual grammar error fixed;415latestpublished.",
+  "latest_tests": "3140core457all0 after real plant-trigger protection/decay and followup target-switch/one-hit coverage.417failed only Android test syntax before APK; raw/branch retained;418native pending.415latestpublished;416heldmanualgrammar.",
   "message_inventory_entries": 5346,
   "message_inventory_counting": "Current authored English property entries across nine files;2432 item entries. Two concise zero-Healing dew/waterskin keys added. Exact Adult OFF/ON checks retained."
 }

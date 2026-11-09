@@ -146,18 +146,18 @@ public class QolItemFeedbackDeviceTest {
             }
             for(RenderedTextBlock text:TopScoresDeviceTest.find(window,RenderedTextBlock.class)){
                 plainHeight[0]=Math.max(plainHeight[0],text.height());
-                assertFalse("No singular duration with a plural unit",java.util.regex.Pattern.compile("(?<![\d.])1 turns\b").matcher(text.text()).find());
+                assertFalse("No singular duration with a plural unit",java.util.regex.Pattern.compile("(?<![0-9.])1 turns(?![a-zA-Z])").matcher(text.text()).find());
             }
             assertNotNull("The actual information window offers calculations",expander.get());
         }catch(Exception e){throw new RuntimeException(e);}});
-        if(screenshot.startsWith("qol-existing-status-clear-")||screenshot.startsWith("qol-existing-power-link-")||screenshot.startsWith("qol-twin-upgrades-existing-panel-")||screenshot.startsWith("qol-weapon-recharging-existing-panel-")){
+        if(screenshot.startsWith("qol-existing-status-clear-")||screenshot.startsWith("qol-existing-power-link-")||screenshot.startsWith("qol-reviewed-talent-clear-")||screenshot.startsWith("qol-twin-upgrades-existing-panel-")||screenshot.startsWith("qol-weapon-recharging-existing-panel-")){
             Thread.sleep(120);TopScoresDeviceTest.render(()->assertDescriptionViewport(window));
             TopScoresDeviceTest.screenshot(screenshot.replace(".png","-normal.png"));
         }
         touch(at[0]);TopScoresDeviceTest.render(()->{try{
             assertEquals("Pointer opens advanced explanation","Hide calculations",expander.get().text());
             for(RenderedTextBlock text:TopScoresDeviceTest.find(window,RenderedTextBlock.class)){
-                assertFalse("No singular duration with a plural unit",java.util.regex.Pattern.compile("(?<![\d.])1 turns\b").matcher(text.text()).find());
+                assertFalse("No singular duration with a plural unit",java.util.regex.Pattern.compile("(?<![0-9.])1 turns(?![a-zA-Z])").matcher(text.text()).find());
                 if(screenshot.contains("Shadows.png")||screenshot.contains("power-link-1.png")||screenshot.contains("power-link-2.png"))assertFalse("Special countdown must not claim ordinary expiry",text.text().contains("Duration remaining"));
             }
             boolean found=false;for(RenderedTextBlock text:TopScoresDeviceTest.find(window,RenderedTextBlock.class))if(text.text().contains(expected))found=true;assertTrue("Rendered calculation contains live explanation: "+expected,found);
@@ -343,6 +343,12 @@ public class QolItemFeedbackDeviceTest {
             calculationWindow(()->{Sword blade=new Sword();blade.level(3);blade.levelKnown=blade.cursedKnown=true;blade.enchant((com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon.Enchantment)Class.forName("com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments."+name).getDeclaredConstructor().newInstance());return new WndInfoItem(blade);},retainedText[index],"qol-retained-"+name+"-clear-details.png");
         }
         calculationWindow(()->{com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier b=new com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier();b.setShield(17);return new WndInfoBuff(b);},"17 shield points","qol-mechanics-buff-expanded.png");
+        String[] reviewedTalentNames={"BARKSKIN","NATURES_AID","PROJECTILE_MOMENTUM","FOLLOWUP_STRIKE"};
+        String[] reviewedTalentText={"Barkskin protection","Barkskin from a visible plant","Thrown weapons while freerunning","Follow-up hit"};
+        for(int index=0;index<reviewedTalentNames.length;index++){
+            final String name=reviewedTalentNames[index];
+            calculationWindow(()->new WndInfoTalent(com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent.valueOf(name),2,null),reviewedTalentText[index],"qol-reviewed-talent-clear-"+name+".png");
+        }
         calculationWindow(()->new WndInfoTalent(com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent.ENHANCED_RINGS,1,null),"= 3 turns","qol-mechanics-talent-expanded.png");
         calculationWindow(()->new WndInfoTalent(com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent.TWIN_UPGRADES,3,null),"Other level bonuses still apply","qol-twin-upgrades-existing-panel-clear.png");
         java.util.LinkedHashMap<com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent,com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent> priorMetamorphs=new java.util.LinkedHashMap<>(Dungeon.hero.metamorphedTalents);

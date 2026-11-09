@@ -653,6 +653,42 @@ public class MechanicsExplanationTest {
    com.watabou.utils.Bundle before=new com.watabou.utils.Bundle();item.storeInBundle(before);TalismanExplanation.details(item);com.watabou.utils.Bundle after=new com.watabou.utils.Bundle();item.storeInBundle(after);assertEquals(before.toString(),after.toString());com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TalismanOfForesight.Foresight passive=item.new Foresight();passive.target=hero;passive.checkAwareness();com.watabou.utils.Bundle actual=new com.watabou.utils.Bundle();item.storeInBundle(actual);assertEquals("warning state"+state,state==0,actual.getBoolean("warn"));assertEquals(tile,Dungeon.level.map[cell]);
   }
  }
+ public static class DescriptionPlantTrigger extends com.shatteredpixel.shatteredpixeldungeon.plants.Plant {
+  @Override public void wither(){}
+  @Override public void activate(com.shatteredpixel.shatteredpixeldungeon.actors.Char target){}
+ }
+ @Test public void plantTalentWordingMatchesActualProtectionAndDecay(){
+  hero=new DescriptionMonkHero();hero.heroClass=HeroClass.HUNTRESS;hero.HP=hero.HT=20;Talent.initClassTalents(hero);Dungeon.hero=hero;descriptionSightArena();com.shatteredpixel.shatteredpixeldungeon.actors.Actor.add(hero);
+  try{
+   for(int rank=1;rank<=3;rank++)for(int level:new int[]{1,2,7,20}){
+    Buff.detach(hero,Barkskin.class);hero.talents.get(0).put(Talent.NATURES_AID,0);hero.talents.get(0).put(Talent.BARKSKIN,rank);hero.lvl=level;
+    DescriptionPlantTrigger plant=new DescriptionPlantTrigger();plant.pos=hero.pos;plant.trigger();
+    Barkskin bark=hero.buff(Barkskin.class);int protection=level*rank/3;assertEquals(protection,bark.level());assertEquals(1,bark.decayInterval());
+    String explanation=MechanicsDetails.talent(Talent.BARKSKIN,rank,"");assertTrue(explanation,explanation.contains("0–"+protection+" damage protection"));
+    if(protection>1){float before=bark.cooldown();bark.act();assertEquals(protection-1,bark.level());assertEquals(1,bark.cooldown()-before,0);}
+   }
+   for(int rank=1;rank<=2;rank++){
+    Buff.detach(hero,Barkskin.class);hero.talents.get(0).put(Talent.BARKSKIN,0);hero.talents.get(0).put(Talent.NATURES_AID,rank);
+    DescriptionPlantTrigger plant=new DescriptionPlantTrigger();plant.pos=hero.pos+1;Dungeon.level.heroFOV[plant.pos]=true;plant.trigger();
+    Barkskin bark=hero.buff(Barkskin.class);assertEquals(2,bark.level());assertEquals(1+2*rank,bark.decayInterval());assertTrue(MechanicsDetails.talent(Talent.NATURES_AID,rank,"").contains("_"+(1+2*rank)+" turns_"));
+    float before=bark.cooldown();bark.act();assertEquals(1,bark.level());assertEquals(1+2*rank,bark.cooldown()-before,0);
+   }
+   assertTrue(Talent.BARKSKIN.desc().contains("one third"));assertFalse(Talent.BARKSKIN.desc().contains("steppingon"));
+  }finally{com.shatteredpixel.shatteredpixeldungeon.actors.Actor.remove(hero);}
+ }
+ @Test public void followupWordingMatchesRealTargetSwitchAndOneHitBonus(){
+  for(int rank=1;rank<=2;rank++){
+   hero.talents.get(0).put(Talent.FOLLOWUP_STRIKE,rank);Buff.detach(hero,Talent.FollowupStrikeTracker.class);
+   PlainStatusTarget first=new PlainStatusTarget(),second=new PlainStatusTarget();first.alignment=second.alignment=com.shatteredpixel.shatteredpixeldungeon.actors.Char.Alignment.ENEMY;
+   hero.belongings.weapon=new com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingKnife();
+   assertEquals(10,Talent.onAttackProc(hero,first,10));assertEquals(first.id(),hero.buff(Talent.FollowupStrikeTracker.class).object);
+   assertEquals(10,Talent.onAttackProc(hero,second,10));assertEquals(second.id(),hero.buff(Talent.FollowupStrikeTracker.class).object);
+   hero.belongings.weapon=new com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Dagger();
+   assertEquals(10,Talent.onAttackProc(hero,first,10));assertNotNull(hero.buff(Talent.FollowupStrikeTracker.class));
+   assertEquals(11+rank,Talent.onAttackProc(hero,second,10));assertNull(hero.buff(Talent.FollowupStrikeTracker.class));assertEquals(10,Talent.onAttackProc(hero,second,10));
+   assertTrue(MechanicsDetails.talent(Talent.FOLLOWUP_STRIKE,rank,"").contains("_"+(1+rank)+" damage_"));
+  }
+ }
  private void descriptionSightArena(){
   Dungeon.level.blobs=new java.util.HashMap<>();Dungeon.level.mobs=new java.util.HashSet<>();Dungeon.level.heaps=new com.watabou.utils.SparseArray<>();Dungeon.level.traps=new com.watabou.utils.SparseArray<>();Dungeon.level.plants=new com.watabou.utils.SparseArray<>();Dungeon.level.customTiles=new java.util.ArrayList<>();Dungeon.level.customWalls=new java.util.ArrayList<>();Dungeon.level.setSize(33,33);java.util.Arrays.fill(Dungeon.level.map,com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.EMPTY);Dungeon.level.buildFlagMaps();Dungeon.level.discoverable=new boolean[Dungeon.level.length()];java.util.Arrays.fill(Dungeon.level.discoverable,true);hero.pos=16*33+16;hero.viewDistance=8;
  }
