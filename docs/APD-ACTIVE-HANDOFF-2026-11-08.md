@@ -153,3 +153,6 @@ All17existing TrinketExplanation branches individually reconciled; three final d
 ### Three retained artifact details
 
 Cape/Chalice/Horn optional math prose and common charge header shorter, preserving effect/bound formulas. Entire own source reconciled, actual existing reflection/regen/food/time/experience/Healing0/save tests pass in3106core457suites. Obsolete Rose-header wording assertion failure retained; corrected assertion preserves actual50%ghost health versus25/100summoning state and save purity. Three new expanded Android windows plus end-of-scroll camera assertion/bottom screenshots added to all existing calculation-window fixtures; runtime pending401.420full/partial338corrected243complete184unresolved,5338English. Whole audit unfinished.
+
+
+400published 2026-11-09T07:53:37Z source56ee1e8f9b3c04288af3e5b2093b5a032f467c7b build42580333970 stage42580378706,3103core457/12targetedAPI34passed. APK/source hashes and supplemental scan independently checked; three actual expanded screenshots manually reviewed. Native controls/viewport/offset checks, no claim manually viewed last lines: next401adds bottom capture/assert. Receipt APD-400-DELIVERY-RECEIPT.json. Continue later3106source; all previous source/APKs preserved.
