@@ -37,7 +37,9 @@ jobs:
           assert hashlib.sha256(pathlib.Path('owner-delivery/APD-Source-409.zip').read_bytes()).hexdigest()==d['source_sha256']
           cases={'qol':'grassDewControlsRingBreakdownsSearchedWallAndOfflineLicenseRenderNatively','wall':'observedGeometryAndRetainedMarksUseTheActualAndroidLayer','seed':'a_controlWritesEnabledPreference','restart':'b_freshProcessReadsEnabledAndCanDisable','gameplay':'c_runtimeDiscoveryRouteAndActualTrapEffect','freeze':'cancelledGhoulAttackReleasesQueueButLiveAttackStaysPending'}
           for label in ['developer','alpha']:
-            for case,method in cases.items():subprocess.run(['python3','tools/apd_check_single_instrumentation.py',str(pathlib.Path('complete-evidence/evidence')/(label+'-'+case+'.txt')),method],check=True)
+            for case,method in cases.items():
+              cls={'qol':'QolItemFeedbackDeviceTest','wall':'WallGeometryDeviceTest','freeze':'RemovedActorStallDeviceTest'}.get(case,'TrapDiscoveryDeviceTest')
+              subprocess.run(['python3','tools/apd_check_single_instrumentation.py',str(pathlib.Path('complete-evidence/evidence')/(label+'-'+case+'.txt')),method,'com.shatteredpixel.shatteredpixeldungeon.android.'+cls],check=True)
           PY
       - name: Scan exact source and full history with reviewed full-line classification
         env: {GH_TOKEN: '${{ github.token }}'}
