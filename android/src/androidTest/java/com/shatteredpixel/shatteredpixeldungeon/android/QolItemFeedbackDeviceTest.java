@@ -244,6 +244,17 @@ public class QolItemFeedbackDeviceTest {
         }finally{TopScoresDeviceTest.render(()->{if(shown.get()!=null)shown.get().hide();Dungeon.hero.belongings.weapon=previous[0];});}
     }
     private static void calculationWindowsRenderAndRespond()throws Exception{
+        String[] statusNames={"Invisibility","Invulnerability","Cripple","Stamina","Blindness","Roots","PinCushion"};
+        String[] statusText={"last known position","ordinary damage","twice as long","two thirds","normal scroll and tome reading","Teleportation","quantity: 3"};
+        for(int i=0;i<statusNames.length;i++){
+            final String name=statusNames[i];
+            calculationWindow(()->{
+                com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff effect=(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff)Class.forName("com.shatteredpixel.shatteredpixeldungeon.actors.buffs."+name).getDeclaredConstructor().newInstance();
+                if(effect instanceof com.shatteredpixel.shatteredpixeldungeon.actors.buffs.PinCushion){ThrowingKnife stack=new ThrowingKnife();stack.quantity(3);((com.shatteredpixel.shatteredpixeldungeon.actors.buffs.PinCushion)effect).stick(stack);}
+                return new WndInfoBuff(effect);
+            },statusText[i],"qol-existing-status-clear-"+name+".png");
+        }
+
         calculationWindow(()->{com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CloakOfShadows cloak=new com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CloakOfShadows();cloak.levelKnown=cloak.cursedKnown=true;return new WndInfoItem(cloak);},"every 4 turns","qol-cloak-explanation-expanded.png");
         calculationWindow(()->{com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose rose=new com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose();rose.levelKnown=rose.cursedKnown=true;return new WndInfoItem(rose);},"the ghost’s health percentage","qol-rose-explanation-expanded.png");
 
