@@ -146,6 +146,7 @@ public class QolItemFeedbackDeviceTest {
             }
             for(RenderedTextBlock text:TopScoresDeviceTest.find(window,RenderedTextBlock.class)){
                 plainHeight[0]=Math.max(plainHeight[0],text.height());
+                assertFalse("Information windows contain no missing-message placeholder",text.text().contains("!!!NO TEXT FOUND!!!"));
                 assertFalse("No singular duration with a plural unit",java.util.regex.Pattern.compile("(?<![0-9.])1 turns(?![a-zA-Z])").matcher(text.text()).find());
             }
             assertNotNull("The actual information window offers calculations",expander.get());
@@ -157,11 +158,13 @@ public class QolItemFeedbackDeviceTest {
         touch(at[0]);TopScoresDeviceTest.render(()->{try{
             assertEquals("Pointer opens advanced explanation","Hide calculations",expander.get().text());
             for(RenderedTextBlock text:TopScoresDeviceTest.find(window,RenderedTextBlock.class)){
+                assertFalse("Information windows contain no missing-message placeholder",text.text().contains("!!!NO TEXT FOUND!!!"));
                 assertFalse("No singular duration with a plural unit",java.util.regex.Pattern.compile("(?<![0-9.])1 turns(?![a-zA-Z])").matcher(text.text()).find());
                 if(screenshot.contains("Shadows.png")||screenshot.contains("power-link-1.png")||screenshot.contains("power-link-2.png"))assertFalse("Special countdown must not claim ordinary expiry",text.text().contains("Duration remaining"));
             }
             boolean found=false;for(RenderedTextBlock text:TopScoresDeviceTest.find(window,RenderedTextBlock.class))if(text.text().contains(expected))found=true;assertTrue("Rendered calculation contains live explanation: "+expected,found);
             for(RenderedTextBlock text:TopScoresDeviceTest.find(window,RenderedTextBlock.class)){
+                if(screenshot.startsWith("qol-reviewed-spell-clear-ShieldOfLight"))assertTrue("Shield of Light shows the actual displayed hero/linked-ally timers",text.text().contains("Lasts 5 turns for you, or 4 turns for the linked ally"));
                 if(screenshot.startsWith("qol-existing-status-clear-")||screenshot.startsWith("qol-existing-power-link-")||screenshot.startsWith("qol-warrior-shield-"))assertFalse("Reviewed status windows avoid technical duration units",text.text().contains("game-time units"));
                 if(screenshot.startsWith("qol-twin-upgrades-existing-panel-")||screenshot.startsWith("qol-weapon-recharging-existing-panel-"))assertFalse("Reviewed talent windows avoid generic rank boilerplate",text.text().contains("rank-specific amounts"));
             }
@@ -444,8 +447,8 @@ public class QolItemFeedbackDeviceTest {
             calculationWindow(()->{Sword blade=new Sword();blade.level(3);blade.levelKnown=blade.cursedKnown=true;blade.enchant((com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon.Enchantment)Class.forName("com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments."+name).getDeclaredConstructor().newInstance());return new WndInfoItem(blade);},retainedText[index],"qol-retained-"+name+"-clear-details.png");
         }
         calculationWindow(()->{com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier b=new com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier();b.setShield(17);return new WndInfoBuff(b);},"17 shield points","qol-mechanics-buff-expanded.png");
-        String[] reviewedTalentNames={"BARKSKIN","NATURES_AID","PROJECTILE_MOMENTUM","FOLLOWUP_STRIKE","SHARED_UPGRADES","SHARED_ENCHANTMENT"};
-        String[] reviewedTalentText={"Barkskin protection","Barkskin from a visible plant","Thrown weapons while freerunning","Follow-up hit","about 16.67% damage","Borrowing the bow's enchantment"};
+        String[] reviewedTalentNames={"BARKSKIN","NATURES_AID","PROJECTILE_MOMENTUM","FOLLOWUP_STRIKE","SHARED_UPGRADES","SHARED_ENCHANTMENT","BOUNTY_HUNTER"};
+        String[] reviewedTalentText={"Barkskin protection","Barkskin from a visible plant","Thrown weapons while freerunning","Follow-up hit","about 16.67% damage","Borrowing the bow's enchantment","normal item-drop chance"};
         for(int index=0;index<reviewedTalentNames.length;index++){
             final String name=reviewedTalentNames[index];
             calculationWindow(()->new WndInfoTalent(com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent.valueOf(name),2,null),reviewedTalentText[index],"qol-reviewed-talent-clear-"+name+".png");

@@ -1,6 +1,6 @@
 {
-  "recorded_utc": "2026-11-09T19:58:50.810337+00:00",
-  "authorization_end_utc": "2026-11-09T20:00:00Z",
+  "recorded_utc": "2026-11-09T20:19:16.555017+00:00",
+  "authorization_end_utc": "2026-11-09T22:00:00Z",
   "latest_verified_published_build": 428,
   "release_url": "https://github.com/APD-Development/ShieldingShouldHaveWorked/releases/tag/apd-alpha-preview-428",
   "source_fix_commit": "28013435e236058ec9945ab5968ec258c4c380aa",
@@ -133,5 +133,6 @@
     "manual_frames": 80,
     "source_manifest_files": 4770
   },
-  "authorization_boundary": "2026-11-09T20:00:00Z = 15:00 Eastern. Do not claim active work afterward. Current phase preservation/finalverification; stopat boundary unless ownersteers."
+  "authorization_boundary": "Owner renewed authorization to17:00Eastern /22:00UTC Nov9. Same rules: verifiedAPK pairs whenvalid about30minutes; preserveallsource/builds/evidence; no newfeatures or balancechanges.",
+  "merged_followup": "cb7540178merged preserving428metadata;3160coreandAndroidsourcepassed42688225690. Newnativeplaceholder/Shield/Bountyguards toverifyin429."
 }
