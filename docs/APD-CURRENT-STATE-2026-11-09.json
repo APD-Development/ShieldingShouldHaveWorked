@@ -32,7 +32,8 @@
     "421": "3144core/457suites and all12 targeted API34 cases plus preparation passed, but compiled history used APD418 instead of immediate previous compiled APD420. Held; no manual visual acceptance/publication. Also inherits420 manually rejected Endure and SoulMark display defects.",
     "422": "Original source5e2908ff0/run42660866454 automated build/core3144/all12native/preparation successful; inherits manually rejected Endure/SoulMark. Preserve private assets; do NOT publish.",
     "423": "Original3149core/all12native passed; packaging-only history recovery42666702358passed and assets staged42667109583. Independent4714sourcehashes/originalAPKbytes matched.28manualframes caught unsupported fraction glyph; keepprivate.",
-    "424": "Inherits unsupported fraction glyph from423; originalpair running42667109736. Preserve all results/assets privately even if automated checks pass."
+    "424": "Inherits unsupported fraction glyph from423; originalpair running42667109736. Preserve all results/assets privately even if automated checks pass.",
+    "426": "Original native fixture expects old HolyWeapon sentence; both variants rejected. Originalsource/APKs/failure evidence retained. Test-only retry pending."
   },
   "newest_source_not_in_any_apk": [
     "Shortened existing buff/talent wrapper details, no panel-availability changes;3157core passed; Android source/native pending"
@@ -55,7 +56,7 @@
   "background_development_after_window_claimed": false,
   "active_build": {
     "number": 426,
-    "status": "App build passed; both native jobs running. Private draft only.",
+    "status": "Original3155core and appbuild passed, native both failed staleHolyWeapon expected wording. Exacttestfixture-only retry, no newapps; draftprivate.",
     "previous_compiled_history": [
       425,
       424,
