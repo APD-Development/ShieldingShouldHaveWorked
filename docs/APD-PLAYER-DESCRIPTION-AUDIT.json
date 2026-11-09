@@ -6,7 +6,7 @@
   "message_entries": 2411,
   "reviewed_units": 409,
   "corrected_units": 333,
-  "unresolved_units": 246,
+  "unresolved_units": 242,
   "category_counts": {
     "apd": 1,
     "mechanics": 38,
@@ -89,7 +89,7 @@
         "details"
       ],
       "wording_corrected": true,
-      "review_notes": "Current ordinary-description pass: concise live values, duplicate mathematical prose removed. Existing optional details and entire category variants remain under review; panel decisions pending. See APD-DESCRIPTION-CORRECTION-2026-11-08.md. Concise normal interval checked against actual Regeneration at0/3/9/10; max-level retained details no longer describe unavailable next prick. No healing/prick effect changed; native levels0/3/10 and actual expanded cap window pending395."
+      "review_notes": "Current ordinary-description pass: concise live values, duplicate mathematical prose removed. Existing optional details and entire category variants remain under review; panel decisions pending. See APD-DESCRIPTION-CORRECTION-2026-11-08.md. Concise normal interval checked against actual Regeneration at0/3/9/10; max-level retained details no longer describe unavailable next prick. No healing/prick effect changed; native levels0/3/10 and actual expanded cap window pending395. Horn full source read: EAT uses truncated whole-charge selection, can leave residual hunger; charged cursed Horn still permits EAT, only ordinary food penalty and recharge stopping described. Actual16 EAT cases across normal/OnDiet, cursed/normal, hunger reserves50/179/181/450 preserve resources and3turn cost. MagicImmune ordinary food exception tested through actual Food.satisfy. Store description explains capacity/experience benefit. New actual windows pending396; no mechanic changed."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/BlandfruitExplanation.java",
@@ -853,9 +853,9 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/armor/glyphs/AntiMagic.java",
       "sha256": "d22f4145b475c99bb2386e2f5a381a6a0dcf7aeca596c7e871091f650282edf2",
       "category": "armor",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_UNCHANGED",
       "description_methods": [],
-      "review_notes": "Individually re-read passive implementation and real external caller in Char.speed/stealth/damage/immunity, Mob detection, HighGrass/Burning as applicable. Current ordinary live-value provider checked: water/3-step enemy path/grass refresh/detection score/selected magical attacks/fire shielding cap. No new wording change needed here; full retained details and all modifiers/class variants remain under review."
+      "review_notes": "Individually re-read passive implementation and real external caller in Char.speed/stealth/damage/immunity, Mob detection, HighGrass/Burning as applicable. Current ordinary live-value provider checked: water/3-step enemy path/grass refresh/detection score/selected magical attacks/fire shielding cap. No new wording change needed here; full retained details and all modifiers/class variants remain under review. Own source and live Char/Hero/HighGrass handlers individually completed2026-11-09. Existing accepted393/394 actual normal Arcana comparison windows reviewed. Real Flow contribution/aura, Camouflage duration refresh and AntiMagic roll bounds tests pass. Added Swiftness actual three-step passable corridor test: near/far enemy and wall/trap/chasm path blockers, identical conditional description prevents reporting hidden presence. Negative glyph sentinel and immunity gates preserved. Shared provider remains separately partial."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/armor/glyphs/Brimstone.java",
@@ -869,9 +869,9 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/armor/glyphs/Camouflage.java",
       "sha256": "591a3f2657629c8c6c7a826879430b6001aaa9b33818f8eac3b17ac93d51f2a0",
       "category": "armor",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_UNCHANGED",
       "description_methods": [],
-      "review_notes": "Individually re-read passive implementation and real external caller in Char.speed/stealth/damage/immunity, Mob detection, HighGrass/Burning as applicable. Current ordinary live-value provider checked: water/3-step enemy path/grass refresh/detection score/selected magical attacks/fire shielding cap. No new wording change needed here; full retained details and all modifiers/class variants remain under review."
+      "review_notes": "Individually re-read passive implementation and real external caller in Char.speed/stealth/damage/immunity, Mob detection, HighGrass/Burning as applicable. Current ordinary live-value provider checked: water/3-step enemy path/grass refresh/detection score/selected magical attacks/fire shielding cap. No new wording change needed here; full retained details and all modifiers/class variants remain under review. Own source and live Char/Hero/HighGrass handlers individually completed2026-11-09. Existing accepted393/394 actual normal Arcana comparison windows reviewed. Real Flow contribution/aura, Camouflage duration refresh and AntiMagic roll bounds tests pass. Added Swiftness actual three-step passable corridor test: near/far enemy and wall/trap/chasm path blockers, identical conditional description prevents reporting hidden presence. Negative glyph sentinel and immunity gates preserved. Shared provider remains separately partial."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/armor/glyphs/Entanglement.java",
@@ -885,9 +885,9 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/armor/glyphs/Flow.java",
       "sha256": "c1e110c0960108059c0aa3e87f94bee4df43dadfd54e8ecff1f6f5e1d581555e",
       "category": "armor",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_UNCHANGED",
       "description_methods": [],
-      "review_notes": "Individually re-read passive implementation and real external caller in Char.speed/stealth/damage/immunity, Mob detection, HighGrass/Burning as applicable. Current ordinary live-value provider checked: water/3-step enemy path/grass refresh/detection score/selected magical attacks/fire shielding cap. No new wording change needed here; full retained details and all modifiers/class variants remain under review."
+      "review_notes": "Individually re-read passive implementation and real external caller in Char.speed/stealth/damage/immunity, Mob detection, HighGrass/Burning as applicable. Current ordinary live-value provider checked: water/3-step enemy path/grass refresh/detection score/selected magical attacks/fire shielding cap. No new wording change needed here; full retained details and all modifiers/class variants remain under review. Own source and live Char/Hero/HighGrass handlers individually completed2026-11-09. Existing accepted393/394 actual normal Arcana comparison windows reviewed. Real Flow contribution/aura, Camouflage duration refresh and AntiMagic roll bounds tests pass. Added Swiftness actual three-step passable corridor test: near/far enemy and wall/trap/chasm path blockers, identical conditional description prevents reporting hidden presence. Negative glyph sentinel and immunity gates preserved. Shared provider remains separately partial."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/armor/glyphs/Obfuscation.java",
@@ -925,9 +925,9 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/armor/glyphs/Swiftness.java",
       "sha256": "c06760c19c68dc739b5a60674665e9a0fe66d112b992c37dacf3ea5cd2a0a0ad",
       "category": "armor",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_UNCHANGED",
       "description_methods": [],
-      "review_notes": "Individually re-read passive implementation and real external caller in Char.speed/stealth/damage/immunity, Mob detection, HighGrass/Burning as applicable. Current ordinary live-value provider checked: water/3-step enemy path/grass refresh/detection score/selected magical attacks/fire shielding cap. No new wording change needed here; full retained details and all modifiers/class variants remain under review."
+      "review_notes": "Individually re-read passive implementation and real external caller in Char.speed/stealth/damage/immunity, Mob detection, HighGrass/Burning as applicable. Current ordinary live-value provider checked: water/3-step enemy path/grass refresh/detection score/selected magical attacks/fire shielding cap. No new wording change needed here; full retained details and all modifiers/class variants remain under review. Own source and live Char/Hero/HighGrass handlers individually completed2026-11-09. Existing accepted393/394 actual normal Arcana comparison windows reviewed. Real Flow contribution/aura, Camouflage duration refresh and AntiMagic roll bounds tests pass. Added Swiftness actual three-step passable corridor test: near/far enemy and wall/trap/chasm path blockers, identical conditional description prevents reporting hidden presence. Negative glyph sentinel and immunity gates preserved. Shared provider remains separately partial."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/armor/glyphs/Thorns.java",
@@ -1042,7 +1042,7 @@
         "desc"
       ],
       "wording_corrected": true,
-      "review_notes": " All15 actual curse branches reviewed; concise conditional ordinary text,15type read-only regression, actual Horn/Chalice effects tested. Existing advanced panels retained pending owner review; full non-curse/class paths may remain incomplete."
+      "review_notes": " All15 actual curse branches reviewed; concise conditional ordinary text,15type read-only regression, actual Horn/Chalice effects tested. Existing advanced panels retained pending owner review; full non-curse/class paths may remain incomplete. Horn full source read: EAT uses truncated whole-charge selection, can leave residual hunger; charged cursed Horn still permits EAT, only ordinary food penalty and recharge stopping described. Actual16 EAT cases across normal/OnDiet, cursed/normal, hunger reserves50/179/181/450 preserve resources and3turn cost. MagicImmune ordinary food exception tested through actual Food.satisfy. Store description explains capacity/experience benefit. New actual windows pending396; no mechanic changed."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/artifacts/LloydsBeacon.java",
@@ -4335,15 +4335,15 @@
       "wording_corrected": true
     }
   ],
-  "completed_units": 181,
+  "completed_units": 185,
   "latest_tests": {
-    "core_tests": 3073,
+    "core_tests": 3075,
     "suites": 457,
     "failures": 0,
     "errors": 0,
     "skipped": 0,
-    "log": "/workspace/apd-trinket-generation-evidence-20261109/final-full",
+    "log": "/workspace/apd-horn-description-evidence-20261109/accepted-full",
     "android_verified": false,
-    "scope": "395pipeline verifies earlier3070source. Later actual detection/Clover/Statue regression and trinket wording3073corepass; new native windows pending396. No gameplay changed."
+    "scope": "395earlier3070source passed targeted native; later trinket/Swiftness/Horn source3075corepass, real new windows pending396. Final Store hint is wording-only after same handlers reviewed."
   }
 }

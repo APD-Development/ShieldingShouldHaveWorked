@@ -481,6 +481,13 @@ public class QolItemFeedbackDeviceTest {
             }
         }finally{TopScoresDeviceTest.render(()->{for(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff buff:new java.util.ArrayList<>(Dungeon.hero.buffs(Ring.RingBuff.class)))buff.detach();Dungeon.hero.belongings.ring=(Ring)previous[0];Dungeon.hero.belongings.misc=previous[1];if(previous[0]!=null)previous[0].activate(Dungeon.hero);if(previous[1] instanceof Ring)previous[1].activate(Dungeon.hero);});}
     }
+    private static void hornMealDescriptionsRender()throws Exception{
+        com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Artifact previous=Dungeon.hero.belongings.artifact;
+        try{for(boolean cursed:new boolean[]{false,true})for(int charges:new int[]{0,2}){
+            com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HornOfPlenty horn=new com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HornOfPlenty();TopScoresDeviceTest.render(()->{try{horn.levelKnown=horn.cursedKnown=true;horn.cursed=cursed;java.lang.reflect.Field charge=com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Artifact.class.getDeclaredField("charge");charge.setAccessible(true);charge.setInt(horn,charges);Dungeon.hero.belongings.artifact=horn;assertEquals(charges>0,horn.actions(Dungeon.hero).contains("EAT"));assertFalse(horn.info().contains("cannot be used"));assertFalse(horn.info().contains("eat until you're full"));}catch(Exception e){throw new RuntimeException(e);}});
+            showItem(horn,cursed?"Other food is":"multiple charges","qol-horn-meal-"+cursed+"-charges-"+charges+".png",true,true);
+        }}finally{TopScoresDeviceTest.render(()->Dungeon.hero.belongings.artifact=previous);}
+    }
     private static void chaliceNormalRatesRender()throws Exception{
         com.watabou.utils.Bundle original=new com.watabou.utils.Bundle();
         TopScoresDeviceTest.render(()->{Dungeon.apdStoreCustomRules(original);com.watabou.utils.Bundle all=new com.watabou.utils.Bundle(),rules=new com.watabou.utils.Bundle();com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomDungeonRules.defaults().with(com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomDungeonRules.Slider.HEALING,100).store(rules);all.put("apd_custom_rules",rules);Dungeon.apdRestoreCustomRules(all);});
@@ -1029,6 +1036,7 @@ public class QolItemFeedbackDeviceTest {
             lightningAndRegrowthDescriptionsRender();
             livingEarthAndPrismaticDescriptionsRender();
             passiveGlyphArcanaDescriptionsRender();
+            hornMealDescriptionsRender();
             chaliceNormalRatesRender();
             artifactBuffsAndDisabledHealingRender();
             catalystAndTransferDescriptionsRender();
