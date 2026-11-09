@@ -62,10 +62,13 @@ jobs:
           cp android/build/outputs/apk/androidTest/debug/android-debug-androidTest.apk evidence/instrumentation.apk
           ./gradlew --stop
       - uses: actions/upload-artifact@v4
-        with: {name: apd396-retry-inputs, path: |
+        with:
+          name: apd396-retry-inputs
+          path: |
             evidence/instrumentation.apk
             evidence/corrected-test-fixture.patch
-            evidence/original-app-hashes.txt, retention-days: 14}
+            evidence/original-app-hashes.txt
+          retention-days: 14
   native:
     needs: instrumentation
     strategy:
@@ -140,6 +143,8 @@ jobs:
         with: {name: apd396-retry-Alpha-Testers, path: evidence}
       - uses: actions/setup-java@v4
         with: {distribution: temurin, java-version: '21'}
+      - uses: actions/download-artifact@v4
+        with: {name: apd396-retry-inputs, path: evidence/corrected-instrumentation}
       - name: Verify exact identities, completed tests and corresponding source
         env: {GH_TOKEN: '${{ github.token }}', APD_SOURCE_SHA: 'd19a99f8d48163c78673e31315a802b0b3f30c5d'}
         run: |

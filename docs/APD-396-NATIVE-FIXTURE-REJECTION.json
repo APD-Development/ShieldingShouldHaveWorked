@@ -10,5 +10,9 @@
   "correction": "test-only expectation and explicit numerical/actor-group assertions; rerun complete12case matrix on original immutable APKs",
   "published": false,
   "latest_published": 395,
-  "original_evidence_preserved": true
+  "original_evidence_preserved": true,
+  "first_retry_workflow_rejection": {
+    "run": 42567119256,
+    "cause": "Invalid YAML flow mapping containing block scalar for multiple instrumentation evidence paths; rejected before jobs, corrected to block mapping. No application APK built."
+  }
 }
