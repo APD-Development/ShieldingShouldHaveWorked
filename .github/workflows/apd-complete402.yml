@@ -48,7 +48,8 @@ jobs:
           for label in ['developer','alpha']:
             for case,name in cases.items():
               if label=='developer' and case=='freeze':continue
-              subprocess.run(['python3','tools/apd_check_single_instrumentation.py','evidence/'+label+'-'+case+'.txt',name],check=True)
+              expected='com.shatteredpixel.shatteredpixeldungeon.android.'+({'qol':'QolItemFeedbackDeviceTest','wall':'WallGeometryDeviceTest','freeze':'RemovedActorStallDeviceTest'}.get(case,'TrapDiscoveryDeviceTest'))
+              subprocess.run(['python3','tools/apd_check_single_instrumentation.py','evidence/'+label+'-'+case+'.txt',name,expected],check=True)
           p=pathlib.Path('evidence/developer-freeze.txt')
           if p.exists():p.rename('evidence/developer-freeze-before-disconnect.txt')
           PYACCEPT
