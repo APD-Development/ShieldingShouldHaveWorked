@@ -101,14 +101,13 @@
   },
   "active_builds": {},
   "latest_delivery": {
-    "number": 428,
-    "core_tests": 3158,
+    "number": 429,
+    "core_tests": 3160,
     "core_suites": 457,
     "native_tests": 12,
-    "manual_new_Developer_frames": 33,
-    "source_manifest_files": 4781,
-    "published_utc": "2026-11-09T19:53:13Z",
-    "original_apps_rebuilt_in_retry": 0
+    "manual_new_Developer_frames": 27,
+    "published_utc": "2026-11-09T20:47:21Z",
+    "source_commit": "fe077c5845b8f4c0781502c0359b827f77e46fc9"
   },
   "followup_source_branch": {
     "branch": "codex/apd-description-followup-20261109T1933",
@@ -134,5 +133,6 @@
     "source_manifest_files": 4770
   },
   "authorization_boundary": "Owner renewed authorization to17:00Eastern /22:00UTC Nov9. Same rules: verifiedAPK pairs whenvalid about30minutes; preserveallsource/builds/evidence; no newfeatures or balancechanges.",
-  "merged_followup": "cb7540178merged preserving428metadata;3160coreandAndroidsourcepassed42688225690. Newnativeplaceholder/Shield/Bountyguards toverifyin429."
+  "merged_followup": "cb7540178merged preserving428metadata;3160coreandAndroidsourcepassed42688225690. Newnativeplaceholder/Shield/Bountyguards toverifyin429.",
+  "ability_followup": "62dbd0d35: all19 own-source effects reviewed;3160core green, Androidfixture sourcecheck42696131036 running; forthcoming430, not429."
 }
