@@ -248,8 +248,8 @@ public class QolItemFeedbackDeviceTest {
         }finally{TopScoresDeviceTest.render(()->{if(shown.get()!=null)shown.get().hide();Dungeon.hero.belongings.weapon=previous[0];});}
     }
     private static void calculationWindowsRenderAndRespond()throws Exception{
-        String[] statusNames={"Invisibility","Invulnerability","Cripple","Stamina","Blindness","Roots","PinCushion","Barkskin","ArcaneArmor","RevealedArea","GravityChaosTracker","SwarmIntelTracker","Drowsy","MagicalSleep","FireImbue","FrostImbue","Adrenaline","Fury","AdrenalineSurge","Healing","GreaterHaste","WellFed","PhysicalEmpower","WandEmpower","Amok","Charm","Terror","Dread","Vertigo","Light","LifeLink"};
-        String[] statusText={"last known position","ordinary damage","twice as long","two thirds","normal scroll and tome reading","Teleportation","quantity: 3","3 turns apart","3 turns apart","3 × 3","pulse count: 11","visible monsters","Incoming damage","1 HP per turn","50% chance","3 turns of Chill","hero does not gain","health is above 50%","Added strength: 2","Healing reserve: 100 HP","haste units: 6","multiple of 18","Adds 3 damage","Adds 4 damage","visible hero","shortens the effect by 5 turns","regardless of damage amount","Remaining fear updates","eight neighboring directions","base sight","combined raw shares can exceed"};
+        String[] statusNames={"Invisibility","Invulnerability","Cripple","Stamina","Blindness","Roots","PinCushion","Barkskin","ArcaneArmor","RevealedArea","GravityChaosTracker","SwarmIntelTracker","Drowsy","MagicalSleep","FireImbue","FrostImbue","Adrenaline","Fury","AdrenalineSurge","Healing","GreaterHaste","WellFed","PhysicalEmpower","WandEmpower","Amok","Charm","Terror","Dread","Vertigo","Light","LifeLink","MagicImmune","BlobImmunity","EnhancedRings","PrismaticGuard"};
+        String[] statusText={"last known position","ordinary damage","twice as long","two thirds","normal scroll and tome reading","Teleportation","quantity: 3","3 turns apart","3 turns apart","3 × 3","pulse count: 11","visible monsters","Incoming damage","1 HP per turn","50% chance","3 turns of Chill","hero does not gain","health is above 50%","Added strength: 2","Healing reserve: 100 HP","haste units: 6","multiple of 18","Adds 3 damage","Adds 4 damage","visible hero","shortens the effect by 5 turns","regardless of damage amount","Remaining fear updates","eight neighboring directions","base sight","combined raw shares can exceed","Suppressed equipment","Burning and Poison","Might's strength bonus","Stored health: 5"};
         for(int i=0;i<statusNames.length;i++){
             final String name=statusNames[i];
             calculationWindow(()->{
@@ -265,12 +265,15 @@ public class QolItemFeedbackDeviceTest {
                 if(effect instanceof com.shatteredpixel.shatteredpixeldungeon.actors.buffs.WellFed)((com.shatteredpixel.shatteredpixeldungeon.actors.buffs.WellFed)effect).reset();
                 if(effect instanceof com.shatteredpixel.shatteredpixeldungeon.actors.buffs.PhysicalEmpower)((com.shatteredpixel.shatteredpixeldungeon.actors.buffs.PhysicalEmpower)effect).set(3,2);
                 if(effect instanceof com.shatteredpixel.shatteredpixeldungeon.actors.buffs.WandEmpower)((com.shatteredpixel.shatteredpixeldungeon.actors.buffs.WandEmpower)effect).set(4,3);
+                if(effect instanceof com.shatteredpixel.shatteredpixeldungeon.actors.buffs.PrismaticGuard){effect.target=Dungeon.hero;((com.shatteredpixel.shatteredpixeldungeon.actors.buffs.PrismaticGuard)effect).set(5);}
                 return new WndInfoBuff(effect);
             },statusText[i],"qol-existing-status-clear-"+name+".png");
         }
 
         calculationWindow(()->{com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CloakOfShadows cloak=new com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CloakOfShadows();cloak.levelKnown=cloak.cursedKnown=true;return new WndInfoItem(cloak);},"every 4 turns","qol-cloak-explanation-expanded.png");
         calculationWindow(()->{com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose rose=new com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose();rose.levelKnown=rose.cursedKnown=true;return new WndInfoItem(rose);},"the ghost’s health percentage","qol-rose-explanation-expanded.png");
+
+        calculationWindow(()->new WndInfoBuff(new com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfLightning.LightningCharge()),"up to 2 tiles","qol-existing-status-clear-LightningCharge.png");
 
         RingOfArcana arcana=new RingOfArcana();
         TopScoresDeviceTest.render(()->{arcana.level(3);arcana.identify();});
