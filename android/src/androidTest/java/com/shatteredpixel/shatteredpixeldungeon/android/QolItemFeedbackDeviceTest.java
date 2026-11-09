@@ -481,6 +481,12 @@ public class QolItemFeedbackDeviceTest {
             }
         }finally{TopScoresDeviceTest.render(()->{for(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff buff:new java.util.ArrayList<>(Dungeon.hero.buffs(Ring.RingBuff.class)))buff.detach();Dungeon.hero.belongings.ring=(Ring)previous[0];Dungeon.hero.belongings.misc=previous[1];if(previous[0]!=null)previous[0].activate(Dungeon.hero);if(previous[1] instanceof Ring)previous[1].activate(Dungeon.hero);});}
     }
+    private static void retainedBlastScrollDescriptionsRender()throws Exception{
+        com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRetribution retribution=new com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRetribution();retribution.anonymize();showItem(retribution,"including allies","qol-retribution-normal-retained.png",true,true);
+        calculationWindow(()->new WndInfoItem(retribution),"At your current health","qol-retribution-existing-detail-clear.png");
+        com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfPsionicBlast blast=new com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfPsionicBlast();blast.anonymize();showItem(blast,"Can kill you","qol-psionic-normal-retained.png",true,true);
+        calculationWindow(()->new WndInfoItem(blast),"Additional affected creatures can reduce it further","qol-psionic-existing-detail-known-bound.png");
+    }
     private static void conciseRechargeDescriptionsRender()throws Exception{
         com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfMysticalEnergy mystical=new com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfMysticalEnergy();mystical.anonymize();showItem(mystical,"30 turns","qol-mystical-energy-duration.png",true);
         com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRecharging scroll=new com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRecharging();scroll.anonymize();showItem(scroll,"30 turns","qol-recharging-known-duration.png",true);
@@ -1159,6 +1165,7 @@ public class QolItemFeedbackDeviceTest {
             remainingBattlemageDescriptionsRender();
             conciseScrollStatusDescriptionsRender();
             conciseRechargeDescriptionsRender();
+            retainedBlastScrollDescriptionsRender();
             divineInspirationChoiceDescriptionRenders();
             imbueAndDisabledVialDescriptionsRender();
             reviewedElixirDescriptionsRender();

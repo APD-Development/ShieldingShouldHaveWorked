@@ -4,9 +4,9 @@
   "counting": "Source units, not distinct item types. reviewed_units includes partial reviews; completed_units excludes partial/pending dependency. corrected_units counts source units with corrections, including incomplete reviews. Inventory/export/tests alone are not an individual review.",
   "source_units": 427,
   "message_entries": 2411,
-  "reviewed_units": 417,
-  "corrected_units": 336,
-  "unresolved_units": 230,
+  "reviewed_units": 418,
+  "corrected_units": 337,
+  "unresolved_units": 228,
   "category_counts": {
     "apd": 1,
     "mechanics": 38,
@@ -335,12 +335,14 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/ScrollExplanation.java",
-      "sha256": "6925dc0b0013bce0677859310cd4863e8eaff28f6971f64406995559cb1e95c6",
+      "sha256": "bde61bb26ddac815a2f3cd4ec9a521f95a496eb903b1c13c8e40a9f5718c0835",
       "category": "mechanics",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
+      "status": "PARTIAL_REVIEW",
       "description_methods": [
         "details"
-      ]
+      ],
+      "wording_corrected": true,
+      "review_notes": "2026-11-09 full provider read; retained Retribution/Psionic branches rewritten as human explanation plus existing formulas/aftereffects, no new panels. Reproduced hidden creature count leak: invisible Rat changed0/50to1/45 and disguised Mimic could count as creature. Preview now counts only apparent creatures, always reports upper bound rather than exact hidden cast count; hidden-present/absent output invariant. Actual scroll doRead tests retain invisible targets, ally damage, self-cost and original formulas. Other legacy known scroll branches need remaining full individual numerical reconciliation; no ordinary scroll expanders restored."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/SpellExplanation.java",
@@ -2452,10 +2454,10 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/scrolls/ScrollOfRetribution.java",
       "sha256": "16d347009fe30160bcc8e66f390150f09be2d0b00fc3d0d1cb2e7b9eb08a3601",
       "category": "scrolls",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [],
       "wording_corrected": true,
-      "review_notes": "Normal scroll wording checked against current APD effect/targeting code. Live constants where shown; hidden identities preserved. Existing complicated panels and complete class/secondary-window review remain pending. Identify/Shards and Metamorphosis use actual APD behavior."
+      "review_notes": "Normal scroll wording checked against current APD effect/targeting code. Live constants where shown; hidden identities preserved. Existing complicated panels and complete class/secondary-window review remain pending. Identify/Shards and Metamorphosis use actual APD behavior. Followup2026-11-09 entire own doRead/formula/effect source read. Actual handlers tested with visible enemy, ally and invisible target: original raw target damage and Psionic full target-count self-cost preserved. Existing optional details now plain words with original formulas/aftereffects; Ret live HP-dependent share uses only hero HP. Psi display is conservative known-target upper bound, never hidden target count. Invisible/disguised absence/presence cannot change preview; actual casting still hits them. Existing panel retained pending owner review, no new controls. Actual new normal/expanded windows pending398, not397."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/scrolls/ScrollOfTeleportation.java",
@@ -2610,10 +2612,10 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/scrolls/exotic/ScrollOfPsionicBlast.java",
       "sha256": "3a68dfe903fde799c1a6aabd35a8c127f42725d7e588893154e65c2dc910a5fe",
       "category": "scrolls",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [],
       "wording_corrected": true,
-      "review_notes": "Normal scroll wording checked against current APD effect/targeting code. Live constants where shown; hidden identities preserved. Existing complicated panels and complete class/secondary-window review remain pending. Identify/Shards and Metamorphosis use actual APD behavior."
+      "review_notes": "Normal scroll wording checked against current APD effect/targeting code. Live constants where shown; hidden identities preserved. Existing complicated panels and complete class/secondary-window review remain pending. Identify/Shards and Metamorphosis use actual APD behavior. Followup2026-11-09 entire own doRead/formula/effect source read. Actual handlers tested with visible enemy, ally and invisible target: original raw target damage and Psionic full target-count self-cost preserved. Existing optional details now plain words with original formulas/aftereffects; Ret live HP-dependent share uses only hero HP. Psi display is conservative known-target upper bound, never hidden target count. Invisible/disguised absence/presence cannot change preview; actual casting still hits them. Existing panel retained pending owner review, no new controls. Actual new normal/expanded windows pending398, not397."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/scrolls/exotic/ScrollOfSirensSong.java",
@@ -4346,7 +4348,7 @@
       "wording_corrected": true
     }
   ],
-  "completed_units": 197,
-  "latest_tests": "3094core/457suites, no failures/errors/skips; actual artifact48cases fractional/full/cursed/immunity and wand partial charge deltas. Full evidence /workspace/apd-recharge-tooltip-evidence-20261109/accepted-full. Native new windows pending398;397in native acceptance.",
+  "completed_units": 199,
+  "latest_tests": "3096core/457suites, no failures/errors/skips; actual blast-scroll handlers and hidden-count preview invariance. Full evidence /workspace/apd-blast-privacy-evidence-20261109/accepted-full. New native normal/expanded windows pending398;397published3089core/12native.",
   "message_inventory_entries": 5338
 }
