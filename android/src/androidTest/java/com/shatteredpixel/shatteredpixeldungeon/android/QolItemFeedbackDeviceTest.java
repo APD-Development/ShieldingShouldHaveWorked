@@ -1066,6 +1066,7 @@ public class QolItemFeedbackDeviceTest {
         }finally{TopScoresDeviceTest.render(()->{shown.get().hide();buff[0].detach();});}
     }
     private static void inventoryScrollCancellationWarningRenders()throws Exception{
+        com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRemoveCurse cleansing=new com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRemoveCurse();TopScoresDeviceTest.render(cleansing::anonymize);showItem(cleansing,"frees that spirit instead","qol-remove-curse-existing-priority.png",true);
         com.watabou.utils.Bundle savedRules=new com.watabou.utils.Bundle();TopScoresDeviceTest.render(()->Dungeon.apdStoreCustomRules(savedRules));
         com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfLullaby lullaby=new com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfLullaby();
         try{

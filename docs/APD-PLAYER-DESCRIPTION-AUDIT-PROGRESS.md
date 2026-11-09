@@ -414,3 +414,6 @@ Key purpose/lockcosts/limitations/wallcost-duration prose concise; actualIron1/f
 
 ### Lullaby Healing0 and seven scroll own reviews
 Known Lullaby nowstates currentrulespreventrestorativesleep; actualDrowsy heroendswithouthealing, allystillheals1HP. Hidden/nohero/inspectionpure; no mechanicschange. Initialred and strictEnglishinventorycount failure preserved; newneutralkey explicitlycounted5340, allAdultOFF/ON/formatchecks retained.3127core457allpass, rawfullXML/logpreserved. InventoryScroll,Identify,MagicMapping,MirrorImage,Lullaby,Rage,Terror ownsource/consumers individuallyreviewed; existingotherconciseproseretained. Audit354complete82unresolved,436units433partial/full350corrected; topcompleted_units andlateststatussynchronized (older317fieldhadlaggedappendix). NativeLullabywindowsreadyforlaterbuild, not409.
+
+### Remove Curse existing behavior clarified
+Fullownsource andTormentedSpiritconsumer reviewed. Ordinary text namesDegradecure andadjacent-spiritpriorityinstead ofimplyinggear-selectionalways.3127core457allpass, rawXML/logpreserved; knowninspectionwindowpending410. No mechanics/interface/newpanel change. Audit355complete81unresolvedof436,433partial/full350corrected,5340Englishkeys.
