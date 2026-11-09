@@ -1,1 +1,1 @@
-2026-11-09: Verify3132 core tests and Androiddebug/release/instrumentationJava/desktop after individual wand own-source reviews and new Frost/Regrowth plant windows. No APK assembly. Owner activewindow through21UTC.410originalpairatccfbb85b6native acceptance in progress;409latestpublished.
+2026-11-09 latest3134core plus Androiddebug/release/instrumentationJava and desktop; verify real cursed-transfer zero-heal popup fixture and ordinary plant/food changes compile. No app APK assembly.411native pending;410published. Owner window through21UTC.
