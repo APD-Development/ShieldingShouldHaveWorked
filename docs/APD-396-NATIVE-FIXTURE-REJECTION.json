@@ -14,5 +14,12 @@
   "first_retry_workflow_rejection": {
     "run": 42567119256,
     "cause": "Invalid YAML flow mapping containing block scalar for multiple instrumentation evidence paths; rejected before jobs, corrected to block mapping. No application APK built."
+  },
+  "retry_native_acceptance": {
+    "run": 42567183633,
+    "distinct_android_cases": 12,
+    "result": "both complete six-case matrices passed on unchanged original APKs",
+    "packaging_failure": "HTTP504 downloading external gitleaks archive; source scan not completed, release held",
+    "recovery": "prepare-only workflow retains original APK/native artifacts and retries scanner download with bounded retry"
   }
 }
