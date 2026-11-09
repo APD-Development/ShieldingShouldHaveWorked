@@ -69,6 +69,9 @@ public final class WeaponExplanation {
     }
 
     public static String summary(Weapon weapon, Hero hero) {
+        return com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.Dart.inspect(()->summaryInInspection(weapon,hero));
+    }
+    private static String summaryInInspection(Weapon weapon, Hero hero) {
         Float delay = normalAttackDelay(weapon, hero);
         String time = delay == null ? "" : com.shatteredpixel.shatteredpixeldungeon.messages.Messages.decimalFormat("0.##",delay);
         String result = delay == null ? "" : "Attack time: _" + time + (time.equals("1") ? " turn" : " turns") + " per attack_.";
@@ -77,6 +80,9 @@ public final class WeaponExplanation {
     }
 
     public static String details(Weapon weapon, Hero hero) {
+        return com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.Dart.inspect(()->detailsInInspection(weapon,hero));
+    }
+    private static String detailsInInspection(Weapon weapon, Hero hero) {
         String result = "_Weapon damage, accuracy and time_\nThe displayed damage range describes a damage roll, not guaranteed HP lost. The item description states its upgrade and augmentation effects; excess strength, talents, rings, enchantments, abilities and the target's defenses can change the result. Do not treat the range as a flat percentage.\n"
                 + "In the standard weapon calculation, each missing strength point divides the weapon's accuracy factor by 1.5 and multiplies its attack time by 1.2. Upgrades reduce strength requirements at +1, +3, +6, +10 and so on; negative levels count as zero for this reduction. Mastery reduces the requirement by 2. Temporary effective levels and permanent upgrades need not affect the requirement in the same way.\n"
                 + "Speed augmentation multiplies rolled damage by 0.7 and base attack time by 2/3. Damage augmentation multiplies rolled damage by 1.5 and base attack time by 5/3. Damage rounds to whole points. These are separate factors: faster does not mean a matching percentage reduction in damage.\n"

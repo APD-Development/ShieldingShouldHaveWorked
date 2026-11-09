@@ -82,7 +82,7 @@ public final class MechanicsDetails {
         return "";
     }
     public static String item(Item item,String visibleDescription){
-        if(item instanceof com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.Dart)
+        if(item instanceof Weapon)
             return com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.Dart.inspect(()->itemInContext(item,visibleDescription));
         return itemInContext(item,visibleDescription);
     }

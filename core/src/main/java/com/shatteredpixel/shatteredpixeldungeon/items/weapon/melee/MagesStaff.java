@@ -299,7 +299,7 @@ public class MagesStaff extends MeleeWeapon {
 	}
 
     public String mechanicsDetails() {
-        return com.shatteredpixel.shatteredpixeldungeon.apd.mechanics.StaffExplanation.details(this, wand, Dungeon.hero);
+        return com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.Dart.inspect(()->com.shatteredpixel.shatteredpixeldungeon.apd.mechanics.StaffExplanation.details(this, wand, Dungeon.hero));
     }
 
 	public Class<?extends Wand> wandClass(){

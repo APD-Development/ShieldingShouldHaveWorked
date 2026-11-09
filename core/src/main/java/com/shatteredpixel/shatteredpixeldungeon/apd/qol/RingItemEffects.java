@@ -69,7 +69,7 @@ public final class RingItemEffects {
     }
 
     public static String describe(Item item){
-        if(item instanceof com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.Dart)
+        if(item instanceof Weapon)
             return com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.Dart.inspect(()->describeInContext(item));
         return describeInContext(item);
     }

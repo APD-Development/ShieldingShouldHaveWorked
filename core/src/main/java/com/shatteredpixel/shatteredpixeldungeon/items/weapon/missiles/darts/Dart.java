@@ -138,6 +138,8 @@ public class Dart extends MissileWeapon {
         InspectionBow preview=inspectionBow.get();
         return preview==null?bow:preview.value;
     }
+    /** True only on this thread while deriving knowledge-safe weapon descriptions. */
+    public static boolean inspectionActive(){return inspectionBow.get()!=null;}
     public static <T> T inspect(java.util.function.Supplier<T> explanation){
         if(inspectionBow.get()!=null)return explanation.get();
         Crossbow visible=equippedCrossbow();
@@ -250,7 +252,11 @@ public class Dart extends MissileWeapon {
 	}
 	
 	@Override
-    public String info(){return inspect(()->super.info());}
+    public String info(){return inspect(()->{
+        String text=super.info();Crossbow shown=crossbowForRead();
+        if(shown!=null&&shown.levelKnown&&shown.hasUnknownTwinUpgradeSource())text+="\n"+com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon.unknownTwinUpgradeNote();
+        return text;
+    });}
 
 	@Override
 	public boolean isUpgradable() {

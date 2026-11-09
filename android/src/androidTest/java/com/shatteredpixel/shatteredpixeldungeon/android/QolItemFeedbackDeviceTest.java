@@ -483,6 +483,20 @@ public class QolItemFeedbackDeviceTest {
             }
         }finally{TopScoresDeviceTest.render(()->{for(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff buff:new java.util.ArrayList<>(Dungeon.hero.buffs(Ring.RingBuff.class)))buff.detach();Dungeon.hero.belongings.ring=(Ring)previous[0];Dungeon.hero.belongings.misc=previous[1];if(previous[0]!=null)previous[0].activate(Dungeon.hero);if(previous[1] instanceof Ring)previous[1].activate(Dungeon.hero);});}
     }
+    private static void hiddenTwinUpgradeDescriptionsRender()throws Exception{
+        HeroClass previousClass=Dungeon.hero.heroClass;com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass previousSubclass=Dungeon.hero.subClass;
+        final com.shatteredpixel.shatteredpixeldungeon.items.KindOfWeapon[] previous=new com.shatteredpixel.shatteredpixeldungeon.items.KindOfWeapon[2];final java.util.HashMap<com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent,Integer> talents=new java.util.HashMap<>();
+        Sword sword=new Sword();com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Crossbow bow=new com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Crossbow();com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Greatsword source=new com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Greatsword();
+        try{
+            TopScoresDeviceTest.render(()->{previous[0]=Dungeon.hero.belongings.weapon;previous[1]=Dungeon.hero.belongings.secondWep;talents.putAll(Dungeon.hero.talents.get(2));Dungeon.hero.heroClass=HeroClass.DUELIST;Dungeon.hero.subClass=com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass.CHAMPION;Dungeon.hero.talents.get(2).put(com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent.TWIN_UPGRADES,3);sword.level(1);sword.levelKnown=sword.cursedKnown=true;sword.enchant(new com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Elastic());bow.level(1);bow.levelKnown=bow.cursedKnown=true;source.levelKnown=source.cursedKnown=false;Dungeon.hero.belongings.weapon=sword;Dungeon.hero.belongings.secondWep=source;source.level(0);String before=sword.info();source.level(8);assertEquals(before,sword.info());assertEquals(8,sword.buffedLvl());});
+            showItem(sword,"Any Twin Upgrades bonus from your unidentified weapon is not shown","qol-known-sword-hidden-twin-upgrade.png",true);
+            com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.Dart dart=new com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.Dart();
+            TopScoresDeviceTest.render(()->{Dungeon.hero.belongings.weapon=bow;source.level(0);String before=dart.info();source.level(8);assertEquals(before,dart.info());assertEquals(8,bow.buffedLvl());});
+            showItem(dart,"Any Twin Upgrades bonus from your unidentified weapon is not shown","qol-known-crossbow-dart-hidden-twin-upgrade.png",true);
+            TopScoresDeviceTest.render(()->{source.levelKnown=source.cursedKnown=true;Dungeon.hero.belongings.weapon=sword;assertFalse(sword.info().contains("bonus from your unidentified weapon"));});
+            showItem(sword,"cleave","qol-known-sword-identified-twin-upgrade.png",true);
+        }finally{TopScoresDeviceTest.render(()->{Dungeon.hero.belongings.weapon=previous[0];Dungeon.hero.belongings.secondWep=previous[1];Dungeon.hero.talents.get(2).clear();Dungeon.hero.talents.get(2).putAll(talents);Dungeon.hero.heroClass=previousClass;Dungeon.hero.subClass=previousSubclass;});}
+    }
     private static void gradualHealingNonStackDescriptionsRender()throws Exception{
         com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing potion=new com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing();potion.anonymize();showItem(potion,"Repeated doses do not add","qol-healing-potion-no-stacking.png",true);
         AtomicReference<Window> shown=new AtomicReference<>();TopScoresDeviceTest.render(()->{com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Healing healing=new com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Healing();healing.setHeal(100,.25f,0);assertTrue(healing.desc().contains("Next heal: up to 25 HP"));com.watabou.utils.Bundle before=new com.watabou.utils.Bundle();healing.storeInBundle(before);Window window=new WndInfoBuff(healing);GameScene.show(window);shown.set(window);com.watabou.utils.Bundle after=new com.watabou.utils.Bundle();healing.storeInBundle(after);assertEquals(before.toString(),after.toString());});
@@ -1186,6 +1200,7 @@ public class QolItemFeedbackDeviceTest {
             retainedBlastScrollDescriptionsRender();
             sightHungerHealingTrinketDescriptionsRender();
             gradualHealingNonStackDescriptionsRender();
+            hiddenTwinUpgradeDescriptionsRender();
             divineInspirationChoiceDescriptionRenders();
             imbueAndDisabledVialDescriptionsRender();
             reviewedElixirDescriptionsRender();

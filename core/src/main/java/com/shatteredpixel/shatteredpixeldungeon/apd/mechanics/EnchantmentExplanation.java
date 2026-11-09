@@ -85,6 +85,9 @@ public final class EnchantmentExplanation {
     }
     /** Complete ordinary enchantment text; do not append the old generic Arcana breakdown. */
     public static String playerDescription(Weapon weapon,Hero hero){
+        return com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.Dart.inspect(()->playerDescriptionInInspection(weapon,hero));
+    }
+    private static String playerDescriptionInInspection(Weapon weapon,Hero hero){
         if(weapon.enchantment==null)return "";
         String fallback=weapon.enchantment.desc();
         if(weapon.enchantment.curse()||!weapon.enchantment.getClass().getPackage().getName().equals(Blazing.class.getPackage().getName()))return fallback;
@@ -130,6 +133,9 @@ public final class EnchantmentExplanation {
     }
     public static String itemSummary(Weapon weapon,Hero hero){String text=describe(weapon,hero,false);if(text.isEmpty())text=CurseExplanation.weapon(weapon,hero,false);return (text.isEmpty()?"":"\n\n"+text)+ArcanaInfoDisplay.weapon(weapon);}
     public static String describe(Weapon weapon,Hero hero,boolean detailed){
+        return com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.Dart.inspect(()->describeInInspection(weapon,hero,detailed));
+    }
+    private static String describeInInspection(Weapon weapon,Hero hero,boolean detailed){
         if(weapon.enchantment==null||weapon.enchantment.curse()||!weapon.enchantment.getClass().getPackage().getName().equals(Blazing.class.getPackage().getName()))return "";
         if(hero!=null&&(!weapon.hasEnchant(weapon.enchantment.getClass(),hero)||hero.buff(MagicImmune.class)!=null))return "This enchantment is currently suppressed or overridden; no active benefit is claimed.";
         if(!weapon.levelKnown)return "Identify the weapon's upgrades to view its level-dependent enchantment calculations. Hidden upgrade values are not used in this preview.";

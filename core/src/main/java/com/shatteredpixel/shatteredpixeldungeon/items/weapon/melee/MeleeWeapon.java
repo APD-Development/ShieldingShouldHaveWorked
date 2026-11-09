@@ -270,6 +270,17 @@ public class MeleeWeapon extends Weapon {
 	}
 
 	private static boolean evaluatingTwinUpgrades = false;
+    /** Public equipment/tier knowledge only; never checks the other weapon's hidden level. */
+    public boolean hasUnknownTwinUpgradeSource(){
+        Hero owner=Dungeon.hero;if(owner==null||!isEquipped(owner)||!owner.hasTalent(Talent.TWIN_UPGRADES))return false;
+        KindOfWeapon other=null;
+        if(owner.belongings.weapon()!=this)other=owner.belongings.weapon();
+        if(owner.belongings.secondWep()!=this)other=owner.belongings.secondWep();
+        return other instanceof MeleeWeapon&&!other.levelKnown
+                &&tier+(3-owner.pointsInTalent(Talent.TWIN_UPGRADES))<=((MeleeWeapon)other).tier;
+    }
+    public static String unknownTwinUpgradeNote(){return "Any Twin Upgrades bonus from your unidentified weapon is not shown.";}
+
 	@Override
 	public int buffedLvl() {
 		if (!evaluatingTwinUpgrades && Dungeon.hero != null && isEquipped(Dungeon.hero) && Dungeon.hero.hasTalent(Talent.TWIN_UPGRADES)){
@@ -277,7 +288,7 @@ public class MeleeWeapon extends Weapon {
 			if (Dungeon.hero.belongings.weapon() != this) other = Dungeon.hero.belongings.weapon();
 			if (Dungeon.hero.belongings.secondWep() != this) other = Dungeon.hero.belongings.secondWep();
 
-			if (other instanceof MeleeWeapon) {
+			if (other instanceof MeleeWeapon && (!com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.Dart.inspectionActive() || other.levelKnown)) {
 				evaluatingTwinUpgrades = true;
 				int otherLevel = other.buffedLvl();
 				evaluatingTwinUpgrades = false;
@@ -308,12 +319,16 @@ public class MeleeWeapon extends Weapon {
 	
 	@Override
 	public String info() {
+        return com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.Dart.inspect(this::inspectionInfo);
+    }
+    private String inspectionInfo() {
         Integer knownStrength=com.shatteredpixel.shatteredpixeldungeon.apd.mechanics.ArmorExplanation.knownStrength(Dungeon.hero);
 
 		String info = super.info() + accuracyDescription();
 
 		if (levelKnown) {
 			info += "\n\n" + Messages.get(MeleeWeapon.class, "stats_known", tier, augment.damageFactor(min()), augment.damageFactor(max()), STRReq());
+            if(hasUnknownTwinUpgradeSource())info+=" "+unknownTwinUpgradeNote();
 			if (knownStrength != null) {
 				if (STRReq() > knownStrength) {
 					info += " " + Messages.get(Weapon.class, "too_heavy");
