@@ -501,6 +501,7 @@ public class MechanicsExplanationTest {
   }
  }
  @Test public void alternateWeaponRechargeDetailsMatchActualDamageRounding(){
+  String normal=Talent.WEAPON_RECHARGING.desc(true);assertTrue(normal,normal.contains("_2.5%_"));assertFalse(normal,normal.contains("+5%"));assertFalse(normal,normal.contains("+7.5%"));
   com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sword sword=new com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sword();hero.belongings.weapon=sword;hero.STR=10;
   for(int rank=1;rank<=2;rank++)for(int seed=0;seed<30;seed++){
    hero.talents.get(1).put(Talent.WEAPON_RECHARGING,0);Random.pushGenerator(seed);int base=hero.damageRoll();Random.popGenerator();hero.talents.get(1).put(Talent.WEAPON_RECHARGING,rank);Recharging effect=Buff.affect(hero,Recharging.class,5);
@@ -616,6 +617,7 @@ public class MechanicsExplanationTest {
    String shownTime=com.shatteredpixel.shatteredpixeldungeon.messages.Messages.decimalFormat("0.##",weapon.delayFactor(hero));assertTrue(WeaponExplanation.summary(weapon,hero).contains(shownTime+(shownTime.equals("1")?" turn":" turns")+" per attack"));
    WeaponExplanation.details(weapon,hero);assertSame(free,hero.buff(Talent.LethalMomentumTracker.class));
   }
+  hero.belongings.weapon=new com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sword();String momentum=TalentExplanation.details(Talent.LETHAL_MOMENTUM,2);assertTrue(momentum,momentum.contains("killing action itself"));assertSame(free,hero.buff(Talent.LethalMomentumTracker.class));assertEquals(0,hero.attackDelay(),0);assertNull(hero.buff(Talent.LethalMomentumTracker.class));assertEquals(hero.belongings.weapon.delayFactor(hero),hero.attackDelay(),0);
  }
  @Test public void ordinarySwordSummaryIsShortAndKeepsLiveTiming(){
   com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sword sword=new com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sword();
@@ -1194,6 +1196,13 @@ public class MechanicsExplanationTest {
   String healing;
   @Override public void showStatusWithIcon(int color,String text,int icon,Object...args){if(icon==com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText.HEALING)healing=text;}
   @Override public com.watabou.noosa.particles.Emitter emitter(){return new com.watabou.noosa.particles.Emitter(){@Override public void burst(com.watabou.noosa.particles.Emitter.Factory factory,int quantity){}@Override public void start(com.watabou.noosa.particles.Emitter.Factory factory,float interval,int quantity){}};}
+ }
+ @Test public void heartyMealHealingNumberMatchesRulesAndPreservesOtherMealBenefits()throws Exception{
+  java.lang.reflect.Field unsafeField=Class.forName("sun.misc.Unsafe").getDeclaredField("theUnsafe");unsafeField.setAccessible(true);Object unsafe=unsafeField.get(null);CursedHealingDisplaySprite sprite=(CursedHealingDisplaySprite)unsafe.getClass().getMethod("allocateInstance",Class.class).invoke(unsafe,CursedHealingDisplaySprite.class);hero.sprite=sprite;hero.HT=100;hero.talents.get(0).put(Talent.STRENGTHENING_MEAL,1);
+  for(int rank:new int[]{1,2})for(int percent:new int[]{0,25,100,200})for(int startingHp:new int[]{10,33,34}){
+   com.watabou.utils.Bundle all=new com.watabou.utils.Bundle(),rules=new com.watabou.utils.Bundle();com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomDungeonRules.defaults().with(com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomDungeonRules.Slider.HEALING,percent).store(rules);all.put("apd_custom_rules",rules);Dungeon.apdRestoreCustomRules(all);hero.talents.get(0).put(Talent.HEARTY_MEAL,rank);hero.HP=startingHp;hero.apdCustomHealingFraction=.75f;sprite.healing=null;Buff.detach(hero,PhysicalEmpower.class);float time=hero.cooldown();com.shatteredpixel.shatteredpixeldungeon.items.food.Food food=new com.shatteredpixel.shatteredpixeldungeon.items.food.Food();
+   Talent.onFoodEaten(hero,Hunger.HUNGRY,food);boolean qualifies=startingHp<33.4f;int restored=qualifies&&percent>0?(int)Math.floor((2+2*rank)*percent/100f+.75f):0;assertEquals("rank="+rank+",percent="+percent+",HP="+startingHp,startingHp+restored,hero.HP);assertEquals("Displayed healing must match actual HP gain",qualifies?Integer.toString(restored):null,sprite.healing);assertEquals(time,hero.cooldown(),0);assertEquals(1,food.quantity());assertEquals(3,hero.buff(PhysicalEmpower.class).dmgBoost);assertEquals(2,hero.buff(PhysicalEmpower.class).left);
+  }
  }
  @Test public void cursedHealthTransferFloatingHealingMatchesActualCustomRules()throws Exception{
   descriptionSightArena();int oldDepth=Dungeon.depth;java.lang.reflect.Field unsafeField=Class.forName("sun.misc.Unsafe").getDeclaredField("theUnsafe");unsafeField.setAccessible(true);Object unsafe=unsafeField.get(null);CursedHealingDisplaySprite sprite=(CursedHealingDisplaySprite)unsafe.getClass().getMethod("allocateInstance",Class.class).invoke(unsafe,CursedHealingDisplaySprite.class);hero.sprite=sprite;hero.HT=100;LightningDamageTarget enemy=new LightningDamageTarget();enemy.sprite=sprite;enemy.pos=hero.pos+1;com.shatteredpixel.shatteredpixeldungeon.actors.Actor.add(enemy);

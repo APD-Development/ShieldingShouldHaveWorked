@@ -1,1 +1,1 @@
-3135core457all0 after ordinary armor attached-seal ready/inclusive half-health/starvation correction and weight warning. Actual sealed armor native inspection fixture compile required. NoAPK assembly.413activecutoff excludes later armor text.
+3136core457all0: Hearty Meal display-only custom-healing fix; normal alternate Weapon Recharging false percent corrected without formula change; Lethal time wording and actual timing test. Compile actual Hearty0popup, sealed armor and two retained talent windows with proper metamorph state. No APK assembly.
