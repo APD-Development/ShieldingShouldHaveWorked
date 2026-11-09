@@ -4,8 +4,8 @@
   "counting": "Source units, not distinct item types. reviewed_units includes partial reviews; completed_units excludes partial/pending dependency. corrected_units counts source units with corrections, including incomplete reviews. Inventory/export/tests alone are not an individual review.",
   "source_units": 427,
   "message_entries": 2411,
-  "reviewed_units": 311,
-  "corrected_units": 292,
+  "reviewed_units": 316,
+  "corrected_units": 297,
   "unresolved_units": 286,
   "category_counts": {
     "apd": 1,
@@ -1832,15 +1832,19 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/potions/exotic/PotionOfCorrosiveGas.java",
       "sha256": "901c85757d190d002ef94fa8766a203afb2c27079001669679971a947f85b4d8",
       "category": "potions",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "PARTIAL",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Individually read use/select/shatter and tracker code, Corrosion/CorrosiveGas/StormCloud consequences and Level.setCellToWater; Mastery eligibility/2STR and Divine tier entitlement verified against real Weapon/Armor/Hero paths. Concise ordinary description retains practical limitations. Broader base potion identification, custom rule/class and legacy helper audit remains unfinished; no new panel or gameplay change."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/potions/exotic/PotionOfDivineInspiration.java",
       "sha256": "32362fc1c098f7e2d3589f2fa9f6e7d8c07e2a7a022c5e286b5b900989b02f38",
       "category": "potions",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "PARTIAL",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Individually read use/select/shatter and tracker code, Corrosion/CorrosiveGas/StormCloud consequences and Level.setCellToWater; Mastery eligibility/2STR and Divine tier entitlement verified against real Weapon/Armor/Hero paths. Concise ordinary description retains practical limitations. Broader base potion identification, custom rule/class and legacy helper audit remains unfinished; no new panel or gameplay change."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/potions/exotic/PotionOfDragonsBreath.java",
@@ -1873,8 +1877,10 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/potions/exotic/PotionOfMastery.java",
       "sha256": "be4e25cd6116affcdcbb5e461710587e3cc51d9617402dee08ae877a2bc790cc",
       "category": "potions",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "PARTIAL",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Individually read use/select/shatter and tracker code, Corrosion/CorrosiveGas/StormCloud consequences and Level.setCellToWater; Mastery eligibility/2STR and Divine tier entitlement verified against real Weapon/Armor/Hero paths. Concise ordinary description retains practical limitations. Broader base potion identification, custom rule/class and legacy helper audit remains unfinished; no new panel or gameplay change."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/potions/exotic/PotionOfShielding.java",
@@ -1916,8 +1922,10 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/potions/exotic/PotionOfStormClouds.java",
       "sha256": "84b1459c60f2f7a252a4d70616bd6a44542653406105465a4aed41c2b1d023e2",
       "category": "potions",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "PARTIAL",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Individually read use/select/shatter and tracker code, Corrosion/CorrosiveGas/StormCloud consequences and Level.setCellToWater; Mastery eligibility/2STR and Divine tier entitlement verified against real Weapon/Armor/Hero paths. Concise ordinary description retains practical limitations. Broader base potion identification, custom rule/class and legacy helper audit remains unfinished; no new panel or gameplay change."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/quest/CeremonialCandle.java",
@@ -3580,10 +3588,12 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/melee/MagesStaff.java",
       "sha256": "4048c90d775c0dff919b5dcb65ce8dd25dc421aecb13f49edf36ae2a5a085a33",
       "category": "weapon",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
+      "status": "PARTIAL",
       "description_methods": [
         "info"
-      ]
+      ],
+      "wording_corrected": true,
+      "review_notes": "Read ordinary info, imbue selection/level calculation, wand preservation and Battlemage hit/reach paths. Imbue confirmation now accurately explains no bonus for an unupgraded staff and level retention with a weaker wand. Existing selected result/unknown lower-bound/cursed and old-wand loss warnings preserved. Full wand-specific, talent and secondary panels remain under review."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/melee/MeleeWeapon.java",
