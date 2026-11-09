@@ -2,10 +2,10 @@
   "scope": "Every item category, inherited and generated descriptions, enchantments/glyphs/curses, class interactions and existing secondary panels. Inventory is not review completion.",
   "baseline_commit": "32f4f3beab4c23b404c3cb1d43bfa06a39165e70",
   "counting": "Source units, not distinct item types. reviewed_units includes partial reviews; completed_units excludes partial/pending dependency. corrected_units counts source units with corrections, including incomplete reviews. Inventory/export/tests alone are not an individual review.",
-  "source_units": 431,
+  "source_units": 436,
   "message_entries": 2411,
-  "reviewed_units": 428,
-  "corrected_units": 345,
+  "reviewed_units": 433,
+  "corrected_units": 350,
   "unresolved_units": 148,
   "category_counts": {
     "apd": 1,
@@ -33,7 +33,8 @@
     "ui": 1,
     "windows": 3,
     "abilities": 1,
-    "cleric_spells": 2
+    "cleric_spells": 2,
+    "buffs": 5
   },
   "entries": [
     {
@@ -4408,9 +4409,64 @@
         "playerDescription"
       ],
       "review_notes": "Previously omitted directly edited spell/buff description source added to inventory. Full own cast/extension/remaining-time and actual Weapon/Armor/Hero proc consumers reconciled. Concise current known amount, Paladin retention/extension and unidentified-ring invariance, magic-immunity guards and attacker-dependent unarmored protection. Existing specific advanced panels retained unchanged; no gameplay/save/UI changes.3110core457pass, new Android windows pending404. Shared SpellExplanation provider remains partial."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/buffs/Barkskin.java",
+      "sha256": "601d4a1d7351f4cac21b6cb2635b7d6723adaac894e12f133dc0c41ce63d1de8",
+      "category": "buffs",
+      "status": "REVIEWED_CORRECTED",
+      "wording_corrected": true,
+      "description_methods": [
+        "desc"
+      ],
+      "review_notes": "Previously omitted normal buff source added. Entire own duration/decay/save/icon path and actual Hero/Char hit/protection consumer read. Ordinary prose shorter; Bless/Hex/Daze percentages use live ROLL_FACTOR; other languages retain existing turn argument plus ignored extra argument. Existing optional panels unchanged. Real8combination\u00d7100seed\u00d72direction hit tests assert live percentages; actual defensive decay/save/read-only test passes.3113core457. New ordinary Android window pending406. Own-source completion, not all BuffExplanation/class providers."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/buffs/ArcaneArmor.java",
+      "sha256": "1fc0e87b5b7ad76aa562c3bc69aab279572890b866f43ec32835c3696aa25e95",
+      "category": "buffs",
+      "status": "REVIEWED_CORRECTED",
+      "wording_corrected": true,
+      "description_methods": [
+        "desc"
+      ],
+      "review_notes": "Previously omitted normal buff source added. Entire own duration/decay/save/icon path and actual Hero/Char hit/protection consumer read. Ordinary prose shorter; Bless/Hex/Daze percentages use live ROLL_FACTOR; other languages retain existing turn argument plus ignored extra argument. Existing optional panels unchanged. Real8combination\u00d7100seed\u00d72direction hit tests assert live percentages; actual defensive decay/save/read-only test passes.3113core457. New ordinary Android window pending406. Own-source completion, not all BuffExplanation/class providers."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/buffs/Bless.java",
+      "sha256": "0c191d357e9ad19326a88d6cb33bfec3215983df43556622520b965e48081333",
+      "category": "buffs",
+      "status": "REVIEWED_CORRECTED",
+      "wording_corrected": true,
+      "description_methods": [
+        "desc"
+      ],
+      "review_notes": "Previously omitted normal buff source added. Entire own duration/decay/save/icon path and actual Hero/Char hit/protection consumer read. Ordinary prose shorter; Bless/Hex/Daze percentages use live ROLL_FACTOR; other languages retain existing turn argument plus ignored extra argument. Existing optional panels unchanged. Real8combination\u00d7100seed\u00d72direction hit tests assert live percentages; actual defensive decay/save/read-only test passes.3113core457. New ordinary Android window pending406. Own-source completion, not all BuffExplanation/class providers."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/buffs/Hex.java",
+      "sha256": "b8496d6e974a9fc7dbdd0aebdce21e5ef4b9adebcd91ba12f89f0d8756e1d054",
+      "category": "buffs",
+      "status": "REVIEWED_CORRECTED",
+      "wording_corrected": true,
+      "description_methods": [
+        "desc"
+      ],
+      "review_notes": "Previously omitted normal buff source added. Entire own duration/decay/save/icon path and actual Hero/Char hit/protection consumer read. Ordinary prose shorter; Bless/Hex/Daze percentages use live ROLL_FACTOR; other languages retain existing turn argument plus ignored extra argument. Existing optional panels unchanged. Real8combination\u00d7100seed\u00d72direction hit tests assert live percentages; actual defensive decay/save/read-only test passes.3113core457. New ordinary Android window pending406. Own-source completion, not all BuffExplanation/class providers."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/buffs/Daze.java",
+      "sha256": "7341addf98c53c238d81d153a052a811514d34de9dfc24b06a3e3816e0c8196c",
+      "category": "buffs",
+      "status": "REVIEWED_CORRECTED",
+      "wording_corrected": true,
+      "description_methods": [
+        "desc"
+      ],
+      "review_notes": "Previously omitted normal buff source added. Entire own duration/decay/save/icon path and actual Hero/Char hit/protection consumer read. Ordinary prose shorter; Bless/Hex/Daze percentages use live ROLL_FACTOR; other languages retain existing turn argument plus ignored extra argument. Existing optional panels unchanged. Real8combination\u00d7100seed\u00d72direction hit tests assert live percentages; actual defensive decay/save/read-only test passes.3113core457. New ordinary Android window pending406. Own-source completion, not all BuffExplanation/class providers."
     }
   ],
-  "completed_units": 283,
-  "latest_tests": "3112core/457suites, failures/errors/skips zero. Retained Force/Tenacity shortened;18current-health/curse/upgrade states match Tenacity actual multiplier and24seeded Force stance differences match current bonus. Existing unknownStrength, hidden rings, MagicImmune and state/RNG checks preserved. Raw full XML/log /workspace/apd405-ring-evidence-20261109/accepted-full. Eight new retained expanded/bottom captures pending405. Full audit unfinished.",
+  "completed_units": 288,
+  "latest_tests": "3113core/457suites all fail/error/skip zero. Five concise ordinary buff descriptions; live Bless/Hex/Daze percentages checked alongside real8mask\u00d7100seed\u00d72direction hit-contest executions. Barkskin/ArcaneArmor actual decay, save/reload and read-only current values at two intervals pass. Full raw XML/log /workspace/apd406-defensive-evidence-20261109/accepted-full. Five ordinary Android windows pending406; no newpanels/gameplay/save changes.405test-only original-app retry pending.",
   "message_inventory_entries": 5339
 }

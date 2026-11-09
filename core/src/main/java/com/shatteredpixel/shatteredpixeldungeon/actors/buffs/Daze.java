@@ -37,6 +37,12 @@ public class Daze extends FlavourBuff {
 		announced = true;
 	}
 
+    @Override
+    public String desc() {
+        return com.shatteredpixel.shatteredpixeldungeon.messages.Messages.get(this, "desc", dispTurns(),
+                com.shatteredpixel.shatteredpixeldungeon.messages.Messages.decimalFormat("0.##", 100 * (1 - ROLL_FACTOR)));
+    }
+
 	@Override
 	public int icon() {
 		return BuffIndicator.DAZE;

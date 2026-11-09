@@ -557,6 +557,22 @@ public class QolItemFeedbackDeviceTest {
             }
         } finally { TopScoresDeviceTest.render(() -> Dungeon.hero.HP = hp); }
     }
+    private static void conciseDefensiveBuffDescriptionsRender() throws Exception {
+        for (String name : new String[]{"Barkskin", "ArcaneArmor", "Bless", "Hex", "Daze"}) {
+            AtomicReference<Window> shown = new AtomicReference<>();
+            TopScoresDeviceTest.render(() -> {
+                try {
+                    com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff buff = (com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff) Class.forName("com.shatteredpixel.shatteredpixeldungeon.actors.buffs." + name).getDeclaredConstructor().newInstance();
+                    if (buff instanceof com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barkskin) ((com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barkskin) buff).set(7, 5);
+                    if (buff instanceof com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ArcaneArmor) ((com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ArcaneArmor) buff).set(9, 5);
+                    assertTrue(buff.desc(), buff.desc().length() < 230);
+                    Window window = new WndInfoBuff(buff); GameScene.show(window); shown.set(window);
+                } catch (Exception e) { throw new RuntimeException(e); }
+            });
+            try { Thread.sleep(250); TopScoresDeviceTest.render(() -> assertDescriptionViewport(shown.get())); TopScoresDeviceTest.screenshot("qol-plain-defensive-buff-" + name + ".png"); }
+            finally { TopScoresDeviceTest.render(() -> shown.get().hide()); }
+        }
+    }
     private static void retainedMonkEnergyDetailsRender()throws Exception{
         final com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass heroClass=Dungeon.hero.heroClass;final com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass subclass=Dungeon.hero.subClass;
         final java.util.ArrayList<java.util.LinkedHashMap<com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent,Integer>> talents=Dungeon.hero.talents;
@@ -1289,6 +1305,7 @@ public class QolItemFeedbackDeviceTest {
             retainedMonkEnergyDetailsRender();
             conciseHolyDescriptionsRender();
             conciseRetainedRingDetailsRender();
+            conciseDefensiveBuffDescriptionsRender();
             liveElementalBlastDescriptionsRender();
             gradualHealingNonStackDescriptionsRender();
             hiddenTwinUpgradeDescriptionsRender();
