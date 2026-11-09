@@ -6,7 +6,7 @@
   "message_entries": 2411,
   "reviewed_units": 433,
   "corrected_units": 350,
-  "unresolved_units": 111,
+  "unresolved_units": 100,
   "category_counts": {
     "apd": 1,
     "mechanics": 38,
@@ -1755,71 +1755,71 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/potions/brews/AquaBrew.java",
       "sha256": "00f63ce9106f9fda5af7f7d87a4635a56cad0f3c643786308fddf909ffd6e03e",
       "category": "potions",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [],
-      "review_notes": "Individual source read2026-11-09; normal Potion identity/color/actions/drink/throw/splash/crafting and exotic shared identity reviewed; Brew/Elixir abstract action/known states unchanged. Aqua now concise actual geyser/water/trap/fire/knockback warning including hero/allies, real shatter verifies flood/removes hidden trap/extinguishes fire/preserves wall. ClassArmor entire source transfer/seal/charge/conditional shortdesc and six sprite-only variants read; normal charge label now percent matching0\u2013100meter. Ability summary concise current cost, separate Warp placement restriction and Trinity variable effect cost retained. Existing specific advanced panels unchanged; full effects provider/inherited dependency reviews remain incomplete.3062core/457suites pass; actual new native windows pending next pair, not392.",
+      "review_notes": "Individual source read2026-11-09; normal Potion identity/color/actions/drink/throw/splash/crafting and exotic shared identity reviewed; Brew/Elixir abstract action/known states unchanged. Aqua now concise actual geyser/water/trap/fire/knockback warning including hero/allies, real shatter verifies flood/removes hidden trap/extinguishes fire/preserves wall. ClassArmor entire source transfer/seal/charge/conditional shortdesc and six sprite-only variants read; normal charge label now percent matching0\u2013100meter. Ability summary concise current cost, separate Warp placement restriction and Trinity variable effect cost retained. Existing specific advanced panels unchanged; full effects provider/inherited dependency reviews remain incomplete.3062core/457suites pass; actual new native windows pending next pair, not392. Entire own source and relevant effect/recipe consumers individually reviewed November9. Geyser direction/center/neighbors,force2,fiery damage,fire clear,terrain/trap water conversion and eight-output recipe checked; existing actual flood/trap/fire test retained. Current concise ordinary descriptions unchanged. Own-source completion only; inherited Potion and separately tracked shared providers remain open. Brews/potions gain no calculation button.",
       "wording_corrected": true
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/potions/brews/BlizzardBrew.java",
       "sha256": "ea81750f839e90094d90ea392a51c4424a3af6243722a0cd36658da9ed42ac76",
       "category": "potions",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [],
       "wording_corrected": true,
-      "review_notes": "Ordinary description corrected after source review. Existing damage/cost/status logic retained; known live effects and challenge/hidden-state cases tested. Complete class variants, optional panels where applicable and Android rendering remain under review."
+      "review_notes": "Ordinary description corrected after source review. Existing damage/cost/status logic retained; known live effects and challenge/hidden-state cases tested. Complete class variants, optional panels where applicable and Android rendering remain under review. Entire own source and relevant effect/recipe consumers individually reviewed November9. Nine120volume placements with blocked shares moved center, Blizzard/Freezing repeated chill/frost/fire clearing and heap.freeze consumers checked; spreading/collateral potion risk prose accurate. Current concise ordinary descriptions unchanged. Own-source completion only; inherited Potion and separately tracked shared providers remain open. Brews/potions gain no calculation button."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/potions/brews/Brew.java",
       "sha256": "bbcadd616403731f62a33f7d284a4b55129921cb53e5a96fd27232348227d741",
       "category": "potions",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_UNCHANGED",
       "description_methods": [],
-      "review_notes": "Individual source read2026-11-09; normal Potion identity/color/actions/drink/throw/splash/crafting and exotic shared identity reviewed; Brew/Elixir abstract action/known states unchanged. Aqua now concise actual geyser/water/trap/fire/knockback warning including hero/allies, real shatter verifies flood/removes hidden trap/extinguishes fire/preserves wall. ClassArmor entire source transfer/seal/charge/conditional shortdesc and six sprite-only variants read; normal charge label now percent matching0\u2013100meter. Ability summary concise current cost, separate Warp placement restriction and Trinity variable effect cost retained. Existing specific advanced panels unchanged; full effects provider/inherited dependency reviews remain incomplete.3062core/457suites pass; actual new native windows pending next pair, not392."
+      "review_notes": "Individual source read2026-11-09; normal Potion identity/color/actions/drink/throw/splash/crafting and exotic shared identity reviewed; Brew/Elixir abstract action/known states unchanged. Aqua now concise actual geyser/water/trap/fire/knockback warning including hero/allies, real shatter verifies flood/removes hidden trap/extinguishes fire/preserves wall. ClassArmor entire source transfer/seal/charge/conditional shortdesc and six sprite-only variants read; normal charge label now percent matching0\u2013100meter. Ability summary concise current cost, separate Warp placement restriction and Trinity variable effect cost retained. Existing specific advanced panels unchanged; full effects provider/inherited dependency reviews remain incomplete.3062core/457suites pass; actual new native windows pending next pair, not392. Entire own source and relevant effect/recipe consumers individually reviewed November9. Own action overrides removeDrink/defaultThrow, normal throwselector, known identity and price/energy checked; no own player prose. Current concise ordinary descriptions unchanged. Own-source completion only; inherited Potion and separately tracked shared providers remain open. Brews/potions gain no calculation button."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/potions/brews/CausticBrew.java",
       "sha256": "9f205fe0607b58dd4f28f6bb4158e2ae27cdac93a513c6bac0e4bb01d0291788",
       "category": "potions",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [],
       "wording_corrected": true,
-      "review_notes": "Ordinary description corrected after source review. Existing damage/cost/status logic retained; known live effects and challenge/hidden-state cases tested. Complete class variants, optional panels where applicable and Android rendering remain under review."
+      "review_notes": "Ordinary description corrected after source review. Existing damage/cost/status logic retained; known live effects and challenge/hidden-state cases tested. Complete class variants, optional panels where applicable and Android rendering remain under review. Entire own source and relevant effect/recipe consumers individually reviewed November9. Three-step non-solid distance map and20turnOoze offered to all characters, actual depth damage/water wash and GooBlob recipe checked; concise prose accurate. Current concise ordinary descriptions unchanged. Own-source completion only; inherited Potion and separately tracked shared providers remain open. Brews/potions gain no calculation button."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/potions/brews/InfernalBrew.java",
       "sha256": "3a4884af7f70fb8e216d8d3d976a80fc5096b8c3c78cc1869e51feb5097154c6",
       "category": "potions",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [],
       "wording_corrected": true,
-      "review_notes": "Ordinary description corrected after source review. Existing damage/cost/status logic retained; known live effects and challenge/hidden-state cases tested. Complete class variants, optional panels where applicable and Android rendering remain under review."
+      "review_notes": "Ordinary description corrected after source review. Existing damage/cost/status logic retained; known live effects and challenge/hidden-state cases tested. Complete class variants, optional panels where applicable and Android rendering remain under review. Entire own source and relevant effect/recipe consumers individually reviewed November9. Nine120volume placements, attribution,Inferno/Fire spreading/burning/flammable terrain and blizzard cancellation checked; concise prose accurate. Current concise ordinary descriptions unchanged. Own-source completion only; inherited Potion and separately tracked shared providers remain open. Brews/potions gain no calculation button."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/potions/brews/ShockingBrew.java",
       "sha256": "557f26c5518599d0950f5164185752d07d4846107e3a03dabd3201b4d20799c2",
       "category": "potions",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [],
       "wording_corrected": true,
-      "review_notes": "Ordinary description corrected after source review. Existing damage/cost/status logic retained; known live effects and challenge/hidden-state cases tested. Complete class variants, optional panels where applicable and Android rendering remain under review."
+      "review_notes": "Ordinary description corrected after source review. Existing damage/cost/status logic retained; known live effects and challenge/hidden-state cases tested. Complete class variants, optional panels where applicable and Android rendering remain under review. Entire own source and relevant effect/recipe consumers individually reviewed November9. Three-stepnon-solid placement20percell, Electricity water flood/paralysis/alternating damage/ground wand recharge and recipe checked; concise hazard prose accurate. Current concise ordinary descriptions unchanged. Own-source completion only; inherited Potion and separately tracked shared providers remain open. Brews/potions gain no calculation button."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/potions/brews/UnstableBrew.java",
       "sha256": "7d127a94f7881e0d92901e8310ce2ed5a2d4d1f017b2ff2b16abb0574463fa31",
       "category": "potions",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [],
       "wording_corrected": true,
-      "review_notes": "Ordinary description corrected after source review. Existing damage/cost/status logic retained; known live effects and challenge/hidden-state cases tested. Complete class variants, optional panels where applicable and Android rendering remain under review."
+      "review_notes": "Ordinary description corrected after source review. Existing damage/cost/status logic retained; known live effects and challenge/hidden-state cases tested. Complete class variants, optional panels where applicable and Android rendering remain under review. Entire own source and relevant effect/recipe consumers individually reviewed November9. Actual weighted table, drink excludes mustThrow, throw permits must/canThrow, Pharmacophobia excludesHealingonlydrink, anonymous selected effects and seed+potion recipe checked; no promise of uniform outcome. Current concise ordinary descriptions unchanged. Own-source completion only; inherited Potion and separately tracked shared providers remain open. Brews/potions gain no calculation button."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/potions/elixirs/Elixir.java",
       "sha256": "441036146bde7963561ba6f4026185ec42ff9acc118ed94d76a35ed60165457e",
       "category": "potions",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_UNCHANGED",
       "description_methods": [],
-      "review_notes": "Individual source read2026-11-09; normal Potion identity/color/actions/drink/throw/splash/crafting and exotic shared identity reviewed; Brew/Elixir abstract action/known states unchanged. Aqua now concise actual geyser/water/trap/fire/knockback warning including hero/allies, real shatter verifies flood/removes hidden trap/extinguishes fire/preserves wall. ClassArmor entire source transfer/seal/charge/conditional shortdesc and six sprite-only variants read; normal charge label now percent matching0\u2013100meter. Ability summary concise current cost, separate Warp placement restriction and Trinity variable effect cost retained. Existing specific advanced panels unchanged; full effects provider/inherited dependency reviews remain incomplete.3062core/457suites pass; actual new native windows pending next pair, not392."
+      "review_notes": "Individual source read2026-11-09; normal Potion identity/color/actions/drink/throw/splash/crafting and exotic shared identity reviewed; Brew/Elixir abstract action/known states unchanged. Aqua now concise actual geyser/water/trap/fire/knockback warning including hero/allies, real shatter verifies flood/removes hidden trap/extinguishes fire/preserves wall. ClassArmor entire source transfer/seal/charge/conditional shortdesc and six sprite-only variants read; normal charge label now percent matching0\u2013100meter. Ability summary concise current cost, separate Warp placement restriction and Trinity variable effect cost retained. Existing specific advanced panels unchanged; full effects provider/inherited dependency reviews remain incomplete.3062core/457suites pass; actual new native windows pending next pair, not392. Entire own source and relevant effect/recipe consumers individually reviewed November9. Entire abstractbaseapply/alwaysknown/value/energy read; no own prose or panel. Current concise ordinary descriptions unchanged. Own-source completion only; inherited Potion and separately tracked shared providers remain open. Brews/potions gain no calculation button."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/potions/elixirs/ElixirOfAquaticRejuvenation.java",
@@ -1902,9 +1902,9 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/potions/exotic/ExoticPotion.java",
       "sha256": "aa60383774317dc16704c07e75edaf352bac519613bff3a70733c6ec55e03eed",
       "category": "potions",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_UNCHANGED",
       "description_methods": [],
-      "review_notes": "Individual source read2026-11-09; normal Potion identity/color/actions/drink/throw/splash/crafting and exotic shared identity reviewed; Brew/Elixir abstract action/known states unchanged. Aqua now concise actual geyser/water/trap/fire/knockback warning including hero/allies, real shatter verifies flood/removes hidden trap/extinguishes fire/preserves wall. ClassArmor entire source transfer/seal/charge/conditional shortdesc and six sprite-only variants read; normal charge label now percent matching0\u2013100meter. Ability summary concise current cost, separate Warp placement restriction and Trinity variable effect cost retained. Existing specific advanced panels unchanged; full effects provider/inherited dependency reviews remain incomplete.3062core/457suites pass; actual new native windows pending next pair, not392."
+      "review_notes": "Individual source read2026-11-09; normal Potion identity/color/actions/drink/throw/splash/crafting and exotic shared identity reviewed; Brew/Elixir abstract action/known states unchanged. Aqua now concise actual geyser/water/trap/fire/knockback warning including hero/allies, real shatter verifies flood/removes hidden trap/extinguishes fire/preserves wall. ClassArmor entire source transfer/seal/charge/conditional shortdesc and six sprite-only variants read; normal charge label now percent matching0\u2013100meter. Ability summary concise current cost, separate Warp placement restriction and Trinity variable effect cost retained. Existing specific advanced panels unchanged; full effects provider/inherited dependency reviews remain incomplete.3062core/457suites pass; actual new native windows pending next pair, not392. Entire own source and relevant effect/recipe consumers individually reviewed November9. Full12regular-exotic mappings, shared knowledge/sprite,price/energy,4energyrecipe/quantity paths read; no identification or balance change. Current concise ordinary descriptions unchanged. Own-source completion only; inherited Potion and separately tracked shared providers remain open. Brews/potions gain no calculation button."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/potions/exotic/PotionOfCleansing.java",
@@ -1919,10 +1919,10 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/potions/exotic/PotionOfCorrosiveGas.java",
       "sha256": "901c85757d190d002ef94fa8766a203afb2c27079001669679971a947f85b4d8",
       "category": "potions",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [],
       "wording_corrected": true,
-      "review_notes": "Individually read use/select/shatter and tracker code, Corrosion/CorrosiveGas/StormCloud consequences and Level.setCellToWater; Mastery eligibility/2STR and Divine tier entitlement verified against real Weapon/Armor/Hero paths. Concise ordinary description retains practical limitations. Broader base potion identification, custom rule/class and legacy helper audit remains unfinished; no new panel or gameplay change."
+      "review_notes": "Individually read use/select/shatter and tracker code, Corrosion/CorrosiveGas/StormCloud consequences and Level.setCellToWater; Mastery eligibility/2STR and Divine tier entitlement verified against real Weapon/Armor/Hero paths. Concise ordinary description retains practical limitations. Broader base potion identification, custom rule/class and legacy helper audit remains unfinished; no new panel or gameplay change. Entire own source and relevant effect/recipe consumers individually reviewed November9. Fullshatter/visibilityidentify/225volume/blockedshare/strength2+depthdiv5 read; CorrosiveGas/Corrosion actualrefresh/increasingdamage/origin/save consumers checked. Current concise ordinary descriptions unchanged. Own-source completion only; inherited Potion and separately tracked shared providers remain open. Brews/potions gain no calculation button."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/potions/exotic/PotionOfDivineInspiration.java",
@@ -2009,10 +2009,10 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/potions/exotic/PotionOfStormClouds.java",
       "sha256": "84b1459c60f2f7a252a4d70616bd6a44542653406105465a4aed41c2b1d023e2",
       "category": "potions",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [],
       "wording_corrected": true,
-      "review_notes": "Individually read use/select/shatter and tracker code, Corrosion/CorrosiveGas/StormCloud consequences and Level.setCellToWater; Mastery eligibility/2STR and Divine tier entitlement verified against real Weapon/Armor/Hero paths. Concise ordinary description retains practical limitations. Broader base potion identification, custom rule/class and legacy helper audit remains unfinished; no new panel or gameplay change."
+      "review_notes": "Individually read use/select/shatter and tracker code, Corrosion/CorrosiveGas/StormCloud consequences and Level.setCellToWater; Mastery eligibility/2STR and Divine tier entitlement verified against real Weapon/Armor/Hero paths. Concise ordinary description retains practical limitations. Broader base potion identification, custom rule/class and legacy helper audit remains unfinished; no new panel or gameplay change. Entire own source and relevant effect/recipe consumers individually reviewed November9. Fullshatter/visibilityidentify/1080volume/blockedshare read; StormCloud water/trap/fire/fierydamage andorigin/save consumers checked. Current concise ordinary descriptions unchanged. Own-source completion only; inherited Potion and separately tracked shared providers remain open. Brews/potions gain no calculation button."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/quest/CeremonialCandle.java",

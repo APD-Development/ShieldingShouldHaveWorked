@@ -387,3 +387,6 @@ Original source 11e73f663f8bccf1e2fd8b2fbb7c4d935bf31c6a; 3115core/457suites and
 
 ### Eight elixir own-source reviews completed
 ArcaneArmor, DragonsBlood, IcyTouch, FeatherFall, AquaticRejuvenation, HoneyedHealing, Might and ToxicEssence individually checked with recipes/nestedbuffs/actual consumers. Existing concise live prose accurate; no gratuitous rewrites or mechanics changes. Prior effect/hidden-state/custom-rule/save tests and actual native windows retained. Own-source completion only; separately tracked inherited/shared providers remain open. Audit436units433partial/full350corrected325complete111unresolved,5339Englishentries.
+
+### Brew and exotic base/source reviews
+Seven Brew classes, Elixir/ExoticPotion bases, CorrosiveGas/StormClouds potions reviewed individually with actual cloud/status/terrain/recipe consumers. Current concise ordinary prose retained, no new panels, no gameplay changes. Existing Aqua actual flood/trap/fire and other relevant regression evidence preserved. Own-source completion only; shared Potion/provider reviews remain open. Audit436units433partial/full350corrected336complete100unresolved,5339Englishentries.408originalpairbuilding at77950dd132349381a70928bcc7c9180910ff9ea3.
