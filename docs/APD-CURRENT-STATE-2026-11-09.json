@@ -1,5 +1,5 @@
 {
-  "recorded_utc": "2026-11-09T17:09:36.972936+00:00",
+  "recorded_utc": "2026-11-09T17:13:23.368844+00:00",
   "authorization_end_utc": "2026-11-09T20:00:00Z",
   "latest_verified_published_build": 418,
   "release_url": "https://github.com/APD-Development/ShieldingShouldHaveWorked/releases/tag/apd-alpha-preview-418",
@@ -12,9 +12,9 @@
     "skipped": 0
   },
   "last_completed_android_source_compile": {
-    "commit": "f49ce8b4944ce0154448eb6f5ee841d99728cb6d",
-    "run": 42661111718,
-    "scope": "3147core, Android debug/release/instrumentationJava/desktop passed. Later Shared Talents and native Degrade fixtures not included; latest3149 verification requested."
+    "commit": "f1061a5b70f24d252ded31f6f4de77ff55434692",
+    "run": 42661877621,
+    "scope": "3149core and Android debug/release/instrumentationJava/desktop all passed. Includes manual Endure/SoulMark fixes and latest SharedTalents/negative-effect fixtures. NoAPK in this source-check."
   },
   "latest_source_compile": {
     "commit": "7143d16bc481045b49ec4a60624128b0dcccc6b1",
@@ -61,31 +61,14 @@
   "physical_phone_or_acoustic_audio_verified": false,
   "background_development_after_window_claimed": false,
   "active_build": {
-    "number": 422,
-    "status": "APD422 attempt1 failed before build on private-draft API403; retry uses exact Actions artifact13691823460 and both artifact/APK hashes. Contains old Endure/SoulMark text; HOLD irrespective of automated outcome.",
-    "previous_compiled_build": 420,
-    "previous_compiled_asset_id": 728202768,
-    "previous_compiled_developer_sha256": "1acebe7f2cecae471ccb0b2810fc31be74ca92ecf339e22edbd2145b1a240f33",
-    "source_parent": "0411dbb9e6dada3c91c9de930bfcc4708e3028cf",
-    "requires": [
-      "3144 core / 457 suites",
-      "Android debug/release/instrumentation Java and desktop compilation",
-      "12 targeted API34 cases per pair",
-      "exact signing/source/history checks",
-      "manual visual review before publication"
+    "number": 423,
+    "status": "Preparing pair after successful latest3149 Android source verification; all12 native/source/scans/manual review still required.422 parallel candidate inherits rejected text and staysprivate.",
+    "previous_compiled_history": [
+      422,
+      421,
+      420
     ],
-    "failed_attempt": {
-      "run": 42660406284,
-      "job": 129310131694,
-      "application_apks_created": 0,
-      "reason": "private draft release API inaccessible to integration token"
-    },
-    "retry_input": {
-      "run": 42654395502,
-      "artifact_id": 13691823460,
-      "artifact_sha256": "3bbdad294c70fa993bce8cfb1391999b62064fb277fd9d80a7b6071bdf28706c",
-      "developer_sha256": "1acebe7f2cecae471ccb0b2810fc31be74ca92ecf339e22edbd2145b1a240f33"
-    }
+    "source_parent": "f1061a5b70f24d252ded31f6f4de77ff55434692"
   },
   "recovered_failed_attempts": {
     "415": {
