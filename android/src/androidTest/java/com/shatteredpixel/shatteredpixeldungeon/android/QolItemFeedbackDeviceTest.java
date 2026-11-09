@@ -367,6 +367,29 @@ public class QolItemFeedbackDeviceTest {
             Thread.sleep(300);TopScoresDeviceTest.render(()->assertDescriptionViewport(shown.get()));TopScoresDeviceTest.screenshot("qol-lightning-charge-concise.png");TopScoresDeviceTest.render(()->shown.get().hide());
         }finally{TopScoresDeviceTest.render(()->{Dungeon.apdRestoreCustomRules(previousRules);Dungeon.hero.heroClass=previousClass;Dungeon.hero.subClass=previousSubclass;});}
     }
+    private static void livingEarthAndPrismaticDescriptionsRender()throws Exception{
+        com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfLivingEarth earth=new com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfLivingEarth();
+        com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfPrismaticLight light=new com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfPrismaticLight();
+        TopScoresDeviceTest.render(()->{earth.level(3);light.level(3);for(com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand wand:new com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand[]{earth,light})wand.levelKnown=wand.cursedKnown=wand.curChargeKnown=true;});
+        showItem(earth,"restore its health instead","qol-living-earth-concise.png",true);
+        showItem(light,"hidden doors and traps along the beam","qol-prismatic-concise.png",true);
+        TopScoresDeviceTest.render(()->{earth.levelKnown=false;light.levelKnown=false;});
+        showItem(earth,"Unupgraded example (+0)","qol-living-earth-unknown.png",true);showItem(light,"Unupgraded example (+0)","qol-prismatic-unknown.png",true);
+        AtomicReference<Window> shown=new AtomicReference<>();
+        TopScoresDeviceTest.render(()->{com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfLivingEarth.RockArmor buff=new com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfLivingEarth.RockArmor();com.watabou.utils.Bundle state=new com.watabou.utils.Bundle();buff.storeInBundle(state);state.put("armor",11);state.put("wand_level",3);buff.restoreFromBundle(state);assertTrue(buff.desc(),buff.desc().contains("_11_"));assertTrue(buff.desc(),buff.desc().contains("_20_"));Window window=new WndInfoBuff(buff);GameScene.show(window);shown.set(window);});
+        Thread.sleep(300);TopScoresDeviceTest.render(()->assertDescriptionViewport(shown.get()));TopScoresDeviceTest.screenshot("qol-rock-armor-reserve-concise.png");TopScoresDeviceTest.render(()->shown.get().hide());
+        com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfLivingEarth.EarthGuardian guardian=new com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfLivingEarth.EarthGuardian();
+        com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfRegrowth.Lotus lotus=new com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfRegrowth.Lotus();
+        TopScoresDeviceTest.render(()->{guardian.setInfo(Dungeon.hero,3,25);com.watabou.utils.Bundle state=new com.watabou.utils.Bundle();lotus.storeInBundle(state);state.put("wand_lvl",5);lotus.restoreFromBundle(state);lotus.HP=lotus.HT=40;});
+        for(com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob mob:new com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob[]{guardian,lotus}){
+            AtomicReference<Window> mobWindow=new AtomicReference<>();float[] time=new float[1];String[] before=new String[1];
+            TopScoresDeviceTest.render(()->{com.shatteredpixel.shatteredpixeldungeon.actors.Actor.add(mob);time[0]=Dungeon.hero.cooldown();com.watabou.utils.Bundle state=new com.watabou.utils.Bundle();mob.storeInBundle(state);before[0]=state.toString();assertTrue(mob.description(),mob.description().contains(mob==guardian?"_3-12 damage_":"_60% chance_"));Window window=new com.shatteredpixel.shatteredpixeldungeon.windows.WndInfoMob(mob);GameScene.show(window);mobWindow.set(window);});
+            Thread.sleep(300);
+            TopScoresDeviceTest.render(()->{Window window=mobWindow.get();for(RenderedTextBlock text:TopScoresDeviceTest.find(window,RenderedTextBlock.class)){Point a=text.camera().cameraToScreen(text.left(),text.top()),b=text.camera().cameraToScreen(text.right(),text.bottom());assertTrue("NPC text fits screen",a.x>=0&&a.y>=0&&b.x<=Game.width&&b.y<=Game.height);}assertEquals(time[0],Dungeon.hero.cooldown(),0);com.watabou.utils.Bundle after=new com.watabou.utils.Bundle();mob.storeInBundle(after);assertEquals(before[0],after.toString());});
+            TopScoresDeviceTest.screenshot(mob==guardian?"qol-earth-guardian-concise.png":"qol-golden-lotus-concise.png");
+            TopScoresDeviceTest.render(()->{mobWindow.get().hide();com.shatteredpixel.shatteredpixeldungeon.actors.Actor.remove(mob);});
+        }
+    }
     private static void unidentifiedWandExamplesRender()throws Exception{
         for(String name:new String[]{"BlastWave","Corrosion","Corruption","Disintegration","Fireblast","Frost","Lightning","LivingEarth","MagicMissile","PrismaticLight","Regrowth","Transfusion","Warding"}){
             com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand wand=(com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand)Class.forName("com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOf"+name).getDeclaredConstructor().newInstance();
@@ -685,6 +708,7 @@ public class QolItemFeedbackDeviceTest {
             corrosionWandDescriptionsRender();
             disintegrationWandDescriptionsRender();
             lightningAndRegrowthDescriptionsRender();
+            livingEarthAndPrismaticDescriptionsRender();
             unidentifiedWandExamplesRender();
             inventoryOrderShowsAutomatically();
             prepareSearchableFloor();
