@@ -1,6 +1,6 @@
 ## Current status — November 9, 2026, active owner-authorized development
 
-Active authorization through16:00EST/21:00UTC. Audit unfinished:437source units,435 fully/partially reviewed,354 corrected,420 own-source complete,17 unresolved;5343 English entries/2432 item entries. These are source-unit counts, not distinct items. Latest published410. Build411 has passed its12 native cases after a one-phrase test-only correction; source preparation and delivery review pending. Build412 Android checks pending. Latest later source3134core/457 suites all pass. No physical-phone or acoustic-audio verification claimed. Historical notes below retain exact prior cutoffs.
+Active authorization through16:00EST/21:00UTC. Audit unfinished:442source units,441 fully/partially reviewed,354 corrected,434 own-source complete,8 unresolved;5343 English entries/2432 item entries. Five previously omitted direct talent/secondary-window sources are now explicit: four window sources fully read, actual Talent source partially read. These source-unit counts do not mean distinct items or whole-game Android coverage. Latest published412 (3134core/12targetedAndroid), later source3135core/457suites all pass.413sourcea0c2f60ec building42616639575; later armor seal wording excluded from that cutoff. No physical-phone/acoustic verification. Historical notes below retain exact prior cutoffs.
 
 ## Latest continuation — crafted spells, runestones and Duelist examples
 

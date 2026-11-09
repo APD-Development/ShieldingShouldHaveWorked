@@ -2,11 +2,11 @@
   "scope": "Every item category, inherited and generated descriptions, enchantments/glyphs/curses, class interactions and existing secondary panels. Inventory is not review completion.",
   "baseline_commit": "32f4f3beab4c23b404c3cb1d43bfa06a39165e70",
   "counting": "Source units, not distinct item types. reviewed_units includes partial reviews; completed_units excludes partial/pending dependency. corrected_units counts source units with corrections, including incomplete reviews. Inventory/export/tests alone are not an individual review.",
-  "source_units": 437,
+  "source_units": 442,
   "message_entries": 2432,
-  "reviewed_units": 436,
+  "reviewed_units": 441,
   "corrected_units": 354,
-  "unresolved_units": 7,
+  "unresolved_units": 8,
   "category_counts": {
     "apd": 1,
     "mechanics": 38,
@@ -31,10 +31,11 @@
     "weapon": 92,
     "plants": 14,
     "ui": 1,
-    "windows": 4,
+    "windows": 8,
     "abilities": 1,
     "cleric_spells": 2,
-    "buffs": 5
+    "buffs": 5,
+    "talents": 1
   },
   "entries": [
     {
@@ -4476,9 +4477,60 @@
       "description_methods": [],
       "wording_corrected": true,
       "review_notes": "2026-11-09 individually inspected previously omitted plant window. Removed universal plant calculations supplier/button, outside owner-retained mechanic-specific groups, keeping normal species/Warden descriptions and existing plain window. No new layout or effects. Thirty actual plant windows across NONE/WARDEN prepared to assert no expander, text screen bounds, pure save/time; Android pending next pair."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/WndInfoTalent.java",
+      "sha256": "05546337b3c5d1d4f330addb2078beb09653931f7609cde6a99c8f3faa68eece",
+      "category": "windows",
+      "status": "REVIEWED_UNCHANGED",
+      "description_methods": [
+        "constructor"
+      ],
+      "review_notes": "2026-11-09: Full own source and existing native talent windows reviewed: normal versus metamorphed text, rank title, optional existing action, reserved button height and lazy mechanic-specific details. No training/selection triggered by inspection; owner-retained panel unchanged."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/WndInfoBuff.java",
+      "sha256": "0afb5d2bf43246b3d305e8f2feadf521ee3bc795b39658e158a1c72343e4e060",
+      "category": "windows",
+      "status": "REVIEWED_UNCHANGED",
+      "description_methods": [
+        "constructor"
+      ],
+      "review_notes": "2026-11-09: Full own source read: actual buff icon/name/normal desc and existing lazy details supplier with bounded viewport. Existing actual buff windows, state/time purity and detailed-pane checks pass. Owner-retained panel unchanged."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/WndInfoArmorAbility.java",
+      "sha256": "3d723b4d4d90345e6a489ba3aa040a30d9ee80ef898687ef02b4a2622d946c4d",
+      "category": "windows",
+      "status": "REVIEWED_UNCHANGED",
+      "description_methods": [
+        "constructor"
+      ],
+      "review_notes": "2026-11-09: Full own source read: actual ability description plus current charge summary, existing lazy details and retained talent grid with reserved height. Actual ability native windows and costs/purity tests pass. No ability activated or new interface added."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/WndTitledMessage.java",
+      "sha256": "ee2540d926ea467272b34b6ac3db23ac50581aa1d6436fb5ffa32009743e0197",
+      "category": "windows",
+      "status": "REVIEWED_UNCHANGED",
+      "description_methods": [
+        "constructor"
+      ],
+      "review_notes": "2026-11-09: Full own source read: existing plain constructor versus explicit mechanic-specific supplier, landscape sizing and reserved controls. The plant correction uses plain constructor. Existing Android normal/expanded/scroll and portrait/landscape cases pass. No universal panel dispatch added."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/hero/Talent.java",
+      "sha256": "7488c8315c351c286cf3674af8f5f0a2ad1fb45098b0ee8e9d16df7ee60a73ef",
+      "category": "talents",
+      "status": "PARTIAL_REVIEW",
+      "description_methods": [
+        "desc",
+        "title"
+      ],
+      "review_notes": "2026-11-09: Previously omitted direct normal-description source added to inventory. Title/rank/normal/metamorphed message dispatch read; underlying talent effect and English rank-text cross-check continues with TalentExplanation. Not marked complete."
     }
   ],
-  "completed_units": 430,
+  "completed_units": 434,
   "latest_tests": "3134core457all0 after full Weapon/Melee/ability/timing/preparation own-provider reviews and two ordinary wording changes.412source8bd99c644build/core/compile passed, native in progress.411originalnative rejected stale exact Catalyst phrase; full original-APK test-only retry42613038722running, originals/sourcefailurebranch preserved.410 latestpublished.",
   "message_inventory_entries": 5343,
   "message_inventory_counting": "Current authored English property entries across nine files;2432 item entries. Two concise zero-Healing dew/waterskin keys added. Exact Adult OFF/ON checks retained."
