@@ -140,7 +140,8 @@ public class SpiritBow extends Weapon {
 	@Override
 	public String info() {
         Integer knownStrength=com.shatteredpixel.shatteredpixeldungeon.apd.mechanics.ArmorExplanation.knownStrength(Dungeon.hero);
-		String info = super.info() + accuracyDescription();
+		String accuracy = accuracyDescription();
+		String info = super.info() + accuracy;
 		
         if(Dungeon.hero==null){
             info+="\n\nDamage grows with your level and Ring of Sharpshooting.";
@@ -171,8 +172,7 @@ public class SpiritBow extends Weapon {
 		if (enchantment != null && (cursedKnown || !enchantment.curse())){
 			info += "\n\n" + Messages.capitalize(Messages.get(Weapon.class, "enchanted", enchantment.name()));
 			if (enchantHardened) info += " " + Messages.get(Weapon.class, "enchant_hardened");
-			info += " " + enchantment.desc();
-            info+=com.shatteredpixel.shatteredpixeldungeon.apd.mechanics.EnchantmentExplanation.itemSummary(this,Dungeon.hero);
+			info += " " + com.shatteredpixel.shatteredpixeldungeon.apd.mechanics.EnchantmentExplanation.playerDescription(this,Dungeon.hero);
 		} else if (enchantHardened){
 			info += "\n\n" + Messages.get(Weapon.class, "hardened_no_enchant");
 		}
@@ -185,7 +185,7 @@ public class SpiritBow extends Weapon {
 			info += "\n\n" + Messages.get(Weapon.class, "not_cursed");
 		}
 		
-		info += "\n\n" + Messages.get(MissileWeapon.class, "distance");
+		if (accuracy.isEmpty()) info += "\n\n" + Messages.get(MissileWeapon.class, "distance");
 		
 		return info;
 	}

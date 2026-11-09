@@ -4,7 +4,7 @@
   "counting": "Source units, not distinct item types. reviewed_units includes partial reviews; completed_units excludes partial/pending dependency. corrected_units counts source units with corrections, including incomplete reviews. Inventory/export/tests alone are not an individual review.",
   "source_units": 427,
   "message_entries": 2411,
-  "reviewed_units": 373,
+  "reviewed_units": 374,
   "corrected_units": 321,
   "unresolved_units": 267,
   "category_counts": {
@@ -38,10 +38,11 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/ArcanaInfoDisplay.java",
       "sha256": "965f9c20553256b371ec6b8690433c70b54494eaefd8f85be89eff7f2b1e9a20",
       "category": "apd",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
+      "status": "PARTIAL_REVIEW",
       "description_methods": [
         "effect"
-      ]
+      ],
+      "review_notes": "Read full legacy formatting and all current call sites2026-11-09. Only normal legacy append remained in SpiritBow via itemSummary; routed ordinary bow to existing concise playerDescription. Shared knownArcanaPower/unknown-ring/SpiritForm safeguards retained. Legacy public exports/tests not removed, full provider review remains open."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/AbilityExplanation.java",
@@ -3208,14 +3209,14 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/SpiritBow.java",
-      "sha256": "c196746d5b5e87e5afd41b68025c38ed4eeaaf3b575805e827c675b40846ec7d",
+      "sha256": "45cf88780f360f6330ba56600379d886c234f5308ae0999d00aa7aef4beefec5",
       "category": "weapon",
       "status": "PARTIAL_REVIEW",
       "description_methods": [
         "info"
       ],
       "wording_corrected": true,
-      "review_notes": "Primary stats use only known ring bonuses and known Strength; no-hero text shortened. Existing gameplay damage, arrow targeting and ability mechanics unchanged. Remaining special shot descriptions still pending individual review."
+      "review_notes": "Primary stats use only known ring bonuses and known Strength; no-hero text shortened. Existing gameplay damage, arrow targeting and ability mechanics unchanged. Remaining special shot descriptions still pending individual review. Reproduced ordinary bow retaining old generic Arcana paragraphs; now same concise playerDescription as melee/missile, skips duplicate distance instruction when actual accuracy row exists. Existing specific panels retained, no gameplay change. Known Elastic/Lucky/Projecting/Vorpal text regression and unknown-ring/read-only one-use buff matrix; actual native windows pending392."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/Weapon.java",
@@ -4292,13 +4293,13 @@
   ],
   "completed_units": 160,
   "latest_tests": {
-    "core_tests": 3058,
+    "core_tests": 3060,
     "suites": 457,
     "failures": 0,
     "errors": 0,
     "skipped": 0,
-    "log": "docs/APD-PLAYER-DESCRIPTION-AUDIT.json",
+    "log": "/workspace/apd-spiritbow-description-evidence-20261109/accepted-full",
     "android_verified": false,
-    "scope": "Post391 unknown-curse privacy, intrinsic reach, dart coatings and Amulet wording; actual new windows pending next pair.391 latest published."
+    "scope": "Post391 known/unknown SpiritBow concise descriptions, real reusable tips, Amulet and unknown-curse privacy. New actual windows pending392.391 published."
   }
 }

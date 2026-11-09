@@ -590,6 +590,26 @@ public class QolItemFeedbackDeviceTest {
             }
         }finally{TopScoresDeviceTest.render(()->Dungeon.hero.heroClass=previous);}
     }
+    private static void spiritBowConciseEnchantmentsRender()throws Exception{
+        final KindofMisc[] previous=new KindofMisc[2];
+        final java.util.Set<com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff> original=new java.util.HashSet<>();
+        try{
+            TopScoresDeviceTest.render(()->{
+                previous[0]=Dungeon.hero.belongings.ring;previous[1]=Dungeon.hero.belongings.misc;original.addAll(Dungeon.hero.buffs());
+                for(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff b:new java.util.ArrayList<>(Dungeon.hero.buffs(Ring.RingBuff.class)))b.detach();
+                RingOfArcana arcana=new RingOfArcana();arcana.level(3);arcana.identify();Dungeon.hero.belongings.ring=arcana;Dungeon.hero.belongings.misc=null;arcana.activate(Dungeon.hero);
+            });
+            for(com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon.Enchantment effect:new com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon.Enchantment[]{new com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Elastic(),new com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Lucky(),new com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Projecting(),new com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Vorpal()}){
+                com.shatteredpixel.shatteredpixeldungeon.items.weapon.SpiritBow bow=new com.shatteredpixel.shatteredpixeldungeon.items.weapon.SpiritBow();
+                TopScoresDeviceTest.render(()->{bow.levelKnown=bow.cursedKnown=true;bow.enchant(effect);assertFalse(bow.info(),bow.info().contains("Arcana changes:"));assertFalse(bow.info(),bow.info().contains("Arcana: "));});
+                showItem(bow,effect instanceof com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Projecting?"Shots can pass through walls":"chance","qol-spirit-bow-"+effect.getClass().getSimpleName()+"-concise.png",true,!(effect instanceof com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Elastic));
+            }
+        }finally{TopScoresDeviceTest.render(()->{
+            for(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff b:new java.util.ArrayList<>(Dungeon.hero.buffs()))if(!original.contains(b))b.detach();
+            Dungeon.hero.belongings.ring=(Ring)previous[0];Dungeon.hero.belongings.misc=previous[1];
+            if(previous[0]!=null)previous[0].activate(Dungeon.hero);if(previous[1]!=null)previous[1].activate(Dungeon.hero);
+        });}
+    }
     private static void basicThrownAndDartDescriptionsRender()throws Exception{
         for(Item item:new Item[]{new com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Javelin(),new com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingSpike(),new com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Trident()}){
             TopScoresDeviceTest.render(()->{item.level(3);item.levelKnown=item.cursedKnown=true;});
@@ -824,6 +844,7 @@ public class QolItemFeedbackDeviceTest {
             questDescriptionsRender();
             tenacityDescriptionsRender();
             unknownRingMissileDescriptionsRender();
+            spiritBowConciseEnchantmentsRender();
             basicThrownAndDartDescriptionsRender();
             missileEffectDescriptionsRender();
             additionalDuelistDescriptionsRender();
