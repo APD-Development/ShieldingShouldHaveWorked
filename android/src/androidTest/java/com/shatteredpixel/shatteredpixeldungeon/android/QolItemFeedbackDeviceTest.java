@@ -831,6 +831,7 @@ public class QolItemFeedbackDeviceTest {
             com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand wand=(com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand)Class.forName("com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOf"+name).getDeclaredConstructor().newInstance();
             TopScoresDeviceTest.render(()->{wand.level(7);wand.levelKnown=false;wand.cursedKnown=wand.curChargeKnown=true;wand.curCharges=2;});
             showItem(wand,name.equals("Corruption")?"Attempts to turn an enemy":name.equals("Regrowth")?"charges":"Unupgraded example (+0)","qol-wand-zero-example-"+name+".png",true);
+            if(name.equals("Frost")){showItem(wand,"This wand deals less damage to chilled targets","qol-frost-specific-damage-unknown.png",true);TopScoresDeviceTest.render(()->{wand.levelKnown=true;});showItem(wand,"cannot harm frozen targets","qol-frost-specific-damage-known.png",true);}
         }
     }
     private static void staffImbueConfirmationsRender()throws Exception{

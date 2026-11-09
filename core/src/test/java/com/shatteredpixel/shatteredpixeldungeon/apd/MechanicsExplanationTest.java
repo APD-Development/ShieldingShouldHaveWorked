@@ -1078,6 +1078,14 @@ public class MechanicsExplanationTest {
  public static class LightningDamageTarget extends PlainStatusTarget {int received;@Override public void damage(int amount,Object source){received+=amount;}}
  public static class LightningDamageCaster extends Hero {int received;@Override public void damage(int amount,Object source){received+=amount;}}
  public static class FixedLightningDescriptionProbe extends com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfLightning {@Override public int damageRoll(){return 20;}@Override protected void wandProc(com.shatteredpixel.shatteredpixeldungeon.actors.Char target,int charges){}}
+ public static class FixedFrostDescriptionProbe extends com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfFrost {int checks;@Override public int damageRoll(){return 20;}@Override protected void wandProc(com.shatteredpixel.shatteredpixeldungeon.actors.Char target,int charges){checks++;}}
+ @Test public void frostDescriptionNamesOnlyItsOwnDamageReductionAndFrozenImmunity()throws Exception{
+  descriptionSightArena();hero.sprite=quietSprite();LightningDamageTarget enemy=new LightningDamageTarget();enemy.sprite=quietSprite();enemy.pos=hero.pos+1;com.shatteredpixel.shatteredpixeldungeon.actors.Actor.add(enemy);FixedFrostDescriptionProbe wand=new FixedFrostDescriptionProbe();wand.level(3);wand.levelKnown=wand.cursedKnown=wand.curChargeKnown=true;java.lang.reflect.Field current=com.shatteredpixel.shatteredpixeldungeon.items.Item.class.getDeclaredField("curUser");current.setAccessible(true);Object previous=current.get(null);
+  try{current.set(null,hero);for(int turns:new int[]{0,3,10,20})for(boolean water:new boolean[]{false,true}){
+   Buff.detach(enemy,Chill.class);Buff.detach(enemy,Frost.class);enemy.received=0;Dungeon.level.water[enemy.pos]=water;if(turns>0)Buff.affect(enemy,Chill.class,turns);int checks=wand.checks;wand.onZap(new com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica(hero.pos,enemy.pos,wand.collisionProperties(enemy.pos)));assertEquals(Math.round(20*(float)Math.pow(.9333f,Math.min(10,turns))),enemy.received);assertEquals(checks+1,wand.checks);assertEquals(turns+(water?4:2)+3,enemy.buff(Chill.class).cooldown(),0);
+  }Buff.detach(enemy,Chill.class);Buff.affect(enemy,Frost.class,5);enemy.received=0;int checks=wand.checks;wand.onZap(new com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica(hero.pos,enemy.pos,wand.collisionProperties(enemy.pos)));assertEquals(0,enemy.received);assertEquals(checks,wand.checks);assertNull(enemy.buff(Chill.class));assertTrue(wand.statsDesc(),wand.statsDesc().contains("This wand deals less damage to chilled targets"));
+  }finally{current.set(null,previous);Dungeon.level.water[enemy.pos]=false;Buff.detach(enemy,Chill.class);Buff.detach(enemy,Frost.class);com.shatteredpixel.shatteredpixeldungeon.actors.Actor.remove(enemy);}
+ }
  @Test public void lightningDescriptionMatchesActualAllyFilterWaterAndCasterDamage()throws Exception{
   descriptionSightArena();
   java.lang.reflect.Field current=com.shatteredpixel.shatteredpixeldungeon.items.Item.class.getDeclaredField("curUser");current.setAccessible(true);Object previous=current.get(null);java.lang.reflect.Field unsafeField=Class.forName("sun.misc.Unsafe").getDeclaredField("theUnsafe");unsafeField.setAccessible(true);Object unsafe=unsafeField.get(null);
@@ -2750,7 +2758,7 @@ public class MechanicsExplanationTest {
   try{
    Frost frozen=Buff.affect(target,Frost.class);int hp=target.HP;
    com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfFrost wand=new com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfFrost();wand.identify();
-   assertTrue(wand.statsDesc().contains("frozen enemies are unaffected"));
+   assertTrue(wand.statsDesc().contains("cannot harm frozen targets"));
    wand.onZap(new com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica(hero.pos,target.pos,com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica.PROJECTILE));
    assertEquals(hp,target.HP);assertSame(frozen,target.buff(Frost.class));
   }finally{for(Buff buff:target.buffs())buff.detach();com.shatteredpixel.shatteredpixeldungeon.actors.Actor.remove(target);}

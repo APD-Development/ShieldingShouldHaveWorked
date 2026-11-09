@@ -6,7 +6,7 @@
   "message_entries": 2432,
   "reviewed_units": 433,
   "corrected_units": 351,
-  "unresolved_units": 64,
+  "unresolved_units": 57,
   "category_counts": {
     "apd": 1,
     "mechanics": 38,
@@ -3149,10 +3149,10 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/wands/WandOfBlastWave.java",
       "sha256": "894966d0de072fdf13d612c55595da79abe168276b97a16f341f14f51aed62ff",
       "category": "wands",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [],
       "wording_corrected": true,
-      "review_notes": "Ordinary description corrected after source review. Existing damage/cost/status logic retained; known live effects and challenge/hidden-state cases tested. Complete class variants, optional panels where applicable and Android rendering remain under review."
+      "review_notes": "2026-11-09: Full own source read: nine-cell trap pressing with Tengu exception, center/collateral damage and knockback, bosses/roots/immovable/large occupancy limits, delayed collision revalidation, collision damage, Battlemage paralysis consumption/cooldown and range labels. Ordinary concise warning matches source; existing actual knockback/occupancy/origin/live bounds regressions retained. No mechanic changes; shared dependencies tracked separately."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/wands/WandOfCorrosion.java",
@@ -3178,10 +3178,10 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/wands/WandOfDisintegration.java",
       "sha256": "5d99610624f70420db29cad63065394f3769a33393ffac05f67ec474479011e8",
       "category": "wands",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [],
       "wording_corrected": true,
-      "review_notes": "Entire beam/range/character/terrain-bonus and staff reach source read. Ordinary prose no longer implies one separate bonus per wall tile or projecting-enchantment equivalence; base damage, extra damage for walls/multiple creatures, range growth and ally risk retained. Full3041core pass; actual known/unknown/staff windows prepared for387. Shared damage/modifier/secondary scope remains open."
+      "review_notes": "2026-11-09: Full own source read: WONT_STOP ray and curse targeting, effective range, solid-terrain carry/capped path, passive undiscovered exclusions, flammable destruction, target-count damage bonus, staff reach and previews. Current ordinary beam/range/ally warning accurate. Existing actual bounds/unknown-preview/native windows retained; shared wand/staff/provider dependencies separate."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/wands/WandOfFireblast.java",
@@ -3198,19 +3198,19 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/wands/WandOfFrost.java",
       "sha256": "b7648e5427668fbaa2244f1e14fbf9ef6de3ff86cc9a9d34875006f1c42aaf3e",
       "category": "wands",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [],
       "wording_corrected": true,
-      "review_notes": "Ordinary description corrected after source review. Existing damage/cost/status logic retained; known live effects and challenge/hidden-state cases tested. Complete class variants, optional panels where applicable and Android rendering remain under review."
+      "review_notes": "2026-11-09: Full own source read: heap freezing, ordinary/eternal fire removal, frozen early return, chilled damage reduction capped at ten remaining turns, additive Chill duration and water bonus, delayed Battlemage freeze. Narrowed ordinary sentence to this wand damage so it does not imply all attacks. Eight actual chilled/water cases and frozen no-proc/no-damage pass; existing unknown/live preview tests retained. New native known/unknown captures prepared, not yet run."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/wands/WandOfLightning.java",
       "sha256": "b33444b14c02642abef64b6b2adfc6df6a49a16b08df0ec0d2bd98dd03058a1d",
       "category": "wands",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [],
       "wording_corrected": true,
-      "review_notes": "Entire normal onZap/arc/onHit/LightningCharge paths and supporting alignment/Shield/Water rules read. Concise normal text corrects direct ally targeting, multiple-target reduction, first target water exception, caster half damage and actual Wand Lightning immunity. New real onZap four-scenario damage/filter regression passes. Source-only after387; full class/secondary and actual new native windows remain open."
+      "review_notes": "2026-11-09: Full own source read: recursive legal arc reach/water distance, self adjacency, ally filter, target-count reduction and first-tile water override, LightningCharge immunity/extended reach, Battlemage proc duration. Existing four actual damage scenarios and live bounds pass. Current concise ordinary text accurate unchanged; shared wand/class sources separately tracked."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/wands/WandOfLivingEarth.java",
@@ -3227,21 +3227,21 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/wands/WandOfMagicMissile.java",
       "sha256": "6c0ba4849e828ff9ab0382002f35cd5459f346922995d3621f515542bfe70aae",
       "category": "wands",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [
         "desc"
       ],
       "wording_corrected": true,
-      "review_notes": "Entire source onZap creature-hit condition, shared MagicCharge setup/max/time/save and single benefiting-zap consumption plus staff charge path read. Normal flavor/stats/buff/Battlemage text concise; damage explicitly base. Existing real consumption regression now also checks public+7 with Scroll Empower2 and description purity, preserving marker. Full3040core pass; new native windows pending387. Retained staff panels/complete class variants remain open."
+      "review_notes": "2026-11-09: Full own source read: direct level bounds, conditional MagicCharge grant, level/last-source save and consumption interaction, Battlemage other-wand charging. Current concise ordinary/temporary buff prose matches actual source; existing MagicCharge priority/cleanup and live/unknown preview tests pass. Shared wand/class providers separately tracked."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/wands/WandOfPrismaticLight.java",
       "sha256": "19e89558db42f3ed5baee62780e44cabe468fef34f7daad679bf764aa4375367",
       "category": "wands",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [],
       "wording_corrected": true,
-      "review_notes": "Entire source read: narrow mapped/secret-discovery strip, dark-floor Light/Darkness timing, blind chance/duration, undead-or-demonic single bonus, staff Cripple and saves through shared Wand. Concise normal flavor/stats/staff text. Regression invokes actual affectTarget across levels0/3/8, four property combinations/eight controlled seeds, validates actual damage/blindness and real staff movement/duration. Full3044core pass. New native windows and complete shared/secondary audit remain open."
+      "review_notes": "2026-11-09: Full own source read: map/neighbor discovery, darkness-dependent Light, level-dependent blindness, undead/demonic rounded bonus, Battlemage Cripple and upgrade labels. Current concise ordinary description accurate; source and actual bound/class effect tests retained, no new panel or mechanics. Shared wand/effect provider tracked separately."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/wands/WandOfRegrowth.java",
@@ -3258,12 +3258,12 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/wands/WandOfTransfusion.java",
       "sha256": "e621f8cff38bb5885fc57cbcce548c3852194d74b86278c4e077f50280b35a4f",
       "category": "wands",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [
         "statsDesc"
       ],
       "wording_corrected": true,
-      "review_notes": "Ordinary description corrected after source review. Existing damage/cost/status logic retained; known live effects and challenge/hidden-state cases tested. Complete class variants, optional panels where applicable and Android rendering remain under review. Followup2026-11-09: normal Battlemage text now says frenzy attacks nearby creatures, nearby burning creatures/tiles improve fire explosion, Transfusion requires charm by you, Warding restores spent upgraded-ward attacks or sentry HP, not basic ward repair. Actual Transfusion ownership/no free charge/time and six ward tier repair checks added; four actual native windows prepared for397. Gameplay and panel availability unchanged."
+      "review_notes": "2026-11-09: Full own source read: Mob-only target branches, rounded self health cost before defenses, ally/charmed healing/overflow shield, zero-Healing applies only Hero not allied Mob, hostile shield/charm versus undead damage, Battlemage health-free token charge/time preserved, token serialization and no-hero/unknown previews. Current concise text accurate; existing actual free-charge/preview/save tests retained. Shared wand/class dependencies separately tracked."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/wands/WandOfWarding.java",
@@ -4467,8 +4467,8 @@
       "review_notes": "Previously omitted normal buff source added. Entire own duration/decay/save/icon path and actual Hero/Char hit/protection consumer read. Ordinary prose shorter; Bless/Hex/Daze percentages use live ROLL_FACTOR; other languages retain existing turn argument plus ignored extra argument. Existing optional panels unchanged. Real8combination\u00d7100seed\u00d72direction hit tests assert live percentages; actual defensive decay/save/read-only test passes.3113core457. New ordinary Android window pending406. Own-source completion, not all BuffExplanation/class providers."
     }
   ],
-  "completed_units": 372,
-  "latest_tests": "3131 core/457 suites, zero failures/errors/skips. Actual zero-Healing dew consumption, Waterskin cost/time and Shielding Dew verified. Latest3130 Android source compile42606030280 passed before newest dew/native edits; newest native windows pending.409 twelve original-APK native cases passed; packaging recovery42607976456 passed, staging/manual review pending.408 latest published.",
+  "completed_units": 379,
+  "latest_tests": "3132core/457suites all0; eight actual chilled/water Frost cases plus frozen no-damage/no-proc, existing Lightning actual damage/preview/hidden/save guards pass. Seven wand own-source reviews closed; inherited/shared dependencies remain tracked. New Frost windows pending next pair;410 build atccfbb85b6 excludes later Frost wording.409 latest published.",
   "message_inventory_entries": 5343,
   "message_inventory_counting": "Current authored English property entries across nine files;2432 item entries. Two concise zero-Healing dew/waterskin keys added. Exact Adult OFF/ON checks retained."
 }
