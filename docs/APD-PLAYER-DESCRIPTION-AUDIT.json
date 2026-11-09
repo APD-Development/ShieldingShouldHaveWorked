@@ -4,8 +4,8 @@
   "counting": "Source units, not distinct item types. reviewed_units includes partial reviews; completed_units excludes partial/pending dependency. corrected_units counts source units with corrections, including incomplete reviews. Inventory/export/tests alone are not an individual review.",
   "source_units": 427,
   "message_entries": 2411,
-  "reviewed_units": 374,
-  "corrected_units": 321,
+  "reviewed_units": 387,
+  "corrected_units": 324,
   "unresolved_units": 267,
   "category_counts": {
     "apd": 1,
@@ -46,13 +46,15 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/AbilityExplanation.java",
-      "sha256": "21384dcafd73adaa0f8dcaeacd3fd1fd38ef04a0d7de12e9267635b3ffd38d93",
+      "sha256": "f841a37df07aeb29c3a2ccd8b9b6d356b007b21692985deb40aacb8f3e7de5db",
       "category": "mechanics",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
+      "status": "PARTIAL_REVIEW",
       "description_methods": [
         "summary",
         "details"
-      ]
+      ],
+      "review_notes": "Individual source read2026-11-09; normal Potion identity/color/actions/drink/throw/splash/crafting and exotic shared identity reviewed; Brew/Elixir abstract action/known states unchanged. Aqua now concise actual geyser/water/trap/fire/knockback warning including hero/allies, real shatter verifies flood/removes hidden trap/extinguishes fire/preserves wall. ClassArmor entire source transfer/seal/charge/conditional shortdesc and six sprite-only variants read; normal charge label now percent matching0\u2013100meter. Ability summary concise current cost, separate Warp placement restriction and Trinity variable effect cost retained. Existing specific advanced panels unchanged; full effects provider/inherited dependency reviews remain incomplete.3062core/457suites pass; actual new native windows pending next pair, not392.",
+      "wording_corrected": true
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/ArmorExplanation.java",
@@ -657,17 +659,20 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/armor/ClassArmor.java",
       "sha256": "bcfc225ccfce6140a985a7e882df74ff531edde8fe7726cc1cc920e3c802e707",
       "category": "armor",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
+      "status": "PARTIAL_REVIEW",
       "description_methods": [
         "desc"
-      ]
+      ],
+      "review_notes": "Individual source read2026-11-09; normal Potion identity/color/actions/drink/throw/splash/crafting and exotic shared identity reviewed; Brew/Elixir abstract action/known states unchanged. Aqua now concise actual geyser/water/trap/fire/knockback warning including hero/allies, real shatter verifies flood/removes hidden trap/extinguishes fire/preserves wall. ClassArmor entire source transfer/seal/charge/conditional shortdesc and six sprite-only variants read; normal charge label now percent matching0\u2013100meter. Ability summary concise current cost, separate Warp placement restriction and Trinity variable effect cost retained. Existing specific advanced panels unchanged; full effects provider/inherited dependency reviews remain incomplete.3062core/457suites pass; actual new native windows pending next pair, not392.",
+      "wording_corrected": true
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/armor/ClericArmor.java",
       "sha256": "4614ab172c39fb4a5f788e064ca8d53232cca72ee956ea47f7832101c4b9ae06",
       "category": "armor",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "PARTIAL_REVIEW",
+      "description_methods": [],
+      "review_notes": "Individual source read2026-11-09; normal Potion identity/color/actions/drink/throw/splash/crafting and exotic shared identity reviewed; Brew/Elixir abstract action/known states unchanged. Aqua now concise actual geyser/water/trap/fire/knockback warning including hero/allies, real shatter verifies flood/removes hidden trap/extinguishes fire/preserves wall. ClassArmor entire source transfer/seal/charge/conditional shortdesc and six sprite-only variants read; normal charge label now percent matching0\u2013100meter. Ability summary concise current cost, separate Warp placement restriction and Trinity variable effect cost retained. Existing specific advanced panels unchanged; full effects provider/inherited dependency reviews remain incomplete.3062core/457suites pass; actual new native windows pending next pair, not392."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/armor/ClothArmor.java",
@@ -681,15 +686,17 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/armor/DuelistArmor.java",
       "sha256": "98cbaab1b5906763731ca6602aef37817208b4b76e1391c3586a9ae9c34ca946",
       "category": "armor",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "PARTIAL_REVIEW",
+      "description_methods": [],
+      "review_notes": "Individual source read2026-11-09; normal Potion identity/color/actions/drink/throw/splash/crafting and exotic shared identity reviewed; Brew/Elixir abstract action/known states unchanged. Aqua now concise actual geyser/water/trap/fire/knockback warning including hero/allies, real shatter verifies flood/removes hidden trap/extinguishes fire/preserves wall. ClassArmor entire source transfer/seal/charge/conditional shortdesc and six sprite-only variants read; normal charge label now percent matching0\u2013100meter. Ability summary concise current cost, separate Warp placement restriction and Trinity variable effect cost retained. Existing specific advanced panels unchanged; full effects provider/inherited dependency reviews remain incomplete.3062core/457suites pass; actual new native windows pending next pair, not392."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/armor/HuntressArmor.java",
       "sha256": "736f807a005d84d6c0407fe985164fe70eeae255781c1d45badd0cd5a80cf5df",
       "category": "armor",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "PARTIAL_REVIEW",
+      "description_methods": [],
+      "review_notes": "Individual source read2026-11-09; normal Potion identity/color/actions/drink/throw/splash/crafting and exotic shared identity reviewed; Brew/Elixir abstract action/known states unchanged. Aqua now concise actual geyser/water/trap/fire/knockback warning including hero/allies, real shatter verifies flood/removes hidden trap/extinguishes fire/preserves wall. ClassArmor entire source transfer/seal/charge/conditional shortdesc and six sprite-only variants read; normal charge label now percent matching0\u2013100meter. Ability summary concise current cost, separate Warp placement restriction and Trinity variable effect cost retained. Existing specific advanced panels unchanged; full effects provider/inherited dependency reviews remain incomplete.3062core/457suites pass; actual new native windows pending next pair, not392."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/armor/LeatherArmor.java",
@@ -703,8 +710,9 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/armor/MageArmor.java",
       "sha256": "2a9fb296013b52dad794fc85dc93642240bb76730c5322a3be0a54571cbebaea",
       "category": "armor",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "PARTIAL_REVIEW",
+      "description_methods": [],
+      "review_notes": "Individual source read2026-11-09; normal Potion identity/color/actions/drink/throw/splash/crafting and exotic shared identity reviewed; Brew/Elixir abstract action/known states unchanged. Aqua now concise actual geyser/water/trap/fire/knockback warning including hero/allies, real shatter verifies flood/removes hidden trap/extinguishes fire/preserves wall. ClassArmor entire source transfer/seal/charge/conditional shortdesc and six sprite-only variants read; normal charge label now percent matching0\u2013100meter. Ability summary concise current cost, separate Warp placement restriction and Trinity variable effect cost retained. Existing specific advanced panels unchanged; full effects provider/inherited dependency reviews remain incomplete.3062core/457suites pass; actual new native windows pending next pair, not392."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/armor/MailArmor.java",
@@ -726,8 +734,9 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/armor/RogueArmor.java",
       "sha256": "d50011f64fdbe72934b5cc1dce3eb8492681bad323b9ec8afa3a16f29082f933",
       "category": "armor",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "PARTIAL_REVIEW",
+      "description_methods": [],
+      "review_notes": "Individual source read2026-11-09; normal Potion identity/color/actions/drink/throw/splash/crafting and exotic shared identity reviewed; Brew/Elixir abstract action/known states unchanged. Aqua now concise actual geyser/water/trap/fire/knockback warning including hero/allies, real shatter verifies flood/removes hidden trap/extinguishes fire/preserves wall. ClassArmor entire source transfer/seal/charge/conditional shortdesc and six sprite-only variants read; normal charge label now percent matching0\u2013100meter. Ability summary concise current cost, separate Warp placement restriction and Trinity variable effect cost retained. Existing specific advanced panels unchanged; full effects provider/inherited dependency reviews remain incomplete.3062core/457suites pass; actual new native windows pending next pair, not392."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/armor/ScaleArmor.java",
@@ -741,8 +750,9 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/armor/WarriorArmor.java",
       "sha256": "bebe3c572d1fd90658604bee1c50b83f0528085d8ebb782c49b505a83e257158",
       "category": "armor",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "PARTIAL_REVIEW",
+      "description_methods": [],
+      "review_notes": "Individual source read2026-11-09; normal Potion identity/color/actions/drink/throw/splash/crafting and exotic shared identity reviewed; Brew/Elixir abstract action/known states unchanged. Aqua now concise actual geyser/water/trap/fire/knockback warning including hero/allies, real shatter verifies flood/removes hidden trap/extinguishes fire/preserves wall. ClassArmor entire source transfer/seal/charge/conditional shortdesc and six sprite-only variants read; normal charge label now percent matching0\u2013100meter. Ability summary concise current cost, separate Warp placement restriction and Trinity variable effect cost retained. Existing specific advanced panels unchanged; full effects provider/inherited dependency reviews remain incomplete.3062core/457suites pass; actual new native windows pending next pair, not392."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/armor/curses/AntiEntropy.java",
@@ -1577,13 +1587,14 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/potions/Potion.java",
       "sha256": "349c7c1066d4295c889dfb23d30caac9bd7956fda0e2cbb47dc0ef7bd12b709f",
       "category": "potions",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
+      "status": "PARTIAL_REVIEW",
       "description_methods": [
         "info",
         "desc",
         "info",
         "info"
-      ]
+      ],
+      "review_notes": "Individual source read2026-11-09; normal Potion identity/color/actions/drink/throw/splash/crafting and exotic shared identity reviewed; Brew/Elixir abstract action/known states unchanged. Aqua now concise actual geyser/water/trap/fire/knockback warning including hero/allies, real shatter verifies flood/removes hidden trap/extinguishes fire/preserves wall. ClassArmor entire source transfer/seal/charge/conditional shortdesc and six sprite-only variants read; normal charge label now percent matching0\u2013100meter. Ability summary concise current cost, separate Warp placement restriction and Trinity variable effect cost retained. Existing specific advanced panels unchanged; full effects provider/inherited dependency reviews remain incomplete.3062core/457suites pass; actual new native windows pending next pair, not392."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/potions/PotionOfExperience.java",
@@ -1701,8 +1712,10 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/potions/brews/AquaBrew.java",
       "sha256": "00f63ce9106f9fda5af7f7d87a4635a56cad0f3c643786308fddf909ffd6e03e",
       "category": "potions",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "PARTIAL_REVIEW",
+      "description_methods": [],
+      "review_notes": "Individual source read2026-11-09; normal Potion identity/color/actions/drink/throw/splash/crafting and exotic shared identity reviewed; Brew/Elixir abstract action/known states unchanged. Aqua now concise actual geyser/water/trap/fire/knockback warning including hero/allies, real shatter verifies flood/removes hidden trap/extinguishes fire/preserves wall. ClassArmor entire source transfer/seal/charge/conditional shortdesc and six sprite-only variants read; normal charge label now percent matching0\u2013100meter. Ability summary concise current cost, separate Warp placement restriction and Trinity variable effect cost retained. Existing specific advanced panels unchanged; full effects provider/inherited dependency reviews remain incomplete.3062core/457suites pass; actual new native windows pending next pair, not392.",
+      "wording_corrected": true
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/potions/brews/BlizzardBrew.java",
@@ -1717,8 +1730,9 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/potions/brews/Brew.java",
       "sha256": "bbcadd616403731f62a33f7d284a4b55129921cb53e5a96fd27232348227d741",
       "category": "potions",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "PARTIAL_REVIEW",
+      "description_methods": [],
+      "review_notes": "Individual source read2026-11-09; normal Potion identity/color/actions/drink/throw/splash/crafting and exotic shared identity reviewed; Brew/Elixir abstract action/known states unchanged. Aqua now concise actual geyser/water/trap/fire/knockback warning including hero/allies, real shatter verifies flood/removes hidden trap/extinguishes fire/preserves wall. ClassArmor entire source transfer/seal/charge/conditional shortdesc and six sprite-only variants read; normal charge label now percent matching0\u2013100meter. Ability summary concise current cost, separate Warp placement restriction and Trinity variable effect cost retained. Existing specific advanced panels unchanged; full effects provider/inherited dependency reviews remain incomplete.3062core/457suites pass; actual new native windows pending next pair, not392."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/potions/brews/CausticBrew.java",
@@ -1760,8 +1774,9 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/potions/elixirs/Elixir.java",
       "sha256": "441036146bde7963561ba6f4026185ec42ff9acc118ed94d76a35ed60165457e",
       "category": "potions",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "PARTIAL_REVIEW",
+      "description_methods": [],
+      "review_notes": "Individual source read2026-11-09; normal Potion identity/color/actions/drink/throw/splash/crafting and exotic shared identity reviewed; Brew/Elixir abstract action/known states unchanged. Aqua now concise actual geyser/water/trap/fire/knockback warning including hero/allies, real shatter verifies flood/removes hidden trap/extinguishes fire/preserves wall. ClassArmor entire source transfer/seal/charge/conditional shortdesc and six sprite-only variants read; normal charge label now percent matching0\u2013100meter. Ability summary concise current cost, separate Warp placement restriction and Trinity variable effect cost retained. Existing specific advanced panels unchanged; full effects provider/inherited dependency reviews remain incomplete.3062core/457suites pass; actual new native windows pending next pair, not392."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/potions/elixirs/ElixirOfAquaticRejuvenation.java",
@@ -1844,8 +1859,9 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/potions/exotic/ExoticPotion.java",
       "sha256": "aa60383774317dc16704c07e75edaf352bac519613bff3a70733c6ec55e03eed",
       "category": "potions",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "PARTIAL_REVIEW",
+      "description_methods": [],
+      "review_notes": "Individual source read2026-11-09; normal Potion identity/color/actions/drink/throw/splash/crafting and exotic shared identity reviewed; Brew/Elixir abstract action/known states unchanged. Aqua now concise actual geyser/water/trap/fire/knockback warning including hero/allies, real shatter verifies flood/removes hidden trap/extinguishes fire/preserves wall. ClassArmor entire source transfer/seal/charge/conditional shortdesc and six sprite-only variants read; normal charge label now percent matching0\u2013100meter. Ability summary concise current cost, separate Warp placement restriction and Trinity variable effect cost retained. Existing specific advanced panels unchanged; full effects provider/inherited dependency reviews remain incomplete.3062core/457suites pass; actual new native windows pending next pair, not392."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/potions/exotic/PotionOfCleansing.java",
@@ -4293,13 +4309,13 @@
   ],
   "completed_units": 160,
   "latest_tests": {
-    "core_tests": 3060,
+    "core_tests": 3062,
     "suites": 457,
     "failures": 0,
     "errors": 0,
     "skipped": 0,
-    "log": "/workspace/apd-spiritbow-description-evidence-20261109/accepted-full",
+    "log": "/workspace/apd-class-armor-aqua-evidence-20261109",
     "android_verified": false,
-    "scope": "Post391 known/unknown SpiritBow concise descriptions, real reusable tips, Amulet and unknown-curse privacy. New actual windows pending392.391 published."
+    "scope": "Post392 Aqua real shatter, classarmor meter cost and variable Trinity summary.392native running;391published."
   }
 }

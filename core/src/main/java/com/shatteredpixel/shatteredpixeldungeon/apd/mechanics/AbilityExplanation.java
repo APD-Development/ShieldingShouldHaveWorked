@@ -28,12 +28,12 @@ public final class AbilityExplanation {
     private AbilityExplanation() {}
     private static String n(float value) { return ObfuscationExplanation.number(value); }
     public static String summary(ArmorAbility ability, Hero hero) {
+        if(ability instanceof com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.cleric.Trinity)
+            return "Charge cost depends on the effect you choose. Each stored effect shows its own cost.";
         float cost=hero==null?ability.baseChargePoints():ability.chargeUse(hero);
         if(ability instanceof com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.mage.WarpBeacon&&hero!=null&&hero.buff(com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.mage.WarpBeacon.WarpBeaconTracker.class)==null)
-            return "Placing the beacon spends one game-time unit without deducting armor charge; normal activation still requires enough charge. Returning to it uses armor charge, with a base current return cost of "+n(cost)+" points before any cross-floor adjustment.";
-        return "Armor charge is a resource measured from 0 to 100 points, not a chance of success. "
-            + (hero==null?"Base cost: ":"Cost with your current talents and ability state: ") + n(cost)
-            + " charge points. A command to an existing summoned ally can have a different cost from creating it.";
+            return "Placing a beacon takes 1 turn and spends no armor charge, but requires "+n(cost)+" charge available. Returning costs "+n(cost)+" charge before any Longrange Warp adjustment.";
+        return (hero==null?"Base cost: ":"Current cost: ")+n(cost)+" charge points out of 100.";
     }
     public static String details(ArmorAbility ability, Hero hero) {
         String result="_Armor ability charge_\n"+(ability instanceof com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.mage.WarpBeacon?"Base return costs ":"Base use costs ")+n(ability.baseChargePoints())

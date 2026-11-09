@@ -667,6 +667,23 @@ public class QolItemFeedbackDeviceTest {
         String[] expected={"north, east, south and west","banishes its wraiths","returns your original equipment"};
         for(int i=0;i<items.length;i++)showItem(items[i],expected[i],"qol-quest-"+i+"-concise.png",true);
     }
+    private static void classArmorCostsAndAquaRender()throws Exception{
+        final com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.ArmorAbility[] previous={null};
+        try{
+            TopScoresDeviceTest.render(()->{previous[0]=Dungeon.hero.armorAbility;Dungeon.hero.armorAbility=new com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.HeroicLeap();});
+            for(com.shatteredpixel.shatteredpixeldungeon.items.armor.ClassArmor armor:new com.shatteredpixel.shatteredpixeldungeon.items.armor.ClassArmor[]{new com.shatteredpixel.shatteredpixeldungeon.items.armor.WarriorArmor(),new com.shatteredpixel.shatteredpixeldungeon.items.armor.MageArmor(),new com.shatteredpixel.shatteredpixeldungeon.items.armor.RogueArmor(),new com.shatteredpixel.shatteredpixeldungeon.items.armor.HuntressArmor(),new com.shatteredpixel.shatteredpixeldungeon.items.armor.DuelistArmor(),new com.shatteredpixel.shatteredpixeldungeon.items.armor.ClericArmor()}){
+                TopScoresDeviceTest.render(()->{armor.tier=2;armor.level(2);Dungeon.hero.belongings.backpack.items.add(armor);});
+                try{showItem(armor,"% charge","qol-class-armor-"+armor.getClass().getSimpleName()+"-cost.png",true);}
+                finally{TopScoresDeviceTest.render(()->Dungeon.hero.belongings.backpack.items.remove(armor));}
+            }
+            AtomicReference<Window> shown=new AtomicReference<>();
+            TopScoresDeviceTest.render(()->{Dungeon.hero.armorAbility=new com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.cleric.Trinity();Window window=new WndInfoArmorAbility(HeroClass.CLERIC,Dungeon.hero.armorAbility);GameScene.show(window);shown.set(window);});
+            Thread.sleep(300);
+            TopScoresDeviceTest.render(()->{try{boolean found=false;for(RenderedTextBlock text:TopScoresDeviceTest.find(shown.get(),RenderedTextBlock.class)){if(text.text().contains("depends on the effect you choose"))found=true;assertFalse(text.text().contains("Armor charge is a resource"));}assertTrue("Trinity does not show one generic current cost",found);assertDescriptionViewport(shown.get());}catch(Exception e){throw new RuntimeException(e);}});
+            TopScoresDeviceTest.screenshot("qol-trinity-effect-specific-cost-normal.png");TopScoresDeviceTest.render(()->shown.get().hide());
+        }finally{TopScoresDeviceTest.render(()->Dungeon.hero.armorAbility=previous[0]);}
+        showItem(new com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.AquaBrew(),"including you and allies","qol-aqua-brew-knockback-warning.png",true);
+    }
     private static void amuletChoicesRender()throws Exception{
         com.shatteredpixel.shatteredpixeldungeon.items.Amulet amulet=new com.shatteredpixel.shatteredpixeldungeon.items.Amulet();
         showItem(amulet,"claim victory now","qol-amulet-normal-choices.png",true);
@@ -839,6 +856,7 @@ public class QolItemFeedbackDeviceTest {
             ordinaryConsumableDescriptionsRender();
             craftedSpellVariantsRender();
             remainsAndLoreDescriptionsRender();
+            classArmorCostsAndAquaRender();
             amuletChoicesRender();
             utilityDescriptionsRender();
             questDescriptionsRender();
