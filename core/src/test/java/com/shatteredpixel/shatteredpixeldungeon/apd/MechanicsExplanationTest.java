@@ -664,7 +664,7 @@ public class MechanicsExplanationTest {
     Buff.detach(hero,Barkskin.class);hero.talents.get(0).put(Talent.NATURES_AID,0);hero.talents.get(0).put(Talent.BARKSKIN,rank);hero.lvl=level;
     DescriptionPlantTrigger plant=new DescriptionPlantTrigger();plant.pos=hero.pos;plant.trigger();
     Barkskin bark=hero.buff(Barkskin.class);int protection=level*rank/3;assertEquals(protection,bark.level());assertEquals(1,bark.decayInterval());
-    String explanation=MechanicsDetails.talent(Talent.BARKSKIN,rank,"");assertTrue(explanation,explanation.contains("0–"+protection+" damage protection"));
+    String explanation=MechanicsDetails.talent(Talent.BARKSKIN,rank,"");assertTrue(explanation,explanation.contains(protection==0?"No extra protection":"0–"+protection+" damage protection"));
     if(protection>1){float before=bark.cooldown();bark.act();assertEquals(protection-1,bark.level());assertEquals(1,bark.cooldown()-before,0);}
    }
    for(int rank=1;rank<=2;rank++){
@@ -931,6 +931,30 @@ public class MechanicsExplanationTest {
  }
  @Test public void deathlessRecoveryDescriptionUsesLevelProgressAndDoesNotActivateBerserk(){
   Berserk rage=Buff.affect(hero,Berserk.class);for(int rank=1;rank<=3;rank++){hero.talents.get(0).put(Talent.DEATHLESS_FURY,rank);com.watabou.utils.Bundle state=new com.watabou.utils.Bundle();rage.storeInBundle(state);state.put("state","RECOVERING");state.put("levelrecovery",Berserk.baseLevelRecovery(rank));state.put("turn_recovery",0);rage.restoreFromBundle(state);String details=TalentExplanation.details(Talent.DEATHLESS_FURY,rank);assertTrue(details.contains((4-rank)+" hero-level equivalents"));int shield=rage.shielding();rage.recover(.25f);rage.storeInBundle(state);assertEquals(4-rank-.25f,state.getFloat("levelrecovery"),0);assertEquals(shield,rage.shielding());rage.recover(10);rage.storeInBundle(state);assertEquals(0,state.getFloat("levelrecovery"),0);assertEquals("NORMAL",state.getString("state"));}
+ }
+ @Test public void holdFastNormalTextMatchesActualClassCapsAndStaysPure(){
+  Object[][] cases={
+   {HeroClass.WARRIOR,1,null,"1–2",1,2},
+   {HeroClass.WARRIOR,2,null,"2–4",2,4},
+   {HeroClass.WARRIOR,3,new MailArmor(),"3–6",3,6},
+   {HeroClass.MAGE,2,new LeatherArmor(),"2",2,2},
+   {HeroClass.MAGE,3,new MailArmor().level(2),"3–5",3,5},
+   {HeroClass.MAGE,2,null,"0",0,0},
+   {HeroClass.MAGE,2,new ClothArmor().level(-3),"penalty",-2,-2}
+  };
+  for(Object[] example:cases){
+   hero.heroClass=(HeroClass)example[0];int rank=(int)example[1];hero.talents.get(0).put(Talent.HOLD_FAST,rank);hero.belongings.armor=(Armor)example[2];if(hero.belongings.armor!=null)hero.belongings.armor.levelKnown=true;
+   HoldFast hold=Buff.affect(hero,HoldFast.class);hold.pos=hero.pos;
+   Random.pushGenerator(867);long next=Random.Long();Random.popGenerator();Random.pushGenerator(867);String normal;try{normal=hold.desc();assertEquals(next,Random.Long());}finally{Random.popGenerator();}
+   String plain=normal.replace("_","");
+   String expected=example[3].equals("penalty")?"reduce protection by 2":example[4].equals(example[5])?"Extra armor protection: "+example[3]+" damage":"Blocks "+example[3]+" extra damage";
+   assertTrue(normal,plain.contains(expected));
+   assertTrue(normal,normal.contains(rank==1?"fade at half speed":rank==2?"fade at quarter speed":"stop fading"));
+   int min=Integer.MAX_VALUE,max=Integer.MIN_VALUE;Random.pushGenerator(337);try{for(int roll=0;roll<1000;roll++){int value=hold.armorBonus();min=Math.min(min,value);max=Math.max(max,value);}}finally{Random.popGenerator();}assertEquals(example[4],min);assertEquals(example[5],max);
+   assertEquals(1f-(25+25*rank)/100f,HoldFast.buffDecayFactor(hero),0);
+   hold.pos=hero.pos+1;com.watabou.utils.Bundle before=new com.watabou.utils.Bundle();hold.storeInBundle(before);assertTrue(hold.desc().contains("You moved"));com.watabou.utils.Bundle after=new com.watabou.utils.Bundle();hold.storeInBundle(after);assertEquals(before.toString(),after.toString());assertSame(hold,hero.buff(HoldFast.class));hold.detach();
+  }
+  hero.heroClass=HeroClass.MAGE;hero.talents.get(0).put(Talent.HOLD_FAST,2);hero.belongings.armor=armor;armor.levelKnown=false;armor.level(0);HoldFast unknown=Buff.affect(hero,HoldFast.class);unknown.pos=hero.pos;String first=unknown.desc();assertTrue(first,first.contains("Identify your armor"));armor.level(9);assertEquals(first,unknown.desc());unknown.detach();
  }
  @Test public void evasiveArmorDescriptionMatchesActualHeroDefensePathAndHidesUnknownArmor(){
   hero.lvl=9;armor.level(3);hero.STR=armor.STRReq()+4;PlainStatusTarget attacker=new PlainStatusTarget();float baseline=hero.defenseSkill(attacker);Momentum momentum=Buff.affect(hero,Momentum.class);com.watabou.utils.Bundle state=new com.watabou.utils.Bundle();momentum.storeInBundle(state);state.put("freerun_turns",3);momentum.restoreFromBundle(state);
@@ -1549,7 +1573,7 @@ public class MechanicsExplanationTest {
  public static class QuietMovementSprite extends com.shatteredpixel.shatteredpixeldungeon.sprites.HeroSprite {@Override public void operate(int cell){}@Override public void updateArmor(){}@Override public com.watabou.noosa.particles.Emitter emitter(){return new com.watabou.noosa.particles.Emitter();} @Override public void add(com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite.State state){} @Override public void remove(com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite.State state){} @Override public void sprint(float speed){} @Override public void showStatus(int color,String text,Object...args){} @Override public void showStatusWithIcon(int color,String text,int icon,Object...args){}}
  private QuietMovementSprite quietSprite()throws Exception{java.lang.reflect.Field field=Class.forName("sun.misc.Unsafe").getDeclaredField("theUnsafe");field.setAccessible(true);Object unsafe=field.get(null);return (QuietMovementSprite)unsafe.getClass().getMethod("allocateInstance",Class.class).invoke(unsafe,QuietMovementSprite.class);}
  @Test public void hasteDetailsAgreeWithActualMovementFactorAndDoNotClaimFasterAttacks()throws Exception{java.lang.reflect.Field field=Class.forName("sun.misc.Unsafe").getDeclaredField("theUnsafe");field.setAccessible(true);Object unsafe=field.get(null);hero.sprite=(QuietMovementSprite)unsafe.getClass().getMethod("allocateInstance",Class.class).invoke(unsafe,QuietMovementSprite.class);float before=hero.speed();Haste haste=Buff.affect(hero,Haste.class,5);assertEquals(before*3,hero.speed(),.00001f);assertTrue(MechanicsDetails.buff(haste,haste.desc()).contains("does not multiply attack"));float timer=haste.cooldown();String detail=MechanicsDetails.buff(haste,haste.desc());assertTrue(detail.contains(ObfuscationExplanation.number(haste.visualcooldown())+" turns."));assertFalse(detail.contains("game-time units"));assertFalse(detail.contains("counter adds one"));assertEquals(timer,haste.cooldown(),0);com.watabou.utils.Bundle clock=new com.watabou.utils.Bundle();haste.storeInBundle(clock);clock.put("time",clock.getFloat("time")-haste.cooldown()+.0001f);haste.restoreFromBundle(clock);String rounded=MechanicsDetails.buff(haste,haste.desc());assertTrue(rounded.contains("1 turn."));assertFalse(rounded.contains("1 turns"));assertFalse(new Drowsy().desc().contains("1 turns"));}
- @Test public void talentDetailsRefreshRankAndDistinguishTemporaryFromActualUpgrades(){String first=MechanicsDetails.talent(Talent.ENHANCED_RINGS,1,"");String next=MechanicsDetails.talent(Talent.ENHANCED_RINGS,3,"");assertTrue(first.contains("= 3 turns"));assertTrue(next.contains("= 9 turns"));assertTrue(next.contains("ordinary rather than effective"));assertTrue(MechanicsDetails.talent(Talent.HOLD_FAST,3,"").contains("decay by 0"));assertTrue(MechanicsDetails.talent(Talent.PROTECTIVE_SHADOWS,2,"").contains("5 shield points"));}
+ @Test public void talentDetailsRefreshRankAndDistinguishTemporaryFromActualUpgrades(){String first=MechanicsDetails.talent(Talent.ENHANCED_RINGS,1,"");String next=MechanicsDetails.talent(Talent.ENHANCED_RINGS,3,"");assertTrue(first.contains("= 3 turns"));assertTrue(next.contains("= 9 turns"));assertTrue(next.contains("ordinary rather than effective"));assertTrue(MechanicsDetails.talent(Talent.HOLD_FAST,3,"").contains("are paused"));assertTrue(MechanicsDetails.talent(Talent.PROTECTIVE_SHADOWS,2,"").contains("5 shield points"));}
  @Test public void passiveGlyphPreviewUsesInactiveSentinelForAllNegativeArmorLevels(){
   ring(1);Armor.Glyph[] glyphs={new com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Flow(),new com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Swiftness(),new com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Camouflage(),new com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.AntiMagic()};
   for(Armor.Glyph glyph:glyphs){armor.inscribe(glyph);for(int level:new int[]{-1,-2,-5}){armor.level(level);assertEquals(-1,hero.glyphLevel(glyph.getClass()));String info=ArcanaInfoDisplay.armor(armor);assertTrue(info,info.contains("inactive"));}}
@@ -2233,7 +2257,7 @@ public class MechanicsExplanationTest {
  }
  @Test public void holdFastDescriptionMatchesArmorRollAndActualDecayWithoutQuerySideEffects(){
   HoldFast hold=Buff.affect(hero,HoldFast.class);hold.pos=hero.pos;
-  for(int rank=1;rank<=3;rank++){hero.talents.get(2).put(Talent.HOLD_FAST,rank);String text=MechanicsDetails.talent(Talent.HOLD_FAST,rank,"");assertTrue(text.contains(rank+"–"+(2*rank)+" damage points"));assertTrue(text.contains("decay by "+ObfuscationExplanation.number(HoldFast.buffDecayFactor(hero))));
+  for(int rank=1;rank<=3;rank++){hero.talents.get(2).put(Talent.HOLD_FAST,rank);String text=MechanicsDetails.talent(Talent.HOLD_FAST,rank,"");assertTrue(text.contains(rank+"–"+(2*rank)+" damage per hit"));assertTrue(text.contains(rank==1?"run at half their normal rate":rank==2?"run at a quarter of their normal rate":"are paused"));
    for(int seed=0;seed<30;seed++){Random.pushGenerator(seed);int expected=Random.NormalIntRange(rank,2*rank);Random.popGenerator();Random.pushGenerator(seed);try{assertEquals(expected,hold.armorBonus());}finally{Random.popGenerator();}}
   }
   hero.heroClass=HeroClass.ROGUE;hero.belongings.armor=null;assertEquals(0,hold.armorBonus());hold.pos=hero.pos+1;MechanicsDetails.talent(Talent.HOLD_FAST,3,"");assertSame(hold,hero.buff(HoldFast.class));

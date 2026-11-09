@@ -299,6 +299,20 @@ public class QolItemFeedbackDeviceTest {
             for(boolean moved:new boolean[]{false,true})calculationWindow(()->{
                 com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HoldFast hold=new com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HoldFast();hold.target=Dungeon.hero;hold.pos=Dungeon.hero.pos+(moved?1:0);return new WndInfoBuff(hold);
             },moved?"currently inactive":"currently active","qol-existing-status-clear-HoldFast-"+(moved?"moved":"holding")+".png");
+            final com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass[] beforeHoldClass=new com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass[1];
+            final com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor[] beforeHoldArmor=new com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor[1];
+            TopScoresDeviceTest.render(()->{beforeHoldClass[0]=Dungeon.hero.heroClass;beforeHoldArmor[0]=Dungeon.hero.belongings.armor;Dungeon.hero.heroClass=com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass.MAGE;});
+            try{
+                for(int example=0;example<5;example++){
+                    final int capCase=example;
+                    calculationWindow(()->{
+                        com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor worn=capCase==1?null:capCase==0?new com.shatteredpixel.shatteredpixeldungeon.items.armor.LeatherArmor():capCase==4?new com.shatteredpixel.shatteredpixeldungeon.items.armor.ClothArmor():new com.shatteredpixel.shatteredpixeldungeon.items.armor.MailArmor();
+                        if(worn!=null){worn.level(capCase==3?9:capCase==4?-3:0);worn.levelKnown=worn.cursedKnown=capCase==0||capCase==4;}Dungeon.hero.belongings.armor=worn;
+                        com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HoldFast hold=new com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HoldFast();hold.target=Dungeon.hero;hold.pos=Dungeon.hero.pos;
+                        String normal=hold.desc();assertTrue(normal,normal.contains(capCase==0?"_2_":capCase==1?"_0_":capCase==4?"reduce protection by _2_":"Identify your armor"));return new WndInfoBuff(hold);
+                    },"currently active","qol-existing-status-clear-HoldFast-cap-"+example+".png");
+                }
+            }finally{TopScoresDeviceTest.render(()->{Dungeon.hero.heroClass=beforeHoldClass[0];Dungeon.hero.belongings.armor=beforeHoldArmor[0];});}
         }finally{TopScoresDeviceTest.render(()->{if(priorHold==null)holdValues.remove(holding);else holdValues.put(holding,priorHold);});}
 
         for(int linked=0;linked<3;linked++){
@@ -394,6 +408,9 @@ public class QolItemFeedbackDeviceTest {
             final String name=reviewedTalentNames[index];
             calculationWindow(()->new WndInfoTalent(com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent.valueOf(name),2,null),reviewedTalentText[index],"qol-reviewed-talent-clear-"+name+".png");
         }
+        final int[] beforeBarkskinLevel=new int[1];TopScoresDeviceTest.render(()->{beforeBarkskinLevel[0]=Dungeon.hero.lvl;Dungeon.hero.lvl=12;});
+        try{calculationWindow(()->new WndInfoTalent(com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent.BARKSKIN,2,null),"0–8 damage protection","qol-reviewed-talent-clear-BARKSKIN-positive.png");}
+        finally{TopScoresDeviceTest.render(()->Dungeon.hero.lvl=beforeBarkskinLevel[0]);}
         calculationWindow(()->new WndInfoTalent(com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent.ENHANCED_RINGS,1,null),"= 3 turns","qol-mechanics-talent-expanded.png");
         calculationWindow(()->new WndInfoTalent(com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent.TWIN_UPGRADES,3,null),"Other level bonuses still apply","qol-twin-upgrades-existing-panel-clear.png");
         java.util.LinkedHashMap<com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent,com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent> priorMetamorphs=new java.util.LinkedHashMap<>(Dungeon.hero.metamorphedTalents);

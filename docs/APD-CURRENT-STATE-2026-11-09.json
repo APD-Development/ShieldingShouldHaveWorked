@@ -1,11 +1,11 @@
 {
-  "recorded_utc": "2026-11-09T16:00:28.971725+00:00",
+  "recorded_utc": "2026-11-09T16:23:08.335381+00:00",
   "authorization_end_utc": "2026-11-09T20:00:00Z",
   "latest_verified_published_build": 418,
   "release_url": "https://github.com/APD-Development/ShieldingShouldHaveWorked/releases/tag/apd-alpha-preview-418",
   "source_fix_commit": "8c2d5ca9f33154af69b782d6aa83ac181bd3c21d",
   "local_full_core": {
-    "tests": 3143,
+    "tests": 3144,
     "suites": 457,
     "failures": 0,
     "errors": 0,
@@ -28,7 +28,8 @@
     "416": "3136core and all12native passed,4616sourcehashes checked,47inspection captures reviewed; rejected new ordinary Drowsy 1 turns copy. Full original APK/source/evidence remains draft and source branch preserved.415latestpublished.",
     "417": "Android instrumentation compile failed from new grammar-test Java escapes, before any APK assembly. Original bcaade3 branch preserved; raw log committed. Corrected using escape-free character classes; next418.",
     "418": "Original compile/core3140 passed; both QoL cases stopped at test-only MindVision expected1tile versus source default2/correct displayed2. Exact source branch preserved; originals archival running. All12 retry pending on unchanged APKs.",
-    "419": "Native popup-fixture Java compile failed (checked exception from UI reflection helper not caught). Production compilation and3142core passed; APK assembly not reached. Correcting test callback handling and will source-compile before next candidate."
+    "419": "Native popup-fixture Java compile failed (checked exception from UI reflection helper not caught). Production compilation and3142core passed; APK assembly not reached. Correcting test callback handling and will source-compile before next candidate.",
+    "420": "Original pair compile/core3143 passed; both native stopped at Might exact raw-string mismatch. Actual detailed text includes underscore highlighting around5of5. Parallel remote f350fb938 attempted prefix-only5 and failed; merging/preserving both. Corrected exact-marker retry prepared on unchanged55d8e9ad original apps. No publication."
   },
   "newest_source_not_in_any_apk": [
     "Drowsy grammar correction",
@@ -43,11 +44,11 @@
     "Berserk unknown-armor shield-preview privacy and shorter normal text"
   ],
   "audit": {
-    "source_units": 444,
-    "completed_units": 436,
+    "source_units": 445,
+    "completed_units": 437,
     "unresolved_units": 8,
-    "corrected_units": 358,
-    "message_inventory_entries": 5347
+    "corrected_units": 359,
+    "message_inventory_entries": 5353
   },
   "remaining": [
     "Complete8 individual description source reviews and pending panel scope decisions",
