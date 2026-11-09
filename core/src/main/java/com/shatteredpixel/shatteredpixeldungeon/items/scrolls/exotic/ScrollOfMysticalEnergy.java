@@ -25,6 +25,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ArtifactRecharge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.effects.SpellSprite;
+import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRecharging;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.watabou.noosa.audio.Sample;
@@ -40,7 +41,7 @@ public class ScrollOfMysticalEnergy extends ExoticScroll {
 
 		detach(curUser.belongings.backpack);
 		//append buff
-		Buff.affect(curUser, ArtifactRecharge.class).set( 30 ).ignoreHornOfPlenty = false;
+		Buff.affect(curUser, ArtifactRecharge.class).set( ArtifactRecharge.DURATION ).ignoreHornOfPlenty = false;
 
 		Sample.INSTANCE.play( Assets.Sounds.READ );
 		Sample.INSTANCE.play( Assets.Sounds.CHARGEUP );
@@ -52,4 +53,9 @@ public class ScrollOfMysticalEnergy extends ExoticScroll {
 		readAnimation();
 	}
 	
+    @Override
+    public String desc() {
+        return isKnown() ? Messages.get(this, "desc", Messages.decimalFormat("0.##", ArtifactRecharge.DURATION)) : super.desc();
+    }
+
 }

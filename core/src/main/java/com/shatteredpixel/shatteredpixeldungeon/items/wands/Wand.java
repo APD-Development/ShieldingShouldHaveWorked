@@ -881,6 +881,7 @@ public abstract class Wand extends Item {
         return (float)(Charger.BASE_CHARGE_DELAY
                 + Charger.SCALING_CHARGE_ADDITION*Math.pow(scale,Math.max(0,missingCharges)));
     }
+    public static float rechargingBonusPerTurn(){return Charger.CHARGE_BUFF_BONUS;}
     public static float normalRechargeScaleFactor(){return Charger.NORMAL_SCALE_FACTOR;}
     public static float baseRechargeDelay(){return Charger.BASE_CHARGE_DELAY;}
     public static float scalingRechargeDelay(){return Charger.SCALING_CHARGE_ADDITION;}

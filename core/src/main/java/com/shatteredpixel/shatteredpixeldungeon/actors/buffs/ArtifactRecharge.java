@@ -105,7 +105,7 @@ public class ArtifactRecharge extends Buff {
 	
 	@Override
 	public String desc() {
-		return Messages.get(this, "desc", dispTurns(left+1));
+		return Messages.get(this, "desc", dispTurns(Math.max(0, left)));
 	}
 	
 	private static final String LEFT = "left";

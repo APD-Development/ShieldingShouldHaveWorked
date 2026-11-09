@@ -481,6 +481,18 @@ public class QolItemFeedbackDeviceTest {
             }
         }finally{TopScoresDeviceTest.render(()->{for(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff buff:new java.util.ArrayList<>(Dungeon.hero.buffs(Ring.RingBuff.class)))buff.detach();Dungeon.hero.belongings.ring=(Ring)previous[0];Dungeon.hero.belongings.misc=previous[1];if(previous[0]!=null)previous[0].activate(Dungeon.hero);if(previous[1] instanceof Ring)previous[1].activate(Dungeon.hero);});}
     }
+    private static void conciseRechargeDescriptionsRender()throws Exception{
+        com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfMysticalEnergy mystical=new com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfMysticalEnergy();mystical.anonymize();showItem(mystical,"30 turns","qol-mystical-energy-duration.png",true);
+        com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRecharging scroll=new com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRecharging();scroll.anonymize();showItem(scroll,"30 turns","qol-recharging-known-duration.png",true);
+        for(int index=0;index<2;index++){
+            final int kind=index;AtomicReference<Window> shown=new AtomicReference<>();
+            TopScoresDeviceTest.render(()->{
+                com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff buff;if(kind==0){com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ArtifactRecharge recharge=new com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ArtifactRecharge();recharge.set(1.5f);buff=recharge;assertTrue(buff.desc().contains("Recharge remaining: 1.5 turns"));}else{buff=new com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Recharging();com.watabou.utils.Bundle state=new com.watabou.utils.Bundle();buff.storeInBundle(state);state.put("time",com.shatteredpixel.shatteredpixeldungeon.actors.Actor.now()+.5f);buff.restoreFromBundle(state);assertTrue(buff.desc().contains("1 extra charge every 4 turns"));}
+                com.watabou.utils.Bundle before=new com.watabou.utils.Bundle();buff.storeInBundle(before);Window window=new WndInfoBuff(buff);GameScene.show(window);shown.set(window);com.watabou.utils.Bundle after=new com.watabou.utils.Bundle();buff.storeInBundle(after);assertEquals(before.toString(),after.toString());
+            });
+            try{Thread.sleep(300);TopScoresDeviceTest.render(()->assertDescriptionViewport(shown.get()));TopScoresDeviceTest.screenshot("qol-recharge-fractional-status-"+kind+".png");}finally{TopScoresDeviceTest.render(()->shown.get().hide());}
+        }
+    }
     private static void conciseScrollStatusDescriptionsRender()throws Exception{
         com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfChallenge scroll=new com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfChallenge();scroll.anonymize();showItem(scroll,"100 turns","qol-challenge-known-duration.png",true);
         for(int index=0;index<4;index++){
@@ -1146,6 +1158,7 @@ public class QolItemFeedbackDeviceTest {
             cleansingStaminaMasteryDescriptionsRender();
             remainingBattlemageDescriptionsRender();
             conciseScrollStatusDescriptionsRender();
+            conciseRechargeDescriptionsRender();
             divineInspirationChoiceDescriptionRenders();
             imbueAndDisabledVialDescriptionsRender();
             reviewedElixirDescriptionsRender();

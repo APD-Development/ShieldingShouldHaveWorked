@@ -22,6 +22,8 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.buffs;
 
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
+import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.watabou.noosa.Image;
 
 public class Recharging extends FlavourBuff {
@@ -46,6 +48,11 @@ public class Recharging extends FlavourBuff {
 	public float iconFadePercent() {
 		return Math.max(0, (DURATION - visualcooldown()) / DURATION);
 	}
+
+    @Override
+    public String desc() {
+        return Messages.get(this, "desc", dispTurns(), Messages.decimalFormat("0.##", 1f / Wand.rechargingBonusPerTurn()));
+    }
 
 	//want to process partial turns for this buff, and not count it when it's expiring.
 	//firstly, if this buff has half a turn left, should give out half the benefit.

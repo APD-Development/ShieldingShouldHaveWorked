@@ -6,7 +6,7 @@
   "message_entries": 2411,
   "reviewed_units": 417,
   "corrected_units": 336,
-  "unresolved_units": 232,
+  "unresolved_units": 230,
   "category_counts": {
     "apd": 1,
     "mechanics": 38,
@@ -222,12 +222,12 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/MechanicsDetails.java",
-      "sha256": "e98a3a922c34d556ac2efd0838697432e602d8b91de2f81a7a9196cf2386bd23",
+      "sha256": "aa116c5ba86c541d34016d41c77b674911180d3ba4c07f4efd63f888391fba2f",
       "category": "mechanics",
       "status": "PARTIAL_REVIEW",
       "description_methods": [],
       "wording_corrected": true,
-      "review_notes": "Current ordinary-description pass: concise live values, duplicate mathematical prose removed. Existing optional details and entire category variants remain under review; panel decisions pending. See APD-DESCRIPTION-CORRECTION-2026-11-08.md."
+      "review_notes": "Current ordinary-description pass: concise live values, duplicate mathematical prose removed. Existing optional details and entire category variants remain under review; panel decisions pending. See APD-DESCRIPTION-CORRECTION-2026-11-08.md. Followup2026-11-09 existing Recharging detail uses same unchanged0.25 getter as actual charger and normal status, not a separate hardcoded value; no dispatcher/panel change."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/MetalExplanation.java",
@@ -2434,10 +2434,10 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/scrolls/ScrollOfRecharging.java",
       "sha256": "ed7835812346c5bf50e3cae29bf937a22275eb2481d9503dff2b0b50f9677608",
       "category": "scrolls",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [],
       "wording_corrected": true,
-      "review_notes": "Normal scroll wording checked against current APD effect/targeting code. Live constants where shown; hidden identities preserved. Existing complicated panels and complete class/secondary-window review remain pending. Identify/Shards and Metamorphosis use actual APD behavior."
+      "review_notes": "Normal scroll wording checked against current APD effect/targeting code. Live constants where shown; hidden identities preserved. Existing complicated panels and complete class/secondary-window review remain pending. Identify/Shards and Metamorphosis use actual APD behavior. Followup2026-11-09 full own read/effect/description and shared recharge handlers reviewed. Mystical uses existing ArtifactRecharge.DURATION30 for unchanged effect and known normal text; status shows remaining beneficial recharge rather than final empty tick. Actual Horn/Cloak48 fractional/cursed/full/MagicImmune cases preserve resource and read-only state. Recharging normal status says one extra charge every4turns from unchanged private0.25 constant, actual charger partial tick/full/immunity deltas verified. Existing specific buff panels retained; no new UI or effects. New actual native known-scroll/fractional-buff windows pending398. Buff callers outside427catalog not counted as additional items."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/scrolls/ScrollOfRemoveCurse.java",
@@ -2581,12 +2581,12 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/scrolls/exotic/ScrollOfMysticalEnergy.java",
-      "sha256": "b7a7740d79427a9f28a5f58204bb63e9805ca4739a6dfd1521843d7626126759",
+      "sha256": "a5ec464255d7d4b08c9a695c37e468df503189acdba6b3e152db06f35a0ce42e",
       "category": "scrolls",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [],
       "wording_corrected": true,
-      "review_notes": "Normal scroll wording checked against current APD effect/targeting code. Live constants where shown; hidden identities preserved. Existing complicated panels and complete class/secondary-window review remain pending. Identify/Shards and Metamorphosis use actual APD behavior."
+      "review_notes": "Normal scroll wording checked against current APD effect/targeting code. Live constants where shown; hidden identities preserved. Existing complicated panels and complete class/secondary-window review remain pending. Identify/Shards and Metamorphosis use actual APD behavior. Followup2026-11-09 full own read/effect/description and shared recharge handlers reviewed. Mystical uses existing ArtifactRecharge.DURATION30 for unchanged effect and known normal text; status shows remaining beneficial recharge rather than final empty tick. Actual Horn/Cloak48 fractional/cursed/full/MagicImmune cases preserve resource and read-only state. Recharging normal status says one extra charge every4turns from unchanged private0.25 constant, actual charger partial tick/full/immunity deltas verified. Existing specific buff panels retained; no new UI or effects. New actual native known-scroll/fractional-buff windows pending398. Buff callers outside427catalog not counted as additional items."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/scrolls/exotic/ScrollOfPassage.java",
@@ -3115,7 +3115,7 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/wands/Wand.java",
-      "sha256": "d4892b8c7831252d26821198c1cc22f4035a5fed7f06e0ba780b28452c8449f6",
+      "sha256": "eafe9854b9c6e6fb4e79875516856f5575d390d6e8812aba83a55189009f1ccd",
       "category": "wands",
       "status": "PARTIAL_REVIEW",
       "description_methods": [
@@ -4346,7 +4346,7 @@
       "wording_corrected": true
     }
   ],
-  "completed_units": 195,
-  "latest_tests": "3092core/457suites, no failures/errors/skips; real Challenge arena/resource/combat/save and Dread speed/sight/distance/XP-input/expiry cases. Full evidence /workspace/apd-scroll-dread-evidence-20261109/accepted-full. Actual new native status windows pending398;397building3089core/12native.",
+  "completed_units": 197,
+  "latest_tests": "3094core/457suites, no failures/errors/skips; actual artifact48cases fractional/full/cursed/immunity and wand partial charge deltas. Full evidence /workspace/apd-recharge-tooltip-evidence-20261109/accepted-full. Native new windows pending398;397in native acceptance.",
   "message_inventory_entries": 5338
 }
