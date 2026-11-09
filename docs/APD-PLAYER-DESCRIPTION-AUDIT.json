@@ -52,7 +52,7 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/AbilityExplanation.java",
       "sha256": "96497cb1d2915e6806f457a964c1e9aa6842c86e5f3fbfbc28fe43cd3fcc1930",
       "category": "mechanics",
-      "status": "REVIEWED",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [
         "summary",
         "details"
