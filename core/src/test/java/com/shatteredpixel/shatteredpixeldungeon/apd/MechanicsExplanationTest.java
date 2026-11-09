@@ -1196,6 +1196,21 @@ public class MechanicsExplanationTest {
    int expected=0;float value=0;while(value<75&&expected<charges){value+=10+upgrade/2f;expected++;}assertEquals(expected,budget);assertEquals(Math.min(1f,expected*(10+upgrade/2f)/75),chance,0f);assertEquals(budget,effect.chargesToUse(wand));assertEquals(chance,effect.stealChance(wand),0f);assertFalse(wand.curseInfusionBonus);
   }
  }
+ public static class QuietArtifactOperateSprite extends QuietMovementSprite {
+  @Override public void operate(int cell,com.watabou.utils.Callback callback){callback.call();}
+  @Override public void idle(){}
+ }
+ @Test public void skeletonKeyDescriptionMatchesActualIronFreeReopeningAndTemporaryWallCosts()throws Exception{
+  descriptionSightArena();java.util.Arrays.fill(Dungeon.level.visited,true);java.lang.reflect.Field unsafeField=Class.forName("sun.misc.Unsafe").getDeclaredField("theUnsafe");unsafeField.setAccessible(true);Object unsafe=unsafeField.get(null);hero.sprite=(QuietArtifactOperateSprite)unsafe.getClass().getMethod("allocateInstance",Class.class).invoke(unsafe,QuietArtifactOperateSprite.class);
+  int depth=Dungeon.depth,branch=Dungeon.branch;java.lang.reflect.Field user=com.shatteredpixel.shatteredpixeldungeon.items.Item.class.getDeclaredField("curUser");user.setAccessible(true);Object previous=user.get(null);Dungeon.depth=2;Dungeon.branch=0;user.set(null,hero);
+  try{for(int terrain:new int[]{com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.LOCKED_DOOR,com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.HERO_LKD_DR,com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.EMPTY}){
+   int target=hero.pos+1;com.shatteredpixel.shatteredpixeldungeon.levels.Level.set(target,terrain);com.shatteredpixel.shatteredpixeldungeon.items.artifacts.SkeletonKey key=new com.shatteredpixel.shatteredpixeldungeon.items.artifacts.SkeletonKey();key.levelKnown=key.cursedKnown=true;hero.belongings.misc=key;
+   String text=key.desc();assertTrue(text,text.contains("1 charge for Iron"));assertTrue(text,text.contains("2 for Golden"));assertTrue(text,text.contains("5 for Crystal"));assertTrue(text,text.contains("10 turns"));int charge=key.currentCharges();float time=hero.cooldown();key.targeter.onSelect(terrain==com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.EMPTY?hero.pos+3:target);assertEquals(1,hero.cooldown()-time,0);
+   if(terrain==com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.LOCKED_DOOR){assertEquals(charge-1,key.currentCharges());assertEquals(com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.DOOR,Dungeon.level.map[target]);}
+   else if(terrain==com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.HERO_LKD_DR){assertEquals(charge,key.currentCharges());assertEquals(com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.DOOR,Dungeon.level.map[target]);}
+   else{assertEquals(charge-2,key.currentCharges());com.shatteredpixel.shatteredpixeldungeon.items.artifacts.SkeletonKey.KeyWall wall=(com.shatteredpixel.shatteredpixeldungeon.items.artifacts.SkeletonKey.KeyWall)Dungeon.level.blobs.get(com.shatteredpixel.shatteredpixeldungeon.items.artifacts.SkeletonKey.KeyWall.class);assertNotNull(wall);assertEquals(30,wall.volume);for(int cell:new int[]{target,target-Dungeon.level.width(),target+Dungeon.level.width()}){assertEquals(10,wall.cur[cell]);assertTrue(Dungeon.level.solid[cell]);}for(int turn=0;turn<10;turn++)wall.act();assertEquals(0,wall.volume);assertFalse(Dungeon.level.solid[target]);}
+  }}finally{Dungeon.depth=depth;Dungeon.branch=branch;user.set(null,previous);}
+ }
  @Test public void sandalsRejectSeedsWithoutAnExistingAbilityAndKeepAllSupportedSeeds()throws Exception{
   com.shatteredpixel.shatteredpixeldungeon.items.artifacts.SandalsOfNature sandals=new com.shatteredpixel.shatteredpixeldungeon.items.artifacts.SandalsOfNature();
   assertFalse("Blandfruit has no footwear cost/color/ability entry",sandals.canUseSeed(new com.shatteredpixel.shatteredpixeldungeon.plants.BlandfruitBush.Seed()));

@@ -272,3 +272,6 @@ Blandfruit lacks existingcost/color/ability entries butwasoffered; two redregres
 
 ### APK408 published 2026-11-09T05:39:34-05:00
 Original77950dd132349381a70928bcc7c9180910ff9ea3;3118core457 and12distinctAPI34casespassed. Independentfiles/4488manifesthasheschecked;22actualCloak/Rose/Talisman normal/expanded/bottomcapturesreviewed. Signedoriginalpair/source/evidenceattached, previousreleasespreserved. Laterartifact/Sandalschangesnotincluded; latestsource3125core457pass, actualnextAndroidwindowsstillpending. Audit344complete92unresolvedof436. Continueownerwindowthrough21UTC.
+
+### Skeleton Key and revival/victory item own reviews
+Key purpose/lockcosts/limitations/wallcost-duration prose concise; actualIron1/freeown-door/cardinalwall2charges/3cells/1turn/10turnexpiry verified;Golden/Crystal source paths read butnotheadlessactivated. FullAnkh/Amulet ownclasses andrelevantrevival/backpack/choice/victory/Ascension consumers read, currentproseaccurateunchanged.3126core457allpass, rawXML/logpreserved. Audit347complete89unresolvedof436units,433partial/full350corrected5339Englishentries.409originalpairwillinclude laterartifactandSandalscorrections; actualnewAndroidwindowsnotyetverified.408publishedfallbackpreserved; continueownerwindowthrough21UTC.

@@ -6,7 +6,7 @@
   "message_entries": 2411,
   "reviewed_units": 433,
   "corrected_units": 350,
-  "unresolved_units": 92,
+  "unresolved_units": 89,
   "category_counts": {
     "apd": 1,
     "mechanics": 38,
@@ -476,22 +476,22 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/Amulet.java",
       "sha256": "88162c74e8ccf1bdf8c0ac7a56c6f9f40b4a5770e7c7437d0613d62dbf3a1ff6",
       "category": "items",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [
         "desc"
       ],
-      "review_notes": "Individual normal source and English wording reviewed2026-11-09. Javelin/Spike/Trident own tier/base-wear and flavor checked unchanged; inherited missile paths remain separately partial. Dart/tipped prompt now permits actual preserved multiple-use tips, plain darts no wear, cleaning one turn, high-bonus no wear correctly attributed to bonuses; tests real wear and existing bow-preview/unknown-level guards. Amulet normal pre/ascent actions checked and text shortened; Dewdrop 5%/waterskin normal line reviewed unchanged against consumeDew and existing DewExplanation. Native actual new windows pending next pair; secondary/class/dependency review remains open.",
+      "review_notes": "Individual normal source and English wording reviewed2026-11-09. Javelin/Spike/Trident own tier/base-wear and flavor checked unchanged; inherited missile paths remain separately partial. Dart/tipped prompt now permits actual preserved multiple-use tips, plain darts no wear, cleaning one turn, high-bonus no wear correctly attributed to bonuses; tests real wear and existing bow-preview/unknown-level guards. Amulet normal pre/ascent actions checked and text shortened; Dewdrop 5%/waterskin normal line reviewed unchanged against consumeDew and existing DewExplanation. Native actual new windows pending next pair; secondary/class/dependency review remains open. IndividualownsourceNovember9. Fullownclass/action/firstpickup/deferredscene/save/desc andAmuletScenevictory/Ascensionkillweakening consumers read; existingconcisebefore/duringAscensionprose accurateunchanged. Existing actualaction/inspectionpurity regression retained. Own-source completion only; inherited/shared/class providers remain separatelytracked.",
       "wording_corrected": true
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/Ankh.java",
       "sha256": "4e2b7b9fe1959e71e5db87675371edd6f310fdd6f5c8d599f65c513abd30cf11",
       "category": "items",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [
         "desc"
       ],
-      "review_notes": "Re-read normal/blessed descriptions against Hero.die, WndResurrect two retained items, InterlevelScene ordinary death position vs locked-floor regenerated backpack. Current wording remains correct, no new change. Full challenge/buff/save/UI interactions remain under review. Clarified up to two selected items, since WndResurrect permits fewer after warning;3040core pass. Later wording not in386.",
+      "review_notes": "Re-read normal/blessed descriptions against Hero.die, WndResurrect two retained items, InterlevelScene ordinary death position vs locked-floor regenerated backpack. Current wording remains correct, no new change. Full challenge/buff/save/UI interactions remain under review. Clarified up to two selected items, since WndResurrect permits fewer after warning;3040core pass. Later wording not in386. IndividualownsourceNovember9. Fullownclass/actions/bless/waterskin/cost/known/save/value andHero.die/resurrect,WndResurrectchoice,InterlevelScene ordinary/lockedfloor LostBackpack consumers read. Current concise unblessed/blessed live quarterHP/invulnerability prose accurate, no further rewrite. Existing actual revival/customhealing/HPbounds/save tests retained. Own-source completion only; inherited/shared/class providers remain separatelytracked.",
       "wording_corrected": true
     },
     {
@@ -1108,12 +1108,12 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/artifacts/SkeletonKey.java",
       "sha256": "ed0a1565b5f34c81f94bdd2f3143d6f6f1945705c8ee148199b064ee004be406",
       "category": "artifacts",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [
         "desc"
       ],
       "wording_corrected": true,
-      "review_notes": " All15 actual curse branches reviewed; concise conditional ordinary text,15type read-only regression, actual Horn/Chalice effects tested. Existing advanced panels retained pending owner review; full non-curse/class paths may remain incomplete."
+      "review_notes": " All15 actual curse branches reviewed; concise conditional ordinary text,15type read-only regression, actual Horn/Chalice effects tested. Existing advanced panels retained pending owner review; full non-curse/class paths may remain incomplete. IndividualownsourceNovember9. Fullownclass/targeter/alllockcosts/doorlocking/push/wall/recharge/upgrades/keyreplacement/curseconsumers/save reviewed. Base/worn prose now explains purpose,Iron1/Golden2/Crystal5,exceptions,freeown-doorreopening,wall2charges/10turns and1turnsuccessfuluse. ActualIron/open/free-door/cardinalwall3cells/charge/time/tenturnexpiry regression passed;Golden/Crystal paths source-reviewed, not actualheadlessactivated. No effect/cost/turn orsavechange. Own-source completion only; inherited/shared/class providers remain separatelytracked."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/artifacts/TalismanOfForesight.java",
