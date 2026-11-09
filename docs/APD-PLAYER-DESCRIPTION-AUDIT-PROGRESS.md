@@ -123,3 +123,8 @@ Unidentified numeric wand stats now labelled +0examples in existing description 
 ### 2026-11-09 01:55UTC checkpoint
 
 Lightning and Regrowth continued: concise normal chaining/damage/ally rules backed by real onZap four-scenario regression; Fireblast/Regrowth charge-cost grammar, plant allowance, 3charge Lotus, staff Healing0 warning and Lotus Rot-dart exception corrected. Full3042core457suites pass, no failures/errors/skips. Evidence /workspace/apd-lightning-regrowth-evidence-20261109. Three remaining concrete dart units closed after original387 actual owned windows manually reviewed; shared providers stay open. 342reviewed source units, 304corrected, 159complete, 268unresolved. These later source changes not in387; new Android verification pending.
+
+
+### Living Earth and Prismatic Light normal descriptions
+
+Read entire two wand sources/supporting paths; normal text shortened and clarified. Living Earth states space restriction and guardian repair; RockArmor reserve/rounding and guardian return explained concisely. Prismatic states narrow secret/terrain reveal, dark-floor light, blind/bonus and staff slow without programmer language. Real staff reserve/guardian matrix and Prismatic actual target/property/controlled-blindness/staff tests pass; full3044core457suites zero failures/errors/skips. Evidence /workspace/apd-livingearth-prismatic-evidence-20261109.344reviewed source units,306corrected,159complete,268unresolved. Source-only after388; actual new Android windows pending. No formulas/mechanics/panels added or removed.

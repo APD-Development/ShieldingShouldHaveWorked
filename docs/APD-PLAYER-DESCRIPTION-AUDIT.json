@@ -4,8 +4,8 @@
   "counting": "Source units, not distinct item types. reviewed_units includes partial reviews; completed_units excludes partial/pending dependency. corrected_units counts source units with corrections, including incomplete reviews. Inventory/export/tests alone are not an individual review.",
   "source_units": 427,
   "message_entries": 2411,
-  "reviewed_units": 342,
-  "corrected_units": 304,
+  "reviewed_units": 344,
+  "corrected_units": 306,
   "unresolved_units": 268,
   "category_counts": {
     "apd": 1,
@@ -3133,10 +3133,12 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/wands/WandOfLivingEarth.java",
       "sha256": "b4681fcafb61b2fb3f56889f1510bb9a64b784c0597a3c7fb7735dcdb01e60bd",
       "category": "wands",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
+      "status": "PARTIAL_REVIEW",
       "description_methods": [
         "desc"
-      ]
+      ],
+      "wording_corrected": true,
+      "review_notes": "Entire wand source incl onZap armor grant/guardian spawn/guardian heal/stasis, staff onHit, RockArmor reserve/ceil-half/cap, guardian stats/aggro/return and save paths read. Concise ordinary text removes damage-dealt equivalence and long protection jargon. Real onHit regression covers three levels, three Empowered Strike ranks and four damage rolls, reserve vs existing guardian; expanded actual reserve absorb/rounding/save-purity matrix. Full3044core pass. Actual new native windows and complete cross-class/secondary audit remain open."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/wands/WandOfMagicMissile.java",
@@ -3153,8 +3155,10 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/wands/WandOfPrismaticLight.java",
       "sha256": "19e89558db42f3ed5baee62780e44cabe468fef34f7daad679bf764aa4375367",
       "category": "wands",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "PARTIAL_REVIEW",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Entire source read: narrow mapped/secret-discovery strip, dark-floor Light/Darkness timing, blind chance/duration, undead-or-demonic single bonus, staff Cripple and saves through shared Wand. Concise normal flavor/stats/staff text. Regression invokes actual affectTarget across levels0/3/8, four property combinations/eight controlled seeds, validates actual damage/blindness and real staff movement/duration. Full3044core pass. New native windows and complete shared/secondary audit remain open."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/wands/WandOfRegrowth.java",
@@ -4241,14 +4245,14 @@
   ],
   "completed_units": 159,
   "latest_tests": {
-    "core_tests": 3042,
+    "core_tests": 3044,
     "suites": 457,
     "failures": 0,
     "errors": 0,
     "skipped": 0,
-    "log": "/workspace/apd-lightning-regrowth-evidence-20261109/apd-regrowth-fireblast-description-full.log",
+    "log": "/workspace/apd-livingearth-prismatic-evidence-20261109/apd-livingearth-prismatic-behavior-full.log",
     "android_verified": false,
     "new_apk_built": false,
-    "scope": "Post387 Lightning actual-onZap regression and Regrowth/Fireblast/Healing0 prose. Native388 pending;387 published3041core/12targetedAndroid."
+    "scope": "Post388 Living Earth/Prismatic prose plus real reserve/guardian/damage/blindness/staff behavior.388 original pair under native verification; latest published387."
   }
 }
