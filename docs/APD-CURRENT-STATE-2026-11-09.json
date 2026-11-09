@@ -1,5 +1,5 @@
 {
-  "recorded_utc": "2026-11-09T16:23:08.335381+00:00",
+  "recorded_utc": "2026-11-09T16:35:26.119866+00:00",
   "authorization_end_utc": "2026-11-09T20:00:00Z",
   "latest_verified_published_build": 418,
   "release_url": "https://github.com/APD-Development/ShieldingShouldHaveWorked/releases/tag/apd-alpha-preview-418",
@@ -12,9 +12,9 @@
     "skipped": 0
   },
   "last_completed_android_source_compile": {
-    "commit": "7143d16bc481045b49ec4a60624128b0dcccc6b1",
-    "run": 42649700318,
-    "scope": "3143core plus Androiddebug/release/instrumentationJava/desktop allpassed; noAPK. Includes three new Berserk known/unknown cases and repaired SoulMark popup fixture."
+    "commit": "4fee1824da1bcfd27f6f6ecb35d1562a140fec30",
+    "run": 42654896449,
+    "scope": "3144core, Androiddebug/release/instrumentationJava/desktop allpassed; noAPK. Includes later HoldFast/Barkskin native fixtures after preserving both shared histories."
   },
   "latest_source_compile": {
     "commit": "7143d16bc481045b49ec4a60624128b0dcccc6b1",
@@ -58,7 +58,14 @@
   "preservation": "All source pushed to codex/apd-phone-fixes-2026-10-09; published403 and priorreleases retained.405/406privateassets include completeAPK/source/tests;404rejectedarchivesretained. Raw local full suites and committed evidence ZIPs retained.",
   "physical_phone_or_acoustic_audio_verified": false,
   "background_development_after_window_claimed": false,
-  "active_build": null,
+  "active_build": {
+    "number": 420,
+    "original_run": 42650360251,
+    "retry_run": 42654395502,
+    "preservation_run": 42654395387,
+    "source_commit": "55d8e9adfb05756e4b6a854e43d2b836748772fd",
+    "status": "Original APKs unchanged; exact Might highlighting expectation correction, instrumentation rebuilt; all12 native running."
+  },
   "recovered_failed_attempts": {
     "415": {
       "original": "Original42625074280 incomplete because Developer emulator transport closed after QoL/preferences. Alpha/build passed. Exact original source failurebranch preserved; private archive42628501288 succeeded. Retry42628501030 requires all12 fresh unmodified cases.",
@@ -75,5 +82,9 @@
       "archive": 42644420906
     }
   },
-  "new_timer_regressions": "Red evidence preserved; full3138 green. Description-only linked Power and Shadows timer fixes with actual attack/protection/expiry coverage; no engine changes."
+  "new_timer_regressions": "Red evidence preserved; full3138 green. Description-only linked Power and Shadows timer fixes with actual attack/protection/expiry coverage; no engine changes.",
+  "metadata_erratum_418": {
+    "run": 42654896450,
+    "status": "success; actual418 MindVision patch SHA verified, erratum attached, copiedCatalyst wording corrected, everyoriginalasset IDretained"
+  }
 }
