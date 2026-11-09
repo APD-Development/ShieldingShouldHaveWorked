@@ -1,5 +1,5 @@
 {
-  "recorded_utc": "2026-11-09T17:34:16.015319+00:00",
+  "recorded_utc": "2026-11-09T17:41:37.290276+00:00",
   "authorization_end_utc": "2026-11-09T20:00:00Z",
   "latest_verified_published_build": 418,
   "release_url": "https://github.com/APD-Development/ShieldingShouldHaveWorked/releases/tag/apd-alpha-preview-418",
@@ -12,9 +12,9 @@
     "skipped": 0
   },
   "last_completed_android_source_compile": {
-    "commit": "5b17bd74da48dd4bdc58484c99477f630e21eed3",
-    "run": 42664848851,
-    "scope": "3152core plus Androiddebug/release/instrumentationJava/desktop allpassed. Later corrected Priest/successful actualattack and nine spell branches/ten native windows need3153 sourcecompile nowrequested."
+    "commit": "5359247be4e7818e7316f470bf6d842812a70083",
+    "run": 42665918751,
+    "scope": "3153core plus Androiddebug/release/instrumentationJava/desktop allpassed. Includes latest nine spell branches, actual Priest attack, ten spell-window contexts."
   },
   "latest_source_compile": {
     "commit": "7143d16bc481045b49ec4a60624128b0dcccc6b1",
@@ -61,15 +61,15 @@
   "physical_phone_or_acoustic_audio_verified": false,
   "background_development_after_window_claimed": false,
   "active_build": {
-    "number": 423,
-    "status": "Preparing pair after successful latest3149 Android source verification; all12 native/source/scans/manual review still required.422 parallel candidate inherits rejected text and staysprivate.",
+    "number": 424,
+    "status": "Preparing after current3153source compilation/core pass. All12native and manualacceptance still required.",
     "previous_compiled_history": [
+      423,
       422,
       421,
       420
     ],
-    "source_parent": "f1061a5b70f24d252ded31f6f4de77ff55434692",
-    "run": 42662501545
+    "source_parent": "f81a640a72904a498c99ccce8c5a93a679bd87ef"
   },
   "recovered_failed_attempts": {
     "415": {
@@ -102,5 +102,13 @@
     "run": 42656324353,
     "report": "docs/APD-421-HELD-HISTORY-2026-11-09.json"
   },
-  "current_work": "3153core457all0. Nine existing spell branches revised, Priest actual attack verified; ten real inspection contexts prepared.7helper/sourcecases remain open, whole audit incomplete.423 native running; held422 source/artifacts staged successfully42664848867,418published."
+  "current_work": "3153core457all0. Nine existing spell branches revised, Priest actual attack verified; ten real inspection contexts prepared.7helper/sourcecases remain open, whole audit incomplete.423 native running; held422 source/artifacts staged successfully42664848867,418published.",
+  "apd423": {
+    "source": "2a98ed3e4d050d2eaa1c34a54a2ca09facde08d9",
+    "original_run": 42662501545,
+    "original_results": "3149core and all12native passed; prepare failed on stale reject421history check",
+    "packaging_only_recovery_run": 42666702358,
+    "recovery_result": "success, no application/instrumentation rebuild or native rerun; require all420421422 entries",
+    "status": "Staging private then independent hashes/source/scan and manual selected windows before publication"
+  }
 }
