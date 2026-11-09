@@ -771,6 +771,23 @@ public class QolItemFeedbackDeviceTest {
         com.watabou.utils.Bundle previousRules=new com.watabou.utils.Bundle();TopScoresDeviceTest.render(()->{Dungeon.apdStoreCustomRules(previousRules);com.watabou.utils.Bundle all=new com.watabou.utils.Bundle(),settings=new com.watabou.utils.Bundle();com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomDungeonRules.defaults().with(com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomDungeonRules.Slider.HEALING,0).store(settings);all.put("apd_custom_rules",settings);Dungeon.apdRestoreCustomRules(all);});
         try{for(boolean known:new boolean[]{true,false}){Sword vampire=new Sword();TopScoresDeviceTest.render(()->{vampire.level(3);vampire.levelKnown=known;vampire.cursedKnown=true;vampire.enchant(new com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Vampiric());});showItem(vampire,"rules prevent this enchantment's healing","qol-vampiric-healing-zero-"+known+".png",true,known);}}finally{TopScoresDeviceTest.render(()->Dungeon.apdRestoreCustomRules(previousRules));}
     }
+    private static void vampiricCustomHealingDescriptionsRender() throws Exception {
+        com.watabou.utils.Bundle previous = new com.watabou.utils.Bundle();
+        TopScoresDeviceTest.render(() -> Dungeon.apdStoreCustomRules(previous));
+        try {
+            for (int percent : new int[]{25, 200}) {
+                Sword sword = new Sword(); String[] expected = new String[1];
+                TopScoresDeviceTest.render(() -> {
+                    com.watabou.utils.Bundle all = new com.watabou.utils.Bundle(), settings = new com.watabou.utils.Bundle();
+                    com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomDungeonRules.defaults().with(com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomDungeonRules.Slider.HEALING, percent).store(settings); all.put("apd_custom_rules", settings); Dungeon.apdRestoreCustomRules(all);
+                    sword.level(3); sword.levelKnown = sword.cursedKnown = true; sword.enchant(new com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Vampiric());
+                    float chance = (.05f + .25f * (Dungeon.hero.HT - Dungeon.hero.HP) / Dungeon.hero.HT) * com.shatteredpixel.shatteredpixeldungeon.apd.mechanics.EnchantmentExplanation.knownPower(Dungeon.hero);
+                    assertTrue(Float.isFinite(chance)); expected[0] = "about _" + com.shatteredpixel.shatteredpixeldungeon.messages.Messages.decimalFormat("0.##", 50 * Math.max(1, chance) * percent / 100f) + "%_";
+                });
+                showItem(sword, expected[0], "qol-vampiric-custom-healing-" + percent + ".png", true, true);
+            }
+        } finally { TopScoresDeviceTest.render(() -> Dungeon.apdRestoreCustomRules(previous)); }
+    }
     private static void ordinaryEnchantmentCatalogRender()throws Exception{
         for(String name:new String[]{"Blazing","Blocking","Blooming","Chilling","Corrupting","Crystal","Elastic","Eldritch","Grim","Kinetic","Lucky","Projecting","Shocking","Unstable","Vampiric","Venomous","Vorpal"}){
             Sword sword=new Sword();TopScoresDeviceTest.render(()->{try{sword.level(3);sword.levelKnown=sword.cursedKnown=true;sword.enchant((com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon.Enchantment)Class.forName("com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments."+name).getDeclaredConstructor().newInstance());}catch(Exception e){throw new RuntimeException(e);}});
@@ -1319,6 +1336,7 @@ public class QolItemFeedbackDeviceTest {
             artifactBuffsAndDisabledHealingRender();
             catalystAndTransferDescriptionsRender();
             correctedEnchantmentDescriptionsRender();
+            vampiricCustomHealingDescriptionsRender();
             ordinaryEnchantmentCatalogRender();
             intrinsicReachDescriptionsRender();
             unidentifiedWandExamplesRender();

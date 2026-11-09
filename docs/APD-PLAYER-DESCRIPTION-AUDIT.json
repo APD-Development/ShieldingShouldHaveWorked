@@ -6,7 +6,7 @@
   "message_entries": 2411,
   "reviewed_units": 433,
   "corrected_units": 350,
-  "unresolved_units": 146,
+  "unresolved_units": 129,
   "category_counts": {
     "apd": 1,
     "mechanics": 38,
@@ -179,14 +179,14 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/EnchantmentExplanation.java",
-      "sha256": "9833aed305268fbe70d4d5d2058410af2ced5eab96c4124a087cd23972f7816f",
+      "sha256": "439568cf97b29b744c1e168585a91bd8b38bd4344a22186bd6d250d69674a6d9",
       "category": "mechanics",
       "status": "PARTIAL_REVIEW",
       "description_methods": [
         "describe"
       ],
       "wording_corrected": true,
-      "review_notes": "Current ordinary-description pass: concise live values, duplicate mathematical prose removed. Existing optional details and entire category variants remain under review; panel decisions pending. See APD-DESCRIPTION-CORRECTION-2026-11-08.md. Followup2026-11-09: read shared regular/exotic labels, identity/actions/recipe code and inventory cancellation flow. Human cancellation warning preserves original consumption; cursed book warning names both actual exceptions. Wayward buff text shortened after real proc/accuracy checks; no new chance/calculation. Four existing retained enchantment details now plain timer/neutral witnesses/direct-damage replacement; source Shocking/Eldritch/Vorpal/Block paths and existing actual proc tests unchanged. No panel/formula changes. Full3064core457suites pass. Actual warning/Wayward/expanded windows pending394, not393; shared full secondary review remains open. Followup2026-11-09 reproduced Twin Upgrades hidden-companion disclosure: Sword known1damage4\u201324became11\u201352and Cleave10\u201330became24\u201365; Dart5\u201315became12\u201336. Existing thread-local weapon/crossbow inspection now excludes unknown companion upgrade contribution, clearly labels omission based solely on visible tier/talent/knowledge, covers normal/optional enchantment/passive-block/ring/legacy/staff queries. Raw combat still borrows actual8outside inspection and on another thread; knowledge change updates displayed values. Exception unwinding/pending crossbow state/read-only saved state retained. Four meaningful regressions pass, actual new owned Sword/Dart windows pending399. No gameplay, balance, saves, targeting or controls changed."
+      "review_notes": "Current ordinary-description pass: concise live values, duplicate mathematical prose removed. Existing optional details and entire category variants remain under review; panel decisions pending. See APD-DESCRIPTION-CORRECTION-2026-11-08.md. Followup2026-11-09: read shared regular/exotic labels, identity/actions/recipe code and inventory cancellation flow. Human cancellation warning preserves original consumption; cursed book warning names both actual exceptions. Wayward buff text shortened after real proc/accuracy checks; no new chance/calculation. Four existing retained enchantment details now plain timer/neutral witnesses/direct-damage replacement; source Shocking/Eldritch/Vorpal/Block paths and existing actual proc tests unchanged. No panel/formula changes. Full3064core457suites pass. Actual warning/Wayward/expanded windows pending394, not393; shared full secondary review remains open. Followup2026-11-09 reproduced Twin Upgrades hidden-companion disclosure: Sword known1damage4\u201324became11\u201352and Cleave10\u201330became24\u201365; Dart5\u201315became12\u201336. Existing thread-local weapon/crossbow inspection now excludes unknown companion upgrade contribution, clearly labels omission based solely on visible tier/talent/knowledge, covers normal/optional enchantment/passive-block/ring/legacy/staff queries. Raw combat still borrows actual8outside inspection and on another thread; knowledge change updates displayed values. Exception unwinding/pending crossbow state/read-only saved state retained. Four meaningful regressions pass, actual new owned Sword/Dart windows pending399. No gameplay, balance, saves, targeting or controls changed. Vampiric ordinary currentheal now includes live customhealing percent and saysabout due originalrounding/credit/cap. Reproduced regression and36actual activations in3114corepass. New nativewindows pending; not in406."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/FoodExplanation.java",
@@ -3394,152 +3394,152 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/enchantments/Blazing.java",
       "sha256": "b2dc19dac6fe5a1387c64f26e4acce89e9ffaa24766907c87cba6e80e3fc381e",
       "category": "weapon",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [],
-      "review_notes": "Entire concrete source and relevant caller/storage/target effects read; normal provider checked against source, no mechanics changed. Elemental Strike/complete secondary scope remains open. Normal ignition-or-extra-fire sentence now clearly applies the activation chance to either outcome.",
+      "review_notes": "Entire own proc/trackers/resource/save/condition branches individually read against existing concise normal description, overflow behavior and relevant Char/Mob/Shield/Burning/Chill/Bleeding/Lotus/weapon consumers. Hidden target/upgrade/counter information remains undisclosed. Own-source review completion only; shared EnchantmentExplanation/legacy/class/generation providers remain separately partial.",
       "wording_corrected": true
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/enchantments/Blocking.java",
       "sha256": "874b1c0ddc4357ed52b4c2c7ccd78677fcc66d87c08c13145a721277bcea6754",
       "category": "weapon",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [
         "desc"
       ],
-      "review_notes": "Entire concrete enchantment source and relevant Char/Mob damage, loot or tracker paths read. Ordinary provider checked against actual effect, no gameplay change. Existing real proc/power/suppression/identification tests retained. Class-specific Elemental Strike/secondary scope remains open. Ordinary shield buff no longer uses baseline decay terminology; existing real HoldFast duration/save test unchanged.",
+      "review_notes": "Entire own proc/trackers/resource/save/condition branches individually read against existing concise normal description, overflow behavior and relevant Char/Mob/Shield/Burning/Chill/Bleeding/Lotus/weapon consumers. Hidden target/upgrade/counter information remains undisclosed. Own-source review completion only; shared EnchantmentExplanation/legacy/class/generation providers remain separately partial.",
       "wording_corrected": true
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/enchantments/Blooming.java",
       "sha256": "769a96c36fad2578bcf3bfddb8846663e3713d03ab2d19b0ff1f617d9a1fa7ef",
       "category": "weapon",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_UNCHANGED",
       "description_methods": [],
-      "review_notes": "Entire concrete source and relevant caller/storage/target effects read; normal provider checked against source, no mechanics changed. Elemental Strike/complete secondary scope remains open."
+      "review_notes": "Entire own proc/trackers/resource/save/condition branches individually read against existing concise normal description, overflow behavior and relevant Char/Mob/Shield/Burning/Chill/Bleeding/Lotus/weapon consumers. Hidden target/upgrade/counter information remains undisclosed. Own-source review completion only; shared EnchantmentExplanation/legacy/class/generation providers remain separately partial."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/enchantments/Chilling.java",
       "sha256": "642fe650106705867cad6d52116c937da58d800691eaaf03ab129bfd1e186cde",
       "category": "weapon",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_UNCHANGED",
       "description_methods": [],
-      "review_notes": "Entire concrete source and relevant caller/storage/target effects read; normal provider checked against source, no mechanics changed. Elemental Strike/complete secondary scope remains open."
+      "review_notes": "Entire own proc/trackers/resource/save/condition branches individually read against existing concise normal description, overflow behavior and relevant Char/Mob/Shield/Burning/Chill/Bleeding/Lotus/weapon consumers. Hidden target/upgrade/counter information remains undisclosed. Own-source review completion only; shared EnchantmentExplanation/legacy/class/generation providers remain separately partial."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/enchantments/Corrupting.java",
       "sha256": "4b641096b0a621e891bae8ed3944f10de3825129c6f0d684944577d9858f1473",
       "category": "weapon",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_UNCHANGED",
       "description_methods": [],
-      "review_notes": "Entire concrete source and relevant caller/storage/target effects read; normal provider checked against source, no mechanics changed. Elemental Strike/complete secondary scope remains open."
+      "review_notes": "Entire own proc/trackers/resource/save/condition branches individually read against existing concise normal description, overflow behavior and relevant Char/Mob/Shield/Burning/Chill/Bleeding/Lotus/weapon consumers. Hidden target/upgrade/counter information remains undisclosed. Own-source review completion only; shared EnchantmentExplanation/legacy/class/generation providers remain separately partial."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/enchantments/Crystal.java",
       "sha256": "35426ce8264bdc279fe754dcc12785888f81c1a49f2910878032d6c95d5ba5e7",
       "category": "weapon",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [
         "desc"
       ],
-      "review_notes": "Entire concrete source and relevant caller/storage/target effects read; normal provider checked against source, no mechanics changed. Elemental Strike/complete secondary scope remains open. Restore visible condition warning that ordinary provider had discarded. New read-only conditionDescription reuses exact old public visual-wear states; no exact hidden wear exposed. Melee/thrown wording separated. Actual item.info six-state/purity and throwable regression passes.",
+      "review_notes": "Entire own proc/trackers/resource/save/condition branches individually read against existing concise normal description, overflow behavior and relevant Char/Mob/Shield/Burning/Chill/Bleeding/Lotus/weapon consumers. Hidden target/upgrade/counter information remains undisclosed. Own-source review completion only; shared EnchantmentExplanation/legacy/class/generation providers remain separately partial.",
       "wording_corrected": true
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/enchantments/Elastic.java",
       "sha256": "f44c7957df48ec699d621f4a3fa9786205eb5ae03c494c29a24366385075220b",
       "category": "weapon",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_UNCHANGED",
       "description_methods": [],
-      "review_notes": "Entire concrete enchantment source and relevant Char/Mob damage, loot or tracker paths read. Ordinary provider checked against actual effect, no gameplay change. Existing real proc/power/suppression/identification tests retained. Class-specific Elemental Strike/secondary scope remains open."
+      "review_notes": "Entire own proc/trackers/resource/save/condition branches individually read against existing concise normal description, overflow behavior and relevant Char/Mob/Shield/Burning/Chill/Bleeding/Lotus/weapon consumers. Hidden target/upgrade/counter information remains undisclosed. Own-source review completion only; shared EnchantmentExplanation/legacy/class/generation providers remain separately partial."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/enchantments/Eldritch.java",
       "sha256": "45ccee2b5945a53ad70570bc6ecf43a982b1441506aa5587cd243f8c78908e2d",
       "category": "weapon",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [],
-      "review_notes": "Entire concrete source and relevant caller/storage/target effects read; normal provider checked against source, no mechanics changed. Elemental Strike/complete secondary scope remains open. Neutral creatures can be affected. New real proc regressions prove neutral/enemy effects and ally/caster/primary exclusions. Ordinary text no longer wrongly implies enemies-only.",
+      "review_notes": "Entire own proc/trackers/resource/save/condition branches individually read against existing concise normal description, overflow behavior and relevant Char/Mob/Shield/Burning/Chill/Bleeding/Lotus/weapon consumers. Hidden target/upgrade/counter information remains undisclosed. Own-source review completion only; shared EnchantmentExplanation/legacy/class/generation providers remain separately partial.",
       "wording_corrected": true
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/enchantments/Grim.java",
       "sha256": "b5d6b67fdc601f1ea872f3e578baaaedb3adc8145b07cf9c2d99b5a09a5a387f",
       "category": "weapon",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_UNCHANGED",
       "description_methods": [],
-      "review_notes": "Entire concrete source and relevant caller/storage/target effects read; normal provider checked against source, no mechanics changed. Elemental Strike/complete secondary scope remains open."
+      "review_notes": "Entire own proc/trackers/resource/save/condition branches individually read against existing concise normal description, overflow behavior and relevant Char/Mob/Shield/Burning/Chill/Bleeding/Lotus/weapon consumers. Hidden target/upgrade/counter information remains undisclosed. Own-source review completion only; shared EnchantmentExplanation/legacy/class/generation providers remain separately partial."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/enchantments/Kinetic.java",
       "sha256": "96703a018cab0d40f0987a24e94554d9d280993362c3812e5d30e9af82a2a04f",
       "category": "weapon",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [
         "desc"
       ],
-      "review_notes": "Entire concrete enchantment source and relevant Char/Mob damage, loot or tracker paths read. Ordinary provider checked against actual effect, no gameplay change. Existing real proc/power/suppression/identification tests retained. Class-specific Elemental Strike/secondary scope remains open. Ordinary stored-damage buff identifies Kinetic/Unstable successful hits and fading rather than vague any attack. Actual Unstable consumption path read. Source storage/decay formulas unchanged; full shared chance/panel audit still open. Current normal provider now shows live percent of newly stored excess and a concise known-Arcana baseline; actual Char.damage regression at ring-2/0/3 proves new storage and exclusion of reused10damage. Full3050pass. New native190.61% owned window prepared for next pair, not in390.",
+      "review_notes": "Entire own proc/trackers/resource/save/condition branches individually read against existing concise normal description, overflow behavior and relevant Char/Mob/Shield/Burning/Chill/Bleeding/Lotus/weapon consumers. Hidden target/upgrade/counter information remains undisclosed. Own-source review completion only; shared EnchantmentExplanation/legacy/class/generation providers remain separately partial.",
       "wording_corrected": true
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/enchantments/Lucky.java",
       "sha256": "fa6d37bc1e2edc970cfb26ddfc79d934fb816a32d28a0163aa92b6586e7bd906",
       "category": "weapon",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [],
-      "review_notes": "Entire concrete enchantment source and relevant Char/Mob damage, loot or tracker paths read. Ordinary provider checked against actual effect, no gameplay change. Existing real proc/power/suppression/identification tests retained. Class-specific Elemental Strike/secondary scope remains open. Loot may include Gold, so normal/detailed text says extra loot, not only consumables. RingOfWealth generator and outlevelled Mob.rollToDropLoot guard read; existing actual Arcana intermediate-roll regression preserved.",
+      "review_notes": "Entire own proc/trackers/resource/save/condition branches individually read against existing concise normal description, overflow behavior and relevant Char/Mob/Shield/Burning/Chill/Bleeding/Lotus/weapon consumers. Hidden target/upgrade/counter information remains undisclosed. Own-source review completion only; shared EnchantmentExplanation/legacy/class/generation providers remain separately partial.",
       "wording_corrected": true
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/enchantments/Projecting.java",
       "sha256": "07d9c846d41bae4e5a9844a6330e8a956a52b3ff1223ca1a065de2d458c6a41a",
       "category": "weapon",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [],
-      "review_notes": "Entire concrete source and relevant caller/storage/target effects read; normal provider checked against source, no mechanics changed. Elemental Strike/complete secondary scope remains open. Own/missile/reachFactor callers read. Ordinary text states enchantment contribution instead of false total under Brawler/Ascend, with concise known-Arcana baseline. Actual reach at all four stance/Ascend combinations and inspection purity tested. No range change.",
+      "review_notes": "Entire own proc/trackers/resource/save/condition branches individually read against existing concise normal description, overflow behavior and relevant Char/Mob/Shield/Burning/Chill/Bleeding/Lotus/weapon consumers. Hidden target/upgrade/counter information remains undisclosed. Own-source review completion only; shared EnchantmentExplanation/legacy/class/generation providers remain separately partial.",
       "wording_corrected": true
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/enchantments/Shocking.java",
       "sha256": "f120eccd4f3c12bb33ba280a6087a0f0e9d54816a570a9666eb11ff4ce3adec8",
       "category": "weapon",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [],
-      "review_notes": "Entire concrete source and relevant caller/storage/target effects read; normal provider checked against source, no mechanics changed. Elemental Strike/complete secondary scope remains open. Neutral creatures can be affected. New real proc regressions prove neutral/enemy effects and ally/caster/primary exclusions. Ordinary text no longer wrongly implies enemies-only.",
+      "review_notes": "Entire own proc/trackers/resource/save/condition branches individually read against existing concise normal description, overflow behavior and relevant Char/Mob/Shield/Burning/Chill/Bleeding/Lotus/weapon consumers. Hidden target/upgrade/counter information remains undisclosed. Own-source review completion only; shared EnchantmentExplanation/legacy/class/generation providers remain separately partial.",
       "wording_corrected": true
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/enchantments/Unstable.java",
       "sha256": "8141c891526d4aace75fb8b00afb016161fbe2b6da2934240ff681a4f045cb14",
       "category": "weapon",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_UNCHANGED",
       "description_methods": [],
-      "review_notes": "Entire concrete enchantment source and relevant Char/Mob damage, loot or tracker paths read. Ordinary provider checked against actual effect, no gameplay change. Existing real proc/power/suppression/identification tests retained. Class-specific Elemental Strike/secondary scope remains open."
+      "review_notes": "Entire own proc/trackers/resource/save/condition branches individually read against existing concise normal description, overflow behavior and relevant Char/Mob/Shield/Burning/Chill/Bleeding/Lotus/weapon consumers. Hidden target/upgrade/counter information remains undisclosed. Own-source review completion only; shared EnchantmentExplanation/legacy/class/generation providers remain separately partial."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/enchantments/Vampiric.java",
       "sha256": "f85fa4beb642d4caf6b5d69326f1c268432855512d0a3ffc289f880d30627bec",
       "category": "weapon",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [],
-      "review_notes": "Entire concrete enchantment source and relevant Char/Mob damage, loot or tracker paths read. Ordinary provider checked against actual effect, no gameplay change. Existing real proc/power/suppression/identification tests retained. Class-specific Elemental Strike/secondary scope remains open. Normal warning when Healing0 even unknown upgrades; new real seeded proc checks actual no-heal on disabled rule with genuine successful rolls.",
+      "review_notes": "Entire own proc/trackers/resource/save/condition branches individually read against existing concise normal description, overflow behavior and relevant Char/Mob/Shield/Burning/Chill/Bleeding/Lotus/weapon consumers. Hidden target/upgrade/counter information remains undisclosed. Own-source review completion only; shared EnchantmentExplanation/legacy/class/generation providers remain separately partial. Found normal healing percentage ignored nonzero custom healing rule. Reproduced25%rule stillshowing50%; corrected to approximate current rule-adjusted amount without altering rounding/fractionalcredit/effect.36actualproc cases pass across4healing settings\u00d73Arcana levels\u00d73damage inputs; inspection preservescredit/save. New native25/200windows prepared but not run; later than406APK.",
       "wording_corrected": true
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/enchantments/Venomous.java",
       "sha256": "d66060726db59a723600325c14fbd580d6f35b6ebd7f4bc468357757d1ec4fef",
       "category": "weapon",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_UNCHANGED",
       "description_methods": [],
-      "review_notes": "Entire concrete enchantment source and relevant Char/Mob damage, loot or tracker paths read. Ordinary provider checked against actual effect, no gameplay change. Existing real proc/power/suppression/identification tests retained. Class-specific Elemental Strike/secondary scope remains open."
+      "review_notes": "Entire own proc/trackers/resource/save/condition branches individually read against existing concise normal description, overflow behavior and relevant Char/Mob/Shield/Burning/Chill/Bleeding/Lotus/weapon consumers. Hidden target/upgrade/counter information remains undisclosed. Own-source review completion only; shared EnchantmentExplanation/legacy/class/generation providers remain separately partial."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/enchantments/Vorpal.java",
       "sha256": "888b19ec3c41c63618e605cddc910d36d973da0a0438eb2f6846e0d64cbe4ac1",
       "category": "weapon",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [],
-      "review_notes": "Entire concrete enchantment source and relevant Char/Mob damage, loot or tracker paths read. Ordinary provider checked against actual effect, no gameplay change. Existing real proc/power/suppression/identification tests retained. Class-specific Elemental Strike/secondary scope remains open. Ordinary text correctly says replaces immediate damage with bleeding. New actual proc\u2192Char.damage test proves HP/shield unchanged for bleeding conversion and normal HP/shield loss for immune target; initial headless sprite-scale fixture failure preserved/corrected, no source damage change.",
+      "review_notes": "Entire own proc/trackers/resource/save/condition branches individually read against existing concise normal description, overflow behavior and relevant Char/Mob/Shield/Burning/Chill/Bleeding/Lotus/weapon consumers. Hidden target/upgrade/counter information remains undisclosed. Own-source review completion only; shared EnchantmentExplanation/legacy/class/generation providers remain separately partial.",
       "wording_corrected": true
     },
     {
@@ -4466,7 +4466,7 @@
       "review_notes": "Previously omitted normal buff source added. Entire own duration/decay/save/icon path and actual Hero/Char hit/protection consumer read. Ordinary prose shorter; Bless/Hex/Daze percentages use live ROLL_FACTOR; other languages retain existing turn argument plus ignored extra argument. Existing optional panels unchanged. Real8combination\u00d7100seed\u00d72direction hit tests assert live percentages; actual defensive decay/save/read-only test passes.3113core457. New ordinary Android window pending406. Own-source completion, not all BuffExplanation/class providers."
     }
   ],
-  "completed_units": 290,
-  "latest_tests": "3113core/457suites all fail/error/skip zero. Five concise ordinary buff descriptions; live Bless/Hex/Daze percentages checked alongside real8mask\u00d7100seed\u00d72direction hit-contest executions. Barkskin/ArcaneArmor actual decay, save/reload and read-only current values at two intervals pass. Full raw XML/log /workspace/apd406-defensive-evidence-20261109/accepted-full. Five ordinary Android windows pending406; no newpanels/gameplay/save changes.405test-only original-app retry pending.",
+  "completed_units": 307,
+  "latest_tests": "3114core457 no failures/errors/skips. Vampiric nonzero customhealing normal-tooltip mismatch reproduced, corrected;36actual activations (4healing\u00d73Arcana\u00d73damage), credit/state preservation pass. All earlier combat/description/save tests retained. Fullraw /workspace/apd-vampiric-evidence-20261109/accepted-full. Source-only Android compilation requested; newest25/200nativewindows NOT yet run, not included in406. Wholeauditunfinished.",
   "message_inventory_entries": 5339
 }

@@ -209,3 +209,8 @@ Full Dart/TippedDart own paths individually reconciled: crossbow cache/knowledge
 ### Rejected404 preserved independently of later retry
 
 Private rejected404draft retains both original unaccepted APKs in explicitly UNVERIFIED archive plus raw both-variant rejected evidence; preservation42591322817SUCCESS. No release publication, no accepted-runtime claim and no rebuild. Original source3b247dec53962815ff9895998285d268b28eaaad preserved.405test-only retry42590603308 compiled corrected instrumentation only and now runs all12cases on immutable original405pair; sourceb5495528fcc772d2f37c0dcb625feaab0a6ecbb3.406build42591183228pending; latestverified403.
+
+
+### Vampiric custom-healing description regression and seventeen own enchantment reviews
+
+Full17own source/trackers/condition/save paths individually read with actualChar/Mob/resource/effect consumers. Shared/class/legacy providers remain separate. Found Vampiric ordinary healpercent ignored nonzero customhealing setting; real25%rule regression showed50%. Corrected read-only nominalpercentage with about/HPcap wording for existing round/fractionalcredit mechanics.36actualactivations across25/50/100/200healing,Arcana0/3/12,damage5/12/20 pass and inspection preservescredit/state.3114core457allpass; initialfailure and acceptedfullXML/log preserved. Two actual25/200nativewindows prepared, NOT run; newestchange notin406. Source-only debug/release/testJava/desktop verification requested, no newAPK.436units433full/partial350corrected307complete129unresolved;5339Englishkeys. Wholeauditstillunfinished.

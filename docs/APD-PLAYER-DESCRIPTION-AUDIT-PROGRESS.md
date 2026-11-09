@@ -357,3 +357,8 @@ Barkskin/ArcaneArmor ordinary text shorter with live range and next weakening; n
 ### Dart and coating own-source closure
 
 Full Dart/TippedDart own paths individually reconciled: crossbow cache/knowledge/thread isolation, charged damage versus tipuses/AOE, coating2perseed/1turn, wear and source/target Lotus/DurableTips/100usecap, cleaning/impactconversion/merge waste/seedmap. Existing concise prose correct; no additional gameplay or wording changes. Individual tips, MissileWeapon and shared effects remain separately tracked.436units433full/partial350corrected290complete146unresolved;5339English keys. Later than406producing source; review closures only.
+
+
+### Vampiric custom-healing description regression and seventeen own enchantment reviews
+
+Full17own source/trackers/condition/save paths individually read with actualChar/Mob/resource/effect consumers. Shared/class/legacy providers remain separate. Found Vampiric ordinary healpercent ignored nonzero customhealing setting; real25%rule regression showed50%. Corrected read-only nominalpercentage with about/HPcap wording for existing round/fractionalcredit mechanics.36actualactivations across25/50/100/200healing,Arcana0/3/12,damage5/12/20 pass and inspection preservescredit/state.3114core457allpass; initialfailure and acceptedfullXML/log preserved. Two actual25/200nativewindows prepared, NOT run; newestchange notin406. Source-only debug/release/testJava/desktop verification requested, no newAPK.436units433full/partial350corrected307complete129unresolved;5339Englishkeys. Wholeauditstillunfinished.

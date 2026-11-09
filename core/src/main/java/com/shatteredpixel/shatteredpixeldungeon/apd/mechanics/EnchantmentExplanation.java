@@ -110,7 +110,10 @@ public final class EnchantmentExplanation {
             case "Vorpal":return "Has a "+chance+" chance to replace a hit's immediate damage with bleeding. Harder hits cause heavier bleeding, which weakens over time.";
             case "Lucky":return "Has a "+chance+" chance to make a killing blow produce extra loot unless you have outlevelled that enemy."+(base*power>1?" At 100%, more enchantment power can improve the reward instead.":"");
             case "Corrupting":return "Has a "+chance+" chance to turn an enemy you kill into a corrupted ally. Some enemies cannot be corrupted."+(strength>1.1f?" The new ally also gains _"+Math.round(5*(strength-1))+" turns_ of adrenaline.":"");
-            case "Vampiric":return "Has a "+chance+" chance to heal you for _"+playerNumber(50*strength)+"%_ of the hit's damage. It activates more often when you are low on health.";
+            case "Vampiric":{
+                int healing=com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomCombatHooks.percentage(com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomDungeonRules.Slider.HEALING);
+                return "Has a "+chance+" chance to heal you for about _"+playerNumber(50*strength*healing/100f)+"%_ of the attack’s damage, limited by missing health. It activates more often when you are low on health.";
+            }
             case "Kinetic":{
                 Kinetic.ConservedDamage stored=hero==null?null:hero.buff(Kinetic.ConservedDamage.class);
                 String amount=Math.abs(power-1f)<.00001f?"excess damage":"_"+playerNumber(100*power)+"%_ of new excess damage";
