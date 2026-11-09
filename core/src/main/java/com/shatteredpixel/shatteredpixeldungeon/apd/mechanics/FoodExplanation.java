@@ -65,14 +65,17 @@ public final class FoodExplanation {
     public static String specialEffect(Food food,Hero hero){
         if(food instanceof MysteryMeat.PlaceHolder)return "";
         String health=hero==null?"one quarter of your maximum health, rounded down":(hero.HT/4)+" HP";
+        boolean noHealing=hero!=null&&com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomHealingHooks.disabled();
+        String healing=noHealing?"a healing effect disabled by your current rules":"healing for "+health+" before healing modifiers";
         String bark=hero==null?"one quarter of your maximum health, rounded down":Integer.toString(hero.HT/4);
         String cure="cures poison, bleeding, blindness, weakness, vulnerability, cripple, drowsiness, slowing and vertigo";
-        if(food instanceof FrozenCarpaccio)return "\n_Frozen meat_\nEach meal has five equally likely outcomes (20% each): invisibility for "+n(Invisibility.DURATION)+" turns; Barkskin that can block up to "+bark+" extra physical damage; a cure for the ailments listed below; healing for "+health+" before healing modifiers; or no extra benefit. Barkskin weakens by 1 each turn. The cure "+cure+".";
-        if(food instanceof PhantomMeat)return "\n_Phantom meat_\nGrants invisibility for "+n(Invisibility.DURATION)+" turns, healing for "+health+" before healing modifiers, and Barkskin that can block up to "+bark+" extra physical damage, weakening by 1 each turn. It also "+cure+".";
+        if(food instanceof FrozenCarpaccio)return "\n_Frozen meat_\nEach meal has five equally likely outcomes (20% each): invisibility for "+n(Invisibility.DURATION)+" turns; Barkskin that can block up to "+bark+" extra physical damage; a cure for the ailments listed below; "+healing+"; or no extra benefit. Barkskin weakens by 1 each turn. The cleansing outcome "+cure+".";
+        if(food instanceof PhantomMeat)return "\n_Phantom meat_\nGrants invisibility for "+n(Invisibility.DURATION)+" turns and Barkskin that can block up to "+bark+" extra physical damage, weakening by 1 each turn. "+(noHealing?"Your current rules prevent its healing.":"Restores "+health+" before healing modifiers.")+" It also "+cure+".";
         if(food instanceof MysteryMeat)return "\n_Raw meat risk_\nEach meal has a 20% chance of each outcome: catching fire; being rooted for "+n(Roots.DURATION*2)+" turns; being poisoned for "+(hero==null?"a duration based on your maximum health":(hero.HT/5)+" turns")+"; being slowed for "+n(Slow.DURATION)+" turns; or no harmful effect. Poison damage varies over its duration. Immunities and resistances can protect you. Cook or freeze the meat to avoid these risks.";
+        if(food instanceof MeatPie&&noHealing)return "\n_Well Fed_\nPauses hunger for "+n(Dungeon.isChallenged(Challenges.NO_FOOD)?Hunger.STARVING/3:Hunger.STARVING)+" turns, but your current rules prevent its healing. Salt Cube extends this duration. Eating another pie refreshes it.";
         if(food instanceof MeatPie)return "\n_Well Fed_\nPauses hunger and normally restores 1 HP every "+WellFed.HEAL_INTERVAL+" turns for "+n(Dungeon.isChallenged(Challenges.NO_FOOD)?Hunger.STARVING/3:Hunger.STARVING)+" turns. Salt Cube makes both the duration and the time between heals longer. Your healing setting still applies. Eating another pie refreshes Well Fed instead of stacking its duration.";
         if(food instanceof Berry)return "\nEvery second berry you eat drops one random seed at your feet.";
-        if(food instanceof SupplyRation)return "\nRestores 5 HP before healing modifiers and adds 1 charge to your Cloak of Shadows, if carried. A full cloak gains no extra charge.";
+        if(food instanceof SupplyRation)return "\n"+(noHealing?"Your current rules prevent its healing. It still adds 1 charge":"Restores 5 HP before healing modifiers and adds 1 charge")+" to your Cloak of Shadows, if carried. A full cloak gains no extra charge.";
         if(food instanceof Blandfruit)return "\n"+BlandfruitExplanation.details((Blandfruit)food,hero);
         if(food instanceof Pasty)return "\n"+PastyExplanation.details(hero);
         return "";

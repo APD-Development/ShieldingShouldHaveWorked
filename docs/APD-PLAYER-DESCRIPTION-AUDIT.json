@@ -2,11 +2,11 @@
   "scope": "Every item category, inherited and generated descriptions, enchantments/glyphs/curses, class interactions and existing secondary panels. Inventory is not review completion.",
   "baseline_commit": "32f4f3beab4c23b404c3cb1d43bfa06a39165e70",
   "counting": "Source units, not distinct item types. reviewed_units includes partial reviews; completed_units excludes partial/pending dependency. corrected_units counts source units with corrections, including incomplete reviews. Inventory/export/tests alone are not an individual review.",
-  "source_units": 436,
+  "source_units": 437,
   "message_entries": 2432,
-  "reviewed_units": 433,
-  "corrected_units": 351,
-  "unresolved_units": 50,
+  "reviewed_units": 434,
+  "corrected_units": 353,
+  "unresolved_units": 39,
   "category_counts": {
     "apd": 1,
     "mechanics": 38,
@@ -31,7 +31,7 @@
     "weapon": 92,
     "plants": 14,
     "ui": 1,
-    "windows": 3,
+    "windows": 4,
     "abilities": 1,
     "cleric_spells": 2,
     "buffs": 5
@@ -41,11 +41,11 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/ArcanaInfoDisplay.java",
       "sha256": "965f9c20553256b371ec6b8690433c70b54494eaefd8f85be89eff7f2b1e9a20",
       "category": "apd",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_UNCHANGED",
       "description_methods": [
         "effect"
       ],
-      "review_notes": "Read full legacy formatting and all current call sites2026-11-09. Only normal legacy append remained in SpiritBow via itemSummary; routed ordinary bow to existing concise playerDescription. Shared knownArcanaPower/unknown-ring/SpiritForm safeguards retained. Legacy public exports/tests not removed, full provider review remains open."
+      "review_notes": "2026-11-09: Full source and live/legacy callers reviewed: known-only combined ring/SpiritForm/aura authority, immunity and unknown-ring suppression, finite power, probability caps and strength thresholds. Ordinary item paths use concise playerDescription, not legacy duplicated append. Existing actual Arcana/modifier/purity/unknown/save tests pass. No panel availability or gameplay changes."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/AbilityExplanation.java",
@@ -98,12 +98,12 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/BlandfruitExplanation.java",
       "sha256": "035b9054fef3d5b3c03c2e638197094f9dd86ddd7527efbff8b1442ec6d92bbb",
       "category": "mechanics",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_UNCHANGED",
       "description_methods": [
         "summary",
         "details"
       ],
-      "review_notes": "Player-language food rewrites; actual source/variant evidence recorded in food entries. PotionExplanation-dependent fruit details pending. Normal zero-Healing rule notice now matches actual hero healing behavior; Shielding remains unaffected."
+      "review_notes": "2026-11-09: Full provider reviewed against actual cooked fruit forms, all twelve potion sources, food/nutrition, Pharmacophobia and zero-Healing branches, thrown shatter/chunks versus whole-fruit/well/pit branches. Existing concise normal effects and dangerous eating warnings accurate unchanged. Legacy formula details not attached to ordinary fruit panels; shared Potion source separately tracked."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/BlastExplanation.java",
@@ -181,35 +181,36 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/EnchantmentExplanation.java",
       "sha256": "439568cf97b29b744c1e168585a91bd8b38bd4344a22186bd6d250d69674a6d9",
       "category": "mechanics",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [
         "describe"
       ],
       "wording_corrected": true,
-      "review_notes": "Current ordinary-description pass: concise live values, duplicate mathematical prose removed. Existing optional details and entire category variants remain under review; panel decisions pending. See APD-DESCRIPTION-CORRECTION-2026-11-08.md. Followup2026-11-09: read shared regular/exotic labels, identity/actions/recipe code and inventory cancellation flow. Human cancellation warning preserves original consumption; cursed book warning names both actual exceptions. Wayward buff text shortened after real proc/accuracy checks; no new chance/calculation. Four existing retained enchantment details now plain timer/neutral witnesses/direct-damage replacement; source Shocking/Eldritch/Vorpal/Block paths and existing actual proc tests unchanged. No panel/formula changes. Full3064core457suites pass. Actual warning/Wayward/expanded windows pending394, not393; shared full secondary review remains open. Followup2026-11-09 reproduced Twin Upgrades hidden-companion disclosure: Sword known1damage4\u201324became11\u201352and Cleave10\u201330became24\u201365; Dart5\u201315became12\u201336. Existing thread-local weapon/crossbow inspection now excludes unknown companion upgrade contribution, clearly labels omission based solely on visible tier/talent/knowledge, covers normal/optional enchantment/passive-block/ring/legacy/staff queries. Raw combat still borrows actual8outside inspection and on another thread; knowledge change updates displayed values. Exception unwinding/pending crossbow state/read-only saved state retained. Four meaningful regressions pass, actual new owned Sword/Dart windows pending399. No gameplay, balance, saves, targeting or controls changed. Vampiric ordinary currentheal now includes live customhealing percent and saysabout due originalrounding/credit/cap. Reproduced regression and36actual activations in3114corepass. New nativewindows pending; not in406."
+      "review_notes": "2026-11-09: Full provider reviewed against built-in effects and existing actual proc/storage/HP/custom-Healing tests: known-only multiplicative/additive contributions, capped trigger probabilities versus strength, unknown/suppression fallbacks, intrinsic/projectile reach and temporary tracker purity. Concise ordinary values and without-Arcana comparison retained; Elastic panel absent. Other existing mechanic-specific panels unchanged pending owner review, no new panel."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/FoodExplanation.java",
-      "sha256": "257218fa2e334cd380cb7be0cd89d7af8e411840a5ab3c593da81e8d57549282",
+      "sha256": "c507030fa26b001af5004caaa5bafef8a9132048c1d0f63f5f49bce6f63ae40b",
       "category": "mechanics",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [
         "summary",
         "details"
       ],
-      "review_notes": "Player-language food rewrites; actual source/variant evidence recorded in food entries. PotionExplanation-dependent fruit details pending."
+      "review_notes": "2026-11-09: Full provider and actual food/base/WellFed/Horn consumers reviewed: nourishment/current meal time, OnDiet and conditional Horn reduction, five equal meat outcomes, quarter-HP request, berries, supply cloak charge, seasonal/cooked delegation. Added clear zero-Healing text for Frozen/Phantom/MeatPie/Supply without changing effects. Actual seeded healing result leaves HP unchanged, Phantom invisibility/Barkskin and supply cloak charge survive; pure inspection tests pass. No ordinary food calculation panel.",
+      "wording_corrected": true
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/GlyphExplanation.java",
       "sha256": "36ff5467fa20835471e753ffa7888958514fca452af7299a023e1b281ab560c6",
       "category": "mechanics",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [
         "summary",
         "details"
       ],
       "wording_corrected": true,
-      "review_notes": "Current ordinary-description pass: concise live values, duplicate mathematical prose removed. Existing optional details and entire category variants remain under review; panel decisions pending. See APD-DESCRIPTION-CORRECTION-2026-11-08.md. Added concise known-Arcana baseline parentheses for Flow/Swiftness/Camouflage/AntiMagic, matching existing chance-based glyph pattern; no new UI/panel/formula. Actual Flow and AntiMagic plus Camouflage duration/save/unknown-ring checks pass. Initial formatting-only assertion mismatch retained; corrected expected two-decimal ordinary display without changing mechanical checks. Full3045core. Native four-window fixture prepared, not yet run."
+      "review_notes": "2026-11-09: Full provider reviewed against built-in glyphs and actual movement/charm/push/shield/defer tests: known ring plus aura, passive negative-level sentinels, Burning-only immunity and capped shield, Stone target-dependent cap, Viscosity whole-point initial delay/diminishing ticks. Concise current ordinary values retained; Viscosity panel absent. Existing other specific panels unchanged pending owner review; no mechanic changes."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/KeyExplanation.java",
@@ -422,22 +423,22 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/UtilityItemExplanation.java",
       "sha256": "1588d3ba43bbc2dbcd6f5e93d8b94d16579240800c160463d79510895c8bd772",
       "category": "mechanics",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_UNCHANGED",
       "description_methods": [
         "details"
       ],
-      "review_notes": "Container section and holster formulas read; remaining utility item cases pending individual review."
+      "review_notes": "2026-11-09: Full legacy provider read against independently reviewed own-source utilities, keys/bags, actual seal capacity, resurrection, dew, material/resin, glyph selector and charging rules. Numeric preview/unknown/pure inspection tests retained; no ordinary UI calculations panel reattached. Shared item/class dependencies tracked separately."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/WandExplanation.java",
       "sha256": "c7951ce540bcdcc735fe3ac2ce6bd9b85cf856d86e3b6d915af76c4480e15ebb",
       "category": "mechanics",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [
         "details"
       ],
       "wording_corrected": true,
-      "review_notes": "Read full provider2026-11-09. Existing retained Warding/Regrowth sections shortened against actual capacity/onZap/chargeLimit/counter paths; shared header clearer, no new panels. Regrowth +10 avoids literal integer sentinel. Resin/curse infusion included, temporary cast levels excluded from capacity/depletion; whole-number division preserved exactly. Existing44hero/wand-level actual-private-formula, saved-counter and Warding temporary-level tests pass in full3103core. Other legacy branches and detailed Warlock/cross-class effects remain under review. New actual expanded windows prepared for400, not yet Android-verified."
+      "review_notes": "2026-11-09: Full provider reviewed against all thirteen individually reviewed wand sources: live/unknown/WildMagic bounds, SoulMark per-character chance and duration, empower consumption separation, Corruption resistance/pools, Warding capacity and Regrowth integer-division exhaustion. Only existing Warding/Regrowth panels reachable from ordinary UI, retained by owner pending review; other legacy dispatcher exports not reattached. Existing actual preview/charge/class/unknown tests pass."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/WeaponAbilityExplanation.java",
@@ -1327,11 +1328,11 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/food/Blandfruit.java",
       "sha256": "d9e064205cf27451f102d9c7560725546f4188734d5b26a26b2c6f3ee7b6f791",
       "category": "food",
-      "status": "REVIEWED_PENDING_DEPENDENCY",
+      "status": "REVIEWED_UNCHANGED",
       "description_methods": [
         "desc"
       ],
-      "review_notes": "Raw plus12actual seed-recipe forms and Chunks; verified actual apply/shatter dispatch, hazard warnings, Challenge behavior and normal meal timing. Secondary PotionExplanation text remains pending separate potion audit.",
+      "review_notes": "2026-11-09: Full own source including identity/names/default action, cooking/anonymized effect/save/glow, six shatter-and-chunks forms versus whole-fruit drops, two-energy recipe/sample and stacks reviewed. Own-source dependency check completed against individually reviewed potion classes and providers; shared Potion/general Item remain separately tracked. No new wording or gameplay change this pass.",
       "description_evidence": [
         "core/src/main/assets/messages/items/items.properties",
         "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/FoodExplanation.java"
@@ -4203,12 +4204,12 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/plants/Earthroot.java",
       "sha256": "c64d38bb55b0145e1f31270eb4d412acf3dd0f52f5a90174a178780ef3bca436",
       "category": "plants",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [
         "desc"
       ],
       "wording_corrected": true,
-      "review_notes": "Seed and plant normal descriptions checked against activation and Warden branches. Floor-one Fadeleaf, immunity limits and movement-ending effects distinguished. Earthroot/Sungrass/Swiftthistle buff details and shared Plant variants remain under review. Android acceptance pending. Entire own buff act/absorb/boost/intercept/save paths read. Ordinary Sungrass stored-healing label and TimeBubble prose shortened; existing advanced buff explanations use player language with real formulas. Actual Hero.spend intercept tested with unchanged cooldown and5.75remaining time, save/load preserved. Actual herb next-heal/last-hit/rounding regressions retained. Full3044core pass, new native buff windows pending. Complete shared Plant/UI variants still separately open."
+      "review_notes": "2026-11-09: Full source and nested armor reviewed: Warden Barkskin, reserve refresh rather than addition, location-bound block and final-hit overspend, live floor cap, save/icon. Existing concise normal/status text accurately says at least reserve and moving ends protection; actual activation/absorb tests pass. No mechanics changed."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/plants/Fadeleaf.java",
@@ -4300,23 +4301,23 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/plants/Sungrass.java",
       "sha256": "f321939c9d5577b59f7fbca666b6517d526cec83a98f901d4fe85f07bb197a7e",
       "category": "plants",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [
         "desc"
       ],
       "wording_corrected": true,
-      "review_notes": "Seed and plant normal descriptions checked against activation and Warden branches. Floor-one Fadeleaf, immunity limits and movement-ending effects distinguished. Earthroot/Sungrass/Swiftthistle buff details and shared Plant variants remain under review. Android acceptance pending. Entire own buff act/absorb/boost/intercept/save paths read. Ordinary Sungrass stored-healing label and TimeBubble prose shortened; existing advanced buff explanations use player language with real formulas. Actual Hero.spend intercept tested with unchanged cooldown and5.75remaining time, save/load preserved. Actual herb next-heal/last-hit/rounding regressions retained. Full3044core pass, new native buff windows pending. Complete shared Plant/UI variants still separately open. Followup2026-11-09: actual Sungrass normal/Warden activation and ticks under HEALING0 tested, player-only warnings on plant/seed/herbal buff; NPC healing and no-hero preview preserved. BarrenLand seed wrapper now states original no-growth rule, actual Level.plant still returns null. Dart selector accepted Blandfruit seed with no recipe; reproduced then filtered by existing TippedDart.types, every real recipe remains selectable and creates expected quantity. No valid recipe, healing rule, challenge, turn cost or new interface changed. English inventory5334. Full3068core457suites pass; actual picker disabled-slot tap/valid prompt and seed states prepared for394, not393. Shared/dependent review remains partial."
+      "review_notes": "2026-11-09: Full source and nested health reviewed: Warden versus location-bound pool, additive boost, strict >1 fractional update, detecting-move final update, custom Healing and waiting preferences, saved partial progress. Current concise ordinary/status/zero-Healing text accurate; actual pool/HP/save/waiting regressions pass. No mechanics changed."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/plants/Swiftthistle.java",
       "sha256": "e15f72fe56be0399b6dabcb654583b0d05e7a12f6af5125bbbfab39fbf861a84",
       "category": "plants",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [
         "desc"
       ],
       "wording_corrected": true,
-      "review_notes": "Seed and plant normal descriptions checked against activation and Warden branches. Floor-one Fadeleaf, immunity limits and movement-ending effects distinguished. Earthroot/Sungrass/Swiftthistle buff details and shared Plant variants remain under review. Android acceptance pending. Entire own buff act/absorb/boost/intercept/save paths read. Ordinary Sungrass stored-healing label and TimeBubble prose shortened; existing advanced buff explanations use player language with real formulas. Actual Hero.spend intercept tested with unchanged cooldown and5.75remaining time, save/load preserved. Actual herb next-heal/last-hit/rounding regressions retained. Full3044core pass, new native buff windows pending. Complete shared Plant/UI variants still separately open."
+      "review_notes": "2026-11-09: Full source and nested TimeBubble reviewed: reset/action allowance, exact expiry tolerance, deferred/disarmed plant/trap presses, fx and save, Warden Haste. Concise current ordinary/status time budget and attacks/magic break text accurate; actual partial-time/save/deferred tests retained. No mechanics changed."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/MechanicsInfoPanel.java",
@@ -4465,10 +4466,19 @@
         "desc"
       ],
       "review_notes": "Previously omitted normal buff source added. Entire own duration/decay/save/icon path and actual Hero/Char hit/protection consumer read. Ordinary prose shorter; Bless/Hex/Daze percentages use live ROLL_FACTOR; other languages retain existing turn argument plus ignored extra argument. Existing optional panels unchanged. Real8combination\u00d7100seed\u00d72direction hit tests assert live percentages; actual defensive decay/save/read-only test passes.3113core457. New ordinary Android window pending406. Own-source completion, not all BuffExplanation/class providers."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/WndInfoPlant.java",
+      "sha256": "12ea7362c2382e79701986f9fd0116086ffc2e3956236cf3f7a14b50f5bcb53b",
+      "category": "windows",
+      "status": "REVIEWED_CORRECTED",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "2026-11-09 individually inspected previously omitted plant window. Removed universal plant calculations supplier/button, outside owner-retained mechanic-specific groups, keeping normal species/Warden descriptions and existing plain window. No new layout or effects. Thirty actual plant windows across NONE/WARDEN prepared to assert no expander, text screen bounds, pure save/time; Android pending next pair."
     }
   ],
-  "completed_units": 386,
-  "latest_tests": "3132core/457suites all0 after ordinary Frost/Corruption/Regrowth-plant and portable-alchemy wording. All thirteen wand own sources and shared Wand reviewed, legacy CursedWand/effect/class providers separately open. New plant/Frost windows pending next pair.410 original pair3131core and Android compilation passed;12runtime cases in progress.409 latest published.",
+  "completed_units": 398,
+  "latest_tests": "3133 core457 all0 after actual zero-Healing food benefits and removal of ordinary plant universal panel. Thirty actual plant windows plus four zero-Healing foods/Frost windows prepared, not yet run.3132 Android source compile42609605936passed before latest food/plant changes.4103131pair runtime in progress;409latestpublished.",
   "message_inventory_entries": 5343,
   "message_inventory_counting": "Current authored English property entries across nine files;2432 item entries. Two concise zero-Healing dew/waterskin keys added. Exact Adult OFF/ON checks retained."
 }

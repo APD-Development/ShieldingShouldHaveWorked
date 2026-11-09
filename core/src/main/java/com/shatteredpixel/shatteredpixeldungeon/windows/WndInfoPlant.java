@@ -34,8 +34,7 @@ public class WndInfoPlant extends WndTitledMessage {
 	public WndInfoPlant( Plant plant ) {
 		
 		super(TerrainFeaturesTilemap.tile( plant.pos, Dungeon.level.map[plant.pos]),
-				Messages.titleCase(plant.name()), plant.desc(),
-                ()->com.shatteredpixel.shatteredpixeldungeon.apd.mechanics.PlantExplanation.details(plant.getClass(),Dungeon.hero),0);
+				Messages.titleCase(plant.name()), plant.desc());
 
 	}
 }
