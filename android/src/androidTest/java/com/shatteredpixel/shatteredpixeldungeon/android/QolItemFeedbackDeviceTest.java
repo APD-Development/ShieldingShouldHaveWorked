@@ -505,6 +505,15 @@ public class QolItemFeedbackDeviceTest {
         AtomicReference<Window> shown=new AtomicReference<>();TopScoresDeviceTest.render(()->{com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Healing healing=new com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Healing();healing.setHeal(100,.25f,0);assertTrue(healing.desc().contains("Next heal: up to 25 HP"));com.watabou.utils.Bundle before=new com.watabou.utils.Bundle();healing.storeInBundle(before);Window window=new WndInfoBuff(healing);GameScene.show(window);shown.set(window);com.watabou.utils.Bundle after=new com.watabou.utils.Bundle();healing.storeInBundle(after);assertEquals(before.toString(),after.toString());});
         try{Thread.sleep(300);TopScoresDeviceTest.render(()->assertDescriptionViewport(shown.get()));TopScoresDeviceTest.screenshot("qol-gradual-healing-concise-status.png");}finally{TopScoresDeviceTest.render(()->shown.get().hide());}
     }
+    private static void liveElementalBlastDescriptionsRender()throws Exception{
+        final com.shatteredpixel.shatteredpixeldungeon.items.KindOfWeapon weapon=Dungeon.hero.belongings.weapon;
+        final java.util.LinkedHashMap<com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent,Integer> talents=new java.util.LinkedHashMap<>(Dungeon.hero.talents.get(3));
+        try{for(String name:new String[]{"Lightning","Corrosion","Warding","Transfusion"})for(int rank:new int[]{0,4}){
+            final int value=rank;final com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand wand=(com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand)Class.forName("com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOf"+name).getDeclaredConstructor().newInstance();
+            AtomicReference<Window> shown=new AtomicReference<>();TopScoresDeviceTest.render(()->{Dungeon.hero.talents.get(3).put(com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent.ELEMENTAL_POWER,value);Dungeon.hero.talents.get(3).put(com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent.BLAST_RADIUS,value);Dungeon.hero.talents.get(3).put(com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent.HEROIC_ENERGY,value);Dungeon.hero.belongings.weapon=new com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff(wand);com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.mage.ElementalBlast ability=new com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.mage.ElementalBlast();String desc=ability.desc();assertTrue(desc,desc.contains("_"+(4+value)+" tiles_"));assertFalse(desc.contains("Charge cost:"));Window window=new WndInfoArmorAbility(HeroClass.MAGE,ability);GameScene.show(window);shown.set(window);});
+            try{Thread.sleep(250);TopScoresDeviceTest.render(()->assertDescriptionViewport(shown.get()));TopScoresDeviceTest.screenshot("qol-live-blast-"+name+"-rank"+rank+".png");}finally{TopScoresDeviceTest.render(()->shown.get().hide());}
+        }}finally{TopScoresDeviceTest.render(()->{Dungeon.hero.belongings.weapon=weapon;Dungeon.hero.talents.get(3).clear();Dungeon.hero.talents.get(3).putAll(talents);});}
+    }
     private static void retainedMonkEnergyDetailsRender()throws Exception{
         final com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass heroClass=Dungeon.hero.heroClass;final com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass subclass=Dungeon.hero.subClass;
         final java.util.ArrayList<java.util.LinkedHashMap<com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent,Integer>> talents=Dungeon.hero.talents;
@@ -1234,6 +1243,7 @@ public class QolItemFeedbackDeviceTest {
             additionalTrinketDetailsRender();
             retainedThreeArtifactDetailsRender();
             retainedMonkEnergyDetailsRender();
+            liveElementalBlastDescriptionsRender();
             gradualHealingNonStackDescriptionsRender();
             hiddenTwinUpgradeDescriptionsRender();
             divineInspirationChoiceDescriptionRenders();

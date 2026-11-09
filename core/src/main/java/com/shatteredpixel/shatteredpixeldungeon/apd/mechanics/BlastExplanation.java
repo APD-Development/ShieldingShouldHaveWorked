@@ -31,6 +31,31 @@ import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 public final class BlastExplanation {
     private BlastExplanation(){}
     private static String n(float x){return ObfuscationExplanation.number(x);}
+    /** Existing normal description: public staff type and talents, never hidden levels or targets. */
+    public static String summary(Hero hero){
+        if(hero==null)return "";
+        MagesStaff staff=hero.belongings.getItem(MagesStaff.class);
+        if(staff==null||staff.wandClass()==null)return "";
+        Class<? extends Wand> type=staff.wandClass();float power=1+.25f*hero.pointsInTalent(Talent.ELEMENTAL_POWER),factor=ElementalBlast.blastDamageFactor(type);
+        String damage=Float.isFinite(factor)&&factor>0?"Initial base damage: _"+Math.round(15*power*factor)+"–"+Math.round(25*power*factor)+"_. ":"";
+        String effect;
+        if(type==WandOfMagicMissile.class)effect="Grants _"+n(power*Recharging.DURATION/2)+" turns_ of wand recharging.";
+        else if(type==WandOfLightning.class)effect="Electrifies water and paralyzes survivors for _"+n(power*Paralysis.DURATION/2)+" turns_.";
+        else if(type==WandOfDisintegration.class)effect="Passes through walls.";
+        else if(type==WandOfFireblast.class)effect="Sets creatures and flammable terrain on fire, opens ordinary doors and clears freezing effects.";
+        else if(type==WandOfCorrosion.class)effect="Inflicts _4 turns_ of corrosion, starting at _"+Math.round(6*power)+" damage_.";
+        else if(type==WandOfBlastWave.class)effect="Pushes creatures outward; obstacles can stop the push.";
+        else if(type==WandOfLivingEarth.class)effect="Heals an existing Earth Guardian when creatures are hit.";
+        else if(type==WandOfFrost.class)effect="Puts out fires and freezes survivors for _"+n(power*Frost.DURATION)+" turns_.";
+        else if(type==WandOfPrismaticLight.class)effect="Maps nearby terrain and reveals secrets, blinds creatures for _"+n(power*Blindness.DURATION/2)+" turns_, and grants _"+n(power*(Dungeon.isChallenged(Challenges.DARKNESS)?10:50))+" turns_ of Light.";
+        else if(type==WandOfWarding.class)effect="Restores spent attacks to upgraded wards and heals sentries. Basic wards are unchanged. This blast passes through walls.";
+        else if(type==WandOfTransfusion.class)effect="Heals allies and charmed creatures by _"+Math.round(10*power)+" HP_, turning excess healing into shielding. Other creatures are charmed for _"+n(power*Charm.DURATION/2)+" turns_, or take _"+Math.round(15*power)+"–"+Math.round(25*power)+" base damage_ if undead.";
+        else if(type==WandOfCorruption.class)effect="Inflicts _"+n(power*5)+" turns_ of amok, making creatures attack each other.";
+        else if(type==WandOfRegrowth.class)effect="Roots creatures for _"+n(power*Roots.DURATION)+" turns_. Each suitable plant-free tile has a _"+n(Math.min(100,33*power))+"%_ chance to grow tall grass.";
+        else return "";
+        return damage+effect+(type==WandOfWarding.class?"":" Direct harmful effects spare allies.")
+            +(type==WandOfFireblast.class||type==WandOfLightning.class?" Terrain hazards can still harm you and allies.":"");
+    }
     public static String details(Hero hero){
         if(hero==null)return "";
         MagesStaff staff=hero.belongings.getItem(MagesStaff.class);

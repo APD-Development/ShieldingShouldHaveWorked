@@ -2,11 +2,11 @@
   "scope": "Every item category, inherited and generated descriptions, enchantments/glyphs/curses, class interactions and existing secondary panels. Inventory is not review completion.",
   "baseline_commit": "32f4f3beab4c23b404c3cb1d43bfa06a39165e70",
   "counting": "Source units, not distinct item types. reviewed_units includes partial reviews; completed_units excludes partial/pending dependency. corrected_units counts source units with corrections, including incomplete reviews. Inventory/export/tests alone are not an individual review.",
-  "source_units": 428,
+  "source_units": 429,
   "message_entries": 2411,
-  "reviewed_units": 423,
-  "corrected_units": 340,
-  "unresolved_units": 180,
+  "reviewed_units": 426,
+  "corrected_units": 342,
+  "unresolved_units": 179,
   "category_counts": {
     "apd": 1,
     "mechanics": 38,
@@ -31,7 +31,8 @@
     "weapon": 92,
     "plants": 14,
     "ui": 1,
-    "windows": 3
+    "windows": 3,
+    "abilities": 1
   },
   "entries": [
     {
@@ -104,12 +105,14 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/BlastExplanation.java",
-      "sha256": "5c5bc66dc5c84267f83b2c9cc9e79dc2817f6cb6421eec6319325b613b3e481e",
+      "sha256": "9ac84a31886ce2a63b49f0e75982bdf8cf6fe92e5208f98ed0400411b5594e6d",
       "category": "mechanics",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [
         "details"
-      ]
+      ],
+      "wording_corrected": true,
+      "review_notes": "Entire provider and actual ElementalBlast thirteen-type activation branches individually reconciled2026-11-09, plus Guardian.setInfo/ward.wandHeal actual consumers. Existing ordinary English ability text had stale unmodified radius/damage/status durations; concise summary now live publicstafftype/talents/challenge values without hidden levels/targets. Corrects unsupported all-targets-outside-area promise and basic-ward repair claim; distinguishes created fire/electricity hazards from ally-safe direct hits. Existing detailed formulas/control preserved. Actual13types\u00d75ranks normal GameScene descriptions verify radius/damage/durations/hidden-level invariance in3109fullcore457. Existing actual6ward-tier repairs retained. Eight actual ability windows prepared for403; not yet Android-verified."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/BombExplanation.java",
@@ -553,10 +556,11 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/Heap.java",
       "sha256": "affeb3a2729ddf90dbe90a5229c15650d39dc5f6cda9e3608289f56eb981400a",
       "category": "items",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
+      "status": "PARTIAL_REVIEW",
       "description_methods": [
         "info"
-      ]
+      ],
+      "review_notes": "Read actual info dispatcher2026-11-09 and matching English chest/GoldenKey/CrystalKey/tomb/skeleton/remains text. Crystal chest intentionally discloses artifact/wand/ring category only; ordinary heap delegates original item.info and its knowledge guards. Current prose clear, no change warranted. Full opening/explosion/haunting/serialization interactions remain unreviewed here, so not complete."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/Honeypot.java",
@@ -4364,9 +4368,20 @@
         "SpellButton.onRightClick"
       ],
       "review_notes": "Previously omitted UI source added to inventory2026-11-09. Read entire own class: learned-spell lists, icons, information versus casting, quickcast/rightclick/hover paths. Both information paths now retain original spell.desc single live cost and existing optional detail, removing duplicate summary. Casting and targeting untouched.243spell/rank/subclass source cases pass; real ordinary HolyWeapon window pending exact402retry. No claim all spell effect details reviewed."
+    },
+    {
+      "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/hero/abilities/mage/ElementalBlast.java",
+      "sha256": "339ae122bad70ecb1e199ad66bc5112844c2fcccd00b0f7d245b813302136548",
+      "category": "abilities",
+      "status": "REVIEWED_CORRECTED",
+      "wording_corrected": true,
+      "description_methods": [
+        "desc"
+      ],
+      "review_notes": "Previously omitted directly edited ability-description source added2026-11-09. Entire actual activation and normal desc branches read against effect type/damage tables/radius/talent multipliers/counts/self effects/armorcharge. English existing live GameScene description now uses public current values and no redundant unmodified35cost line because actual ability window already appends current talent-adjusted cost. Out-of-game/other-language descriptions unchanged. Gameplay methods/tables/casts untouched.65source cases and3109fullcorepass; native windows pending403."
     }
   ],
-  "completed_units": 248,
+  "completed_units": 250,
   "latest_tests": "3103core/457suites no failures/errors/skips; Twin unknown-source preview invariance, known-source update, passive block/enchantment/legacy values, raw combat/other thread and exception cleanup. Full evidence /workspace/apd-twin-inspection-evidence-20261109/accepted-full. New native windows pending399. Earlier source-only compile42575862693passed ondd9eccc670ca7927c5ef44ad3d3a40c95958798f with3099tests; not later Twin source.",
-  "message_inventory_entries": 5338
+  "message_inventory_entries": 5339
 }
