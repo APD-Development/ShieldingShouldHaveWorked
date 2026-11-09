@@ -1,11 +1,11 @@
 {
-  "recorded_utc": "2026-11-09T10:39:36.228898+00:00",
+  "recorded_utc": "2026-11-09T11:22:28.974998+00:00",
   "authorization_end_utc": "2026-11-09T21:00:00Z",
-  "latest_verified_published_build": 408,
-  "release_url": "https://github.com/APD-Development/ShieldingShouldHaveWorked/releases/tag/apd-alpha-preview-408",
-  "source_fix_commit": "77950dd132349381a70928bcc7c9180910ff9ea3",
+  "latest_verified_published_build": 409,
+  "release_url": "https://github.com/APD-Development/ShieldingShouldHaveWorked/releases/tag/apd-alpha-preview-409",
+  "source_fix_commit": "9fddee7ee05770375925106afe455723b6a2d93b",
   "local_full_core": {
-    "tests": 3125,
+    "tests": 3131,
     "suites": 457,
     "failures": 0,
     "errors": 0,
@@ -17,9 +17,9 @@
     "scope": "3115core, Androiddebug/release/instrumentationJava and desktop; no appAPK assembled; before latest Tenacity sourcefix"
   },
   "latest_source_compile": {
-    "commit": "ec95db133",
-    "run": 42599197355,
-    "status": "SUCCESS:3118core plus Android debug/release/instrumentationJava and desktop compilation; no APK assembled"
+    "commit": "0a71a6cd4",
+    "run": 42606030280,
+    "status": "3130 core and Android debug/release/instrumentation/desktop compile passed before newest dew changes"
   },
   "held_private_builds": {
     "404": "Native fixture failed before-render camera check; original unacceptedAPKs/rawfailures preserved in explicitprivatearchives.",
@@ -27,18 +27,17 @@
     "406": "3113core/12nativepassed, independenthashes+4463sourcefilehashes,10newbuffcapturesreadable. Same bad Tenacity provider; originalpairheldprivate."
   },
   "newest_source_not_in_any_apk": [
-    "Shorter retained Armband/Toolkit/Hourglass/Spellbook details; actual shop/budget/warmup regressions",
-    "Sandals visible-tile/livegrowth prose and actual18feeds",
-    "Unsupported Sandals seed crash reproduced/fixed with legacy-save data preserved;12supported abilities unchanged; native fixture prepared"
+    "Lullaby Healing0, RemoveCurse spirit priority, Teleport room restriction, live Passage destination",
+    "Enchantment replacement and Siren immunity wording",
+    "Shorter retained artifact details and natural versus direct food charge clarification",
+    "Dew/Waterskin zero-Healing warnings, actual consumption/turn/shield tests"
   ],
   "audit": {
     "source_units": 436,
-    "fully_or_partially_reviewed": 433,
-    "corrected_source_units": 350,
-    "completed_own_source_units": 344,
-    "unresolved_source_units": 92,
-    "authored_english_message_entries": 5339,
-    "complete": false
+    "completed_units": 372,
+    "unresolved_units": 64,
+    "corrected_units": 351,
+    "message_inventory_entries": 5343
   },
   "remaining": [
     "Continue92unresolved own/shared/class/generation/effect reviews",
@@ -48,5 +47,11 @@
   ],
   "preservation": "All source pushed to codex/apd-phone-fixes-2026-10-09; published403 and priorreleases retained.405/406privateassets include completeAPK/source/tests;404rejectedarchivesretained. Raw local full suites and committed evidence ZIPs retained.",
   "physical_phone_or_acoustic_audio_verified": false,
-  "background_development_after_window_claimed": false
+  "background_development_after_window_claimed": false,
+  "active_build": {
+    "number": 410,
+    "run": 42608369809,
+    "source": "ccfbb85b6",
+    "status": "in progress; no success or publication claim"
+  }
 }
