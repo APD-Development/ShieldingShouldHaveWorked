@@ -298,7 +298,7 @@ public class QolItemFeedbackDeviceTest {
     private static void ordinaryExoticPotionDescriptionsRender()throws Exception{
         String[] names={"PotionOfCorrosiveGas","PotionOfDivineInspiration","PotionOfMastery","PotionOfStormClouds"};
         for(String name:names){
-            Item item=(Item)Class.forName("com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic."+name).getDeclaredConstructor().newInstance();item.identify();
+            Item item=(Item)Class.forName("com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic."+name).getDeclaredConstructor().newInstance();TopScoresDeviceTest.render(()->item.identify());
             for(boolean use:new boolean[]{false,true}){
                 AtomicReference<WndInfoItem> shown=new AtomicReference<>();
                 TopScoresDeviceTest.render(()->{WndInfoItem window=use?new WndUseItem(null,item):new WndInfoItem(item);GameScene.show(window);shown.set(window);});
