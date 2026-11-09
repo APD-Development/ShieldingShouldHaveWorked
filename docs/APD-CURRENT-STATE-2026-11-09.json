@@ -1,5 +1,5 @@
 {
-  "recorded_utc": "2026-11-09T17:41:37.290276+00:00",
+  "recorded_utc": "2026-11-09T17:49:17.814044+00:00",
   "authorization_end_utc": "2026-11-09T20:00:00Z",
   "latest_verified_published_build": 418,
   "release_url": "https://github.com/APD-Development/ShieldingShouldHaveWorked/releases/tag/apd-alpha-preview-418",
@@ -31,7 +31,9 @@
     "419": "Native popup-fixture Java compile failed (checked exception from UI reflection helper not caught). Production compilation and3142core passed; APK assembly not reached. Correcting test callback handling and will source-compile before next candidate.",
     "420": "3143core,12native,4671sourcehashes passed.46selectedfullframes manually viewed; rejected Endure stored-count/future-count contradiction plus 1 hits and SoulMark raw %s from unescaped40%. Assets remain private.",
     "421": "3144core/457suites and all12 targeted API34 cases plus preparation passed, but compiled history used APD418 instead of immediate previous compiled APD420. Held; no manual visual acceptance/publication. Also inherits420 manually rejected Endure and SoulMark display defects.",
-    "422": "Original source5e2908ff0/run42660866454 automated build/core3144/all12native/preparation successful; inherits manually rejected Endure/SoulMark. Preserve private assets; do NOT publish."
+    "422": "Original source5e2908ff0/run42660866454 automated build/core3144/all12native/preparation successful; inherits manually rejected Endure/SoulMark. Preserve private assets; do NOT publish.",
+    "423": "Original3149core/all12native passed; packaging-only history recovery42666702358passed and assets staged42667109583. Independent4714sourcehashes/originalAPKbytes matched.28manualframes caught unsupported fraction glyph; keepprivate.",
+    "424": "Inherits unsupported fraction glyph from423; originalpair running42667109736. Preserve all results/assets privately even if automated checks pass."
   },
   "newest_source_not_in_any_apk": [
     "Drowsy grammar correction",
@@ -102,13 +104,13 @@
     "run": 42656324353,
     "report": "docs/APD-421-HELD-HISTORY-2026-11-09.json"
   },
-  "current_work": "3153core457all0. Nine existing spell branches revised, Priest actual attack verified; ten real inspection contexts prepared.7helper/sourcecases remain open, whole audit incomplete.423 native running; held422 source/artifacts staged successfully42664848867,418published.",
+  "current_work": "3153core457all0: font fixed to dynamic about16.67% with exact count\u00f76,14spellbranches simplified.15actualspellwindow contexts prepared. Latest Androidsourcecompile requested before425.423/424held,418published; wholeaudit438complete7open.",
   "apd423": {
     "source": "2a98ed3e4d050d2eaa1c34a54a2ca09facde08d9",
     "original_run": 42662501545,
     "original_results": "3149core and all12native passed; prepare failed on stale reject421history check",
     "packaging_only_recovery_run": 42666702358,
     "recovery_result": "success, no application/instrumentation rebuild or native rerun; require all420421422 entries",
-    "status": "Staging private then independent hashes/source/scan and manual selected windows before publication"
+    "status": "MANUAL HOLD:28fullframes viewed; unsupported SharedUpgrades fraction glyph.4714sourcehashes and originalAPKbytechecks passed, but do not publish."
   }
 }
