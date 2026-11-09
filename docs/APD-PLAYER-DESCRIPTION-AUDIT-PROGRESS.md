@@ -384,3 +384,6 @@ Cloak natural recharge versus external charge distinguished; retainedpayment/cou
 
 ### APK407 published 2026-11-09T05:17:43-05:00
 Original source 11e73f663f8bccf1e2fd8b2fbb7c4d935bf31c6a; 3115core/457suites and12distinctAPI34cases passed. Independent files/4479manifest hashes checked;20actual Tenacity/Vampiric captures reviewed. Zero-state prose corrected,25/200healing displays match live rules.403/prior releases retained;404–406 remain rejected private. Latest later source ec95db133 separately passes3118core and source compile42599197355; Cloak/Rose/Talisman actual next-APK windows not yet verified. Audit317complete/119unresolved of436units,433partial/full reviewed,350corrected,5339Englishentries. Continue through21UTC owner window.
+
+### Eight elixir own-source reviews completed
+ArcaneArmor, DragonsBlood, IcyTouch, FeatherFall, AquaticRejuvenation, HoneyedHealing, Might and ToxicEssence individually checked with recipes/nestedbuffs/actual consumers. Existing concise live prose accurate; no gratuitous rewrites or mechanics changes. Prior effect/hidden-state/custom-rule/save tests and actual native windows retained. Own-source completion only; separately tracked inherited/shared providers remain open. Audit436units433partial/full350corrected325complete111unresolved,5339Englishentries.
