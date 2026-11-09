@@ -481,6 +481,18 @@ public class QolItemFeedbackDeviceTest {
             }
         }finally{TopScoresDeviceTest.render(()->{for(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff buff:new java.util.ArrayList<>(Dungeon.hero.buffs(Ring.RingBuff.class)))buff.detach();Dungeon.hero.belongings.ring=(Ring)previous[0];Dungeon.hero.belongings.misc=previous[1];if(previous[0]!=null)previous[0].activate(Dungeon.hero);if(previous[1] instanceof Ring)previous[1].activate(Dungeon.hero);});}
     }
+    private static void remainingBattlemageDescriptionsRender()throws Exception{
+        HeroClass previousClass=Dungeon.hero.heroClass;com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass previousSubclass=Dungeon.hero.subClass;
+        com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand[] wands={new com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfCorruption(),new com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfFireblast(),new com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfTransfusion(),new com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfWarding()};
+        String[] expected={"attack nearby creatures","burning creatures and tiles","charmed by you","Basic wards cannot be repaired"};
+        try{
+            for(int index=0;index<wands.length;index++){
+                com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand wand=wands[index];com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff staff=new com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff();
+                TopScoresDeviceTest.render(()->{try{Dungeon.hero.heroClass=HeroClass.MAGE;Dungeon.hero.subClass=com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass.BATTLEMAGE;staff.level(3);staff.levelKnown=staff.cursedKnown=true;wand.level(3);wand.levelKnown=wand.cursedKnown=wand.curChargeKnown=true;wand.charge(Dungeon.hero);java.lang.reflect.Field field=staff.getClass().getDeclaredField("wand");field.setAccessible(true);field.set(staff,wand);}catch(Exception e){throw new RuntimeException(e);}});
+                try{showItem(staff,expected[index],"qol-battlemage-normal-"+wand.getClass().getSimpleName()+".png",true);}finally{TopScoresDeviceTest.render(wand::stopCharging);}
+            }
+        }finally{TopScoresDeviceTest.render(()->{Dungeon.hero.heroClass=previousClass;Dungeon.hero.subClass=previousSubclass;});}
+    }
     private static void cleansingStaminaMasteryDescriptionsRender()throws Exception{
         com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfCleansing cleansing=new com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfCleansing();cleansing.anonymize();showItem(cleansing,"most harmful effects","qol-cleansing-known.png",true);
         com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfStamina stamina=new com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfStamina();stamina.anonymize();showItem(stamina,"Does not speed up attacks","qol-stamina-known.png",true);
@@ -805,6 +817,18 @@ public class QolItemFeedbackDeviceTest {
             try{Thread.sleep(300);TopScoresDeviceTest.render(()->{try{java.util.List<com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions> windows=TopScoresDeviceTest.find(Game.scene(),com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions.class);assertEquals(1,windows.size());shown.set(windows.get(0));boolean found=false;for(RenderedTextBlock text:TopScoresDeviceTest.find(shown.get(),RenderedTextBlock.class))if(text.text().contains("Both share charges"))found=true;assertTrue(found);assertEquals(2,TopScoresDeviceTest.find(shown.get(),RedButton.class).size());assertEquals(time[0],Dungeon.hero.cooldown(),0);}catch(Exception e){throw new RuntimeException(e);}});TopScoresDeviceTest.screenshot("qol-champion-slot-choice-concise.png");}finally{TopScoresDeviceTest.render(()->{if(shown.get()!=null)shown.get().hide();});}
         }finally{TopScoresDeviceTest.render(()->{Dungeon.hero.belongings.weapon=weapons[0];Dungeon.hero.belongings.secondWep=weapons[1];Dungeon.hero.belongings.armor=armor[0];Dungeon.hero.belongings.ring=ring[0];Dungeon.hero.subClass=kind;Dungeon.hero.heroClass=heroClass;});}
     }
+    private static void furtherPlantDescriptionsRender()throws Exception{
+        com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass previous=Dungeon.hero.subClass;
+        try{
+            for(boolean warden:new boolean[]{false,true}){
+                TopScoresDeviceTest.render(()->Dungeon.hero.subClass=warden?com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass.WARDEN:com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass.NONE);
+                showItem(new com.shatteredpixel.shatteredpixeldungeon.plants.Blindweed.Seed(),warden?"invisible instead":"Blinds and cripples","qol-blindweed-warden-"+warden+".png",true);
+                showItem(new com.shatteredpixel.shatteredpixeldungeon.plants.Stormvine.Seed(),warden?"levitates instead":"Keep away from pits","qol-stormvine-warden-"+warden+".png",true);
+                showItem(new com.shatteredpixel.shatteredpixeldungeon.plants.Mageroyal.Seed(),warden?"protection from harmful clouds":"Does not restore health","qol-mageroyal-warden-"+warden+".png",true);
+            }
+            showItem(new com.shatteredpixel.shatteredpixeldungeon.plants.BlandfruitBush.Seed(),"cannot be eaten raw","qol-blandfruit-bush-raw-warning.png",true);
+        }finally{TopScoresDeviceTest.render(()->Dungeon.hero.subClass=previous);}
+    }
     private static void seedRuleDescriptionsAndDartPickerRender()throws Exception{
         final com.watabou.utils.Bundle rules=new com.watabou.utils.Bundle();final int challenges=Dungeon.challenges;final com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass kind=Dungeon.hero.subClass;
         TopScoresDeviceTest.render(()->Dungeon.apdStoreCustomRules(rules));
@@ -1091,6 +1115,7 @@ public class QolItemFeedbackDeviceTest {
             defensiveWeaponSingleBlockDescriptionsRender();
             cursedRemovalAndChampionSlotDescriptionsRender();
             seedRuleDescriptionsAndDartPickerRender();
+            furtherPlantDescriptionsRender();
             waywardBuffDescriptionRenders();
             inventoryScrollCancellationWarningRenders();
             landscapeItemWindowsFit(scenario);
@@ -1104,6 +1129,7 @@ public class QolItemFeedbackDeviceTest {
             livingEarthAndPrismaticDescriptionsRender();
             passiveGlyphArcanaDescriptionsRender();
             cleansingStaminaMasteryDescriptionsRender();
+            remainingBattlemageDescriptionsRender();
             divineInspirationChoiceDescriptionRenders();
             imbueAndDisabledVialDescriptionsRender();
             reviewedElixirDescriptionsRender();

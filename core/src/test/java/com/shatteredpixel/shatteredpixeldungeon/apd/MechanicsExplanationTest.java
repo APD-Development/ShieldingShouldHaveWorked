@@ -150,6 +150,26 @@ public class MechanicsExplanationTest {
   com.shatteredpixel.shatteredpixeldungeon.plants.Sorrowmoss sorrow=new com.shatteredpixel.shatteredpixeldungeon.plants.Sorrowmoss();sorrow.pos=hero.pos;sorrow.activate(hero);int duration=5+Math.round(2*Dungeon.scalingDepth()/3f);assertEquals(duration,hero.buff(Poison.class).apdRemaining(),0);assertTrue(PlantExplanation.details(sorrow.getClass(),hero).contains("currently "+duration+"."));hero.buff(Poison.class).detach();
   hero.subClass=HeroSubClass.WARDEN;sun.activate(hero);assertEquals(100,hero.buff(Healing.class).remainingHealingPool());assertEquals(1,hero.buff(Healing.class).flatHealing());earth.activate(hero);assertEquals(11,hero.buff(Barkskin.class).level());assertEquals(5,hero.buff(Barkskin.class).decayInterval());assertTrue(PlantExplanation.details(earth.getClass(),hero).contains("currently 11 damage-blocking points"));
  }
+ @Test public void blindweedAndStormvineDescriptionsMatchBothActualSubclassEffects()throws Exception{
+  hero=new DescriptionMonkHero();hero.heroClass=HeroClass.WARRIOR;Talent.initClassTalents(hero);Dungeon.hero=hero;descriptionSightArena();hero.sprite=quietSprite();java.util.Arrays.fill(Dungeon.level.heroFOV,false);
+  for(HeroSubClass subclass:new HeroSubClass[]{HeroSubClass.NONE,HeroSubClass.WARDEN}){
+   hero.subClass=subclass;com.shatteredpixel.shatteredpixeldungeon.plants.Blindweed blind=new com.shatteredpixel.shatteredpixeldungeon.plants.Blindweed();blind.pos=hero.pos;java.util.Arrays.fill(Dungeon.level.heroFOV,false);blind.activate(hero);
+   if(subclass==HeroSubClass.WARDEN){assertNull(hero.buff(Blindness.class));assertNull(hero.buff(Cripple.class));assertEquals(Invisibility.DURATION/2,hero.buff(Invisibility.class).cooldown(),.00001f);assertTrue(blind.desc().contains("invisible instead"));Buff.detach(hero,Invisibility.class);}else{assertEquals(Blindness.DURATION,hero.buff(Blindness.class).cooldown(),.00001f);assertEquals(Cripple.DURATION,hero.buff(Cripple.class).cooldown(),.00001f);Buff.detach(hero,Blindness.class);Buff.detach(hero,Cripple.class);}
+   com.shatteredpixel.shatteredpixeldungeon.plants.Stormvine storm=new com.shatteredpixel.shatteredpixeldungeon.plants.Stormvine();storm.pos=hero.pos;java.util.Arrays.fill(Dungeon.level.heroFOV,false);storm.activate(hero);
+   if(subclass==HeroSubClass.WARDEN){assertNull(hero.buff(Vertigo.class));assertTrue(hero.flying);assertEquals(Levitation.DURATION/2,hero.buff(Levitation.class).cooldown(),.00001f);assertTrue(storm.desc().contains("levitates instead"));com.watabou.noosa.Game previousGame=com.watabou.noosa.Game.instance;java.lang.reflect.Field f=Class.forName("sun.misc.Unsafe").getDeclaredField("theUnsafe");f.setAccessible(true);Object unsafe=f.get(null);com.watabou.noosa.Game.instance=(com.watabou.noosa.Game)unsafe.getClass().getMethod("allocateInstance",Class.class).invoke(unsafe,com.watabou.noosa.Game.class);try{Buff.detach(hero,Levitation.class);}finally{com.watabou.noosa.Game.instance=previousGame;}}else{assertEquals(Vertigo.DURATION,hero.buff(Vertigo.class).cooldown(),.00001f);Buff.detach(hero,Vertigo.class);}
+  }
+ }
+ @Test public void mageroyalCuresWithoutHealingAndAddsCloudProtectionOnlyForWarden()throws Exception{
+  hero.sprite=quietSprite();hero.HP=5;hero.HT=20;com.shatteredpixel.shatteredpixeldungeon.plants.Mageroyal plant=new com.shatteredpixel.shatteredpixeldungeon.plants.Mageroyal();plant.pos=hero.pos;
+  for(HeroSubClass subclass:new HeroSubClass[]{HeroSubClass.NONE,HeroSubClass.WARDEN}){
+   hero.subClass=subclass;Buff.affect(hero,Weakness.class,10);Buff.affect(hero,Cripple.class,10);plant.activate(hero);assertNull(hero.buff(Weakness.class));assertNull(hero.buff(Cripple.class));assertEquals(5,hero.HP);assertTrue(plant.desc().contains("Does not restore health"));
+   if(subclass==HeroSubClass.WARDEN){assertEquals(BlobImmunity.DURATION/2,hero.buff(BlobImmunity.class).cooldown(),.00001f);Buff.detach(hero,BlobImmunity.class);}else assertNull(hero.buff(BlobImmunity.class));
+  }
+ }
+ @Test public void blandfruitBushSeedWarnsThatRawFruitCannotBeEatenAndActualAttemptIsFree(){
+  com.shatteredpixel.shatteredpixeldungeon.plants.BlandfruitBush.Seed seed=new com.shatteredpixel.shatteredpixeldungeon.plants.BlandfruitBush.Seed();assertTrue(seed.info(),seed.info().contains("cannot be eaten raw"));
+  com.shatteredpixel.shatteredpixeldungeon.items.food.Blandfruit fruit=new com.shatteredpixel.shatteredpixeldungeon.items.food.Blandfruit();assertTrue(fruit.collect());Hunger hunger=Buff.affect(hero,Hunger.class);com.watabou.utils.Bundle food=new com.watabou.utils.Bundle();hunger.storeInBundle(food);food.put("level",300f);hunger.restoreFromBundle(food);float time=hero.cooldown();fruit.execute(hero,com.shatteredpixel.shatteredpixeldungeon.items.food.Food.AC_EAT);assertEquals(300,hunger.hungerPoints(),0);assertEquals(time,hero.cooldown(),0);assertTrue(hero.belongings.contains(fruit));assertEquals(1,fruit.quantity());assertNull(fruit.defaultAction());
+ }
  @Test public void timeBubbleDetailsPreserveFractionalActionBudgetAcrossSaveLoad(){
   com.shatteredpixel.shatteredpixeldungeon.plants.Swiftthistle.TimeBubble bubble=Buff.affect(hero,com.shatteredpixel.shatteredpixeldungeon.plants.Swiftthistle.TimeBubble.class);bubble.reset();assertEquals(7,bubble.remainingActionTime(),0);float time=hero.cooldown();hero.spend(1.25f);assertEquals(time,hero.cooldown(),0);assertEquals(5.75f,bubble.remainingActionTime(),0);com.watabou.utils.Bundle before=new com.watabou.utils.Bundle(),after=new com.watabou.utils.Bundle();bubble.storeInBundle(before);assertTrue(BuffExplanation.details(bubble).contains("5.75 turns"));bubble.storeInBundle(after);assertEquals(before.toString(),after.toString());com.shatteredpixel.shatteredpixeldungeon.plants.Swiftthistle.TimeBubble loaded=new com.shatteredpixel.shatteredpixeldungeon.plants.Swiftthistle.TimeBubble();loaded.restoreFromBundle(before);assertEquals(5.75f,loaded.remainingActionTime(),0);
  }
@@ -1652,6 +1672,34 @@ public class MechanicsExplanationTest {
 
  private com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff describedStaff(com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand wand,int level)throws Exception{
   com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff staff=new com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff();staff.level(level);staff.levelKnown=true;wand.level(level);wand.levelKnown=wand.cursedKnown=wand.curChargeKnown=true;wand.charge(hero);java.lang.reflect.Field field=staff.getClass().getDeclaredField("wand");field.setAccessible(true);field.set(staff,wand);return staff;
+ }
+ @Test public void transfusionStaffRequiresCharmOwnedByAttackerAndPreparesOnlyHealthExemption()throws Exception{
+  hero.subClass=HeroSubClass.BATTLEMAGE;hero.sprite=quietSprite();
+  com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfTransfusion wand=new com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfTransfusion();
+  com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff staff=describedStaff(wand,3);
+  PlainStatusTarget target=new PlainStatusTarget();target.sprite=quietSprite();
+  for(int owner:new int[]{-1,hero.id()+1,hero.id()}){
+   Buff.detach(target,Charm.class);Buff.detach(hero,Barrier.class);
+   java.lang.reflect.Field free=wand.getClass().getDeclaredField("freeCharge");free.setAccessible(true);free.setBoolean(wand,false);
+   if(owner!=-1)Buff.affect(target,Charm.class,10).object=owner;
+   int charges=wand.curCharges;float time=hero.cooldown();wand.onHit(staff,hero,target,10);
+   com.watabou.utils.Bundle after=new com.watabou.utils.Bundle();wand.storeInBundle(after);
+   assertEquals(owner==hero.id(),after.getBoolean("freecharge"));assertEquals(charges,wand.curCharges);assertEquals(time,hero.cooldown(),0);
+   if(owner==hero.id())assertEquals(16,hero.buff(Barrier.class).shielding());else assertNull(hero.buff(Barrier.class));
+  }
+  assertTrue(staff.info(),staff.info().contains("charmed by you"));assertTrue(staff.info().contains("still uses a charge and a turn"));
+  hero.subClass=HeroSubClass.NONE;assertFalse(staff.info().contains("charmed by you"));wand.stopCharging();
+ }
+ @Test public void wardStaffDescriptionDistinguishesAttackRepairFromSentryHealing()throws Exception{
+  hero.subClass=HeroSubClass.BATTLEMAGE;com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfWarding wand=new com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfWarding();
+  com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff staff=describedStaff(wand,3);
+  assertTrue(staff.info(),staff.info().contains("restore spent attacks"));assertTrue(staff.info().contains("Basic wards cannot be repaired"));
+  for(int tier=1;tier<=6;tier++){
+   com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfWarding.Ward ward=new com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfWarding.Ward();ward.tier=tier;ward.totalZaps=4;ward.HP=5;ward.HT=100;
+   Random.pushGenerator(789);try{ward.wandHeal(3,1);}finally{Random.popGenerator();}
+   if(tier==1){assertEquals(4,ward.totalZaps);assertEquals(5,ward.HP);}else if(tier<=3){assertTrue(ward.totalZaps<4);assertEquals(5,ward.HP);}else{assertEquals(4,ward.totalZaps);assertTrue(ward.HP>5);}
+  }
+  wand.stopCharging();
  }
  @Test public void staffCorruptionChanceAndDurationMatchActualOnHitChecks()throws Exception{
   hero.subClass=com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass.BATTLEMAGE;hero.talents.get(2).put(Talent.EMPOWERED_STRIKE,2);Buff.affect(hero,Talent.EmpoweredStrikeTracker.class);com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfCorruption wand=new com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfCorruption();com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff staff=describedStaff(wand,3);float chance=4f/9f*com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand.procChanceMultiplier(hero);String text=staff.mechanicsDetails();assertTrue(text.contains(ObfuscationExplanation.number(100*chance)+"% per eligible hit"));

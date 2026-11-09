@@ -4,7 +4,7 @@
   "counting": "Source units, not distinct item types. reviewed_units includes partial reviews; completed_units excludes partial/pending dependency. corrected_units counts source units with corrections, including incomplete reviews. Inventory/export/tests alone are not an individual review.",
   "source_units": 427,
   "message_entries": 2411,
-  "reviewed_units": 411,
+  "reviewed_units": 417,
   "corrected_units": 336,
   "unresolved_units": 236,
   "category_counts": {
@@ -69,7 +69,7 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/ArtifactEconomyExplanation.java",
-      "sha256": "1c930c6a1940fe9ec741a747169e55e6b1573bb3614017cc9c5470f7cb2ee086",
+      "sha256": "b21a6a9ce16ea29cb209bb2f855b0b42794da6265356ca8692c66910fefc8cc3",
       "category": "mechanics",
       "status": "PARTIAL_REVIEW",
       "description_methods": [
@@ -81,7 +81,7 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/ArtifactExplanation.java",
-      "sha256": "785cd9ae2e12656d77f77792494da830a430b290a822d9cd552f32ee5b4b86c4",
+      "sha256": "096b6b37ab0923c9b286faae75276354c36e890d7f29ba9346f8739115738e1e",
       "category": "mechanics",
       "status": "PARTIAL_REVIEW",
       "description_methods": [
@@ -115,14 +115,15 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/BombExplanation.java",
       "sha256": "4a23a9e2fa061d7d88be27d8cf223945fd845845e3d60c46dcb84cf5c9652ba7",
       "category": "mechanics",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
+      "status": "PARTIAL_REVIEW",
       "description_methods": [
         "details"
-      ]
+      ],
+      "review_notes": "2026-11-09 read full bomb-effect provider, ordinary bomb descriptions, FlashBang full handler and Noisemaker full staged fuse/save/pickup handlers. Legacy export has no ordinary bomb calculations UI; no panel added. Existing actual occupancy/fuse/save/read-only tests retained. Remaining special detonation variants still require individual handler reconciliation."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/BuffExplanation.java",
-      "sha256": "fc53c0587fdf6c85a59270c6d01e975fb81691a74d238f830356728cf676369e",
+      "sha256": "488fe04c74559e6125e4b94e60b3ee21db03ce8b06c46a8041b288cb5c0838ef",
       "category": "mechanics",
       "status": "PARTIAL_REVIEW",
       "description_methods": [
@@ -133,7 +134,7 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/CloakExplanation.java",
-      "sha256": "a5aa6305134752401f7356b9f2123d41578dd077b73d7d6282cca0115b21e1bd",
+      "sha256": "a0b9e26afb7cc3db7c280eb9d931122bd2761df871becb4c75c5878759c9cb36",
       "category": "mechanics",
       "status": "PARTIAL_REVIEW",
       "description_methods": [
@@ -147,17 +148,19 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/CraftingEffectExplanation.java",
       "sha256": "33cc45a85d4b76cb005d2b9429f3a29888b562f81426bb6d124856b90bcb6c66",
       "category": "mechanics",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
+      "status": "PARTIAL_REVIEW",
       "description_methods": [
         "details"
-      ]
+      ],
+      "review_notes": "2026-11-09 full legacy Rune/alchemy provider read and actual caller inventory checked. Ordinary itemCalculations does not dispatch it; no expander restored. Own source/normal descriptions of concrete stones/spells reviewed elsewhere. Comprehensive secondary numerical/formula reconciliation still incomplete."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/CurseExplanation.java",
       "sha256": "0bd8a15436dd837bc045d40c0f74348d10063a56d2faa3c00bd5d021804ee63f",
       "category": "mechanics",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "PARTIAL_REVIEW",
+      "description_methods": [],
+      "review_notes": "2026-11-09 full legacy curse provider read; live ordinary enchantment/glyph callers checked and Bulk/Metabolism/Sacrificial handlers individually read. Ordinary weapon/glyph descriptions use concise own fallback, not this legacy technical export. Bulk/Metabolism normal exceptions remain useful. Other secondary curse handler reconciliation still open; no panels added."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/DewExplanation.java",
@@ -193,7 +196,7 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/GlyphExplanation.java",
-      "sha256": "f3ec528618aec753d01d8abfac4c35c1757ea50be89d23035bc1dad3215d39a6",
+      "sha256": "36ff5467fa20835471e753ffa7888958514fca452af7299a023e1b281ab560c6",
       "category": "mechanics",
       "status": "PARTIAL_REVIEW",
       "description_methods": [
@@ -282,14 +285,15 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/PlantExplanation.java",
       "sha256": "c2bfd916aec2d60815c253d58de131738cc6c74e1baf8d8d811b4267bc39bb59",
       "category": "mechanics",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
+      "status": "PARTIAL_REVIEW",
       "description_methods": [
         "details"
-      ]
+      ],
+      "review_notes": "2026-11-09 read entire species provider and activation handlers for13 plants, including Warden replacements and special Rotberry/Blandfruit wither/drop handling. This legacy export is not returned by ordinary seed itemCalculations; no panel restored. Existing actual Sungrass/Earthroot/Sorrowmoss/TimeBubble and new Blindweed/Stormvine/Mageroyal tests cover actual effects. Other secondary species variants still open."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/PotionExplanation.java",
-      "sha256": "ff3b3981f9caf9073ac8c542d5adceb675ce60841ccc6a20768ce734f4452b5a",
+      "sha256": "b5dbea187193c527b7374f7a5bc59da64ce95f0d21af345417bb9a6cbffd59b0",
       "category": "mechanics",
       "status": "PARTIAL_REVIEW",
       "description_methods": [
@@ -303,8 +307,9 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/PreparedShotExplanation.java",
       "sha256": "f2a425200d01f8024a68fe39022cf3da65dea189f310713e5d8de7cab490be00",
       "category": "mechanics",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "PARTIAL_REVIEW",
+      "description_methods": [],
+      "review_notes": "2026-11-09 full existing Preparation/Sniper provider read. Existing real best-of-rolls, strict thresholds, saved source knowledge and firing-delay tests retained. It is specific buff detail, explicitly retained pending owner review, not a universal item panel. Full interaction review still open."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/RingExplanation.java",
@@ -351,10 +356,11 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/StaffExplanation.java",
       "sha256": "18e1b5a7c21a341df2ce2a0fd4574b3928c759720b99636aac2455b44d1420d6",
       "category": "mechanics",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
+      "status": "PARTIAL_REVIEW",
       "description_methods": [
         "details"
-      ]
+      ],
+      "review_notes": "2026-11-09 read entire staff-effect provider and corresponding13 wand onHit/reach/charge/EmpoweredStrike paths. This legacy export is not returned by ordinary itemCalculations for a plain staff; no panel restored. Live Corruption/Regrowth/Prismatic/Earth tests retained, new Transfusion ownership and Warding repair checks added. Complete secondary variants still open."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/StrikeExplanation.java",
@@ -391,7 +397,7 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/TrinketExplanation.java",
-      "sha256": "3516cc807cc6f5431eec5ea9b550728c6c56658d9d4cfc493e33cf5e02786330",
+      "sha256": "134ed3e02e9be0ef3b88039569336c795db1d71f8c222ff47c9891aa7aad0628",
       "category": "mechanics",
       "status": "PARTIAL_REVIEW",
       "description_methods": [
@@ -430,7 +436,7 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/WeaponExplanation.java",
-      "sha256": "4267f8605f28e74740c974ec42702b75bb2cb062aae1e9f5d3034d4042bb0399",
+      "sha256": "9c5980355005aed2b7557da666fa204b7e80a894a866c9dc674267fbf4549a10",
       "category": "mechanics",
       "status": "PARTIAL_REVIEW",
       "description_methods": [
@@ -484,7 +490,7 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/BrokenSeal.java",
-      "sha256": "91f45629af0cf1ed61ec67b459a0501c7ff0080ded93dc2cc8d6e04dfa460b9d",
+      "sha256": "d15497f1578cfcd013f307c741c8547370c172023ca885ad22a97139ab8049c2",
       "category": "items",
       "status": "PARTIAL_REVIEW",
       "description_methods": [
@@ -1008,7 +1014,7 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/artifacts/DriedRose.java",
-      "sha256": "5872598870678087478d947ec8cafb7130ea86c3d6caa4b0390099c876a94562",
+      "sha256": "bf42ed69b0e5beb24057712246cf715f55843829a94537dd3e857d116e9664e3",
       "category": "artifacts",
       "status": "PARTIAL_REVIEW",
       "description_methods": [
@@ -1800,7 +1806,7 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/potions/elixirs/ElixirOfAquaticRejuvenation.java",
-      "sha256": "fcb1c900601d2446fd4f29f66a23cc482e712133a3b7311ce63ffb971f337c73",
+      "sha256": "091eeefc28291cf57280085ab237a3f189f0c8a67188a4d8d3c214dd50046790",
       "category": "potions",
       "status": "PARTIAL_REVIEW",
       "description_methods": [
@@ -1820,7 +1826,7 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/potions/elixirs/ElixirOfDragonsBlood.java",
-      "sha256": "f36bf2dc6420e5fe4700c6e81ee7381307ad762f2d02815543bf6040163f65f5",
+      "sha256": "c61055bd12f451781879e13a31cc722af2db6f237e742a3b0b45b187bfa6b8c3",
       "category": "potions",
       "status": "PARTIAL_REVIEW",
       "description_methods": [],
@@ -1829,7 +1835,7 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/potions/elixirs/ElixirOfFeatherFall.java",
-      "sha256": "4913f8e742b7e01f6ca8015b18a159eb0da7608748c274b59cb8381d941f1599",
+      "sha256": "35bfb0e310918021bcc36e6c91bc003cc2d41f8d7dbd627fa67eb82583ea34bc",
       "category": "potions",
       "status": "PARTIAL_REVIEW",
       "description_methods": [],
@@ -1847,7 +1853,7 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/potions/elixirs/ElixirOfIcyTouch.java",
-      "sha256": "802fdb33ed879b513bbbbc87ee4e26b51d023bc2a0fc964e77dad39839ba02f3",
+      "sha256": "a179f4297baf70c1565d6a78d509de29f685eb8511cbfa2a44f8f1a4926e86a6",
       "category": "potions",
       "status": "PARTIAL_REVIEW",
       "description_methods": [],
@@ -1868,7 +1874,7 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/potions/elixirs/ElixirOfToxicEssence.java",
-      "sha256": "2b18e426568644c71d643c8e0adfb874bb351083149436480422b062b1874f06",
+      "sha256": "8c91f8d53f1fc1f3cefcdad71f63886e1afc622106de185ca27de082529978f1",
       "category": "potions",
       "status": "PARTIAL_REVIEW",
       "description_methods": [],
@@ -2246,7 +2252,7 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/rings/RingOfForce.java",
-      "sha256": "6398780db0493f28203c482efb523c71b52474c2328d17255ac5963eabb960fc",
+      "sha256": "a1fc9e53d15abbef65d2ff394bef899b4ac8f3852d9dfd14fb188d089a228334",
       "category": "rings",
       "status": "REVIEWED_PENDING_DEPENDENCY",
       "description_methods": [
@@ -2319,7 +2325,7 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/rings/RingOfTenacity.java",
-      "sha256": "3f13ac681cf1191a37e8a5aab8f8f2facedb410c091b47dab1763abd8ff005d4",
+      "sha256": "eb1b5d5884781c7e5490efb98d1a5a61ba9b231c7ef05abc9631fa7f694842dc",
       "category": "rings",
       "status": "REVIEWED_PENDING_DEPENDENCY",
       "description_methods": [],
@@ -2555,7 +2561,7 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/scrolls/exotic/ScrollOfForwarding.java",
-      "sha256": "d831d83c96bd0dd06eca44e9f35c5b91d947461153e7c913e8aa68a65f4c94d6",
+      "sha256": "560ec5ef1dfcd13d81b14431d6a875a91e6497d3bde478ee93a88ab0fae9b737",
       "category": "scrolls",
       "status": "PARTIAL_REVIEW",
       "description_methods": [
@@ -3070,7 +3076,7 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/trinkets/VialOfBlood.java",
-      "sha256": "2386adb48dc3af0f541c5b39e1eee4dee18137261718e2ea7c28e27d0c54bf6d",
+      "sha256": "a136312f157cd20aa7de8208d99e385c662b2f520f8498a720182adf9e412c9a",
       "category": "trinkets",
       "status": "PARTIAL_REVIEW",
       "description_methods": [
@@ -3109,7 +3115,7 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/wands/Wand.java",
-      "sha256": "8039a4603992213c22bd512ae216740b49ed4b9c57088e42c454d467d6b3a779",
+      "sha256": "d4892b8c7831252d26821198c1cc22f4035a5fed7f06e0ba780b28452c8449f6",
       "category": "wands",
       "status": "PARTIAL_REVIEW",
       "description_methods": [
@@ -3147,7 +3153,7 @@
       "status": "PARTIAL_REVIEW",
       "description_methods": [],
       "wording_corrected": true,
-      "review_notes": "Ordinary description corrected after source review. Existing damage/cost/status logic retained; known live effects and challenge/hidden-state cases tested. Complete class variants, optional panels where applicable and Android rendering remain under review."
+      "review_notes": "Ordinary description corrected after source review. Existing damage/cost/status logic retained; known live effects and challenge/hidden-state cases tested. Complete class variants, optional panels where applicable and Android rendering remain under review. Followup2026-11-09: normal Battlemage text now says frenzy attacks nearby creatures, nearby burning creatures/tiles improve fire explosion, Transfusion requires charm by you, Warding restores spent upgraded-ward attacks or sentry HP, not basic ward repair. Actual Transfusion ownership/no free charge/time and six ward tier repair checks added; four actual native windows prepared for397. Gameplay and panel availability unchanged."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/wands/WandOfDisintegration.java",
@@ -3167,7 +3173,7 @@
         "statsDesc"
       ],
       "wording_corrected": true,
-      "review_notes": "Ordinary description corrected after source review. Existing damage/cost/status logic retained; known live effects and challenge/hidden-state cases tested. Complete class variants, optional panels where applicable and Android rendering remain under review."
+      "review_notes": "Ordinary description corrected after source review. Existing damage/cost/status logic retained; known live effects and challenge/hidden-state cases tested. Complete class variants, optional panels where applicable and Android rendering remain under review. Followup2026-11-09: normal Battlemage text now says frenzy attacks nearby creatures, nearby burning creatures/tiles improve fire explosion, Transfusion requires charm by you, Warding restores spent upgraded-ward attacks or sentry HP, not basic ward repair. Actual Transfusion ownership/no free charge/time and six ward tier repair checks added; four actual native windows prepared for397. Gameplay and panel availability unchanged."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/wands/WandOfFrost.java",
@@ -3238,7 +3244,7 @@
         "statsDesc"
       ],
       "wording_corrected": true,
-      "review_notes": "Ordinary description corrected after source review. Existing damage/cost/status logic retained; known live effects and challenge/hidden-state cases tested. Complete class variants, optional panels where applicable and Android rendering remain under review."
+      "review_notes": "Ordinary description corrected after source review. Existing damage/cost/status logic retained; known live effects and challenge/hidden-state cases tested. Complete class variants, optional panels where applicable and Android rendering remain under review. Followup2026-11-09: normal Battlemage text now says frenzy attacks nearby creatures, nearby burning creatures/tiles improve fire explosion, Transfusion requires charm by you, Warding restores spent upgraded-ward attacks or sentry HP, not basic ward repair. Actual Transfusion ownership/no free charge/time and six ward tier repair checks added; four actual native windows prepared for397. Gameplay and panel availability unchanged."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/wands/WandOfWarding.java",
@@ -3249,7 +3255,7 @@
         "statsDesc"
       ],
       "wording_corrected": true,
-      "review_notes": "Ordinary description corrected after source review. Existing damage/cost/status logic retained; known live effects and challenge/hidden-state cases tested. Complete class variants, optional panels where applicable and Android rendering remain under review."
+      "review_notes": "Ordinary description corrected after source review. Existing damage/cost/status logic retained; known live effects and challenge/hidden-state cases tested. Complete class variants, optional panels where applicable and Android rendering remain under review. Followup2026-11-09: normal Battlemage text now says frenzy attacks nearby creatures, nearby burning creatures/tiles improve fire explosion, Transfusion requires charm by you, Warding restores spent upgraded-ward attacks or sentry HP, not basic ward repair. Actual Transfusion ownership/no free charge/time and six ward tier repair checks added; four actual native windows prepared for397. Gameplay and panel availability unchanged."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/SpiritBow.java",
@@ -3412,7 +3418,7 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/enchantments/Crystal.java",
-      "sha256": "ba0b5bb4a985fc86d1543c8de2cf36373b6a2f7d0ba30d3fd3070f091246beb1",
+      "sha256": "35426ce8264bdc279fe754dcc12785888f81c1a49f2910878032d6c95d5ba5e7",
       "category": "weapon",
       "status": "PARTIAL_REVIEW",
       "description_methods": [
@@ -3586,7 +3592,7 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/melee/Flail.java",
-      "sha256": "751b49bdc236e05fac2605bf768e57b5e5d3e289fbdef11a98d828be4dea1203",
+      "sha256": "b4ab982f118106f27c71302200ceccddcb04f75e32bb142eb33b7efb4144634e",
       "category": "weapon",
       "status": "PARTIAL_REVIEW",
       "description_methods": [
@@ -3708,18 +3714,18 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/melee/MagesStaff.java",
-      "sha256": "4048c90d775c0dff919b5dcb65ce8dd25dc421aecb13f49edf36ae2a5a085a33",
+      "sha256": "ff141b19e848892b7afcb22e047bf4df67574f9fc7037ce7bfd1dac2eed58175",
       "category": "weapon",
       "status": "PARTIAL_REVIEW",
       "description_methods": [
         "info"
       ],
       "wording_corrected": true,
-      "review_notes": "Read ordinary info, imbue selection/level calculation, wand preservation and Battlemage hit/reach paths. Imbue confirmation now accurately explains no bonus for an unupgraded staff and level retention with a weaker wand. Existing selected result/unknown lower-bound/cursed and old-wand loss warnings preserved. Full wand-specific, talent and secondary panels remain under review."
+      "review_notes": "Read ordinary info, imbue selection/level calculation, wand preservation and Battlemage hit/reach paths. Imbue confirmation now accurately explains no bonus for an unupgraded staff and level retention with a weaker wand. Existing selected result/unknown lower-bound/cursed and old-wand loss warnings preserved. Full wand-specific, talent and secondary panels remain under review. Followup2026-11-09: normal Battlemage text now says frenzy attacks nearby creatures, nearby burning creatures/tiles improve fire explosion, Transfusion requires charm by you, Warding restores spent upgraded-ward attacks or sentry HP, not basic ward repair. Actual Transfusion ownership/no free charge/time and six ward tier repair checks added; four actual native windows prepared for397. Gameplay and panel availability unchanged."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/melee/MeleeWeapon.java",
-      "sha256": "d99830587cf9f7122c24bc0a0e1067f166ba4201672b46d4053e5c508ca59959",
+      "sha256": "af65c08da333d6c8f473a414838b12a1fa14b2dfdbce7dce933566a0ad7f0058",
       "category": "weapon",
       "status": "PARTIAL_REVIEW",
       "description_methods": [
@@ -4163,7 +4169,7 @@
       "status": "REVIEWED_CORRECTED",
       "description_methods": [],
       "wording_corrected": true,
-      "review_notes": "Seed and plant normal descriptions checked against activation and Warden branches. Floor-one Fadeleaf, immunity limits and movement-ending effects distinguished. Earthroot/Sungrass/Swiftthistle buff details and shared Plant variants remain under review. Android acceptance pending."
+      "review_notes": "Seed and plant normal descriptions checked against activation and Warden branches. Floor-one Fadeleaf, immunity limits and movement-ending effects distinguished. Earthroot/Sungrass/Swiftthistle buff details and shared Plant variants remain under review. Android acceptance pending. Followup2026-11-09 seed description no longer calls inedible raw fruit poor food; says cook it first. Real raw EAT attempt checks no food/time/item use; actual seed window prepared for397."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/plants/Blindweed.java",
@@ -4172,7 +4178,7 @@
       "status": "REVIEWED_CORRECTED",
       "description_methods": [],
       "wording_corrected": true,
-      "review_notes": "Seed and plant normal descriptions checked against activation and Warden branches. Floor-one Fadeleaf, immunity limits and movement-ending effects distinguished. Earthroot/Sungrass/Swiftthistle buff details and shared Plant variants remain under review. Android acceptance pending."
+      "review_notes": "Seed and plant normal descriptions checked against activation and Warden branches. Floor-one Fadeleaf, immunity limits and movement-ending effects distinguished. Earthroot/Sungrass/Swiftthistle buff details and shared Plant variants remain under review. Android acceptance pending. Followup2026-11-09 actual normal/Warden activation, status/duration and no-healing distinctions checked; same concise wording retained, actual seed windows prepared for397."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/plants/Earthroot.java",
@@ -4219,7 +4225,7 @@
       "status": "REVIEWED_CORRECTED",
       "description_methods": [],
       "wording_corrected": true,
-      "review_notes": "Seed and plant normal descriptions checked against activation and Warden branches. Floor-one Fadeleaf, immunity limits and movement-ending effects distinguished. Earthroot/Sungrass/Swiftthistle buff details and shared Plant variants remain under review. Android acceptance pending."
+      "review_notes": "Seed and plant normal descriptions checked against activation and Warden branches. Floor-one Fadeleaf, immunity limits and movement-ending effects distinguished. Earthroot/Sungrass/Swiftthistle buff details and shared Plant variants remain under review. Android acceptance pending. Followup2026-11-09 actual normal/Warden activation, status/duration and no-healing distinctions checked; same concise wording retained, actual seed windows prepared for397."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/plants/Plant.java",
@@ -4269,7 +4275,7 @@
       "status": "REVIEWED_CORRECTED",
       "description_methods": [],
       "wording_corrected": true,
-      "review_notes": "Seed and plant normal descriptions checked against activation and Warden branches. Floor-one Fadeleaf, immunity limits and movement-ending effects distinguished. Earthroot/Sungrass/Swiftthistle buff details and shared Plant variants remain under review. Android acceptance pending."
+      "review_notes": "Seed and plant normal descriptions checked against activation and Warden branches. Floor-one Fadeleaf, immunity limits and movement-ending effects distinguished. Earthroot/Sungrass/Swiftthistle buff details and shared Plant variants remain under review. Android acceptance pending. Followup2026-11-09 actual normal/Warden activation, status/duration and no-healing distinctions checked; same concise wording retained, actual seed windows prepared for397."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/plants/Sungrass.java",
@@ -4341,15 +4347,6 @@
     }
   ],
   "completed_units": 191,
-  "latest_tests": {
-    "core_tests": 3084,
-    "suites": 457,
-    "failures": 0,
-    "errors": 0,
-    "skipped": 0,
-    "log": "/workspace/apd-cleansing-stamina-mastery-evidence-20261109/accepted-full",
-    "android_verified": false,
-    "scope": "396immutable original APKs passed12native cases; scanner recovery42569117432passed, finalstage/review pending. Later source3084corepassed; latest native additions pending397. Earlier source-only Android/desktop compile42568229887on8ca9 passed3081, not proof of later runtime."
-  },
+  "latest_tests": "3089core/457suites, no failures/errors/skips; actual staff Transfusion ownership and six ward tier repair checks, Blindweed/Stormvine/Mageroyal normal/Warden branches and raw Blandfruit no-use checks. Full evidence /workspace/apd-staff-plant-evidence-20261109/accepted-full. Native new windows pending397;396published3080core/12native.",
   "message_inventory_entries": 5338
 }
