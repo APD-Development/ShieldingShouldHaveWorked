@@ -276,6 +276,26 @@ public class MechanicsExplanationTest {
   descriptionSightArena();hero.viewDistance=8;com.shatteredpixel.shatteredpixeldungeon.items.trinkets.EyeOfNewt eye=new com.shatteredpixel.shatteredpixeldungeon.items.trinkets.EyeOfNewt();eye.cursedKnown=true;hero.belongings.backpack.items.add(eye);
   for(int level=0;level<=3;level++){eye.level(level);boolean[] fov=new boolean[Dungeon.level.length()];Dungeon.level.updateFieldOfView(hero,fov);int radius=Math.round(8*com.shatteredpixel.shatteredpixeldungeon.items.trinkets.EyeOfNewt.visionRangeMultiplier(level));assertTrue(fov[hero.pos+radius]);assertFalse(fov[hero.pos+radius+1]);assertTrue(TrinketExplanation.details(eye).contains("= "+(2+level)+" tiles"));}
  }
+ @Test public void cloverDescribesIndependentDamageRollsRatherThanWholeAttackOutcomes(){
+  com.shatteredpixel.shatteredpixeldungeon.items.trinkets.ThirteenLeafClover clover=new com.shatteredpixel.shatteredpixeldungeon.items.trinkets.ThirteenLeafClover();clover.levelKnown=clover.cursedKnown=true;hero.belongings.backpack.items.add(clover);
+  for(int level=0;level<=3;level++){
+   clover.level(level);float chance=com.shatteredpixel.shatteredpixeldungeon.items.trinkets.ThirteenLeafClover.alterHeroDamageChance(level);String text=clover.info();assertTrue(text,text.contains("weapon and many magical damage rolls"));assertTrue(text.contains("_"+Math.round(60*chance)+"%_"));assertTrue(text.contains("_"+Math.round(40*chance)+"%_"));assertFalse(text.contains("of your attacks"));
+   for(int seed=0;seed<100;seed++){
+    Random.pushGenerator(seed);int expected=Random.Float()<chance?(Random.Float()<.6f?17:3):Random.NormalIntRange(3,17);int expectedNext=Random.Int();Random.popGenerator();
+    Random.pushGenerator(seed);try{assertEquals(expected,Hero.heroDamageIntRange(3,17));assertEquals(expectedNext,Random.Int());}finally{Random.popGenerator();}
+   }
+  }
+  clover.levelKnown=false;clover.level(0);String unknown=clover.info();clover.level(3);assertEquals(unknown,clover.info());
+ }
+ @Test public void ratSkullDetailsPreserveHalfBonusForActualArmoredStatueGeneration(){
+  com.shatteredpixel.shatteredpixeldungeon.items.trinkets.RatSkull skull=new com.shatteredpixel.shatteredpixeldungeon.items.trinkets.RatSkull();skull.levelKnown=skull.cursedKnown=true;hero.belongings.backpack.items.add(skull);com.watabou.utils.Bundle generation=new com.watabou.utils.Bundle();com.shatteredpixel.shatteredpixeldungeon.items.Generator.storeInBundle(generation);
+  try{for(int level=0;level<=3;level++){
+   skull.level(level);float factor=com.shatteredpixel.shatteredpixeldungeon.items.trinkets.RatSkull.exoticChanceMultiplier(level),halfBonusFactor=1+(factor-1)/2f;String text=TrinketExplanation.details(skull);assertTrue(text,text.contains("only the increase above the ordinary chance is halved"));assertTrue(text.contains("effective factor at this level is "+ObfuscationExplanation.number(halfBonusFactor)));
+   for(int seed=0;seed<100;seed++){
+    Random.pushGenerator(seed);boolean expected=Random.Float()<.1f*halfBonusFactor;Random.popGenerator();Random.pushGenerator(seed);try{assertEquals(expected,com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Statue.random(false) instanceof com.shatteredpixel.shatteredpixeldungeon.actors.mobs.ArmoredStatue);}finally{Random.popGenerator();}
+   }
+  }}finally{com.shatteredpixel.shatteredpixeldungeon.items.Generator.restoreFromBundle(generation);}
+ }
  @Test public void ferretTuftDescriptionMatchesActualContestForEnemyAndHeroAllies(){
   com.shatteredpixel.shatteredpixeldungeon.items.trinkets.FerretTuft tuft=new com.shatteredpixel.shatteredpixeldungeon.items.trinkets.FerretTuft();tuft.cursedKnown=true;hero.belongings.backpack.items.add(tuft);ContestScoreTarget attacker=new ContestScoreTarget(),defender=new ContestScoreTarget();
   for(int level=0;level<=3;level++){tuft.level(level);float factor=com.shatteredpixel.shatteredpixeldungeon.items.trinkets.FerretTuft.evasionMultiplier(level);
@@ -739,6 +759,18 @@ public class MechanicsExplanationTest {
  @Test public void farsightDescriptionMatchesActualRoundedFieldOfViewCapAndBlindness(){
   descriptionSightArena();boolean[] view=new boolean[Dungeon.level.length()];for(int rank=1;rank<=3;rank++){hero.talents.get(0).put(Talent.FARSIGHT,rank);Dungeon.level.updateFieldOfView(hero,view);int radius=Math.round(hero.viewDistance*(1+.25f*rank));assertTrue(view[hero.pos+radius]);assertFalse(view[hero.pos+radius+1]);String text=TalentExplanation.details(Talent.FARSIGHT,rank);assertTrue(text.contains(ObfuscationExplanation.number(1+.25f*rank)));assertTrue(text.contains("caps that radius at 20 tiles"));}
   Dungeon.level.setSize(49,49);java.util.Arrays.fill(Dungeon.level.map,com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.EMPTY);Dungeon.level.buildFlagMaps();Dungeon.level.discoverable=new boolean[Dungeon.level.length()];java.util.Arrays.fill(Dungeon.level.discoverable,true);hero.pos=24*49+24;hero.viewDistance=20;view=new boolean[Dungeon.level.length()];Dungeon.level.updateFieldOfView(hero,view);assertTrue(view[hero.pos+20]);assertFalse(view[hero.pos+21]);Buff.affect(hero,Blindness.class,5);Dungeon.level.updateFieldOfView(hero,view);assertFalse(view[hero.pos+2]);assertTrue(TalentExplanation.details(Talent.FARSIGHT,3).contains("disable this normal distant-sight path"));
+ }
+ @Test public void obfuscationDetectionDetailsMatchActualSleepingAndWanderingChecks()throws Exception{
+  descriptionSightArena();com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Rat observer=new com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Rat();
+  java.lang.reflect.Method sleeping=observer.SLEEPING.getClass().getDeclaredMethod("detectionChance",com.shatteredpixel.shatteredpixeldungeon.actors.Char.class),wandering=observer.WANDERING.getClass().getDeclaredMethod("detectionChance",com.shatteredpixel.shatteredpixeldungeon.actors.Char.class);sleeping.setAccessible(true);wandering.setAccessible(true);
+  for(int level:new int[]{0,3,9})for(int ringLevel:new int[]{0,3}){
+   armor.level(level);RingOfArcana arcana=ring(ringLevel);String details=ObfuscationExplanation.details(armor,hero);assertTrue(details.contains("distance in tiles + your stealth points"));assertTrue(details.contains("distance in tiles / 2 + your stealth points"));assertTrue(details.contains("separate enemy checks"));assertTrue(details.contains("Alerts, damage, invisibility"));
+   for(int distance:new int[]{1,2,5}){
+    observer.pos=hero.pos+distance;float stealth=hero.stealth();assertEquals(Obfuscation.stealthBoost(hero,hero.glyphLevel(Obfuscation.class)),stealth,0);
+    assertEquals(1f/(observer.distance(hero)+stealth),(Float)sleeping.invoke(observer.SLEEPING,hero),.000001f);assertEquals(1f/(observer.distance(hero)/2f+stealth),(Float)wandering.invoke(observer.WANDERING,hero),.000001f);
+   }
+   for(Ring.RingBuff buff:new java.util.ArrayList<>(hero.buffs(Ring.RingBuff.class)))buff.detach();hero.belongings.ring=null;
+  }
  }
  @Test public void mailPlusThreeExplainsUnitsAndUsesActualObfuscationScore(){armor.level(3);RingOfArcana ring=ring(3);float expected=Obfuscation.stealthBoost(hero,hero.glyphLevel(Obfuscation.class));String text=armor.info();assertTrue(text,text.contains("(_2_ without Arcana)"));assertTrue(text,text.contains(com.shatteredpixel.shatteredpixeldungeon.messages.Messages.decimalFormat("0.##",expected)+" stealth"));assertTrue(text,text.contains("unaware enemies"));assertFalse(text,text.contains("added stealth 2 to"));}
  @Test public void upgradesAndArcanaRefreshBothReadableValuesAndDetailedResults(){armor.level(0);RingOfArcana ring=ring(0);String first=ObfuscationExplanation.details(armor,hero);armor.level(6);ring.upgrade();String next=ObfuscationExplanation.details(armor,hero);assertNotEquals(first,next);assertTrue(next,next.contains(ObfuscationExplanation.number(Obfuscation.stealthBoost(hero,hero.glyphLevel(Obfuscation.class)))));assertTrue(next,next.contains("3 stealth points"));}

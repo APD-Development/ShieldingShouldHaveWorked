@@ -332,6 +332,16 @@ public class QolItemFeedbackDeviceTest {
             TopScoresDeviceTest.render(()->{Dungeon.challenges=previous;Dungeon.hero.belongings.backpack.items.remove(haste);Dungeon.hero.belongings.backpack.items.remove(shielding);Dungeon.hero.belongings.backpack.items.remove(noisemaker);Dungeon.hero.belongings.backpack.items.remove(regrowthBomb);});
         }
     }
+    private static void reviewedTrinketDamageDescriptionsRender()throws Exception{
+        for(int level:new int[]{0,3})for(boolean known:new boolean[]{true,false}){
+            com.shatteredpixel.shatteredpixeldungeon.items.trinkets.ThirteenLeafClover clover=new com.shatteredpixel.shatteredpixeldungeon.items.trinkets.ThirteenLeafClover();TopScoresDeviceTest.render(()->{clover.level(level);clover.levelKnown=known;clover.cursedKnown=true;});
+            showItem(clover,"weapon and many magical damage rolls","qol-clover-damage-rolls-"+level+"-"+known+".png",true,known);
+        }
+        com.shatteredpixel.shatteredpixeldungeon.items.trinkets.RatSkull skull=new com.shatteredpixel.shatteredpixeldungeon.items.trinkets.RatSkull();TopScoresDeviceTest.render(()->{skull.level(3);skull.levelKnown=skull.cursedKnown=true;});
+        showItem(skull,"bonus is halved","qol-rat-skull-half-bonus.png",true,true);
+        calculationWindow(()->new WndInfoItem(skull),"only the increase above the ordinary chance is halved","qol-rat-skull-retained-half-bonus.png");
+        com.shatteredpixel.shatteredpixeldungeon.items.trinkets.MimicTooth tooth=new com.shatteredpixel.shatteredpixeldungeon.items.trinkets.MimicTooth();TopScoresDeviceTest.render(()->{tooth.level(3);tooth.levelKnown=tooth.cursedKnown=true;});showItem(tooth,"Ordinary floors","qol-mimic-tooth-ordinary-floors.png",true,true);
+    }
     private static void retainedTrinketDescriptionsRender()throws Exception{
         Item[] items={new com.shatteredpixel.shatteredpixeldungeon.items.trinkets.PetrifiedSeed(),new com.shatteredpixel.shatteredpixeldungeon.items.trinkets.MossyClump(),new com.shatteredpixel.shatteredpixeldungeon.items.trinkets.ExoticCrystals(),new com.shatteredpixel.shatteredpixeldungeon.items.trinkets.FerretTuft(),new com.shatteredpixel.shatteredpixeldungeon.items.trinkets.EyeOfNewt(),new com.shatteredpixel.shatteredpixeldungeon.items.trinkets.CrackedSpyglass(),new com.shatteredpixel.shatteredpixeldungeon.items.trinkets.VialOfBlood(),new com.shatteredpixel.shatteredpixeldungeon.items.trinkets.SaltCube(),new com.shatteredpixel.shatteredpixeldungeon.items.trinkets.ShardOfOblivion()};
         String[] expected={"seeds or runestones","Excludes Floor 1","cannot be spent as alchemy energy","harder to hit","sense enemies through walls","Search can uncover it","maximum health","slows natural healing","once for each type"};
@@ -1000,6 +1010,7 @@ public class QolItemFeedbackDeviceTest {
             missileEffectDescriptionsRender();
             additionalDuelistDescriptionsRender();
             retainedArtifactDescriptionsRender();
+            reviewedTrinketDamageDescriptionsRender();
             retainedTrinketDescriptionsRender();
             ordinaryDartDescriptionsRender();
             ordinaryExoticPotionDescriptionsRender();

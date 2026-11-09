@@ -208,3 +208,8 @@ Sungrass actual normal/Warden activation and six real healing ticks under HEALIN
 ### Chalice maximum and shared source review
 
 Chalice normal interval concise, compared with actual Regeneration levels0/3/9/10; retained max-level details correctly state no next prick. All3070core457suites passed; new actual native windows pending395. Reviewed six sprite/flavor-only class armor subclasses, Artifact base, ItemStatusHandler and Recipe base individually; no own description corrections required. Inherited ability/provider review remains separate. 408full/partial source reviews,332corrected,179complete,248unresolved. Three legacy detail providers now partial, never counted complete just because not exposed in normal UI.
+
+
+### Actual stealth detection and trinket roll/generation audit
+
+All3073core457suites passed. Actual Mob sleeping/wandering chance handlers match conditional Obfuscation explanation across distances, armor and Arcana. Clover text now describes independent weapon/many magic damage rolls, not complete attack extremes;400seeded actual rolls and next RNG match. RatSkull details clarify half only of bonus above baseline,400seeded actual Statue generations match; CrystalVault branch separately source-reviewed. Ferret duplicate effect removed; MimicTooth ebony chance restricted to ordinary floors in wording after RegularLevel/LastShop/boss creation read. New trinket actual windows pending396;395is earlier3070source. One new test-fixture compile error (nonexistent deactivate helper) preserved; corrected by actual RingBuff detach fixture without weakening tests. 409full/partial,333corrected,181complete,246unresolved source units. No gameplay changes or full audit claim.
