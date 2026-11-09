@@ -162,7 +162,7 @@ public class QolItemFeedbackDeviceTest {
             }
             boolean found=false;for(RenderedTextBlock text:TopScoresDeviceTest.find(window,RenderedTextBlock.class))if(text.text().contains(expected))found=true;assertTrue("Rendered calculation contains live explanation: "+expected,found);
             for(RenderedTextBlock text:TopScoresDeviceTest.find(window,RenderedTextBlock.class)){
-                if(screenshot.startsWith("qol-existing-status-clear-")||screenshot.startsWith("qol-warrior-shield-"))assertFalse("Reviewed status windows avoid technical duration units",text.text().contains("game-time units"));
+                if(screenshot.startsWith("qol-existing-status-clear-")||screenshot.startsWith("qol-existing-power-link-")||screenshot.startsWith("qol-warrior-shield-"))assertFalse("Reviewed status windows avoid technical duration units",text.text().contains("game-time units"));
                 if(screenshot.startsWith("qol-twin-upgrades-existing-panel-")||screenshot.startsWith("qol-weapon-recharging-existing-panel-"))assertFalse("Reviewed talent windows avoid generic rank boilerplate",text.text().contains("rank-specific amounts"));
             }
             for(java.util.Map.Entry<Button,float[]> entry:controls.entrySet()){Button b=entry.getKey();float[] before=entry.getValue();assertEquals(before[0],b.left(),0);assertEquals(before[1],b.top(),0);assertEquals(before[2],b.width(),0);assertEquals(before[3],b.height(),0);}
