@@ -1,11 +1,11 @@
 {
-  "recorded_utc": "2026-11-09T17:58:34.525152+00:00",
+  "recorded_utc": "2026-11-09T18:09:35.755041+00:00",
   "authorization_end_utc": "2026-11-09T20:00:00Z",
   "latest_verified_published_build": 418,
   "release_url": "https://github.com/APD-Development/ShieldingShouldHaveWorked/releases/tag/apd-alpha-preview-418",
   "source_fix_commit": "8c2d5ca9f33154af69b782d6aa83ac181bd3c21d",
   "local_full_core": {
-    "tests": 3153,
+    "tests": 3154,
     "suites": 457,
     "failures": 0,
     "errors": 0,
@@ -107,7 +107,7 @@
     "run": 42656324353,
     "report": "docs/APD-421-HELD-HISTORY-2026-11-09.json"
   },
-  "current_work": "3153core457all0:17of27existing spellbranches revised,18actualcontexts prepared; next Androidsourcecompile requested.425source758096097 has14branches/fontfix; running.423/424privateheld,418published.7helpers/sourcecases still open.",
+  "current_work": "3154core457all0.21of27spellbranches reviewed with actual DivineSense classrange/artifact FOV regression;22nativecontexts prepared. Latest Androidsourcecompile requested.425older3153/14branch/fontfix running, source758096097;423/424held,418published. Wholeaudit438complete7open.",
   "apd423": {
     "source": "2a98ed3e4d050d2eaa1c34a54a2ca09facde08d9",
     "original_run": 42662501545,
