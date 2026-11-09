@@ -38,13 +38,15 @@ public final class RingExplanation {
         else if(ring instanceof RingOfMight)effect="Adds "+plain+" strength points. Maximum-HP factor = 1.035^bonus = × "+n(RingOfMight.HTMultiplier(b))+" before the maximum-HP calculation's integer rounding. Strength uses the ring's ordinary bonus; temporary effective-ring bonuses can affect HP separately. This does not heal the same amount as its percentage.";
         else if(ring instanceof RingOfSharpshooting)effect="Adds "+b+" effective upgrade levels to thrown-weapon damage calculations. Durability factor = 1.2^ordinary bonus = × "+n(RingOfSharpshooting.durabilityMultiplier(plain))+". This changes durability consumption, not damage by the same percentage; each thrown weapon's own rules and rounding still apply.";
         else if(ring instanceof RingOfTenacity){
-            effect="Protection grows as you lose HP. ";
+            effect=b>0?"Damage reduction grows as you lose HP. ":b<0?"Extra damage taken grows as you lose HP. ":"This ring currently has no effect on damage. ";
             if(Dungeon.hero!=null&&Dungeon.hero.HT>0){
                 float missing=(Dungeon.hero.HT-Dungeon.hero.HP)/(float)Dungeon.hero.HT;
                 float factor=RingOfTenacity.damageMultiplier(b,missing);
                 effect+="At your current health: _"+n(Math.abs(100*(1-factor)))+"% "+(factor>1?"more":"less")+" damage_ (× "+n(factor)+"). ";
             } else effect+="Inspect during a run for the result at your current health. ";
-            effect+="Full health gives no reduction or increase. Cursed rings increase damage instead. The listed maximum is approached only near zero HP; it is not your reduction on every hit.\n\nDamage multiplier = 0.85^(ring value × fraction of HP missing). Other defenses and rounding still apply.";
+            effect+="Full health gives no reduction or increase. ";
+            if(b!=0)effect+="The listed maximum is approached only near zero HP; it is not your "+(b>0?"reduction":"increase")+" on every hit. ";
+            effect+="\n\nDamage multiplier = 0.85^(ring value × fraction of HP missing). Other defenses and rounding still apply.";
         }
         else if(ring instanceof RingOfWealth)effect="Qualifying ordinary loot chance × 1.20^bonus = × "+n((float)Math.pow(1.20,b))+". This multiplies an eligible source's chance; it does not add that percentage to every drop. Special bonus-loot counters and their guarantees follow separate rules, and some sources ignore this ring.";
         else if(ring instanceof RingOfForce){

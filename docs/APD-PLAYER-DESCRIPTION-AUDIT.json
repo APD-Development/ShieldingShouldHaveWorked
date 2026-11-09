@@ -320,13 +320,13 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/RingExplanation.java",
-      "sha256": "deb35654c26d40c2a8dd1f7db2a4dcd63dc3f75e4c87ad0edd65c63f2492d02d",
+      "sha256": "c9edfacdddc8ea5c4b77a5324b9ba79319daff6e1905e9654c2e0feda7e2df88",
       "category": "mechanics",
       "status": "PARTIAL_REVIEW",
       "description_methods": [
         "details"
       ],
-      "review_notes": "All formula branches read; Force unknown-strength disclosure fixed and boilerplate reduced. Remaining mechanic-specific complex explanation prose still needs individual refinement. Force/Tenacity retained branches now shorter, currentpercent less/more explicit, exact formulas and known-only values retained. No newpanel or balance changes. Other branches remain separately partial.",
+      "review_notes": "All formula branches read; Force unknown-strength disclosure fixed and boilerplate reduced. Remaining mechanic-specific complex explanation prose still needs individual refinement. Force/Tenacity retained branches now shorter, currentpercent less/more explicit, exact formulas and known-only values retained. No newpanel or balance changes. Other branches remain separately partial. Manual405screens found0-valuecursedTenacity contradiction despite correct0%number. Latestsource differentiates positive/negative/zero opening and omitsnearzeroHPmaximum claim atzero. Existing18stateactualmultiplier test now validates these conditionals.3115fullpass.405/406heldprivate; correction notinAPK.",
       "wording_corrected": true
     },
     {
@@ -4467,6 +4467,6 @@
     }
   ],
   "completed_units": 307,
-  "latest_tests": "3114core457 no failures/errors/skips. Vampiric nonzero customhealing normal-tooltip mismatch reproduced, corrected;36actual activations (4healing\u00d73Arcana\u00d73damage), credit/state preservation pass. All earlier combat/description/save tests retained. Fullraw /workspace/apd-vampiric-evidence-20261109/accepted-full. Source-only Android compilation requested; newest25/200nativewindows NOT yet run, not included in406. Wholeauditunfinished. Added all-configured-language formatting regression for three live-percent buffs;3115fullcore457pass, nofail/error/skip. No production changes since91a71abc0. Newest Vampire Android window runtime remains pending.",
+  "latest_tests": "3115core457 failures/errors/skips zero on final Tenacity zero-state correction plus Vampiric/currenthealing and all-language livebuff tests. Actual manual405review of32captures rejected inaccurate cursed-zero generic claim despite correct0%number;405/406same affectedprovider held PRIVATE, not published. Latestpublished403. Fullraw /workspace/apd-tenacity-zero-evidence-20261109/accepted-full. Latestsource-onlyAndroid compilation requested; corrected Tenacity/Vampiric actualnativewindows/newAPK still pending. Wholeaudit436units433fullpartial350corrected307complete129unresolved.",
   "message_inventory_entries": 5339
 }

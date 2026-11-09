@@ -989,7 +989,7 @@ public class MechanicsExplanationTest {
  @Test public void tenacityRetainedDetailsShowCurrentProtectionOrCurseAcrossHealthAndBonuses(){
   RingOfTenacity ring=new RingOfTenacity();ring.anonymize();ring.levelKnown=ring.cursedKnown=true;hero.belongings.ring=ring;ring.activate(hero);
   for(boolean cursed:new boolean[]{false,true})for(int level:new int[]{0,3,8})for(int hp:new int[]{1,hero.HT/2,hero.HT}){
-   ring.cursed=cursed;ring.level(level);hero.HP=hp;String before=savedDescriptionHero(),text=RingExplanation.details(ring);float actual=RingOfTenacity.damageMultiplier(hero);String amount=ObfuscationExplanation.number(Math.abs(100*(1-actual)))+"% "+(actual>1?"more":"less")+" damage";assertTrue(text,text.contains(amount));assertTrue(text.contains("0.85^(ring value × fraction of HP missing)"));assertEquals(before,savedDescriptionHero());
+   ring.cursed=cursed;ring.level(level);hero.HP=hp;String before=savedDescriptionHero(),text=RingExplanation.details(ring);float actual=RingOfTenacity.damageMultiplier(hero);String amount=ObfuscationExplanation.number(Math.abs(100*(1-actual)))+"% "+(actual>1?"more":"less")+" damage";assertTrue(text,text.contains(amount));assertTrue(text.contains("0.85^(ring value × fraction of HP missing)"));assertTrue(text,text.contains(ring.soloBuffedBonus()>0?"Damage reduction grows":ring.soloBuffedBonus()<0?"Extra damage taken grows":"currently has no effect on damage"));assertFalse(text.contains("Cursed rings increase damage instead"));if(ring.soloBuffedBonus()==0)assertFalse(text.contains("only near zero HP"));assertEquals(before,savedDescriptionHero());
   }
  }
  @Test public void forceRetainedStanceBonusMatchesActualSeededDamageDifference(){

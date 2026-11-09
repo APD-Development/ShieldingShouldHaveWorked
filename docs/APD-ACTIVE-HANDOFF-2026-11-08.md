@@ -219,3 +219,8 @@ Full17own source/trackers/condition/save paths individually read with actualChar
 ### Live-percent translation compatibility
 
 Allconfigured Languages values×Bless/Hex/Daze actualdesc formatting passes, restoring original language afterward. Original translated turn placeholders remain valid with extra ignored numeric argument.3115fullcore457allpass, rawXML/log committed. Production unchanged since91a71abc0; source-only compile requested.405retry both variants all12success, packagingpending;406nativepending. Wholeaudit436units433full/partial350corrected307complete129unresolved.
+
+
+### Manual review rejected405/406; zero-value Tenacity corrected in source
+
+405originals passed3112core457/12actualAPI34aftertest-onlytimingretry. IndependentAPK/source/sidecar/scan and4453sourcefilehashchecks passed;32newHoly/ringactualcaptures reviewed. Cursed+3Tenacityshowscorrect0%andringvalue0butgenerictextclaims cursedharmandnearzeroHPmaximum: incorrectforneutralzero. Rejectpublication.406containsidenticalaffectedprovider deb35654c26d40c2a8dd1f7db2a4dcd63dc3f75e4c87ad0edd65c63f2492d02d;alsoheldprivate despite3113core/12nativepasses. Bothoriginalpairs/evidence retained; no successfuldelivery claim. Latestsource differentiatespositive/negative/zeroandonlymentionsmaxnearzeroHPfornonzero. Existing18stateactualmultiplierteststrengthened;3115fullcore457allpass. ScreenshotrejectionandrawfullXML/logcommitted. CorrectedTenacityandnewVampiricarenotinAPKyet; source-onlycompile requested.403remainslatestpublished. Wholeaudit436units433fullpartial350corrected307complete129unresolved; continueuntil~09:30UTC.
