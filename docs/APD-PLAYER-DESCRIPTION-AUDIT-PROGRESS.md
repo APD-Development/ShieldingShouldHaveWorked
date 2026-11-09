@@ -297,3 +297,8 @@ All3103core457suites pass. Reproduced known Sword and crossbow Dart tooltip chan
 ### Sword-family source reconciliation
 
 Read complete own five Sword-family sources and shared Cleave branch behavior. Existing concise paid/free-followup/zero-time-kill descriptions correct; actual18family deferred-bonus inputs and15family augmentation/rounding/known/unknown preview tests remain accepted. Five own review units completed; inherited/provider review separate. Extra headless accounting fixture cannot construct real AttackIndicator, exact candidate/log preserved in APD-400-cleave-headless-ui-fixture.zip and excluded; no application failure or successful kill-turn-cost runtime claim. Production source/tests remain accepted3103core; no extra mechanics or unnecessary wording added.419full/partial337corrected211complete216unresolved source units,5338English.399source58f6b67d3ced039c85a612923909efd7d9c2277f build42578107734 native in progress;398published fallback. Continue remaining weapon-family review.
+
+
+### Retained growth and ward details
+
+Warding/Regrowth existing panels shorter, no new controls. Capacity counts resin/curse infusion, excludes temporary casting levels; Regrowth whole-number exhaustion formula/saved counters preserved and +10 described as effectively disabled rather than2147483647charges. All3103core457suites passed. New expanded native windows pending400. Seven own HeavyBlow/Spike source reviews closed after individual source reconciliation; inherited/shared review remains separate.420full/partial338corrected218complete209unresolved,5338English. Whole audit unfinished.399published fallback; continue.

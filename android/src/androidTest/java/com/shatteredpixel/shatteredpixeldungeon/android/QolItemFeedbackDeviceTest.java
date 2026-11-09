@@ -502,6 +502,13 @@ public class QolItemFeedbackDeviceTest {
         AtomicReference<Window> shown=new AtomicReference<>();TopScoresDeviceTest.render(()->{com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Healing healing=new com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Healing();healing.setHeal(100,.25f,0);assertTrue(healing.desc().contains("Next heal: up to 25 HP"));com.watabou.utils.Bundle before=new com.watabou.utils.Bundle();healing.storeInBundle(before);Window window=new WndInfoBuff(healing);GameScene.show(window);shown.set(window);com.watabou.utils.Bundle after=new com.watabou.utils.Bundle();healing.storeInBundle(after);assertEquals(before.toString(),after.toString());});
         try{Thread.sleep(300);TopScoresDeviceTest.render(()->assertDescriptionViewport(shown.get()));TopScoresDeviceTest.screenshot("qol-gradual-healing-concise-status.png");}finally{TopScoresDeviceTest.render(()->shown.get().hide());}
     }
+    private static void retainedGrowthAndWardDescriptionsRender()throws Exception{
+        com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfWarding ward=new com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfWarding();ward.level(3);ward.levelKnown=ward.cursedKnown=ward.curChargeKnown=true;
+        calculationWindow(()->new WndInfoItem(ward),"supports 5 points of wards","qol-warding-existing-detail-clear.png");
+        com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfRegrowth growth=new com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfRegrowth();growth.level(3);growth.levelKnown=growth.cursedKnown=growth.curChargeKnown=true;
+        calculationWindow(()->new WndInfoItem(growth),"Growth and exhaustion","qol-regrowth-existing-detail-clear.png");
+        growth.level(10);calculationWindow(()->new WndInfoItem(growth),"exhaustion is effectively disabled","qol-regrowth-level10-existing-detail.png");
+    }
     private static void sightHungerHealingTrinketDescriptionsRender()throws Exception{
         com.shatteredpixel.shatteredpixeldungeon.items.trinkets.EyeOfNewt eye=new com.shatteredpixel.shatteredpixeldungeon.items.trinkets.EyeOfNewt();eye.level(3);eye.levelKnown=eye.cursedKnown=true;showItem(eye,"Stealthy mimics evade this sensing","qol-eye-of-newt-known-sensing-limit.png",true,true);
         calculationWindow(()->new WndInfoItem(eye),"sight factor = 0.875","qol-eye-of-newt-existing-detail-clear.png");
@@ -1199,6 +1206,7 @@ public class QolItemFeedbackDeviceTest {
             conciseRechargeDescriptionsRender();
             retainedBlastScrollDescriptionsRender();
             sightHungerHealingTrinketDescriptionsRender();
+            retainedGrowthAndWardDescriptionsRender();
             gradualHealingNonStackDescriptionsRender();
             hiddenTwinUpgradeDescriptionsRender();
             divineInspirationChoiceDescriptionRenders();

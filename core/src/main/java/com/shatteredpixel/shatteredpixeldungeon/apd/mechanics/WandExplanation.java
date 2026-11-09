@@ -34,17 +34,16 @@ public final class WandExplanation {
     public static String details(Wand wand) {
         if (!wand.isIdentified()) return "Identify the wand before its upgrade-dependent calculations are shown.";
         int[] levels = wand.previewEffectiveLevels();
-        String result = "_Current wand levels and charges_\nEffective level for the next cast: "
-            + levels[0] + (levels[0] == levels[1] ? "" : " to " + levels[1])
-            + ". This is a level used by the wand's own formulas, not that many damage points. "
-            + "Current charges: " + wand.curCharges + " of " + wand.maxCharges + ". A charge is a casting resource, not damage. "
-            + "Temporary +2 levels from Inscribed Power, one-charge Desperate Power, Wild Magic's capped random bonus and a stronger Magic Charge can change effective levels; they do not permanently upgrade the wand. "
-            + "An ordinary upgrade raises the underlying level by one, consumes one existing resin bonus when present, and can remove a curse. Charge limits and each wand's effects follow their separate formulas.";
-        if (levels[0] != levels[1]) result += "\nWild Magic has two equally likely bonus branches before its level cap and stronger Magic Charge apply. The range above includes both outcomes; the cast selects its outcome normally.";
+        String result = "_Next cast_\nWand level for this cast: "
+            + levels[0] + (levels[0] == levels[1] ? "" : "–" + levels[1])
+            + ". Charges: " + wand.curCharges + "/" + wand.maxCharges
+            + ". Temporary bonuses can strengthen this cast without upgrading the wand. "
+            + "Upgrading adds one permanent level, uses up one resin bonus if present, and may remove a curse.";
+        if (levels[0] != levels[1]) result += "\nWild Magic gives two equally likely level bonuses. Its cap and any stronger Magic Charge are already included in this range.";
         if(Dungeon.hero!=null&&Dungeon.hero.subClass==com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass.WARLOCK){
             result+="\n\n_Warlock Soul Mark_\nOn a qualifying effect check against a character other than the hero, mark chance = clamp(1 − (0.92 raised to (effective wand level × effect charge count + 1) − 0.07), 0, 1). This is a per-character effect check, not a guarantee that a cast finds a valid target. The effect's charge count can differ from Wild Magic's fractional resource payment.";
             if(wand instanceof WandOfWarding)result+=" A ward checks using its own stored wand level when it attacks; current casting level is not treated as every existing ward's level.";
-            else{int cost=wand.previewChargeCost();if(cost>=0){float low=(float)Math.max(0,Math.min(1,1-Wand.soulMarkThreshold(levels[0],cost))),high=(float)Math.max(0,Math.min(1,1-Wand.soulMarkThreshold(levels[1],cost)));result+=" With the current standard effect charge count "+cost+": "+ObfuscationExplanation.number(100*low)+(levels[0]==levels[1]?"":"–"+ObfuscationExplanation.number(100*high))+"% per qualifying check; offered duration "+(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.SoulMark.DURATION+levels[0])+(levels[0]==levels[1]?"":"–"+(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.SoulMark.DURATION+levels[1]))+" scheduled units before target status rules.";}}
+            else{int cost=wand.previewChargeCost();if(cost>=0){float low=(float)Math.max(0,Math.min(1,1-Wand.soulMarkThreshold(levels[0],cost))),high=(float)Math.max(0,Math.min(1,1-Wand.soulMarkThreshold(levels[1],cost)));result+=" With the current standard effect charge count "+cost+": "+ObfuscationExplanation.number(100*low)+(levels[0]==levels[1]?"":"–"+ObfuscationExplanation.number(100*high))+"% per qualifying check; offered duration "+(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.SoulMark.DURATION+levels[0])+(levels[0]==levels[1]?"":"–"+(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.SoulMark.DURATION+levels[1]))+" turns, before target resistances.";}}
         }
         if (wand instanceof DamageWand) {
             DamageWand direct = (DamageWand)wand;
@@ -87,19 +86,22 @@ public final class WandExplanation {
                 + "\nPossible major effects and their relative selection weights: "+corruptionGroup(true,true)+". Minor effects and weights: "+corruptionGroup(false,true)+". Existing or immune effects are removed from selection; among remaining effects, weight two is twice as likely as weight one. Some statuses weaken resistance but are not offered by this wand itself.";
         }
         if (wand instanceof WandOfWarding) {
-            result += "\n\n_Ward support budget_\nThis wand contributes 2 + its ordinary known level = " + (2+wand.previewBaseLevel())
-                + " support points. This is a budget for active wards, not alchemy energy, damage or charges consumed on each attack. Each ward uses points equal to its tier; multiple charging Warding wands contribute to the total budget. Temporary casting levels do not increase that ordinary-level budget. "
-                + "Creating or upgrading wards needs available support points. At full support, higher-tier sentries can still be healed under their own rule rather than upgraded; ordinary wards cannot simply exceed the budget. Ward damage and healing use the cast's effective level separately.";
+            result += "\n\n_Ward capacity_\nThis wand supports " + (2+wand.previewBaseLevel())
+                + " points of wards: 2 + its wand level, including resin and curse infusion. Each ward uses points equal to its tier; other charging Warding wands add their own capacity. "
+                + "You need a free point to create or upgrade a ward. At full capacity, zapping a tier 4–6 sentry heals it instead; tier 1–3 wards cannot be zapped. "
+                + "Temporary casting levels do not increase capacity, but can strengthen ward damage and healing.";
+
         }
         if (wand instanceof WandOfRegrowth && Dungeon.hero != null) {
             WandOfRegrowth growth=(WandOfRegrowth)wand;int cost=wand.previewChargeCost();int limit=growth.previewChargeLimit(Dungeon.hero.lvl);
-            result += "\n\n_Regrowth area and depletion_\nCurrent cast uses "+cost+" charge units. Its tall/furrowed-grass placement budget is round((3.67 + effective level / 3) × charges used): "
-                + Math.round((3.67f+levels[0]/3f)*cost) + (levels[0]==levels[1]?"":" to "+Math.round((3.67f+levels[1]/3f)*cost))
-                + " tile attempts. Suitable terrain, existing plants, immovable creatures and available space limit actual placement. Qualifying affected creatures are offered 4 × charges used = "+(4*cost)+" turns of Roots before resistance. "
-                + "After passing a separate depletion check, eligible checks offer a seedpod/dewcatcher with charges used / 6 chance and a random plant with charges used / 3 chance, subject to space and planting rules. These are not guaranteed drops on every tile. "
-                + "Ordinary wand level controls the growth-charge allowance separately from temporary casting level. At ordinary level 10 or more, the allowance is "+Integer.MAX_VALUE+" charge units. Below 10, allowance = round(20 + hero level × (2 + ordinary wand level) × (1 + quotient)), where quotient is ordinary wand level divided by (50 − 5 × ordinary wand level), discarding the fractional part. "
-                + ("Current allowance: "+limit+" charge units; "+growth.usedGrowthCharges()+" units recorded as used.")
-                + " After the allowance is reached, furrowed-grass chance is (extra charges already used + 1) / 5, capped at 100%. Current chance on eligible grass checks: "+ObfuscationExplanation.number(100*growth.previewFurrowedChance(Dungeon.hero.lvl))+"%. Those depletion checks also restrict plant opportunities; furrowed grass does not give normal dew/seed rolls.";
+            result += "\n\n_Growth and exhaustion_\nThe next cast uses "+cost+" charges and tries to grow tall grass on "
+                + Math.round((3.67f+levels[0]/3f)*cost) + (levels[0]==levels[1]?"":"–"+Math.round((3.67f+levels[1]/3f)*cost))
+                + " tiles: round((3.67 + casting level / 3) × charges). Terrain, plants and creatures can leave less room. Creatures on suitable tiles are rooted for up to "+(4*cost)+" turns (4 × charges), before resistance. "
+                + "With space available, separate rolls can grow a seedpod or dewcatcher (charges / 6 chance) and a random plant (charges / 3 chance). Exhaustion can prevent either. "
+                + "\n\n"+(wand.previewBaseLevel()>=10 ? "At wand level +10 or higher, exhaustion is effectively disabled. " : "The wand becomes exhausted after "+limit+" charges of growth; "+growth.usedGrowthCharges()+" are recorded toward that limit. ")+""
+                + (wand.previewBaseLevel()>=10 ? "" : "Limit = round(20 + hero level × (2 + wand level) × (1 + whole-number quotient of wand level / (50 − 5 × wand level))). Resin and curse infusion count toward wand level; temporary casting bonuses do not. ")
+                + "Once exhausted, grass can be furrowed instead of tall and give no dew or seeds. Chance per grass tile: min(100%, (charges beyond the limit + 1) × 20%) — currently "+ObfuscationExplanation.number(100*growth.previewFurrowedChance(Dungeon.hero.lvl))+"%.";
+
         }
         return result;
     }

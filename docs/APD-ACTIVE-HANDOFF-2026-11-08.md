@@ -135,3 +135,6 @@ Read complete own five Sword-family sources and shared Cleave branch behavior. E
 
 
 399 published2026-11-09T07:31:09Z, source58f6b67d3ced039c85a612923909efd7d9c2277f build42578107734 stage42578197309.3103core457suites and12targetedAPI34 passed. BothAPK/source hashes plus supplemental scan independently checked, eight actual captures manually reviewed. Receipt APD-399-DELIVERY-RECEIPT.json. Twin unknown-source privacy now delivered; physical-phone/speaker and comprehensive audit remain unverified. Next target08:01:09UTC. Continue Warding/Regrowth existing-panel prose/formula reconciliation; no new panels.
+
+
+Retained WandExplanation shared header and Warding/Regrowth sections shortened; actual growth-limit formula checked, +10 integer sentinel removed from prose, capacity includes resin/curseinfusion, temporary cast bonuses excluded. Existing private-formula44cases/saved-counter/temporary-Warding tests in3103fullcore pass,457suites nofail/error/skip. Rawbackup/workspace/apd400-wand-details-evidence-20261109/accepted-full and repoZIP. Actual expanded Warding/Regrowth/+10 windows added to current native fixture; not Android-verified yet. Metadata420full/partial338corrected218complete209unresolved,5338English. Seven ownHeavyBlow/Spike reviews completed; provider/inherited limits remain separate. Queue400then continue next approved audit units.

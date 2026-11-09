@@ -4,9 +4,9 @@
   "counting": "Source units, not distinct item types. reviewed_units includes partial reviews; completed_units excludes partial/pending dependency. corrected_units counts source units with corrections, including incomplete reviews. Inventory/export/tests alone are not an individual review.",
   "source_units": 427,
   "message_entries": 2411,
-  "reviewed_units": 419,
-  "corrected_units": 337,
-  "unresolved_units": 216,
+  "reviewed_units": 420,
+  "corrected_units": 338,
+  "unresolved_units": 209,
   "category_counts": {
     "apd": 1,
     "mechanics": 38,
@@ -420,12 +420,14 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/WandExplanation.java",
-      "sha256": "a8791ddbcc4028985a0d93ee8316804ad88725c3fd4fa234af029290c6a2f9a8",
+      "sha256": "c7951ce540bcdcc735fe3ac2ce6bd9b85cf856d86e3b6d915af76c4480e15ebb",
       "category": "mechanics",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
+      "status": "PARTIAL_REVIEW",
       "description_methods": [
         "details"
-      ]
+      ],
+      "wording_corrected": true,
+      "review_notes": "Read full provider2026-11-09. Existing retained Warding/Regrowth sections shortened against actual capacity/onZap/chargeLimit/counter paths; shared header clearer, no new panels. Regrowth +10 avoids literal integer sentinel. Resin/curse infusion included, temporary cast levels excluded from capacity/depletion; whole-number division preserved exactly. Existing44hero/wand-level actual-private-formula, saved-counter and Warding temporary-level tests pass in full3103core. Other legacy branches and detailed Warlock/cross-class effects remain under review. New actual expanded windows prepared for400, not yet Android-verified."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/WeaponAbilityExplanation.java",
@@ -3542,12 +3544,12 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/melee/BattleAxe.java",
       "sha256": "87fdc3cb26d67a1a939f7d0d66a2207f2ad40f33a1440df10248de931ae31e67",
       "category": "weapon",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [
         "abilityInfo"
       ],
       "wording_corrected": true,
-      "review_notes": "Normal curse wording or weapon ability display reviewed against implementation; full variants and existing optional panel review remain unfinished. See November 8 correction record."
+      "review_notes": "Normal curse wording or weapon ability display reviewed against implementation; full variants and existing optional panel review remain unfinished. See November 8 correction record. Own source reconciliation completed2026-11-09: full own class, known/unknown +0 previews, intrinsic accuracy/delay/reach, augment-rounded actual bonus inputs, shared Heavy Blow surprise-only bonus/Daze5 with .5 attack/defense rolls or Spike nonadjacency/one-tile collision-limited push checked. Existing15family preview and18family deferred-input matrices/actual native family windows retained. Inherited/shared provider reviews tracked separately; no new ability-execution claim."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/melee/Crossbow.java",
@@ -3564,12 +3566,12 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/melee/Cudgel.java",
       "sha256": "4dd41849c29ce29dd78d1cb7b48f5f5aac0c2df0e88144204944e8ee131ffe3e",
       "category": "weapon",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [
         "abilityInfo"
       ],
       "wording_corrected": true,
-      "review_notes": "Normal curse wording or weapon ability display reviewed against implementation; full variants and existing optional panel review remain unfinished. See November 8 correction record."
+      "review_notes": "Normal curse wording or weapon ability display reviewed against implementation; full variants and existing optional panel review remain unfinished. See November 8 correction record. Own source reconciliation completed2026-11-09: full own class, known/unknown +0 previews, intrinsic accuracy/delay/reach, augment-rounded actual bonus inputs, shared Heavy Blow surprise-only bonus/Daze5 with .5 attack/defense rolls or Spike nonadjacency/one-tile collision-limited push checked. Existing15family preview and18family deferred-input matrices/actual native family windows retained. Inherited/shared provider reviews tracked separately; no new ability-execution claim."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/melee/Dagger.java",
@@ -3620,12 +3622,12 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/melee/Glaive.java",
       "sha256": "e8a42d5a382b552d9f2e6bd6bf9022c94fd55d307bc15c75518af1e43db94d4a",
       "category": "weapon",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [
         "abilityInfo"
       ],
       "wording_corrected": true,
-      "review_notes": "Normal curse wording or weapon ability display reviewed against implementation; full variants and existing optional panel review remain unfinished. See November 8 correction record. Ordinary intrinsic reach now explicit2/2/3tiles, replacing vague/duplicate slow prose; actual RCH is constant across upgrades. Regression uses actual RCH at known/unknown0/3/8; no mechanics or generic UI addition. Native six windows prepared, not yet run."
+      "review_notes": "Normal curse wording or weapon ability display reviewed against implementation; full variants and existing optional panel review remain unfinished. See November 8 correction record. Ordinary intrinsic reach now explicit2/2/3tiles, replacing vague/duplicate slow prose; actual RCH is constant across upgrades. Regression uses actual RCH at known/unknown0/3/8; no mechanics or generic UI addition. Native six windows prepared, not yet run. Own source reconciliation completed2026-11-09: full own class, known/unknown +0 previews, intrinsic accuracy/delay/reach, augment-rounded actual bonus inputs, shared Heavy Blow surprise-only bonus/Daze5 with .5 attack/defense rolls or Spike nonadjacency/one-tile collision-limited push checked. Existing15family preview and18family deferred-input matrices/actual native family windows retained. Inherited/shared provider reviews tracked separately; no new ability-execution claim."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/melee/Gloves.java",
@@ -3675,12 +3677,12 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/melee/HandAxe.java",
       "sha256": "4b5ff1cf472b7c8e04cbd2758ef6f1524d1a09a638eaf91208c6228704b84781",
       "category": "weapon",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [
         "abilityInfo"
       ],
       "wording_corrected": true,
-      "review_notes": "Normal curse wording or weapon ability display reviewed against implementation; full variants and existing optional panel review remain unfinished. See November 8 correction record."
+      "review_notes": "Normal curse wording or weapon ability display reviewed against implementation; full variants and existing optional panel review remain unfinished. See November 8 correction record. Own source reconciliation completed2026-11-09: full own class, known/unknown +0 previews, intrinsic accuracy/delay/reach, augment-rounded actual bonus inputs, shared Heavy Blow surprise-only bonus/Daze5 with .5 attack/defense rolls or Spike nonadjacency/one-tile collision-limited push checked. Existing15family preview and18family deferred-input matrices/actual native family windows retained. Inherited/shared provider reviews tracked separately; no new ability-execution claim."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/melee/Katana.java",
@@ -3708,12 +3710,12 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/melee/Mace.java",
       "sha256": "e706004399ab30a47e9998a30887fbeb753b9a2cb163df6fcb9af231eb380acc",
       "category": "weapon",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [
         "abilityInfo"
       ],
       "wording_corrected": true,
-      "review_notes": "Normal curse wording or weapon ability display reviewed against implementation; full variants and existing optional panel review remain unfinished. See November 8 correction record."
+      "review_notes": "Normal curse wording or weapon ability display reviewed against implementation; full variants and existing optional panel review remain unfinished. See November 8 correction record. Own source reconciliation completed2026-11-09: full own class, known/unknown +0 previews, intrinsic accuracy/delay/reach, augment-rounded actual bonus inputs, shared Heavy Blow surprise-only bonus/Daze5 with .5 attack/defense rolls or Spike nonadjacency/one-tile collision-limited push checked. Existing15family preview and18family deferred-input matrices/actual native family windows retained. Inherited/shared provider reviews tracked separately; no new ability-execution claim."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/melee/MagesStaff.java",
@@ -3831,12 +3833,12 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/melee/Spear.java",
       "sha256": "f01db4221073f7657750c3b5d29eff1caab7bbb5243d83e0099b6778514d9e1d",
       "category": "weapon",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [
         "abilityInfo"
       ],
       "wording_corrected": true,
-      "review_notes": "Normal curse wording or weapon ability display reviewed against implementation; full variants and existing optional panel review remain unfinished. See November 8 correction record. Ordinary intrinsic reach now explicit2/2/3tiles, replacing vague/duplicate slow prose; actual RCH is constant across upgrades. Regression uses actual RCH at known/unknown0/3/8; no mechanics or generic UI addition. Native six windows prepared, not yet run."
+      "review_notes": "Normal curse wording or weapon ability display reviewed against implementation; full variants and existing optional panel review remain unfinished. See November 8 correction record. Ordinary intrinsic reach now explicit2/2/3tiles, replacing vague/duplicate slow prose; actual RCH is constant across upgrades. Regression uses actual RCH at known/unknown0/3/8; no mechanics or generic UI addition. Native six windows prepared, not yet run. Own source reconciliation completed2026-11-09: full own class, known/unknown +0 previews, intrinsic accuracy/delay/reach, augment-rounded actual bonus inputs, shared Heavy Blow surprise-only bonus/Daze5 with .5 attack/defense rolls or Spike nonadjacency/one-tile collision-limited push checked. Existing15family preview and18family deferred-input matrices/actual native family windows retained. Inherited/shared provider reviews tracked separately; no new ability-execution claim."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/melee/Sword.java",
@@ -3853,12 +3855,12 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/melee/WarHammer.java",
       "sha256": "bf62eccc6dbb3be60d84b0f0cec694c086d8a6fe3e6d3311dd07fd3f3e1117d2",
       "category": "weapon",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [
         "abilityInfo"
       ],
       "wording_corrected": true,
-      "review_notes": "Normal curse wording or weapon ability display reviewed against implementation; full variants and existing optional panel review remain unfinished. See November 8 correction record."
+      "review_notes": "Normal curse wording or weapon ability display reviewed against implementation; full variants and existing optional panel review remain unfinished. See November 8 correction record. Own source reconciliation completed2026-11-09: full own class, known/unknown +0 previews, intrinsic accuracy/delay/reach, augment-rounded actual bonus inputs, shared Heavy Blow surprise-only bonus/Daze5 with .5 attack/defense rolls or Spike nonadjacency/one-tile collision-limited push checked. Existing15family preview and18family deferred-input matrices/actual native family windows retained. Inherited/shared provider reviews tracked separately; no new ability-execution claim."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/melee/WarScythe.java",
@@ -4349,7 +4351,7 @@
       "wording_corrected": true
     }
   ],
-  "completed_units": 211,
+  "completed_units": 218,
   "latest_tests": "3103core/457suites no failures/errors/skips; Twin unknown-source preview invariance, known-source update, passive block/enchantment/legacy values, raw combat/other thread and exception cleanup. Full evidence /workspace/apd-twin-inspection-evidence-20261109/accepted-full. New native windows pending399. Earlier source-only compile42575862693passed ondd9eccc670ca7927c5ef44ad3d3a40c95958798f with3099tests; not later Twin source.",
   "message_inventory_entries": 5338
 }
