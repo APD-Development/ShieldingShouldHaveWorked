@@ -84,7 +84,7 @@ public class AuthoredLanguageTest {
   // Plus three neutral live Power of Many descriptions, including marked-target and linked-duration conditions.
   // Plus one neutral Berserk description which withholds an unidentified armor shield preview.
   // Plus six neutral Hold Fast descriptions for known, single, penalty, unknown, moved and unavailable states.
-  assertEquals("Reviewed English message inventory",5353,values);
+  assertEquals("Reviewed English message inventory",5355,values);
  }
  @Test public void localizedAlternativesDoNotDamageInnocentWordsOrOtherLanguages(){
   for(String innocent:new String[]{"Hell","slut","kesialan","Verdammte Charaktere","dictionary","classic","Scunthorpe","Prick","Fan of Blades"})assertEquals(innocent,AuthoredLanguage.select(innocent,false));
