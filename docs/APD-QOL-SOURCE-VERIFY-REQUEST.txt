@@ -1,2 +1,2 @@
-2026-11-09 2026-11-09T15:56:27.280384+00:00
-Verify3143core and Androiddebug/release/instrumentationJava/desktop for Berserk unknown-armor privacy with three native cases before next numbered APK. Previous popup-fixture compile correction passed42648615419; no repeat investigation.418published exact8c2d5ca9, all failures preserved. New core field/template changes and new inspection fixtures need current compilation. No APK assembly/publication.
+2026-11-09 2026-11-09T16:26:59.745615+00:00
+Verify3144core plus Androiddebug/release/instrumentationJava/desktop for later HoldFast/Barkskin descriptions and five cap/penalty/unknown native states, positive Barkskin window.445sourceunits437complete359corrected8open5353Englishkeys2432itemkeys. Merged f350fb938 metadata/test-only work with full local3144source; preserve both histories.420exact-markup retry42654395502 uses unchanged55d8 originalapps; noAPK in this sourceverification.418published.
