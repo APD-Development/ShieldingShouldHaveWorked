@@ -1,11 +1,11 @@
 {
-  "recorded_utc": "2026-11-09T17:13:23.368844+00:00",
+  "recorded_utc": "2026-11-09T17:21:02.751643+00:00",
   "authorization_end_utc": "2026-11-09T20:00:00Z",
   "latest_verified_published_build": 418,
   "release_url": "https://github.com/APD-Development/ShieldingShouldHaveWorked/releases/tag/apd-alpha-preview-418",
   "source_fix_commit": "8c2d5ca9f33154af69b782d6aa83ac181bd3c21d",
   "local_full_core": {
-    "tests": 3149,
+    "tests": 3151,
     "suites": 457,
     "failures": 0,
     "errors": 0,
@@ -68,7 +68,8 @@
       421,
       420
     ],
-    "source_parent": "f1061a5b70f24d252ded31f6f4de77ff55434692"
+    "source_parent": "f1061a5b70f24d252ded31f6f4de77ff55434692",
+    "run": 42662501545
   },
   "recovered_failed_attempts": {
     "415": {
@@ -101,5 +102,5 @@
     "run": 42656324353,
     "report": "docs/APD-421-HELD-HISTORY-2026-11-09.json"
   },
-  "current_work": "3149core green. Endure/SoulMark actual manual fixes plus simpler negative effects/SharedTalents; latest Android source compilation requested before423.421 staged/4695sourcehashes checked,18newHoldFast/Barkskin windows manually viewed; still held for inherited defects/history.422 parallel original build before these fixes running, never publish as corrected."
+  "current_work": "3151core green. ElementalStrike own helper fully audited/revised,438complete7open445units; new native expanded windows pending Androidcompile.423 original source2a98ed3e all12 native running, stage request preserves private until independent checks+manual review.418published."
 }

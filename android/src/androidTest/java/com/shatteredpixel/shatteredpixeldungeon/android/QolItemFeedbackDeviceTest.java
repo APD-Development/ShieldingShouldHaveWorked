@@ -440,6 +440,15 @@ public class QolItemFeedbackDeviceTest {
             TopScoresDeviceTest.render(()->Dungeon.hero.metamorphedTalents.put(com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent.HEARTY_MEAL,com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent.WEAPON_RECHARGING));
             calculationWindow(()->new WndInfoTalent(com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent.WEAPON_RECHARGING,2,null),"1.025","qol-weapon-recharging-existing-panel-clear.png");
         }finally{TopScoresDeviceTest.render(()->{Dungeon.hero.metamorphedTalents.clear();Dungeon.hero.metamorphedTalents.putAll(priorMetamorphs);});}
+        final com.shatteredpixel.shatteredpixeldungeon.items.KindOfWeapon[] beforeStrikeDetails=new com.shatteredpixel.shatteredpixeldungeon.items.KindOfWeapon[1];
+        TopScoresDeviceTest.render(()->beforeStrikeDetails[0]=Dungeon.hero.belongings.weapon);
+        try{for(int effect=0;effect<2;effect++){
+            final boolean bleeding=effect==1;
+            calculationWindow(()->{
+                Sword sword=new Sword();sword.cursedKnown=true;sword.levelKnown=false;sword.enchantment=bleeding?new com.shatteredpixel.shatteredpixeldungeon.items.weapon.curses.Sacrificial():new com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Crystal();Dungeon.hero.belongings.weapon=sword;
+                return new WndInfoArmorAbility(HeroClass.DUELIST,new com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.duelist.ElementalStrike());
+            },bleeding?"Makes you and targets bleed":"full weapon durability","qol-elemental-strike-reviewed-"+(bleeding?"Sacrificial":"Crystal")+".png");
+        }}finally{TopScoresDeviceTest.render(()->Dungeon.hero.belongings.weapon=beforeStrikeDetails[0]);}
         calculationWindow(()->new WndInfoArmorAbility(HeroClass.WARRIOR,new com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.HeroicLeap()),"Actual current ability cost:","qol-mechanics-ability-expanded.png");
         AtomicReference<WndClericSpells> menu=new AtomicReference<>();Point[] spellAt=new Point[1];
         TopScoresDeviceTest.render(()->{try{

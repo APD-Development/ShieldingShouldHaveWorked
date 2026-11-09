@@ -6,7 +6,7 @@
   "message_entries": 2432,
   "reviewed_units": 445,
   "corrected_units": 359,
-  "unresolved_units": 8,
+  "unresolved_units": 7,
   "category_counts": {
     "apd": 1,
     "mechanics": 38,
@@ -377,14 +377,15 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/StrikeExplanation.java",
-      "sha256": "bae93a1e2951ea8dc34961677a4e17ff22c84d6a3b23f26d38e29a5aefe5dd2d",
+      "sha256": "466658a280e6cb03df9c41397e48347f0abb964c200fdee49290e556643c97cb",
       "category": "mechanics",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [
+        "playerDescription",
         "details"
       ],
       "wording_corrected": true,
-      "review_notes": "Ordinary ElementalStrike.desc previously displayed base cone/rank-sensitive values regardless of trained talents. Existing provider now supplies concise live header and all27 built-in enchantment/curse effects, public talents only. Unknown curse matches no disclosed enchantment across hidden-2/0/8; no hidden level, target HP/count or future roll read. Existing window supplies current cost once, no new interface/panel. Actual default cone damage handler verified five ranks; actual preattack shielding compared. Existing28effect matrix now resets level0 before12 for EVERY type, strengthening prior loop. Detailed fields retain formulas; full advanced review remains partial.3065core457suites passed; twelve new normal ability window captures pending394, not393."
+      "review_notes": "Ordinary ElementalStrike.desc previously displayed base cone/rank-sensitive values regardless of trained talents. Existing provider now supplies concise live header and all27 built-in enchantment/curse effects, public talents only. Unknown curse matches no disclosed enchantment across hidden-2/0/8; no hidden level, target HP/count or future roll read. Existing window supplies current cost once, no new interface/panel. Actual default cone damage handler verified five ranks; actual preattack shielding compared. Existing28effect matrix now resets level0 before12 for EVERY type, strengthening prior loop. Detailed fields retain formulas; full advanced review remains partial.3065core457suites passed; twelve new normal ability window captures pending394, not393. 2026-11-09: Full own116lines and actual681line ElementalStrike reviewed, all28null/enchantment/curse paths crosschecked including preattack, terrain and character effects; Bleeding.initial randomization and Crystal.repair checked separately. Existing detail header and each effect rewritten individually in player terms; exact useful chances/formulas/ranges retained without internalunits/offer terminology or repeated inspection disclaimers. Existing panel retained pending owner review, no new controls or gameplay changes. Added200 seeded freshbleed/firstdamage and50actualCrystal damage/repair/cap cases; existing real basecone/shield/DirectedPower plus all28 unknown-upgrade invariance cases remain.3151core457all0. Two new actual expanded windows prepared; Android compile/native/visual acceptance pending."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/TalentExplanation.java",
@@ -4567,8 +4568,8 @@
       "review_notes": "Own behavior/description/serialization reviewed; underlying armorBonus and buffDecayFactor untouched. Normal English shows actual known class/armor cap, single/zero/negative results, inactive-after-moving state, unknown-armor withholding and half/quarter/paused decay language. Existing non-English format retained. Independent golden cases with1000 real rolls each across Warrior/Mage and none/leather/mail/negative cloth armor verify ranges and existing negative-cap behavior; inspector RNG, saved state and inactive buff unchanged. Barkskin zero-value detail now plain no-protection text; existing real plant cases retained.3144core457all0, new native cap/penalty/unknown/positive-Barkskin fixtures prepared but not compiled yet. Existing negative cap can reduce protection; accurately described, balance not changed."
     }
   ],
-  "completed_units": 437,
-  "latest_tests": "3149core/457suites passed all0 after Shared Upgrades/Enchantment actual-runtime cases. Android source3147 passed42661111718; latest3149 source compilation requested. Native windows pending.",
+  "completed_units": 438,
+  "latest_tests": "3151core457suites all0. ElementalStrike own source audit complete; whole audit remains incomplete. Latest native/Android windows pending; published418.",
   "message_inventory_entries": 5353,
   "message_inventory_counting": "Current authored English property entries across nine files;2432 item entries. Two concise zero-Healing dew/waterskin keys added. Exact Adult OFF/ON checks retained."
 }
