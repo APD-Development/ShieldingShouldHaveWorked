@@ -1,9 +1,9 @@
 {
-  "recorded_utc": "2026-11-09T18:34:45.455487+00:00",
+  "recorded_utc": "2026-11-09T18:44:23.090261+00:00",
   "authorization_end_utc": "2026-11-09T20:00:00Z",
-  "latest_verified_published_build": 418,
-  "release_url": "https://github.com/APD-Development/ShieldingShouldHaveWorked/releases/tag/apd-alpha-preview-418",
-  "source_fix_commit": "8c2d5ca9f33154af69b782d6aa83ac181bd3c21d",
+  "latest_verified_published_build": 425,
+  "release_url": "https://github.com/APD-Development/ShieldingShouldHaveWorked/releases/tag/apd-alpha-preview-425",
+  "source_fix_commit": "75809609745851368fe81f2dced1b69eb63cdfdf",
   "local_full_core": {
     "tests": 3155,
     "suites": 457,
@@ -12,9 +12,9 @@
     "skipped": 0
   },
   "last_completed_android_source_compile": {
-    "commit": "aa224a0683418f4159586e3a8ea5f3bc4b78bd26",
-    "run": 42668339102,
-    "scope": "3153core and Androiddebug/release/instrumentationJava/desktop allpassed. Includes manually caught unsupportedglyph correction,14spellbranches/15actualspellcontexts with state restoration."
+    "commit": "1b6d43d1e44886055cbfc8093eb85377dc5cdd9b",
+    "run": 42675254523,
+    "scope": "3155core plus Androiddebug/release/instrumentationJava/desktop allpassed. All27SpellExplanationbranches and32actualwindow contexts, including actual classFOV andmagic-immunity tests."
   },
   "latest_source_compile": {
     "commit": "7143d16bc481045b49ec4a60624128b0dcccc6b1",
@@ -27,7 +27,6 @@
     "406": "3113core/12nativepassed, independenthashes+4463sourcefilehashes,10newbuffcapturesreadable. Same bad Tenacity provider; originalpairheldprivate.",
     "416": "3136core and all12native passed,4616sourcehashes checked,47inspection captures reviewed; rejected new ordinary Drowsy 1 turns copy. Full original APK/source/evidence remains draft and source branch preserved.415latestpublished.",
     "417": "Android instrumentation compile failed from new grammar-test Java escapes, before any APK assembly. Original bcaade3 branch preserved; raw log committed. Corrected using escape-free character classes; next418.",
-    "418": "Original compile/core3140 passed; both QoL cases stopped at test-only MindVision expected1tile versus source default2/correct displayed2. Exact source branch preserved; originals archival running. All12 retry pending on unchanged APKs.",
     "419": "Native popup-fixture Java compile failed (checked exception from UI reflection helper not caught). Production compilation and3142core passed; APK assembly not reached. Correcting test callback handling and will source-compile before next candidate.",
     "420": "3143core,12native,4671sourcehashes passed.46selectedfullframes manually viewed; rejected Endure stored-count/future-count contradiction plus 1 hits and SoulMark raw %s from unescaped40%. Assets remain private.",
     "421": "3144core/457suites and all12 targeted API34 cases plus preparation passed, but compiled history used APD418 instead of immediate previous compiled APD420. Held; no manual visual acceptance/publication. Also inherits420 manually rejected Endure and SoulMark display defects.",
@@ -63,18 +62,17 @@
   "physical_phone_or_acoustic_audio_verified": false,
   "background_development_after_window_claimed": false,
   "active_build": {
-    "number": 425,
-    "status": "Originalpair running,14spellbranches plus readablefontfix; all12native/source/scans/manual acceptance still required. Newer17branch text not in425.",
+    "number": 426,
+    "status": "Preparing exactlatest3155verifiedsource;all12native/source/scans/manual acceptance pending.",
     "previous_compiled_history": [
+      425,
       424,
       423,
       422,
       421,
       420
     ],
-    "source_parent": "aa224a0683418f4159586e3a8ea5f3bc4b78bd26",
-    "source_commit": "75809609745851368fe81f2dced1b69eb63cdfdf",
-    "run": 42669136432
+    "source_parent": "1b6d43d1e44886055cbfc8093eb85377dc5cdd9b"
   },
   "recovered_failed_attempts": {
     "415": {
@@ -84,12 +82,8 @@
       "original_and_accepted_apps_and_test_binary_unchanged": true
     },
     "418": {
-      "original": 42642508263,
-      "accepted_retry": 42644420369,
-      "staging": 42644551621,
-      "application_apks_unchanged": true,
-      "instrumentation_only_patch": "MindVision expected default radius2instead1",
-      "archive": 42644420906
+      "original_held_status": "Original compile/core3140 passed; both QoL cases stopped at test-only MindVision expected1tile versus source default2/correct displayed2. Exact source branch preserved; originals archival running. All12 retry pending on unchanged APKs.",
+      "resolution": "Exact-app native fixture retry andindependent/manual acceptance succeeded;418published earlier andnowpreserved aspreviousfallback.425latestpublished."
     }
   },
   "new_timer_regressions": "Red evidence preserved; full3138 green. Description-only linked Power and Shadows timer fixes with actual attack/protection/expiry coverage; no engine changes.",
@@ -107,7 +101,7 @@
     "run": 42656324353,
     "report": "docs/APD-421-HELD-HISTORY-2026-11-09.json"
   },
-  "current_work": "3155core457all0. Full SpellExplanation ownreview complete,27branches/32nativecontexts. Wholeaudit439complete6open. Latest Androidsourceverification requested; older3154runfailedbeforeanyjob.425correctedfont staged after successful packaging-onlyrecovery;manualpending.418published.",
+  "current_work": "425published with verifiedcorrectedfont/14spellcutoff. Full27spellhelper review completeinnewersource,3155core andAndroidcompile42675254523passed.426pairpreparing. Overall439complete6open; continue remaining approvedhelper reviews.",
   "apd423": {
     "source": "2a98ed3e4d050d2eaa1c34a54a2ca09facde08d9",
     "original_run": 42662501545,
@@ -123,6 +117,7 @@
     "packaging_only_recovery_run": 42673560388,
     "recovery": "success; exact original apps/evidence reused, no assembly/native rerun",
     "stage_run": 42674685237,
-    "status": "stagedprivate; independentchecks/manual underway"
+    "status": "PUBLISHED2026-11-09T18:39:38Z; core3153/all12native,4739sourcehashes,37selectedfullframesmanuallyreviewed,originalAPKsbyte-identical",
+    "receipt": "docs/APD-425-DELIVERY-RECEIPT.json"
   }
 }
