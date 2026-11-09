@@ -1,0 +1,6 @@
+{
+  "run_id": 42679430170,
+  "source_commit": "209277bdabbb9520bba60717f3fa3927f80d5eb6",
+  "requested_utc": "2026-11-09T19:02:26.772577+00:00",
+  "purpose": "Stage exact427 only after original build/all12 pass; manual and independent acceptance required; no auto publication."
+}
