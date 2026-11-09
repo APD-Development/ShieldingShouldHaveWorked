@@ -42,6 +42,10 @@ public final class GlyphExplanation {
         return text;
     }
     private static String playerNumber(float value){return com.shatteredpixel.shatteredpixeldungeon.messages.Messages.decimalFormat(value!=0&&Math.abs(value)<.01f?"0.##E0":"0.##",value);}
+    private static String arcanaComparison(float before,float after,String unit,Hero hero){
+        return ArcanaInfoDisplay.hasKnownArcana(hero)&&Math.abs(before-after)>.00001f
+                ? " (_"+playerNumber(before)+unit+"_ without Arcana)" : "";
+    }
     private static String playerChance(float base,float power,Hero hero){
         String chance="_"+playerNumber(100*Math.max(0,Math.min(1,base*power)))+"%_";
         float ring=ArcanaInfoDisplay.knownArcanaPower(hero),without=1+ObfuscationExplanation.aura(hero);
@@ -76,10 +80,13 @@ public final class GlyphExplanation {
         int raw=armor.buffedLvl(),level=Math.max(0,raw);float ring=ArcanaInfoDisplay.knownArcanaPower(hero),power=ring+ObfuscationExplanation.aura(hero);
         if(!Float.isFinite(power))return fallback;
         if((armor.glyph instanceof Flow||armor.glyph instanceof Swiftness||armor.glyph instanceof Camouflage||armor.glyph instanceof AntiMagic||armor.glyph instanceof Brimstone)&&raw<0)return "This glyph is inactive at the armor's current level.";
-        if(armor.glyph instanceof Flow)return "Move at _"+playerNumber((2+.5f*raw)*power)+"×_ normal speed in water.";
-        if(armor.glyph instanceof Swiftness)return "Move at _"+playerNumber((1.2f+.04f*raw)*power)+"×_ normal speed when no enemy is within a _3-tile walking path_.";
-        if(armor.glyph instanceof Camouflage)return "Trampling tall grass grants _"+Math.round((3+raw/2f)*power)+" turns_ of invisibility. Attacking or using magic can end it early; repeated activations refresh it rather than adding their durations.";
-        if(armor.glyph instanceof AntiMagic)return "Blocks an extra _"+Math.round(raw*power)+"–"+Math.round((3+1.5f*raw)*power)+" damage_ from certain magical attacks.";
+        if(armor.glyph instanceof Flow){float base=(2+.5f*raw)*(1+ObfuscationExplanation.aura(hero)),current=(2+.5f*raw)*power;return "Move at _"+playerNumber(current)+"×_ normal speed in water"+arcanaComparison(base,current,"×",hero)+".";}
+        if(armor.glyph instanceof Swiftness){float base=(1.2f+.04f*raw)*(1+ObfuscationExplanation.aura(hero)),current=(1.2f+.04f*raw)*power;return "Move at _"+playerNumber(current)+"×_ normal speed when no enemy is within a _3-tile walking path_"+arcanaComparison(base,current,"×",hero)+".";}
+        if(armor.glyph instanceof Camouflage){int base=Math.round((3+raw/2f)*(1+ObfuscationExplanation.aura(hero))),current=Math.round((3+raw/2f)*power);return "Trampling tall grass grants _"+current+" turns_ of invisibility"+arcanaComparison(base,current," turns",hero)+". Attacking or using magic can end it early; repeated activations refresh it rather than adding their durations.";}
+        if(armor.glyph instanceof AntiMagic){
+            int low=Math.round(raw*power),high=Math.round((3+1.5f*raw)*power);float without=1+ObfuscationExplanation.aura(hero);int baseLow=Math.round(raw*without),baseHigh=Math.round((3+1.5f*raw)*without);
+            return "Blocks an extra _"+low+"–"+high+" damage_ from certain magical attacks"+(ArcanaInfoDisplay.hasKnownArcana(hero)&&(low!=baseLow||high!=baseHigh)?" (_"+baseLow+"–"+baseHigh+"_ without Arcana)":"")+".";
+        }
         if(armor.glyph instanceof Stone)return "Replaces dodging with damage reduction. Attacks that would be easier to dodge deal less damage, up to _75%_ less.";
         if(armor.glyph instanceof Brimstone){
             String text="Prevents damage from Burning.";float gain=2*(power-1);int cap=Math.round(8*(power-1));

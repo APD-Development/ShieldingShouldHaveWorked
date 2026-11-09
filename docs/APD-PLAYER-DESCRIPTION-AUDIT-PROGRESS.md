@@ -133,3 +133,8 @@ Read entire two wand sources/supporting paths; normal text shortened and clarifi
 ### Herbal and Time Bubble secondary explanations
 
 Read own Earthroot/Sungrass/Swiftthistle buff mechanics and save paths. Short ordinary Sungrass store label removes false upper-cap implication; TimeBubble no redundant paragraph. Existing detailed herbal/rock/time sections use plain language while retaining actual formulas, final-heal/final-block quirks, ascension depth26 and custom healing limitations. Existing retained panels unchanged in scope. Actual Hero.spend intercept, fractional budget/save and herb/block mechanical assertions pass; full3044core457suites zero failures/errors/skips. Evidence /workspace/apd-herbal-buff-human-evidence-20261109. Actual later Android windows pending. Counts unchanged; shared Plant/complete variants remain open.
+
+
+### Passive glyph Arcana comparisons
+
+Concise normal Flow/Swiftness/Camouflage/AntiMagic text now gives live final effect plus a short without-Arcana comparison only when known and numerically different. Re-read real glyph proc/caller paths; existing actual Flow/Aura and AntiMagic roll bounds retained, new actual Camouflage duration/save/unknown-ring regression. Full3045core457suites pass. Initial ordinary-vs-legacy decimal-precision assertion failure preserved; fixed expected display precision, no source mechanic change. Evidence /workspace/apd-passive-glyph-comparison-evidence-20261109. Native four owned windows prepared; Android verification not yet claimed. Counts344reviewed306corrected159complete268unresolved, complete individual audit still unfinished.

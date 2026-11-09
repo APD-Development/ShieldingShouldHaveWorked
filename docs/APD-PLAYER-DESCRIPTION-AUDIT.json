@@ -194,7 +194,7 @@
         "details"
       ],
       "wording_corrected": true,
-      "review_notes": "Current ordinary-description pass: concise live values, duplicate mathematical prose removed. Existing optional details and entire category variants remain under review; panel decisions pending. See APD-DESCRIPTION-CORRECTION-2026-11-08.md."
+      "review_notes": "Current ordinary-description pass: concise live values, duplicate mathematical prose removed. Existing optional details and entire category variants remain under review; panel decisions pending. See APD-DESCRIPTION-CORRECTION-2026-11-08.md. Added concise known-Arcana baseline parentheses for Flow/Swiftness/Camouflage/AntiMagic, matching existing chance-based glyph pattern; no new UI/panel/formula. Actual Flow and AntiMagic plus Camouflage duration/save/unknown-ring checks pass. Initial formatting-only assertion mismatch retained; corrected expected two-decimal ordinary display without changing mechanical checks. Full3045core. Native four-window fixture prepared, not yet run."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/KeyExplanation.java",
@@ -4245,14 +4245,14 @@
   ],
   "completed_units": 159,
   "latest_tests": {
-    "core_tests": 3044,
+    "core_tests": 3045,
     "suites": 457,
     "failures": 0,
     "errors": 0,
     "skipped": 0,
-    "log": "/workspace/apd-herbal-buff-human-evidence-20261109/apd-herbal-buff-human-description-actual-time-full.log",
+    "log": "/workspace/apd-passive-glyph-comparison-evidence-20261109/apd-passive-glyph-arcana-comparisons-corrected-full.log",
     "android_verified": false,
     "new_apk_built": false,
-    "scope": "Post388 herbs/TimeBubble text and actual Hero.spend interception.344reviewed306corrected159complete268unresolved; no blanket completion."
+    "scope": "Post388 live passive glyph Arcana comparisons and later earth/prism/herb prose. New actual windows pending next pair.344reviewed306corrected159complete268unresolved."
   }
 }

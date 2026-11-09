@@ -48,3 +48,8 @@ Latest source AFTER386 includes three dart limitation wording corrections and An
 ### 2026-11-09 01:55UTC checkpoint
 
 APK387 published2026-11-09T01:41:54Z; sourcefc2d64b91, build42545546958/stage42545874735. Original signed pair,3041core457suites/12targeted API34 cases. Both app/source hashes independently matched; ten capture selections manually reviewed including real owned action rows. Receipt APD-387-DELIVERY-RECEIPT.json. Full audit/phone/audio not claimed. Owner extended active approved development/cadence to09:30UTC Nov9; next APK due around02:12UTC. Later Lightning/Regrowth wording has full3042pass, not yet Androidverified.
+
+
+### APK388 delivered02:09:36UTC / continuing
+
+Original source13e5fc1cc, build42547894100, native-only corrected full12-case acceptance42548247427, stage42548915906. Both original signed APKs/source/hashes downloaded and independently checked, six actual capture selections manually read. Complete test XML/logs and initial rejected Regrowth-helper attempt persist as release asset. Original attempt rejected owner-retained Regrowth expander incorrectly; corrected fixture expects exactly one only in those known retained windows, preserves ordinary no-panel/action/save/time/viewport checks. Three-charge fixture uses legitimate level5capacity7. Receipt APD-388-DELIVERY-RECEIPT.json. No physical-phone/audio/full audit claim. Later source LivingEarth/Prismatic/herb/passiveArcana has3045core457suites pass; next native windows prepared. Next valid pair target around02:40UTC; active authorization ends09:30UTC.

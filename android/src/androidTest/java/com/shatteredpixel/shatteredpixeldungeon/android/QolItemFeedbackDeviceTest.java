@@ -378,6 +378,24 @@ public class QolItemFeedbackDeviceTest {
         AtomicReference<Window> shown=new AtomicReference<>();
         TopScoresDeviceTest.render(()->{com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfLivingEarth.RockArmor buff=new com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfLivingEarth.RockArmor();com.watabou.utils.Bundle state=new com.watabou.utils.Bundle();buff.storeInBundle(state);state.put("armor",11);state.put("wand_level",3);buff.restoreFromBundle(state);assertTrue(buff.desc(),buff.desc().contains("_11_"));assertTrue(buff.desc(),buff.desc().contains("_20_"));Window window=new WndInfoBuff(buff);GameScene.show(window);shown.set(window);});
         Thread.sleep(300);TopScoresDeviceTest.render(()->assertDescriptionViewport(shown.get()));TopScoresDeviceTest.screenshot("qol-rock-armor-reserve-concise.png");TopScoresDeviceTest.render(()->shown.get().hide());
+        HeroClass priorClass=Dungeon.hero.heroClass;com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass priorSubclass=Dungeon.hero.subClass;
+        try{
+            TopScoresDeviceTest.render(()->{Dungeon.hero.heroClass=HeroClass.MAGE;Dungeon.hero.subClass=com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass.BATTLEMAGE;earth.levelKnown=light.levelKnown=true;});
+            for(com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand wand:new com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand[]{earth,light}){
+                com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff staff=new com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff();
+                TopScoresDeviceTest.render(()->{try{wand.charge(Dungeon.hero);staff.level(3);staff.levelKnown=staff.cursedKnown=true;java.lang.reflect.Field field=staff.getClass().getDeclaredField("wand");field.setAccessible(true);field.set(staff,wand);}catch(Exception e){throw new RuntimeException(e);}});
+                try{showItem(staff,wand==earth?"restore your guardian's health":"slow enemy movement","qol-"+(wand==earth?"earth":"prismatic")+"-battlemage.png",true);}finally{TopScoresDeviceTest.render(()->wand.stopCharging());}
+            }
+        }finally{TopScoresDeviceTest.render(()->{Dungeon.hero.heroClass=priorClass;Dungeon.hero.subClass=priorSubclass;});}
+        for(int kind=0;kind<3;kind++){
+            final int type=kind;AtomicReference<Window> buffWindow=new AtomicReference<>();
+            TopScoresDeviceTest.render(()->{com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff buff;com.watabou.utils.Bundle state=new com.watabou.utils.Bundle();
+                if(type==0){buff=new com.shatteredpixel.shatteredpixeldungeon.plants.Earthroot.Armor();buff.storeInBundle(state);state.put("level",11);state.put("pos",Dungeon.hero.pos);buff.restoreFromBundle(state);}
+                else if(type==1){buff=new com.shatteredpixel.shatteredpixeldungeon.plants.Sungrass.Health();buff.storeInBundle(state);state.put("level",11);state.put("pos",Dungeon.hero.pos);buff.restoreFromBundle(state);}
+                else{com.shatteredpixel.shatteredpixeldungeon.plants.Swiftthistle.TimeBubble time=new com.shatteredpixel.shatteredpixeldungeon.plants.Swiftthistle.TimeBubble();time.reset();time.processTime(1.25f);buff=time;}
+                Window window=new WndInfoBuff(buff);GameScene.show(window);buffWindow.set(window);
+            });Thread.sleep(300);TopScoresDeviceTest.render(()->assertDescriptionViewport(buffWindow.get()));TopScoresDeviceTest.screenshot("qol-herbal-time-buff-"+type+".png");TopScoresDeviceTest.render(()->buffWindow.get().hide());
+        }
         com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfLivingEarth.EarthGuardian guardian=new com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfLivingEarth.EarthGuardian();
         com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfRegrowth.Lotus lotus=new com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfRegrowth.Lotus();
         TopScoresDeviceTest.render(()->{guardian.setInfo(Dungeon.hero,3,25);com.watabou.utils.Bundle state=new com.watabou.utils.Bundle();lotus.storeInBundle(state);state.put("wand_lvl",5);lotus.restoreFromBundle(state);lotus.HP=lotus.HT=40;});
@@ -389,6 +407,17 @@ public class QolItemFeedbackDeviceTest {
             TopScoresDeviceTest.screenshot(mob==guardian?"qol-earth-guardian-concise.png":"qol-golden-lotus-concise.png");
             TopScoresDeviceTest.render(()->{mobWindow.get().hide();com.shatteredpixel.shatteredpixeldungeon.actors.Actor.remove(mob);});
         }
+    }
+    private static void passiveGlyphArcanaDescriptionsRender()throws Exception{
+        KindofMisc[] previous=new KindofMisc[2];
+        try{
+            TopScoresDeviceTest.render(()->{previous[0]=Dungeon.hero.belongings.ring;previous[1]=Dungeon.hero.belongings.misc;for(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff buff:new java.util.ArrayList<>(Dungeon.hero.buffs(Ring.RingBuff.class)))buff.detach();RingOfArcana ring=new RingOfArcana();ring.level(3);ring.identify();Dungeon.hero.belongings.ring=ring;Dungeon.hero.belongings.misc=null;ring.activate(Dungeon.hero);});
+            for(String name:new String[]{"Flow","Swiftness","Camouflage","AntiMagic"}){
+                com.shatteredpixel.shatteredpixeldungeon.items.armor.MailArmor armor=new com.shatteredpixel.shatteredpixeldungeon.items.armor.MailArmor();
+                TopScoresDeviceTest.render(()->{try{armor.level(3);armor.levelKnown=armor.cursedKnown=true;armor.inscribe((com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor.Glyph)Class.forName("com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs."+name).getDeclaredConstructor().newInstance());}catch(Exception e){throw new RuntimeException(e);}});
+                showItem(armor,"without Arcana","qol-passive-glyph-"+name+"-arcana.png",true,true);
+            }
+        }finally{TopScoresDeviceTest.render(()->{for(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff buff:new java.util.ArrayList<>(Dungeon.hero.buffs(Ring.RingBuff.class)))buff.detach();Dungeon.hero.belongings.ring=(Ring)previous[0];Dungeon.hero.belongings.misc=previous[1];if(previous[0]!=null)previous[0].activate(Dungeon.hero);if(previous[1] instanceof Ring)previous[1].activate(Dungeon.hero);});}
     }
     private static void unidentifiedWandExamplesRender()throws Exception{
         for(String name:new String[]{"BlastWave","Corrosion","Corruption","Disintegration","Fireblast","Frost","Lightning","LivingEarth","MagicMissile","PrismaticLight","Regrowth","Transfusion","Warding"}){
@@ -709,6 +738,7 @@ public class QolItemFeedbackDeviceTest {
             disintegrationWandDescriptionsRender();
             lightningAndRegrowthDescriptionsRender();
             livingEarthAndPrismaticDescriptionsRender();
+            passiveGlyphArcanaDescriptionsRender();
             unidentifiedWandExamplesRender();
             inventoryOrderShowsAutomatically();
             prepareSearchableFloor();
