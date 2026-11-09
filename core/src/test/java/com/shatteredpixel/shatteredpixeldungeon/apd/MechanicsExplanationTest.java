@@ -1799,7 +1799,14 @@ public class MechanicsExplanationTest {
  }
  public static class StatusDamageObserver extends com.shatteredpixel.shatteredpixeldungeon.actors.Char {int received;public StatusDamageObserver(){HP=HT=100;}@Override public void damage(int amount,Object source){received=amount;}}
  @Test public void corrosionDisplayedBaseDamageTracksRealTickGrowth(){
-  int depth=Dungeon.depth,branch=Dungeon.branch;try{Dungeon.depth=8;Dungeon.branch=0;StatusDamageObserver target=new StatusDamageObserver();Corrosion corrosion=new Corrosion();corrosion.target=target;corrosion.set(8,2);for(int expected:new int[]{2,3,4,5,6,6}){assertEquals(expected,corrosion.apdNextRaw());assertTrue(BuffExplanation.details(corrosion).contains(expected+" damage points"));corrosion.act();assertEquals(expected,target.received);}assertEquals(7,corrosion.apdNextRaw());}finally{Dungeon.depth=depth;Dungeon.branch=branch;}
+  int depth=Dungeon.depth,branch=Dungeon.branch;try{
+   int[] depths={1,8,23},starts={2,2,12};int[][] expected={{2,2,3,3},{2,3,4,5,6,6},{12,13,13,14}};
+   for(int scenario=0;scenario<depths.length;scenario++){
+    Dungeon.depth=depths[scenario];Dungeon.branch=0;StatusDamageObserver target=new StatusDamageObserver();Corrosion corrosion=new Corrosion();corrosion.target=target;corrosion.set(8,starts[scenario]);
+    for(int amount:expected[scenario]){assertEquals(amount,corrosion.apdNextRaw());String detail=BuffExplanation.details(corrosion);assertTrue(detail.contains(amount+" damage points"));assertTrue(detail.contains("once it reaches "+(Dungeon.scalingDepth()/2+2)));corrosion.act();assertEquals(amount,target.received);}
+    if(scenario==1)assertEquals(7,corrosion.apdNextRaw());
+   }
+  }finally{Dungeon.depth=depth;Dungeon.branch=branch;}
  }
  @Test public void burningExplanationUsesLegitimateRangeWithoutRevealingCachedRandomOutcome(){
   Burning burning=new Burning();burning.reignite(hero,8);com.watabou.utils.Bundle state=new com.watabou.utils.Bundle();burning.storeInBundle(state);state.put("next_dmg",2);burning.restoreFromBundle(state);String first=BuffExplanation.details(burning);state.put("next_dmg",3);burning.restoreFromBundle(state);assertEquals(first,BuffExplanation.details(burning));assertTrue(first,first.contains("1–"+burning.apdRandomMaximum()+" damage points"));

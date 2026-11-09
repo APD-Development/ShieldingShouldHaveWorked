@@ -14,3 +14,5 @@ After414cutoff: additional status prose and six ordinary descriptions shortened 
 After415cutoff:5 protection/ring/image branches and2 ordinary descriptions simplified;3136core457all0 preservedAPD-416-protection-ring-image-accepted.zip. Native35base-status plus separateLightningCharge fixtures prepared.415run42625074280native active;414latestpublished.
 
 416source: Frost/Levitation/Toxic/LockedFloor text and3 normal entries corrected; Toxic real act tested0.5/2/2.5 releases, gas conservation and5extra protectionupdates.3136core457all0 rawZIPpreserved.39base+LightningCharge native models prepared, no deviceclaim.415native still running.
+
+415original Developer emulator transport died after QoL/preferences; no full-grid claim. Source failurebranch a52... preserved; original APK/raw archive42628501288 succeeded. All12 fresh original-app/test retry42628501030 active; staging now targets retry.414latestverified.416source Burning/Corrosion/Ooze refinements pass3136core457all0, rawZIP and42base+LightningCharge/6shield fixtures preserved.

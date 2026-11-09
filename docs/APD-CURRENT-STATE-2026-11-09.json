@@ -24,7 +24,8 @@
   "held_private_builds": {
     "404": "Native fixture failed before-render camera check; original unacceptedAPKs/rawfailures preserved in explicitprivatearchives.",
     "405": "3112core/12nativepassed with test-only timingretry, independenthashes+4453sourcefilehashes,32manualcaptures. Rejected manual Tenacity zero-value prose; originals preserved.",
-    "406": "3113core/12nativepassed, independenthashes+4463sourcefilehashes,10newbuffcapturesreadable. Same bad Tenacity provider; originalpairheldprivate."
+    "406": "3113core/12nativepassed, independenthashes+4463sourcefilehashes,10newbuffcapturesreadable. Same bad Tenacity provider; originalpairheldprivate.",
+    "415": "Original42625074280 incomplete because Developer emulator transport closed after QoL/preferences. Alpha/build passed. Exact original source failurebranch preserved; private archive42628501288 succeeded. Retry42628501030 requires all12 fresh unmodified cases."
   },
   "newest_source_not_in_any_apk": [
     "415 candidate:31 status/seal detail simplifications and six ordinary status descriptions",
@@ -49,6 +50,6 @@
     "number": 415,
     "run": 42625074280,
     "source_commit": "a52bd33a8868875eb24fa2d0162ba41bdd099b0c",
-    "status": "building; acceptance and visual review pending"
+    "status": "Original Developer emulator transport failed; no release. Fresh unchanged-app/test retry42628501030 pending."
   }
 }
