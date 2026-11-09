@@ -6,7 +6,7 @@
   "message_entries": 2411,
   "reviewed_units": 417,
   "corrected_units": 336,
-  "unresolved_units": 236,
+  "unresolved_units": 232,
   "category_counts": {
     "apd": 1,
     "mechanics": 38,
@@ -2507,21 +2507,21 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/scrolls/exotic/ScrollOfAntiMagic.java",
       "sha256": "ee45b06bd52fc167dd759c5b2ff9ad3d2ce409c8ea96b678db95b279ad454009",
       "category": "scrolls",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [],
       "wording_corrected": true,
-      "review_notes": "Normal scroll wording checked against current APD effect/targeting code. Live constants where shown; hidden identities preserved. Existing complicated panels and complete class/secondary-window review remain pending. Identify/Shards and Metamorphosis use actual APD behavior."
+      "review_notes": "Normal scroll wording checked against current APD effect/targeting code. Live constants where shown; hidden identities preserved. Existing complicated panels and complete class/secondary-window review remain pending. Identify/Shards and Metamorphosis use actual APD behavior. Followup2026-11-09 own doRead/description/status/save paths individually reconciled. Challenge actual100turn expiry, exit, saved arena, Hunger pause and real attack reduction before armor checked; known normal duration shares unchanged constant. Dread actual doubled speed, sight+6tile conjunction, no ordinary death/loot branch, halved XP input and expiry/damage recovery checked. Foresight actual8tile mapping/search/time behavior and MagicImmune actual listed/unlisted sources retained. Four normal status descriptions shortened; existing specific panels unchanged. Buff source Foresight is outside427source catalog, not an extra reviewed item. Actual new item/status windows pending398, not397 already building. Shared providers/dependencies tracked separately."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/scrolls/exotic/ScrollOfChallenge.java",
-      "sha256": "edd801014b2cb02247a713f0fed939e3cc1538d179b04970f68f4aba1efc7f7a",
+      "sha256": "b30b45db64c826e1f6fbc397de88dbf0fd92b4d227d398bd585cfd157e246394",
       "category": "scrolls",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [
         "desc"
       ],
       "wording_corrected": true,
-      "review_notes": "Normal scroll wording checked against current APD effect/targeting code. Live constants where shown; hidden identities preserved. Existing complicated panels and complete class/secondary-window review remain pending. Identify/Shards and Metamorphosis use actual APD behavior."
+      "review_notes": "Normal scroll wording checked against current APD effect/targeting code. Live constants where shown; hidden identities preserved. Existing complicated panels and complete class/secondary-window review remain pending. Identify/Shards and Metamorphosis use actual APD behavior. Followup2026-11-09 own doRead/description/status/save paths individually reconciled. Challenge actual100turn expiry, exit, saved arena, Hunger pause and real attack reduction before armor checked; known normal duration shares unchanged constant. Dread actual doubled speed, sight+6tile conjunction, no ordinary death/loot branch, halved XP input and expiry/damage recovery checked. Foresight actual8tile mapping/search/time behavior and MagicImmune actual listed/unlisted sources retained. Four normal status descriptions shortened; existing specific panels unchanged. Buff source Foresight is outside427source catalog, not an extra reviewed item. Actual new item/status windows pending398, not397 already building. Shared providers/dependencies tracked separately."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/scrolls/exotic/ScrollOfDivination.java",
@@ -2536,10 +2536,10 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/scrolls/exotic/ScrollOfDread.java",
       "sha256": "af27f2168240953dfd7098bd171ecce4c507e574b626bf89ec439d6addc8ca28",
       "category": "scrolls",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [],
       "wording_corrected": true,
-      "review_notes": "Normal scroll wording checked against current APD effect/targeting code. Live constants where shown; hidden identities preserved. Existing complicated panels and complete class/secondary-window review remain pending. Identify/Shards and Metamorphosis use actual APD behavior."
+      "review_notes": "Normal scroll wording checked against current APD effect/targeting code. Live constants where shown; hidden identities preserved. Existing complicated panels and complete class/secondary-window review remain pending. Identify/Shards and Metamorphosis use actual APD behavior. Followup2026-11-09 own doRead/description/status/save paths individually reconciled. Challenge actual100turn expiry, exit, saved arena, Hunger pause and real attack reduction before armor checked; known normal duration shares unchanged constant. Dread actual doubled speed, sight+6tile conjunction, no ordinary death/loot branch, halved XP input and expiry/damage recovery checked. Foresight actual8tile mapping/search/time behavior and MagicImmune actual listed/unlisted sources retained. Four normal status descriptions shortened; existing specific panels unchanged. Buff source Foresight is outside427source catalog, not an extra reviewed item. Actual new item/status windows pending398, not397 already building. Shared providers/dependencies tracked separately."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/scrolls/exotic/ScrollOfEnchantment.java",
@@ -2554,10 +2554,10 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/scrolls/exotic/ScrollOfForesight.java",
       "sha256": "28f0b86c9050bac0f4b91be7375055b8c35613af69d456018986efaf0011e860",
       "category": "scrolls",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [],
       "wording_corrected": true,
-      "review_notes": "Normal scroll wording checked against current APD effect/targeting code. Live constants where shown; hidden identities preserved. Existing complicated panels and complete class/secondary-window review remain pending. Identify/Shards and Metamorphosis use actual APD behavior."
+      "review_notes": "Normal scroll wording checked against current APD effect/targeting code. Live constants where shown; hidden identities preserved. Existing complicated panels and complete class/secondary-window review remain pending. Identify/Shards and Metamorphosis use actual APD behavior. Followup2026-11-09 own doRead/description/status/save paths individually reconciled. Challenge actual100turn expiry, exit, saved arena, Hunger pause and real attack reduction before armor checked; known normal duration shares unchanged constant. Dread actual doubled speed, sight+6tile conjunction, no ordinary death/loot branch, halved XP input and expiry/damage recovery checked. Foresight actual8tile mapping/search/time behavior and MagicImmune actual listed/unlisted sources retained. Four normal status descriptions shortened; existing specific panels unchanged. Buff source Foresight is outside427source catalog, not an extra reviewed item. Actual new item/status windows pending398, not397 already building. Shared providers/dependencies tracked separately."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/scrolls/exotic/ScrollOfForwarding.java",
@@ -4346,7 +4346,7 @@
       "wording_corrected": true
     }
   ],
-  "completed_units": 191,
-  "latest_tests": "3089core/457suites, no failures/errors/skips; actual staff Transfusion ownership and six ward tier repair checks, Blindweed/Stormvine/Mageroyal normal/Warden branches and raw Blandfruit no-use checks. Full evidence /workspace/apd-staff-plant-evidence-20261109/accepted-full. Native new windows pending397;396published3080core/12native.",
+  "completed_units": 195,
+  "latest_tests": "3092core/457suites, no failures/errors/skips; real Challenge arena/resource/combat/save and Dread speed/sight/distance/XP-input/expiry cases. Full evidence /workspace/apd-scroll-dread-evidence-20261109/accepted-full. Actual new native status windows pending398;397building3089core/12native.",
   "message_inventory_entries": 5338
 }

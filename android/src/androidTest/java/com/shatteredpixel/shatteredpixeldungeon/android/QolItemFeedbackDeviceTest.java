@@ -481,6 +481,21 @@ public class QolItemFeedbackDeviceTest {
             }
         }finally{TopScoresDeviceTest.render(()->{for(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff buff:new java.util.ArrayList<>(Dungeon.hero.buffs(Ring.RingBuff.class)))buff.detach();Dungeon.hero.belongings.ring=(Ring)previous[0];Dungeon.hero.belongings.misc=previous[1];if(previous[0]!=null)previous[0].activate(Dungeon.hero);if(previous[1] instanceof Ring)previous[1].activate(Dungeon.hero);});}
     }
+    private static void conciseScrollStatusDescriptionsRender()throws Exception{
+        com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfChallenge scroll=new com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfChallenge();scroll.anonymize();showItem(scroll,"100 turns","qol-challenge-known-duration.png",true);
+        for(int index=0;index<4;index++){
+            final int kind=index;AtomicReference<Window> shown=new AtomicReference<>();
+            TopScoresDeviceTest.render(()->{
+                com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff buff;com.watabou.utils.Bundle state=new com.watabou.utils.Bundle();
+                if(kind==0){buff=new com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Foresight();buff.storeInBundle(state);state.put("time",com.shatteredpixel.shatteredpixeldungeon.actors.Actor.now()+37);buff.restoreFromBundle(state);assertTrue(buff.desc().contains("8 tiles"));}
+                else if(kind==1){buff=new com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Dread();buff.storeInBundle(state);state.put("left",13);buff.restoreFromBundle(state);assertTrue(buff.desc().contains("half experience"));}
+                else if(kind==2){buff=new com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfChallenge.ChallengeArena();buff.storeInBundle(state);state.put("left",17);buff.restoreFromBundle(state);assertTrue(buff.desc().contains("Leaving ends"));}
+                else{buff=new com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune();buff.storeInBundle(state);state.put("time",com.shatteredpixel.shatteredpixeldungeon.actors.Actor.now()+23);buff.restoreFromBundle(state);assertTrue(buff.desc().contains("Disables your rings"));}
+                String before=state.toString();Window window=new WndInfoBuff(buff);GameScene.show(window);shown.set(window);com.watabou.utils.Bundle after=new com.watabou.utils.Bundle();buff.storeInBundle(after);assertEquals(before,after.toString());
+            });
+            try{Thread.sleep(300);TopScoresDeviceTest.render(()->assertDescriptionViewport(shown.get()));TopScoresDeviceTest.screenshot("qol-scroll-status-concise-"+kind+".png");}finally{TopScoresDeviceTest.render(()->shown.get().hide());}
+        }
+    }
     private static void remainingBattlemageDescriptionsRender()throws Exception{
         HeroClass previousClass=Dungeon.hero.heroClass;com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass previousSubclass=Dungeon.hero.subClass;
         com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand[] wands={new com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfCorruption(),new com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfFireblast(),new com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfTransfusion(),new com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfWarding()};
@@ -1130,6 +1145,7 @@ public class QolItemFeedbackDeviceTest {
             passiveGlyphArcanaDescriptionsRender();
             cleansingStaminaMasteryDescriptionsRender();
             remainingBattlemageDescriptionsRender();
+            conciseScrollStatusDescriptionsRender();
             divineInspirationChoiceDescriptionRenders();
             imbueAndDisabledVialDescriptionsRender();
             reviewedElixirDescriptionsRender();
