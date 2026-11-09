@@ -1,5 +1,5 @@
 {
-  "recorded_utc": "2026-11-09T15:06:59.303288+00:00",
+  "recorded_utc": "2026-11-09T15:07:41.018411+00:00",
   "authorization_end_utc": "2026-11-09T20:00:00Z",
   "latest_verified_published_build": 415,
   "release_url": "https://github.com/APD-Development/ShieldingShouldHaveWorked/releases/tag/apd-alpha-preview-415",
@@ -48,7 +48,12 @@
   "preservation": "All source pushed to codex/apd-phone-fixes-2026-10-09; published403 and priorreleases retained.405/406privateassets include completeAPK/source/tests;404rejectedarchivesretained. Raw local full suites and committed evidence ZIPs retained.",
   "physical_phone_or_acoustic_audio_verified": false,
   "background_development_after_window_claimed": false,
-  "active_build": null,
+  "active_build": {
+    "number": 417,
+    "run": 42641365143,
+    "source_commit": "bcaade3fe1781671d0ce51805fc3fe38af640476",
+    "status": "Android build and native verification running; no publication"
+  },
   "recovered_failed_attempts": {
     "415": {
       "original": "Original42625074280 incomplete because Developer emulator transport closed after QoL/preferences. Alpha/build passed. Exact original source failurebranch preserved; private archive42628501288 succeeded. Retry42628501030 requires all12 fresh unmodified cases.",
