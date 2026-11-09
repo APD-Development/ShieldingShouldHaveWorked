@@ -299,7 +299,7 @@ public class QolItemFeedbackDeviceTest {
         for(int count=1;count<=3;count++){
             final int spins=count;AtomicReference<Window> shown=new AtomicReference<>();
             TopScoresDeviceTest.render(()->{
-                com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Flail.SpinAbilityTracker buff=new com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Flail.SpinAbilityTracker();buff.spins=spins;buff.spend(3);
+                com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Flail.SpinAbilityTracker buff=new com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Flail.SpinAbilityTracker();buff.spins=spins;com.watabou.utils.Bundle saved=new com.watabou.utils.Bundle();buff.storeInBundle(saved);saved.put("time",com.shatteredpixel.shatteredpixeldungeon.actors.Actor.now()+3);buff.restoreFromBundle(saved);
                 assertTrue(buff.desc(),buff.desc().contains("Spins: "+spins+"/3"));Window window=new WndInfoBuff(buff);GameScene.show(window);shown.set(window);
             });Thread.sleep(300);TopScoresDeviceTest.render(()->assertDescriptionViewport(shown.get()));
             TopScoresDeviceTest.screenshot("qol-flail-spin-"+count+"-normal.png");TopScoresDeviceTest.render(()->shown.get().hide());
