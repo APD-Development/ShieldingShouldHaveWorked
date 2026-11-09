@@ -184,3 +184,8 @@ Existing English GameScene ability window replaces stale4tile/15–25/fixedstatu
 ### Fifteen further own-source reviews
 
 All10weapon curses plus Gloves/Sai/Gauntlet/RoundShield/Greatshield individually reconciled with proc/status/Geyser/Guard/ComboStrike consumers and save branches. Existing normal prose remains concise and accurate, so no gratuitous wording or gameplay edits. Own source reviews closed; shared effects/class/generation/ElementalStrike/CursedWand providers remain separate, not implicitly completed.431sourceunits,428full/partial344corrected271complete160unresolved;5339English entries.3110acceptedcore457raw retained. These15review closures are later than404producing source; no app changes. Whole audit unfinished.
+
+
+### APK403 published
+
+Published 2026-11-09T08:56:59Z at https://github.com/APD-Development/ShieldingShouldHaveWorked/releases/tag/apd-alpha-preview-403; original a4a471211973ba15f6f232b535ffe2323f08f053, build42587402851/stage42588615831SUCCESS.3109core457/12distinctAPI34 passed. Independent APK/source/sidecars/scan checks,20new actualcaptures across both variants manually reviewed. Live normal Blast/Monk wording included; later Holy work not included,404pending. No physical-phone/audio or whole-audit claim. Continue approved development through09:30UTC.
