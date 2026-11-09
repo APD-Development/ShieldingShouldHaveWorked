@@ -1,20 +1,20 @@
 {
-  "recorded_utc": "2026-11-09T17:04:55.682002+00:00",
+  "recorded_utc": "2026-11-09T17:09:36.972936+00:00",
   "authorization_end_utc": "2026-11-09T20:00:00Z",
   "latest_verified_published_build": 418,
   "release_url": "https://github.com/APD-Development/ShieldingShouldHaveWorked/releases/tag/apd-alpha-preview-418",
   "source_fix_commit": "8c2d5ca9f33154af69b782d6aa83ac181bd3c21d",
   "local_full_core": {
-    "tests": 3147,
+    "tests": 3149,
     "suites": 457,
     "failures": 0,
     "errors": 0,
     "skipped": 0
   },
   "last_completed_android_source_compile": {
-    "commit": "4fee1824da1bcfd27f6f6ecb35d1562a140fec30",
-    "run": 42654896449,
-    "scope": "3144core, Androiddebug/release/instrumentationJava/desktop allpassed; noAPK. Includes later HoldFast/Barkskin native fixtures after preserving both shared histories."
+    "commit": "f49ce8b4944ce0154448eb6f5ee841d99728cb6d",
+    "run": 42661111718,
+    "scope": "3147core, Android debug/release/instrumentationJava/desktop passed. Later Shared Talents and native Degrade fixtures not included; latest3149 verification requested."
   },
   "latest_source_compile": {
     "commit": "7143d16bc481045b49ec4a60624128b0dcccc6b1",
@@ -118,5 +118,5 @@
     "run": 42656324353,
     "report": "docs/APD-421-HELD-HISTORY-2026-11-09.json"
   },
-  "current_work": "Fix Endure/SoulMark actual native display defects; shorten Doom/Corruption/Degrade against actual mechanics; full3147core running and Android source compile requested. Latest published418 remains unchanged."
+  "current_work": "3149core green. Endure/SoulMark actual manual fixes plus simpler negative effects/SharedTalents; latest Android source compilation requested before423.421 staged/4695sourcehashes checked,18newHoldFast/Barkskin windows manually viewed; still held for inherited defects/history.422 parallel original build before these fixes running, never publish as corrected."
 }

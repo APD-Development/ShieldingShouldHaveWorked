@@ -351,6 +351,17 @@ public class QolItemFeedbackDeviceTest {
             com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfAquaticRejuvenation.AquaHealing healing=new com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfAquaticRejuvenation.AquaHealing();healing.target=Dungeon.hero;healing.set(148);return new WndInfoBuff(healing);
         },"Stored healing reserve: 148 HP","qol-existing-status-clear-AquaticHealing.png");
 
+        final com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor[] beforeDegradedArmor=new com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor[1];
+        TopScoresDeviceTest.render(()->beforeDegradedArmor[0]=Dungeon.hero.belongings.armor);
+        try{for(int known=0;known<2;known++){
+            final boolean knownLevel=known==1;
+            calculationWindow(()->{
+                com.shatteredpixel.shatteredpixeldungeon.items.armor.MailArmor armor=new com.shatteredpixel.shatteredpixeldungeon.items.armor.MailArmor();armor.level(9);armor.levelKnown=armor.cursedKnown=knownLevel;Dungeon.hero.belongings.armor=armor;
+                com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Degrade degraded=new com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Degrade();degraded.target=Dungeon.hero;
+                if(!knownLevel)assertFalse(com.shatteredpixel.shatteredpixeldungeon.apd.mechanics.BuffExplanation.details(degraded).contains("+9 → +5"));return new WndInfoBuff(degraded);
+            },knownLevel?"+9 → +5":"Weakened upgrades","qol-existing-status-clear-Degrade-"+(knownLevel?"known":"unknown")+".png");
+        }}finally{TopScoresDeviceTest.render(()->Dungeon.hero.belongings.armor=beforeDegradedArmor[0]);}
+
         final com.shatteredpixel.shatteredpixeldungeon.ui.ActionIndicator.Action[] previousMomentumAction=new com.shatteredpixel.shatteredpixeldungeon.ui.ActionIndicator.Action[1];
         TopScoresDeviceTest.render(()->previousMomentumAction[0]=com.shatteredpixel.shatteredpixeldungeon.ui.ActionIndicator.action);
         try{
@@ -413,8 +424,8 @@ public class QolItemFeedbackDeviceTest {
             calculationWindow(()->{Sword blade=new Sword();blade.level(3);blade.levelKnown=blade.cursedKnown=true;blade.enchant((com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon.Enchantment)Class.forName("com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments."+name).getDeclaredConstructor().newInstance());return new WndInfoItem(blade);},retainedText[index],"qol-retained-"+name+"-clear-details.png");
         }
         calculationWindow(()->{com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier b=new com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier();b.setShield(17);return new WndInfoBuff(b);},"17 shield points","qol-mechanics-buff-expanded.png");
-        String[] reviewedTalentNames={"BARKSKIN","NATURES_AID","PROJECTILE_MOMENTUM","FOLLOWUP_STRIKE"};
-        String[] reviewedTalentText={"Barkskin protection","Barkskin from a visible plant","Thrown weapons while freerunning","Follow-up hit"};
+        String[] reviewedTalentNames={"BARKSKIN","NATURES_AID","PROJECTILE_MOMENTUM","FOLLOWUP_STRIKE","SHARED_UPGRADES","SHARED_ENCHANTMENT"};
+        String[] reviewedTalentText={"Barkskin protection","Barkskin from a visible plant","Thrown weapons while freerunning","Follow-up hit","Shared Upgrades","Borrowing the bow's enchantment"};
         for(int index=0;index<reviewedTalentNames.length;index++){
             final String name=reviewedTalentNames[index];
             calculationWindow(()->new WndInfoTalent(com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent.valueOf(name),2,null),reviewedTalentText[index],"qol-reviewed-talent-clear-"+name+".png");

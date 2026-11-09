@@ -388,14 +388,14 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/TalentExplanation.java",
-      "sha256": "88de39bb76b5a139136331c9a94cd3d85ba09d8ca49e7554bba01ae0463f9044",
+      "sha256": "01d7cb63e0354bea79b57f010c47bacbb120e9089da33a8d5c1c0418d92be4fb",
       "category": "mechanics",
       "status": "PARTIAL_REVIEW",
       "description_methods": [
         "details",
         "details"
       ],
-      "review_notes": "2026-11-09: Full own source read; normal English rank/metamorph text cross-check continues. Fixed Hearty Meal display-only raw4versusactual0 feedback using existing CustomHealingHooks.display; actual0/25/100/200 by2ranks andHP10/33/34 tests preserve other meal benefit, food quantity and handler time. Corrected normal alternate Weapon Recharging overstated5/7.5percent text to existing2.5percent scaling plus small rank-dependent addition/whole-damage rounding; actual damage formula unchanged and seeded real damage tests retained. Removed irrelevant recursion/balance implementation prose from existing detail and clarified Lethal Momentum can remove killing-action time; actual attackDelay consumption test.3136core457all0. Actual new Hearty popup, Twin and metamorphed recharging windows prepared but not yetAndroid verified. Comprehensive text review remains open. 2026-11-09 continued individual normal/detailed Barkskin, Natures Aid, Projectile Momentum and Followup Strike review: plain protection/fading, active freerunning accuracy/damage and five-turn one-hit target-switch descriptions. Existing talent panels retained pending owner decision. Real plant triggers/protection/decay and followup attack target-switch/one-use checks pass; full3140/native418 pending. No gameplay changes. Hold Fast existing detail/meta text clarified after checking actual rest readiness, class cap, negative armor cap and exact Combo/Barrier/Blocking/seal-expiry/Berserk decay call sites. Existing negative-cap effect described, not changed. Zero Barkskin now states no current protection instead0\u20130; actual plant-level/rank tests retained.3144core457all0. New native cases prepared, notyetAndroidcompiled.",
+      "review_notes": "2026-11-09: Full own source read; normal English rank/metamorph text cross-check continues. Fixed Hearty Meal display-only raw4versusactual0 feedback using existing CustomHealingHooks.display; actual0/25/100/200 by2ranks andHP10/33/34 tests preserve other meal benefit, food quantity and handler time. Corrected normal alternate Weapon Recharging overstated5/7.5percent text to existing2.5percent scaling plus small rank-dependent addition/whole-damage rounding; actual damage formula unchanged and seeded real damage tests retained. Removed irrelevant recursion/balance implementation prose from existing detail and clarified Lethal Momentum can remove killing-action time; actual attackDelay consumption test.3136core457all0. Actual new Hearty popup, Twin and metamorphed recharging windows prepared but not yetAndroid verified. Comprehensive text review remains open. 2026-11-09 continued individual normal/detailed Barkskin, Natures Aid, Projectile Momentum and Followup Strike review: plain protection/fading, active freerunning accuracy/damage and five-turn one-hit target-switch descriptions. Existing talent panels retained pending owner decision. Real plant triggers/protection/decay and followup attack target-switch/one-use checks pass; full3140/native418 pending. No gameplay changes. Hold Fast existing detail/meta text clarified after checking actual rest readiness, class cap, negative armor cap and exact Combo/Barrier/Blocking/seal-expiry/Berserk decay call sites. Existing negative-cap effect described, not changed. Zero Barkskin now states no current protection instead0\u20130; actual plant-level/rank tests retained.3144core457all0. New native cases prepared, notyetAndroidcompiled. 2026-11-09: Individually crosschecked Shared Upgrades actual Hero delayed mark creation and Shared Enchantment MissileWeapon.proc/Projecting borrowing paths. Normal text now gives honest approximate17%, exact cap-specific33/67/100%, borrowing fractions and own-enchantment limitation. Existing detail shortened with exact1/6; actualrank1\u20133level0\u20139 mark duration/bonus and120seeded borrowing/ownproc/immunity cases green. No engine change. Other talent branches remain open.",
       "wording_corrected": true
     },
     {
@@ -4568,7 +4568,7 @@
     }
   ],
   "completed_units": 437,
-  "latest_tests": "3147core expected; full execution in progress.420/421 manually held;418 published. Android source verification requested before next numbered pair.",
+  "latest_tests": "3149core/457suites passed all0 after Shared Upgrades/Enchantment actual-runtime cases. Android source3147 passed42661111718; latest3149 source compilation requested. Native windows pending.",
   "message_inventory_entries": 5353,
   "message_inventory_counting": "Current authored English property entries across nine files;2432 item entries. Two concise zero-Healing dew/waterskin keys added. Exact Adult OFF/ON checks retained."
 }

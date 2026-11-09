@@ -2559,6 +2559,33 @@ public class MechanicsExplanationTest {
   for(int mode=0;mode<3;mode++){com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingKnife weapon=new com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingKnife();weapon.level(2);weapon.levelKnown=mode!=0;weapon.cursedKnown=true;hero.belongings.weapon=weapon;if(mode==2){RingOfArcana unknown=ring(1);unknown.levelKnown=false;}
    java.util.Set<com.shatteredpixel.shatteredpixeldungeon.actors.Actor> before=new java.util.HashSet<>(com.shatteredpixel.shatteredpixeldungeon.actors.Actor.all());hero.attackProc(new PlainStatusTarget(),5);java.util.List<com.shatteredpixel.shatteredpixeldungeon.actors.Actor> queued=new java.util.ArrayList<>();for(com.shatteredpixel.shatteredpixeldungeon.actors.Actor actor:com.shatteredpixel.shatteredpixeldungeon.actors.Actor.all())if(!before.contains(actor)&&actor.getClass().getName().startsWith(Hero.class.getName()+"$"))queued.add(actor);assertEquals(1,queued.size());java.lang.reflect.Method act=queued.get(0).getClass().getDeclaredMethod("act");act.setAccessible(true);act.invoke(queued.get(0));SnipersMark mark=hero.buff(SnipersMark.class);assertNotNull(mark);assertEquals(mode==1,mark.bonusIsKnown());}
  }
+ public static class BorrowedEnchantmentProbe extends com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon.Enchantment {
+  int calls;
+  @Override public int proc(com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon weapon,com.shatteredpixel.shatteredpixeldungeon.actors.Char attacker,com.shatteredpixel.shatteredpixeldungeon.actors.Char defender,int damage){calls++;return damage;}
+  @Override public com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite.Glowing glowing(){return null;}
+ }
+ @Test public void sharedEnchantmentBorrowChancePreservesOwnProcAndMagicImmunity(){
+  com.shatteredpixel.shatteredpixeldungeon.items.weapon.SpiritBow bow=new com.shatteredpixel.shatteredpixeldungeon.items.weapon.SpiritBow();BorrowedEnchantmentProbe borrowed=new BorrowedEnchantmentProbe();bow.enchantment=borrowed;assertTrue(bow.collect(hero.belongings.backpack));
+  com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingKnife knife=new com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingKnife();BorrowedEnchantmentProbe own=new BorrowedEnchantmentProbe();knife.enchantment=own;knife.levelKnown=knife.cursedKnown=true;
+  for(int rank=0;rank<=3;rank++)for(int seed=0;seed<30;seed++){
+   hero.talents.get(2).put(Talent.SHARED_ENCHANTMENT,rank);Random.pushGenerator(seed);boolean eligible=Random.Int(3)<rank;Random.popGenerator();borrowed.calls=own.calls=0;
+   Random.pushGenerator(seed);try{knife.proc(hero,new PlainStatusTarget(),5);}finally{Random.popGenerator();}
+   assertEquals(eligible?1:0,borrowed.calls);assertEquals(1,own.calls);
+  }
+  Buff.affect(hero,MagicImmune.class);borrowed.calls=own.calls=0;knife.proc(hero,new PlainStatusTarget(),5);assertEquals(0,borrowed.calls);assertEquals(0,own.calls);
+ }
+ @Test public void sharedUpgradeDescriptionMatchesActualMarkAtEveryTalentCap()throws Exception{
+  hero.subClass=com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass.SNIPER;
+  String normal=com.shatteredpixel.shatteredpixeldungeon.messages.Messages.get(Talent.class,"shared_upgrades.desc");assertTrue(normal,normal.contains("about 17%"));assertFalse(normal,normal.contains("by 16%"));
+  for(int rank=1;rank<=3;rank++)for(int level=0;level<=9;level++){
+   Buff.detach(hero,SnipersMark.class);hero.talents.get(2).put(Talent.SHARED_UPGRADES,rank);
+   com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingKnife knife=new com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingKnife();knife.level(level);knife.levelKnown=knife.cursedKnown=true;hero.belongings.weapon=knife;
+   java.util.Set<com.shatteredpixel.shatteredpixeldungeon.actors.Actor> before=new java.util.HashSet<>(com.shatteredpixel.shatteredpixeldungeon.actors.Actor.all());hero.attackProc(new PlainStatusTarget(),5);
+   int callbacks=0;for(com.shatteredpixel.shatteredpixeldungeon.actors.Actor actor:new java.util.ArrayList<>(com.shatteredpixel.shatteredpixeldungeon.actors.Actor.all()))if(!before.contains(actor)&&actor.getClass().getName().startsWith(Hero.class.getName()+"$")){java.lang.reflect.Method act=actor.getClass().getDeclaredMethod("act");act.setAccessible(true);act.invoke(actor);callbacks++;}
+   assertEquals(1,callbacks);SnipersMark mark=hero.buff(SnipersMark.class);assertNotNull(mark);int counted=Math.min(2*rank,level);assertEquals(counted/6f,mark.percentDmgBonus,0);assertEquals(SnipersMark.DURATION+counted,mark.cooldown(),0);
+   String details=TalentExplanation.details(Talent.SHARED_UPGRADES,rank,false);assertTrue(details,details.contains("up to _"+(2*rank)+" upgrades_"));assertTrue(details,details.contains("count ÷ 6"));
+  }
+ }
  @Test public void sniperShotNormalDelayPreviewMatchesActualBowWithoutConsumingReadyBenefits(){
   com.shatteredpixel.shatteredpixeldungeon.items.weapon.SpiritBow bow=new com.shatteredpixel.shatteredpixeldungeon.items.weapon.SpiritBow();SnipersMark mark=new SnipersMark();mark.set(0,0,true);RingOfFuror furor=new RingOfFuror();furor.anonymize();furor.levelKnown=furor.cursedKnown=true;hero.belongings.ring=furor;furor.activate(hero);for(int level=0;level<=3;level++){furor.level(level);bow.sniperSpecial=true;bow.augment=com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon.Augment.SPEED;String text=PreparedShotExplanation.sniper(mark);assertTrue(text.contains("volley delay: "+ObfuscationExplanation.number(bow.delayFactor(hero))));bow.augment=com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon.Augment.DAMAGE;assertTrue(text.contains("damage-augmented delay: "+ObfuscationExplanation.number(bow.delayFactor(hero))));assertTrue(bow.sniperSpecial);}
  }

@@ -1,2 +1,2 @@
-2026-11-09T17:02:54.692967+00:00
-Verify3147core and Androiddebug/release/instrumentationJava/desktop for actual manual Endure and SoulMark display fixes plus Doom/Corruption/Degrade descriptions. No APK in this verification;420/421 heldprivate and418published.
+2026-11-09T17:09:36.973042+00:00
+Verify3149core plus Androiddebug/release/instrumentationJava/desktop after actual Endure/SoulMark window fixes, simpler negative effects, Shared Upgrades/Enchantment actual runtime regressions and their native windows. No APK; prior3147source42661111718passed.418published;420/421/422hold.
