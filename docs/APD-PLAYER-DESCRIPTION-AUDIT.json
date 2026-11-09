@@ -4557,7 +4557,7 @@
     }
   ],
   "completed_units": 436,
-  "latest_tests": "3143core457all0 after Berserk unknown-armor preview privacy. Previous419test fix source-check42648615419 success atd2a06e7 (3142core/Androiddebug+release+instrumentationJava/desktop,noAPK). New Berserk native fixtures await new no-APK compile.418published3140core12native42manual4636sourcehashes; newer work notpublished.",
+  "latest_tests": "3143core457all0; noAPK sourcecheck42649700318 at7143d16 passed Androiddebug/release/instrumentationJava/desktop, including current Berserk and popup fixtures.420pair requested with sameapp/testsource.418latestpublished3140core12native42manual4636sourcehashes. Audit8open.",
   "message_inventory_entries": 5347,
   "message_inventory_counting": "Current authored English property entries across nine files;2432 item entries. Two concise zero-Healing dew/waterskin keys added. Exact Adult OFF/ON checks retained."
 }

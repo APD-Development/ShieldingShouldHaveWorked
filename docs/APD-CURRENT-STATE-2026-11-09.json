@@ -1,5 +1,5 @@
 {
-  "recorded_utc": "2026-11-09T15:56:27.280673+00:00",
+  "recorded_utc": "2026-11-09T16:00:28.971725+00:00",
   "authorization_end_utc": "2026-11-09T20:00:00Z",
   "latest_verified_published_build": 418,
   "release_url": "https://github.com/APD-Development/ShieldingShouldHaveWorked/releases/tag/apd-alpha-preview-418",
@@ -12,14 +12,14 @@
     "skipped": 0
   },
   "last_completed_android_source_compile": {
-    "commit": "d2a06e7efac9cab21cd7b89f097710361c4af0dd",
-    "run": 42648615419,
-    "scope": "3142core and Androiddebug/release/instrumentationJava/desktop passed; noAPK.419popup checked-exception repair compiled. New Berserk changes excluded."
+    "commit": "7143d16bc481045b49ec4a60624128b0dcccc6b1",
+    "run": 42649700318,
+    "scope": "3143core plus Androiddebug/release/instrumentationJava/desktop allpassed; noAPK. Includes three new Berserk known/unknown cases and repaired SoulMark popup fixture."
   },
   "latest_source_compile": {
-    "commit": "481d4ccfeb6d2ff456788b4380bc4b122c27138c",
-    "run": 42620050274,
-    "status": "success:3136core and Androiddebug/release/instrumentationJava/desktop; noAPK"
+    "commit": "7143d16bc481045b49ec4a60624128b0dcccc6b1",
+    "run": 42649700318,
+    "status": "success; current application and instrumentation source compiled, noAPK"
   },
   "held_private_builds": {
     "404": "Native fixture failed before-render camera check; original unacceptedAPKs/rawfailures preserved in explicitprivatearchives.",
