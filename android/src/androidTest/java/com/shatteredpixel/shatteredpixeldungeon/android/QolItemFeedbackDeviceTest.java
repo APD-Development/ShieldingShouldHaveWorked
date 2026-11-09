@@ -295,6 +295,19 @@ public class QolItemFeedbackDeviceTest {
             TopScoresDeviceTest.render(()->shown.get().hide());
         }}finally{TopScoresDeviceTest.render(()->Dungeon.hero.belongings.misc=previous);}
     }
+    private static void ordinaryDartDescriptionsRender()throws Exception{
+        String[] names={"Dart","AdrenalineDart","BlindingDart","ChillingDart","CleansingDart","DisplacingDart","HealingDart","HolyDart","IncendiaryDart","ParalyticDart","PoisonDart","RotDart","ShockingDart"};
+        for(String name:names){
+            Item item=(Item)Class.forName("com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts."+name).getDeclaredConstructor().newInstance();
+            for(boolean use:new boolean[]{false,true}){
+                AtomicReference<WndInfoItem> shown=new AtomicReference<>();
+                TopScoresDeviceTest.render(()->{item.levelKnown=item.cursedKnown=true;WndInfoItem window=use?new WndUseItem(null,item):new WndInfoItem(item);GameScene.show(window);shown.set(window);assertFalse(item.info(),item.info().contains("scheduled units"));assertFalse(item.info().contains("scaling floor"));});
+                Thread.sleep(300);TopScoresDeviceTest.render(()->assertDescriptionViewport(shown.get()));
+                if(use)TopScoresDeviceTest.screenshot("qol-ordinary-dart-"+name+"-description.png");
+                TopScoresDeviceTest.render(()->shown.get().hide());
+            }
+        }
+    }
     private static void additionalDuelistDescriptionsRender()throws Exception{
         HeroClass previous=Dungeon.hero.heroClass;
         try{
@@ -525,6 +538,7 @@ public class QolItemFeedbackDeviceTest {
             additionalDuelistDescriptionsRender();
             retainedArtifactDescriptionsRender();
             retainedTrinketDescriptionsRender();
+            ordinaryDartDescriptionsRender();
             inventoryOrderShowsAutomatically();
             prepareSearchableFloor();
             final int[] center={0};

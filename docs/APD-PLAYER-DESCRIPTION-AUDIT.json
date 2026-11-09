@@ -4,8 +4,8 @@
   "counting": "Source units, not distinct item types. reviewed_units includes partial reviews; completed_units excludes partial/pending dependency. corrected_units counts source units with corrections, including incomplete reviews. Inventory/export/tests alone are not an individual review.",
   "source_units": 427,
   "message_entries": 2411,
-  "reviewed_units": 276,
-  "corrected_units": 257,
+  "reviewed_units": 288,
+  "corrected_units": 280,
   "unresolved_units": 286,
   "category_counts": {
     "apd": 1,
@@ -901,7 +901,9 @@
       "status": "PENDING_INDIVIDUAL_REVIEW",
       "description_methods": [
         "desc"
-      ]
+      ],
+      "wording_corrected": true,
+      "review_notes": " All15 actual curse branches reviewed; concise conditional ordinary text,15type read-only regression, actual Horn/Chalice effects tested. Existing advanced panels retained pending owner review; full non-curse/class paths may remain incomplete."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/artifacts/Artifact.java",
@@ -920,7 +922,9 @@
       "description_methods": [
         "desc",
         "desc"
-      ]
+      ],
+      "wording_corrected": true,
+      "review_notes": " All15 actual curse branches reviewed; concise conditional ordinary text,15type read-only regression, actual Horn/Chalice effects tested. Existing advanced panels retained pending owner review; full non-curse/class paths may remain incomplete."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/artifacts/ChaliceOfBlood.java",
@@ -929,7 +933,9 @@
       "status": "PENDING_INDIVIDUAL_REVIEW",
       "description_methods": [
         "desc"
-      ]
+      ],
+      "wording_corrected": true,
+      "review_notes": " All15 actual curse branches reviewed; concise conditional ordinary text,15type read-only regression, actual Horn/Chalice effects tested. Existing advanced panels retained pending owner review; full non-curse/class paths may remain incomplete."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/artifacts/CloakOfShadows.java",
@@ -938,7 +944,9 @@
       "status": "PENDING_INDIVIDUAL_REVIEW",
       "description_methods": [
         "desc"
-      ]
+      ],
+      "wording_corrected": true,
+      "review_notes": " All15 actual curse branches reviewed; concise conditional ordinary text,15type read-only regression, actual Horn/Chalice effects tested. Existing advanced panels retained pending owner review; full non-curse/class paths may remain incomplete."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/artifacts/DriedRose.java",
@@ -947,7 +955,9 @@
       "status": "PENDING_INDIVIDUAL_REVIEW",
       "description_methods": [
         "desc"
-      ]
+      ],
+      "wording_corrected": true,
+      "review_notes": " All15 actual curse branches reviewed; concise conditional ordinary text,15type read-only regression, actual Horn/Chalice effects tested. Existing advanced panels retained pending owner review; full non-curse/class paths may remain incomplete."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/artifacts/EtherealChains.java",
@@ -956,14 +966,18 @@
       "status": "PENDING_INDIVIDUAL_REVIEW",
       "description_methods": [
         "desc"
-      ]
+      ],
+      "wording_corrected": true,
+      "review_notes": " All15 actual curse branches reviewed; concise conditional ordinary text,15type read-only regression, actual Horn/Chalice effects tested. Existing advanced panels retained pending owner review; full non-curse/class paths may remain incomplete."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/artifacts/HolyTome.java",
       "sha256": "2c50135839e0d44e47165bf77c3b1e7334c827d805e638e17938501af9f1773d",
       "category": "artifacts",
       "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": " All15 actual curse branches reviewed; concise conditional ordinary text,15type read-only regression, actual Horn/Chalice effects tested. Existing advanced panels retained pending owner review; full non-curse/class paths may remain incomplete."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/artifacts/HornOfPlenty.java",
@@ -972,7 +986,9 @@
       "status": "PENDING_INDIVIDUAL_REVIEW",
       "description_methods": [
         "desc"
-      ]
+      ],
+      "wording_corrected": true,
+      "review_notes": " All15 actual curse branches reviewed; concise conditional ordinary text,15type read-only regression, actual Horn/Chalice effects tested. Existing advanced panels retained pending owner review; full non-curse/class paths may remain incomplete."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/artifacts/LloydsBeacon.java",
@@ -981,7 +997,9 @@
       "status": "PENDING_INDIVIDUAL_REVIEW",
       "description_methods": [
         "desc"
-      ]
+      ],
+      "wording_corrected": true,
+      "review_notes": " All15 actual curse branches reviewed; concise conditional ordinary text,15type read-only regression, actual Horn/Chalice effects tested. Existing advanced panels retained pending owner review; full non-curse/class paths may remain incomplete."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/artifacts/MasterThievesArmband.java",
@@ -992,7 +1010,7 @@
         "desc"
       ],
       "wording_corrected": true,
-      "review_notes": "Ordinary descriptions and important cursed states checked individually against real activation, charging, scroll talent suppression/exception, theft and grass/seed code. Clear normal uses and drawbacks replace vague flavor-only guidance; redundant technical cursed summary suppressed only for these four reviewed types when their own worn description already states it. Existing mechanic-specific panels retained pending review. Full variant/corner-case review still pending; native382 worn normal/cursed windows included, not yet run."
+      "review_notes": "Ordinary descriptions and important cursed states checked individually against real activation, charging, scroll talent suppression/exception, theft and grass/seed code. Clear normal uses and drawbacks replace vague flavor-only guidance; redundant technical cursed summary suppressed only for these four reviewed types when their own worn description already states it. Existing mechanic-specific panels retained pending review. Full variant/corner-case review still pending; native382 worn normal/cursed windows included, not yet run. All15 actual curse branches reviewed; concise conditional ordinary text,15type read-only regression, actual Horn/Chalice effects tested. Existing advanced panels retained pending owner review; full non-curse/class paths may remain incomplete."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/artifacts/SandalsOfNature.java",
@@ -1003,7 +1021,7 @@
         "desc"
       ],
       "wording_corrected": true,
-      "review_notes": "Ordinary descriptions and important cursed states checked individually against real activation, charging, scroll talent suppression/exception, theft and grass/seed code. Clear normal uses and drawbacks replace vague flavor-only guidance; redundant technical cursed summary suppressed only for these four reviewed types when their own worn description already states it. Existing mechanic-specific panels retained pending review. Full variant/corner-case review still pending; native382 worn normal/cursed windows included, not yet run."
+      "review_notes": "Ordinary descriptions and important cursed states checked individually against real activation, charging, scroll talent suppression/exception, theft and grass/seed code. Clear normal uses and drawbacks replace vague flavor-only guidance; redundant technical cursed summary suppressed only for these four reviewed types when their own worn description already states it. Existing mechanic-specific panels retained pending review. Full variant/corner-case review still pending; native382 worn normal/cursed windows included, not yet run. All15 actual curse branches reviewed; concise conditional ordinary text,15type read-only regression, actual Horn/Chalice effects tested. Existing advanced panels retained pending owner review; full non-curse/class paths may remain incomplete."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/artifacts/SkeletonKey.java",
@@ -1012,7 +1030,9 @@
       "status": "PENDING_INDIVIDUAL_REVIEW",
       "description_methods": [
         "desc"
-      ]
+      ],
+      "wording_corrected": true,
+      "review_notes": " All15 actual curse branches reviewed; concise conditional ordinary text,15type read-only regression, actual Horn/Chalice effects tested. Existing advanced panels retained pending owner review; full non-curse/class paths may remain incomplete."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/artifacts/TalismanOfForesight.java",
@@ -1021,7 +1041,9 @@
       "status": "PENDING_INDIVIDUAL_REVIEW",
       "description_methods": [
         "desc"
-      ]
+      ],
+      "wording_corrected": true,
+      "review_notes": " All15 actual curse branches reviewed; concise conditional ordinary text,15type read-only regression, actual Horn/Chalice effects tested. Existing advanced panels retained pending owner review; full non-curse/class paths may remain incomplete."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/artifacts/TimekeepersHourglass.java",
@@ -1033,7 +1055,7 @@
         "desc"
       ],
       "wording_corrected": true,
-      "review_notes": "Ordinary descriptions and important cursed states checked individually against real activation, charging, scroll talent suppression/exception, theft and grass/seed code. Clear normal uses and drawbacks replace vague flavor-only guidance; redundant technical cursed summary suppressed only for these four reviewed types when their own worn description already states it. Existing mechanic-specific panels retained pending review. Full variant/corner-case review still pending; native382 worn normal/cursed windows included, not yet run."
+      "review_notes": "Ordinary descriptions and important cursed states checked individually against real activation, charging, scroll talent suppression/exception, theft and grass/seed code. Clear normal uses and drawbacks replace vague flavor-only guidance; redundant technical cursed summary suppressed only for these four reviewed types when their own worn description already states it. Existing mechanic-specific panels retained pending review. Full variant/corner-case review still pending; native382 worn normal/cursed windows included, not yet run. All15 actual curse branches reviewed; concise conditional ordinary text,15type read-only regression, actual Horn/Chalice effects tested. Existing advanced panels retained pending owner review; full non-curse/class paths may remain incomplete."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/artifacts/UnstableSpellbook.java",
@@ -1044,7 +1066,7 @@
         "desc"
       ],
       "wording_corrected": true,
-      "review_notes": "Ordinary descriptions and important cursed states checked individually against real activation, charging, scroll talent suppression/exception, theft and grass/seed code. Clear normal uses and drawbacks replace vague flavor-only guidance; redundant technical cursed summary suppressed only for these four reviewed types when their own worn description already states it. Existing mechanic-specific panels retained pending review. Full variant/corner-case review still pending; native382 worn normal/cursed windows included, not yet run."
+      "review_notes": "Ordinary descriptions and important cursed states checked individually against real activation, charging, scroll talent suppression/exception, theft and grass/seed code. Clear normal uses and drawbacks replace vague flavor-only guidance; redundant technical cursed summary suppressed only for these four reviewed types when their own worn description already states it. Existing mechanic-specific panels retained pending review. Full variant/corner-case review still pending; native382 worn normal/cursed windows included, not yet run. All15 actual curse branches reviewed; concise conditional ordinary text,15type read-only regression, actual Horn/Chalice effects tested. Existing advanced panels retained pending owner review; full non-curse/class paths may remain incomplete."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/bags/Bag.java",
@@ -3851,29 +3873,37 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/missiles/darts/AdrenalineDart.java",
       "sha256": "2556e4b6f37fc55817f367a40f0338c7adc0c213a0de547d2715b7b87012e0d8",
       "category": "weapon",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "PARTIAL",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Ordinary tip description individually checked against proc, allied/enemy branches and status implementation; concise practical effects and drawbacks. Inherited stats/privacy tested separately. Charged Shot secondary interaction wording and full class-context coverage remain under review; legacy technical helper is not an active ordinary panel."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/missiles/darts/BlindingDart.java",
       "sha256": "57dba7064558b7de5d58da1a6fc3c02d0f9eee713189d19e01c83828a1b957c6",
       "category": "weapon",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "PARTIAL",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Ordinary tip description individually checked against proc, allied/enemy branches and status implementation; concise practical effects and drawbacks. Inherited stats/privacy tested separately. Charged Shot secondary interaction wording and full class-context coverage remain under review; legacy technical helper is not an active ordinary panel."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/missiles/darts/ChillingDart.java",
       "sha256": "7c0b4b9eb7a6f5b883740a1524e52b67b394c106e0b72c3f3c0d73080094dc32",
       "category": "weapon",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "PARTIAL",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Ordinary tip description individually checked against proc, allied/enemy branches and status implementation; concise practical effects and drawbacks. Inherited stats/privacy tested separately. Charged Shot secondary interaction wording and full class-context coverage remain under review; legacy technical helper is not an active ordinary panel."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/missiles/darts/CleansingDart.java",
       "sha256": "8efdf199c44280d2de6c231060e81215e5f9020e36089ca194fec0872001bd94",
       "category": "weapon",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "PARTIAL",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Ordinary tip description individually checked against proc, allied/enemy branches and status implementation; concise practical effects and drawbacks. Inherited stats/privacy tested separately. Charged Shot secondary interaction wording and full class-context coverage remain under review; legacy technical helper is not an active ordinary panel."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/missiles/darts/Dart.java",
@@ -3888,57 +3918,73 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/missiles/darts/DisplacingDart.java",
       "sha256": "32dfff38f08c043bf86b7811d9c3c56015dbd5f7a9feea0bb17fe0f1ddb952d5",
       "category": "weapon",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "PARTIAL",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Ordinary tip description individually checked against proc, allied/enemy branches and status implementation; concise practical effects and drawbacks. Inherited stats/privacy tested separately. Charged Shot secondary interaction wording and full class-context coverage remain under review; legacy technical helper is not an active ordinary panel."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/missiles/darts/HealingDart.java",
       "sha256": "9b5f090ac1ed3eb2b910af257dbf21e17bb0fc8b65f19b285ab7fb9f515932e1",
       "category": "weapon",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "PARTIAL",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Ordinary tip description individually checked against proc, allied/enemy branches and status implementation; concise practical effects and drawbacks. Inherited stats/privacy tested separately. Charged Shot secondary interaction wording and full class-context coverage remain under review; legacy technical helper is not an active ordinary panel."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/missiles/darts/HolyDart.java",
       "sha256": "932c6b7ae911f5d2de5453b53426e89e00bf3134b75f0d1d37097803741db12d",
       "category": "weapon",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "PARTIAL",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Ordinary tip description individually checked against proc, allied/enemy branches and status implementation; concise practical effects and drawbacks. Inherited stats/privacy tested separately. Charged Shot secondary interaction wording and full class-context coverage remain under review; legacy technical helper is not an active ordinary panel."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/missiles/darts/IncendiaryDart.java",
       "sha256": "6c32dd9156721e7335c64cc6dd11b57b7fbb783c8ab9850744d51ed637a30c3c",
       "category": "weapon",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "PARTIAL",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Ordinary tip description individually checked against proc, allied/enemy branches and status implementation; concise practical effects and drawbacks. Inherited stats/privacy tested separately. Charged Shot secondary interaction wording and full class-context coverage remain under review; legacy technical helper is not an active ordinary panel."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/missiles/darts/ParalyticDart.java",
       "sha256": "4b4329ab0b998da4cb9cf1c6391fb551895fe120c2e4efd6de792a8733cf59c9",
       "category": "weapon",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "PARTIAL",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Ordinary tip description individually checked against proc, allied/enemy branches and status implementation; concise practical effects and drawbacks. Inherited stats/privacy tested separately. Charged Shot secondary interaction wording and full class-context coverage remain under review; legacy technical helper is not an active ordinary panel."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/missiles/darts/PoisonDart.java",
       "sha256": "8bc9aa820640b6cd398745618c2793e7c34fded637dcf6e73dd2742fa3b7e425",
       "category": "weapon",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "PARTIAL",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Ordinary tip description individually checked against proc, allied/enemy branches and status implementation; concise practical effects and drawbacks. Inherited stats/privacy tested separately. Charged Shot secondary interaction wording and full class-context coverage remain under review; legacy technical helper is not an active ordinary panel."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/missiles/darts/RotDart.java",
       "sha256": "0817a63ccbf38a8caa10ed677f757a2b2c415f7145d625055e92e0e300fe28a1",
       "category": "weapon",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "PARTIAL",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Ordinary tip description individually checked against proc, allied/enemy branches and status implementation; concise practical effects and drawbacks. Inherited stats/privacy tested separately. Charged Shot secondary interaction wording and full class-context coverage remain under review; legacy technical helper is not an active ordinary panel."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/missiles/darts/ShockingDart.java",
       "sha256": "585536b098651bad0107aee85a3f58a676ce8d5721a3caefbb0fd91fa0fea034",
       "category": "weapon",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
-      "description_methods": []
+      "status": "PARTIAL",
+      "description_methods": [],
+      "wording_corrected": true,
+      "review_notes": "Ordinary tip description individually checked against proc, allied/enemy branches and status implementation; concise practical effects and drawbacks. Inherited stats/privacy tested separately. Charged Shot secondary interaction wording and full class-context coverage remain under review; legacy technical helper is not an active ordinary panel."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/weapon/missiles/darts/TippedDart.java",
