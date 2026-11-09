@@ -3,10 +3,10 @@
   "baseline_commit": "32f4f3beab4c23b404c3cb1d43bfa06a39165e70",
   "counting": "Source units, not distinct item types. reviewed_units includes partial reviews; completed_units excludes partial/pending dependency. corrected_units counts source units with corrections, including incomplete reviews. Inventory/export/tests alone are not an individual review.",
   "source_units": 436,
-  "message_entries": 2430,
+  "message_entries": 2432,
   "reviewed_units": 433,
-  "corrected_units": 350,
-  "unresolved_units": 70,
+  "corrected_units": 316,
+  "unresolved_units": 63,
   "category_counts": {
     "apd": 1,
     "mechanics": 38,
@@ -171,11 +171,11 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/DewExplanation.java",
       "sha256": "b1568415b2a5e64bcdd63ca3926b43119c18ec2a806da8b8b4659e7da89042dc",
       "category": "mechanics",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_UNCHANGED",
       "description_methods": [
         "details"
       ],
-      "review_notes": "2026-11-09 full provider source read; legacy details exported via MechanicsDetails.item/UtilityItemExplanation.details. No ordinary UI caller via itemCalculations, no expander restored. Underlying dew/metal/missile resource and all exceptional subclass details require further individual numerical review; not closed."
+      "review_notes": "2026-11-09: Full legacy provider reviewed against actual Dewdrop/Waterskin rounding, Vial/shield allocation, Healing and fractional credit. Existing actual base/shield tests and new zero-Healing consumption test pass. This legacy dispatcher is not an ordinary itemCalculations UI panel; no panel restored."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/EnchantmentExplanation.java",
@@ -238,11 +238,11 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/MetalExplanation.java",
       "sha256": "ed35cf6ae2959f2ab66d87ce85fce3a9f183c16b35bfbb9c3ba55fb5f6edfabf",
       "category": "mechanics",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_UNCHANGED",
       "description_methods": [
         "details"
       ],
-      "review_notes": "2026-11-09 full provider source read; legacy details exported via MechanicsDetails.item/UtilityItemExplanation.details. No ordinary UI caller via itemCalculations, no expander restored. Underlying dew/metal/missile resource and all exceptional subclass details require further individual numerical review; not closed."
+      "review_notes": "2026-11-09: Full legacy provider reviewed against repair/recycle formulas, unknown-level exclusion, Dart handling and real sampled outputs. Existing actual recipe/repair tests pass. Not reachable from current ordinary itemCalculations UI; no panel restored."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/MissileExplanation.java",
@@ -517,11 +517,12 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/Dewdrop.java",
-      "sha256": "579e12e39097fae452c520fc32782634e2483b5ac5965b0e94d1c00c0163c13d",
+      "sha256": "18f40325a1f24a569056d11d04286876d41485b2f1405f16755d0c758c7c69b7",
       "category": "items",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [],
-      "review_notes": "Individual normal source and English wording reviewed2026-11-09. Javelin/Spike/Trident own tier/base-wear and flavor checked unchanged; inherited missile paths remain separately partial. Dart/tipped prompt now permits actual preserved multiple-use tips, plain darts no wear, cleaning one turn, high-bonus no wear correctly attributed to bonuses; tests real wear and existing bow-preview/unknown-level guards. Amulet normal pre/ascent actions checked and text shortened; Dewdrop 5%/waterskin normal line reviewed unchanged against consumeDew and existing DewExplanation. Native actual new windows pending next pair; secondary/class/dependency review remains open."
+      "review_notes": "2026-11-09: Full own source reviewed: pickup storage/consumption, base rounding, Shielding Dew, Vial allocation and custom Healing. Added concise zero-Healing warning without changing consumption; actual zero-heal consumption, waterskin cost/time and shielding tested. Native normal/zero captures prepared, not yet run.",
+      "wording_corrected": true
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/EnergyCrystal.java",
@@ -625,9 +626,9 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/LiquidMetal.java",
       "sha256": "d3d74b873e3111071f4249bdfd3fcac1be38ac33616245087b75f32ef083c01b",
       "category": "items",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_UNCHANGED",
       "description_methods": [],
-      "review_notes": "Entire repair and recycle source/recipe/unknown-upgrade sample and save-free UI read. Existing concise normal text consistent with actual Dart exclusion, missing-set branch, partial-material repair and uncursed recipe requirement; no wording change needed this pass. Existing actual recipe/repair scale tests retained. New actual native normal window pending389; complete shared missile/class interaction scope remains open.",
+      "review_notes": "2026-11-09: Full own repair/recycling and preview source re-reviewed; concise ordinary text matches partial repair, spare reconstruction, Dart exclusion and known-uncursed recipe. Existing actual recipe/repair/hidden-level tests retained. Shared missile dependencies remain separately tracked; no panel added.",
       "wording_corrected": false
     },
     {
@@ -676,7 +677,7 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/Waterskin.java",
-      "sha256": "9c8af95c7d2b03e64052bf70e0265a45901a2e5b43c699979c5340b56d8fabbf",
+      "sha256": "9bd8faf0b3545035e6080a2ea2746b5b23d1e405b80e91bbc084fd95339fc29e",
       "category": "items",
       "status": "REVIEWED_CORRECTED",
       "description_methods": [
@@ -2065,10 +2066,10 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/quest/EscapeCrystal.java",
       "sha256": "cb579be0eb42dcfeee1671cf111da939e18e6934d15e7e3bf1b3b5ea3b2f9219",
       "category": "quest",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [],
       "wording_corrected": true,
-      "review_notes": "Normal description checked against stored belongings, progress gates and one-item reward selector; still pending individual review of every score-specific dialogue and legacy failure path. No quest balance changes."
+      "review_notes": "2026-11-09: Full own vault scoring/dialogue thresholds, item reward restrictions, belongings/gold/energy restoration, old-save and exit paths reviewed. Existing concise ordinary description matches progress gate, original equipment restoration and loot restriction. No scoring or gameplay changes."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/quest/GooBlob.java",
@@ -3086,9 +3087,9 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/trinkets/TrinketCatalyst.java",
       "sha256": "babe59b91eb0c9a791e2a1b9f77a1d68767f2c55d653ea31f77610165b7d7354",
       "category": "trinkets",
-      "status": "PARTIAL_REVIEW",
+      "status": "REVIEWED_CORRECTED",
       "description_methods": [],
-      "review_notes": "Entire recipe, six-energy cost, four saved choices, confirmation/consumption and save paths read. Normal text and existing choice-window text shortened with cost/four options/carried effect/+3cap; RandomTrinket legacy preview concise. No selection/RNG/recipe behavior change. Actual four preloaded choices and item windows prepared for389; not yet Androidverified.",
+      "review_notes": "2026-11-09: Full own recipe, four saved choices, duplicate handling, confirmation consumption and save paths reviewed. Existing ordinary cost/four choices/carried effect/+3 cap accurate; no behavior or panel change. Shared trinket effects separately tracked.",
       "wording_corrected": true
     },
     {
@@ -4466,8 +4467,8 @@
       "review_notes": "Previously omitted normal buff source added. Entire own duration/decay/save/icon path and actual Hero/Char hit/protection consumer read. Ordinary prose shorter; Bless/Hex/Daze percentages use live ROLL_FACTOR; other languages retain existing turn argument plus ignored extra argument. Existing optional panels unchanged. Real8combination\u00d7100seed\u00d72direction hit tests assert live percentages; actual defensive decay/save/read-only test passes.3113core457. New ordinary Android window pending406. Own-source completion, not all BuffExplanation/class providers."
     }
   ],
-  "completed_units": 366,
-  "latest_tests": "3130core457zero failures/errors/skips. Actualcursedfoodcharge/ordinarychargeblock andChainsXP/externaloverflow regressions pass; existingall13rechargerate/unknownring/save guardsretained. Sourcecompile3128at8d26f7f79passed42604879507beforelatestsecondarywording/nativefixtures.409originalAPKtestonlyretry42604779534pending, originalsourcefailurebranch/rawprivateassetsretained;408latestpublished.",
-  "message_inventory_entries": 5341,
-  "message_inventory_counting": "Current authored English property entries across nine files;2430itementries. Prior5339 inventory grew by known LullabyHealing0 and live Passage destination keys. ExactAdultOFF/ON checks retained."
+  "completed_units": 373,
+  "latest_tests": "3131 core/457 suites, zero failures/errors/skips. Actual zero-Healing dew consumption, Waterskin cost/time and Shielding Dew verified. Latest3130 Android source compile42606030280 passed before newest dew/native edits; newest native windows pending.409 twelve original-APK native cases passed; packaging recovery42607976456 passed, staging/manual review pending.408 latest published.",
+  "message_inventory_entries": 5343,
+  "message_inventory_counting": "Current authored English property entries across nine files;2432 item entries. Two concise zero-Healing dew/waterskin keys added. Exact Adult OFF/ON checks retained."
 }

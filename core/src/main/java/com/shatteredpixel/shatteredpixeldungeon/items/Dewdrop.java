@@ -143,6 +143,14 @@ public class Dewdrop extends Item {
 		return true;
 	}
 
+    @Override
+    public String desc() {
+        if (Dungeon.hero != null && com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomHealingHooks.disabled()) {
+            return Messages.get(this, "desc_no_healing");
+        }
+        return super.desc();
+    }
+
 	@Override
 	public boolean isUpgradable() {
 		return false;

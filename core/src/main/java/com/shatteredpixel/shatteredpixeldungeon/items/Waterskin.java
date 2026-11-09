@@ -25,6 +25,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.items;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
@@ -102,7 +103,9 @@ public class Waterskin extends Item {
     }
     protected void requestDrinkConfirmation(com.shatteredpixel.shatteredpixeldungeon.apd.qol.ConfirmationDecision decision){
         drinkPrompt=new com.shatteredpixel.shatteredpixeldungeon.windows.WndActionConfirmation("Use Waterskin?",
-                "Drink stored dew from your Waterskin to heal? Dew used here cannot be saved for blessing an Ankh.",decision);
+                (com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomHealingHooks.disabled()
+                        ? "Drink stored dew? Your current rules prevent healing. Dew used here cannot be saved for blessing an Ankh."
+                        : "Drink stored dew from your Waterskin to heal? Dew used here cannot be saved for blessing an Ankh."),decision);
         com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene.show(drinkPrompt);
     }
     protected void executeConfirmed(final Hero hero,String action){
@@ -169,7 +172,7 @@ public class Waterskin extends Item {
 		if (volume == 0){
 			info += "\n\n" + Messages.get(this, "desc_water");
 		} else {
-			info += "\n\n" + Messages.get(this, "desc_heal",volume,MAX_VOLUME,com.shatteredpixel.shatteredpixeldungeon.apd.mechanics.ObfuscationExplanation.number(TIME_TO_DRINK),TIME_TO_DRINK==1?"turn":"turns");
+			info += "\n\n" + Messages.get(this, Dungeon.hero != null && com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomHealingHooks.disabled() ? "desc_no_healing" : "desc_heal",volume,MAX_VOLUME,com.shatteredpixel.shatteredpixeldungeon.apd.mechanics.ObfuscationExplanation.number(TIME_TO_DRINK),TIME_TO_DRINK==1?"turn":"turns");
 		}
 
 		if (isFull()){
