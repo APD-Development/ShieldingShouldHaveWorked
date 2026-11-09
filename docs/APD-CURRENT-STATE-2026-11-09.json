@@ -1,20 +1,20 @@
 {
-  "recorded_utc": "2026-11-09T17:21:02.751643+00:00",
+  "recorded_utc": "2026-11-09T17:27:42.500917+00:00",
   "authorization_end_utc": "2026-11-09T20:00:00Z",
   "latest_verified_published_build": 418,
   "release_url": "https://github.com/APD-Development/ShieldingShouldHaveWorked/releases/tag/apd-alpha-preview-418",
   "source_fix_commit": "8c2d5ca9f33154af69b782d6aa83ac181bd3c21d",
   "local_full_core": {
-    "tests": 3151,
+    "tests": 3152,
     "suites": 457,
     "failures": 0,
     "errors": 0,
     "skipped": 0
   },
   "last_completed_android_source_compile": {
-    "commit": "f1061a5b70f24d252ded31f6f4de77ff55434692",
-    "run": 42661877621,
-    "scope": "3149core and Android debug/release/instrumentationJava/desktop all passed. Includes manual Endure/SoulMark fixes and latest SharedTalents/negative-effect fixtures. NoAPK in this source-check."
+    "commit": "9115182d6",
+    "run": 42663758281,
+    "scope": "3151core and Androiddebug/release/instrumentationJava/desktop allpassed. Later five Cleric windows/common copy and3152core now requested."
   },
   "latest_source_compile": {
     "commit": "7143d16bc481045b49ec4a60624128b0dcccc6b1",
@@ -31,7 +31,7 @@
     "419": "Native popup-fixture Java compile failed (checked exception from UI reflection helper not caught). Production compilation and3142core passed; APK assembly not reached. Correcting test callback handling and will source-compile before next candidate.",
     "420": "3143core,12native,4671sourcehashes passed.46selectedfullframes manually viewed; rejected Endure stored-count/future-count contradiction plus 1 hits and SoulMark raw %s from unescaped40%. Assets remain private.",
     "421": "3144core/457suites and all12 targeted API34 cases plus preparation passed, but compiled history used APD418 instead of immediate previous compiled APD420. Held; no manual visual acceptance/publication. Also inherits420 manually rejected Endure and SoulMark display defects.",
-    "422": "Parallel source5e2908ff0 uses3144 source before manual Endure/SoulMark corrections; must remain private even if automated checks pass. Preserve original run42660866454 and firstfailure42660406284."
+    "422": "Original source5e2908ff0/run42660866454 automated build/core3144/all12native/preparation successful; inherits manually rejected Endure/SoulMark. Preserve private assets; do NOT publish."
   },
   "newest_source_not_in_any_apk": [
     "Drowsy grammar correction",
@@ -102,5 +102,5 @@
     "run": 42656324353,
     "report": "docs/APD-421-HELD-HISTORY-2026-11-09.json"
   },
-  "current_work": "3151core green. ElementalStrike own helper fully audited/revised,438complete7open445units; new native expanded windows pending Androidcompile.423 original source2a98ed3e all12 native running, stage request preserves private until independent checks+manual review.418published."
+  "current_work": "3152core passed; first five existing spell explanations/common resources shortened with actual source/cap/charge/shield tests.438complete7open445units359corrected. Latest Androidcompile requested.423 native still running; stage request private pending independent+manual.418published."
 }

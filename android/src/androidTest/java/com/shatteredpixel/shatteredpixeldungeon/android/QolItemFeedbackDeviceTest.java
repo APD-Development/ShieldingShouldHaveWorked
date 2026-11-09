@@ -450,6 +450,18 @@ public class QolItemFeedbackDeviceTest {
             },bleeding?"Makes you and targets bleed":"full weapon durability","qol-elemental-strike-reviewed-"+(bleeding?"Sacrificial":"Crystal")+".png");
         }}finally{TopScoresDeviceTest.render(()->Dungeon.hero.belongings.weapon=beforeStrikeDetails[0]);}
         calculationWindow(()->new WndInfoArmorAbility(HeroClass.WARRIOR,new com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.HeroicLeap()),"Actual current ability cost:","qol-mechanics-ability-expanded.png");
+        final HeroClass[] beforeSpellClass=new HeroClass[1];
+        final java.util.ArrayList<java.util.LinkedHashMap<com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent,Integer>> beforeSpellTalents=new java.util.ArrayList<>();
+        TopScoresDeviceTest.render(()->{beforeSpellClass[0]=Dungeon.hero.heroClass;for(java.util.LinkedHashMap<com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent,Integer> tier:Dungeon.hero.talents)beforeSpellTalents.add(new java.util.LinkedHashMap<>(tier));Dungeon.hero.heroClass=HeroClass.CLERIC;});
+        com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.ClericSpell[] reviewedSpells={com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.GuidingLight.INSTANCE,com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.ShieldOfLight.INSTANCE,com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.Sunray.INSTANCE,com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.BlessSpell.INSTANCE,com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.LayOnHands.INSTANCE};
+        String[] reviewedSpellNames={"GuidingLight","ShieldOfLight","Sunray","Bless","LayOnHands"};String[] reviewedSpellExpected={"2–8 base magic damage","3–6 damage per hit","6–12 base magic damage","10 turns of Bless","20 shield points"};
+        try{for(int spellIndex=0;spellIndex<reviewedSpells.length;spellIndex++){
+            final com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.ClericSpell spell=reviewedSpells[spellIndex];
+            calculationWindow(()->{
+                for(com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent talent:new com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent[]{com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent.SHIELD_OF_LIGHT,com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent.SUNRAY,com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent.BLESS,com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent.LAY_ON_HANDS}){for(java.util.LinkedHashMap<com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent,Integer> tier:Dungeon.hero.talents)tier.remove(talent);Dungeon.hero.talents.get(0).put(talent,2);}
+                return new WndTitledMessage(new com.shatteredpixel.shatteredpixeldungeon.ui.HeroIcon(spell),com.shatteredpixel.shatteredpixeldungeon.messages.Messages.titleCase(spell.name()),spell.desc(),()->com.shatteredpixel.shatteredpixeldungeon.apd.mechanics.SpellExplanation.details(spell,Dungeon.hero),0);
+            },reviewedSpellExpected[spellIndex],"qol-reviewed-spell-clear-"+reviewedSpellNames[spellIndex]+".png");
+        }}finally{TopScoresDeviceTest.render(()->{Dungeon.hero.heroClass=beforeSpellClass[0];for(int tier=0;tier<beforeSpellTalents.size();tier++){Dungeon.hero.talents.get(tier).clear();Dungeon.hero.talents.get(tier).putAll(beforeSpellTalents.get(tier));}});}
         AtomicReference<WndClericSpells> menu=new AtomicReference<>();Point[] spellAt=new Point[1];
         TopScoresDeviceTest.render(()->{try{
             WndClericSpells w=new WndClericSpells(new com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HolyTome(),Dungeon.hero,true);GameScene.show(w);menu.set(w);
