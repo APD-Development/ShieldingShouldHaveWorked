@@ -319,6 +319,13 @@ public class QolItemFeedbackDeviceTest {
             com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.Endure.EndureTracker endured=new com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.Endure.EndureTracker();endured.target=Dungeon.hero;endured.enduring=false;endured.damageBonus=7;endured.hitsLeft=2;return new WndInfoBuff(endured);
         },"Retaliation ready: +7 damage points on each of 2","qol-existing-status-clear-Endure-ready.png");
 
+        calculationWindow(()->{
+            com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfMight.HTBoost boost=new com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfMight.HTBoost();boost.target=Dungeon.hero;boost.reset();return new WndInfoBuff(boost);
+        },"Level-ups remaining: 5 of 5","qol-existing-status-clear-MightBoost.png");
+        calculationWindow(()->{
+            com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfAquaticRejuvenation.AquaHealing healing=new com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfAquaticRejuvenation.AquaHealing();healing.target=Dungeon.hero;healing.set(148);return new WndInfoBuff(healing);
+        },"Stored healing reserve: 148 HP","qol-existing-status-clear-AquaticHealing.png");
+
         calculationWindow(()->new WndInfoBuff(new com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfLightning.LightningCharge()),"up to 2 tiles","qol-existing-status-clear-LightningCharge.png");
 
         RingOfArcana arcana=new RingOfArcana();
