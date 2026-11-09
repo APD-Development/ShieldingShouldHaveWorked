@@ -58,13 +58,14 @@ public class ElixirOfFeatherFall extends Elixir {
 		}
 
 		public void processFall(){
-			spend(-10f);
+			spend(-FALL_COST);
 			if (cooldown() <= 0) {
 				detach();
 			}
 		}
 
 		public static final float DURATION	= 50f;
+        public static final float FALL_COST = 10f;
 
 		@Override
 		public int icon() {
@@ -84,7 +85,7 @@ public class ElixirOfFeatherFall extends Elixir {
 
     @Override
     public String desc() {
-        return Messages.get(this, "desc", Messages.decimalFormat("0.##", FeatherBuff.DURATION));
+        return Messages.get(this, "desc", Messages.decimalFormat("0.##", FeatherBuff.DURATION), Messages.decimalFormat("0.##", FeatherBuff.FALL_COST));
     }
 
 	public static class Recipe extends com.shatteredpixel.shatteredpixeldungeon.items.Recipe.SimpleRecipe {

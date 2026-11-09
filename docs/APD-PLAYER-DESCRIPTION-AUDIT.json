@@ -4,8 +4,8 @@
   "counting": "Source units, not distinct item types. reviewed_units includes partial reviews; completed_units excludes partial/pending dependency. corrected_units counts source units with corrections, including incomplete reviews. Inventory/export/tests alone are not an individual review.",
   "source_units": 427,
   "message_entries": 2411,
-  "reviewed_units": 409,
-  "corrected_units": 334,
+  "reviewed_units": 410,
+  "corrected_units": 335,
   "unresolved_units": 242,
   "category_counts": {
     "apd": 1,
@@ -289,11 +289,13 @@
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/PotionExplanation.java",
       "sha256": "ff3b3981f9caf9073ac8c542d5adceb675ce60841ccc6a20768ce734f4452b5a",
       "category": "mechanics",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
+      "status": "PARTIAL_REVIEW",
       "description_methods": [
         "details",
         "effect"
-      ]
+      ],
+      "wording_corrected": true,
+      "review_notes": "Partial provider review2026-11-09: Might/Feather/Arcane cases individually compared with real handlers. Feather legacy effect text now shares live unchanged duration/fall-cost constants. Many other cases still require individual numerical reconciliation; not completed or exposed as new ordinary panels."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/PreparedShotExplanation.java",
@@ -1812,7 +1814,7 @@
       "status": "PARTIAL_REVIEW",
       "description_methods": [],
       "wording_corrected": true,
-      "review_notes": "Ordinary description corrected after source review. Existing damage/cost/status logic retained; known live effects and challenge/hidden-state cases tested. Complete class variants, optional panels where applicable and Android rendering remain under review."
+      "review_notes": "Ordinary description corrected after source review. Existing damage/cost/status logic retained; known live effects and challenge/hidden-state cases tested. Complete class variants, optional panels where applicable and Android rendering remain under review. Entire own source/recipe and Chasm.heroLand/ArcaneArmor replacement/HTBoost decay handlers read2026-11-09. Feather normal50-turn/extra10-turn fall cost shares unchanged gameplay constant, actual protected landing preserves HP and avoids bleed/cripple while debiting10. Arcane elixir no longer falsely promises stronger existing protection stays: actual20strength1interval replaced by10strength80interval;9strength200interval stays. Might buff normal concise HP/remaining level-up labels, actual decay/save regression retained. New actual normal/buff windows pending396; no recipe/damage/HP/fall calculation changed."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/potions/elixirs/ElixirOfDragonsBlood.java",
@@ -1830,7 +1832,7 @@
       "status": "PARTIAL_REVIEW",
       "description_methods": [],
       "wording_corrected": true,
-      "review_notes": "Ordinary description corrected after source review. Existing damage/cost/status logic retained; known live effects and challenge/hidden-state cases tested. Complete class variants, optional panels where applicable and Android rendering remain under review."
+      "review_notes": "Ordinary description corrected after source review. Existing damage/cost/status logic retained; known live effects and challenge/hidden-state cases tested. Complete class variants, optional panels where applicable and Android rendering remain under review. Entire own source/recipe and Chasm.heroLand/ArcaneArmor replacement/HTBoost decay handlers read2026-11-09. Feather normal50-turn/extra10-turn fall cost shares unchanged gameplay constant, actual protected landing preserves HP and avoids bleed/cripple while debiting10. Arcane elixir no longer falsely promises stronger existing protection stays: actual20strength1interval replaced by10strength80interval;9strength200interval stays. Might buff normal concise HP/remaining level-up labels, actual decay/save regression retained. New actual normal/buff windows pending396; no recipe/damage/HP/fall calculation changed."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/potions/elixirs/ElixirOfHoneyedHealing.java",
@@ -1860,7 +1862,7 @@
         "desc"
       ],
       "wording_corrected": true,
-      "review_notes": "Ordinary description corrected after source review. Existing damage/cost/status logic retained; known live effects and challenge/hidden-state cases tested. Complete class variants, optional panels where applicable and Android rendering remain under review."
+      "review_notes": "Ordinary description corrected after source review. Existing damage/cost/status logic retained; known live effects and challenge/hidden-state cases tested. Complete class variants, optional panels where applicable and Android rendering remain under review. Entire own source/recipe and Chasm.heroLand/ArcaneArmor replacement/HTBoost decay handlers read2026-11-09. Feather normal50-turn/extra10-turn fall cost shares unchanged gameplay constant, actual protected landing preserves HP and avoids bleed/cripple while debiting10. Arcane elixir no longer falsely promises stronger existing protection stays: actual20strength1interval replaced by10strength80interval;9strength200interval stays. Might buff normal concise HP/remaining level-up labels, actual decay/save regression retained. New actual normal/buff windows pending396; no recipe/damage/HP/fall calculation changed."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/items/potions/elixirs/ElixirOfToxicEssence.java",
@@ -4338,14 +4340,14 @@
   ],
   "completed_units": 185,
   "latest_tests": {
-    "core_tests": 3078,
+    "core_tests": 3080,
     "suites": 457,
     "failures": 0,
     "errors": 0,
     "skipped": 0,
-    "log": "/workspace/apd-tenacity-preview-evidence-20261109/accepted-full",
+    "log": "/workspace/apd-elixir-description-evidence-20261109/accepted-full",
     "android_verified": false,
-    "scope": "395published3070core/12targeted API34; later trinket/Horn/runestone/ring source3078fullcore pass. New actual windows/upgrade rows pending396. No combat/source-generation/turn formulas changed."
+    "scope": "395published3070core/12targeted native. Later source3080core passed; new actual trinket/Horn/stone/ring upgrade/elixir/buff windows pending396. No new interface or calculation panel."
   },
   "message_inventory_entries": 5336
 }

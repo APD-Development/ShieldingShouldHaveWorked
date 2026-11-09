@@ -481,6 +481,15 @@ public class QolItemFeedbackDeviceTest {
             }
         }finally{TopScoresDeviceTest.render(()->{for(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff buff:new java.util.ArrayList<>(Dungeon.hero.buffs(Ring.RingBuff.class)))buff.detach();Dungeon.hero.belongings.ring=(Ring)previous[0];Dungeon.hero.belongings.misc=previous[1];if(previous[0]!=null)previous[0].activate(Dungeon.hero);if(previous[1] instanceof Ring)previous[1].activate(Dungeon.hero);});}
     }
+    private static void reviewedElixirDescriptionsRender()throws Exception{
+        showItem(new com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfFeatherFall(),"10 extra turns","qol-feather-fall-extra-time.png",true);
+        showItem(new com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfArcaneArmor(),"does not stack","qol-arcane-armor-no-stack.png",true);
+        showItem(new com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfMight(),"five level-ups","qol-might-level-duration.png",true);
+        AtomicReference<Window> shown=new AtomicReference<>();AtomicReference<com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff> effect=new AtomicReference<>();TopScoresDeviceTest.render(()->{assertNull(Dungeon.hero.buff(com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfFeatherFall.FeatherBuff.class));effect.set(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff.append(Dungeon.hero,com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfFeatherFall.FeatherBuff.class,50));Window window=new WndInfoBuff(effect.get());GameScene.show(window);shown.set(window);});
+        try{Thread.sleep(300);TopScoresDeviceTest.render(()->assertDescriptionViewport(shown.get()));TopScoresDeviceTest.screenshot("qol-feather-buff-concise.png");}finally{TopScoresDeviceTest.render(()->{shown.get().hide();effect.get().detach();});}
+        int[] original=new int[3];TopScoresDeviceTest.render(()->{assertNull(Dungeon.hero.buff(com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfMight.HTBoost.class));original[0]=Dungeon.hero.STR;original[1]=Dungeon.hero.HT;original[2]=Dungeon.hero.HP;new com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfMight().apply(Dungeon.hero);effect.set(Dungeon.hero.buff(com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfMight.HTBoost.class));assertTrue(effect.get().desc().contains("Level-ups remaining: _5_"));Window window=new WndInfoBuff(effect.get());GameScene.show(window);shown.set(window);});
+        try{Thread.sleep(300);TopScoresDeviceTest.render(()->assertDescriptionViewport(shown.get()));TopScoresDeviceTest.screenshot("qol-might-buff-level-count.png");}finally{TopScoresDeviceTest.render(()->{shown.get().hide();effect.get().detach();Dungeon.hero.STR=original[0];Dungeon.hero.HT=original[1];Dungeon.hero.HP=original[2];});}
+    }
     private static void forceKnownBonusWithUnknownStrengthRender()throws Exception{
         Ring previous=Dungeon.hero.belongings.ring;com.shatteredpixel.shatteredpixeldungeon.items.KindofMisc misc=Dungeon.hero.belongings.misc;boolean enhanced=Dungeon.hero.buff(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.EnhancedRings.class)!=null;
         com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfForce force=new com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfForce();
@@ -1056,6 +1065,7 @@ public class QolItemFeedbackDeviceTest {
             lightningAndRegrowthDescriptionsRender();
             livingEarthAndPrismaticDescriptionsRender();
             passiveGlyphArcanaDescriptionsRender();
+            reviewedElixirDescriptionsRender();
             forceKnownBonusWithUnknownStrengthRender();
             reviewedRunestoneTargetDescriptionsRender();
             hornMealDescriptionsRender();

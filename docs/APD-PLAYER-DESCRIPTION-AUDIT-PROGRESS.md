@@ -223,3 +223,8 @@ All3075core457suites passed. Added actual Swiftness path-condition test includin
 ### Alert targeting and truthful ring upgrade descriptions
 
 All3078core457suites passed. Aggression real Mob targeting regression confirms alert/visibility condition and no waking sleepers; normal text updated, Fear/DeepSleep targets source-reviewed. Reproduced Force4instead5with temporary EnhancedRings and an unknown companion; known own melee bonus now correct without exposing unarmed range or companion level. Tenacity existing upgrade preview names more/less damage, preserving formula and existing interface. New actual Force and upgrade/stone windows pending396. Ring panels stay as explicitly requested. English message inventory5336 after two neutral upgrade-value messages.395published3070core/12targeted Android cases; none of these later changes claimed in395. Full individual audit unfinished.
+
+
+### Elixir stacking and fall protection source review
+
+All3080core457suites passed. Actual Chasm landing with FeatherFall preserves HP and prevents fall bleed/cripple, consumes10extra protection turns. Normal duration50/fall cost10 now share unchanged constants. Actual ArcaneArmor replacement shows why stronger-in-strength does not always stay; normal elixir says no stacking. Might buff uses concise base HP and remaining level-up labels, with existing decay/save checks. Full three elixir own sources/recipes and shared target handlers read; new normal/buff native windows pending396. 410full/partial source reviews,335corrected,185complete,242unresolved; source units are not item counts.395remains published3070source, none of later source claimed delivered.
