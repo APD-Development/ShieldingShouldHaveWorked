@@ -22,7 +22,7 @@ jobs:
           d=json.loads(subprocess.check_output(['gh','run','view','42608369809','--repo','APD-Development/ShieldingShouldHaveWorked','--json','jobs,headSha,conclusion']))
           jobs={j['name']:j['conclusion'] for j in d['jobs']}
           assert d['headSha']=='ccfbb85b69c96f00a4e6ae5e3d6c3aca81a10053'
-          assert jobs['build']=='success' and jobs['native (Developer, developer)']=='success' and jobs['native (Alpha-Testers, alpha)']=='success'
+          assert jobs['build']=='success' and jobs['native (Developer)']=='success' and jobs['native (Alpha-Testers)']=='success'
           assert jobs['prepare']=='failure' and d['conclusion']=='failure'
           PY
           gh run download 42608369809 --repo "$GITHUB_REPOSITORY" --name apd410-prepared-owner-pair --dir owner-delivery

@@ -5,5 +5,7 @@
   "line": 8,
   "full_line_sha256": "dc2390272260b95053a4dcf87aac64fafa5891b29ff477b4dbeff1639152f690",
   "disposition": "Exact reviewed JSON line quotes previously reviewed boolean item-identification assignments. It contains no credential. Pin only this full line; do not exempt file or rule.",
-  "new_apks_created_by_recovery": 0
+  "new_apks_created_by_recovery": 0,
+  "recovery_attempt": 2,
+  "job_name_note": "Check exact original preparation matrix job names; retry409 used an extra label column."
 }
