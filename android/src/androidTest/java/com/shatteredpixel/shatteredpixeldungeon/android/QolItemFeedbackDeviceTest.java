@@ -929,6 +929,8 @@ public class QolItemFeedbackDeviceTest {
             TopScoresDeviceTest.render(()->{try{
                 com.shatteredpixel.shatteredpixeldungeon.items.BrokenSeal.WarriorShield shield=new com.shatteredpixel.shatteredpixeldungeon.items.BrokenSeal.WarriorShield();shield.setShield(reserve);model.set(shield);
                 java.lang.reflect.Field cooldown=shield.getClass().getDeclaredField("cooldown");cooldown.setAccessible(true);cooldown.setInt(shield,time);
+                java.lang.reflect.Field original=shield.getClass().getDeclaredField("initialShield");original.setAccessible(true);original.setInt(shield,reserve>0||time>0?12:0);
+                assertEquals(reserve>0||time>0?12:0,shield.activationShield());
                 assertFalse(shield.desc(),shield.desc().contains("game-time units"));Window window=new WndInfoBuff(shield);GameScene.show(window);shown.set(window);
             }catch(Exception e){throw new RuntimeException(e);}});
             Thread.sleep(300);TopScoresDeviceTest.render(()->assertDescriptionViewport(shown.get()));
