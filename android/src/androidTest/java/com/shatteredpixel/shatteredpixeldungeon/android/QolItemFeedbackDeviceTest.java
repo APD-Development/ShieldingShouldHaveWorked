@@ -321,7 +321,7 @@ public class QolItemFeedbackDeviceTest {
 
         calculationWindow(()->{
             com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfMight.HTBoost boost=new com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfMight.HTBoost();boost.target=Dungeon.hero;boost.reset();return new WndInfoBuff(boost);
-        },"Level-ups remaining: 5 of 5","qol-existing-status-clear-MightBoost.png");
+        },"Level-ups remaining: _5 of 5_","qol-existing-status-clear-MightBoost.png");
         calculationWindow(()->{
             com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfAquaticRejuvenation.AquaHealing healing=new com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfAquaticRejuvenation.AquaHealing();healing.target=Dungeon.hero;healing.set(148);return new WndInfoBuff(healing);
         },"Stored healing reserve: 148 HP","qol-existing-status-clear-AquaticHealing.png");
