@@ -194,6 +194,22 @@ public class QolItemFeedbackDeviceTest {
             }
         }finally{TopScoresDeviceTest.render(()->{Dungeon.hero.belongings.backpack.items.clear();Dungeon.hero.belongings.backpack.items.addAll(original);});}
     }
+    private static void elementalStrikeLiveTalentDescriptionsRender()throws Exception{
+        final com.shatteredpixel.shatteredpixeldungeon.items.KindOfWeapon[] previous={null};
+        final java.util.LinkedHashMap<com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent,Integer> original=new java.util.LinkedHashMap<>();
+        try{
+            TopScoresDeviceTest.render(()->{previous[0]=Dungeon.hero.belongings.weapon;original.putAll(Dungeon.hero.talents.get(3));});
+            for(int rank:new int[]{0,2,4})for(String name:new String[]{"None","Lucky","Elastic","Crystal"}){
+                final AtomicReference<Window> shown=new AtomicReference<>();
+                TopScoresDeviceTest.render(()->{try{
+                    Dungeon.hero.talents.get(3).put(com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent.ELEMENTAL_REACH,rank);Dungeon.hero.talents.get(3).put(com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent.STRIKING_FORCE,rank);
+                    Sword sword=new Sword();sword.level(8);sword.levelKnown=false;sword.cursedKnown=true;if(!name.equals("None"))sword.enchant((com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon.Enchantment)Class.forName("com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments."+name).getDeclaredConstructor().newInstance());Dungeon.hero.belongings.weapon=sword;
+                    com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.duelist.ElementalStrike ability=new com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.duelist.ElementalStrike();assertTrue(ability.desc(),ability.desc().contains("_"+(4+rank)+" tiles_"));assertTrue(ability.desc(),ability.desc().contains("_"+(65+10*rank)+" degrees_"));Window window=new WndInfoArmorAbility(HeroClass.DUELIST,ability);GameScene.show(window);shown.set(window);
+                }catch(Exception e){throw new RuntimeException(e);}});
+                try{Thread.sleep(300);TopScoresDeviceTest.render(()->assertDescriptionViewport(shown.get()));TopScoresDeviceTest.screenshot("qol-elemental-strike-live-"+rank+"-"+name+".png");}finally{TopScoresDeviceTest.render(()->shown.get().hide());}
+            }
+        }finally{TopScoresDeviceTest.render(()->{Dungeon.hero.belongings.weapon=previous[0];Dungeon.hero.talents.get(3).clear();Dungeon.hero.talents.get(3).putAll(original);});}
+    }
     private static void elementalStrikeUnknownCurseDescriptionRenders()throws Exception{
         final com.shatteredpixel.shatteredpixeldungeon.items.KindOfWeapon[] previous={null};
         final Sword sword=new Sword();
@@ -220,7 +236,7 @@ public class QolItemFeedbackDeviceTest {
             checkCalculationWindow(shown.get(),"Identify the weapon's unknown properties","qol-elemental-strike-unknown-curse-expanded.png");
             TopScoresDeviceTest.render(()->{
                 com.watabou.utils.Bundle after=new com.watabou.utils.Bundle();sword.storeInBundle(after);assertEquals(saved[0],after.toString());
-                sword.cursedKnown=true;assertTrue(ability.desc(),ability.desc().contains("annoying"));
+                sword.cursedKnown=true;assertTrue(ability.desc(),ability.desc().toLowerCase(java.util.Locale.ROOT).contains("annoying"));
             });
         }finally{TopScoresDeviceTest.render(()->{if(shown.get()!=null)shown.get().hide();Dungeon.hero.belongings.weapon=previous[0];});}
     }
@@ -907,6 +923,7 @@ public class QolItemFeedbackDeviceTest {
             });
             showItem(scale,"6-32","qol-scale-armor-concise.png");
             TopScoresDeviceTest.render(()->{Dungeon.hero.STR=priorStrength[0];Dungeon.hero.belongings.armor=priorArmor[0];});
+            elementalStrikeLiveTalentDescriptionsRender();
             elementalStrikeUnknownCurseDescriptionRenders();
             calculationWindowsRenderAndRespond();
             ordinaryEffectsMatchOwnerScreenshots();

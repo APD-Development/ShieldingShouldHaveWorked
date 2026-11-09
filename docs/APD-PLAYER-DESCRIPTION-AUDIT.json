@@ -4,8 +4,8 @@
   "counting": "Source units, not distinct item types. reviewed_units includes partial reviews; completed_units excludes partial/pending dependency. corrected_units counts source units with corrections, including incomplete reviews. Inventory/export/tests alone are not an individual review.",
   "source_units": 427,
   "message_entries": 2411,
-  "reviewed_units": 398,
-  "corrected_units": 329,
+  "reviewed_units": 399,
+  "corrected_units": 330,
   "unresolved_units": 266,
   "category_counts": {
     "apd": 1,
@@ -351,12 +351,14 @@
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/StrikeExplanation.java",
-      "sha256": "51b43c97cf3797503cff8d38d600697293d5107332111a05e59a3424aacd320d",
+      "sha256": "bae93a1e2951ea8dc34961677a4e17ff22c84d6a3b23f26d38e29a5aefe5dd2d",
       "category": "mechanics",
-      "status": "PENDING_INDIVIDUAL_REVIEW",
+      "status": "PARTIAL_REVIEW",
       "description_methods": [
         "details"
-      ]
+      ],
+      "wording_corrected": true,
+      "review_notes": "Ordinary ElementalStrike.desc previously displayed base cone/rank-sensitive values regardless of trained talents. Existing provider now supplies concise live header and all27 built-in enchantment/curse effects, public talents only. Unknown curse matches no disclosed enchantment across hidden-2/0/8; no hidden level, target HP/count or future roll read. Existing window supplies current cost once, no new interface/panel. Actual default cone damage handler verified five ranks; actual preattack shielding compared. Existing28effect matrix now resets level0 before12 for EVERY type, strengthening prior loop. Detailed fields retain formulas; full advanced review remains partial.3065core457suites passed; twelve new normal ability window captures pending394, not393."
     },
     {
       "source": "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/mechanics/TalentExplanation.java",
@@ -4323,13 +4325,13 @@
   ],
   "completed_units": 161,
   "latest_tests": {
-    "core_tests": 3064,
+    "core_tests": 3065,
     "suites": 457,
     "failures": 0,
     "errors": 0,
     "skipped": 0,
-    "log": "/workspace/apd-scroll-retained-detail-evidence-20261109",
+    "log": "/workspace/apd-strike-live-description-evidence-20261109/accepted-matrix",
     "android_verified": false,
-    "scope": "Post393 scroll warning, Wayward normal buff and four retained detail prose only. Actual windows pending394;393native running and392published."
+    "scope": "Post393 live ElementalStrike normal header/effect/privacy and real cone damage, plus earlier warning/detail prose.394native pending;393published."
   }
 }

@@ -28,6 +28,49 @@ public final class StrikeExplanation {
     private StrikeExplanation(){}
     private static String n(float x){return ObfuscationExplanation.number(x);}
     private static String chance(float value){return n(Math.min(100,100*value))+"%";}
+    /** Ordinary ability text: public talents and a disclosed enchantment only; no target inspection or rolls. */
+    public static String playerDescription(Hero hero){
+        if(hero==null)return "";
+        int reach=hero.pointsInTalent(Talent.ELEMENTAL_REACH);
+        float power=1+.3f*hero.pointsInTalent(Talent.STRIKING_FORCE);
+        String header="Strike a target within weapon reach with a guaranteed hit, then release a magic cone up to _"+(4+reach)+" tiles_ across _"+(65+10*reach)+" degrees_. Aiming closer shortens the cone; walls block it.";
+        KindOfWeapon held=hero.belongings.weapon();
+        Weapon.Enchantment enchantment=held instanceof MeleeWeapon?((MeleeWeapon)held).enchantment:null;
+        if(enchantment!=null&&enchantment.curse()&&!held.cursedKnown)enchantment=null;
+        if(enchantment==null)return header+"\n\nWithout an enchantment, the cone deals _"+Math.round(6*power)+"–"+Math.round(12*power)+" base damage_.";
+        String effect;
+        switch(enchantment.getClass().getSimpleName()){
+            case "Blazing":effect="Spreads fire through the cone.";break;
+            case "Chilling":effect="Spreads freezing air through the cone.";break;
+            case "Shocking":effect="Spreads electricity through the cone.";break;
+            case "Blocking":effect="Grants _"+n(6*power)+" base shielding per enemy_ in the cone, rounding the total.";break;
+            case "Vampiric":effect=com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomHealingHooks.disabled()?"Your current rules prevent this healing.":"Restores health based on the number of enemies in the cone, up to your missing health.";break;
+            case "Kinetic":effect="Deals _"+n(40*power)+"%_ of your stored Kinetic damage to other targets in the cone.";break;
+            case "Venomous":effect="Adds _"+n(10*power)+" turns_ of poison to other targets. Fresh poison starts after a _3-turn_ delay.";break;
+            case "Blooming":effect="Grows grass and roots targets for _"+Math.round(6*power)+" turns_.";break;
+            case "Elastic":effect="Pushes targets away up to _"+Math.round(5*power)+" tiles_. Obstacles can shorten the push.";break;
+            case "Eldritch":effect="Frightens targets for _"+n(10*power)+" turns_, including the primary target.";break;
+            case "Lucky":effect="Has a _"+chance(.125f*power)+"_ chance to drop loot beneath each enemy. Only one successful reward per enemy.";break;
+            case "Projecting":effect="Deals _"+n(30*power)+"%_ of your normal attack damage to other targets in the cone.";break;
+            case "Unstable":effect="Applies a random enchantment effect to each other target.";break;
+            case "Vorpal":effect="Causes extra bleeding in other targets. The bleeding weakens over time.";break;
+            case "Corrupting":effect="Has a _"+chance(.05f*power)+"–"+chance(.25f*power)+"_ chance to turn other targets into allies, rising as their health falls. Some enemies cannot be corrupted.";break;
+            case "Crystal":effect="Deals _"+Math.round(10*power)+"–"+Math.round(20*power)+" base magic damage_ to other targets and repairs the weapon for each.";break;
+            case "Grim":effect="Has a _"+chance(.06f*power)+"–"+chance(.30f*power)+"_ chance to kill other targets, rising as their health falls. Some targets resist.";break;
+            case "Annoying":effect="Has a _"+chance(.2f*power)+"_ chance to drive each target amok for _6 turns_.";break;
+            case "Displacing":effect="Has a _"+chance(.5f*power)+"_ chance to teleport each target elsewhere on this floor, if a destination is available.";break;
+            case "Dazzling":effect="Has a _"+chance(.5f*power)+"_ chance to blind each target for _6 turns_.";break;
+            case "Explosive":effect="Has a _"+chance(.5f*power)+"_ chance to explode at one target in the cone. The blast can hurt you and allies.";break;
+            case "Sacrificial":effect="Makes you and targets in the cone bleed.";break;
+            case "Wayward":effect="Has a _"+chance(.5f*power)+"_ chance to hex each target for _6 turns_.";break;
+            case "Polarized":effect="Has a _"+chance(.5f*power)+"_ chance to deal _24–36 base damage_ to each target.";break;
+            case "Friendly":effect="Has a _"+chance(.5f*power)+"_ chance to charm each target toward you for _6 turns_.";break;
+            case "Wondrous":effect="Has a _"+chance(.5f*power)+"_ chance to trigger a random cursed-wand effect on each target.";break;
+            case "Pressurized":effect="Can flood the cone and push targets away up to _"+Math.round(2*power)+" tiles_.";break;
+            default:return header+"\n\n"+com.shatteredpixel.shatteredpixeldungeon.messages.Messages.get(enchantment,"elestrike_desc");
+        }
+        return header+"\n\n"+com.shatteredpixel.shatteredpixeldungeon.messages.Messages.capitalize(enchantment.name())+": "+effect;
+    }
     public static String details(Hero hero){
         if(hero==null)return "";
         int reach=hero.pointsInTalent(Talent.ELEMENTAL_REACH),directed=hero.pointsInTalent(Talent.DIRECTED_POWER);
