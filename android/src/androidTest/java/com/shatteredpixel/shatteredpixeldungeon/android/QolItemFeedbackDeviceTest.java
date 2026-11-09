@@ -1221,17 +1221,17 @@ public class QolItemFeedbackDeviceTest {
         com.watabou.utils.Bundle savedHunger=new com.watabou.utils.Bundle();boolean[] hadHunger={false};
         java.util.Set<com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText> prior=java.util.Collections.newSetFromMap(new java.util.IdentityHashMap<>());
         try{
-            TopScoresDeviceTest.render(()->{
+            TopScoresDeviceTest.render(()->{try{
                 hp[0]=Dungeon.hero.HP;fraction[0]=Dungeon.hero.apdCustomHealingFraction;time[0]=Dungeon.hero.cooldown();Dungeon.hero.HP=Math.max(1,Dungeon.hero.HT/4);
                 appetite.set(Dungeon.hero.buff(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger.class));hadHunger[0]=appetite.get()!=null;if(hadHunger[0])appetite.get().storeInBundle(savedHunger);
                 for(com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText text:TopScoresDeviceTest.find(Game.scene(),com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText.class))if(text.alive)prior.add(text);
                 SoulMarkWindowTarget target=new SoulMarkWindowTarget();target.pos=Dungeon.hero.pos+1;victim.set(target);com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff.affect(target,com.shatteredpixel.shatteredpixeldungeon.actors.buffs.SoulMark.class,10);
                 target.defenseProc(Dungeon.hero,10);assertEquals(Math.max(1,Dungeon.hero.HT/4),Dungeon.hero.HP);
-            });
-            Thread.sleep(120);TopScoresDeviceTest.render(()->{
+            }catch(Exception e){throw new RuntimeException(e);}});
+            Thread.sleep(120);TopScoresDeviceTest.render(()->{try{
                 boolean found=false;for(com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText text:TopScoresDeviceTest.find(Game.scene(),com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText.class))if(!prior.contains(text)&&text.alive&&"0".equals(text.text()))found=true;
                 assertTrue("Actual zero-Healing Soul Mark popup is rendered",found);assertEquals(time[0],Dungeon.hero.cooldown(),0);
-            });TopScoresDeviceTest.screenshot("qol-soulmark-zero-healing-popup.png");
+            }catch(Exception e){throw new RuntimeException(e);}});TopScoresDeviceTest.screenshot("qol-soulmark-zero-healing-popup.png");
         }finally{TopScoresDeviceTest.render(()->{
             Dungeon.hero.HP=hp[0];Dungeon.hero.apdCustomHealingFraction=fraction[0];
             if(hadHunger[0])appetite.get().restoreFromBundle(savedHunger);else{com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger added=Dungeon.hero.buff(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger.class);if(added!=null)added.detach();}
