@@ -1,5 +1,5 @@
 {
-  "recorded_utc": "2026-11-09T16:59:42.310Z",
+  "recorded_utc": "2026-11-09T17:02:34.998Z",
   "authorization_end_utc": "2026-11-09T20:00:00Z",
   "latest_verified_published_build": 418,
   "release_url": "https://github.com/APD-Development/ShieldingShouldHaveWorked/releases/tag/apd-alpha-preview-418",
@@ -61,7 +61,7 @@
   "background_development_after_window_claimed": false,
   "active_build": {
     "number": 422,
-    "status": "Intentional history-parent correction candidate; trigger pending in same lease-guarded commit.",
+    "status": "APD422 attempt1 failed before build on private-draft API403; retry uses exact Actions artifact13691823460 and both artifact/APK hashes.",
     "previous_compiled_build": 420,
     "previous_compiled_asset_id": 728202768,
     "previous_compiled_developer_sha256": "1acebe7f2cecae471ccb0b2810fc31be74ca92ecf339e22edbd2145b1a240f33",
@@ -72,7 +72,19 @@
       "12 targeted API34 cases per pair",
       "exact signing/source/history checks",
       "manual visual review before publication"
-    ]
+    ],
+    "failed_attempt": {
+      "run": 42660406284,
+      "job": 129310131694,
+      "application_apks_created": 0,
+      "reason": "private draft release API inaccessible to integration token"
+    },
+    "retry_input": {
+      "run": 42654395502,
+      "artifact_id": 13691823460,
+      "artifact_sha256": "3bbdad294c70fa993bce8cfb1391999b62064fb277fd9d80a7b6071bdf28706c",
+      "developer_sha256": "1acebe7f2cecae471ccb0b2810fc31be74ca92ecf339e22edbd2145b1a240f33"
+    }
   },
   "recovered_failed_attempts": {
     "415": {
