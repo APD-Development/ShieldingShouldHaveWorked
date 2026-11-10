@@ -74,7 +74,11 @@ public class WndCustomDungeonRules extends Window {
                 RedButton save=new RedButton("Save settings to slot",6){
                     @Override protected void onClick(){chooseSlot(true);}
                 };
-                save.setRect(0,y,width,18);content.add(save);y=save.bottom()+5;
+                save.setRect(0,y,width,18);content.add(save);y=save.bottom()+3;
+                RedButton rename=new RedButton("Rename preset slot",6){
+                    @Override protected void onClick(){chooseRenameSlot();}
+                };
+                rename.setRect(0,y,width,18);content.add(rename);y=rename.bottom()+5;
             }
             for(final CustomDungeonRules.Slider rule:CustomDungeonRules.Slider.values()) {
                 final RenderedTextBlock caption=PixelScene.renderTextBlock(caption(rule),6);
@@ -135,7 +139,7 @@ public class WndCustomDungeonRules extends Window {
         String[] options=new String[SPDSettings.APD_CUSTOM_RULE_SLOT_COUNT];
         for(int i=0;i<options.length;i++){
             boolean occupied=SPDSettings.apdCustomRuleSlotOccupied(i+1);
-            options[i]="Slot "+(i+1)+(occupied?" (saved)":" (empty)");
+            options[i]="Slot "+(i+1)+": "+SPDSettings.apdCustomRuleSlotName(i+1)+(occupied?" (saved)":" (empty)");
         }
         com.watabou.noosa.Game.scene().addToFront(new WndOptions(
                 saving?"Save settings":"Load settings",
@@ -158,6 +162,27 @@ public class WndCustomDungeonRules extends Window {
                         });
                     }else SPDSettings.apdCustomRuleSlot(slot,draft);
                 }else applyDraft(SPDSettings.apdCustomRuleSlot(slot));
+            }
+        });
+    }
+    private void chooseRenameSlot(){
+        if(currentRun)return;
+        String[] options=new String[SPDSettings.APD_CUSTOM_RULE_SLOT_COUNT];
+        for(int i=0;i<options.length;i++)
+            options[i]="Slot "+(i+1)+": "+SPDSettings.apdCustomRuleSlotName(i+1);
+        com.watabou.noosa.Game.scene().addToFront(new WndOptions(
+                "Rename preset","Choose a slot to rename. This does not change its saved slider values.",options){
+            @Override protected void onSelect(int index){
+                if(index<0||index>=SPDSettings.APD_CUSTOM_RULE_SLOT_COUNT)return;
+                final int slot=index+1;
+                com.watabou.noosa.Game.scene().addToFront(new WndTextInput(
+                        "Rename slot "+slot,
+                        "Up to 24 characters. Leave blank to restore the class name.",
+                        SPDSettings.apdCustomRuleSlotName(slot),24,false,"Save","Cancel"){
+                    @Override public void onSelect(boolean confirmed,String text){
+                        if(confirmed)SPDSettings.apdCustomRuleSlotName(slot,text);
+                    }
+                });
             }
         });
     }
