@@ -1,0 +1,30 @@
+{
+  "recorded_utc": "2026-11-10T16:52:07.855174+00:00",
+  "active_branch": "codex/apd-phone-fixes-2026-10-09",
+  "resumed_source_commit": "8b9ef4e293fc9dfc9d1a8b6485c1f59565bd7ea7",
+  "source_check_run": 42858513472,
+  "source_check_status": "in_progress at record time",
+  "latest_verified_published_build": 429,
+  "apd430": {
+    "source": "2193252bf075b8b429118262fdca8cca046e149c",
+    "build_run": 42696629251,
+    "failed_original_stage_run": 42696773758,
+    "recovery": "Full independent identity/source/test checks and 76 manually reviewed frames accepted; publication request ready, remote delivery not yet verified"
+  },
+  "local_core": {
+    "tests": 3164,
+    "suites": 457,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "new_application_apks_created_this_session": 0,
+  "remaining": [
+    "TalentExplanation and normal talent text audit remain partial",
+    "Cursed Wand owner wording decision",
+    "New talent native execution and accepted APD431 pair"
+  ],
+  "delivery_instruction": "Push builds to me every new build you complete",
+  "scheduled_automation_created": false,
+  "physical_phone_or_acoustic_audio_verified": false
+}

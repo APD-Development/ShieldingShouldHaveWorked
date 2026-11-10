@@ -1,0 +1,33 @@
+{
+  "number": 430,
+  "source_commit": "2193252bf075b8b429118262fdca8cca046e149c",
+  "core_tests": 3160,
+  "android_tests": 12,
+  "application_id": "com.charltonchris29.adhdpixeldungeon.indev",
+  "version_code": 920,
+  "signing_certificate": "067688b3ab6bd5820a67f4c1ba7d5859db578173771cf31d3252b3e4e012246e",
+  "apk_hashes": {
+    "Developer": "9cf9b6fa4097d8d92dcda40eea7c84e71196d76c940b84ecffac7ee3b44b3bb4",
+    "Alpha-Testers": "f655c36db28e7a155fc4a316d4775469300f22bd105a09ca5b965d9c134823e2"
+  },
+  "source_sha256": "a3b38764f2ff596ec892051d80194e25d1451e1dd9291350e3e14377cb054c4c",
+  "core_suites": 457,
+  "source_manifest_files": 4820,
+  "manual_frames": 76,
+  "run_id": 42696629251,
+  "title": "APD430: clearer existing armor ability explanations",
+  "visual_review": "docs/APD-430-MANUAL-VISUAL-REVIEW.json",
+  "status_note": "docs/APD-430-DELIVERY-BOUNDARIES.md",
+  "artifacts": {
+    "prepared": {
+      "id": 13711945743,
+      "name": "apd430-prepared-owner-pair",
+      "sha256": "8b90791eca5afb5b972c61d36f310b457d224d3d30d4ea3c0a1e8fc9917075c9"
+    },
+    "evidence": {
+      "id": 13710608892,
+      "name": "apd430-source-and-native-evidence",
+      "sha256": "abc4fb7941ff90bdf0c3ed4ae01e7d511bbf04e750889f26ebc60be876a01fd6"
+    }
+  }
+}
