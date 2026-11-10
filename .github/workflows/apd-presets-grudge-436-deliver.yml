@@ -68,7 +68,7 @@ jobs:
               images=list(native.rglob('qol-automatic-inventory-*.png'))
               assert len(images)>=5,(variant,len(images))
               assert all(p.stat().st_size>2000 for p in images)
-          pathlib.Path('release-notes.md').write_text('APD436: Inventory organization. Gear now sorts by category, known upgrade and tier without treating an unknown curse as an unknown upgrade. Velvet Pouch keeps seeds together and stones together rather than mixing them by stack size. Gameplay, saves, stats and prior signing are unchanged. Verified 3172 core tests, API34 native inventory window checks for Developer and Alpha-Testers, matching signatures and offline build history. Emulator testing does not establish physical-phone testing. Install over existing app without uninstalling.\n')
+          pathlib.Path('release-notes.md').write_text('APD436: Six independent Custom Dungeon Rules preset slots, labeled Warrior, Mage, Rogue, Huntress, Duelist, and Cleric by default and optionally renamed. Includes Easiest, Hardest, Default, All Max, and All Min quick choices. Hidden Cleric Grudge now enabled for Alpha-Testers without other Developer-only switches. No changes to gameplay balance, run saves, or Grudge unlock conditions. Verified 3177 core tests, signed Android Developer and Alpha-Testers APKs, and native emulator checks. Emulator testing does not establish physical-phone testing.\\n')
           PY
       - name: Publish new tag without modifying existing APKs or releases
         env: {GH_TOKEN: '${{ github.token }}'}
