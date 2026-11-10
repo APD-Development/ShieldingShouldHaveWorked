@@ -5,3 +5,4 @@ Resume approved description audit: Combined Lethality inclusive execution bounda
 2026-11-10 Final Android instrumentation changes: ordinary Obfuscation preview and four normal glyph windows, no extra calculations panel. Reverify core, Android and desktop compilation.
 2026-11-10 Inventory UI correction: group by item family, sort visible upgrades independently of curse knowledge, group Velvet Pouch seeds and stones before stack sizes; three new regression tests. Verify 3172 tests and compile Android.
 2026-11-10 Include the added on-device Velvet Pouch seed/stone mixed-stack regression in the Android compilation verification.
+2026-11-10 Six class-labelled Custom Dungeon Rules slots with user rename; existing quick presets easiest/hardest/default and previously approved all-min/all-max kept. Alpha-Testers Grudge activated without demo or Developer flags. Require 3177 core cases and Android/desktop compilation on this exact source.
