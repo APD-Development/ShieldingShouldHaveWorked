@@ -114,7 +114,7 @@ public class WndCustomDungeonRules extends Window {
             OptionSlider control=sliderControls[index];
             RenderedTextBlock label=sliderCaptions[index];
             if(control!=null)control.setSelectedValue(CustomRulesPresentation.position(rule,draft.get(rule)));
-            if(label!=null){label.text(caption(rule));label.maxWidth((int)width());}
+            if(label!=null){label.text(caption(rule));label.maxWidth((int)width);}
         }
         updateCombined();
     }
