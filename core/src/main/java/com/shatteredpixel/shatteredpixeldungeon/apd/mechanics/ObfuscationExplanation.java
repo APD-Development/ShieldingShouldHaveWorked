@@ -35,18 +35,27 @@ public final class ObfuscationExplanation {
     public static float aura(Hero hero){return hero!=null&&hero.buff(AuraOfProtection.AuraBuff.class)!=null?.25f+.25f*hero.pointsInTalent(Talent.AURA_OF_PROTECTION):0;}
     public static String summary(Armor armor,Hero hero){
         if(!applies(armor))return "";
-        String meaning="Makes unaware enemies less likely to notice you. It does not hide you from enemies already alerted.";
+        String meaning="Makes unaware enemies less likely to notice you. Upgrading this armor strengthens the effect. It does not hide you from enemies that already noticed you.";
         if(hero!=null&&hero.buff(MagicImmune.class)!=null)return "Magic immunity currently disables this glyph.";
         if(hero!=null&&!armor.hasGlyph(Obfuscation.class,hero))return "Your current effects replace this glyph.";
         if(!armor.levelKnown)return meaning;
         float value=base(Math.max(-1,armor.buffedLvl()));
         if(value==0)return "This glyph currently adds no stealth.";
         float power=ArcanaInfoDisplay.knownArcanaPower(hero),aura=aura(hero);
-        if(!Float.isFinite(power))return "Adds _"+number(value)+" stealth_ before ring bonuses. "+meaning;
-        float total=value*(power+aura),without=value*(1+aura);
-        String text="Adds _"+Messages.decimalFormat("0.##",total)+" stealth_";
-        if(ArcanaInfoDisplay.hasKnownArcana(hero)&&Math.abs(total-without)>.00001f)text+=" (_"+Messages.decimalFormat("0.##",without)+"_ without Arcana)";
-        return text+". "+meaning;
+        if(!Float.isFinite(power))return meaning;
+        float boosted=value*(power+aura);
+        // Same eligible sleeping-enemy check as Mob.Sleeping.detectionChance.
+        // Use a fixed three-tile example, not a claim about every enemy or every turn.
+        float without=100f/3f, withGlyph=100f/(3f+boosted);
+        String text="Makes unaware enemies less likely to notice you. For example, a normally sleeping enemy 3 tiles away has about _"
+                +Messages.decimalFormat("0.#",without)+"%_ chance to notice you per check without this glyph, versus _"
+                +Messages.decimalFormat("0.#",withGlyph)+"%_ with it";
+        if(ArcanaInfoDisplay.hasKnownArcana(hero)){
+            float withoutArcana=100f/(3f+value*(1+aura));
+            if(Math.abs(withGlyph-withoutArcana)>.00001f)
+                text+=" (_"+Messages.decimalFormat("0.#",withoutArcana)+"%_ without Arcana)";
+        }
+        return text+". This is an example, not a guaranteed chance against every enemy. It does not hide you from enemies already alerted.";
     }
     public static String details(Armor armor,Hero hero){
         if(!applies(armor))return "";
