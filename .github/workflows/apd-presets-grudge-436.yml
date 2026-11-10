@@ -30,10 +30,10 @@ jobs:
           assert not artifact['expired']
           assert artifact['digest']=='sha256:1383231b920b3dc456611d8269b16006709e1d63842fe6f0e4c239e69ff457d9'
           assert artifact['workflow_run']['head_sha']=='1ddb731d2d03a4ea2dd56cf76ebc7e3bbe7600ec'
-          subprocess.run(['gh','run','download','42920537849','--repo',repo,'--name','apd434-built-pair','--dir','fallback'],check=True)
-          previous=list(pathlib.Path('fallback').rglob('APD-Developer-434.apk'))
+          subprocess.run(['gh','run','download','42920537849','--repo',repo,'--name','apd435-built-pair','--dir','fallback'],check=True)
+          previous=list(pathlib.Path('fallback').rglob('APD-Developer-435.apk'))
           assert len(previous)==1
-          merge_previous_apk(pathlib.Path.cwd(),previous[0],'Codex TEST 434')
+          merge_previous_apk(pathlib.Path.cwd(),previous[0],'Codex TEST 435')
           changed=subprocess.check_output(['git','diff','--name-only','1ddb731d2d03a4ea2dd56cf76ebc7e3bbe7600ec','HEAD'],text=True).splitlines()
           assert 'core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/difficulty/CustomRulePresets.java' in changed
           assert 'core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/SPDSettings.java' in changed
