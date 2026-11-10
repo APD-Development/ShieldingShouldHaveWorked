@@ -1,0 +1,50 @@
+# ADHD Pixel Dungeon; Copyright (C) 2026 Chris Charlton
+# SPDX-License-Identifier: GPL-3.0-or-later
+name: Verify existing Excess Charge behavior without application changes
+on:
+  push:
+    branches: [codex/apd-excess-charge-tests-20261110]
+    paths:
+      - .github/workflows/apd-excess-charge-source.yml
+      - core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/ExcessChargeHandlerRegressionTest.java
+permissions: {contents: read}
+concurrency: {group: apd-excess-charge-tests, cancel-in-progress: false}
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with: {fetch-depth: 0}
+      - uses: actions/setup-java@v4
+        with: {distribution: temurin, java-version: '21'}
+      - uses: gradle/actions/setup-gradle@v4
+      - name: Require test-only changes and full core and compilation results
+        run: |
+          python3 - <<'PY'
+          import subprocess
+          paths=subprocess.check_output(['git','diff','--name-only','558262c3e7e20baf55e307d9b70534da7de7606c','HEAD'],text=True).splitlines()
+          assert paths==['.github/workflows/apd-excess-charge-source.yml','core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/ExcessChargeHandlerRegressionTest.java'],paths
+          PY
+          "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "platforms;android-36"
+          ./gradlew :core:test :desktop:classes :android:compileDebugJavaWithJavac :android:compileReleaseJavaWithJavac :android:compileDebugAndroidTestJavaWithJavac
+      - name: Summarize original-handler test evidence
+        if: always()
+        run: |
+          python3 - <<'PY'
+          import pathlib,xml.etree.ElementTree as E,json,os
+          roots=[E.parse(p).getroot() for p in pathlib.Path('core/build/test-results/test').glob('TEST-*.xml')]
+          totals={k:sum(int(r.get(k,0)) for r in roots) for k in ['tests','failures','errors','skipped']}
+          summary={'source_commit':os.environ['GITHUB_SHA'],'run_id':os.environ['GITHUB_RUN_ID'],'suites':len(roots),**totals,'scope':'Actual Wand.wandUsed regression tests only. Application and wording unchanged. APD433 producing source unchanged.','apk_assembled':False,'physical_phone_tested':False}
+          pathlib.Path('excess-charge-verification.json').write_text(json.dumps(summary,indent=2)+'\n')
+          print(json.dumps(summary))
+          assert len(roots)==459 and totals=={'tests':3173,'failures':0,'errors':0,'skipped':0},summary
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: apd-excess-charge-source-evidence
+          path: |
+            core/build/test-results/test/
+            excess-charge-verification.json
+          retention-days: 30
