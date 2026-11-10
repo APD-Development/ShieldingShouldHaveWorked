@@ -4,21 +4,20 @@ import com.watabou.noosa.Game;
 import com.watabou.noosa.Group;
 
 /**
- * Visual-only playback control. Private test builds can intentionally exaggerate
- * animations; actor turns, UI input timing, and the global game clock are untouched.
+ * Visual-only playback control available to every player.
+ * Actor turns, UI input timing, and the global game clock are untouched.
  */
 public final class PlaybackGroup extends Group {
     private static final float[] FACTORS = {0.5f, 1f, 2f, 4f, 8f, 16f, 32f, 64f, 100f, 1000f};
     private static final String[] LABELS =
             {"0.5x", "1x", "2x", "4x", "8x", "16x", "32x", "64x", "100x", "1000x"};
-    private static final int PUBLIC_CHOICES = 3;
     private static final int NORMAL = 1;
 
     private static float speed = 1f;
     private static int updating;
 
     public static int choiceCount() {
-        return ApdFeatures.extendedPlayback() ? FACTORS.length : PUBLIC_CHOICES;
+        return FACTORS.length;
     }
 
     public static boolean allowed(int selection) {
