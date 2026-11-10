@@ -1,5 +1,5 @@
 {
-  "recorded_utc": "2026-11-10T17:18:07.021253+00:00",
+  "recorded_utc": "2026-11-10T17:40:31.530062+00:00",
   "active_branch": "codex/apd-phone-fixes-2026-10-09",
   "resumed_source_commit": "8b9ef4e293fc9dfc9d1a8b6485c1f59565bd7ea7",
   "source_check_run": 42858513472,
@@ -26,7 +26,7 @@
   "remaining": [
     "TalentExplanation and normal talent text audit remain partial",
     "Cursed Wand owner wording decision",
-    "New talent native execution and accepted APD431 pair"
+    "Publish and verify accepted APD432 pair; archive rejected APD431 without publication"
   ],
   "delivery_instruction": "Push builds to me every new build you complete",
   "scheduled_automation_created": false,
@@ -36,8 +36,10 @@
     "number": 432,
     "source_commit": "a3d08081eea0b03475c9093423da60e84fc509be",
     "run_id": 42862026382,
-    "status": "Both exact APKs assembled successfully; all3165core tests and required compilation passed. API34 native cases running. Independent signatures/app IDs/versions/hashes and all435 prior history files verified.",
-    "independent_build_check": "docs/APD-432-INDEPENDENT-BUILD-CHECK.json"
+    "status": "Original build run completed successfully: 3165 core tests/457 suites, required compilation, all12 targetedAPI34 cases. All80 native frames manually accepted. Independent originalAPK signatures, app versions, source4851-file manifest and all raw core/native evidence checked. Private release draft440692773 ready for exact artifact upload and readback.",
+    "independent_build_check": "docs/APD-432-INDEPENDENT-BUILD-CHECK.json",
+    "manual_review": "docs/APD-432-MANUAL-VISUAL-REVIEW.json",
+    "release_draft_id": 440692773
   },
   "source_check_artifact": {
     "id": 13784835729,
@@ -52,12 +54,15 @@
   "apd431": {
     "source": "5a8fe508d6d3f2a449c5a9b8fa9632e22f86dcb3",
     "run": 42859611090,
-    "status": "Original pair built and independently verified; native cases running. Hold for source-confirmed singular charge/points wording defect. No publication."
+    "status": "Build and all12 native cases passed. Actual screenshot review rejected three singular charge/damage strings. Unpublished draft440691614 created through authenticated owner UI after Actions token403. Archive retry42867181054 running; do not publish.",
+    "manual_review": "docs/APD-431-MANUAL-REJECTION.json",
+    "archive_run": 42867181054,
+    "release_draft_id": 440691614
   },
   "next_candidate": 432,
   "held_archive_guard_tests": {
-    "tests": 5,
+    "tests": 7,
     "failures": 0,
-    "purpose": "Rejected review cannot publish; archive mode makes no publication call and cannot label a published release private; successful publication must resolve the exact source tag."
+    "purpose": "Rejected review cannot publish; archive mode makes no publication call and cannot label a published release private; successful publication must resolve the exact source tag. Preserved source branch must resolve to the exact original build; moved/unpinned/unrelated branches rejected."
   }
 }

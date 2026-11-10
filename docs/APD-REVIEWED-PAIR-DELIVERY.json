@@ -1,36 +1,35 @@
 {
-  "number": 431,
-  "source_commit": "5a8fe508d6d3f2a449c5a9b8fa9632e22f86dcb3",
-  "core_tests": 3164,
+  "number": 432,
+  "source_commit": "a3d08081eea0b03475c9093423da60e84fc509be",
+  "source_branch": "archive/apd432-original-source",
+  "core_tests": 3165,
   "android_tests": 12,
   "application_id": "com.charltonchris29.adhdpixeldungeon.indev",
   "version_code": 920,
   "signing_certificate": "067688b3ab6bd5820a67f4c1ba7d5859db578173771cf31d3252b3e4e012246e",
   "apk_hashes": {
-    "Developer": "a8d6bac9652bde976771d82fa014e2a8ecf50ab4f4933551ed5b493ca639c675",
-    "Alpha-Testers": "6a330d64dd84398a21522d1585284528878e2be6fa2fd40116e75b81ae31c405"
+    "Developer": "4f8b4c87a315c4568bbc5ee28efe1e921e6aab32a3c7ffef3bbfe181ce80cd0e",
+    "Alpha-Testers": "4a2f975e2b52dbf278c72cf34135aa276a3bc1ada652c13f4cd1412f19608d34"
   },
-  "source_sha256": "e24a20b5fbb8d76cefd308cb69592390220f2ed38052d9d74bee183152f0dd22",
-  "publish": false,
+  "source_sha256": "d6e01e10a9b83d1c4a1b00baccd6f9f594fa25e50bbee7f11940f43ad48b5ba3",
+  "publish": true,
   "core_suites": 457,
-  "source_manifest_files": 4839,
-  "manual_frames": 3,
-  "run_id": 42859611090,
-  "title": "APD431 HELD: singular charge wording",
-  "visual_review": "docs/APD-431-MANUAL-REJECTION.json",
-  "status_note": "docs/APD-431-ARCHIVE-BOUNDARIES.md",
+  "source_manifest_files": 4851,
+  "manual_frames": 80,
+  "run_id": 42862026382,
+  "title": "APD432: clearer talent and meal descriptions",
+  "visual_review": "docs/APD-432-MANUAL-VISUAL-REVIEW.json",
+  "status_note": "docs/APD-432-DELIVERY-BOUNDARIES.md",
   "artifacts": {
     "prepared": {
-      "id": 13785194277,
-      "name": "apd431-prepared-owner-pair",
-      "sha256": "1141ab8710e63280c9491658a795cfdbcba6e8e6427983171f9cc6462ad82209"
+      "id": 13787756281,
+      "name": "apd432-prepared-owner-pair",
+      "sha256": "e2f4be23b5fdffb15bb16384c28d845995c97fdbf02ff7c8c805a6110859d4f5"
     },
     "evidence": {
-      "id": 13785837789,
-      "name": "apd431-source-and-native-evidence",
-      "sha256": "9f3a02d27036828d7aff5e27e8f49bb33c596539404f61daec4f352c33e62a9e"
+      "id": 13787621631,
+      "name": "apd432-source-and-native-evidence",
+      "sha256": "adb3a2fc8fd4ae03eda3009586a2d0ec02782b9065173e4ca98087ddc07dba3d"
     }
-  },
-  "source_branch": "archive/apd431-original-source",
-  "delivery_retry": "Authenticated GitHub UI created draft 440691614 after Actions token rejected release creation. Exact source branch must resolve to original build SHA; archive remains unpublished."
+  }
 }
