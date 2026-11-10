@@ -3,6 +3,7 @@ package com.shatteredpixel.shatteredpixeldungeon.windows;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomDungeonRules;
+import com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomRulePresets;
 import com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomScoreSnapshot;
 import com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomRulesPresentation;
 import com.shatteredpixel.shatteredpixeldungeon.apd.query.WindowGeometry;
@@ -22,6 +23,8 @@ public class WndCustomDungeonRules extends Window {
     private final RenderedTextBlock scoringNotice;
     private final ScrollPane scroll;
     private final RenderedTextBlock combined;
+    private final OptionSlider[] sliderControls=new OptionSlider[CustomDungeonRules.Slider.values().length];
+    private final RenderedTextBlock[] sliderCaptions=new RenderedTextBlock[CustomDungeonRules.Slider.values().length];
     public WndCustomDungeonRules() {this(false);}
     public WndCustomDungeonRules(final boolean currentRun) {
         super();
@@ -59,9 +62,23 @@ public class WndCustomDungeonRules extends Window {
                 mode+=" Original score kept; multipliers preview new runs.";
             RenderedTextBlock context=PixelScene.renderTextBlock(mode,6);
             context.maxWidth(width);context.setPos(0,y);content.add(context);y=context.bottom()+4;
+            if(!currentRun){
+                RedButton presets=new RedButton("Quick presets",6){
+                    @Override protected void onClick(){choosePreset();}
+                };
+                presets.setRect(0,y,width,18);content.add(presets);y=presets.bottom()+3;
+                RedButton load=new RedButton("Load saved settings",6){
+                    @Override protected void onClick(){chooseSlot(false);}
+                };
+                load.setRect(0,y,width,18);content.add(load);y=load.bottom()+3;
+                RedButton save=new RedButton("Save settings to slot",6){
+                    @Override protected void onClick(){chooseSlot(true);}
+                };
+                save.setRect(0,y,width,18);content.add(save);y=save.bottom()+5;
+            }
             for(final CustomDungeonRules.Slider rule:CustomDungeonRules.Slider.values()) {
                 final RenderedTextBlock caption=PixelScene.renderTextBlock(caption(rule),6);
-                caption.maxWidth(width);caption.setPos(0,y);content.add(caption);y+=22;
+                caption.maxWidth(width);caption.setPos(0,y);content.add(caption);sliderCaptions[rule.ordinal()]=caption;y+=22;
                 OptionSlider slider=new OptionSlider("",CustomRulesPresentation.valueText(rule,rule.min),
                         CustomRulesPresentation.valueText(rule,rule.max),0,CustomRulesPresentation.positions(rule)) {
                     @Override protected void onChange() {
@@ -72,6 +89,7 @@ public class WndCustomDungeonRules extends Window {
                 slider.scrollVerticallyWith(scroll);slider.liveChanges(true);
                 slider.setRect(0,y,width,22);
                 slider.setSelectedValue(CustomRulesPresentation.position(rule,draft.get(rule)));
+                sliderControls[rule.ordinal()]=slider;
                 slider.enable(!currentRun && CustomRulesPresentation.gameplayImplemented(rule));
                 content.add(slider);y=slider.bottom()+4;
             }
@@ -86,6 +104,62 @@ public class WndCustomDungeonRules extends Window {
             }
         };
         finish.setRect(0,above+paneHeight+4,width,22);add(finish);
+    }
+    /** All changes remain in the next-run draft until Save for new runs is pressed. */
+    private void applyDraft(CustomDungeonRules selected){
+        if(currentRun||selected==null)return;
+        draft=selected;
+        for(CustomDungeonRules.Slider rule:CustomDungeonRules.Slider.values()){
+            int index=rule.ordinal();
+            OptionSlider control=sliderControls[index];
+            RenderedTextBlock label=sliderCaptions[index];
+            if(control!=null)control.setSelectedValue(CustomRulesPresentation.position(rule,draft.get(rule)));
+            if(label!=null){label.text(caption(rule));label.maxWidth((int)width());}
+        }
+        updateCombined();
+    }
+    private void choosePreset(){
+        if(currentRun)return;
+        final CustomRulePresets.Preset[] presets=CustomRulePresets.Preset.values();
+        String[] options=new String[presets.length];
+        for(int i=0;i<presets.length;i++)options[i]=presets[i].label;
+        com.watabou.noosa.Game.scene().addToFront(new WndOptions(
+                "Apply preset","Apply to the next-run draft. Individual sliders can still be adjusted.",options){
+            @Override protected void onSelect(int index){
+                if(index>=0&&index<presets.length)applyDraft(CustomRulePresets.apply(presets[index]));
+            }
+        });
+    }
+    private void chooseSlot(final boolean saving){
+        if(currentRun)return;
+        String[] options=new String[SPDSettings.APD_CUSTOM_RULE_SLOT_COUNT];
+        for(int i=0;i<options.length;i++){
+            boolean occupied=SPDSettings.apdCustomRuleSlotOccupied(i+1);
+            options[i]="Slot "+(i+1)+(occupied?" (saved)":" (empty)");
+        }
+        com.watabou.noosa.Game.scene().addToFront(new WndOptions(
+                saving?"Save settings":"Load settings",
+                saving?"Save the current slider draft to one slot. Existing saved settings in that slot will be replaced."
+                      :"Load a stored slider configuration into the next-run draft.",options){
+            @Override protected boolean enabled(int index){
+                return saving||SPDSettings.apdCustomRuleSlotOccupied(index+1);
+            }
+            @Override protected void onSelect(int index){
+                if(index<0||index>=SPDSettings.APD_CUSTOM_RULE_SLOT_COUNT)return;
+                int slot=index+1;
+                if(saving){
+                    if(SPDSettings.apdCustomRuleSlotOccupied(slot)){
+                        com.watabou.noosa.Game.scene().addToFront(new WndOptions(
+                                "Overwrite slot "+slot+"?","This replaces the settings stored in this slot.",
+                                "Overwrite","Cancel"){
+                            @Override protected void onSelect(int choice){
+                                if(choice==0)SPDSettings.apdCustomRuleSlot(slot,draft);
+                            }
+                        });
+                    }else SPDSettings.apdCustomRuleSlot(slot,draft);
+                }else applyDraft(SPDSettings.apdCustomRuleSlot(slot));
+            }
+        });
     }
     private void updateCombined(){
         String factor=draft==null?"Not recorded":
