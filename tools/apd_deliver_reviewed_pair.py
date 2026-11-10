@@ -62,6 +62,15 @@ def finalize_visibility(repo, tag, source, current, publish, notes):
         assert current['draft'], 'A held candidate must remain an unpublished draft'
         return current
     if current['draft']:
+        # A draft's target_commitish does not override an already-existing tag.
+        # Reject a conflicting tag BEFORE publishing, not only on readback.
+        refs = api(f'repos/{repo}/git/matching-refs/tags/{tag}')
+        assert isinstance(refs, list), 'Incomplete tag inventory'
+        matches = [ref for ref in refs if ref['ref'] == f'refs/tags/{tag}']
+        assert len(matches) <= 1, 'Duplicate exact source tag'
+        if matches:
+            existing = matches[0]['object']
+            assert existing['type'] == 'commit' and existing['sha'] == source, 'Existing source tag differs; keep draft private'
         subprocess.run(['gh', 'release', 'edit', tag, '--repo', repo, '--draft=false', '--prerelease',
                         '--latest=false', '--notes-file', str(notes)], check=True)
     current = api(f'repos/{repo}/releases/{current["id"]}')
