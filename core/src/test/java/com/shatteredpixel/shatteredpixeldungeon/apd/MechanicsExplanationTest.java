@@ -2936,7 +2936,8 @@ public class MechanicsExplanationTest {
   RingOfArcana ring=new RingOfArcana();ring.anonymize();ring.level(3);ring.levelKnown=ring.cursedKnown=true;
   assertEquals("",MechanicsDetails.itemCalculations(ring));assertTrue(ring.statsInfo().contains("90.61"));assertFalse(RingExplanation.details(ring).contains("1.175^"));
   MailArmor armor=new MailArmor();armor.level(3);armor.levelKnown=armor.cursedKnown=true;armor.glyph=new com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Obfuscation();
-  String glyph=MechanicsDetails.itemCalculations(armor);assertTrue(glyph,glyph.contains("stealth"));assertFalse(glyph.contains("_Armor damage"));
+  // Armor glyphs now explain gameplay in the ordinary description, without an extra math panel.
+  String glyph=MechanicsDetails.itemCalculations(armor);assertEquals("",glyph);assertTrue(armor.info().contains("sleeping enemy 3 tiles away"));
   com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sword sword=new com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sword();sword.levelKnown=sword.cursedKnown=true;sword.enchant(new com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Blazing());String enchantment=MechanicsDetails.itemCalculations(sword);assertTrue(enchantment,enchantment.contains("Blazing calculations"));assertFalse(enchantment.contains("_Damage numbers_"));
   ring.levelKnown=false;armor.levelKnown=false;sword.levelKnown=false;assertEquals("",MechanicsDetails.itemCalculations(ring));assertEquals("",MechanicsDetails.itemCalculations(armor));assertEquals("",MechanicsDetails.itemCalculations(sword));
  }
