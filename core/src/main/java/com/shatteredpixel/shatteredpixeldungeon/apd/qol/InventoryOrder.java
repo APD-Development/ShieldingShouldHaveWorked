@@ -60,13 +60,13 @@ public final class InventoryOrder {
     public static int compare(Item a,Item b){
         int group=Integer.compare(category(a),category(b));
         if(group!=0)return group;
-        // Equipment tier precedes upgrades within its visible category.
-        int order=Integer.compare(tier(a),tier(b));
+        // Unknown upgrades go last within each category. Known gear is ordered
+        // by tier first, then the upgrade the player can actually see.
+        int order=knowledge(a,b);
         if(order!=0)return order;
-        order=knowledge(a,b);
-        if(order!=0)return order;
-        // Never reveal an unidentified upgrade or use it for ordering.
         if(!sortableKnowledge(a))return 0;
+        order=Integer.compare(tier(a),tier(b));
+        if(order!=0)return order;
         order=Integer.compare(a.visiblyUpgraded(),b.visiblyUpgraded());
         if(order!=0)return order;
         // Existing subcategory order only resolves visible equal-rank ties.
