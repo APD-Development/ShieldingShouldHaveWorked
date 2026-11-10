@@ -67,11 +67,9 @@ public final class MechanicsDetails {
             com.shatteredpixel.shatteredpixeldungeon.items.scrolls.Scroll scroll=(com.shatteredpixel.shatteredpixeldungeon.items.scrolls.Scroll)item;
             return scroll.isKnown()?ScrollExplanation.details(scroll,Dungeon.hero):"";
         }
-        if(item instanceof Armor){
-            Armor armor=(Armor)item;
-            if(armor.glyph instanceof com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Viscosity)return "";
-            return armor.levelKnown&&armor.glyph!=null&&!armor.glyph.curse()?GlyphExplanation.details(armor,Dungeon.hero):"";
-        }
+        // Ordinary armor glyphs explain their effect directly in the item description.
+        // No duplicate technical calculation panel or Show calculations button.
+        if(item instanceof Armor)return "";
         if(item instanceof Weapon){
             Weapon weapon=(Weapon)item;
             if(!weapon.levelKnown||weapon.enchantment==null||weapon.enchantment.curse()||weapon.enchantment instanceof com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Elastic)return "";
