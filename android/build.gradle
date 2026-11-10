@@ -23,11 +23,11 @@ android {
         apdFeaturesFile.text = "testBuild\ngrudge\ndemoUnlock\nclericPlayable\n"
         sourceSets.main.assets.srcDir(apdFeaturesDir)
     } else if ((project.findProperty('apdBuild') ?: '').toString().startsWith('P')) {
-        // Owner-approved Alpha Testers playback choices, without Developer switches.
+        // Owner-approved Alpha Testers playback and hidden Grudge, without Developer switches.
         def apdPlaybackDir = project.layout.buildDirectory.dir('apdAlphaPlaybackAssets').get().asFile
         def apdPlaybackFile = new File(apdPlaybackDir, 'apd/features.txt')
         apdPlaybackFile.parentFile.mkdirs()
-        apdPlaybackFile.text = "extendedPlayback\n"
+        apdPlaybackFile.text = "extendedPlayback\ngrudge\n"
         sourceSets.main.assets.srcDir(apdPlaybackDir)
     }
 
