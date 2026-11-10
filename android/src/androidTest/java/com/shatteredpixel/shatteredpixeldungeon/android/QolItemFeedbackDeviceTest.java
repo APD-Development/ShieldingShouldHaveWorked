@@ -464,7 +464,7 @@ public class QolItemFeedbackDeviceTest {
         Thread.sleep(200);TopScoresDeviceTest.screenshot("qol-lucky-arcana-increase.png");
         TopScoresDeviceTest.render(()->{assertEquals(luckyTime[0],Dungeon.hero.cooldown(),0);luckyWindow.get().hide();});
         Sword kinetic=new Sword();TopScoresDeviceTest.render(()->{kinetic.levelKnown=kinetic.cursedKnown=true;kinetic.enchant(new com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Kinetic());});showItem(kinetic,"_190.61%_","qol-kinetic-arcana-storage.png",true,true);
-        calculationWindow(()->{com.shatteredpixel.shatteredpixeldungeon.items.armor.MailArmor armor=new com.shatteredpixel.shatteredpixeldungeon.items.armor.MailArmor();armor.level(3);armor.levelKnown=armor.cursedKnown=true;armor.glyph=new com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Obfuscation();return new WndInfoItem(armor);},"stealth","qol-obfuscation-calculations-retained.png");
+        com.shatteredpixel.shatteredpixeldungeon.items.armor.MailArmor obfuscationArmor=new com.shatteredpixel.shatteredpixeldungeon.items.armor.MailArmor();obfuscationArmor.level(3);obfuscationArmor.levelKnown=obfuscationArmor.cursedKnown=true;obfuscationArmor.inscribe(new com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Obfuscation());showItem(obfuscationArmor,"sleeping enemy 3 tiles away","qol-obfuscation-plain-detection-example.png",true);
 
         String[] retainedNames={"Blocking","Shocking","Eldritch","Vorpal"},retainedText={"5-turn timer","including neutral creatures","hero witnesses","Replaces immediate hit damage"};
         for(int index=0;index<retainedNames.length;index++){
@@ -779,7 +779,7 @@ public class QolItemFeedbackDeviceTest {
             for(String name:new String[]{"Flow","Swiftness","Camouflage","AntiMagic"}){
                 com.shatteredpixel.shatteredpixeldungeon.items.armor.MailArmor armor=new com.shatteredpixel.shatteredpixeldungeon.items.armor.MailArmor();
                 TopScoresDeviceTest.render(()->{try{armor.level(3);armor.levelKnown=armor.cursedKnown=true;armor.inscribe((com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor.Glyph)Class.forName("com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs."+name).getDeclaredConstructor().newInstance());}catch(Exception e){throw new RuntimeException(e);}});
-                showItem(armor,"without Arcana","qol-passive-glyph-"+name+"-arcana.png",true,true);
+                showItem(armor,"without Arcana","qol-passive-glyph-"+name+"-arcana.png",true);
             }
         }finally{TopScoresDeviceTest.render(()->{for(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff buff:new java.util.ArrayList<>(Dungeon.hero.buffs(Ring.RingBuff.class)))buff.detach();Dungeon.hero.belongings.ring=(Ring)previous[0];Dungeon.hero.belongings.misc=previous[1];if(previous[0]!=null)previous[0].activate(Dungeon.hero);if(previous[1] instanceof Ring)previous[1].activate(Dungeon.hero);});}
     }
