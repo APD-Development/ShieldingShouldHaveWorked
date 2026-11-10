@@ -501,6 +501,23 @@ public class SPDSettings extends GameSettings {
         put("apd_custom_rules_v1", rules.preferenceText());
     }
 
+    // Five player-owned configuration slots. These do not use game save slots.
+    public static final int APD_CUSTOM_RULE_SLOT_COUNT = 5;
+    public static boolean apdCustomRuleSlotOccupied(int slot){
+        if(slot<1||slot>APD_CUSTOM_RULE_SLOT_COUNT)throw new IllegalArgumentException("Preset slot out of range");
+        return !getString("apd_custom_rules_slot_"+slot,"").isEmpty();
+    }
+    public static com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomDungeonRules apdCustomRuleSlot(int slot){
+        if(slot<1||slot>APD_CUSTOM_RULE_SLOT_COUNT)throw new IllegalArgumentException("Preset slot out of range");
+        String value=getString("apd_custom_rules_slot_"+slot,"");
+        return value.isEmpty()?null:com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomDungeonRules.fromPreferenceText(value);
+    }
+    public static void apdCustomRuleSlot(int slot,com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomDungeonRules rules){
+        if(slot<1||slot>APD_CUSTOM_RULE_SLOT_COUNT)throw new IllegalArgumentException("Preset slot out of range");
+        if(rules==null)throw new IllegalArgumentException("Missing saved slider configuration");
+        put("apd_custom_rules_slot_"+slot,rules.preferenceText());
+    }
+
 	public static void apdDifficulty( int value ){
 		put( KEY_APD_DIFFICULTY, com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.Difficulty.normalize( value ) );
 	}
