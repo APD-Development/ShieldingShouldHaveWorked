@@ -5,15 +5,15 @@ import com.badlogic.gdx.Gdx;
 //The owner's feature switches. Every one is OFF in the normal build. A private test build adds the asset "apd/features.txt"
 //(see android/build.gradle, -PapdTestBuild), whose lines name the switches to turn on:
 //  testBuild        shows the "PRIVATE TEST BUILD" banner
-//  grudge           the Cleric Grudge humor (ClericGrudge); enabled in private tests; public release remains gated
+//  grudge           hidden Cleric Grudge humor; enabled in Developer and approved Alpha-Testers builds
 //  demoUnlock       the UIMSD unlock gate and its demo
 //  clericPlayable   Cleric can be picked to start a run (the un-ban; the ruleset changes only for runs played this way)
 //Unknown lines and '#' comments are ignored. Tests can set the switches directly.
 public final class ApdFeatures {
 
 	//THE central switch for the Cleric Grudge / Lore feature (its UI, settings, popups, counters, notifications and background tracking all
-	//read grudge() and nothing else). It is postponed until the public release: while this is false normal builds remain off, even if
-	//apd/features.txt names "grudge". Private test builds may opt in explicitly, as approved by the owner.
+	//read grudge() and nothing else). Public releases remain gated while approved test builds can enable it.
+	//Alpha-Testers enable extendedPlayback and grudge; the Developer build uses testBuild.
 	//(Cleric as a playable class is a separate switch, clericPlayable, and is not affected.)
 	public static final boolean GRUDGE_LORE_IN_THIS_RELEASE = false;
 
@@ -24,7 +24,7 @@ public final class ApdFeatures {
 
 	public static synchronized boolean extendedPlayback(){ ensure(); return testBuild || extendedPlayback; }
 	public static synchronized boolean testBuild(){ ensure(); return testBuild; }
-	public static synchronized boolean grudge(){ ensure(); return (GRUDGE_LORE_IN_THIS_RELEASE || testBuild) && grudge; }
+	public static synchronized boolean grudge(){ ensure(); return (GRUDGE_LORE_IN_THIS_RELEASE || testBuild || extendedPlayback) && grudge; }
 	public static synchronized boolean demoUnlock(){ ensure(); return demoUnlock; }
 	public static synchronized boolean clericPlayable(){ ensure(); return clericPlayable; }
 
