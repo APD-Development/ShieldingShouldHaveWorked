@@ -53,7 +53,7 @@ class ReviewedDeliveryVisibilityTest(unittest.TestCase):
         for resolved in ('a' * 40, 'b' * 40):
             current = {'id': 7, 'draft': True}
             published = {'id': 7, 'draft': False, 'published_at': '2026-11-10T00:00:00Z'}
-            with patch('apd_deliver_reviewed_pair.subprocess.run') as command, patch('apd_deliver_reviewed_pair.api', side_effect=[published, {'object': {'type': 'commit', 'sha': resolved}}]):
+            with patch('apd_deliver_reviewed_pair.subprocess.run') as command, patch('apd_deliver_reviewed_pair.api', side_effect=[[], published, {'object': {'type': 'commit', 'sha': resolved}}]):
                 if resolved == 'a' * 40:
                     self.assertEqual(published, finalize_visibility('owner/repo', 'candidate', 'a' * 40, current, True, 'notes.md'))
                 else:
