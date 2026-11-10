@@ -3,3 +3,4 @@ Resume approved description audit: Combined Lethality inclusive execution bounda
 2026-11-10 Obfuscation practical detection chance, remove ordinary armor glyph calculation panels, regression update. Request full source check at current head.
 2026-11-10 Follow-up: legacy armor math panel assertion updated to enforce absence. Verify exact revised source.
 2026-11-10 Final Android instrumentation changes: ordinary Obfuscation preview and four normal glyph windows, no extra calculations panel. Reverify core, Android and desktop compilation.
+2026-11-10 Inventory UI correction: group by item family, sort visible upgrades independently of curse knowledge, group Velvet Pouch seeds and stones before stack sizes; three new regression tests. Verify 3172 tests and compile Android.
