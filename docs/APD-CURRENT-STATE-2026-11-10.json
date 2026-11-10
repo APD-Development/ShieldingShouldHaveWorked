@@ -1,5 +1,5 @@
 {
-  "recorded_utc": "2026-11-10T17:11:34.007983+00:00",
+  "recorded_utc": "2026-11-10T17:18:07.021253+00:00",
   "active_branch": "codex/apd-phone-fixes-2026-10-09",
   "resumed_source_commit": "8b9ef4e293fc9dfc9d1a8b6485c1f59565bd7ea7",
   "source_check_run": 42858513472,
@@ -22,7 +22,7 @@
     "errors": 0,
     "skipped": 0
   },
-  "new_application_apks_created_this_session": 2,
+  "new_application_apks_created_this_session": 4,
   "remaining": [
     "TalentExplanation and normal talent text audit remain partial",
     "Cursed Wand owner wording decision",
@@ -36,7 +36,8 @@
     "number": 432,
     "source_commit": "a3d08081eea0b03475c9093423da60e84fc509be",
     "run_id": 42862026382,
-    "status": "in_progress; corrected unit wording. Require full build/native/manual acceptance before delivery."
+    "status": "Both exact APKs assembled successfully; all3165core tests and required compilation passed. API34 native cases running. Independent signatures/app IDs/versions/hashes and all435 prior history files verified.",
+    "independent_build_check": "docs/APD-432-INDEPENDENT-BUILD-CHECK.json"
   },
   "source_check_artifact": {
     "id": 13784835729,

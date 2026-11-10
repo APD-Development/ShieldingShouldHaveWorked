@@ -12,5 +12,8 @@
   "native_status": "in_progress at record time",
   "manual_acceptance": false,
   "original_apks_preserved": true,
-  "next_candidate": 432
+  "next_candidate": 432,
+  "manual_confirmation": "Actual Developer screenshots show 1 weapon-ability charges, 1 Tome charges and +1 points in the three affected meal talent contexts. Corrected source is being verified as APD432.",
+  "manual_review": "docs/APD-431-MANUAL-REJECTION.json",
+  "native_developer_status": "All six targeted cases passed on the exact original Developer APK"
 }
