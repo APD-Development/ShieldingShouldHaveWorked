@@ -13,8 +13,8 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-java@v4
         with: {distribution: temurin, java-version: '21'}
-      - name: Verify that rejected candidates remain private drafts
-        run: python3 -m unittest discover -s tools -p test_apd_deliver_reviewed_pair.py -v
+      - name: Verify rejected-draft and source-tag publication safeguards
+        run: python3 -m unittest discover -s tools -p 'test_apd_deliv*.py' -v
       - name: Recheck exact APKs, source, tests and manual review, then deliver
         env: {GH_TOKEN: '${{ github.token }}'}
         run: python3 tools/apd_deliver_reviewed_pair.py
