@@ -501,8 +501,22 @@ public class SPDSettings extends GameSettings {
         put("apd_custom_rules_v1", rules.preferenceText());
     }
 
-    // Five player-owned configuration slots. These do not use game save slots.
-    public static final int APD_CUSTOM_RULE_SLOT_COUNT = 5;
+    // Six player-owned configuration slots, pre-labelled by class. No game save slots are used.
+    public static final int APD_CUSTOM_RULE_SLOT_COUNT = 6;
+    private static final String[] APD_CUSTOM_RULE_SLOT_DEFAULT_NAMES = {"Warrior","Mage","Rogue","Huntress","Duelist","Cleric"};
+    public static String apdCustomRuleSlotName(int slot){
+        if(slot<1||slot>APD_CUSTOM_RULE_SLOT_COUNT)throw new IllegalArgumentException("Preset slot out of range");
+        String saved=getString("apd_custom_rules_slot_name_"+slot,"");
+        return saved.isEmpty()?APD_CUSTOM_RULE_SLOT_DEFAULT_NAMES[slot-1]:saved;
+    }
+    public static void apdCustomRuleSlotName(int slot,String name){
+        if(slot<1||slot>APD_CUSTOM_RULE_SLOT_COUNT)throw new IllegalArgumentException("Preset slot out of range");
+        if(name==null)throw new IllegalArgumentException("Missing name");
+        String clean=name.trim();
+        if(clean.length()>24)throw new IllegalArgumentException("Name too long");
+        // An empty name restores the built-in class label.
+        put("apd_custom_rules_slot_name_"+slot,clean);
+    }
     public static boolean apdCustomRuleSlotOccupied(int slot){
         if(slot<1||slot>APD_CUSTOM_RULE_SLOT_COUNT)throw new IllegalArgumentException("Preset slot out of range");
         return !getString("apd_custom_rules_slot_"+slot,"").isEmpty();
