@@ -1,2 +1,3 @@
 2026-11-10T16:48:08.409305+00:00
 Resume approved description audit: Combined Lethality inclusive execution boundary/miniboss wording plus eight meal talent descriptions. 3164 core tests / 457 suites, zero failures/errors/skips locally. Actual 72 combat boundary cases and existing real meal handlers retained. Compile 12 added native-window contexts before APD431 assembly. Source verification only, no APK in this workflow.
+2026-11-10 Obfuscation practical detection chance, remove ordinary armor glyph calculation panels, regression update. Request full source check at current head.
