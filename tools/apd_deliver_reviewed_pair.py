@@ -3,7 +3,7 @@
 # Copyright (C) 2026 Chris Charlton
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-"""Deliver a manually accepted, exact existing private APK pair without rebuilding."""
+"""Archive a held pair or deliver an accepted exact private APK pair without rebuilding."""
 import datetime
 import hashlib
 import json
@@ -35,6 +35,29 @@ def releases_for_tag(repo, tag):
             assert len(matches) <= 1, 'Duplicate release tag'
             return matches
     raise RuntimeError('Release inventory incomplete')
+
+
+def reviewed_publication_requested(spec, review):
+    publish = spec.get('publish', True)
+    assert type(publish) is bool, 'Publication decision must be a JSON boolean'
+    if publish:
+        assert review.get('accepted') is True, 'Unaccepted images cannot be published'
+    else:
+        assert review.get('accepted') is False and review.get('hold_reason'), 'A held archive needs its actual rejection reason'
+    return publish
+
+
+def finalize_visibility(repo, tag, source, current, publish, notes):
+    if not publish:
+        assert current['draft'], 'A held candidate must remain an unpublished draft'
+        return current
+    if current['draft']:
+        subprocess.run(['gh', 'release', 'edit', tag, '--repo', repo, '--draft=false', '--prerelease',
+                        '--latest=false', '--notes-file', str(notes)], check=True)
+    current = api(f'repos/{repo}/releases/{current["id"]}')
+    resolved = api(f'repos/{repo}/git/ref/tags/{tag}')['object']
+    assert not current['draft'] and current['published_at'] and resolved['type'] == 'commit' and resolved['sha'] == source
+    return current
 
 
 def extract_pinned(archive, expected, destination):
@@ -96,7 +119,8 @@ def verify_files(spec, review, out, evidence, signer):
             assert len(re.findall(r'^INSTRUMENTATION_STATUS_CODE: 0$', text, re.M)) == 1
             assert not any(x in text for x in ('FAILURES', 'INSTRUMENTATION_FAILED', 'Process crashed', 'AssumptionFailure'))
     assert spec['android_tests'] == 12
-    assert review['accepted'] is True and review['source_commit'] == spec['source_commit']
+    reviewed_publication_requested(spec, review)
+    assert review['source_commit'] == spec['source_commit']
     assert review['original_build_run'] == spec['run_id']
     assert len(review['reviewed_images']) == spec['manual_frames'] > 0
     assert len({x['path'] for x in review['reviewed_images']}) == spec['manual_frames']
@@ -135,6 +159,7 @@ def main():
         extract_pinned(archive, pin['sha256'], destination)
     out, evidence = Path('owner-delivery'), Path('complete-evidence')
     review = json.loads(Path(spec['visual_review']).read_text())
+    publish = reviewed_publication_requested(spec, review)
     signer = sorted(Path(os.environ['ANDROID_HOME']).glob('build-tools/*/apksigner'))[-1]
     verify_files(spec, review, out, evidence, signer)
     archive_evidence(evidence, out / f'APD-{number}-Complete-Test-Evidence.zip')
@@ -169,19 +194,16 @@ def main():
     for name in (f'APD-Developer-{number}.apk', f'APD-Alpha-Testers-{number}.apk', f'APD-Source-{number}.zip'):
         subprocess.run(['gh', 'release', 'download', tag, '--repo', repo, '--pattern', name, '--dir', str(downloaded)], check=True)
         assert digest(downloaded / name) == digest(out / name)
-    if current['draft']:
-        subprocess.run(['gh', 'release', 'edit', tag, '--repo', repo, '--draft=false', '--prerelease',
-                        '--latest=false', '--notes-file', str(out / 'release-notes.md')], check=True)
-    current = api(f'repos/{repo}/releases/{release["id"]}')
-    resolved = api(f'repos/{repo}/git/ref/tags/{tag}')['object']
-    assert not current['draft'] and current['published_at'] and resolved['type'] == 'commit' and resolved['sha'] == source
+    current = finalize_visibility(repo, tag, source, current, publish, out / 'release-notes.md')
     receipt = dict(number=number, source_commit=source, release_url=current['html_url'], published_utc=current['published_at'],
                    delivery_workflow_run=os.environ['GITHUB_RUN_ID'], downloaded_back_verified=True, rebuilt=False,
                    core_tests=spec['core_tests'], core_suites=spec['core_suites'], android_tests=12,
                    manual_frames=spec['manual_frames'], source_manifest_files=spec['source_manifest_files'],
                    apk_hashes=spec['apk_hashes'], source_sha256=spec['source_sha256'], physical_phone_verified=False,
+                   accepted=review['accepted'], private_archive_only=not publish,
                    verified_utc=datetime.datetime.now(datetime.timezone.utc).isoformat())
-    (out / f'APD-{number}-Delivery-Receipt.json').write_text(json.dumps(receipt, indent=2) + '\n')
+    receipt_kind = 'Delivery' if publish else 'Archive'
+    (out / f'APD-{number}-{receipt_kind}-Receipt.json').write_text(json.dumps(receipt, indent=2) + '\n')
     print(json.dumps(receipt, indent=2))
 
 

@@ -1,5 +1,5 @@
 {
-  "recorded_utc": "2026-11-10T17:01:02.499396+00:00",
+  "recorded_utc": "2026-11-10T17:11:34.007983+00:00",
   "active_branch": "codex/apd-phone-fixes-2026-10-09",
   "resumed_source_commit": "8b9ef4e293fc9dfc9d1a8b6485c1f59565bd7ea7",
   "source_check_run": 42858513472,
@@ -16,7 +16,7 @@
     "published_utc": "2026-11-10T16:56:53Z"
   },
   "local_core": {
-    "tests": 3164,
+    "tests": 3165,
     "suites": 457,
     "failures": 0,
     "errors": 0,
@@ -33,10 +33,10 @@
   "physical_phone_or_acoustic_audio_verified": false,
   "release_url": "https://github.com/APD-Development/ShieldingShouldHaveWorked/releases/tag/apd-alpha-preview-430",
   "active_build": {
-    "number": 431,
-    "source_commit": "5a8fe508d6d3f2a449c5a9b8fa9632e22f86dcb3",
-    "run_id": 42859611090,
-    "status": "in_progress; no completed new APK acceptance claimed"
+    "number": 432,
+    "source_commit": "a3d08081eea0b03475c9093423da60e84fc509be",
+    "run_id": 42862026382,
+    "status": "in_progress; corrected unit wording. Require full build/native/manual acceptance before delivery."
   },
   "source_check_artifact": {
     "id": 13784835729,
@@ -53,5 +53,10 @@
     "run": 42859611090,
     "status": "Original pair built and independently verified; native cases running. Hold for source-confirmed singular charge/points wording defect. No publication."
   },
-  "next_candidate": 432
+  "next_candidate": 432,
+  "held_archive_guard_tests": {
+    "tests": 5,
+    "failures": 0,
+    "purpose": "Rejected review cannot publish; archive mode makes no publication call and cannot label a published release private; successful publication must resolve the exact source tag."
+  }
 }
