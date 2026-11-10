@@ -26,6 +26,17 @@ def api(path):
     return json.loads(subprocess.check_output(['gh', 'api', path]))
 
 
+def releases_for_tag(repo, tag):
+    matches = []
+    for page in range(1, 101):
+        releases = api(f'repos/{repo}/releases?per_page=100&page={page}')
+        matches.extend(r for r in releases if r['tag_name'] == tag)
+        if len(releases) < 100:
+            assert len(matches) <= 1, 'Duplicate release tag'
+            return matches
+    raise RuntimeError('Release inventory incomplete')
+
+
 def extract_pinned(archive, expected, destination):
     assert digest(archive) == expected, 'Artifact archive differs'
     destination = Path(destination)
@@ -132,20 +143,14 @@ def main():
     with (out / 'release-notes.md').open('a') as notes:
         notes.write('\n\n' + Path(spec['status_note']).read_text())
     # All local acceptance checks finish before creating a release or tag.
-    matches = []
-    for page in range(1, 101):
-        releases = api(f'repos/{repo}/releases?per_page=100&page={page}')
-        matches.extend(r for r in releases if r['tag_name'] == tag)
-        if len(releases) < 100:
-            break
-    else:
-        raise RuntimeError('Release inventory incomplete')
-    assert len(matches) <= 1
+    matches = releases_for_tag(repo, tag)
     if not matches:
         subprocess.run(['gh', 'release', 'create', tag, '--repo', repo, '--target', source,
                         '--draft', '--prerelease', '--latest=false', '--title', spec['title'],
                         '--notes-file', str(out / 'release-notes.md')], check=True)
-        matches = [api(f'repos/{repo}/releases/tags/{tag}')]
+        # A new draft has no materialized Git tag, so the by-tag endpoint can 404.
+        matches = releases_for_tag(repo, tag)
+        assert len(matches) == 1, 'New draft was not found in the release inventory'
     release = matches[0]
     assert release['target_commitish'] == source, 'Existing release source differs'
     existing = {a['name']: a for a in release['assets']}

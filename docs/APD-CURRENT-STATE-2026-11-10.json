@@ -3,13 +3,15 @@
   "active_branch": "codex/apd-phone-fixes-2026-10-09",
   "resumed_source_commit": "8b9ef4e293fc9dfc9d1a8b6485c1f59565bd7ea7",
   "source_check_run": 42858513472,
-  "source_check_status": "in_progress at record time",
+  "source_check_status": "success: 3164 core tests, Android debug/release/instrumentation and desktop compiled",
   "latest_verified_published_build": 429,
   "apd430": {
     "source": "2193252bf075b8b429118262fdca8cca046e149c",
     "build_run": 42696629251,
     "failed_original_stage_run": 42696773758,
-    "recovery": "Full independent identity/source/test checks and 76 manually reviewed frames accepted; publication request ready, remote delivery not yet verified"
+    "recovery": "Full independent identity/source/test checks and 76 manually reviewed frames accepted; publication request ready, remote delivery not yet verified",
+    "first_recovery_run": 42859170353,
+    "first_recovery_result": "All local and remote preflight checks passed; draft created, lookup by unmaterialized tag failed before uploads. Original evidence retained; corrected request pending."
   },
   "local_core": {
     "tests": 3164,

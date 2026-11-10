@@ -29,5 +29,8 @@
       "name": "apd430-source-and-native-evidence",
       "sha256": "abc4fb7941ff90bdf0c3ed4ae01e7d511bbf04e750889f26ebc60be876a01fd6"
     }
-  }
+  },
+  "retry_utc": "2026-11-10T16:55:02.474209+00:00",
+  "prior_recovery_run": 42859170353,
+  "retry_reason": "All preflight checks passed; draft created successfully, then releases/tags lookup returned 404 before assets were staged. Use the paginated release inventory for the existing draft. No original APK/source changes."
 }
