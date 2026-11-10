@@ -6,10 +6,27 @@
 import unittest
 from unittest.mock import patch
 
-from apd_deliver_reviewed_pair import finalize_visibility, reviewed_publication_requested
+from apd_deliver_reviewed_pair import finalize_visibility, reviewed_publication_requested, verify_release_source
 
 
 class ReviewedDeliveryVisibilityTest(unittest.TestCase):
+    def test_preserved_source_branch_must_resolve_to_exact_built_commit(self):
+        spec = {'number': 432, 'source_commit': 'a' * 40, 'source_branch': 'archive/apd432-original-source'}
+        for resolved in ('a' * 40, 'b' * 40):
+            with patch('apd_deliver_reviewed_pair.api', return_value={'object': {'type': 'commit', 'sha': resolved}}):
+                if resolved == spec['source_commit']:
+                    verify_release_source('owner/repo', {'target_commitish': spec['source_branch']}, spec)
+                else:
+                    with self.assertRaises(AssertionError):
+                        verify_release_source('owner/repo', {'target_commitish': spec['source_branch']}, spec)
+
+    def test_unpinned_or_unrelated_source_branch_is_rejected(self):
+        for spec, target in (({'number': 432, 'source_commit': 'a' * 40}, 'main'),
+                             ({'number': 432, 'source_commit': 'a' * 40, 'source_branch': 'main'}, 'main'),
+                             ({'number': 432, 'source_commit': 'a' * 40, 'source_branch': 'archive/apd432-original-source'}, 'archive/apd431-original-source')):
+            with self.assertRaises(AssertionError):
+                verify_release_source('owner/repo', {'target_commitish': target}, spec)
+
     def test_rejected_candidate_cannot_request_publication(self):
         for spec in ({}, {'publish': True}):
             with self.assertRaises(AssertionError):

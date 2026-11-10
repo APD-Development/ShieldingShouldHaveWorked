@@ -47,6 +47,16 @@ def reviewed_publication_requested(spec, review):
     return publish
 
 
+def verify_release_source(repo, release, spec):
+    source, target = spec['source_commit'], release['target_commitish']
+    if target == source:
+        return
+    branch = spec.get('source_branch')
+    assert branch == f"archive/apd{spec['number']}-original-source" and target == branch, 'Existing release source differs'
+    resolved = api(f'repos/{repo}/git/ref/heads/{branch}')['object']
+    assert resolved['type'] == 'commit' and resolved['sha'] == source, 'Preserved source branch moved'
+
+
 def finalize_visibility(repo, tag, source, current, publish, notes):
     if not publish:
         assert current['draft'], 'A held candidate must remain an unpublished draft'
@@ -177,7 +187,7 @@ def main():
         matches = releases_for_tag(repo, tag)
         assert len(matches) == 1, 'New draft was not found in the release inventory'
     release = matches[0]
-    assert release['target_commitish'] == source, 'Existing release source differs'
+    verify_release_source(repo, release, spec)
     existing = {a['name']: a for a in release['assets']}
     files = [p for p in sorted(out.iterdir()) if p.is_file() and p.name != 'release-notes.md']
     for path in files:
@@ -194,6 +204,7 @@ def main():
     for name in (f'APD-Developer-{number}.apk', f'APD-Alpha-Testers-{number}.apk', f'APD-Source-{number}.zip'):
         subprocess.run(['gh', 'release', 'download', tag, '--repo', repo, '--pattern', name, '--dir', str(downloaded)], check=True)
         assert digest(downloaded / name) == digest(out / name)
+    verify_release_source(repo, current, spec)
     current = finalize_visibility(repo, tag, source, current, publish, out / 'release-notes.md')
     receipt = dict(number=number, source_commit=source, release_url=current['html_url'], published_utc=current['published_at'],
                    delivery_workflow_run=os.environ['GITHUB_RUN_ID'], downloaded_back_verified=True, rebuilt=False,

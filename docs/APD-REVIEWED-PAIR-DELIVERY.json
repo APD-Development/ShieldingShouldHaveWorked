@@ -30,5 +30,7 @@
       "name": "apd431-source-and-native-evidence",
       "sha256": "9f3a02d27036828d7aff5e27e8f49bb33c596539404f61daec4f352c33e62a9e"
     }
-  }
+  },
+  "source_branch": "archive/apd431-original-source",
+  "delivery_retry": "Authenticated GitHub UI created draft 440691614 after Actions token rejected release creation. Exact source branch must resolve to original build SHA; archive remains unpublished."
 }
