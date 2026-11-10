@@ -70,10 +70,41 @@ public class AutomaticInventoryOrderTest {
             Backpack bag=new Backpack();populate(bag,pair[1],pair[0]);expect(bag,pair[0],pair[1]);
         }
     }
-    @Test public void consumableBagsSortByQuantityAcrossTypes(){
-        Bag pouch=new VelvetPouch();Item seed=new Sungrass.Seed().quantity(5),stone=new com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfBlink().quantity(1);populate(pouch,seed,stone);expect(pouch,stone,seed);
+    @Test public void consumableBagsKeepItemFamiliesTogetherThenSortStacks(){
+        Bag pouch=new VelvetPouch();Item seed=new Sungrass.Seed().quantity(5),stone=new com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfBlink().quantity(1);populate(pouch,stone,seed);expect(pouch,seed,stone);
         Bag scrolls=new ScrollHolder();Item identify=new ScrollOfIdentify().identify().quantity(7),upgrade=new ScrollOfUpgrade().identify().quantity(2);populate(scrolls,identify,upgrade);expect(scrolls,upgrade,identify);
         Bag potions=new PotionBandolier();Item healing=new PotionOfHealing().identify().quantity(8),shield=new PotionOfShielding().identify().quantity(1);populate(potions,healing,shield);expect(potions,shield,healing);
+    }
+    @Test public void pouchGroupsSeedsBeforeStonesEvenWhenStonesHaveSmallerStacks(){
+        Bag pouch=new VelvetPouch();
+        Item seedBig=new Sungrass.Seed().quantity(6);
+        Item seedSmall=new Firebloom.Seed().quantity(1);
+        Item stoneSmall=new com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfBlink().quantity(1);
+        Item stoneBig=new com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfIntuition().quantity(8);
+        populate(pouch,stoneSmall,seedBig,stoneBig,seedSmall);
+        expect(pouch,seedSmall,seedBig,stoneSmall,stoneBig);
+    }
+    @Test public void visibleUpgradeRemainsSortableBeforeFullCurseIdentification(){
+        Bag bag=new Backpack();
+        Item knownLow=new LeatherArmor().level(1);
+        knownLow.levelKnown=true;
+        knownLow.cursedKnown=false;
+        Item knownHigh=known(new LeatherArmor(),3);
+        Item unknown=new LeatherArmor().level(9);
+        populate(bag,unknown,knownHigh,knownLow);
+        expect(bag,knownLow,knownHigh,unknown);
+        assertFalse(knownLow.isIdentified());
+        assertEquals(1,knownLow.visiblyUpgraded());
+        // Sorting is a presentation snapshot, not an identification action.
+        assertFalse(knownLow.cursedKnown);
+        assertFalse(unknown.levelKnown);
+    }
+    @Test public void backpackKeepsSeedsAndStonesGroupedRegardlessOfStackSizes(){
+        Backpack bag=new Backpack();
+        Item seed=new Sungrass.Seed().quantity(9);
+        Item stone=new com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfBlink().quantity(1);
+        populate(bag,stone,seed);
+        expect(bag,seed,stone);
     }
     @Test public void holsterKeepsThrowablesTierAndUpgradeBeforeWandUpgrades(){
         Bag bag=new MagicalHolster();Item knife=known(new ThrowingKnife(),8),club=known(new ThrowingClub(),0),clubPlus=known(new ThrowingClub(),3),wand=known(new WandOfFrost(),-1),wandPlus=known(new WandOfMagicMissile(),4),unknown=new WandOfFrost().level(12);
