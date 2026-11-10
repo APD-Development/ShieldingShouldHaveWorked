@@ -27,18 +27,21 @@ public class PlaybackSpeedTest {
   assertEquals(1,SPDSettings.playbackSpeed());
   for(int mode=0;mode<=2;mode++){SPDSettings.playbackSpeed(mode);GameSettings.set(new HeadlessPreferences(new FileHandle(file)));assertEquals(mode,SPDSettings.playbackSpeed());}
  }
- @Test public void extraSpeedsArePrivateAndNeverLeakIntoNormalBuilds() {
-  assertEquals(3,PlaybackGroup.choiceCount());
-  assertEquals("2x",PlaybackGroup.label(2));
-  assertFalse(PlaybackGroup.allowed(3));
+ @Test public void everyPlaybackSpeedIsAvailableWithoutPrivateFeatureFlags() {
+  ApdFeatures.parse("");
+  assertFalse(ApdFeatures.testBuild());
+  assertFalse(ApdFeatures.extendedPlayback());
+  assertEquals(10,PlaybackGroup.choiceCount());
+  assertEquals("1000x",PlaybackGroup.label(9));
+  assertTrue(PlaybackGroup.allowed(9));
   SPDSettings.playbackSpeed(9);
-  assertEquals(1,SPDSettings.playbackSpeed());
-  GameSettings.put("apd_playback_speed",9);
-  assertEquals("Developer-only preference cannot activate in normal build",1,SPDSettings.playbackSpeed());
+  GameSettings.set(new HeadlessPreferences(new FileHandle(file)));
+  assertEquals(9,SPDSettings.playbackSpeed());
   PlaybackGroup.speed(9);
-  Game.elapsed=0.016f; PlaybackGroup group=new PlaybackGroup(); float[] observed={0};
+  Game.elapsed=.016f;PlaybackGroup group=new PlaybackGroup();float[] observed={0};
   group.add(observe(observed));group.update();
-  assertEquals(0.016f,observed[0],0.00001f);
+  assertEquals(16f,observed[0],.0001f);
+  assertEquals(.016f,Game.elapsed,0f);
  }
  @Test public void developerSpeedsPersistAndScaleVisualsFromFourToOneThousand(){
   ApdFeatures.parse("testBuild\n");
@@ -57,13 +60,13 @@ public class PlaybackSpeedTest {
    assertEquals(.016f,Game.elapsed,0f);
   }
   assertFalse(PlaybackGroup.allowed(labels.length));
-  // Simulate opening the same preferences in a production build.
+  // Production builds retain all ten choices and saved selections.
   ApdFeatures.parse("");
-  assertEquals(3,PlaybackGroup.choiceCount());
-  assertEquals(1,SPDSettings.playbackSpeed());
+  assertEquals(10,PlaybackGroup.choiceCount());
+  assertEquals(9,SPDSettings.playbackSpeed());
   PlaybackGroup.speed(9);
   Game.elapsed=.016f;float[] observed={0};PlaybackGroup g=new PlaybackGroup();g.add(observe(observed));g.update();
-  assertEquals(.016f,observed[0],0.00001f);
+  assertEquals(16f,observed[0],.0001f);
  }
  @Test public void alphaPlaybackFlagExposesAllSpeedsWithoutDeveloperFeatures(){
   ApdFeatures.parse("extendedPlayback\n");
@@ -78,7 +81,7 @@ public class PlaybackSpeedTest {
    assertEquals(.016f*factors[mode],seen[0],.0001f);assertEquals(.016f,Game.elapsed,0f);
   }
   assertEquals("1000x",PlaybackGroup.label(9));assertFalse(PlaybackGroup.allowed(10));
-  ApdFeatures.parse("");assertEquals(3,PlaybackGroup.choiceCount());assertEquals(1,SPDSettings.playbackSpeed());
+  ApdFeatures.parse("");assertEquals(10,PlaybackGroup.choiceCount());assertEquals(9,SPDSettings.playbackSpeed());
  }
  @Test public void extremeVisualPlaybackPreservesNormalHeroIdleTiming(){
   ApdFeatures.parse("testBuild\n");
@@ -96,7 +99,7 @@ public class PlaybackSpeedTest {
    visuals.update();
    float factor=new float[]{.5f,1f,2f,4f,8f,16f,32f,64f,100f,1000f}[mode];
    assertEquals(.016f*factor,seen[0],.0001f);
-   assertEquals("Preserve 0.5x/1x/2x idle; cap developer-only extremes at 1x",
+   assertEquals("Preserve 0.5x/1x/2x idle; cap extreme visual speeds at 1x",
      .016f*(factor<=2f?factor:1f),seen[1],.0001f);
    assertEquals(.016f,Game.elapsed,0f);
   }
@@ -117,7 +120,7 @@ public class PlaybackSpeedTest {
   }
  }
  @Test public void invalidChoicesUseNormalSpeed(){
-  for(int mode:new int[]{-1,3,Integer.MIN_VALUE,Integer.MAX_VALUE}){GameSettings.put("apd_playback_speed",mode);assertEquals(1,SPDSettings.playbackSpeed());SPDSettings.playbackSpeed(mode);assertEquals(1,SPDSettings.playbackSpeed());}
+  for(int mode:new int[]{-1,10,Integer.MIN_VALUE,Integer.MAX_VALUE}){GameSettings.put("apd_playback_speed",mode);assertEquals(1,SPDSettings.playbackSpeed());SPDSettings.playbackSpeed(mode);assertEquals(1,SPDSettings.playbackSpeed());}
  }
  private Gizmo observe(final float[] observed){return new Gizmo(){@Override public void update(){observed[0]=Game.elapsed;}};}
  @Test public void scalesDungeonVisualsAtAllThreeSpeeds(){
