@@ -2,6 +2,7 @@
   "number": 433,
   "source_commit": "3cc23e1b4727a2401b7f4d4efd414973bcf2bef5",
   "source_branch": "archive/apd433-original-source",
+  "release_id": 441012398,
   "core_tests": 3169,
   "android_tests": 12,
   "application_id": "com.charltonchris29.adhdpixeldungeon.indev",

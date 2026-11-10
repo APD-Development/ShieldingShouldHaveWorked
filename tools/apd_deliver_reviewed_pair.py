@@ -37,6 +37,34 @@ def releases_for_tag(repo, tag):
     raise RuntimeError('Release inventory incomplete')
 
 
+def select_release(repo, tag, spec, notes):
+    """Resolve retries by pinned ID; new drafts by the creation response, not a stale list."""
+    pinned = spec.get('release_id')
+    if 'release_id' in spec:
+        assert type(pinned) is int and pinned > 0, 'Invalid pinned release ID'
+        release = api(f'repos/{repo}/releases/{pinned}')
+        assert release['id'] == pinned and release['tag_name'] == tag, 'Pinned release identity differs'
+        return release
+    matches = releases_for_tag(repo, tag)
+    if matches:
+        return matches[0]
+    payload = dict(tag_name=tag, target_commitish=spec['source_commit'], name=spec['title'],
+                   body=Path(notes).read_text(encoding='utf-8'), draft=True,
+                   prerelease=True, make_latest='false')
+    created = json.loads(subprocess.check_output(
+        ['gh', 'api', f'repos/{repo}/releases', '--method', 'POST', '--input', '-'],
+        input=json.dumps(payload).encode('utf-8')))
+    release_id = created['id']
+    assert type(release_id) is int and release_id > 0, 'Invalid created release ID'
+    assert created['tag_name'] == tag and created['draft'] is True, 'Created draft identity differs'
+    assert created['target_commitish'] == spec['source_commit'], 'Created draft source differs'
+    # Direct readback avoids an immediately stale paginated collection response.
+    release = api(f'repos/{repo}/releases/{release_id}')
+    assert release['id'] == release_id and release['tag_name'] == tag, 'Created release readback differs'
+    assert release['draft'] is True and release['target_commitish'] == spec['source_commit'], 'Created draft changed'
+    return release
+
+
 def reviewed_publication_requested(spec, review):
     publish = spec.get('publish', True)
     assert type(publish) is bool, 'Publication decision must be a JSON boolean'
@@ -187,15 +215,7 @@ def main():
     with (out / 'release-notes.md').open('a') as notes:
         notes.write('\n\n' + Path(spec['status_note']).read_text())
     # All local acceptance checks finish before creating a release or tag.
-    matches = releases_for_tag(repo, tag)
-    if not matches:
-        subprocess.run(['gh', 'release', 'create', tag, '--repo', repo, '--target', source,
-                        '--draft', '--prerelease', '--latest=false', '--title', spec['title'],
-                        '--notes-file', str(out / 'release-notes.md')], check=True)
-        # A new draft has no materialized Git tag, so the by-tag endpoint can 404.
-        matches = releases_for_tag(repo, tag)
-        assert len(matches) == 1, 'New draft was not found in the release inventory'
-    release = matches[0]
+    release = select_release(repo, tag, spec, out / 'release-notes.md')
     verify_release_source(repo, release, spec)
     existing = {a['name']: a for a in release['assets']}
     files = [p for p in sorted(out.iterdir()) if p.is_file() and p.name != 'release-notes.md']
