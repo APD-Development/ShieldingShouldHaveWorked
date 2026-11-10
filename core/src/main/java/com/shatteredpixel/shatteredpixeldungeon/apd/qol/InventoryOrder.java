@@ -40,41 +40,58 @@ public final class InventoryOrder {
         if(item instanceof Armor)return ((Armor)item).tier;
         return 0;
     }
+    // An item's upgrade is public as soon as its level is known. Curse knowledge
+    // is unrelated to equipment ordering and must not push visible +3 gear last.
+    private static boolean sortableKnowledge(Item item){
+        if(item instanceof MeleeWeapon || item instanceof MissileWeapon
+                || item instanceof Armor || item instanceof Wand
+                || item instanceof com.shatteredpixel.shatteredpixeldungeon.items.rings.Ring
+                || item instanceof com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Artifact
+                || item instanceof com.shatteredpixel.shatteredpixeldungeon.items.trinkets.Trinket)
+            return item.levelKnown;
+        return item.isIdentified();
+    }
+    private static int knowledge(Item a,Item b){
+        return Boolean.compare(!sortableKnowledge(a),!sortableKnowledge(b));
+    }
+    private static int category(Item item){
+        return Generator.Category.order(item)/100;
+    }
     public static int compare(Item a,Item b){
-        int categoryA=Generator.Category.order(a),categoryB=Generator.Category.order(b);
-        int order=Integer.compare(categoryA/100,categoryB/100);
+        int group=Integer.compare(category(a),category(b));
+        if(group!=0)return group;
+        // Equipment tier precedes upgrades within its visible category.
+        int order=Integer.compare(tier(a),tier(b));
         if(order!=0)return order;
         order=knowledge(a,b);
         if(order!=0)return order;
-        // Unknown items keep stable relative order. Never consult hidden level/type as a tie-breaker.
-        if(!a.isIdentified())return 0;
-        order=Integer.compare(categoryA,categoryB);
-        if(order!=0)return order;
-        order=Integer.compare(tier(a),tier(b));
-        if(order!=0)return order;
+        // Never reveal an unidentified upgrade or use it for ordering.
+        if(!sortableKnowledge(a))return 0;
         order=Integer.compare(a.visiblyUpgraded(),b.visiblyUpgraded());
         if(order!=0)return order;
-        // Quantity is a tie-breaker in the backpack, never ahead of equipment tier/upgrade.
+        // Existing subcategory order only resolves visible equal-rank ties.
+        order=Integer.compare(Generator.Category.order(a),Generator.Category.order(b));
+        if(order!=0)return order;
         return Integer.compare(a.quantity(),b.quantity());
-    }
-    private static int knowledge(Item a,Item b){
-        return Boolean.compare(!a.isIdentified(),!b.isIdentified());
     }
     public static int compareInBag(Bag bag,Item a,Item b){
         if(bag instanceof MagicalHolster){
-            // All thrown items, including bombs, stay before wands.
+            // Throwables, including bombs, before wands.
             int group=Integer.compare(a instanceof Wand?1:0,b instanceof Wand?1:0);
             if(group!=0)return group;
             if(a instanceof Wand && b instanceof Wand){
                 int known=knowledge(a,b);
                 if(known!=0)return known;
-                if(!a.isIdentified())return 0;
+                if(!sortableKnowledge(a))return 0;
                 int level=Integer.compare(a.visiblyUpgraded(),b.visiblyUpgraded());
                 return level!=0?level:Integer.compare(a.quantity(),b.quantity());
             }
             return compare(a,b);
         }
         if(bag instanceof VelvetPouch || bag instanceof ScrollHolder || bag instanceof PotionBandolier){
+            // Seeds with seeds, stones with stones; never interleave by stack size.
+            int group=Integer.compare(category(a),category(b));
+            if(group!=0)return group;
             int known=knowledge(a,b);
             if(known!=0)return known;
             int stacks=Integer.compare(a.quantity(),b.quantity());
