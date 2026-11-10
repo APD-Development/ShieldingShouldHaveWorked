@@ -82,6 +82,14 @@ jobs:
               metadata=subprocess.check_output([str(aapt),'dump','badging',str(p)],text=True)
               assert 'com.charltonchris29.adhdpixeldungeon.indev' in metadata
               verify_compiled(root,p)
+              import zipfile
+              with zipfile.ZipFile(p) as packed:
+                  feature_lines=packed.read('assets/apd/features.txt').decode('utf-8').splitlines()
+                  if variant=='Alpha-Testers':
+                      assert 'grudge' in feature_lines and 'extendedPlayback' in feature_lines
+                      assert 'testBuild' not in feature_lines and 'demoUnlock' not in feature_lines and 'clericPlayable' not in feature_lines
+                  else:
+                      assert 'grudge' in feature_lines and 'testBuild' in feature_lines
               signatures[variant]={'sha256':hashlib.sha256(p.read_bytes()).hexdigest(),'bytes':p.stat().st_size,'cert':cert[0]}
           (root/'evidence'/'apks.json').write_text(json.dumps(signatures,indent=2)+'\n')
           print(json.dumps(signatures))
