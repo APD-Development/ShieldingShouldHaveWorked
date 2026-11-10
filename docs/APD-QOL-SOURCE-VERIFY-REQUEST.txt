@@ -1,2 +1,2 @@
-2026-11-09T20:55:09.071340+00:00
-Existing7talent explanation branches simplified.3163core/457all0. Newactual SwiftEquip equip/time/cursed/save test, VariedCharge different/sametypepairs andactual SearingLight damage/AggressiveBarrier HPthreshold/preservation. Nativewindowcoverage adds7contexts includingDuelist/alternate recharge. Androidsourcecompile only, noAPK.
+2026-11-10T16:48:08.409305+00:00
+Resume approved description audit: Combined Lethality inclusive execution boundary/miniboss wording plus eight meal talent descriptions. 3164 core tests / 457 suites, zero failures/errors/skips locally. Actual 72 combat boundary cases and existing real meal handlers retained. Compile 12 added native-window contexts before APD431 assembly. Source verification only, no APK in this workflow.

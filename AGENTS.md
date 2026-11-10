@@ -16,6 +16,7 @@ APD is a private fork of Shattered Pixel Dungeon 4.0.x (upstream licence/attribu
 
 ## Standing rules from the owner (do not break)
 - Do NOT trigger GitHub Actions, publish a release, push to main, or spend money without the owner's explicit approval for that specific action.
+- Owner update, November 10, 2026: resume the approved APD work and "Push builds to me every new build you complete". This authorizes the build, verification and private owner delivery Actions for each completed build in this resumed work, superseding the expired November 9 delivery window and per-build confirmation requirement. Preserve the existing signing identity, all previous builds and evidence, and send the version/download links. This does not authorize main pushes, new gameplay decisions, paid services, or a new recurring schedule.
 - No gameplay/balance changes beyond what the owner approved. Cleric balance is NOT to be changed. Cleric is playable (own ruleset `cleric=playable`; all other ruleset ids and run history must stay unchanged).
 - Never weaken or skip tests to get green. Never force-push, never change signing keys, no secrets in the APK.
 - No fabricated statistics, achievements or history anywhere in the game.

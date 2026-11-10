@@ -1,18 +1,12 @@
 {
   "active": false,
-  "owner_instruction": "Latest explicit owner authorization November9: sustained previously approved APD work until3PM Eastern; verified GitHub APKs every30minutes when valid; preserve all previous source, failures, builds and saves.",
-  "recorded_date": "2026-11-07",
-  "scope": "Remaining approved work, including description audit and verification. Continue implementation/tests/backups without routine approval.",
-  "preserve_delivered_build": 369,
-  "additional_apk_delivery": "Verified cadence authorized through20:00UTC; actual acceptance and visual review required.",
-  "daily_limit_when_delivery_resumes": "Current verified30minute cadence governs through20:00UTC.",
-  "prior_owner_instruction": "2026-11-08: Send an APK to GitHub every 30 minutes; finish approved work by 7 p.m. EST.",
-  "prior_additional_apk_delivery": "Latest cadence instruction authorizes incremental Developer/Alpha pairs through 2026-11-09 00:00 UTC, with unfinished work disclosed. It supersedes the previous hold until the whole audit completes and conflicting prior cadence limits during this window. No recurring delivery beyond this deadline is configured.",
-  "authorization_window_end_utc": "2026-11-09T20:00:00Z",
-  "authorization_window_end_eastern": "2026-11-09 15:00 EST",
-  "prior_daily_limit": "10 APKs total per New York day, five Developer and five Alpha. A maximum, not a build target.",
+  "recorded_date": "2026-11-10",
+  "owner_instruction": "Push builds to me every new build you complete",
+  "scope": "Resumed previously approved APD development. Build, verify and deliver each completed Developer/Alpha-Testers pair through the existing private GitHub release route, with version and download links. No new game design or balance changes.",
+  "delivery_trigger": "Each newly completed and accepted build; no fixed interval or new background schedule.",
+  "authorization_window_end_utc": null,
+  "prior_authorization_window_end_utc": "2026-11-09T20:00:00Z",
+  "latest_verified_published_build": 429,
   "preserve_all_previous_builds": true,
-  "latest_published_build": 415,
-  "latest_published": 415,
-  "previous_authorization_window_end_utc": "2026-11-09T09:30:00Z"
+  "verification_required": "Actual core/native results, manual affected-window review, original signing identity, source and hashes. Retain failed candidates and their evidence."
 }

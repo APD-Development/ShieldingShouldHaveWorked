@@ -36,6 +36,69 @@ public class MechanicsExplanationTest {
  @After public void restore()throws Exception{for(java.util.Map.Entry<java.lang.reflect.Field,Object> e:badgeState.entrySet())e.getKey().set(null,e.getValue());Dungeon.hero=oldHero;Dungeon.level=oldLevel;Dungeon.challenges=oldChallenges;Dungeon.apdRestoreCustomRules(oldRules);java.lang.reflect.Field notes=com.shatteredpixel.shatteredpixeldungeon.journal.Notes.class.getDeclaredField("records");notes.setAccessible(true);notes.set(null,oldNotes);}
  private RingOfArcana ring(int level){RingOfArcana ring=new RingOfArcana();ring.level(level);ring.anonymize();ring.levelKnown=ring.cursedKnown=true;hero.belongings.ring=ring;ring.activate(hero);return ring;}
  public static class BountyLootProbe extends com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob {public BountyLootProbe(float chance){lootChance=chance;}}
+ public static class CombinedLethalityTarget extends PlainStatusTarget {
+  int deaths;
+  CombinedLethalityTarget(com.shatteredpixel.shatteredpixeldungeon.actors.Char.Property trait) {
+   if (trait != null) properties.add(trait);
+  }
+  @Override public void die(Object cause) { deaths++; }
+ }
+ @Test public void combinedLethalityTextMatchesRealInclusiveThresholdAndExclusions() throws Exception {
+  hero.sprite=quietSprite();
+  hero.STR=20;
+  java.util.Arrays.fill(Dungeon.level.heroFOV,false);
+  com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sword first=new com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sword();
+  com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sword copy=new com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sword();
+  java.lang.reflect.Method used=com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon.class.getDeclaredMethod("afterAbilityUsed",Hero.class);
+  used.setAccessible(true);
+  com.shatteredpixel.shatteredpixeldungeon.actors.Char.Property[] traits={null,
+   com.shatteredpixel.shatteredpixeldungeon.actors.Char.Property.BOSS,
+   com.shatteredpixel.shatteredpixeldungeon.actors.Char.Property.MINIBOSS};
+  for(int rank=1;rank<=3;rank++) {
+   hero.talents.get(2).put(Talent.COMBINED_LETHALITY,rank);
+   for(boolean sameWeapon:new boolean[]{false,true}) for(int relation=0;relation<4;relation++) {
+    hero.belongings.weapon=sameWeapon?first:copy;
+    CombinedLethalityTarget target=new CombinedLethalityTarget(relation<3?traits[relation]:null);
+    target.HT=150;
+    target.pos=hero.pos+1;
+    target.alignment=relation==3?hero.alignment:com.shatteredpixel.shatteredpixeldungeon.actors.Char.Alignment.ENEMY;
+    Buff.detach(hero,Talent.CombinedLethalityAbilityTracker.class);
+    target.HP=150;
+    Random.pushGenerator(43110);
+    try { assertTrue(hero.attack(target)); } finally { Random.popGenerator(); }
+    int ordinaryDamage=150-target.HP;
+    assertTrue(ordinaryDamage>0);
+    for(int offset=-1;offset<=1;offset++) {
+     int remaining=20*rank+offset;
+     Buff.detach(hero,Talent.CombinedLethalityAbilityTracker.class);
+     used.invoke(first,hero);
+     Talent.CombinedLethalityAbilityTracker tracker=hero.buff(Talent.CombinedLethalityAbilityTracker.class);
+     assertNotNull(tracker);
+     assertSame(first,tracker.weapon);
+     float time=hero.cooldown();
+     TalentExplanation.details(Talent.COMBINED_LETHALITY,rank);
+     assertSame(tracker,hero.buff(Talent.CombinedLethalityAbilityTracker.class));
+     assertSame(first,tracker.weapon);
+     assertEquals(time,hero.cooldown(),0);
+     target.HP=remaining+ordinaryDamage;
+     target.deaths=0;
+     Random.pushGenerator(43110);
+     try { assertTrue(hero.attack(target)); } finally { Random.popGenerator(); }
+     boolean executes=!sameWeapon&&relation==0&&offset<=0;
+     String context="rank="+rank+", sameWeapon="+sameWeapon+", relation="+relation+", remaining="+remaining;
+     assertEquals(context,executes?0:remaining,target.HP);
+     assertEquals(context,executes?1:0,target.deaths);
+     assertEquals(context,sameWeapon,hero.buff(Talent.CombinedLethalityAbilityTracker.class)!=null);
+    }
+   }
+  }
+  String normal=Talent.COMBINED_LETHALITY.desc();
+  assertTrue(normal,normal.contains("at or below"));
+  assertTrue(normal,normal.contains("Bosses and minibosses"));
+  assertTrue(normal,normal.contains("about 13.33%"));
+  assertTrue(normal,normal.contains("about 26.67%"));
+  assertTrue(normal,normal.contains("40%"));
+ }
  @Test public void swiftEquipExplanationMatchesActualFreeUsesCooldownSaveAndCursedBlock()throws Exception{
   hero.sprite=quietSprite();java.util.Set<com.shatteredpixel.shatteredpixeldungeon.actors.Actor> original=new java.util.HashSet<>(com.shatteredpixel.shatteredpixeldungeon.actors.Actor.all());
   try{for(int rank=1;rank<=2;rank++){
@@ -1032,7 +1095,7 @@ public class MechanicsExplanationTest {
  }
  @Test public void mealRechargeAndHasteDescriptionsMatchActualDurationsReplacementAndHornFlags()throws Exception{
   hero.sprite=quietSprite();com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HornOfPlenty horn=new com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HornOfPlenty();for(int rank=1;rank<=2;rank++){
-   for(Buff b:new Buff[]{hero.buff(Recharging.class),hero.buff(ArtifactRecharge.class),hero.buff(Haste.class)})if(b!=null)b.detach();hero.talents.get(0).put(Talent.ENERGIZING_MEAL,rank);hero.talents.get(0).put(Talent.MYSTICAL_MEAL,rank);hero.talents.get(0).put(Talent.INVIGORATING_MEAL,rank);Talent.onFoodEaten(hero,1,null);Recharging wand=hero.buff(Recharging.class);ArtifactRecharge artifact=hero.buff(ArtifactRecharge.class);Haste haste=hero.buff(Haste.class);assertEquals(2+3*rank,wand.cooldown(),.0001f);assertEquals(1+2*rank,artifact.left(),0);assertEquals(.67f+rank,haste.cooldown(),.0001f);assertFalse(artifact.ignoreHornOfPlenty);assertTrue(TalentExplanation.details(Talent.ENERGIZING_MEAL,rank).contains((2+3*rank)+" game-time units"));assertTrue(TalentExplanation.details(Talent.MYSTICAL_MEAL,rank).contains((1+2*rank)+" game-time units"));
+   for(Buff b:new Buff[]{hero.buff(Recharging.class),hero.buff(ArtifactRecharge.class),hero.buff(Haste.class)})if(b!=null)b.detach();hero.talents.get(0).put(Talent.ENERGIZING_MEAL,rank);hero.talents.get(0).put(Talent.MYSTICAL_MEAL,rank);hero.talents.get(0).put(Talent.INVIGORATING_MEAL,rank);Talent.onFoodEaten(hero,1,null);Recharging wand=hero.buff(Recharging.class);ArtifactRecharge artifact=hero.buff(ArtifactRecharge.class);Haste haste=hero.buff(Haste.class);assertEquals(2+3*rank,wand.cooldown(),.0001f);assertEquals(1+2*rank,artifact.left(),0);assertEquals(.67f+rank,haste.cooldown(),.0001f);assertFalse(artifact.ignoreHornOfPlenty);assertTrue(TalentExplanation.details(Talent.ENERGIZING_MEAL,rank).contains("_"+(2+3*rank)+" turns of wand Recharging_"));assertTrue(TalentExplanation.details(Talent.MYSTICAL_MEAL,rank).contains("_"+(1+2*rank)+" turns of Artifact Recharging_"));
    Talent.onFoodEaten(hero,1,horn);assertFalse("equal offer preserves an existing different source",artifact.ignoreHornOfPlenty);artifact.detach();Talent.onFoodEaten(hero,1,horn);artifact=hero.buff(ArtifactRecharge.class);assertTrue("new Horn-sourced offer excludes Horn",artifact.ignoreHornOfPlenty);Talent.onFoodEaten(hero,1,null);assertTrue("equal ordinary offer does not replace the flag",artifact.ignoreHornOfPlenty);Buff.prolong(hero,Haste.class,20);Talent.onFoodEaten(hero,1,null);assertEquals(20,haste.cooldown(),.0001f);
   }
  }
@@ -2393,7 +2456,7 @@ public class MechanicsExplanationTest {
   hero.talents.get(0).put(Talent.VETERANS_INTUITION,2);hero.talents.get(0).put(Talent.ADVENTURERS_INTUITION,2);assertEquals(10f,Talent.itemIDSpeedFactor(hero,items[0]),0);assertEquals(7.5f,Talent.itemIDSpeedFactor(hero,items[1]),0);
  }
  @Test public void mealEmpowerDescriptionsMatchActualBuffOffersAndReplacementRules(){
-  for(int rank=1;rank<=2;rank++){hero.talents.get(0).put(Talent.EMPOWERING_MEAL,rank);hero.talents.get(0).put(Talent.STRENGTHENING_MEAL,rank);Talent.onFoodEaten(hero,1,null);WandEmpower wand=hero.buff(WandEmpower.class);PhysicalEmpower physical=hero.buff(PhysicalEmpower.class);assertEquals(1+rank,wand.dmgBoost);assertEquals(3,wand.left);assertEquals(3,physical.dmgBoost);assertEquals(1+rank,physical.left);assertTrue(MechanicsDetails.talent(Talent.EMPOWERING_MEAL,rank,"").contains((1+rank)+" points per qualifying"));assertTrue(MechanicsDetails.talent(Talent.STRENGTHENING_MEAL,rank,"").contains("next "+(1+rank)));assertTrue(MechanicsDetails.buff(physical,physical.desc()).contains("Adds 3 damage"));}
+  for(int rank=1;rank<=2;rank++){hero.talents.get(0).put(Talent.EMPOWERING_MEAL,rank);hero.talents.get(0).put(Talent.STRENGTHENING_MEAL,rank);Talent.onFoodEaten(hero,1,null);WandEmpower wand=hero.buff(WandEmpower.class);PhysicalEmpower physical=hero.buff(PhysicalEmpower.class);assertEquals(1+rank,wand.dmgBoost);assertEquals(3,wand.left);assertEquals(3,physical.dmgBoost);assertEquals(1+rank,physical.left);assertTrue(MechanicsDetails.talent(Talent.EMPOWERING_MEAL,rank,"").contains("_"+(1+rank)+" damage_"));assertTrue(MechanicsDetails.talent(Talent.STRENGTHENING_MEAL,rank,"").contains("next "+(1+rank)));assertTrue(MechanicsDetails.buff(physical,physical.desc()).contains("Adds 3 damage"));}
   PhysicalEmpower physical=hero.buff(PhysicalEmpower.class);physical.set(1,2);assertEquals(3,physical.dmgBoost);assertEquals(3,physical.left);physical.set(5,2);assertEquals(5,physical.dmgBoost);assertEquals(2,physical.left);
   WandEmpower wand=hero.buff(WandEmpower.class);wand.set(1,2);assertEquals(1,wand.dmgBoost);assertEquals(3,wand.left);
  }
@@ -2406,7 +2469,7 @@ public class MechanicsExplanationTest {
  }
  @Test public void enlighteningMealTomeOfferMatchesActualFractionalChargeAndCap()throws Exception{
   hero.heroClass=HeroClass.CLERIC;java.lang.reflect.Field charge=com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Artifact.class.getDeclaredField("charge"),partial=com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Artifact.class.getDeclaredField("partialCharge");charge.setAccessible(true);partial.setAccessible(true);com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HolyTome tome=new com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HolyTome();hero.belongings.artifact=tome;
-  for(int rank=1;rank<=2;rank++){charge.setInt(tome,0);partial.setFloat(tome,0);hero.talents.get(0).put(Talent.ENLIGHTENING_MEAL,rank);Talent.onFoodEaten(hero,1,null);assertEquals((rank+1)/3f,charge.getInt(tome)+partial.getFloat(tome),.00001f);assertTrue(MechanicsDetails.talent(Talent.ENLIGHTENING_MEAL,rank,"").contains(ObfuscationExplanation.number((rank+1)/3f)+" Tome charges"));assertTrue(MechanicsDetails.talent(Talent.ENLIGHTENING_MEAL,rank,"",true).contains((1+rank)+" game-time units"));}
+  for(int rank=1;rank<=2;rank++){charge.setInt(tome,0);partial.setFloat(tome,0);hero.talents.get(0).put(Talent.ENLIGHTENING_MEAL,rank);Talent.onFoodEaten(hero,1,null);assertEquals((rank+1)/3f,charge.getInt(tome)+partial.getFloat(tome),.00001f);assertTrue(MechanicsDetails.talent(Talent.ENLIGHTENING_MEAL,rank,"").contains(ObfuscationExplanation.number((rank+1)/3f)+" Tome charges"));assertTrue(MechanicsDetails.talent(Talent.ENLIGHTENING_MEAL,rank,"",true).contains("_"+(1+rank)+" turns_"));}
   tome.directCharge(100);int full=charge.getInt(tome);Talent.onFoodEaten(hero,1,null);assertEquals(full,charge.getInt(tome));assertEquals(0,partial.getFloat(tome),0);
  }
  @Test public void endureExplanationMatchesActualProtectionAndPerHitStorageTruncation(){
