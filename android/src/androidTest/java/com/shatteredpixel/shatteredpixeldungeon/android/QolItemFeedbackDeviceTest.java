@@ -199,6 +199,14 @@ public class QolItemFeedbackDeviceTest {
             com.shatteredpixel.shatteredpixeldungeon.items.bags.PotionBandolier bandolier=new com.shatteredpixel.shatteredpixeldungeon.items.bags.PotionBandolier();
             Item few=new com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing().identify().quantity(1),many=new com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfShielding().identify().quantity(8);
             bandolier.owner=Dungeon.hero;backpack.items.add(bandolier);bandolier.items.addAll(java.util.Arrays.asList(many,few));bags.add(bandolier);expected.add(java.util.Arrays.asList(few,many));
+            com.shatteredpixel.shatteredpixeldungeon.items.bags.VelvetPouch pouch=new com.shatteredpixel.shatteredpixeldungeon.items.bags.VelvetPouch();
+            Item seedLarge=new com.shatteredpixel.shatteredpixeldungeon.plants.Sungrass.Seed().quantity(6);
+            Item seedSmall=new com.shatteredpixel.shatteredpixeldungeon.plants.Firebloom.Seed().quantity(1);
+            Item stoneSmall=new com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfBlink().quantity(1);
+            Item stoneLarge=new com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfIntuition().quantity(8);
+            pouch.owner=Dungeon.hero;backpack.items.add(pouch);
+            pouch.items.addAll(java.util.Arrays.asList(stoneSmall,seedLarge,stoneLarge,seedSmall));
+            bags.add(pouch);expected.add(java.util.Arrays.asList(seedSmall,seedLarge,stoneSmall,stoneLarge));
         });
         try{
             for(int i=0;i<bags.size()+1;i++){
