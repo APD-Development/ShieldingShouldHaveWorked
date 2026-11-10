@@ -1,10 +1,10 @@
 # AGENTS.md: ADHD Pixel Dungeon (APD), start here
 
-APD is a private fork of Shattered Pixel Dungeon 4.0.x (upstream licence/attribution must stay). It is a solo project: all in-game developer voice is first-person singular (I/me/my). The owner is the sole decision maker. Repo: github.com/charltonchris29/ShieldingShouldHaveWorked (private).
+APD is a private fork of Shattered Pixel Dungeon 4.0.x (upstream licence/attribution must stay). It is a solo project: all in-game developer voice is first-person singular (I/me/my). The owner is the sole decision maker. Repo: github.com/APD-Development/ShieldingShouldHaveWorked (private).
 
 ## Branches
-- Work branch: `claude/adhd-pixel-dungeon-setup-iszc3v` (ALL current work is here; it is far ahead of `main`).
-- `main` holds only verified builds (up to apd-build-80) plus `.github/workflows/private-test-apk.yml`. Never merge unfinished code to main to get a test APK.
+- Current work branch: `codex/apd-phone-fixes-2026-10-09`. Resumed on November 10 from `6919e4b86b033f7d8ceec9d4c18f3f4d69cb2f18`; follow current receipts and `docs/APD-CURRENT-STATE-2026-11-10.json`. Historical Claude branches and `main` are not the current work checkout.
+- Preserve `main`; never merge unfinished work there to obtain an APK. All current source verification, preparation and private delivery use the active work branch.
 
 ## Read first (in this order)
 0. `docs/WORK-COMPLETED-LEDGER.md`: everything already DONE (do not redo) vs NOT done. Check it before starting any task.
@@ -26,12 +26,14 @@ APD is a private fork of Shattered Pixel Dungeon 4.0.x (upstream licence/attribu
 - The owner tests on a RedMagic 11 Pro and reports bugs by checklist step. Untested changes caused many bugs before: prefer small, test-backed changes and say clearly what is NOT device-verified.
 
 ## Build and test
-- Unit tests (no Android SDK needed): `tools/run-core-tests.sh` (about 1-3 minutes; 848 tests at last run, all passing). Single test: `tools/run-core-tests.sh --tests '*ApdIntroTest*'`.
+- Unit tests (no Android SDK needed): `tools/run-core-tests.sh` (about 1-3 minutes; 3,164 tests across 457 suites at the November 10 resumed-source check, all passing). Single test: `tools/run-core-tests.sh --tests '*ApdIntroTest*'`.
 - The Android module (APK) needs the Android SDK/AGP; build it with `./gradlew :android:assembleDebug -PapdTestBuild -PapdBuild=<n>` on a machine with the SDK, or via the manual GitHub workflow below.
 - Level generation can be tested headlessly: see `core/src/test/.../apd/LevelGenerationHarness.java` and `FirstFloorExitTest`.
 
-## Releasing a test APK (owner approval required each time)
-GitHub > Actions > "Private test APK" > Run workflow, ref = the claude branch. `publish` on = a GitHub PRE-RELEASE (tag `apd-test-N`) with the .apk attached directly; `from_run` = publish an already built run without rebuilding. Latest: https://github.com/charltonchris29/ShieldingShouldHaveWorked/releases/tag/apd-test-3 (built from 46229e1d7). Installs over previous builds (same signing key + app id `.indev`); never ask the owner to uninstall (it erases their data).
+## Releasing a verified build during the resumed work
+The November 10 instruction above authorizes delivery of every completed verified build. Follow the exact current build request and preparation workflow, preserve the immediately previous compiled APK history, and require the complete core results, required compilation and all targeted native cases on the exact assembled pair. Review the affected native screenshots before publication. `docs/APD-REVIEWED-PAIR-DELIVERY.json` binds the original artifact IDs/digests, source commit, APK hashes, test counts and manual image hashes; its workflow rechecks them and downloads the pair/source back before publication. The delivery-only workflow never rebuilds the applications.
+
+Latest verified release at this update: [APD430](https://github.com/APD-Development/ShieldingShouldHaveWorked/releases/tag/apd-alpha-preview-430), published November 10 after recovering the original November 9 artifacts. APD431 is held for a confirmed singular charge/points wording defect; its original native verification is running at [42859611090](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/42859611090); APD432 is the corrective candidate. Consult the current-state record and delivery receipt for later outcomes. The same original signer and `.indev` application ID are required. Never ask the owner to uninstall or clear player data. Send each completed build's version and download links in the owner conversation.
 
 ## Code map
 - Game: `core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/`; APD additions under `apd/` (recorder, stats, query = UIMSD statistics database, backend, backendbridge, humor, difficulty, demo, replay). UI windows in `windows/`, scenes in `scenes/`.

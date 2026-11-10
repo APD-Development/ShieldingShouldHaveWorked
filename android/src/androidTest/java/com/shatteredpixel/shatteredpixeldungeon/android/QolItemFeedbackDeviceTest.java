@@ -479,16 +479,17 @@ public class QolItemFeedbackDeviceTest {
             calculationWindow(()->new WndInfoTalent(com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent.valueOf(name),2,null),reviewedTalentText[index],"qol-reviewed-talent-clear-"+name+".png");
         }
         final HeroClass[] beforeMealClass=new HeroClass[1];
+        final int[] beforeMealLevel=new int[1];
         final java.util.LinkedHashMap<com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent,com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent> beforeMealMetamorphs=new java.util.LinkedHashMap<>();
-        TopScoresDeviceTest.render(()->{beforeMealClass[0]=Dungeon.hero.heroClass;beforeMealMetamorphs.putAll(Dungeon.hero.metamorphedTalents);});
+        TopScoresDeviceTest.render(()->{beforeMealClass[0]=Dungeon.hero.heroClass;beforeMealLevel[0]=Dungeon.hero.lvl;beforeMealMetamorphs.putAll(Dungeon.hero.metamorphedTalents);});
         String[] mealNames={"ENERGIZING_MEAL","MYSTICAL_MEAL","INVIGORATING_MEAL","SATIATED_SPELLS","FOCUSED_MEAL","ENLIGHTENING_MEAL","EMPOWERING_MEAL","STRENGTHENING_MEAL","COMBINED_LETHALITY","SATIATED_SPELLS","FOCUSED_MEAL","ENLIGHTENING_MEAL"};
         HeroClass[] mealClasses={HeroClass.MAGE,HeroClass.ROGUE,HeroClass.HUNTRESS,HeroClass.CLERIC,HeroClass.DUELIST,HeroClass.CLERIC,HeroClass.MAGE,HeroClass.DUELIST,HeroClass.DUELIST,HeroClass.WARRIOR,HeroClass.WARRIOR,HeroClass.WARRIOR};
-        String[] mealExpected={"1 extra charge every 4 turns","including whether it can recharge the Horn","Haste triples movement speed","next qualifying spell cast","Fractions accumulate","With a Holy Tome","3 direct-wand damage rolls","total remaining bonus","Bosses and minibosses cannot be executed","delays decay for at least","next physical damage roll","both wand and artifact Recharging"};
+        String[] mealExpected={"1 extra charge every 4 turns","including whether it can recharge the Horn","Haste triples movement speed","next qualifying spell cast","_1 weapon-ability charge_","_1 Tome charge_","3 direct-wand damage rolls","total remaining bonus","Bosses and minibosses cannot be executed","delays decay for at least","_+1 damage_","both wand and artifact Recharging"};
         try{for(int index=0;index<mealNames.length;index++){
             final String name=mealNames[index];final HeroClass mealClass=mealClasses[index];final boolean alternate=index>=9;
-            TopScoresDeviceTest.render(()->{Dungeon.hero.heroClass=mealClass;Dungeon.hero.metamorphedTalents.clear();if(alternate)Dungeon.hero.metamorphedTalents.put(com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent.HEARTY_MEAL,com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent.valueOf(name));});
+            TopScoresDeviceTest.render(()->{Dungeon.hero.heroClass=mealClass;Dungeon.hero.lvl=1;Dungeon.hero.metamorphedTalents.clear();if(alternate)Dungeon.hero.metamorphedTalents.put(com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent.HEARTY_MEAL,com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent.valueOf(name));});
             calculationWindow(()->new WndInfoTalent(com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent.valueOf(name),2,null),mealExpected[index],"qol-reviewed-talent-clear-"+name+(alternate?"-alternate":"-native")+".png");
-        }}finally{TopScoresDeviceTest.render(()->{Dungeon.hero.heroClass=beforeMealClass[0];Dungeon.hero.metamorphedTalents.clear();Dungeon.hero.metamorphedTalents.putAll(beforeMealMetamorphs);});}
+        }}finally{TopScoresDeviceTest.render(()->{Dungeon.hero.heroClass=beforeMealClass[0];Dungeon.hero.lvl=beforeMealLevel[0];Dungeon.hero.metamorphedTalents.clear();Dungeon.hero.metamorphedTalents.putAll(beforeMealMetamorphs);});}
         final HeroClass[] beforeRechargeClass=new HeroClass[1];TopScoresDeviceTest.render(()->{beforeRechargeClass[0]=Dungeon.hero.heroClass;Dungeon.hero.heroClass=HeroClass.DUELIST;});
         try{calculationWindow(()->new WndInfoTalent(com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent.WEAPON_RECHARGING,2,null),"1 extra weapon-ability charge every 10 turns","qol-reviewed-talent-clear-WEAPON_RECHARGING-duelist.png");}
         finally{TopScoresDeviceTest.render(()->Dungeon.hero.heroClass=beforeRechargeClass[0]);}

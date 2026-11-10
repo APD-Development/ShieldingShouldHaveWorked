@@ -36,6 +36,19 @@ public class MechanicsExplanationTest {
  @After public void restore()throws Exception{for(java.util.Map.Entry<java.lang.reflect.Field,Object> e:badgeState.entrySet())e.getKey().set(null,e.getValue());Dungeon.hero=oldHero;Dungeon.level=oldLevel;Dungeon.challenges=oldChallenges;Dungeon.apdRestoreCustomRules(oldRules);java.lang.reflect.Field notes=com.shatteredpixel.shatteredpixeldungeon.journal.Notes.class.getDeclaredField("records");notes.setAccessible(true);notes.set(null,oldNotes);}
  private RingOfArcana ring(int level){RingOfArcana ring=new RingOfArcana();ring.level(level);ring.anonymize();ring.levelKnown=ring.cursedKnown=true;hero.belongings.ring=ring;ring.activate(hero);return ring;}
  public static class BountyLootProbe extends com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob {public BountyLootProbe(float chance){lootChance=chance;}}
+ @Test public void mealChargeTextUsesSingularForOneChargeAndUncountedDamage() {
+  hero.heroClass=HeroClass.DUELIST;
+  String focused=TalentExplanation.details(Talent.FOCUSED_MEAL,2);
+  assertTrue(focused,focused.contains("_1 weapon-ability charge_"));
+  assertTrue(TalentExplanation.details(Talent.FOCUSED_MEAL,1).contains("_0.667 weapon-ability charges_"));
+  hero.heroClass=HeroClass.CLERIC;
+  String enlightening=TalentExplanation.details(Talent.ENLIGHTENING_MEAL,2);
+  assertTrue(enlightening,enlightening.contains("_1 Tome charge_"));
+  assertTrue(TalentExplanation.details(Talent.ENLIGHTENING_MEAL,1).contains("_0.667 Tome charges_"));
+  hero.heroClass=HeroClass.WARRIOR;hero.lvl=1;
+  String alternate=TalentExplanation.details(Talent.FOCUSED_MEAL,2,true);
+  assertTrue(alternate,alternate.contains("At your current level: _+1 damage_."));
+ }
  public static class CombinedLethalityTarget extends PlainStatusTarget {
   int deaths;
   CombinedLethalityTarget(com.shatteredpixel.shatteredpixeldungeon.actors.Char.Property trait) {
@@ -2464,12 +2477,12 @@ public class MechanicsExplanationTest {
   PhysicalEmpower physical=Buff.affect(hero,PhysicalEmpower.class);physical.set(4,7);com.watabou.utils.Bundle before=new com.watabou.utils.Bundle();physical.storeInBundle(before);String first=MechanicsDetails.buff(physical,physical.desc());assertTrue(first.contains("next 7 hero physical damage rolls"));armor.levelKnown=false;armor.level(9);assertEquals(first,MechanicsDetails.buff(physical,physical.desc()));com.watabou.utils.Bundle after=new com.watabou.utils.Bundle();physical.storeInBundle(after);assertEquals(before.toString(),after.toString());
  }
  @Test public void focusedMealAlternateDamageUsesLiveHeroLevelAndActualOffer(){
-  for(int rank=1;rank<=2;rank++)for(int level:new int[]{1,7,20}){PhysicalEmpower old=hero.buff(PhysicalEmpower.class);if(old!=null)old.detach();hero.lvl=level;hero.talents.get(0).put(Talent.FOCUSED_MEAL,rank);Talent.onFoodEaten(hero,1,null);int amount=Math.round(level/(4f-rank));PhysicalEmpower buff=hero.buff(PhysicalEmpower.class);assertEquals(amount,buff.dmgBoost);assertEquals(amount>0?1:0,buff.left);assertTrue(MechanicsDetails.talent(Talent.FOCUSED_MEAL,rank,"").contains("+"+amount+" points"));}
+  for(int rank=1;rank<=2;rank++)for(int level:new int[]{1,7,20}){PhysicalEmpower old=hero.buff(PhysicalEmpower.class);if(old!=null)old.detach();hero.lvl=level;hero.talents.get(0).put(Talent.FOCUSED_MEAL,rank);Talent.onFoodEaten(hero,1,null);int amount=Math.round(level/(4f-rank));PhysicalEmpower buff=hero.buff(PhysicalEmpower.class);assertEquals(amount,buff.dmgBoost);assertEquals(amount>0?1:0,buff.left);assertTrue(MechanicsDetails.talent(Talent.FOCUSED_MEAL,rank,"").contains("+"+amount+" damage"));}
   hero.heroClass=HeroClass.DUELIST;assertTrue(MechanicsDetails.talent(Talent.FOCUSED_MEAL,1,"",false).contains("0.667 weapon-ability charges"));assertTrue(MechanicsDetails.talent(Talent.FOCUSED_MEAL,1,"",true).contains("Alternate next-hit damage"));
  }
  @Test public void enlighteningMealTomeOfferMatchesActualFractionalChargeAndCap()throws Exception{
   hero.heroClass=HeroClass.CLERIC;java.lang.reflect.Field charge=com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Artifact.class.getDeclaredField("charge"),partial=com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Artifact.class.getDeclaredField("partialCharge");charge.setAccessible(true);partial.setAccessible(true);com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HolyTome tome=new com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HolyTome();hero.belongings.artifact=tome;
-  for(int rank=1;rank<=2;rank++){charge.setInt(tome,0);partial.setFloat(tome,0);hero.talents.get(0).put(Talent.ENLIGHTENING_MEAL,rank);Talent.onFoodEaten(hero,1,null);assertEquals((rank+1)/3f,charge.getInt(tome)+partial.getFloat(tome),.00001f);assertTrue(MechanicsDetails.talent(Talent.ENLIGHTENING_MEAL,rank,"").contains(ObfuscationExplanation.number((rank+1)/3f)+" Tome charges"));assertTrue(MechanicsDetails.talent(Talent.ENLIGHTENING_MEAL,rank,"",true).contains("_"+(1+rank)+" turns_"));}
+  for(int rank=1;rank<=2;rank++){charge.setInt(tome,0);partial.setFloat(tome,0);hero.talents.get(0).put(Talent.ENLIGHTENING_MEAL,rank);Talent.onFoodEaten(hero,1,null);assertEquals((rank+1)/3f,charge.getInt(tome)+partial.getFloat(tome),.00001f);assertTrue(MechanicsDetails.talent(Talent.ENLIGHTENING_MEAL,rank,"").contains(rank==2?"_1 Tome charge_":"_0.667 Tome charges_"));assertTrue(MechanicsDetails.talent(Talent.ENLIGHTENING_MEAL,rank,"",true).contains("_"+(1+rank)+" turns_"));}
   tome.directCharge(100);int full=charge.getInt(tome);Talent.onFoodEaten(hero,1,null);assertEquals(full,charge.getInt(tome));assertEquals(0,partial.getFloat(tome),0);
  }
  @Test public void endureExplanationMatchesActualProtectionAndPerHitStorageTruncation(){

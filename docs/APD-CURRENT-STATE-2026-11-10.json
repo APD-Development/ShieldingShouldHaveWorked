@@ -1,17 +1,19 @@
 {
-  "recorded_utc": "2026-11-10T16:52:07.855174+00:00",
+  "recorded_utc": "2026-11-10T17:01:02.499396+00:00",
   "active_branch": "codex/apd-phone-fixes-2026-10-09",
   "resumed_source_commit": "8b9ef4e293fc9dfc9d1a8b6485c1f59565bd7ea7",
   "source_check_run": 42858513472,
   "source_check_status": "success: 3164 core tests, Android debug/release/instrumentation and desktop compiled",
-  "latest_verified_published_build": 429,
+  "latest_verified_published_build": 430,
   "apd430": {
     "source": "2193252bf075b8b429118262fdca8cca046e149c",
     "build_run": 42696629251,
     "failed_original_stage_run": 42696773758,
-    "recovery": "Full independent identity/source/test checks and 76 manually reviewed frames accepted; publication request ready, remote delivery not yet verified",
+    "recovery": "Published exact original pair after verified readback; links sent in the active owner conversation",
     "first_recovery_run": 42859170353,
-    "first_recovery_result": "All local and remote preflight checks passed; draft created, lookup by unmaterialized tag failed before uploads. Original evidence retained; corrected request pending."
+    "first_recovery_result": "All local and remote preflight checks passed; draft created, lookup by unmaterialized tag failed before uploads. Original evidence retained; corrected request pending.",
+    "delivery_run": 42859610772,
+    "published_utc": "2026-11-10T16:56:53Z"
   },
   "local_core": {
     "tests": 3164,
@@ -20,7 +22,7 @@
     "errors": 0,
     "skipped": 0
   },
-  "new_application_apks_created_this_session": 0,
+  "new_application_apks_created_this_session": 2,
   "remaining": [
     "TalentExplanation and normal talent text audit remain partial",
     "Cursed Wand owner wording decision",
@@ -28,5 +30,28 @@
   ],
   "delivery_instruction": "Push builds to me every new build you complete",
   "scheduled_automation_created": false,
-  "physical_phone_or_acoustic_audio_verified": false
+  "physical_phone_or_acoustic_audio_verified": false,
+  "release_url": "https://github.com/APD-Development/ShieldingShouldHaveWorked/releases/tag/apd-alpha-preview-430",
+  "active_build": {
+    "number": 431,
+    "source_commit": "5a8fe508d6d3f2a449c5a9b8fa9632e22f86dcb3",
+    "run_id": 42859611090,
+    "status": "in_progress; no completed new APK acceptance claimed"
+  },
+  "source_check_artifact": {
+    "id": 13784835729,
+    "sha256": "8380b47d31a673d4bf99a5614cc2758260710c0b9a8ccaf07826c3c23e816910",
+    "committed_copy": "docs/evidence/APD-20261110-source-check-green.zip",
+    "tests": 3164,
+    "suites": 457,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "apd431": {
+    "source": "5a8fe508d6d3f2a449c5a9b8fa9632e22f86dcb3",
+    "run": 42859611090,
+    "status": "Original pair built and independently verified; native cases running. Hold for source-confirmed singular charge/points wording defect. No publication."
+  },
+  "next_candidate": 432
 }
