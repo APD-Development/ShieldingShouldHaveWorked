@@ -761,6 +761,9 @@ public class SPDSettings extends GameSettings {
     public static void autoEatWhenHungry(boolean value){put("apd_wait_eat_hungry",value);}
     public static boolean continueOnTrapDiscovery(){return getBoolean("apd_continue_trap_discovery",false);}
     public static void continueOnTrapDiscovery(boolean enabled){put("apd_continue_trap_discovery",enabled);}
+    /** Chooser preference only: never performs a search or changes its range/cost. */
+    public static boolean adaptiveSearchChoice(){return getBoolean("apd_adaptive_search_choice",true);}
+    public static void adaptiveSearchChoice(boolean enabled){put("apd_adaptive_search_choice",enabled);}
     public static boolean singleTapSearch(){return getBoolean("apd_single_tap_search",false);}
     public static void singleTapSearch(boolean enabled){put("apd_single_tap_search",enabled);}
     public static int playbackSpeed() {
