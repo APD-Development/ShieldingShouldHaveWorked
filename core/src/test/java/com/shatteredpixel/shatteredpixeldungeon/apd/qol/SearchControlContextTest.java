@@ -267,6 +267,9 @@ public class SearchControlContextTest {
                     false, level.searchedWalls.attempted(wall));
             assertTrue("normal Search still increments the remembered search count",
                     hero.wallSearch.searches() > 0);
+            // A completed paid Search rightly keeps its negative doorway evidence.
+            // Reset only this disposable test floor to inspect a fresh adjacent wall.
+            level.searchedWalls.clear();
             hero.pos = at(11, 10);
             assertEquals(Action.WALL_SEARCH, SearchControlContext.preferred(hero, level));
             select(Action.SEARCH);
