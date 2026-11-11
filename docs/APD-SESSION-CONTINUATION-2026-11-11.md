@@ -1,5 +1,13 @@
 # APD continuation, November 11, 2026
 
+## APD446 frozen pair: pre-native verification, November 11
+
+APD446 has been assembled once from [1968913a](https://github.com/APD-Development/ShieldingShouldHaveWorked/commit/1968913a441f53ab3652cffc05e131427d0c3703) in [run 43077773970](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/43077773970), attempt 1. Independent pre-native verification passed: 3,247 raw core tests across 468 suites with zero failures, errors or skips; all five required compile targets including the corrected seed fixture; both JSON ABI checks; original signer/application identity; exact-source scanning; all 5,057 source entries; and preserved APD445 compiled history. The actual scan contains 71 reviewed source candidates and 23 retained redacted historical findings under unchanged rules. The first checker attempt rejected a still-running scan snapshot; that timing failure remains preserved.
+
+The exact source comparison with accepted APD444 finds only the eight approved seed-history/Search application integration paths changed. All other compared main-source and build files are unchanged, including the existing scoring, saved-seed and hero search handlers, toolbar swap and wall-search safety classes. See the APD446 application-scope and pre-native receipts. Both native jobs are still running at this checkpoint. No native, manual or owner-delivery acceptance is claimed; keep the frozen pair unchanged.
+
+APD445's original failed build/source/native artifacts and diagnostic evidence are now preserved in `APD-445-Unaccepted-Build-Evidence-2026-11-11.zip`, 302,443,798 bytes, SHA-256 `af95d5f359f5c188822eb64aa59827b881056387b62c363aa2df0731504fe3c4`. All 1,680 archived evidence files were read back, and the saved archive was downloaded back with the same bytes/hash at `2026-11-11T18:29:30.684910+00:00`. This preserves the rejected candidate, not an accepted game release. APD444 remains the last accepted delivered owner game. The new preservation receipt binds the saved-file identity and original evidence.
+
 ## APD446 source verification and corrected build request, November 11
 
 The completed application correction is committed at [245310c4](https://github.com/APD-Development/ShieldingShouldHaveWorked/commit/245310c4d2a820bd7f220de6e7c3278cd5b119e7). Fresh local tests and actual [source CI 43075480141](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/43075480141) each passed 3,247 tests across 468 suites with zero failures, errors or skips. All five required core, desktop and Android compilation targets passed. Exact supported unfinished attempts now count as matching local history; only their canonical observed main-dungeon depth is reported, explicitly distinguished from final results. Existing scoring remains unchanged.
@@ -82,9 +90,10 @@ The APD442-444 raw verification evidence is now preserved in `APD-Verification-E
 
 ## Next execution steps
 
-1. Retain the delivered APD444 game/source at 2b8787a2 and the separately accepted corrected pylon test at b5ba1c00, with both original and corrected evidence. Resume from the latest verified branch head recorded above; later test-only or receipt commits do not change the delivered game.
-2. Record the owner's next-APK requests when they are provided, then assess their concrete implementation scope against the current source, standing design decisions and save/signing requirements. No next game build has started.
-3. For independent work within the existing approval, select only still-unfinished ordinary talent-description facets after checking the current inventory and completed records. Keep Cursed Wand wording and mechanic-panel choices with the owner, and preserve the broader boss, physical-phone and audio limits.
-4. After a new approved application change is source-verified, use the exact predecessor history and one frozen pair, run the relevant full compilation/core/native/source/manual gates, then save, download back and immediately deliver the verified APKs and corresponding source.
+1. Finish the exact APD446 native run, preserving all case reports and complete device-image inventories. Reuse the frozen pair from source 1968913a; do not assemble it again.
+2. Require all 18 native cases and manually review the 61 affected originals plus eight retained controls per variant. Review the corrected visible seed-entry capture and complete unfinished-history notice specifically.
+3. Verify the owner package against the already accepted pre-native proof, then save, download back and immediately deliver the verified APKs and matching source. APD445 remains unaccepted and must not be delivered.
+4. Preserve APD446 raw evidence and push the final acceptance/delivery/current-state records. The separate APD445 failed archive is already durably saved and read back.
+5. Keep imported-seed severity and the absent numerical personal replay/new-depth score formula as owner decisions. Preserve the recorded physical-phone, audio, broader boss and wording limits.
 
 This checkpoint describes the observed current session. No new recurring development mechanism was created, and it does not claim that coding will continue after the execution session ends.
