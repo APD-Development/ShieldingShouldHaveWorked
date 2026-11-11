@@ -17,6 +17,7 @@
  */
 package com.shatteredpixel.shatteredpixeldungeon.apd.qol;
 
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.Room;
@@ -42,6 +43,16 @@ public final class SearchedWallMarkers {
     private static boolean gatedRoomPerimeter(Level l, int p) {
         if (!(l instanceof RegularLevel) || !((RegularLevel) l).apdHasRooms()) return false;
         int w = l.width(), y = p / w;
+        // Old saves may contain checkmarks created from inside a keyed room. Hide
+        // those within its actual bounds whenever the hero is inside that room.
+        // The original memory bits are not deleted or migrated.
+        if (Dungeon.level == l && Dungeon.hero != null
+                && DoorSearchEligibility.insideGatedRoom(l, Dungeon.hero.pos)) {
+            Room current = ((RegularLevel) l).room(Dungeon.hero.pos);
+            int x = p % w;
+            if (current != null && x >= current.left && x <= current.right
+                    && y >= current.top && y <= current.bottom) return true;
+        }
         // Only an immediate room interior can identify this wall as its perimeter.
         // Checking all four sides also handles walls that border another ordinary room.
         // The renderer is hot: do not allocate an array for each wall marker.
