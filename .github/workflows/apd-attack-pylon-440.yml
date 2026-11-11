@@ -10,7 +10,7 @@ concurrency: {group: apd440-verified-build, cancel-in-progress: false}
 jobs:
   build:
     runs-on: ubuntu-latest
-    timeout-minutes: 35
+    timeout-minutes: 70
     steps:
       - uses: actions/checkout@v4
         with: {fetch-depth: 0}
@@ -20,6 +20,7 @@ jobs:
       - name: Recover exact previous compiled history without changing previous builds
         env: {GH_TOKEN: '${{ github.token }}'}
         run: |
+          gh run watch 42938370462 --repo "$GITHUB_REPOSITORY" --exit-status --interval 15
           python3 tools/apd_owner_delivery_policy.py
           python3 - <<'PY'
           import json,pathlib,subprocess,sys
