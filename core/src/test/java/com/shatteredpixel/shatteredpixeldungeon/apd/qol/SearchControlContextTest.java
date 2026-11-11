@@ -275,7 +275,8 @@ public class SearchControlContextTest {
             select(Action.SEARCH);
             assertTrue("adjacent eligible wall is recorded by the actual paid Search",
                     level.searchedWalls.attempted(wall));
-            assertEquals(4f, hero.cooldown(), 0f);
+            assertEquals("Each normal Search retains its own two-turn action cost",
+                    2f, hero.cooldown(), 0f);
         } finally {
             SPDSettings.adaptiveSearchChoice(priorChoice);
             Dungeon.depth = priorDepth;
