@@ -1,5 +1,7 @@
 # APD441 source changes, November 11, 2026
 
+Acceptance update: APD441 subsequently passed producing run [43026044936](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/43026044936), all twelve native cases, the affected-image reviews and exact-source scan [43028854285](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/43028854285). Both frozen APKs and corresponding source were delivered after exact saved-file readback. See [the final delivery receipt](APD-441-DELIVERY-2026-11-11.json) and [current handoff](APD-SESSION-2026-11-11.md). The preparation notes below retain their original verification sequence; their then-pending gates are complete in those final records.
+
 The resumed baseline is `293b5a0d5fed957c1d953b301fadf576a766611b` on `codex/apd-phone-fixes-2026-10-09`. APD439/440 original APK recovery is separate from this new source candidate. No claim is made that these changes are in those original APKs.
 
 ## Bounded correction and retained work

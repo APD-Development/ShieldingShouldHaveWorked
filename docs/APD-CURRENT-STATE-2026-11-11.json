@@ -1,0 +1,220 @@
+{
+  "schema": 1,
+  "recorded_utc": "2026-11-11T13:52:23.415234+00:00",
+  "project": "ADHD Pixel Dungeon",
+  "repository": "APD-Development/ShieldingShouldHaveWorked",
+  "branch": "codex/apd-phone-fixes-2026-10-09",
+  "resumed_from": "293b5a0d5fed957c1d953b301fadf576a766611b",
+  "latest_verified_source_commit": "748f9c990284b61f74b39c5111646bcb1d395183",
+  "last_verified_remote_commit_before_handoff_commit": "76866517a5e6ecd043d7ac3f36fe383d2cf9aaf3",
+  "latest_delivered_build": 441,
+  "builds_delivered_in_session": [
+    439,
+    440,
+    441
+  ],
+  "new_application_apks_created_this_session": 2,
+  "original_439_440_apks_rebuilt": false,
+  "production_changes": [
+    "Ordinary Excess Charge text now matches the existing rank factors 0.67/1.34/2.01 per effective imbued-wand level, temporary bonuses, whole-point rounding and stronger Barrier preservation.",
+    "Ordinary Counter Ability rank +2 refund text corrected from 0.77 to 0.75; the existing rank * 0.375 handler is unchanged."
+  ],
+  "unchanged": [
+    "Gameplay formulas and balance",
+    "Game Java production source",
+    "Save schema and recorded player history",
+    "Application ID, versionCode and signing identity",
+    "Cleric balance and lore requirements",
+    "Existing original builds and failure evidence",
+    "main branch"
+  ],
+  "restored_history": {
+    "original_parent": "a14cf151638c7863a07f533d3a3de423bbe136e8",
+    "restored_test_blob": "481b1b036de405e25e2c86256423c2e1c03f082c",
+    "restored_tests": 4,
+    "method": "Exact historical test restored and original commit retained as additional parent of dd9cfb."
+  },
+  "new_targeting_integration_tests": 6,
+  "verification": {
+    "final_build_run": 43026044936,
+    "final_build_status": "success",
+    "core": {
+      "tests": 3190,
+      "suites": 463,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "required_compilation": "Core, desktop, Android debug/release and instrumentation compilation passed.",
+    "android_json_abi": {
+      "production_classes_checked": 4134,
+      "distinct_json_references": 38,
+      "passed_after_compile_and_assembly": true
+    },
+    "native": {
+      "cases_per_variant": 6,
+      "total_cases": 12,
+      "variants": [
+        "Developer",
+        "Alpha-Testers"
+      ],
+      "pngs_per_variant": 1414,
+      "all_png_hashes_and_complete_device_transfer_manifests_verified": true
+    },
+    "manual": {
+      "Developer_original_size_images": 19,
+      "Alpha_original_size_images": 25,
+      "root_affected_images_per_variant": 8,
+      "all_native_images_manually_reviewed_at_full_size": false
+    },
+    "source_scan": {
+      "run": 43028854285,
+      "status": "success",
+      "manifest_files": 4943,
+      "reviewed_source_candidates": 72,
+      "retained_redacted_historical_findings": 23,
+      "zero_findings_claimed": false
+    },
+    "local_full": {
+      "tests": 3190,
+      "suites": 463,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "local_final_targeted": {
+      "fresh_main_java_files": 1718,
+      "fresh_test_java_files": 491,
+      "tests": 519,
+      "suites": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "source_only_ci": {
+      "run": 43021746221,
+      "status": "success",
+      "tests": 3190,
+      "suites": 463,
+      "source": "dd9cfb270fba156815adb43cd4fd382830ea78c6"
+    },
+    "saved_file_readback": "All three files for each delivered build read back with matching SHA-256 before direct links were sent."
+  },
+  "delivery_receipts": [
+    "docs/APD-439-DELIVERY-2026-11-11.json",
+    "docs/APD-440-DELIVERY-2026-11-11.json",
+    "docs/APD-441-DELIVERY-2026-11-11.json"
+  ],
+  "preserved_failures": [
+    {
+      "kind": "Initial local fixture recovery",
+      "tests": 3190,
+      "suites": 463,
+      "failures": 0,
+      "errors": 2,
+      "skipped": 0,
+      "affected_suite": "ApdHistoricalCoverageTest",
+      "reason": "Two methods errored because history/index.tsv had not been recovered. Exact current and historical fixtures restored; fresh full run passed."
+    },
+    {
+      "run": 43021022953,
+      "kind": "Original exact-APK recovery",
+      "status": "failure",
+      "reason": "APD440 Alpha QoL passed; emulator disappeared during bulk screenshot collection, leaving 1386 partial images and five unrun cases. Exact host-side cause remains unknown.",
+      "corrective_run": 43024704967,
+      "corrective_status": "success"
+    },
+    {
+      "run": 43021889179,
+      "kind": "First APD441 attempt",
+      "status": "failure",
+      "reason": "Stopped at failed original recovery prerequisite before compilation or assembly; zero APKs created."
+    }
+  ],
+  "github_release_publication": {
+    "last_verified_published_release": 437,
+    "release_id": 441113099,
+    "tag": "apd-alpha-preview-437",
+    "source": "4da1ef4cf0e116c7a5187236b5c61e53600e241b",
+    "published_at": "2026-11-11T01:00:23Z",
+    "unresolved_path": "Original APD439 release run 42938508243 returned HTTP 403 Resource not accessible by integration on POST /releases; credential-free correction not proven.",
+    "new_439_440_441_github_releases_claimed": false,
+    "direct_download_delivery_succeeded": true
+  },
+  "remaining_limits": [
+    "Physical RedMagic install-over and checklist steps 23-41 remain unverified.",
+    "Prison/Tengu speaker delay and overlap remain unmeasured on the physical device.",
+    "Whole ordinary talent/item-description audit remains incomplete.",
+    "Cursed Wand wording and pending mechanic-panel decisions remain with the owner.",
+    "Hero-select pips/win star remain designed but not approved for implementation.",
+    "No targeted native DM300/pylon screenshot acceptance; six actual-callsite headless integration regressions passed.",
+    "Developer synthetic Ooze image does not clearly show the effect; runtime assertions passed."
+  ],
+  "next_steps": [
+    "Resume from this work branch and its latest verified remote head, retaining the APD441 producing commit and direct-delivery receipt.",
+    "Continue the remaining ordinary-description audit against actual handlers and saved approved review scope. Record only demonstrated mismatches; preserve mechanics and unresolved owner decisions.",
+    "For the next approved source change, run relevant handler regressions and the complete core/required compilation gates, then assemble one new signed pair and verify exact native evidence before immediate delivery.",
+    "Investigate the release-write HTTP 403 only through the existing authorized connection and retained evidence; do not broaden credentials or alter main as a workaround.",
+    "Keep physical install-over, phone checklist and Prison/Tengu acoustic verification explicitly open until actual device evidence exists."
+  ],
+  "session_execution": {
+    "new_recurring_schedule_created": false,
+    "background_coding_promised": false,
+    "all_observed_build_and_scan_runs_terminal": true
+  },
+  "session_commits": [
+    {
+      "sha": "45b4520ced7bf719db2678bdb123f0de88de5019",
+      "summary": "Recover exact original APD439 and APD440 native evidence",
+      "url": "https://github.com/APD-Development/ShieldingShouldHaveWorked/commit/45b4520ced7bf719db2678bdb123f0de88de5019"
+    },
+    {
+      "sha": "dd9cfb270fba156815adb43cd4fd382830ea78c6",
+      "summary": "Correct Excess Charge text, restore four actual-handler tests and add six targeting integration tests",
+      "url": "https://github.com/APD-Development/ShieldingShouldHaveWorked/commit/dd9cfb270fba156815adb43cd4fd382830ea78c6"
+    },
+    {
+      "sha": "02e2d1c98b29a5abdec58bcaf6eb18347ad413fc",
+      "summary": "Request the first gated APD441 candidate; prerequisite stopped it before build",
+      "url": "https://github.com/APD-Development/ShieldingShouldHaveWorked/commit/02e2d1c98b29a5abdec58bcaf6eb18347ad413fc"
+    },
+    {
+      "sha": "f552403050a03bccf0a1a2864f53dc57b22bd08a",
+      "summary": "Restore exact source/history scan wrapper and validate complete PNG image data without Pillow",
+      "url": "https://github.com/APD-Development/ShieldingShouldHaveWorked/commit/f552403050a03bccf0a1a2864f53dc57b22bd08a"
+    },
+    {
+      "sha": "bbb24627d7717b7fd0869c3a1e8b524d9ad856c3",
+      "summary": "Recover the frozen APD440 Alpha with serialized transfers and complete device manifests",
+      "url": "https://github.com/APD-Development/ShieldingShouldHaveWorked/commit/bbb24627d7717b7fd0869c3a1e8b524d9ad856c3"
+    },
+    {
+      "sha": "b269eb3f392f248cd0c55c7482ccdeb9dcf4c5ca",
+      "summary": "Record verified APD439 direct delivery",
+      "url": "https://github.com/APD-Development/ShieldingShouldHaveWorked/commit/b269eb3f392f248cd0c55c7482ccdeb9dcf4c5ca"
+    },
+    {
+      "sha": "748f9c990284b61f74b39c5111646bcb1d395183",
+      "summary": "Correct Counter Ability text, complete native review captures, and harden APD441 evidence gates",
+      "url": "https://github.com/APD-Development/ShieldingShouldHaveWorked/commit/748f9c990284b61f74b39c5111646bcb1d395183"
+    },
+    {
+      "sha": "76866517a5e6ecd043d7ac3f36fe383d2cf9aaf3",
+      "summary": "Record APD440 delivery and request exact APD441 source scan",
+      "url": "https://github.com/APD-Development/ShieldingShouldHaveWorked/commit/76866517a5e6ecd043d7ac3f36fe383d2cf9aaf3"
+    }
+  ],
+  "verification_evidence_archive": {
+    "bytes": 387807901,
+    "sha256": "9264785bb88e17518879816ef6b3aabc3d1e8d233800ca785dddaff969d4e331",
+    "files": 1461,
+    "file_name": "APD-Verification-Evidence-2026-11-11.zip",
+    "file_id": "file_00000000556481f59b806aab12893978",
+    "library_file_id": "libfile_fde3_f-b60a767459388191b4e4c553c988f629_4aba2690a1e48191a771a2e43a4a6278",
+    "all_1461_evidence_files_read_back_and_hash_verified_during_archive_creation": true,
+    "manifest_additional_to_evidence_file_count": true,
+    "saved_archive_download_readback_sha256_verified": true,
+    "readback_verified_utc": "2026-11-11T13:52:23.415234+00:00",
+    "snapshot_note": "The archive preserves the reviewed delivery/state/handoff snapshot before the archive receipt itself was added. This avoids any circular archive hash or file-ID claim. Later documentation links the same frozen evidence; application APKs and source archives are separately delivered."
+  }
+}
