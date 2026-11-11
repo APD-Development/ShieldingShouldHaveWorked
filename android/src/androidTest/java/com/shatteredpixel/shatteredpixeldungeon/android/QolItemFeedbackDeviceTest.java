@@ -389,6 +389,9 @@ public class QolItemFeedbackDeviceTest {
                 "3 bonus damage","5 bonus damage","lasts 5 turns","adds 5 turns to its remaining duration");
         ordinaryTalentWindowRenders(Talent.LINGERING_MAGIC,2,HeroClass.MAGE,HeroSubClass.NONE,
                 "1-2 bonus damage","2 bonus damage","lasts 5 turns","Another zap refreshes that duration");
+        ordinaryTalentWindowRenders(Talent.EMPOWERED_STRIKE,3,HeroClass.MAGE,HeroSubClass.BATTLEMAGE,
+                "one sixth more damage","1.5 times its normal power","one third more damage","2 times its normal power",
+                "50% more damage","2.5 times its normal power","lasts 10 turns","another staff zap refreshes it");
         ordinaryTalentWindowRenders(Talent.SPEEDY_STEALTH,3,HeroClass.ROGUE,HeroSubClass.FREERUNNER,
                 "up to 10","freerunning is inactive and off cooldown","moves at 2x speed");
         ordinaryTalentWindowRenders(Talent.LIQUID_AGILITY,2,HeroClass.DUELIST,HeroSubClass.NONE,

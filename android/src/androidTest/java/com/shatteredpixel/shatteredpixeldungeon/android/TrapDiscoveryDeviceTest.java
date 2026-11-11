@@ -329,6 +329,32 @@ public class TrapDiscoveryDeviceTest {
             }
         }finally{TopScoresDeviceTest.render(()->{try{ref.get().restore();}catch(Exception e){throw new RuntimeException(e);}});}
     }
+    private static void captureActualOoze()throws Exception{
+        Field activeFade=Class.forName(PixelScene.class.getName()+"$Fader").getDeclaredField("INSTANCE");
+        activeFade.setAccessible(true);AtomicReference<Boolean> settled=new AtomicReference<>(false);
+        waitFor(()->{
+            TopScoresDeviceTest.render(()->{try{
+                settled.set(activeFade.get(null)==null&&!Dungeon.hero.sprite.isMoving);
+            }catch(IllegalAccessException e){throw new RuntimeException(e);}});
+            return settled.get();
+        });
+        float[] time=new float[1];int[] hp=new int[1];
+        TopScoresDeviceTest.render(()->{
+            Hero hero=Dungeon.hero;assertNotNull("The actual trap effect remains present for its capture",hero.buff(Ooze.class));
+            time[0]=hero.cooldown();hp[0]=hero.HP;
+            // Reframe the disposable arena after its real movement and normal scene fade have finished.
+            Camera.main.snapTo(hero.sprite.center());GameScene.updateFog();
+        });
+        Thread.sleep(200);
+        TopScoresDeviceTest.render(()->{
+            Hero hero=Dungeon.hero;assertNotNull(hero.buff(Ooze.class));assertTrue(hero.sprite.visible);
+            assertEquals("Framing spends no game time",time[0],hero.cooldown(),0f);assertEquals(hp[0],hero.HP);
+            PointF center=hero.sprite.center();Point screen=Camera.main.cameraToScreen(center.x,center.y);
+            assertTrue("The affected hero is inside the actual capture",screen.x>0&&screen.x<Game.width&&screen.y>0&&screen.y<Game.height);
+            System.out.println("OOZE_CAPTURE hero="+hero.pos+" screen="+screen.x+","+screen.y+" hp="+hero.HP+" effect=true normal_fade_finished=true");
+        });
+        TopScoresDeviceTest.screenshot("trap-discovery-runtime-actual-ooze.png");
+    }
     @Test public void a_controlWritesEnabledPreference()throws Exception{
         try(ActivityScenario<AndroidLauncher> app=ActivityScenario.launch(AndroidLauncher.class)){title();assertFalse("Fresh disposable emulator keeps the original default",SPDSettings.continueOnTrapDiscovery());WndAPDSettings window=settings();CheckBox box=checkbox(window);assertFalse(box.checked());touchControl(window,box);assertTrue(box.checked());assertTrue(SPDSettings.continueOnTrapDiscovery());System.out.println("TRAP_PERSIST_SEED_PID="+android.os.Process.myPid());TopScoresDeviceTest.screenshot("trap-discovery-setting-on.png");TopScoresDeviceTest.render(window::hide);}
         // Intentionally leaves On for b, which CI runs after an actual force-stop/new process.
@@ -354,7 +380,7 @@ public class TrapDiscoveryDeviceTest {
                 hero.pos=anchor;hero.sprite.place(anchor);OozeTrap routeTrap=new OozeTrap();routeTrap.set(anchor+2);level.traps.put(routeTrap.pos,routeTrap);Level.set(routeTrap.pos,Terrain.SECRET_TRAP);HeroAction.Move walk=new HeroAction.Move(anchor+6,HeroAction.Move.Mode.TRAVEL);hero.curAction=walk;path.set(hero,null);assertTrue((Boolean)closer.invoke(hero,walk.dst));assertSame(walk,hero.curAction);assertTrue(routeTrap.visible);assertFalse(level.passable[routeTrap.pos]);assertTrue((Boolean)closer.invoke(hero,walk.dst));assertNotEquals(routeTrap.pos,hero.pos);assertTrue(routeTrap.active);assertSame(walk,hero.curAction);
                 OozeTrap stepped=new OozeTrap();stepped.set(hero.pos+1);level.traps.put(stepped.pos,stepped);Level.set(stepped.pos,Terrain.SECRET_TRAP);level.discover(stepped.pos);hero.curAction=new HeroAction.Move(stepped.pos);path.set(hero,null);assertTrue((Boolean)closer.invoke(hero,stepped.pos));assertEquals(stepped.pos,hero.pos);assertNull(hero.curAction);assertFalse(stepped.active);assertNotNull("The actual Ooze trap must apply its actual effect",hero.buff(Ooze.class));hero.lastAction=null;GameScene.updateMap();
             }catch(Exception error){throw new RuntimeException(error);}});
-            Thread.sleep(500);TopScoresDeviceTest.screenshot("trap-discovery-runtime-actual-ooze.png");
+            captureActualOoze();
             alternateSeerShotHonorsBranch();
             liquidAgilitySurvivesActualCreatureThrow();
         }finally{SPDSettings.continueOnTrapDiscovery(oldContinue);SPDSettings.confirmKnownTraps(oldConfirm);SPDSettings.intro(oldIntro);if(created[0]>0)Dungeon.deleteGame(created[0],true);GamesInProgress.curSlot=oldSlot;GamesInProgress.selectedClass=oldClass;}

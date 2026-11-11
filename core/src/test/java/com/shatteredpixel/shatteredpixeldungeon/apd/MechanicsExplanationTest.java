@@ -2173,6 +2173,41 @@ public class MechanicsExplanationTest {
    }
   }finally{user.set(null,oldUser);item.set(null,oldItem);com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene.updateItemDisplays=oldRefresh;}
  }
+ @Test public void empoweredStrikeRealStaffZapRefreshesTenTurnsAndExpiresWithoutAStrike()throws Exception{
+  java.lang.reflect.Field user=com.shatteredpixel.shatteredpixeldungeon.items.Item.class.getDeclaredField("curUser"),item=com.shatteredpixel.shatteredpixeldungeon.items.Item.class.getDeclaredField("curItem");user.setAccessible(true);item.setAccessible(true);
+  Object oldUser=user.get(null),oldItem=item.get(null);boolean oldRefresh=com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene.updateItemDisplays;
+  try(TalentExpiryClock clock=new TalentExpiryClock()){
+   hero.heroClass=HeroClass.MAGE;hero.subClass=HeroSubClass.BATTLEMAGE;hero.talents=new java.util.ArrayList<>();Talent.initClassTalents(hero);Talent.initSubclassTalents(hero);
+   hero.sprite=quietSprite();com.shatteredpixel.shatteredpixeldungeon.actors.Actor.addDelayed(hero,10000);
+   PlainStatusTarget enemy=new PlainStatusTarget();enemy.HP=enemy.HT=100;
+   for(int rank=1;rank<=3;rank++){
+    hero.talents.get(2).put(Talent.EMPOWERED_STRIKE,rank);
+    com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfFrost standalone=new com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfFrost();standalone.levelKnown=standalone.cursedKnown=standalone.curChargeKnown=true;
+    hero.belongings.backpack.items.add(standalone);standalone.charge(hero);standalone.setCurrent(hero);
+    float time=hero.cooldown();int charges=standalone.curCharges;standalone.wandUsed();
+    assertEquals(charges-1,standalone.curCharges);assertEquals(time+1,hero.cooldown(),0);assertNull("A real standalone wand use does not ready a staff strike",hero.buff(Talent.EmpoweredStrikeTracker.class));
+    standalone.stopCharging();hero.belongings.backpack.items.remove(standalone);
+
+    com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfFrost wand=new com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfFrost();
+    com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff staff=new com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff(wand);staff.levelKnown=staff.cursedKnown=true;
+    hero.belongings.weapon=staff;staff.applyWandChargeBuff(hero);wand.setCurrent(hero);
+    time=hero.cooldown();charges=wand.curCharges;wand.wandUsed();
+    assertEquals(charges-1,wand.curCharges);assertEquals(time+1,hero.cooldown(),0);
+    Talent.EmpoweredStrikeTracker tracker=hero.buff(Talent.EmpoweredStrikeTracker.class);assertNotNull(tracker);assertEquals(10f,tracker.cooldown(),0);
+    assertEquals(Math.round(12*(1f+rank/6f)),staff.proc(hero,enemy,12));assertNull("The real staff strike consumes the ready effect",hero.buff(Talent.EmpoweredStrikeTracker.class));assertEquals(12,staff.proc(hero,enemy,12));
+
+    time=hero.cooldown();charges=wand.curCharges;wand.wandUsed();assertEquals(charges-1,wand.curCharges);assertEquals(time+1,hero.cooldown(),0);
+    tracker=hero.buff(Talent.EmpoweredStrikeTracker.class);float start=com.shatteredpixel.shatteredpixeldungeon.actors.Actor.now();assertNotNull(tracker);assertEquals(10f,tracker.cooldown(),0);
+    clock.advanceTo(start+9);assertSame(tracker,hero.buff(Talent.EmpoweredStrikeTracker.class));assertEquals(1f,tracker.cooldown(),0);
+    time=hero.cooldown();charges=wand.curCharges;wand.wandUsed();assertEquals(charges-1,wand.curCharges);assertEquals(time+1,hero.cooldown(),0);
+    assertSame(tracker,hero.buff(Talent.EmpoweredStrikeTracker.class));assertEquals("Another real staff zap refreshes ten turns without adding the remaining turn",10f,tracker.cooldown(),0);
+    clock.advanceTo(start+18.75f);assertSame(tracker,hero.buff(Talent.EmpoweredStrikeTracker.class));assertEquals(.25f,tracker.cooldown(),0);
+    clock.advanceTo(start+19);assertNull("The actual scheduler expires unused readiness at the refreshed deadline",hero.buff(Talent.EmpoweredStrikeTracker.class));assertEquals(12,staff.proc(hero,enemy,12));assertEquals(20,hero.HP);
+    System.out.println("EMPOWERED_STRIKE_EXPIRY rank="+rank+" initial=10 refresh_remaining=1 refreshed=10 final_before_expiry="+(start+18.75f)+" expired_at="+(start+19)+" natural_expiry=true real_staff_consumption=true standalone_rejected=true");
+    wand.stopCharging();hero.belongings.weapon=null;
+   }
+  }finally{user.set(null,oldUser);item.set(null,oldItem);com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene.updateItemDisplays=oldRefresh;}
+ }
  @Test public void flatAttackTalentDescriptionsMatchRealProcAndConsumeOnlyActualAttack(){
   com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Rat enemy=new com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Rat();enemy.HP=enemy.HT=20;
   for(int rank=1;rank<=2;rank++){
