@@ -142,6 +142,10 @@ public class Potion extends Item {
 	protected float talentFactor = 1;
 	//the chance (0-1) of whether on-potion talents trigger from this potion
 	protected float talentChance = 1;
+
+	// One throw's successful talent application only; never stored in a save.
+	private Talent.LiquidAgilEVATracker thrownLiquidAgility;
+	private float thrownLiquidAgilityExtraTime;
 	
 	{
 		stackable = true;
@@ -318,6 +322,8 @@ public class Potion extends Item {
 	
 	@Override
 	protected void onThrow( int cell ) {
+		thrownLiquidAgility = null;
+		thrownLiquidAgilityExtraTime = 0f;
 		if (Dungeon.level.map[cell] == Terrain.WELL || Dungeon.level.pit[cell]) {
 			
 			super.onThrow( cell );
@@ -335,9 +341,24 @@ public class Potion extends Item {
 				Catalog.countUse(getClass());
 				if (Random.Float() < talentChance) {
 					Talent.onPotionUsed(curUser, cell, talentFactor);
+					if (curUser.hasTalent(Talent.LIQUID_AGILITY)) {
+						thrownLiquidAgility = curUser.buff(Talent.LiquidAgilEVATracker.class);
+						thrownLiquidAgilityExtraTime = Math.max(0f, talentFactor - 1f);
+					}
 				}
 			}
 			
+		}
+	}
+
+	@Override
+	protected void onThrowComplete( Hero user ) {
+		Talent.LiquidAgilEVATracker applied = thrownLiquidAgility;
+		float extraTime = thrownLiquidAgilityExtraTime;
+		thrownLiquidAgility = null;
+		thrownLiquidAgilityExtraTime = 0f;
+		if (applied != null && user.buff(Talent.LiquidAgilEVATracker.class) == applied) {
+			Buff.prolong(user, Talent.LiquidAgilEVATracker.class, user.cooldown() + extraTime);
 		}
 	}
 	

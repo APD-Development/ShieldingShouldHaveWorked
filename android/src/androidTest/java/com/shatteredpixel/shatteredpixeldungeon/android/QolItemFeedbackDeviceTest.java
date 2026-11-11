@@ -391,6 +391,8 @@ public class QolItemFeedbackDeviceTest {
                 "1-2 bonus damage","2 bonus damage","lasts 5 turns","Another zap refreshes that duration");
         ordinaryTalentWindowRenders(Talent.SPEEDY_STEALTH,3,HeroClass.ROGUE,HeroSubClass.FREERUNNER,
                 "up to 10","freerunning is inactive and off cooldown","moves at 2x speed");
+        ordinaryTalentWindowRenders(Talent.LIQUID_AGILITY,2,HeroClass.DUELIST,HeroSubClass.NONE,
+                "3x evasion","infinite evasion","until her next turn","drink-only potions or elixirs");
     }
     private static void counterAbilityNormalWindowRenders()throws Exception{
         AtomicReference<WndInfoTalent> shown=new AtomicReference<>();float[] time=new float[1];int[] hp=new int[1];

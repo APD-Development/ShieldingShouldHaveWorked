@@ -224,6 +224,9 @@ public class Item implements Bundlable {
 			heap.sprite.drop( cell );
 		}
 	}
+
+	/** Occupied-target impact has resolved its action cost; actors have not resumed yet. */
+	protected void onThrowComplete( Hero user ) {}
 	
 	//takes two items and merges them (if possible)
 	public Item merge( Item other ){
@@ -747,10 +750,12 @@ public class Item implements Bundlable {
 							}
 							if (user.buff(Talent.LethalMomentumTracker.class) != null){
 								user.buff(Talent.LethalMomentumTracker.class).detach();
-								user.next();
 							} else {
-								user.spendAndNext(delay);
+								user.busy();
+								user.spend(delay);
 							}
+							if (i != null) i.onThrowComplete(user);
+							user.next();
 						}
 					});
 		} else {
