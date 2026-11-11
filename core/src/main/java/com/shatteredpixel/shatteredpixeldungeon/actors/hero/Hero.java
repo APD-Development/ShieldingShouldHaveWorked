@@ -2814,7 +2814,10 @@ public class Hero extends Char {
                     if (intentional) {
                         com.shatteredpixel.shatteredpixeldungeon.levels.traps.Trap searchedTrap = Dungeon.level.traps == null ? null : Dungeon.level.traps.get(curr);
                         boolean guaranteed = foresight || searchedTrap == null || searchedTrap.canBeSearched;
-                        if (Dungeon.level.searchedWalls.mark(Dungeon.level,curr)) GameScene.updateSearchedWall(curr);
+                        // Searching inside a keyed/barricaded special room never adds wall checkmarks.
+                        // Discovery, search costs and completed-door-check evidence remain unchanged.
+                        if (!com.shatteredpixel.shatteredpixeldungeon.apd.qol.DoorSearchEligibility.insideGatedRoom(Dungeon.level,pos)
+                                && Dungeon.level.searchedWalls.mark(Dungeon.level,curr)) GameScene.updateSearchedWall(curr);
                         Dungeon.level.searchedWalls.recordCompletedDoorCheck(Dungeon.level,curr,guaranteed);
                     }
 
