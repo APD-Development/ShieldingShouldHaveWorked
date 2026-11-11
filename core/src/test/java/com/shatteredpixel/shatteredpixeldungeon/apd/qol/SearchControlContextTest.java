@@ -21,6 +21,11 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.Room;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.CrystalChoiceRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.CrystalVaultRoom;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.ArmoryRoom;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.TreasuryRoom;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.StorageRoom;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.SpecialRoom;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.EmptyRoom;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.CellSelector;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.HeroSprite;
@@ -455,6 +460,45 @@ public class SearchControlContextTest {
         assertFalse(hero.wallSearch.exists());
         assertEquals(0, hero.nextCalls);
         assertEquals(0f, hero.cooldown(), 0f);
+    }
+
+    @Test public void actualSearchFromInsideKeyedRoomDoesNotCreateCheckmarks() throws Exception {
+        Object[][] gated = {
+                {new ArmoryRoom(), Room.Door.Type.LOCKED},
+                {new TreasuryRoom(), Room.Door.Type.LOCKED},
+                {new CrystalVaultRoom(), Room.Door.Type.LOCKED},
+                {new StorageRoom(), Room.Door.Type.BARRICADE},
+                {new StorageRoom(), Room.Door.Type.CRYSTAL}
+        };
+        for (Object[] pair : gated) {
+            clearTerrain();
+            int wall = candidate(1, 0);
+            SpecialRoom room = (SpecialRoom) pair[0];
+            room.set(7, 7, 13, 13);
+            Room.Door entrance = new Room.Door(7, 10);
+            entrance.set((Room.Door.Type) pair[1]);
+            room.connected.put(new EmptyRoom(), entrance);
+            level.setRooms(room);
+            assertSame(room, level.room(hero.pos));
+            assertTrue(DoorSearchEligibility.candidate(level, wall));
+            assertTrue(DoorSearchEligibility.insideGatedRoom(level, hero.pos));
+            int before = level.map[wall];
+            select(Action.SEARCH); // Actual ordinary paid search, not a mocked marker call.
+            assertEquals("No checkmark after searching inside " + room.getClass().getSimpleName(),
+                    false, level.searchedWalls.attempted(wall));
+            assertEquals(before, level.map[wall]);
+            assertTrue("Ordinary Search still spends its normal two turns", hero.cooldown() >= 2f);
+            hero.spend(-hero.cooldown());
+        }
+        // Locking an ordinary room is not a license to suppress its wall markers.
+        clearTerrain();
+        int ordinaryWall = candidate(1, 0);
+        EmptyRoom ordinary = new EmptyRoom();
+        ordinary.set(7, 7, 13, 13);
+        level.setRooms(ordinary);
+        assertFalse(DoorSearchEligibility.insideGatedRoom(level, hero.pos));
+        select(Action.SEARCH);
+        assertTrue(level.searchedWalls.attempted(ordinaryWall));
     }
 
     @Test public void existingForesightFootprintIsPreservedWithoutRevealingUnknownWalls() {
