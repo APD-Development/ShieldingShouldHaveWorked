@@ -11,7 +11,7 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.ArmoryRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.CrystalVaultRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.StorageRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.SpecialRoom;
-import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.StandardRoom;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.EmptyRoom;
 import com.watabou.utils.Bundle;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -64,7 +64,7 @@ public class GatedRoomWallMarkerTest {
         room.set(3, 3, 8, 8);
         Room.Door door = new Room.Door(6, 3);
         door.set(doorType);
-        room.connected.put(new StandardRoom(), door);
+        room.connected.put(new EmptyRoom(), door);
         level.roomForTest(room);
     }
 
@@ -101,7 +101,7 @@ public class GatedRoomWallMarkerTest {
     }
 
     @Test public void ordinaryAndOpenSpecialRoomsKeepTheirExistingCheckmark() {
-        setRoom(new StandardRoom(), Room.Door.Type.LOCKED);
+        setRoom(new EmptyRoom(), Room.Door.Type.LOCKED);
         assertEquals(SearchedWallMarkers.FACE, SearchedWallMarkers.visual(level, wall));
         setRoom(new ArmoryRoom(), Room.Door.Type.REGULAR);
         assertEquals(SearchedWallMarkers.FACE, SearchedWallMarkers.visual(level, wall));
