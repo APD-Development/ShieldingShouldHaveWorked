@@ -30,10 +30,10 @@ jobs:
           assert not artifact['expired']
           assert artifact['digest']=='sha256:b0de2656c4b537d5ae17b1534fd8d58492c12bf593fd8df5307666f3e238a554'
           assert artifact['workflow_run']['head_sha']=='faf9657dd190629af2683af8f4932e506f326fd9'
-          subprocess.run(['gh','run','download','42926288020','--repo',repo,'--name','apd435-built-pair','--dir','fallback'],check=True)
-          previous=list(pathlib.Path('fallback').rglob('APD-Developer-435.apk'))
+          subprocess.run(['gh','run','download','42926288020','--repo',repo,'--name','apd436-built-pair','--dir','fallback'],check=True)
+          previous=list(pathlib.Path('fallback').rglob('APD-Developer-436.apk'))
           assert len(previous)==1
-          merge_previous_apk(pathlib.Path.cwd(),previous[0],'Codex TEST 435')
+          merge_previous_apk(pathlib.Path.cwd(),previous[0],'Codex TEST 436')
           changed=subprocess.check_output(['git','diff','--name-only','faf9657dd190629af2683af8f4932e506f326fd9','HEAD'],text=True).splitlines()
           assert 'core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/PlaybackGroup.java' in changed
           assert 'core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/PlaybackSpeedTest.java' in changed
