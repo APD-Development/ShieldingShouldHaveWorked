@@ -1,3 +1,13 @@
+## APD442 delivered; APD443 qualification pending; later source CI passed, November 11, 2026
+
+The [continuation handoff](APD-SESSION-CONTINUATION-2026-11-11.md) and [current state](APD-CURRENT-STATE-2026-11-11.json) record this active checkpoint. APD442's exact pair was verified and delivered after 3,197 core tests across 464 suites and all twelve native cases. Its Seer Shot branch repair and four ordinary talent descriptions have completed native and manual acceptance; see the [delivery receipt](APD-442-DELIVERY-2026-11-11.json).
+
+Liquid Agility's occupied-target throw repair, ordinary description and thirteen regressions are in frozen APD443 source `a2960688`, run `43051129325`. Its 3,210 tests across 465 suites, required compilation and both JSON ABI checks passed. The exact-source scan verified 4,981 manifest files, with 72 reviewed source candidates and 23 retained redacted historical findings under unchanged rules. The [local pre-native checks](APD-443-PRE-NATIVE-ACCEPTANCE-2026-11-11.json) also passed. Native acceptance, manual review and delivery remain pending.
+
+The newer source `0cc99bbf` adds Empowered Strike's existing ten-turn readiness wording and actual-handler regression, plus its ordinary-window captures and the instrumentation-only Ooze framing correction. [Source CI run 43052555006](APD-444-SOURCE-CI-VERIFICATION-2026-11-11.json) passed 3,211 tests across 465 suites and all required compilation, including Android instrumentation. These changes are excluded from APD443 and await an APD444 build. No APD444 APK has been requested.
+
+Do not restart the completed source investigations, documented ordinary-description facets or earlier recovery work. The full description inventory remains 445 source units, with 442 complete and three partial. The whole talent audit and unresolved owner decisions remain open. Older snapshots below preserve their original observed statuses and do not override this checkpoint.
+
 ## APD439 and APD440 recovered; APD441 built, verified and delivered, November 11, 2026
 
 This is the current completed checkpoint. Resume from `codex/apd-phone-fixes-2026-10-09` and [APD-CURRENT-STATE-2026-11-11.json](APD-CURRENT-STATE-2026-11-11.json), with [the full session handoff](APD-SESSION-2026-11-11.md). Historical entries below retain their original dates and pending states; they do not override this newer observed result.

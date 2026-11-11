@@ -2,6 +2,14 @@
 
 APD is a private fork of Shattered Pixel Dungeon 4.0.x (upstream licence/attribution must stay). It is a solo project: all in-game developer voice is first-person singular (I/me/my). The owner is the sole decision maker. Repo: github.com/APD-Development/ShieldingShouldHaveWorked (private).
 
+## Latest continuation checkpoint, November 11
+
+Read `docs/APD-SESSION-CONTINUATION-2026-11-11.md` and `docs/APD-CURRENT-STATE-2026-11-11.json` before the older build-status paragraphs. This continuation resumed from `31e66d6c`; the completed APD439, APD440 and APD441 checkpoint remains below.
+
+APD442 was verified and delivered after 3,197 core tests across 464 suites, all twelve native cases, manual review, source checks and saved-file readback. APD443 is frozen at source `a2960688` in run `43051129325`. Its 3,210 tests across 465 suites, required compilation, both JSON ABI checks and exact-source scan passed. Native acceptance, manual review and delivery remain pending. The local pre-native source/history receipt is `docs/APD-443-PRE-NATIVE-ACCEPTANCE-2026-11-11.json`.
+
+The newer source `0cc99bbf` passed 3,211 tests across 465 suites and all required source compilation, including Android instrumentation, in run `43052555006`. Its Empowered Strike sentence and Ooze capture correction are intended for APD444 and are not inside APD443. No APD444 APK has been requested. Keep these source cutoffs distinct and preserve every frozen pair. All standing instructions below remain unchanged.
+
 ## Branches
 
 - Current work branch: `codex/apd-phone-fixes-2026-10-09`. Resumed on November 11 from `293b5a0d5fed957c1d953b301fadf576a766611b`; follow current receipts, `docs/APD-CURRENT-STATE-2026-11-11.json` and `docs/APD-SESSION-2026-11-11.md`. Historical Claude branches and `main` are not the current work checkout.
