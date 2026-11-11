@@ -2,6 +2,14 @@
 
 APD is a private fork of Shattered Pixel Dungeon 4.0.x (upstream licence/attribution must stay). It is a solo project: all in-game developer voice is first-person singular (I/me/my). The owner is the sole decision maker. Repo: github.com/APD-Development/ShieldingShouldHaveWorked (private).
 
+## Approved seed and search work, November 11
+
+The owner supplied two concrete next-APK approvals: offline exact-seed history classification/recorded attempts/deepest floor, and contextual Search/Wall Search presentation using actual acquired talents and room context. These are implemented in [80c9aab1](https://github.com/APD-Development/ShieldingShouldHaveWorked/commit/80c9aab144f5812f89e6584f548d5969339775c1). Fresh local verification and [source CI 43071231591](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/43071231591) both passed 3,244 tests across 468 suites; actual desktop, Android debug/release and instrumentation compilation passed. See the new source and CI receipts.
+
+APD445 is requested by this checkpoint using the final build plan, original signer and exact accepted APD444 history. It must pass nine native cases per variant and manual review of 60 affected originals per variant before delivery. No APD445 APK or native success is claimed here; APD444 below remains the latest delivered game until a later acceptance/delivery receipt says otherwise. Preserve the one assembled pair and all failures.
+
+The verified branch has no implemented personal seed-reuse attempt/depth score multiplier. All existing scores remain unchanged. Imported-seed severity and the numerical personal replay/new-depth scoring formula remain owner decisions; do not invent or activate them. The new history notice distinguishes matching local records from unknown imports and never attributes the original creator.
+
 ## Latest continuation checkpoint, November 11
 
 Read `docs/APD-SESSION-CONTINUATION-2026-11-11.md` and `docs/APD-CURRENT-STATE-2026-11-11.json` before the older build-status paragraphs. This continuation resumed from `31e66d6c`; the completed APD439, APD440 and APD441 checkpoint remains below.

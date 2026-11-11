@@ -1,5 +1,13 @@
 # APD continuation, November 11, 2026
 
+## Approved seed and search work, November 11
+
+The owner supplied two concrete next-APK approvals: offline exact-seed history classification/recorded attempts/deepest floor, and contextual Search/Wall Search presentation using actual acquired talents and room context. These are implemented in [80c9aab1](https://github.com/APD-Development/ShieldingShouldHaveWorked/commit/80c9aab144f5812f89e6584f548d5969339775c1). Fresh local verification and [source CI 43071231591](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/43071231591) both passed 3,244 tests across 468 suites; actual desktop, Android debug/release and instrumentation compilation passed. See the new source and CI receipts.
+
+APD445 is requested by this checkpoint using the final build plan, original signer and exact accepted APD444 history. It must pass nine native cases per variant and manual review of 60 affected originals per variant before delivery. No APD445 APK or native success is claimed here; APD444 below remains the latest delivered game until a later acceptance/delivery receipt says otherwise. Preserve the one assembled pair and all failures.
+
+The verified branch has no implemented personal seed-reuse attempt/depth score multiplier. All existing scores remain unchanged. Imported-seed severity and the numerical personal replay/new-depth scoring formula remain owner decisions; do not invent or activate them. The new history notice distinguishes matching local records from unknown imports and never attributes the original creator.
+
 ## Verified continuation checkpoint
 
 This continuation resumed from `31e66d6c5bb9f8602f97dd051ec6d8f45c7929f3` after the completed APD439 and APD440 recovery and APD441 delivery. The older [session handoff](APD-SESSION-2026-11-11.md) and its evidence remain historical records. The [current state](APD-CURRENT-STATE-2026-11-11.json) records the exact source and build cutoffs below. APD444 is now the latest verified and delivered game. Later test-only work is recorded separately from that frozen application source.
