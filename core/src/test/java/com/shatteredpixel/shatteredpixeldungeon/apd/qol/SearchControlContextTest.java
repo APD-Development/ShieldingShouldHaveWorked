@@ -483,12 +483,13 @@ public class SearchControlContextTest {
             assertTrue(DoorSearchEligibility.candidate(level, wall));
             assertTrue(DoorSearchEligibility.insideGatedRoom(level, hero.pos));
             int before = level.map[wall];
+            float cooldownBefore = hero.cooldown();
             select(Action.SEARCH); // Actual ordinary paid search, not a mocked marker call.
             assertEquals("No checkmark after searching inside " + room.getClass().getSimpleName(),
                     false, level.searchedWalls.attempted(wall));
             assertEquals(before, level.map[wall]);
-            assertTrue("Ordinary Search still spends its normal two turns", hero.cooldown() >= 2f);
-            hero.spend(-hero.cooldown());
+            assertEquals("Ordinary Search keeps its exact two-turn cost",
+                    cooldownBefore + 2f, hero.cooldown(), 0f);
         }
         // Locking an ordinary room is not a license to suppress its wall markers.
         clearTerrain();
