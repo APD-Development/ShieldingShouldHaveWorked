@@ -21,6 +21,7 @@ import com.shatteredpixel.shatteredpixeldungeon.apd.stats.RunLogReader;
 import com.shatteredpixel.shatteredpixeldungeon.apd.stats.TelemetryVersion;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.HeroSelectScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.ui.IconButton;
@@ -211,6 +212,22 @@ public class SeedHistoryDeviceTest {
                             DeviceCompat.isDebug());
                     owned.set(new OwnedFixture("seed-history"));
                 });
+                // Finish startup before adding the measured history: TitleScene prepares
+                // UIMSD derived rows, and entering gameplay retires that background load.
+                owned.get().start(HeroClass.WARRIOR, false);
+                waitFor(() -> {
+                    for (Thread thread : Thread.getAllStackTraces().keySet()) {
+                        if (thread.isAlive() && ("uimsd-title-prewarm".equals(thread.getName())
+                                || "uimsd-load".equals(thread.getName()))) return false;
+                    }
+                    return true;
+                });
+                render(() -> {
+                    assertTrue("Startup has left TitleScene before adding history", Game.scene() instanceof GameScene
+                            && !Game.switchingScene());
+                    assertNotNull(Dungeon.hero);
+                    assertTrue(Dungeon.hero.ready);
+                });
                 LegacyImporter.Extract rankings = LegacyImporter.extractRankingsFile(System.currentTimeMillis());
                 long knownSeed = seedAbsentFromRankings(445202611L, rankings);
                 long unknownSeed = seedAbsentFromRankings(knownSeed+1, rankings);
@@ -232,7 +249,6 @@ public class SeedHistoryDeviceTest {
 
                 // Build a genuine ranking-page payload from an owned initialized hero, without
                 // submitting a ranking or writing rankings.dat. The record/seed are fixture data.
-                owned.get().start(HeroClass.WARRIOR, false);
                 AtomicReference<Rankings.Record> record = new AtomicReference<>();
                 render(() -> {
                     Rankings.Record current = new Rankings.Record();
@@ -254,6 +270,14 @@ public class SeedHistoryDeviceTest {
                 });
                 waitFor(() -> Game.scene() instanceof HeroSelectScene && !Game.switchingScene());
                 WndTextInput input = entry(knownCode);
+                long entryFrame = com.badlogic.gdx.Gdx.graphics.getFrameId();
+                waitFor(() -> com.badlogic.gdx.Gdx.graphics.getFrameId() >= entryFrame + 4);
+                Thread.sleep(150);
+                render(() -> {
+                    TextInput box = (TextInput) field(WndTextInput.class, "textBox").get(input);
+                    assertEquals("The captured entry contains the assigned seed", knownCode, box.getText());
+                    point(box);
+                });
                 TopScoresDeviceTest.screenshot("seed-history-entry.png");
                 press(input, Messages.get(HeroSelectScene.class, "custom_seed_set"));
                 WndTitledMessage matching = notice("Matching local history.");

@@ -1,5 +1,15 @@
 # AGENTS.md: ADHD Pixel Dungeon (APD), start here
 
+## APD446 source verification and corrected build request, November 11
+
+The completed application correction is committed at [245310c4](https://github.com/APD-Development/ShieldingShouldHaveWorked/commit/245310c4d2a820bd7f220de6e7c3278cd5b119e7). Fresh local tests and actual [source CI 43075480141](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/43075480141) each passed 3,247 tests across 468 suites with zero failures, errors or skips. All five required core, desktop and Android compilation targets passed. Exact supported unfinished attempts now count as matching local history; only their canonical observed main-dungeon depth is reported, explicitly distinguished from final results. Existing scoring remains unchanged.
+
+APD445 is frozen and unaccepted. Its native run completed with 14 passing reports, two seed-fixture failures and two pylon cases not run; owner preparation was skipped. The seed fixture froze its log tree before a title-screen visit, allowing the existing statistics preloader to write derived caches. Raw logs were unchanged, and the failure occurred after the real ranking Copy assertions. Preserve both failed archives and the separate unfinished-history acceptance hold. Do not rebuild or deliver 445.
+
+This checkpoint corrects only the native fixture setup and initial seed-entry capture timing after the verified application source. The fixture now starts the disposable game and waits for the actual retired prewarm workers before adding its records, retaining every no-write assertion. Its new SDK compilation and native result remain pending in the 446 producing workflow. The prior sourceCI is not evidence for this later fixture-only edit.
+
+APD446 is requested with the original signer, accepted APD444 receipt safeguards and separately retained unaccepted 445 compiled history. All new 446 core, compile, ABI, exact-source, 18 native-case and manual 61-affected-original-per-variant gates remain mandatory. No 446 APK/native acceptance or delivery is claimed at this request checkpoint. The previous APD444 owner delivery remains current until a later verified delivery receipt. See the 446 sourceCI, fixture correction/review and build-readiness receipts. Imported-seed and personal replay/depth scoring formulas remain owner decisions.
+
 APD is a private fork of Shattered Pixel Dungeon 4.0.x (upstream licence/attribution must stay). It is a solo project: all in-game developer voice is first-person singular (I/me/my). The owner is the sole decision maker. Repo: github.com/APD-Development/ShieldingShouldHaveWorked (private).
 
 ## Approved seed and search work, November 11
