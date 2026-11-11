@@ -29,13 +29,13 @@ jobs:
           assert run['conclusion']=='success' and run['status']=='completed',run['conclusion']
           assert run['head_sha']=='4da1ef4cf0e116c7a5187236b5c61e53600e241b',run['head_sha']
           assert run['path']=='.github/workflows/apd-playback-437.yml'
-          assert len([j for j in api('repos/'+repo+'/actions/runs/42920537849/jobs')['jobs'] if j['conclusion']=='success'])==3
+          assert len([j for j in api('repos/'+repo+'/actions/runs/42927955467/jobs')['jobs'] if j['conclusion']=='success'])==3
           pathlib.Path('proof').mkdir()
           for name in ('apd437-built-pair','apd437-native-Developer','apd437-native-Alpha-Testers'):
-              artifacts=[a for a in api('repos/'+repo+'/actions/runs/42920537849/artifacts')['artifacts'] if a['name']==name and not a['expired']]
+              artifacts=[a for a in api('repos/'+repo+'/actions/runs/42927955467/artifacts')['artifacts'] if a['name']==name and not a['expired']]
               assert len(artifacts)==1,name
               dest=pathlib.Path('proof')/name;dest.mkdir()
-              subprocess.run(['gh','run','download','42920537849','--repo',repo,'--name',name,'--dir',str(dest)],check=True)
+              subprocess.run(['gh','run','download','42927955467','--repo',repo,'--name',name,'--dir',str(dest)],check=True)
           root=pathlib.Path('proof/apd437-built-pair')
           tests=list(root.rglob('TEST-*.xml'))
           import xml.etree.ElementTree as ET
