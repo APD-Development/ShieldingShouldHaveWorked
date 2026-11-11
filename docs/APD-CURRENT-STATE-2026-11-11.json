@@ -1,13 +1,13 @@
 {
   "schema": 2,
-  "recorded_utc": "2026-11-11T17:51:47.146286+00:00",
+  "recorded_utc": "2026-11-11T18:05:38.084222+00:00",
   "project": "ADHD Pixel Dungeon",
   "repository": "APD-Development/ShieldingShouldHaveWorked",
   "branch": "codex/apd-phone-fixes-2026-10-09",
   "continuation_resumed_from": "31e66d6c5bb9f8602f97dd051ec6d8f45c7929f3",
   "prior_checkpoint": "The earlier APD439, APD440 and APD441 recovery and delivery checkpoint remains in Git at commit 31e66d6 and in its unchanged delivery and evidence receipts. Do not reopen completed work.",
   "latest_verified_source_commit": "2b8787a2fb41fc6ecacbb77617bd5f1763d902b0",
-  "last_verified_remote_commit_before_checkpoint_commit": "80c9aab144f5812f89e6584f548d5969339775c1",
+  "last_verified_remote_commit_before_checkpoint_commit": "a0c2755a7a668f8b2f5f4181be50a8d53f40f525",
   "latest_delivered_build": 444,
   "builds_delivered_in_this_continuation": [
     442,
@@ -342,16 +342,17 @@
     "Older APD442 Ooze limits remain historical. Both actual APD443 and APD444 Ooze originals are visibly assessable."
   ],
   "next_steps": [
-    "Observe the APD445 producing run created by this checkpoint; retain its exact source, job logs and artifacts. Do not equate the successful source-only run with an APK or native acceptance.",
-    "Require the complete 3,244-test/468-suite core and compile/ABI/source gates, nine native cases per variant, all declared images and manual review. Preserve any failed evidence and already assembled pair.",
-    "Save, download back and immediately deliver each successfully verified APK plus its corresponding source; then record exact delivery receipts and update the latest-build cutoff.",
-    "Keep imported-seed and personal replay/new-depth numerical scoring decisions with the owner. Preserve all earlier physical-phone, audio, boss and description-audit limits."
+    "Finish the bounded unfinished-history fix and focused red-before-green regression, preserving all 445 source, binaries and failed acceptance evidence.",
+    "Run fresh full core and actual Android source compilation for the correction; push only reviewed source with exact results.",
+    "Preserve 445 compiled history separately from accepted 444 owner delivery when preparing 446. Never assert that 445 was accepted or delivered.",
+    "Complete the new 446 exact-pair core/compile/ABI/source/native/manual gates, then save, read back and immediately deliver verified APKs.",
+    "Leave every scoring multiplier/formula and the existing physical-phone/audio/design limits pending as already recorded."
   ],
   "session_execution": {
     "active_at_checkpoint": true,
     "new_recurring_schedule_created": false,
     "background_coding_promised": false,
-    "all_observed_build_runs_terminal": true
+    "all_observed_build_runs_terminal": false
   },
   "session_commits": [
     {
@@ -440,7 +441,7 @@
   },
   "application_apk_count_basis": "Exactly two new application APKs each for APD442, APD443 and APD444, six in this continuation. Separate supplemental instrumentation APKs are tests only and do not add a game build or replace original instrumentation.",
   "latest_verified_source_commit_scope": "Exact producing source of the delivered APD444 application pair. Later metadata or test-only repository heads do not replace its frozen source.",
-  "last_verified_remote_tree_before_checkpoint_commit": "ab4afc74bdc432992b70d0910ec08cc67cf6d56a",
+  "last_verified_remote_tree_before_checkpoint_commit": "35d0eb69fff22c00647c0b4e73e0d6268643df14",
   "supplemental_pylon_verification": {
     "source_commit": "b5ba1c00ef01238624265d62d7c65af1fa34ef57",
     "run": 43063913542,
@@ -575,16 +576,14 @@
     "scope_limit": "Five actual native selection states only. Full natural boss progression, actual touch/attack, vulnerable-boss and blocked/mind-vision-only native controls remain outside this bounded fixture."
   },
   "next_application_build": {
-    "number": 445,
+    "number": 446,
     "started": false,
-    "owner_next_apk_requests": "Offline exact-seed history/origin detection and context-sensitive Search/Wall Search using actual acquired talents and current room.",
-    "source_cutoff": "80c9aab144f5812f89e6584f548d5969339775c1",
-    "source_verification_run": 43071231591,
-    "source_verification_complete": true,
-    "build_workflow_requested": true,
+    "owner_next_apk_requests": "Complete the approved available-history lookup by including valid unfinished attempts and their known canonical observed depth, with explicit completion status. Preserve the already approved contextual-search work.",
+    "source_cutoff": null,
+    "source_verification_complete": false,
+    "build_workflow_requested": false,
     "application_scope_defined": true,
-    "game_apk_created": false,
-    "actual_build_run": "Inspect Actions for the run created by this request commit; none observed before this checkpoint is pushed."
+    "game_apk_created": false
   },
   "verification_evidence_archive_442_444": {
     "file_name": "APD-Verification-Evidence-442-444-2026-11-11.zip",
@@ -603,7 +602,7 @@
   },
   "latest_verified_feature_source_commit": "80c9aab144f5812f89e6584f548d5969339775c1",
   "approved_seed_search_work": {
-    "status": "source_verified_build_requested",
+    "status": "unfinished_history_gap_being_corrected",
     "source_ci_run": 43071231591,
     "tests": 3244,
     "suites": 468,
@@ -613,6 +612,19 @@
     "pending_owner_decisions": [
       "Exact imported-seed score multiplier.",
       "Numerical personal seed replay/new-depth scoring formula, absent from this branch."
-    ]
+    ],
+    "feature_scope_accepted": false
+  },
+  "unaccepted_build_445": {
+    "source_commit": "a0c2755a7a668f8b2f5f4181be50a8d53f40f525",
+    "producing_run": 43072342086,
+    "built_artifact_id": 13880080743,
+    "built_artifact_sha256": "7b6efc1ff834af2bba23df9716477ba0784c6283c4bfddddaf482f20b572b848",
+    "apk_pair_frozen": true,
+    "pre_native_mechanical_evidence_passed": true,
+    "overall_accepted": false,
+    "delivered": false,
+    "known_gap": "Exact seed from valid unfinished/crash history is wrongly classified unknown imported.",
+    "receipt": "docs/APD-445-ACCEPTANCE-HOLD-2026-11-11.json"
   }
 }

@@ -8,6 +8,8 @@ APD445 is requested by this checkpoint using the final build plan, original sign
 
 The verified branch has no implemented personal seed-reuse attempt/depth score multiplier. All existing scores remain unchanged. Imported-seed severity and the numerical personal replay/new-depth scoring formula remain owner decisions; do not invent or activate them. The new history notice distinguishes matching local records from unknown imports and never attributes the original creator.
 
+**APD445 acceptance is blocked by a confirmed seed-history gap.** The assembled pair remains frozen at `a0c2755a7a668f8b2f5f4181be50a8d53f40f525` in run 43072342086. Its core, compilation, ABI and source-scan checks passed, but a valid exact seed in unfinished/crash history is wrongly classified as unknown imported. See `docs/APD-445-ACCEPTANCE-HOLD-2026-11-11.json` and the separate pre-native receipt. Passing mechanical/native checks do not resolve that gap. Do not deliver or rebuild APD445. The approved correction, additional regression coverage and corrected candidate APD446 are in progress; the last accepted delivered game remains APD444.
+
 ## Verified continuation checkpoint
 
 This continuation resumed from `31e66d6c5bb9f8602f97dd051ec6d8f45c7929f3` after the completed APD439 and APD440 recovery and APD441 delivery. The older [session handoff](APD-SESSION-2026-11-11.md) and its evidence remain historical records. The [current state](APD-CURRENT-STATE-2026-11-11.json) records the exact source and build cutoffs below. APD444 is now the latest verified and delivered game. Later test-only work is recorded separately from that frozen application source.
