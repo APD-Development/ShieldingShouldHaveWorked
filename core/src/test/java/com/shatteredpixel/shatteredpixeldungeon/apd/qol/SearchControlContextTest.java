@@ -250,6 +250,37 @@ public class SearchControlContextTest {
         }
     }
 
+    @Test public void actualSearchInMiddleOfFloorTwoRoomDoesNotMakeWallCheckmarks() throws Exception {
+        int priorDepth = Dungeon.depth;
+        boolean priorChoice = SPDSettings.adaptiveSearchChoice();
+        try {
+            Dungeon.depth = 2;
+            SPDSettings.adaptiveSearchChoice(true);
+            EmptyRoom room = new EmptyRoom();
+            room.set(7, 7, 13, 13);
+            level.setRooms(room);
+            talents(HeroClass.ROGUE, false, 0);
+            int wall = candidate(2, 0);
+            select(Action.SEARCH);
+            assertEquals(2f, hero.cooldown(), 0f);
+            assertEquals("ordinary Search in room center must not record distant wall search",
+                    false, level.searchedWalls.attempted(wall));
+            assertTrue("normal Search still increments the remembered search count",
+                    hero.wallSearch.searches() > 0);
+            hero.pos = at(11, 10);
+            assertEquals(Action.WALL_SEARCH, SearchControlContext.preferred(hero, level));
+            select(Action.SEARCH);
+            assertTrue("adjacent eligible wall is recorded by the actual paid Search",
+                    level.searchedWalls.attempted(wall));
+            assertEquals(4f, hero.cooldown(), 0f);
+        } finally {
+            SPDSettings.adaptiveSearchChoice(priorChoice);
+            Dungeon.depth = priorDepth;
+            hero.pos = at(10, 10);
+            level.setRooms();
+        }
+    }
+
     @Test public void floorOneAndCrystalRoomsNeverPrioritizeAdaptiveWallChoice() {
         boolean prior = SPDSettings.adaptiveSearchChoice();
         int priorDepth = Dungeon.depth;
