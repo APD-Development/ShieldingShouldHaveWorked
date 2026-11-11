@@ -120,12 +120,16 @@ public class AttackIndicator extends Tag {
 			}
 		}
 		
-		if (lastTarget == null || !candidates.contains( lastTarget )) {
+		// Keep a manual attack target unless it is the invulnerable DM-300.
+		// The candidates already passed normal visibility and melee-reach checks.
+		Mob activePylon = com.shatteredpixel.shatteredpixeldungeon.apd.qol.BossPylonTargeting.activeAttackablePylon(candidates);
+		if (lastTarget == null || !candidates.contains( lastTarget )
+				|| com.shatteredpixel.shatteredpixeldungeon.apd.qol.BossPylonTargeting.replaceInvulnerableBoss(lastTarget, activePylon)) {
 			if (candidates.isEmpty()) {
 				lastTarget = null;
 			} else {
 				active = true;
-				lastTarget = Random.element( candidates );
+				lastTarget = activePylon != null ? activePylon : Random.element( candidates );
 				updateImage();
 				flash();
 			}
