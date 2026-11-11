@@ -274,6 +274,7 @@ public class WndRanking extends WndTabbed {
 					@Override
 					protected void onClick() {
 						super.onClick();
+						com.shatteredpixel.shatteredpixeldungeon.ui.SeedHistoryNotice.cancel();
 						ShatteredPixelDungeon.scene().addToFront(new WndOptions(new Image(icon),
 								Messages.get(WndRanking.StatsTab.this, "copy_seed"),
 								Messages.get(WndRanking.StatsTab.this, "copy_seed_desc"),
@@ -284,6 +285,7 @@ public class WndRanking extends WndTabbed {
 								super.onSelect(index);
 								if (index == 0){
 									SPDSettings.customSeed(DungeonSeed.convertToCode(Dungeon.seed));
+									com.shatteredpixel.shatteredpixeldungeon.ui.SeedHistoryNotice.selected(SPDSettings.customSeed());
 									icon.hardlight(1f, 1.5f, 0.67f);
 								}
 							}

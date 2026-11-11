@@ -40,6 +40,7 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.Icons;
 import com.shatteredpixel.shatteredpixeldungeon.ui.OptionSlider;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RedButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
+import com.shatteredpixel.shatteredpixeldungeon.ui.SeedHistoryNotice;
 import com.shatteredpixel.shatteredpixeldungeon.ui.DifficultyBar;
 import com.shatteredpixel.shatteredpixeldungeon.ui.StyledButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
@@ -708,6 +709,7 @@ public class HeroSelectScene extends PixelScene {
 						return;
 					}
 
+					SeedHistoryNotice.cancel();
 					String existingSeedtext = SPDSettings.customSeed();
 					ShatteredPixelDungeon.scene().addToFront( new WndTextInput(Messages.get(HeroSelectScene.class, "custom_seed_title"),
 							Messages.get(HeroSelectScene.class, "custom_seed_desc"),
@@ -726,6 +728,7 @@ public class HeroSelectScene extends PixelScene {
 								for (GamesInProgress.Info info : GamesInProgress.checkAll()){
 									if (info.customSeed.isEmpty() && info.seed == seed){
 										SPDSettings.customSeed("");
+										SeedHistoryNotice.selected("");
 										icon.resetColor();
 										ShatteredPixelDungeon.scene().addToFront(new WndMessage(Messages.get(HeroSelectScene.class, "custom_seed_duplicate")));
 										return;
@@ -733,9 +736,11 @@ public class HeroSelectScene extends PixelScene {
 								}
 
 								SPDSettings.customSeed(text);
+								SeedHistoryNotice.selected(text);
 								icon.hardlight(1f, 1.5f, 0.67f);
 							} else {
 								SPDSettings.customSeed("");
+								SeedHistoryNotice.selected("");
 								icon.resetColor();
 							}
 							updateOptionsColor();

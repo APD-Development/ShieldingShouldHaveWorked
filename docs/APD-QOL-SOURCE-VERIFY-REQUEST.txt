@@ -1,6 +1,6 @@
 APD source verification request, 2026-11-11
-Parent cutoff: c12a24360ed6d5b7d5cad5d98ccd7d9f9ea9626c
-Scope: ordinary Arcane Vision qualifying-effect activation wording; three actual-handler/FOV regressions for Frost, allied Transfusion and autonomous ward hits; additive ordinary-window top/bottom captures. No production gameplay or detailed-panel change. Earlier Empowered Strike and Ooze capture work is retained from the parent cutoff.
-Fresh local result: 3214 tests across 466 suites, zero failures/errors/skips.
+Parent cutoff: 49ef0f1861592bbbd349f332de97eb5c7bb89821
+Scope: approved offline exact-seed history lookup and context-sensitive remembered-search presentation. Existing scores, seed storage/generation, search footprints/costs, save formats and original signing remain unchanged. Adds30 focused core methods and two reviewed native fixtures; includes the retained corrected pylon fixture in the upcoming build plan.
+Fresh revised local result:3244 tests across468 suites, zero failures/errors/skips, all current production/test classes freshly compiled. The earlier two integration failures are preserved and corrected without weakening the statistics library or authored-language checks.
 Require the complete core suite and desktop plus Android debug, release and instrumentation compilation.
-This source-only request assembles no APK. The frozen APD443 pair remains unchanged.
+This source-only request assembles no APK. The frozen APD444 pair remains unchanged.
