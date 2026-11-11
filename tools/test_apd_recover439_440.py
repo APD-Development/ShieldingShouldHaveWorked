@@ -1,17 +1,47 @@
 # ADHD Pixel Dungeon; Copyright (C) 2026 Chris Charlton
 # SPDX-License-Identifier: GPL-3.0-or-later
 import copy
+import hashlib
 import io
 from pathlib import Path
+import struct
 import tempfile
 import unittest
 import zipfile
+import zlib
 
-from apd_recover439_440 import (CASES, SPECS, check_core, check_instrumentation,
+from apd_recover439_440 import (CASES, SPECS, check_core, check_images, check_instrumentation,
                                 extract_archive, safe_name, sanitize_snapshot)
 
 
 class RecoverySafeguardsTest(unittest.TestCase):
+    image_names = (
+        'wall-geometry-corner-no-false-check.png', 'wall-geometry-valid-searched-face.png',
+        'wall-geometry-retained-after-zoom-pan-pause-rebuild.png', 'wall-geometry-door-no-stale-check.png',
+        'trap-discovery-setting-on.png', 'trap-discovery-setting-restarted.png',
+        'trap-discovery-setting-off.png', 'trap-discovery-runtime-actual-ooze.png',
+        *('qol-automatic-inventory-' + str(index) + '.png' for index in range(5)),
+    )
+
+    @staticmethod
+    def png(width=320, height=640, compressed_pixels=None):
+        def chunk(kind, payload):
+            return (struct.pack('>I', len(payload)) + kind + payload
+                    + struct.pack('>I', zlib.crc32(kind + payload) & 0xffffffff))
+
+        if compressed_pixels is None:
+            compressed_pixels = zlib.compress((b'\0' + b'\x20\x60\xc0' * width) * height, 0)
+        return (b'\x89PNG\r\n\x1a\n'
+                + chunk(b'IHDR', struct.pack('>IIBBBBB', width, height, 8, 2, 0, 0, 0))
+                + chunk(b'tEXt', b'fixture\0' + b'x' * 2100)
+                + chunk(b'IDAT', compressed_pixels) + chunk(b'IEND', b''))
+
+    def write_images(self, root):
+        data = self.png()
+        for name in self.image_names:
+            (root / name).write_bytes(data)
+        return data
+
     def native_text(self):
         return ('INSTRUMENTATION_STATUS: class=example.NativeTest\n'
                 'INSTRUMENTATION_STATUS: test=expectedMethod\n'
@@ -38,6 +68,40 @@ class RecoverySafeguardsTest(unittest.TestCase):
         self.assertEqual([case[0] for case in CASES], ['qol', 'wall', 'seed', 'restart', 'gameplay', 'freeze'])
         self.assertEqual(len({(case[1], case[2]) for case in CASES}), 6)
         self.assertEqual(CASES[3][2], 'b_freshProcessReadsEnabledAndCanDisable')
+
+    def test_native_screenshots_decode_and_keep_exact_hashes(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            data = self.write_images(Path(temporary))
+            self.assertEqual(check_images(temporary),
+                             {name: hashlib.sha256(data).hexdigest() for name in self.image_names})
+
+    def test_native_screenshots_reject_corruption_and_placeholder_images(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            data = self.write_images(root)
+            damaged_crc = bytearray(data)
+            damaged_crc[data.index(b'IDAT') + 8] ^= 1
+            # These have valid PNG chunk CRCs but cannot decode complete screen pixels.
+            invalid_pixels = self.png(compressed_pixels=b'not a zlib pixel stream')
+            missing_pixels = self.png(compressed_pixels=zlib.compress(b''))
+            invalid_filter = self.png(compressed_pixels=zlib.compress((b'\x05' + b'\0' * 960) * 640))
+            placeholder = self.png(width=1, height=1)
+            target = root / self.image_names[0]
+            for label, broken in (('CRC', damaged_crc), ('pixel stream', invalid_pixels),
+                                  ('missing rows', missing_pixels), ('row filter', invalid_filter),
+                                  ('placeholder', placeholder),
+                                  ('truncated', data[:-5])):
+                target.write_bytes(broken)
+                with self.subTest(damage=label), self.assertRaises(RuntimeError):
+                    check_images(root)
+
+    def test_native_screenshots_require_complete_existing_capture_set(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            self.write_images(root)
+            (root / 'trap-discovery-setting-restarted.png').unlink()
+            with self.assertRaises(RuntimeError):
+                check_images(root)
 
     def test_rejects_path_escape_and_artifact_symlink(self):
         for name in ('../outside', '/absolute', 'a/../../outside', 'a\\..\\outside'):

@@ -17,6 +17,9 @@ import threading
 import time
 import xml.etree.ElementTree as ET
 import zipfile
+import zlib
+
+from validate_android_visuals import validate as validate_png
 
 REPO = 'APD-Development/ShieldingShouldHaveWorked'
 APP = 'com.charltonchris29.adhdpixeldungeon.indev'
@@ -117,6 +120,44 @@ def check_instrumentation(text, class_name, method):
             'Native failure marker')
 
 
+def check_png_pixels(data):
+    """Decode the PNG stream and require every complete row and legal filter byte."""
+    dimensions = validate_png(data)
+    require(data[12:16] == b'IHDR', 'PNG header is not first')
+    width, height, depth, color, compression, filtering, interlace = struct.unpack('>IIBBBBB', data[16:29])
+    channels = {0: 1, 2: 3, 3: 1, 4: 2, 6: 4}
+    depths = {0: (1, 2, 4, 8, 16), 2: (8, 16), 3: (1, 2, 4, 8), 4: (8, 16), 6: (8, 16)}
+    require(color in channels and depth in depths[color] and compression == filtering == 0
+            and interlace in (0, 1), 'Invalid native PNG encoding')
+    # Adam7 interlacing uses seven reduced images, each with its own row filters.
+    passes = ((0, 0, 1, 1),) if interlace == 0 else (
+        (0, 0, 8, 8), (4, 0, 8, 8), (0, 4, 4, 8), (2, 0, 4, 4),
+        (0, 2, 2, 4), (1, 0, 2, 2), (0, 1, 1, 2))
+    rows = []
+    for x, y, step_x, step_y in passes:
+        columns, count = max(0, (width - x + step_x - 1) // step_x), max(0, (height - y + step_y - 1) // step_y)
+        if columns and count:
+            rows.append(((columns * channels[color] * depth + 7) // 8 + 1, count))
+    compressed = []
+    at = 8
+    while at < len(data):
+        length = struct.unpack_from('>I', data, at)[0]
+        if data[at + 4:at + 8] == b'IDAT':
+            compressed.append(data[at + 8:at + 8 + length])
+        at += length + 12
+    expected = sum(length * count for length, count in rows)
+    decoder = zlib.decompressobj()
+    pixels = decoder.decompress(b''.join(compressed), expected + 1)
+    require(decoder.eof and not decoder.unused_data and not decoder.unconsumed_tail
+            and len(pixels) == expected, 'Incomplete or oversized PNG pixel stream')
+    at = 0
+    for length, count in rows:
+        for _ in range(count):
+            require(pixels[at] <= 4, 'Invalid PNG row filter')
+            at += length
+    return dimensions
+
+
 def check_images(directory):
     images = sorted(Path(directory).rglob('*.png'))
     names = {path.name for path in images}
@@ -131,8 +172,10 @@ def check_images(directory):
     for path in images:
         data = path.read_bytes()
         require(len(data) > 2000 and data.startswith(b'\x89PNG\r\n\x1a\n'), 'Invalid native screenshot')
-        require(len(data) >= 24 and all(v > 0 for v in struct.unpack('>II', data[16:24])), 'Invalid PNG dimensions')
-        require(b'IEND' in data[-16:], 'Incomplete PNG')
+        try:
+            check_png_pixels(data)
+        except (ValueError, zlib.error) as error:
+            raise RuntimeError('Invalid native screenshot: ' + path.name) from error
         manifest[str(path.relative_to(directory))] = sha(path)
     return manifest
 
