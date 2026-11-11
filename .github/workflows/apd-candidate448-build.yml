@@ -59,7 +59,7 @@ jobs:
           for variant in ('Developer','Alpha-Testers'):
               path=pathlib.Path('candidate448')/f'APD-{variant}-448.apk'
               output=subprocess.check_output([str(tools/'apksigner'),'verify','--print-certs',str(path)],text=True)
-              match=re.search(r'SHA-256 digest:\\s*([0-9a-fA-F:]+)',output)
+              match=re.search(r'SHA-256 digest:\s*([0-9a-fA-F:]+)',output)
               assert match,output
               cert=match.group(1).replace(':','').lower()
               assert cert==expected,(variant,cert)
