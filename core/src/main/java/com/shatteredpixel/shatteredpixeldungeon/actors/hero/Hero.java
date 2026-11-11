@@ -2707,7 +2707,8 @@ public class Hero extends Char {
         // recording uses the adaptive, observed wall context.
         boolean recordWallChecks = intentional
                 && !com.shatteredpixel.shatteredpixeldungeon.apd.qol.DoorSearchEligibility.insideGatedRoom(Dungeon.level,pos)
-                && com.shatteredpixel.shatteredpixeldungeon.apd.qol.SearchControlContext.hasMeaningfulWall(this,Dungeon.level);
+                && (!SPDSettings.adaptiveSearchChoice()
+                || !com.shatteredpixel.shatteredpixeldungeon.apd.qol.SearchControlContext.openRoomInterior(this,Dungeon.level));
 
 		boolean circular = pointsInTalent(Talent.WIDE_SEARCH) == 1;
 		int distance = heroClass == HeroClass.ROGUE ? 2 : 1;
