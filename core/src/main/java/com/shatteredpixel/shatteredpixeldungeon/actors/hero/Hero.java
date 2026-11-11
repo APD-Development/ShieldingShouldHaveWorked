@@ -1880,9 +1880,10 @@ public class Hero extends Char {
 				//only do a simple check for mind visioned enemies, better performance
 				if ((!mindVisionEnemies.contains(m) && QuickSlotButton.autoAim(m) != -1)
 						|| (mindVisionEnemies.contains(m) && new Ballistica( pos, m.pos, Ballistica.PROJECTILE ).collisionPos == m.pos)) {
-					if (target == null) {
-						target = m;
-					} else if (distance(target) > distance(m)) {
+					if (target == null
+							|| com.shatteredpixel.shatteredpixeldungeon.apd.qol.BossPylonTargeting.prefer(m, target)
+							|| (!com.shatteredpixel.shatteredpixeldungeon.apd.qol.BossPylonTargeting.prefer(target, m)
+								&& distance(target) > distance(m))) {
 						target = m;
 					}
 					if (m instanceof Snake && Dungeon.level.distance(m.pos, pos) <= 4
@@ -1899,7 +1900,8 @@ public class Hero extends Char {
 		if (target != null && (lastTarget == null ||
 							!lastTarget.isAlive() || !lastTarget.isActive() ||
 							lastTarget.alignment == Alignment.ALLY ||
-							!fieldOfView[lastTarget.pos])){
+							!fieldOfView[lastTarget.pos] ||
+							com.shatteredpixel.shatteredpixeldungeon.apd.qol.BossPylonTargeting.replaceInvulnerableBoss(lastTarget, target))){
 			QuickSlotButton.target(target);
 		}
 		
