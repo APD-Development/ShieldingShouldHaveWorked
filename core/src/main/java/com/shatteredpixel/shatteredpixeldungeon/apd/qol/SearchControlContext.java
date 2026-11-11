@@ -17,6 +17,7 @@
  */
 package com.shatteredpixel.shatteredpixeldungeon.apd.qol;
 
+import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Foresight;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
@@ -34,7 +35,8 @@ public final class SearchControlContext {
     public enum Action { SEARCH, WALL_SEARCH, RESUME_MOVEMENT, SHOW_SAVED, FORGET, CANCEL }
 
     public static Action preferred(Hero hero, Level level) {
-        if (hero != null && hero.wallSearch.matches(level) && hasMeaningfulWall(hero, level)) {
+        if (SPDSettings.adaptiveSearchChoice() && hero != null
+                && hero.wallSearch.matches(level) && hasMeaningfulWall(hero, level)) {
             return Action.WALL_SEARCH;
         }
         return hero != null && hero.lastAction != null ? Action.RESUME_MOVEMENT : Action.SEARCH;
@@ -61,6 +63,28 @@ public final class SearchControlContext {
         if (level instanceof RegularLevel && ((RegularLevel) level).apdHasRooms()) {
             Room room = ((RegularLevel) level).room(hero.pos);
             if (room instanceof CrystalVaultRoom || room instanceof CrystalChoiceRoom) return false;
+            if (room != null) {
+                // The room's interior is not a wall-investigation position merely
+                // because Rogue or acquired Wide Search can reach its perimeter.
+                // Directly adjacent eligible walls still take priority.
+                int x = hero.pos % level.width(), y = hero.pos / level.width();
+                if (x >= room.left + 2 && x <= room.right - 2
+                        && y >= room.top + 2 && y <= room.bottom - 2) {
+                    boolean adjacentCandidate = false;
+                    int width = level.width();
+                    for (int nearby : new int[]{hero.pos-width, hero.pos+width,
+                            hero.pos-1, hero.pos+1}) {
+                        if (nearby >= 0 && nearby < level.length()
+                                && WallSearchSession.covers(hero, level, hero.pos, nearby)
+                                && DoorSearchEligibility.candidate(level, nearby)
+                                && !level.searchedWalls.confirmed(level, nearby)) {
+                            adjacentCandidate = true;
+                            break;
+                        }
+                    }
+                    if (!adjacentCandidate) return false;
+                }
+            }
         }
 
         // Bound the scan to the existing maximum footprint; covers retains the exact class,
