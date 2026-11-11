@@ -2,7 +2,9 @@ name: Qualify frozen APD448 candidate on Android emulators
 on:
   push:
     branches: [codex/apd-phone-fixes-2026-10-09]
-    paths: [.github/workflows/apd-candidate448-native.yml]
+    paths:
+      - .github/workflows/apd-candidate448-native.yml
+      - tools/apd448_native_postcheck.py
 permissions: {contents: read, actions: read}
 concurrency: {group: apd448-native-candidate, cancel-in-progress: false}
 jobs:
