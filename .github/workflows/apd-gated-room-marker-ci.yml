@@ -2,7 +2,10 @@ name: Verify gated-room wall checkmark exclusion
 on:
   push:
     branches: [codex/apd-phone-fixes-2026-10-09]
-    paths: [.github/workflows/apd-gated-room-marker-ci.yml]
+    paths:
+      - .github/workflows/apd-gated-room-marker-ci.yml
+      - core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/qol/SearchedWallMarkers.java
+      - core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/qol/GatedRoomWallMarkerTest.java
 permissions:
   contents: read
 jobs:
