@@ -1,6 +1,6 @@
 APD source verification request, 2026-11-11
-Parent cutoff: 49ef0f1861592bbbd349f332de97eb5c7bb89821
-Scope: approved offline exact-seed history lookup and context-sensitive remembered-search presentation. Existing scores, seed storage/generation, search footprints/costs, save formats and original signing remain unchanged. Adds30 focused core methods and two reviewed native fixtures; includes the retained corrected pylon fixture in the upcoming build plan.
-Fresh revised local result:3244 tests across468 suites, zero failures/errors/skips, all current production/test classes freshly compiled. The earlier two integration failures are preserved and corrected without weakening the statistics library or authored-language checks.
-Require the complete core suite and desktop plus Android debug, release and instrumentation compilation.
-This source-only request assembles no APK. The frozen APD444 pair remains unchanged.
+Parent cutoff: 57720443ec56d9d6776afb663ca4c821fab76956
+Scope: correct seed-history classification for available unfinished/crash-interrupted records. Count exact supported logical attempts, expose unfinished status, and use only canonical observed main-dungeon depth for an unfinished identity. Preserve the existing search changes, every score, save field, seed generation path and active-save restriction.
+Fresh local result: 3,247 tests across 468 suites, zero failures/errors/skips. Three new methods reproduce four failures against frozen APD445 and pass after correction.
+The extended real seed-entry device fixture retains its six original capture stages and adds seed-history-unfinished-record.png. Require actual desktop and Android debug/release/instrumentation compilation.
+This source-only request assembles no APK. APD445 remains frozen, unaccepted and undelivered; APD444 remains the last accepted delivered game.

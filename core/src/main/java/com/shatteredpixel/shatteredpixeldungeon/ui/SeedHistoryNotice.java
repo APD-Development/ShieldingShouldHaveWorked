@@ -60,6 +60,10 @@ public final class SeedHistoryNotice {
         String depth = summary.deepestFloor < 0
                 ? Messages.get(HeroSelectScene.class, "seed_history_depth_unknown")
                 : Messages.get(HeroSelectScene.class, "seed_history_depth", summary.deepestFloor);
+        if (summary.unfinishedAttempts > 0) {
+            depth = Messages.get(HeroSelectScene.class, "seed_history_unfinished",
+                    summary.attempts - summary.unfinishedAttempts, summary.unfinishedAttempts) + "\n" + depth;
+        }
         String text = Messages.get(HeroSelectScene.class, "seed_history_match", summary.attempts, depth);
         if (summary.attemptsWithKnownDepth < summary.attempts) {
             text += "\n\n" + Messages.get(HeroSelectScene.class, "seed_history_depth_partial",

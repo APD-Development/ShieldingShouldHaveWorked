@@ -22,6 +22,7 @@ import org.junit.rules.TemporaryFolder;
 import java.io.File;
 import java.lang.reflect.Field;
 import java.nio.file.Files;
+import java.nio.file.StandardOpenOption;
 import java.util.Arrays;
 
 import static org.junit.Assert.*;
@@ -61,6 +62,12 @@ public class SeedHistoryTest {
         assertTrue(writer.close(true, 10000));
     }
 
+    private void enter(RunLogWriter writer, long clock, int depth, int branch) {
+        LifecycleEvents.LevelEnter level = new LifecycleEvents.LevelEnter();
+        level.depth = depth; level.branch = branch; level.entryMode = "DESCEND";
+        assertTrue(LifecycleEvents.emitLevelEnter(writer, clock, level));
+    }
+
     private LegacyEvents.Record old(String id, long seed, int depth) {
         LegacyEvents.Record record = new LegacyEvents.Record(); record.gameId = id;
         record.putNum(FactKeys.SEED, seed); record.putNum(FactKeys.OUTCOME, LifecycleEvents.OUTCOME_DIED);
@@ -87,6 +94,7 @@ public class SeedHistoryTest {
         SeedHistory.Summary result = lookup(DungeonSeed.convertToCode(SEED));
         assertEquals(SeedHistory.Kind.MATCHING_LOCAL_HISTORY, result.kind);
         assertEquals(2, result.attempts); assertEquals(26, result.deepestFloor);
+        assertEquals(0, result.unfinishedAttempts);
         assertEquals(2, result.attemptsWithKnownDepth);
         assertEquals(result.attempts, lookup(Long.toString(SEED)).attempts);
         // Prior custom play is a history match, never a generated-locally or creator classification.
@@ -95,15 +103,85 @@ public class SeedHistoryTest {
     }
 
     @Test public void exactLogicalSegmentsAndCopiedLogsCountOnceAndLatestOpenSegmentIsNotFinished() throws Exception {
-        run("one", SEED, LifecycleEvents.SEED_RANDOM, LifecycleEvents.OUTCOME_DIED, 4, null);
+        run("one", SEED, LifecycleEvents.SEED_RANDOM, LifecycleEvents.OUTCOME_DIED, 4, "one-ranking");
         RunLogWriter resumed = start("one_1", "one", 1, SEED, LifecycleEvents.SEED_RANDOM, "fixture");
-        end(resumed, 5, LifecycleEvents.OUTCOME_WON, 20, true, null); assertTrue(resumed.close(true, 10000));
+        end(resumed, 5, LifecycleEvents.OUTCOME_WON, 20, true, "one-ranking"); assertTrue(resumed.close(true, 10000));
         Files.copy(new File(root(), "runs/one_1.apdlog").toPath(), new File(root(), "runs/copied.apdlog").toPath());
+        LegacyEvents.Record priorFinish = old("one-ranking", SEED, 20);
+        priorFinish.putNum(FactKeys.OUTCOME, LifecycleEvents.OUTCOME_WON);
+        legacy("one-ranking-copy", priorFinish);
         assertEquals(1, lookup(Long.toString(SEED)).attempts);
         assertEquals(20, lookup(Long.toString(SEED)).deepestFloor);
         RunLogWriter open = start("one_2", "one", 2, SEED, LifecycleEvents.SEED_RANDOM, "fixture");
         assertTrue(open.close(false, 10000));
-        assertEquals(0, lookup(Long.toString(SEED)).attempts);
+        SeedHistory.Summary latest = lookup(Long.toString(SEED));
+        assertEquals(SeedHistory.Kind.MATCHING_LOCAL_HISTORY, latest.kind);
+        assertEquals(1, latest.attempts);
+        assertEquals(1, latest.unfinishedAttempts);
+        assertEquals(-1, latest.deepestFloor);
+        assertEquals(0, latest.attemptsWithKnownDepth);
+    }
+
+    @Test public void unfinishedRecordedHistoryMatchesAndUsesCanonicalObservedDepth() throws Exception {
+        RunLogWriter writer = start("unfinished", "unfinished", 0, SEED, LifecycleEvents.SEED_RANDOM, "fixture");
+        enter(writer, 1, 3, 0);
+        enter(writer, 2, 99, 1); // A side branch is not a deeper main-dungeon floor.
+        LifecycleEvents.Save save = new LifecycleEvents.Save(); save.depth = 3;
+        assertTrue(LifecycleEvents.emitSave(writer, 3, save));
+        enter(writer, 4, 20, 0);
+        LifecycleEvents.Rollback rollback = new LifecycleEvents.Rollback();
+        rollback.kind = LifecycleEvents.ROLLBACK_MATCHED; rollback.matchedSaveIndex = 3; rollback.abandonedEvents = 1;
+        assertTrue(LifecycleEvents.emitRollback(writer, 5, rollback));
+        enter(writer, 6, 7, 0);
+        assertTrue(writer.close(false, 10000));
+        File raw = new File(root(), "runs/unfinished.apdlog");
+        byte[] before = Files.readAllBytes(raw.toPath());
+        SeedHistory.Summary result = lookup(Long.toString(SEED));
+        assertEquals(SeedHistory.Kind.MATCHING_LOCAL_HISTORY, result.kind);
+        assertEquals(1, result.attempts);
+        assertEquals(1, result.unfinishedAttempts);
+        assertEquals(7, result.deepestFloor);
+        assertEquals(1, result.attemptsWithKnownDepth);
+        assertArrayEquals(before, Files.readAllBytes(raw.toPath()));
+    }
+
+    @Test public void crashedHistoryWithoutDepthStillMatchesAndKeepsUnknownDepth() throws Exception {
+        RunLogWriter writer = start("crashed", "crashed", 0, SEED, LifecycleEvents.SEED_CUSTOM, "fixture");
+        assertTrue(writer.close(false, 10000));
+        File raw = new File(root(), "runs/crashed.apdlog");
+        byte[] frame = LogFormat.eventFrame(LogTestSupport.T_PLAIN, 0, 3, new byte[]{7});
+        Files.write(raw.toPath(), Arrays.copyOf(frame, frame.length - 1), StandardOpenOption.APPEND);
+        assertEquals(ReadStatus.TRUNCATED, RunLogReader.read(raw).status);
+        byte[] before = Files.readAllBytes(raw.toPath());
+        SeedHistory.Summary result = lookup(DungeonSeed.convertToCode(SEED));
+        assertEquals(SeedHistory.Kind.MATCHING_LOCAL_HISTORY, result.kind);
+        assertEquals(1, result.attempts);
+        assertEquals(1, result.unfinishedAttempts);
+        assertEquals(-1, result.deepestFloor);
+        assertEquals(0, result.attemptsWithKnownDepth);
+        assertTrue(result.incompleteHistory);
+        assertArrayEquals(before, Files.readAllBytes(raw.toPath()));
+    }
+
+    @Test public void mixedFinishedAndOpenExactIdentitiesCountOnceWithoutResurrectingTerminalDepth() throws Exception {
+        run("old-finish", SEED, LifecycleEvents.SEED_RANDOM, LifecycleEvents.OUTCOME_DIED, 26, "shared-ranking");
+        RunLogWriter open = start("open-copy", "open-copy", 0, SEED, LifecycleEvents.SEED_CUSTOM, "fixture");
+        enter(open, 1, 6, 0);
+        LegacyEvents.RankingLink link = new LegacyEvents.RankingLink(); link.gameId = "shared-ranking";
+        assertTrue(LegacyEvents.emitRankingLink(open, 2, link));
+        assertTrue(open.close(false, 10000));
+        Files.copy(new File(root(), "runs/open-copy.apdlog").toPath(), new File(root(), "runs/duplicate-open.apdlog").toPath());
+        RunLogWriter unknown = start("other-open", "other-open", 0, SEED, LifecycleEvents.SEED_RANDOM, "fixture");
+        assertTrue(unknown.close(false, 10000));
+        legacy("retained", old("shared-ranking", SEED, 26), old("independent-finish", SEED, 4));
+        LegacyImporter.Extract current = new LegacyImporter.Extract();
+        current.fresh.add(old("shared-ranking", SEED, 26));
+        SeedHistory.Summary result = SeedHistory.lookup(root(), Long.toString(SEED), current);
+        assertEquals(SeedHistory.Kind.MATCHING_LOCAL_HISTORY, result.kind);
+        assertEquals(3, result.attempts);
+        assertEquals(2, result.unfinishedAttempts);
+        assertEquals(6, result.deepestFloor);
+        assertEquals(2, result.attemptsWithKnownDepth);
     }
 
     @Test public void rollbackRemovesTheAbandonedDeepFinish() {
@@ -256,6 +334,7 @@ public class SeedHistoryTest {
             GameSettings.set(new HeadlessPreferences(new FileHandle(prefs)));
             Dungeon.daily = Dungeon.dailyReplay = false; SPDSettings.customSeed("");
             assertEquals(SeedHistory.Kind.GENERATED_LOCALLY, lookup(SPDSettings.customSeed()).kind);
+            assertEquals(0, lookup(SPDSettings.customSeed()).unfinishedAttempts);
             Dungeon.initSeed();
             assertEquals("", Dungeon.customSeedText); assertTrue(Dungeon.seed >= 0 && Dungeon.seed < DungeonSeed.TOTAL_SEEDS);
             String generated = DungeonSeed.convertToCode(Dungeon.seed);

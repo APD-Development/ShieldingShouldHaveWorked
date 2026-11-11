@@ -12,14 +12,19 @@ import com.shatteredpixel.shatteredpixeldungeon.Rankings;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.apd.recorder.LegacyImporter;
+import com.shatteredpixel.shatteredpixeldungeon.apd.stats.EventTypes;
 import com.shatteredpixel.shatteredpixeldungeon.apd.stats.LifecycleEvents;
 import com.shatteredpixel.shatteredpixeldungeon.apd.recorder.SeedHistory;
+import com.shatteredpixel.shatteredpixeldungeon.apd.stats.ReadResult;
+import com.shatteredpixel.shatteredpixeldungeon.apd.stats.ReadStatus;
+import com.shatteredpixel.shatteredpixeldungeon.apd.stats.RunLogReader;
 import com.shatteredpixel.shatteredpixeldungeon.apd.stats.TelemetryVersion;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.HeroSelectScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.ui.IconButton;
+import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
 import com.shatteredpixel.shatteredpixeldungeon.ui.SeedHistoryNotice;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndRanking;
@@ -130,6 +135,72 @@ public class SeedHistoryDeviceTest {
         });
     }
 
+    private static void unfinishedRecordUsesObservedHistory(OwnedFixture owned, long seed,
+                                                            LegacyImporter.Extract rankings) throws Exception {
+        String code = DungeonSeed.convertToCode(seed);
+        assertEquals("No fixture record exists for this seed yet", SeedHistory.Kind.UNKNOWN_IMPORTED,
+                SeedHistory.lookup(owned.root, code, rankings).kind);
+        Map<String,String> before = manifest(owned.root);
+        DeviceLogs log = new DeviceLogs(owned.root, "seed446-unfinished", TelemetryVersion.CURRENT, 1700000001000L)
+                .seeds(seed, "")
+                .start("seed446-logical-unfinished", 0, "WARRIOR", "default", 0, 0, false)
+                .enter(4).enter(9).enter(4);
+        assertTrue("Close the owned log without a final seal or run result", log.w.close(false, 10000));
+        ReadResult raw = RunLogReader.read(log.file);
+        assertEquals(ReadStatus.UNSEALED, raw.status);
+        assertFalse(raw.sealed);
+        assertEquals(0, raw.events.stream().filter(event -> event.type == EventTypes.RUN_END).count());
+        Map<String,String> withUnfinished = manifest(owned.root);
+        assertEquals(before.size() + 1, withUnfinished.size());
+        for (Map.Entry<String,String> existing : before.entrySet()) {
+            assertEquals("Previous fixture log is unchanged", existing.getValue(), withUnfinished.get(existing.getKey()));
+        }
+
+        SeedHistory.Summary expected = SeedHistory.lookup(owned.root, code, rankings);
+        assertEquals(SeedHistory.Kind.MATCHING_LOCAL_HISTORY, expected.kind);
+        assertEquals(1, expected.attempts);
+        assertEquals(1, expected.unfinishedAttempts);
+        assertEquals(0, expected.attempts - expected.unfinishedAttempts);
+        assertEquals("Use the deepest canonical observed entry, not the last entry", 9, expected.deepestFloor);
+        assertEquals(1, expected.attemptsWithKnownDepth);
+        assertFalse("A clean unsealed log is readable history", expected.incompleteHistory);
+
+        WndTextInput input = entry(code);
+        press(input, Messages.get(HeroSelectScene.class, "custom_seed_set"));
+        WndTitledMessage unfinished = notice("Matching local history.");
+        render(() -> {
+            String visible = text(unfinished).replace("_", "");
+            assertTrue(visible, visible.contains("Recorded previous attempts: 1"));
+            assertTrue(visible, visible.contains("Finished attempts: 0"));
+            assertTrue(visible, visible.contains("Unfinished attempts: 1"));
+            assertTrue(visible, visible.contains("Deepest recorded floor: 9"));
+            assertTrue(visible, visible.contains("Unfinished depths are observed main-dungeon floors, not final results."));
+            assertTrue(visible, visible.contains("may include imported archives"));
+            assertTrue(visible, visible.contains("does not establish who originally created the seed"));
+            assertFalse(visible, visible.contains("Unknown imported seed."));
+            assertFalse(visible, visible.contains("Some history could not be read completely"));
+            assertEquals(seed, DungeonSeed.convertFromText(SPDSettings.customSeed()));
+            // This notice is an ordinary non-scrolling WndTitledMessage. Every text block
+            // must fit in the actual viewport; collecting its text alone is not visual proof.
+            for (RenderedTextBlock block : TopScoresDeviceTest.find(unfinished, RenderedTextBlock.class)) {
+                if (!block.exists || !block.isVisible() || block.text() == null || block.text().isEmpty()) continue;
+                Point top = block.camera().cameraToScreen(block.left(), block.top());
+                Point bottom = block.camera().cameraToScreen(block.right(), block.bottom());
+                assertTrue("Unfinished-history notice text fits without clipping", top.x >= 0 && top.y >= 0
+                        && bottom.x <= Game.width && bottom.y <= Game.height);
+            }
+        });
+        TopScoresDeviceTest.screenshot("seed-history-unfinished-record.png");
+        render(() -> {
+            unfinished.hide();
+            owned.assertOriginalFiles();
+        });
+        assertEquals("Unfinished lookup does not rewrite logs or create a cache", withUnfinished, manifest(owned.root));
+        System.out.println("APD446_SEED_HISTORY unfinished_exact_seed=true total_attempts=1"
+                + " finished_attempts=0 unfinished_attempts=1 observed_main_depth=9"
+                + " clean_unsealed=true no_terminal_record=true rankings_unchanged=true");
+    }
+
     @Test public void seedEntryShowsOnlyMatchingRecordedHistory() throws Exception {
         try (ActivityScenario<AndroidLauncher> app = ActivityScenario.launch(AndroidLauncher.class)) {
             waitFor(() -> Game.scene() != null && PixelScene.uiCamera != null);
@@ -143,6 +214,7 @@ public class SeedHistoryDeviceTest {
                 LegacyImporter.Extract rankings = LegacyImporter.extractRankingsFile(System.currentTimeMillis());
                 long knownSeed = seedAbsentFromRankings(445202611L, rankings);
                 long unknownSeed = seedAbsentFromRankings(knownSeed+1, rankings);
+                long unfinishedSeed = seedAbsentFromRankings(unknownSeed+1, rankings);
                 String knownCode = DungeonSeed.convertToCode(knownSeed);
                 String unknownCode = DungeonSeed.convertToCode(unknownSeed);
                 log(owned.get().root, "seed445-attempt-one", "seed445-logical-one", knownSeed, 7);
@@ -153,6 +225,7 @@ public class SeedHistoryDeviceTest {
                 SeedHistory.Summary expected = SeedHistory.lookup(owned.get().root, knownCode, rankings);
                 assertEquals(SeedHistory.Kind.MATCHING_LOCAL_HISTORY, expected.kind);
                 assertEquals(2, expected.attempts);
+                assertEquals(0, expected.unfinishedAttempts);
                 assertEquals(12, expected.deepestFloor);
                 assertEquals(2, expected.attemptsWithKnownDepth);
                 assertFalse(expected.incompleteHistory);
@@ -212,7 +285,7 @@ public class SeedHistoryDeviceTest {
                 WndTitledMessage unknown = notice("Unknown imported seed.");
                 render(() -> {
                     String visible = text(unknown).replace("_", "");
-                    assertTrue(visible, visible.contains("No matching completed or failed attempt"));
+                    assertTrue(visible, visible.contains("No matching recorded attempt with a known seed"));
                     assertTrue(visible, visible.contains("The original creator is unknown."));
                     assertFalse(visible, visible.contains("Recorded previous attempts: 2"));
                     assertEquals(unknownSeed, DungeonSeed.convertFromText(SPDSettings.customSeed()));
@@ -263,6 +336,7 @@ public class SeedHistoryDeviceTest {
                 assertEquals("The lookup writes no fixture log, cache or derived index", fixtureLogs, manifest(owned.get().root));
                 System.out.println("APD445_SEED_HISTORY callbacks=hero-select-set,clear,ranking-copy"
                         + " logical_attempts=2 raw_logs=3 deepest=12 latest_queued_selection_only=true rankings_unchanged=true");
+                unfinishedRecordUsesObservedHistory(owned.get(), unfinishedSeed, rankings);
             } finally {
                 if (owned.get() != null) owned.get().close();
             }

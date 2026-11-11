@@ -85,7 +85,7 @@ public class AuthoredLanguageTest {
   // Plus one neutral Berserk description which withholds an unidentified armor shield preview.
   // Plus six neutral Hold Fast descriptions for known, single, penalty, unknown, moved and unavailable states.
   // Plus eight neutral seed-history labels for available records, unknown provenance and depth coverage.
-  assertEquals("Reviewed English message inventory",5363,values);
+  assertEquals("Reviewed English message inventory",5364,values);
  }
  @Test public void localizedAlternativesDoNotDamageInnocentWordsOrOtherLanguages(){
   for(String innocent:new String[]{"Hell","slut","kesialan","Verdammte Charaktere","dictionary","classic","Scunthorpe","Prick","Fan of Blades"})assertEquals(innocent,AuthoredLanguage.select(innocent,false));

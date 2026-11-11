@@ -36,17 +36,20 @@ public final class SeedHistory {
     public static final class Summary {
         public final Kind kind;
         public final long seed;
+        /** Distinct recorded attempts, including those without a recorded final result. */
         public final int attempts;
-        /** -1 when no matching attempt recorded its deepest floor. */
+        public final int unfinishedAttempts;
+        /** Deepest final or canonical observed floor; -1 when no matching attempt recorded one. */
         public final int deepestFloor;
         public final int attemptsWithKnownDepth;
         public final boolean incompleteHistory;
 
-        private Summary(Kind kind, long seed, int attempts, int deepestFloor,
+        private Summary(Kind kind, long seed, int attempts, int unfinishedAttempts, int deepestFloor,
                         int attemptsWithKnownDepth, boolean incompleteHistory) {
             this.kind = kind;
             this.seed = seed;
             this.attempts = attempts;
+            this.unfinishedAttempts = unfinishedAttempts;
             this.deepestFloor = deepestFloor;
             this.attemptsWithKnownDepth = attemptsWithKnownDepth;
             this.incompleteHistory = incompleteHistory;
@@ -60,7 +63,7 @@ public final class SeedHistory {
      */
     public static Summary lookup(File root, String seedText, LegacyImporter.Extract rankings) {
         if (seedText == null || seedText.isEmpty()) {
-            return new Summary(Kind.GENERATED_LOCALLY, -1, 0, -1, 0, false);
+            return new Summary(Kind.GENERATED_LOCALLY, -1, 0, 0, -1, 0, false);
         }
         long seed = DungeonSeed.convertFromText(seedText);
         Scan scan = new Scan(seed);
@@ -87,7 +90,11 @@ public final class SeedHistory {
     }
 
     private static int deepest(RunFacts facts) {
-        long depth = facts.numOr(FactKeys.DEEPEST, -1);
+        return depth(facts, FactKeys.DEEPEST);
+    }
+
+    private static int depth(RunFacts facts, String key) {
+        long depth = facts.numOr(key, -1);
         return depth >= 1 && depth <= Integer.MAX_VALUE ? (int) depth : -1;
     }
 
@@ -109,7 +116,7 @@ public final class SeedHistory {
             segment = facts.numOr(FactKeys.SEGMENT, 0);
             outcome = facts.numOr(FactKeys.OUTCOME, -1);
             terminal = finished(facts);
-            deepest = deepest(facts);
+            deepest = depth(facts, terminal ? FactKeys.DEEPEST : FactKeys.DEEPEST_ENTERED);
             addRanking(facts);
         }
 
@@ -121,14 +128,16 @@ public final class SeedHistory {
         void merge(RunFacts facts) {
             if (seed != facts.numOr(FactKeys.SEED, -1)) conflict = true;
             long nextSegment = facts.numOr(FactKeys.SEGMENT, 0);
+            boolean nextTerminal = finished(facts);
+            int nextDeepest = depth(facts, nextTerminal ? FactKeys.DEEPEST : FactKeys.DEEPEST_ENTERED);
             if (nextSegment > segment) {
                 segment = nextSegment;
                 outcome = facts.numOr(FactKeys.OUTCOME, -1);
-                terminal = finished(facts);
-                deepest = deepest(facts);
+                terminal = nextTerminal;
+                deepest = nextDeepest;
             } else if (nextSegment == segment) {
                 // Identical copied logs count once. Conflicting copies cannot establish an exact result.
-                if (outcome != facts.numOr(FactKeys.OUTCOME, -1) || deepest != deepest(facts)) conflict = true;
+                if (outcome != facts.numOr(FactKeys.OUTCOME, -1) || deepest != nextDeepest) conflict = true;
             }
             addRanking(facts);
         }
@@ -213,7 +222,7 @@ public final class SeedHistory {
         }
 
         Summary finish() {
-            int attempts = 0, known = 0, deepest = -1;
+            int attempts = 0, unfinished = 0, known = 0, deepest = -1;
             // Validate exact identities before filtering by the requested seed. A conflicting copy
             // must not become trustworthy simply because the other seed was filtered out first.
             Map<String, Long> rankingSeeds = new HashMap<>();
@@ -229,7 +238,7 @@ public final class SeedHistory {
             Set<String> exactRankingIds = new HashSet<>();
             Map<String, Attempt> counted = new TreeMap<>();
             Map<String, String> parents = new HashMap<>();
-            Set<String> open = new HashSet<>();
+            Map<String, Attempt> open = new TreeMap<>();
             for (Map.Entry<String, Attempt> entry : runs.entrySet()) {
                 Attempt run = entry.getValue();
                 if (run.conflict || conflictingRanking(run) || run.seed != seed || seed == -1) continue;
@@ -244,7 +253,19 @@ public final class SeedHistory {
                 if (run.conflict || conflictingRanking(run)) { incomplete = true; continue; }
                 if (run.seed != seed || seed == -1) continue;
                 String owner = find(parents, "run:" + entry.getKey());
-                if (!run.terminal) { open.add(owner); continue; }
+                if (!run.terminal) {
+                    Attempt prior = open.get(owner);
+                    if (prior == null) {
+                        open.put(owner, run);
+                    } else {
+                        if (prior.outcome != run.outcome || (prior.deepest >= 0 && run.deepest >= 0 && prior.deepest != run.deepest)) {
+                            prior.conflict = true;
+                            incomplete = true;
+                        } else if (prior.deepest < 0) prior.deepest = run.deepest;
+                        prior.rankingIds.addAll(run.rankingIds);
+                    }
+                    continue;
+                }
                 // A ranking link is exact identity evidence. A probable statistics link is never used.
                 Attempt prior = counted.get(owner);
                 if (prior == null) {
@@ -259,7 +280,7 @@ public final class SeedHistory {
             }
             for (Map.Entry<String, Attempt> entry : counted.entrySet()) {
                 Attempt run = entry.getValue();
-                if (run.conflict || open.contains(entry.getKey())) continue;
+                if (run.conflict || open.containsKey(entry.getKey())) continue;
                 if (run.deepest < 0) {
                     for (String id : run.rankingIds) {
                         RunFacts old = oldRecords.get(id);
@@ -272,6 +293,19 @@ public final class SeedHistory {
                 attempts++;
                 if (run.deepest >= 0) { known++; deepest = Math.max(deepest, run.deepest); }
             }
+            for (Map.Entry<String, Attempt> entry : open.entrySet()) {
+                Attempt run = entry.getValue();
+                Attempt priorFinish = counted.get(entry.getKey());
+                if (run.conflict || (priorFinish != null && priorFinish.conflict)) {
+                    incomplete = true;
+                    continue;
+                }
+                // An unfinished identity is still recorded use. Only its canonical observed depth
+                // is available; an older terminal copy or ranking must not supply a final result.
+                attempts++;
+                unfinished++;
+                if (run.deepest >= 0) { known++; deepest = Math.max(deepest, run.deepest); }
+            }
             for (Map.Entry<String, RunFacts> entry : oldRecords.entrySet()) {
                 if (conflictingRankings.contains(entry.getKey())) { incomplete = true; continue; }
                 RunFacts facts = entry.getValue();
@@ -281,7 +315,7 @@ public final class SeedHistory {
                 if (depth >= 0) { known++; deepest = Math.max(deepest, depth); }
             }
             return new Summary(attempts > 0 ? Kind.MATCHING_LOCAL_HISTORY : Kind.UNKNOWN_IMPORTED,
-                    seed, attempts, deepest, known, incomplete);
+                    seed, attempts, unfinished, deepest, known, incomplete);
         }
 
         private void rememberSeed(Map<String, Long> seeds, String id, long seed) {
