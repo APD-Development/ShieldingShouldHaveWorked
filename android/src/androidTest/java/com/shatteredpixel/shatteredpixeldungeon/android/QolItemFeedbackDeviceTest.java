@@ -155,6 +155,36 @@ public class QolItemFeedbackDeviceTest {
             Thread.sleep(120);TopScoresDeviceTest.render(()->assertDescriptionViewport(window));
             TopScoresDeviceTest.screenshot(screenshot.replace(".png","-normal.png"));
         }
+        if(screenshot.equals("qol-reviewed-talent-clear-EXCESS_CHARGE.png")){
+            TopScoresDeviceTest.render(()->{try{
+                ScrollPane scroll=TopScoresDeviceTest.find(window,ScrollPane.class).get(0);
+                boolean found=false;
+                for(RenderedTextBlock body:TopScoresDeviceTest.find(scroll.content(),RenderedTextBlock.class)){
+                    String text=body.text();
+                    if(text.contains("Temporary wand-level bonuses count.")){
+                        found=true;
+                        assertTrue("Normal rank-one description uses the effective imbued wand level",text.contains("0.67 shielding per effective level of its imbued wand"));
+                        assertTrue("Normal rank-two description uses the actual factor",text.contains("1.34 shielding per effective level of its imbued wand"));
+                        assertTrue("Normal rank-three description uses the actual factor",text.contains("2.01 shielding per effective level of its imbued wand"));
+                        assertTrue("Normal description explains whole-point rounding",text.contains("rounded to the nearest whole shield point"));
+                        assertTrue("Normal final sentence preserves the existing stronger Barrier",text.endsWith("A stronger existing Barrier is kept; the amounts do not add together."));
+                        assertFalse("These assertions inspect the collapsed ordinary description",text.contains("Calculations and explanation"));
+                    }
+                }
+                assertTrue("Actual talent window contains the corrected ordinary Excess Charge description",found);
+                float bottom=Math.max(0,scroll.content().height()-scroll.height());
+                scroll.scrollTo(0,bottom);
+                assertEquals("Ordinary Excess Charge text can scroll fully to its final line",bottom,scroll.content().camera.scroll.y,.001f);
+                for(RenderedTextBlock body:TopScoresDeviceTest.find(scroll.content(),RenderedTextBlock.class)){
+                    assertTrue("Ordinary final line has padding below it",scroll.content().height()>=Math.ceil(body.height())+2);
+                    assertTrue("Ordinary final line is reachable without clipping",body.bottom()-bottom<=scroll.content().camera.height-2);
+                }
+                assertEquals(time[0],Dungeon.hero.cooldown(),0);assertEquals(hp[0],Dungeon.hero.HP);
+            }catch(Exception e){throw new RuntimeException(e);}});
+            Thread.sleep(120);TopScoresDeviceTest.render(()->assertDescriptionViewport(window));
+            TopScoresDeviceTest.screenshot(screenshot.replace(".png","-normal-bottom.png"));
+            TopScoresDeviceTest.render(()->{try{TopScoresDeviceTest.find(window,ScrollPane.class).get(0).scrollTo(0,0);}catch(Exception e){throw new RuntimeException(e);}});
+        }
         touch(at[0]);TopScoresDeviceTest.render(()->{try{
             assertEquals("Pointer opens advanced explanation","Hide calculations",expander.get().text());
             for(RenderedTextBlock text:TopScoresDeviceTest.find(window,RenderedTextBlock.class)){
@@ -480,8 +510,8 @@ public class QolItemFeedbackDeviceTest {
             calculationWindow(()->{Sword blade=new Sword();blade.level(3);blade.levelKnown=blade.cursedKnown=true;blade.enchant((com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon.Enchantment)Class.forName("com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments."+name).getDeclaredConstructor().newInstance());return new WndInfoItem(blade);},retainedText[index],"qol-retained-"+name+"-clear-details.png");
         }
         calculationWindow(()->{com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier b=new com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier();b.setShield(17);return new WndInfoBuff(b);},"17 shield points","qol-mechanics-buff-expanded.png");
-        String[] reviewedTalentNames={"BARKSKIN","NATURES_AID","PROJECTILE_MOMENTUM","FOLLOWUP_STRIKE","SHARED_UPGRADES","SHARED_ENCHANTMENT","BOUNTY_HUNTER","SHIELDING_DEW","SEARING_LIGHT","AGGRESSIVE_BARRIER","SWIFT_EQUIP","VARIED_CHARGE"};
-        String[] reviewedTalentText={"Barkskin protection","Barkskin from a visible plant","Thrown weapons while freerunning","Follow-up hit","about 16.67% damage","Borrowing the bow's enchantment","normal item-drop chance","Shielding cap =","once per Illumination","50% health or less","20 turns","start another pair"};
+        String[] reviewedTalentNames={"BARKSKIN","NATURES_AID","PROJECTILE_MOMENTUM","FOLLOWUP_STRIKE","SHARED_UPGRADES","SHARED_ENCHANTMENT","BOUNTY_HUNTER","SHIELDING_DEW","SEARING_LIGHT","AGGRESSIVE_BARRIER","SWIFT_EQUIP","VARIED_CHARGE","EXCESS_CHARGE"};
+        String[] reviewedTalentText={"Barkskin protection","Barkskin from a visible plant","Thrown weapons while freerunning","Follow-up hit","about 16.67% damage","Borrowing the bow's enchantment","normal item-drop chance","Shielding cap =","once per Illumination","50% health or less","20 turns","start another pair","round(effective wand level × 0.67 × rank)"};
         for(int index=0;index<reviewedTalentNames.length;index++){
             final String name=reviewedTalentNames[index];
             calculationWindow(()->new WndInfoTalent(com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent.valueOf(name),2,null),reviewedTalentText[index],"qol-reviewed-talent-clear-"+name+".png");
