@@ -224,6 +224,7 @@ public class SearchControlContextTest {
         try {
             Dungeon.depth = 2;
             SPDSettings.adaptiveSearchChoice(true);
+            hero.wallSearch.searched(hero); // The remembered search must belong to Floor 2.
             EmptyRoom ordinary = new EmptyRoom();
             ordinary.set(7, 7, 13, 13);
             level.setRooms(ordinary);
