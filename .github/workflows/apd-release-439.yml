@@ -20,25 +20,25 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          gh run watch 42938088524 --repo "$GITHUB_REPOSITORY" --exit-status --interval 15
+          gh run watch 42938370462 --repo "$GITHUB_REPOSITORY" --exit-status --interval 15
           python3 tools/apd_owner_delivery_policy.py
           python3 - <<'PY'
           import json,subprocess,pathlib,hashlib,zipfile,xml.etree.ElementTree as E,os,sys
           repo=os.environ['GITHUB_REPOSITORY']
           api=lambda uri:json.loads(subprocess.check_output(['gh','api',uri]))
           assert api('repos/'+repo)['private']
-          run=api('repos/'+repo+'/actions/runs/42938088524')
+          run=api('repos/'+repo+'/actions/runs/42938370462')
           assert run['status']=='completed' and run['conclusion']=='success'
-          assert run['head_sha']=='17aa9b3bd4a0739a087aff4ca1985992a968a234'
+          assert run['head_sha']=='8224872be92c44827282ff8ba6bde363d67f0826'
           assert run['path']=='.github/workflows/apd-pylon-439.yml'
-          jobs=api('repos/'+repo+'/actions/runs/42938088524/jobs')['jobs']
+          jobs=api('repos/'+repo+'/actions/runs/42938370462/jobs')['jobs']
           assert len(jobs)==3 and all(j['conclusion']=='success' for j in jobs)
-          artifacts=api('repos/'+repo+'/actions/runs/42938088524/artifacts')['artifacts']
+          artifacts=api('repos/'+repo+'/actions/runs/42938370462/artifacts')['artifacts']
           expected={'apd439-built-pair','apd439-native-Developer','apd439-native-Alpha-Testers'}
           assert expected.issubset({a['name'] for a in artifacts if not a['expired']})
           root=pathlib.Path('proof');root.mkdir()
           for name in sorted(expected):
-              subprocess.run(['gh','run','download','42938088524','--repo',repo,'--name',name,'--dir',str(root/name)],check=True)
+              subprocess.run(['gh','run','download','42938370462','--repo',repo,'--name',name,'--dir',str(root/name)],check=True)
           built=root/'apd439-built-pair'
           xml=list(built.rglob('TEST-*.xml'))
           suites=[E.parse(path).getroot() for path in xml]
@@ -86,7 +86,7 @@ jobs:
             exit 1
           fi
           gh release create apd-alpha-preview-439 --repo "$GITHUB_REPOSITORY" \
-            --target 17aa9b3bd4a0739a087aff4ca1985992a968a234 --prerelease --latest=false \
+            --target 8224872be92c44827282ff8ba6bde363d67f0826 --prerelease --latest=false \
             --title "APD439: DM-300 active pylon targeting" --notes-file release-notes.md \
             proof/apd439-built-pair/owner-delivery/APD-Developer-439.apk \
             proof/apd439-built-pair/owner-delivery/APD-Alpha-Testers-439.apk
