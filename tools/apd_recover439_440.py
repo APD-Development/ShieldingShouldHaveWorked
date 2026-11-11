@@ -460,11 +460,12 @@ def finalize(number, root, native_root, destination):
     require(sha(sourcezip) == prepared['source_archive_sha256'], 'Corresponding source archive changed')
     shutil.copyfile(sourcezip, destination / sourcezip.name)
     shutil.copyfile(Path(str(sourcezip) + '.sha256'), destination / (sourcezip.name + '.sha256'))
-    proof.update(native_recovery_complete=True, android_tests=12, manual_visual_review_complete=False,
+    accepted_cases = len(CASES) * len(FEATURES)
+    proof.update(native_recovery_complete=True, android_tests=accepted_cases, manual_visual_review_complete=False,
                  source_archive_sha256=prepared['source_archive_sha256'], physical_phone_verified=False,
                  recovery_run=os.environ['GITHUB_RUN_ID'], recovery_commit=os.environ['GITHUB_SHA'])
     write_json(destination / f'APD-{number}-Recovery-Verification.json', proof)
-    print(f'APD{number}: all 12 exact-APK API34 cases accepted; manual image review remains required; no release published.')
+    print(f'APD{number}: all {accepted_cases} exact-APK API34 cases accepted; manual image review remains required; no release published.')
 
 
 def main():

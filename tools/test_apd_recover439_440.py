@@ -3,12 +3,17 @@
 import copy
 import hashlib
 import io
+import json
+import os
 from pathlib import Path
 import struct
 import tempfile
 import unittest
+from unittest.mock import patch
 import zipfile
 import zlib
+
+import apd_recover439_440 as recovery
 
 from apd_recover439_440 import (CASES, SPECS, check_core, check_images, check_instrumentation,
                                 extract_archive, safe_name, sanitize_snapshot)
@@ -68,6 +73,72 @@ class RecoverySafeguardsTest(unittest.TestCase):
         self.assertEqual([case[0] for case in CASES], ['qol', 'wall', 'seed', 'restart', 'gameplay', 'freeze'])
         self.assertEqual(len({(case[1], case[2]) for case in CASES}), 6)
         self.assertEqual(CASES[3][2], 'b_freshProcessReadsEnabledAndCanDisable')
+
+    def finalize_fixture(self, directory, cases, omitted=None):
+        root = directory / 'candidate'
+        native = directory / 'native'
+        number = 445
+        apk_dir = root / 'built/owner-delivery'
+        apk_dir.mkdir(parents=True)
+        source_dir = root / 'source'
+        source_dir.mkdir()
+        source = source_dir / f'APD-Source-{number}.zip'
+        source.write_bytes(b'unit-test corresponding-source fixture')
+        Path(str(source) + '.sha256').write_text(recovery.sha(source))
+        (root / 'preparation.json').write_text(json.dumps({'source_archive_sha256': recovery.sha(source)}))
+        spec = {'source': 'a' * 40, 'hashes': {}}
+        for variant in recovery.FEATURES:
+            apk = apk_dir / f'APD-{variant}-{number}.apk'
+            apk.write_bytes(('unit-test application fixture ' + variant).encode())
+            spec['hashes'][variant] = recovery.sha(apk)
+            evidence = native / f'apd-recovery-{number}-native-{variant}'
+            visuals = evidence / 'visuals'
+            visuals.mkdir(parents=True)
+            self.write_images(visuals)
+            completed = []
+            for label, short_class, method, _ in cases:
+                if label == omitted:
+                    continue
+                report = self.native_text().replace('example.NativeTest', recovery.CLASS_PREFIX + short_class).replace('expectedMethod', method)
+                (evidence / (label + '.txt')).write_text(report)
+                completed.append(label)
+            (evidence / 'native-logcat.txt').write_text('unit-test captured logcat fixture\n')
+            (evidence / 'native-verification.json').write_text(json.dumps({
+                'number': number, 'variant': variant, 'source_commit': spec['source'],
+                'apk_sha256': spec['hashes'][variant], 'instrumentation_sha256': 'b' * 64,
+                'completed_cases': completed, 'native_recovery_complete': True,
+                'images': recovery.check_images(visuals),
+            }))
+        return root, native, spec
+
+    def test_finalize_counts_only_the_complete_configured_native_inventory(self):
+        additional = tuple((f'extra-{i}', f'Extra{i}Test', f'case{i}', 30) for i in range(3))
+        for cases in (CASES, CASES + additional):
+            with self.subTest(cases=len(cases)), tempfile.TemporaryDirectory() as temporary:
+                directory = Path(temporary)
+                root, native, spec = self.finalize_fixture(directory, cases)
+                destination = directory / 'accepted'
+                # Pair/signature compilation is outside this exact-case aggregation unit test.
+                with patch.object(recovery, 'CASES', cases), patch.dict(recovery.SPECS, {445: spec}), \
+                        patch.object(recovery, 'check_pair', return_value=({}, {'instrumentation_sha256': 'b' * 64})), \
+                        patch.dict(os.environ, {'GITHUB_RUN_ID': '1', 'GITHUB_SHA': spec['source']}):
+                    recovery.finalize(445, root, native, destination)
+                proof = json.loads((destination / 'APD-445-Recovery-Verification.json').read_text())
+                self.assertEqual(proof['android_tests'], len(cases) * len(recovery.FEATURES))
+                self.assertFalse(proof['manual_visual_review_complete'])
+
+    def test_finalize_rejects_an_omitted_additional_native_case(self):
+        cases = CASES + (('new-required', 'NewRequiredTest', 'requiredCase', 30),)
+        with tempfile.TemporaryDirectory() as temporary:
+            directory = Path(temporary)
+            root, native, spec = self.finalize_fixture(directory, cases, omitted='new-required')
+            destination = directory / 'accepted'
+            with patch.object(recovery, 'CASES', cases), patch.dict(recovery.SPECS, {445: spec}), \
+                    patch.object(recovery, 'check_pair', return_value=({}, {'instrumentation_sha256': 'b' * 64})), \
+                    patch.dict(os.environ, {'GITHUB_RUN_ID': '1', 'GITHUB_SHA': spec['source']}), \
+                    self.assertRaisesRegex(RuntimeError, 'identity/case set differs'):
+                recovery.finalize(445, root, native, destination)
+            self.assertFalse(destination.exists())
 
     def test_native_screenshots_decode_and_keep_exact_hashes(self):
         with tempfile.TemporaryDirectory() as temporary:
