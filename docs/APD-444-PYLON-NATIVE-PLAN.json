@@ -4,7 +4,7 @@
   "status": "ready_for_supplemental_native",
   "pending_review": [],
   "fixture_path": "android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/BossPylonTargetingDeviceTest.java",
-  "fixture_sha256": "80082944135a2f405e2659fe7a6e65961c38941ebde9c898f4500d85939aded8",
+  "fixture_sha256": "ff81cc756822f727bcba560e6962272789e197f12e0e19a5dcf255701d877034",
   "class": "com.shatteredpixel.shatteredpixeldungeon.android.BossPylonTargetingDeviceTest",
   "method": "nativeIndicatorsPreserveManualTargetsAndExcludeHiddenOrInactivePylons",
   "required_images": [

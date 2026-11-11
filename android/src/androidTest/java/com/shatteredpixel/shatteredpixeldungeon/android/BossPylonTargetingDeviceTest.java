@@ -6,6 +6,7 @@ import static org.junit.Assert.*;
 import android.os.SystemClock;
 import androidx.test.core.app.ActivityScenario;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
+import com.badlogic.gdx.Gdx;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.GamesInProgress;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
@@ -342,7 +343,7 @@ public class BossPylonTargetingDeviceTest {
 
     @Test public void nativeIndicatorsPreserveManualTargetsAndExcludeHiddenOrInactivePylons()
             throws Exception {
-        final boolean intro = SPDSettings.intro();
+        final AtomicReference<Boolean> intro = new AtomicReference<>();
         final int oldSlot = GamesInProgress.curSlot;
         final HeroClass oldClass = GamesInProgress.selectedClass;
         final boolean oldDaily = Dungeon.daily, oldReplay = Dungeon.dailyReplay;
@@ -351,7 +352,14 @@ public class BossPylonTargetingDeviceTest {
         final AtomicReference<Probe> probe = new AtomicReference<>();
         try (ActivityScenario<AndroidLauncher> app = ActivityScenario.launch(AndroidLauncher.class)) {
             waitFor(() -> Game.scene() != null && PixelScene.uiCamera != null);
-            render(() -> ShatteredPixelDungeon.switchNoFade(TitleScene.class));
+            render(() -> {
+                assertNotNull("The launched game initializes Gdx.app", Gdx.app);
+                boolean introStored = SPDSettings.contains(SPDSettings.KEY_INTRO);
+                intro.set(SPDSettings.intro());
+                System.out.println("NATIVE_PYLON_PREFERENCE stage=captured intro=" + intro.get()
+                        + " stored=" + introStored);
+                ShatteredPixelDungeon.switchNoFade(TitleScene.class);
+            });
             waitFor(() -> Game.scene() instanceof TitleScene);
             try {
                 render(() -> {
@@ -392,13 +400,21 @@ public class BossPylonTargetingDeviceTest {
                 waitFor(() -> Game.scene() instanceof TitleScene);
             }
         } finally {
-            SPDSettings.intro(intro);
-            if (slot[0] > 0) Dungeon.deleteGame(slot[0], true);
-            GamesInProgress.curSlot = oldSlot;
-            GamesInProgress.selectedClass = oldClass;
-            Dungeon.daily = oldDaily;
-            Dungeon.dailyReplay = oldReplay;
-            Dungeon.customSeedText = oldSeedText;
+            try {
+                if (intro.get() != null) {
+                    SPDSettings.intro(intro.get());
+                    assertEquals("Restore the actually captured intro preference",
+                            intro.get().booleanValue(), SPDSettings.intro());
+                    System.out.println("NATIVE_PYLON_PREFERENCE stage=restored intro=" + intro.get());
+                }
+            } finally {
+                if (slot[0] > 0) Dungeon.deleteGame(slot[0], true);
+                GamesInProgress.curSlot = oldSlot;
+                GamesInProgress.selectedClass = oldClass;
+                Dungeon.daily = oldDaily;
+                Dungeon.dailyReplay = oldReplay;
+                Dungeon.customSeedText = oldSeedText;
+            }
         }
     }
 }
