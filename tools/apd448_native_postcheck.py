@@ -19,7 +19,9 @@ def verify(variant, case, directory):
     if "OK (1 test)" not in text or any(
             marker in text for marker in ("FAILURES!!!", "INSTRUMENTATION_FAILED", "Process crashed.")):
         raise RuntimeError("Native case failed, crashed or lacks a complete one-test result")
-    hashes = sync_images(directory / "visuals")
+    visuals = directory / "visuals"
+    visuals.mkdir(parents=True, exist_ok=True)
+    hashes = sync_images(visuals)
     receipt = {
         "build": 448,
         "source": "fbc7d6edf5d531e70f4d1046ed8f27ce98f04862",
