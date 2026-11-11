@@ -41,12 +41,15 @@ public final class SearchedWallMarkers {
      */
     private static boolean gatedRoomPerimeter(Level l, int p) {
         if (!(l instanceof RegularLevel) || !((RegularLevel) l).apdHasRooms()) return false;
-        int w = l.width(), x = p % w, y = p / w;
+        int w = l.width(), y = p / w;
         // Only an immediate room interior can identify this wall as its perimeter.
         // Checking all four sides also handles walls that border another ordinary room.
-        for (int neighbour : new int[]{p-w, p+w, p-1, p+1}) {
+        // The renderer is hot: do not allocate an array for each wall marker.
+        for (int direction = 0; direction < 4; direction++) {
+            int neighbour = direction == 0 ? p - w : direction == 1 ? p + w
+                    : direction == 2 ? p - 1 : p + 1;
             if (neighbour < 0 || neighbour >= l.length()) continue;
-            if (Math.abs(neighbour - p) == 1 && neighbour / w != y) continue;
+            if (direction >= 2 && neighbour / w != y) continue;
             Room room = ((RegularLevel) l).room(neighbour);
             if (!(room instanceof SpecialRoom)) continue;
             SpecialRoom special = (SpecialRoom) room;
