@@ -18,6 +18,9 @@
 package com.shatteredpixel.shatteredpixeldungeon.apd.qol;
 
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
+import com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.Room;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.SpecialRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTileSheet;
 
@@ -29,7 +32,38 @@ public final class SearchedWallMarkers {
     private static boolean open(Level l,int p){return known(l,p)&&!DungeonTileSheet.wallStitcheable(l.map[p]);}
     /** A renderer and UI must use the same public floor/terrain/geometry eligibility rule. */
     public static boolean couldBeDoor(Level l,int p){return DoorSearchEligibility.candidate(l,p);}
-    private static boolean showWall(Level l,int p){return l.searchedWalls.shows(l,p)&&couldBeDoor(l,p);}
+    /**
+     * A visible keyed, crystal-keyed or barricaded special-room entrance identifies a
+     * deliberately gated room. Its perimeter walls must not suggest another hidden
+     * doorway just because their geometry resembles an ordinary passage wall.
+     * Do not consult unseen entrances: marker presentation must not reveal a room
+     * the player has not observed. The recorded searches themselves are retained.
+     */
+    private static boolean gatedRoomPerimeter(Level l, int p) {
+        if (!(l instanceof RegularLevel) || !((RegularLevel) l).apdHasRooms()) return false;
+        int w = l.width(), x = p % w, y = p / w;
+        // Only an immediate room interior can identify this wall as its perimeter.
+        // Checking all four sides also handles walls that border another ordinary room.
+        for (int neighbour : new int[]{p-w, p+w, p-1, p+1}) {
+            if (neighbour < 0 || neighbour >= l.length()) continue;
+            if (Math.abs(neighbour - p) == 1 && neighbour / w != y) continue;
+            Room room = ((RegularLevel) l).room(neighbour);
+            if (!(room instanceof SpecialRoom)) continue;
+            SpecialRoom special = (SpecialRoom) room;
+            Room.Door entrance = special.entrance();
+            if (entrance == null || entrance.x < 0 || entrance.x >= w
+                    || entrance.y < 0 || entrance.y >= l.height()) continue;
+            int door = entrance.y * w + entrance.x;
+            if (!known(l, door)) continue;
+            if (entrance.type == Room.Door.Type.LOCKED
+                    || entrance.type == Room.Door.Type.CRYSTAL
+                    || entrance.type == Room.Door.Type.BARRICADE) return true;
+        }
+        return false;
+    }
+    private static boolean showWall(Level l,int p){
+        return l.searchedWalls.shows(l,p)&&couldBeDoor(l,p)&&!gatedRoomPerimeter(l,p);
+    }
     public static int visual(Level l,int p){
         if(p<0||p>=l.length())return -1;
         // Never host another tile's raised-wall mark on a visible doorway.
