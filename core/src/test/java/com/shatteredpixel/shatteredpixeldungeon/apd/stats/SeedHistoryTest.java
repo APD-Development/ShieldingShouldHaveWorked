@@ -270,6 +270,21 @@ public class SeedHistoryTest {
         assertEquals(1, result.attempts); assertEquals(2, result.deepestFloor);
     }
 
+    @Test public void explicitNegativeOneIsRecordedHistoryNotAnEmptySelection() throws Exception {
+        run("negative-one", -1, LifecycleEvents.SEED_CUSTOM, LifecycleEvents.OUTCOME_DIED, 6, null);
+        File raw = new File(root(), "runs/negative-one.apdlog");
+        byte[] before = Files.readAllBytes(raw.toPath());
+        SeedHistory.Summary matching = lookup("-1");
+        assertEquals(SeedHistory.Kind.MATCHING_LOCAL_HISTORY, matching.kind);
+        assertEquals(-1, matching.seed);
+        assertEquals(1, matching.attempts);
+        assertEquals(6, matching.deepestFloor);
+        assertEquals(1, matching.attemptsWithKnownDepth);
+        assertEquals(SeedHistory.Kind.GENERATED_LOCALLY, lookup("").kind);
+        assertEquals(SeedHistory.Kind.UNKNOWN_IMPORTED, lookup("-2").kind);
+        assertArrayEquals(before, Files.readAllBytes(raw.toPath()));
+    }
+
     @Test public void deletedRawRecordsDoNotSurviveInCachesAndLookupWritesNothing() throws Exception {
         run("deleted", SEED, LifecycleEvents.SEED_RANDOM, LifecycleEvents.OUTCOME_DIED, 7, null);
         DerivedStore store = new DerivedStore(root()); store.load();
