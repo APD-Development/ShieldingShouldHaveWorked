@@ -1,13 +1,13 @@
 {
   "schema": 2,
-  "recorded_utc": "2026-11-11T18:36:27.887971+00:00",
+  "recorded_utc": "2026-11-11T19:09:45.569995+00:00",
   "project": "ADHD Pixel Dungeon",
   "repository": "APD-Development/ShieldingShouldHaveWorked",
   "branch": "codex/apd-phone-fixes-2026-10-09",
   "continuation_resumed_from": "31e66d6c5bb9f8602f97dd051ec6d8f45c7929f3",
   "prior_checkpoint": "The earlier APD439, APD440 and APD441 recovery and delivery checkpoint remains in Git at commit 31e66d6 and in its unchanged delivery and evidence receipts. Do not reopen completed work.",
   "latest_verified_source_commit": "2b8787a2fb41fc6ecacbb77617bd5f1763d902b0",
-  "last_verified_remote_commit_before_checkpoint_commit": "1968913a441f53ab3652cffc05e131427d0c3703",
+  "last_verified_remote_commit_before_checkpoint_commit": "6eaa346b38e17c93abffade923875b37596f2ee3",
   "latest_delivered_build": 444,
   "builds_delivered_in_this_continuation": [
     442,
@@ -342,10 +342,11 @@
     "Older APD442 Ooze limits remain historical. Both actual APD443 and APD444 Ooze originals are visibly assessable."
   ],
   "next_steps": [
-    "Complete the exact APD446 native run and require all18 raw cases with complete device-image transfers.",
-    "Review69 original images per variant, including all61 affected frames and the initial seed text/unfinished-history notice.",
-    "Verify owner package, save and download back the exact APKs/source, and deliver working links immediately.",
-    "Preserve446 raw evidence and push final receipts. Never rebuild the frozen446 pair or accept/deliver445.",
+    "Run the narrow Developer seed-history and pylon verification recovery against exact frozen446 game/test bytes; do not rebuild.",
+    "Require nine accepted cases per variant, with original Developer1457 and new12 images proven separately; retain original failed run and partial diagnostics.",
+    "Finish Developer69-original manual review, including the12 fresh recovery images; retain completed Alpha69 review.",
+    "Verify the owner package, save and download back the exact APKs/source, and deliver working links immediately.",
+    "Preserve raw original and recovery evidence and push final receipts. Never accept or deliver445.",
     "Leave numerical scoring, physical-phone/audio and previously recorded design decisions pending."
   ],
   "session_execution": {
@@ -452,8 +453,13 @@
     },
     {
       "sha": "1968913a441f53ab3652cffc05e131427d0c3703",
-      "summary": "Correct the seed native fixture setup/capture and request one exact446 pair; actual build, complete core/compile/ABI/source/history pre-native checks passed. Native/manual delivery gates remain pending.",
+      "summary": "Produce one exact446 pair; core/compile/ABI/source/history gates passed. Original native run has17 raw passes and a Developer emulator transport failure before final pylon, preserved for verification-only recovery.",
       "url": "https://github.com/APD-Development/ShieldingShouldHaveWorked/commit/1968913a441f53ab3652cffc05e131427d0c3703"
+    },
+    {
+      "sha": "6eaa346b38e17c93abffade923875b37596f2ee3",
+      "summary": "Preserve446 pre-native and accepted444-to446 application scope proof, plus durable445 unaccepted-evidence readback; metadata only.",
+      "url": "https://github.com/APD-Development/ShieldingShouldHaveWorked/commit/6eaa346b38e17c93abffade923875b37596f2ee3"
     }
   ],
   "previous_verification_evidence_archive": {
@@ -471,7 +477,7 @@
   },
   "application_apk_count_basis": "Six accepted442-444 APKs, two frozen unaccepted445 APKs and two frozen446 APKs awaiting native/manual acceptance.",
   "latest_verified_source_commit_scope": "Exact producing source of the delivered APD444 application pair. Later metadata or test-only repository heads do not replace its frozen source.",
-  "last_verified_remote_tree_before_checkpoint_commit": "b53e170363a25b9854e876cfbac99072b3a0b6c8",
+  "last_verified_remote_tree_before_checkpoint_commit": "a1a2fbdc6d4f68446451fd77617e188f3b5c172c",
   "supplemental_pylon_verification": {
     "source_commit": "b5ba1c00ef01238624265d62d7c65af1fa34ef57",
     "run": 43063913542,
@@ -614,13 +620,13 @@
     "application_scope_defined": true,
     "game_apk_created": true,
     "subsequent_fixture_sha256": "45208417464da8397aea86c94953caaec30fec88a6b5b264be0098ad4f732bfd",
-    "subsequent_fixture_sdk_and_native": "SDK compilation passed in exact producing run; native pending",
+    "subsequent_fixture_sdk_and_native": "Exact fixture SDK compilation passed. Both original seed-history native cases passed; Developer screenshot transfer was interrupted after its pass. Recovery uses the same fixture binary.",
     "request": "docs/APD-446-BUILD-REQUEST.txt",
     "readiness": "docs/APD-446-BUILD-READINESS-2026-11-11.json",
     "application_source_checkpoint": "245310c4d2a820bd7f220de6e7c3278cd5b119e7",
     "producing_run": 43077773970,
     "run_attempt": 1,
-    "status": "frozen_pair_pre_native_verified_native_running",
+    "status": "frozen_pair_original_native_transport_failure_recovery_requested",
     "core": {
       "tests": 3247,
       "failures": 0,
@@ -669,7 +675,57 @@
     "pre_native_receipt": "docs/APD-446-PRE-NATIVE-ACCEPTANCE-2026-11-11.json",
     "native_accepted": false,
     "manual_accepted": false,
-    "delivered": false
+    "delivered": false,
+    "original_native_terminal": {
+      "run": 43077773970,
+      "attempt": 1,
+      "conclusion": "failure",
+      "raw_passed": 17,
+      "failed_test_reports": 0,
+      "not_run": 1,
+      "complete_case_transfer_receipts": 16,
+      "developer_complete_cases": 7,
+      "developer_complete_images": 1457,
+      "developer_partial_seed_diagnostics": 6,
+      "alpha_complete_cases": 9,
+      "alpha_complete_images": 1469,
+      "receipt": "docs/APD-446-ORIGINAL-NATIVE-TRANSPORT-FAILURE-2026-11-11.json",
+      "receipt_sha256": "fb81e1829455bfedb92f4e1f1b030ada48c07947a790ca07c444d0c466d3f258",
+      "underlying_emulator_exit_cause_established": false
+    },
+    "alpha_scoped_manual_review": {
+      "accepted": true,
+      "original_images_actually_viewed": 69,
+      "affected_originals": 61,
+      "receipt": "docs/APD-446-MANUAL-ALPHA-2026-11-11.json",
+      "receipt_sha256": "4b2e963cb1b1ed227d337cd9ca30defd940d14287e6776eacba18ed1b5d4f2c2",
+      "pair_acceptance": false
+    },
+    "native_recovery": {
+      "workflow": ".github/workflows/apd-recover446-developer.yml",
+      "plan": "docs/APD-446-NATIVE-RECOVERY-PLAN.json",
+      "status": "requested_by_this_checkpoint_actual_run_pending",
+      "cases": [
+        "seed-history",
+        "pylon"
+      ],
+      "variant": "Developer",
+      "original_developer_images": 1457,
+      "required_new_images": 12,
+      "required_combined_images": 1469,
+      "original_images_not_copied_to_new_device": true,
+      "separate_cohort_device_proofs_required": true,
+      "application_rebuilt": false,
+      "instrumentation_rebuilt": false,
+      "source_archive_rebuilt": false,
+      "ready_plan_sha256": "0cc17ab213decd76acbba0c9ec2189b0063008278b3751c22a82facbd4cbbb92",
+      "helper_sha256": "faef5900de91c62f1b7da021020968719bffb3ab9088d61d045e3042dc0faf25",
+      "workflow_sha256": "ed2837ce728ed01fa0beb4eab6287215793bb890f700df5d86e79e04c42da127",
+      "readiness_receipt": "docs/APD-446-NATIVE-RECOVERY-READINESS-2026-11-11.json",
+      "independent_review_receipt": "docs/APD-446-NATIVE-RECOVERY-REVIEW-2026-11-11.json",
+      "guard_tests": 8,
+      "corruption_rejections": 51
+    }
   },
   "verification_evidence_archive_442_444": {
     "file_name": "APD-Verification-Evidence-442-444-2026-11-11.zip",
@@ -688,7 +744,7 @@
   },
   "latest_verified_feature_source_commit": "245310c4d2a820bd7f220de6e7c3278cd5b119e7",
   "approved_seed_search_work": {
-    "status": "exact446_pre_native_verified_awaiting_native_and_manual_acceptance",
+    "status": "source_and_frozen_pair_pre_native_verified_alpha_complete_developer_transport_recovery_pending",
     "source_ci_run": 43075480141,
     "tests": 3247,
     "suites": 468,
