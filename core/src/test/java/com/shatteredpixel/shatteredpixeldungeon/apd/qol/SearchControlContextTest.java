@@ -2,6 +2,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.apd.qol;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
@@ -215,6 +216,59 @@ public class SearchControlContextTest {
         assertTrue(level.searchedWalls.confirmed(level, wall));
         assertEquals(Action.SEARCH, SearchControlContext.preferred(hero, level));
         assertEquals(saved, memory());
+    }
+
+    @Test public void floorTwoOrdinaryRoomCenterPrefersSearchEvenWhenWideSearchReachesWall() {
+        int previousDepth = Dungeon.depth;
+        boolean prior = SPDSettings.adaptiveSearchChoice();
+        try {
+            Dungeon.depth = 2;
+            SPDSettings.adaptiveSearchChoice(true);
+            EmptyRoom ordinary = new EmptyRoom();
+            ordinary.set(7, 7, 13, 13);
+            level.setRooms(ordinary);
+            talents(HeroClass.ROGUE, false, 0);
+            int wall = candidate(2, 0);
+            assertTrue(DoorSearchEligibility.candidate(level, wall));
+            assertTrue("Rogue still has unchanged two-tile search footprint",
+                    WallSearchSession.covers(hero, level, hero.pos, wall));
+            assertEquals("middle of ordinary Floor 2 room must not prefer remembered Wall Search",
+                    Action.SEARCH, SearchControlContext.preferred(hero, level));
+            assertEquals(Action.SEARCH, SearchControlContext.choices(hero, level)[0]);
+            hero.pos = at(11, 10);
+            assertEquals("beside eligible wall should still prefer Wall Search",
+                    Action.WALL_SEARCH, SearchControlContext.preferred(hero, level));
+            SPDSettings.adaptiveSearchChoice(false);
+            assertEquals("optional setting disables adaptive wall preference",
+                    Action.SEARCH, SearchControlContext.preferred(hero, level));
+            assertEquals(Action.SEARCH, SearchControlContext.choices(hero, level)[0]);
+        } finally {
+            SPDSettings.adaptiveSearchChoice(prior);
+            Dungeon.depth = previousDepth;
+            level.setRooms();
+            hero.pos = at(10, 10);
+        }
+    }
+
+    @Test public void floorOneAndCrystalRoomsNeverPrioritizeAdaptiveWallChoice() {
+        boolean prior = SPDSettings.adaptiveSearchChoice();
+        int priorDepth = Dungeon.depth;
+        try {
+            SPDSettings.adaptiveSearchChoice(true);
+            candidate(1, 0);
+            Dungeon.depth = 1;
+            assertEquals(Action.SEARCH, SearchControlContext.preferred(hero, level));
+            Dungeon.depth = 2;
+            for (Room room : new Room[]{new CrystalVaultRoom(), new CrystalChoiceRoom()}) {
+                room.set(7, 7, 13, 13);
+                level.setRooms(room);
+                assertEquals(Action.SEARCH, SearchControlContext.preferred(hero, level));
+            }
+        } finally {
+            SPDSettings.adaptiveSearchChoice(prior);
+            Dungeon.depth = priorDepth;
+            level.setRooms();
+        }
     }
 
     @Test public void baseClassDoesNotPretendWideSearchWasAcquired() {
