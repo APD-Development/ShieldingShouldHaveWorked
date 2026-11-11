@@ -1,6 +1,6 @@
 APD source verification request, 2026-11-11
-Parent cutoff: a2960688e02468817914f006ff4c563b844c80c5
-Scope: existing Empowered Strike ten-turn readiness and refresh in ordinary text; one actual-handler/scheduler regression at all three ranks; additive ordinary-window capture; instrumentation-only Ooze camera/fade capture correction.
-Fresh local result: 3211 tests across 465 suites, zero failures/errors/skips.
+Parent cutoff: c12a24360ed6d5b7d5cad5d98ccd7d9f9ea9626c
+Scope: ordinary Arcane Vision qualifying-effect activation wording; three actual-handler/FOV regressions for Frost, allied Transfusion and autonomous ward hits; additive ordinary-window top/bottom captures. No production gameplay or detailed-panel change. Earlier Empowered Strike and Ooze capture work is retained from the parent cutoff.
+Fresh local result: 3214 tests across 466 suites, zero failures/errors/skips.
 Require the complete core suite and desktop plus Android debug, release and instrumentation compilation.
 This source-only request assembles no APK. The frozen APD443 pair remains unchanged.

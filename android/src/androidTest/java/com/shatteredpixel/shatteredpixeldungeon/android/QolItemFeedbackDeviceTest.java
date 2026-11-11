@@ -392,6 +392,9 @@ public class QolItemFeedbackDeviceTest {
         ordinaryTalentWindowRenders(Talent.EMPOWERED_STRIKE,3,HeroClass.MAGE,HeroSubClass.BATTLEMAGE,
                 "one sixth more damage","1.5 times its normal power","one third more damage","2 times its normal power",
                 "50% more damage","2.5 times its normal power","lasts 10 turns","another staff zap refreshes it");
+        ordinaryTalentWindowRenders(Talent.ARCANE_VISION,2,HeroClass.MAGE,HeroSubClass.NONE,
+                "10 turns","15 turns","Transfusion targets allies","wards hit surviving targets",
+                "Frost does not trigger this","already frozen");
         ordinaryTalentWindowRenders(Talent.SPEEDY_STEALTH,3,HeroClass.ROGUE,HeroSubClass.FREERUNNER,
                 "up to 10","freerunning is inactive and off cooldown","moves at 2x speed");
         ordinaryTalentWindowRenders(Talent.LIQUID_AGILITY,2,HeroClass.DUELIST,HeroSubClass.NONE,
