@@ -1,0 +1,6 @@
+APD444 supplemental pylon targeting verification request, 2026-11-11
+Original game source: 2b8787a2fb41fc6ecacbb77617bd5f1763d902b0; producing run 43057716359; frozen built artifact 13873030855.
+Compile one separate Android instrumentation APK and execute only BossPylonTargetingDeviceTest#nativeIndicatorsPreserveManualTargetsAndExcludeHiddenOrInactivePylons on each exact original APD444 variant.
+Verify inactive, active, manual-target, ranged-versus-melee and hidden-pylon selection with actual game indicators, five complete native image transfers per variant and unchanged hero turn/HP.
+The only new Java source is this standalone Android test. Reject application-source differences from the frozen game, game APK assembly, changed original APKs or original instrumentation, and mixed-source/run/attempt evidence.
+This is supplemental test work. It does not rebuild the game, replace its primary six-case acceptance, authorize release publication, or claim touch/attack/full-boss/physical-phone validation. Deliver the primary APD444 pair as soon as its independent acceptance completes.
