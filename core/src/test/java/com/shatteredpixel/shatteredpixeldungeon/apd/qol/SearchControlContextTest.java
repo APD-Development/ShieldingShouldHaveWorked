@@ -277,8 +277,8 @@ public class SearchControlContextTest {
             select(Action.SEARCH);
             assertTrue("adjacent eligible wall is recorded by the actual paid Search",
                     level.searchedWalls.attempted(wall));
-            assertEquals("Each normal Search retains its own two-turn action cost",
-                    2f, hero.cooldown(), 0f);
+            assertEquals("Two paid searches retain their four total turns",
+                    4f, hero.cooldown(), 0f);
         } finally {
             SPDSettings.adaptiveSearchChoice(priorChoice);
             Dungeon.depth = priorDepth;
@@ -562,6 +562,7 @@ public class SearchControlContextTest {
                 {new StorageRoom(), Room.Door.Type.CRYSTAL}
         };
         for (Object[] pair : gated) {
+            hero.ready = true; // Each case must execute its own paid Search.
             clearTerrain();
             int wall = candidate(1, 0);
             SpecialRoom room = (SpecialRoom) pair[0];
