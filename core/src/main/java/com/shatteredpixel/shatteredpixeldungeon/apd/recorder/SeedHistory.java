@@ -223,7 +223,7 @@ public final class SeedHistory {
 
         Summary finish() {
             int attempts = 0, unfinished = 0, known = 0, deepest = -1;
-            // Validate exact identities before filtering by the requested seed. A conflicting copy
+            // Only a null/empty selection means generated locally. A supplied numeric -1\n            // is a valid recorded seed; never reuse the empty-selection sentinel here.\n            // Validate exact identities before filtering by the requested seed. A conflicting copy
             // must not become trustworthy simply because the other seed was filtered out first.
             Map<String, Long> rankingSeeds = new HashMap<>();
             for (Attempt run : runs.values()) {
@@ -241,7 +241,7 @@ public final class SeedHistory {
             Map<String, Attempt> open = new TreeMap<>();
             for (Map.Entry<String, Attempt> entry : runs.entrySet()) {
                 Attempt run = entry.getValue();
-                if (run.conflict || conflictingRanking(run) || run.seed != seed || seed == -1) continue;
+                if (run.conflict || conflictingRanking(run) || run.seed != seed) continue;
                 String owner = "run:" + entry.getKey();
                 for (String id : run.rankingIds) {
                     parents.put(find(parents, "ranking:" + id), find(parents, owner));
@@ -251,7 +251,7 @@ public final class SeedHistory {
             for (Map.Entry<String, Attempt> entry : new TreeMap<>(runs).entrySet()) {
                 Attempt run = entry.getValue();
                 if (run.conflict || conflictingRanking(run)) { incomplete = true; continue; }
-                if (run.seed != seed || seed == -1) continue;
+                if (run.seed != seed) continue;
                 String owner = find(parents, "run:" + entry.getKey());
                 if (!run.terminal) {
                     Attempt prior = open.get(owner);
@@ -309,7 +309,7 @@ public final class SeedHistory {
             for (Map.Entry<String, RunFacts> entry : oldRecords.entrySet()) {
                 if (conflictingRankings.contains(entry.getKey())) { incomplete = true; continue; }
                 RunFacts facts = entry.getValue();
-                if (facts.numOr(FactKeys.SEED, -1) != seed || seed == -1 || exactRankingIds.contains(entry.getKey())) continue;
+                if (facts.numOr(FactKeys.SEED, -1) != seed || exactRankingIds.contains(entry.getKey())) continue;
                 attempts++;
                 int depth = deepest(facts);
                 if (depth >= 0) { known++; deepest = Math.max(deepest, depth); }
