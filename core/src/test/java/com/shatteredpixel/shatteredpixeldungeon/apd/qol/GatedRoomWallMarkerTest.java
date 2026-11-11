@@ -81,6 +81,8 @@ public class GatedRoomWallMarkerTest {
             level.searchedWalls.store(before);
             assertTrue(level.searchedWalls.attempted(wall));
             assertEquals(-1, SearchedWallMarkers.visual(level, wall));
+            assertEquals("raised checkmark must also be hidden", -1,
+                    SearchedWallMarkers.visual(level, at(4, 2)));
             assertTrue("real search eligibility stays unchanged",
                     DoorSearchEligibility.candidate(level, wall));
             Bundle after = new Bundle();
@@ -93,6 +95,7 @@ public class GatedRoomWallMarkerTest {
         setRoom(new ArmoryRoom(), Room.Door.Type.LOCKED);
         level.heroFOV[entrance] = false;
         assertEquals(SearchedWallMarkers.FACE, SearchedWallMarkers.visual(level, wall));
+        assertEquals(SearchedWallMarkers.OVERHANG, SearchedWallMarkers.visual(level, at(4, 2)));
         level.visited[entrance] = true;
         assertEquals(-1, SearchedWallMarkers.visual(level, wall));
         level.visited[entrance] = false;
