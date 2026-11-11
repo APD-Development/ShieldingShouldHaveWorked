@@ -19,6 +19,8 @@ package com.shatteredpixel.shatteredpixeldungeon.apd.qol;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.levels.*;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.Room;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.SpecialRoom;
 
 /** Public generation rules and observed terrain only. Never asks whether a secret actually exists. */
 public final class DoorSearchEligibility {
@@ -36,6 +38,19 @@ public final class DoorSearchEligibility {
                 || level instanceof VaultLevel || level instanceof MiningLevel);
     }
     public static boolean supportsDoors(Level level){return supportsDoors(level,Dungeon.depth,Dungeon.branch);}
+    /** A search made from inside a gated special room must not create wall checkmarks.
+     * Uses the hero's current room, not the searched wall's tile or hidden map data.
+     * The room type survives opening its original keyed/barricaded entrance. */
+    public static boolean insideGatedRoom(Level level,int heroPos) {
+        if (!(level instanceof RegularLevel) || !((RegularLevel)level).apdHasRooms()
+                || heroPos<0 || heroPos>=level.length()) return false;
+        Room room=((RegularLevel)level).room(heroPos);
+        if (!(room instanceof SpecialRoom)) return false;
+        Room.Door entrance=((SpecialRoom)room).entrance();
+        return entrance!=null && (entrance.type==Room.Door.Type.LOCKED
+                || entrance.type==Room.Door.Type.CRYSTAL
+                || entrance.type==Room.Door.Type.BARRICADE);
+    }
     private static boolean known(Level l,int p){return p>=0&&p<l.length()&&(l.heroFOV[p]||l.visited[p]||l.mapped[p]);}
     private static boolean frame(Level l,int p){
         if(!known(l,p))return true;
