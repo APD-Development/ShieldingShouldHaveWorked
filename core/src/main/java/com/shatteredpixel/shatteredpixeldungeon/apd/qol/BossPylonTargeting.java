@@ -25,6 +25,15 @@ public final class BossPylonTargeting {
         return false; // caller's existing distance order is preserved
     }
 
+    /** Candidates must already be visible and attackable. No extra range rules. */
+    public static Mob activeAttackablePylon(Iterable<? extends Mob> candidates) {
+        if (candidates == null) return null;
+        for (Mob mob : candidates) {
+            if (isActivePylon(mob)) return mob;
+        }
+        return null;
+    }
+
     public static boolean replaceInvulnerableBoss(Char previous, Mob choice) {
         return isActivePylon(choice) && previous instanceof DM300
                 && ((DM300) previous).isSupercharged();
