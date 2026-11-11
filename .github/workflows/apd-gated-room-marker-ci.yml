@@ -9,6 +9,9 @@ on:
       - core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/qol/DoorSearchEligibility.java
       - core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/hero/Hero.java
       - core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/qol/SearchControlContextTest.java
+      - core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/qol/SearchControlContext.java
+      - core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/SPDSettings.java
+      - core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/APDSettingsPane.java
 permissions:
   contents: read
 jobs:
@@ -34,7 +37,7 @@ jobs:
           assert files,'Missing complete core test results'
           roots=[ET.parse(p).getroot() for p in files]
           totals={k:sum(int(r.get(k,0)) for r in roots) for k in ('tests','failures','errors','skipped')}
-          assert totals['tests']>=3253,totals
+          assert totals['tests']>=3255,totals
           assert totals['failures']==totals['errors']==totals['skipped']==0,totals
           suites=[r for r in roots if r.get('name','').endswith('.GatedRoomWallMarkerTest')]
           assert len(suites)==1,'Missing real gated-room marker test suite'
@@ -46,6 +49,9 @@ jobs:
           assert expected<=actual,(expected,actual)
           actual_search=[r for r in roots if r.get('name','').endswith('.SearchControlContextTest')]
           assert len(actual_search)==1,'Missing real SearchControlContextTest suite'
+          assert {'floorTwoOrdinaryRoomCenterPrefersSearchEvenWhenWideSearchReachesWall',
+              'floorOneAndCrystalRoomsNeverPrioritizeAdaptiveWallChoice'} <= {
+              case.get('name') for case in actual_search[0].findall('testcase')},'Missing adaptive Search regressions'
           assert 'actualSearchFromInsideKeyedRoomDoesNotCreateCheckmarks' in {
               case.get('name') for case in actual_search[0].findall('testcase')},'Missing in-room paid Search regression'
           print('Accepted actual core XML:',totals,'suites:',len(files))
