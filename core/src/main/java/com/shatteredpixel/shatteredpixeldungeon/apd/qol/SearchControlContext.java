@@ -55,6 +55,28 @@ public final class SearchControlContext {
         return choices.toArray(new Action[0]);
     }
 
+    /** A known, open part of a generated room is not a wall-search position.
+     * Only observed cardinal walls can override the room-center rule; a distant
+     * wall reached through Wide Search does not turn the whole room into wall mode.
+     * This is read-only and never inspects hidden terrain behind a wall. */
+    public static boolean openRoomInterior(Hero hero, Level level) {
+        if (hero == null || level == null || hero.pos < 0 || hero.pos >= level.length()
+                || !(level instanceof RegularLevel) || !((RegularLevel)level).apdHasRooms())
+            return false;
+        Room room = ((RegularLevel)level).room(hero.pos);
+        if (room == null) return false;
+        int width = level.width(), x = hero.pos % width, y = hero.pos / width;
+        if (x < room.left + 2 || x > room.right - 2
+                || y < room.top + 2 || y > room.bottom - 2) return false;
+        for (int neighbour : new int[]{hero.pos-width, hero.pos+width,
+                hero.pos-1, hero.pos+1}) {
+            if (neighbour >= 0 && neighbour < level.length()
+                    && level.heroFOV[neighbour]
+                    && DoorSearchEligibility.candidate(level, neighbour)) return false;
+        }
+        return true;
+    }
+
     public static boolean hasMeaningfulWall(Hero hero, Level level) {
         if (hero == null || level == null || hero.pos < 0 || hero.pos >= level.length()
                 || !DoorSearchEligibility.supportsDoors(level)) return false;
@@ -63,28 +85,7 @@ public final class SearchControlContext {
         if (level instanceof RegularLevel && ((RegularLevel) level).apdHasRooms()) {
             Room room = ((RegularLevel) level).room(hero.pos);
             if (room instanceof CrystalVaultRoom || room instanceof CrystalChoiceRoom) return false;
-            if (room != null) {
-                // The room's interior is not a wall-investigation position merely
-                // because Rogue or acquired Wide Search can reach its perimeter.
-                // Directly adjacent eligible walls still take priority.
-                int x = hero.pos % level.width(), y = hero.pos / level.width();
-                if (x >= room.left + 2 && x <= room.right - 2
-                        && y >= room.top + 2 && y <= room.bottom - 2) {
-                    boolean adjacentCandidate = false;
-                    int width = level.width();
-                    for (int nearby : new int[]{hero.pos-width, hero.pos+width,
-                            hero.pos-1, hero.pos+1}) {
-                        if (nearby >= 0 && nearby < level.length()
-                                && WallSearchSession.covers(hero, level, hero.pos, nearby)
-                                && DoorSearchEligibility.candidate(level, nearby)
-                                && !level.searchedWalls.confirmed(level, nearby)) {
-                            adjacentCandidate = true;
-                            break;
-                        }
-                    }
-                    if (!adjacentCandidate) return false;
-                }
-            }
+            if (openRoomInterior(hero, level)) return false;
         }
 
         // Bound the scan to the existing maximum footprint; covers retains the exact class,
