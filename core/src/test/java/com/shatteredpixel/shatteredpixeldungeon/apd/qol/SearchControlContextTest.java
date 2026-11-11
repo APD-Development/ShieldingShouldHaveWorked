@@ -272,6 +272,7 @@ public class SearchControlContextTest {
             // Reset only this disposable test floor to inspect a fresh adjacent wall.
             level.searchedWalls.clear();
             hero.pos = at(11, 10);
+            hero.ready = true; // The first paid search finished the prior action.
             assertEquals(Action.WALL_SEARCH, SearchControlContext.preferred(hero, level));
             select(Action.SEARCH);
             assertTrue("adjacent eligible wall is recorded by the actual paid Search",
@@ -589,9 +590,11 @@ public class SearchControlContextTest {
         clearTerrain();
         int ordinaryWall = candidate(1, 0);
         EmptyRoom ordinary = new EmptyRoom();
-        ordinary.set(7, 7, 13, 13);
+        ordinary.set(7, 7, 11, 13); // The eligible wall is now on this room's edge.
         level.setRooms(ordinary);
+        hero.ready = true;
         assertFalse(DoorSearchEligibility.insideGatedRoom(level, hero.pos));
+        assertFalse(SearchControlContext.openRoomInterior(hero, level));
         select(Action.SEARCH);
         assertTrue(level.searchedWalls.attempted(ordinaryWall));
     }
