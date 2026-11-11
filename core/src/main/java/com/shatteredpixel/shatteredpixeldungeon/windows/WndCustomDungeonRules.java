@@ -127,7 +127,7 @@ public class WndCustomDungeonRules extends Window {
         final CustomRulePresets.Preset[] presets=CustomRulePresets.Preset.values();
         String[] options=new String[presets.length];
         for(int i=0;i<presets.length;i++)options[i]=presets[i].label;
-        com.watabou.noosa.Game.scene().addToFront(new WndOptions(
+        com.watabou.noosa.Game.scene().addToFront(new WndUimsdChoices(
                 "Apply preset","Apply to the next-run draft. Individual sliders can still be adjusted.",options){
             @Override protected void onSelect(int index){
                 if(index>=0&&index<presets.length)applyDraft(CustomRulePresets.apply(presets[index]));
@@ -141,16 +141,20 @@ public class WndCustomDungeonRules extends Window {
             boolean occupied=SPDSettings.apdCustomRuleSlotOccupied(i+1);
             options[i]="Slot "+(i+1)+": "+SPDSettings.apdCustomRuleSlotName(i+1)+(occupied?" (saved)":" (empty)");
         }
-        com.watabou.noosa.Game.scene().addToFront(new WndOptions(
+        com.watabou.noosa.Game.scene().addToFront(new WndUimsdChoices(
                 saving?"Save settings":"Load settings",
                 saving?"Save the current slider draft to one slot. Existing saved settings in that slot will be replaced."
-                      :"Load a stored slider configuration into the next-run draft.",options){
-            @Override protected boolean enabled(int index){
-                return saving||SPDSettings.apdCustomRuleSlotOccupied(index+1);
-            }
+                      :"Load a stored slider configuration into the next-run draft. Empty slots cannot be loaded.",options){
             @Override protected void onSelect(int index){
                 if(index<0||index>=SPDSettings.APD_CUSTOM_RULE_SLOT_COUNT)return;
                 int slot=index+1;
+                // The scrollable choices widget deliberately allows every row to be
+                // reached. Empty saved slots are inert and must not reset a draft.
+                if(!saving&&!SPDSettings.apdCustomRuleSlotOccupied(slot)){
+                    com.watabou.noosa.Game.scene().addToFront(
+                            new WndMessage("Slot "+slot+" has no saved settings yet."));
+                    return;
+                }
                 if(saving){
                     if(SPDSettings.apdCustomRuleSlotOccupied(slot)){
                         com.watabou.noosa.Game.scene().addToFront(new WndOptions(
@@ -170,7 +174,7 @@ public class WndCustomDungeonRules extends Window {
         String[] options=new String[SPDSettings.APD_CUSTOM_RULE_SLOT_COUNT];
         for(int i=0;i<options.length;i++)
             options[i]="Slot "+(i+1)+": "+SPDSettings.apdCustomRuleSlotName(i+1);
-        com.watabou.noosa.Game.scene().addToFront(new WndOptions(
+        com.watabou.noosa.Game.scene().addToFront(new WndUimsdChoices(
                 "Rename preset","Choose a slot to rename. This does not change its saved slider values.",options){
             @Override protected void onSelect(int index){
                 if(index<0||index>=SPDSettings.APD_CUSTOM_RULE_SLOT_COUNT)return;
