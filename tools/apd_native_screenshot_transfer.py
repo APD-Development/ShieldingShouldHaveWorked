@@ -7,6 +7,7 @@ from pathlib import Path
 import re
 import subprocess
 import threading
+import time
 
 from validate_android_visuals import validate as validate_png
 
@@ -92,13 +93,24 @@ class IncrementalImages:
         require(not self.thread.is_alive(), 'Background screenshot transfer did not stop')
 
 
+def device_manifest(command):
+    """Retry only transient ADB transport errors, never an invalid or changing manifest."""
+    for attempt in range(3):
+        try:
+            return parse_manifest(output(['adb', 'shell', command], timeout=60))
+        except (subprocess.CalledProcessError, subprocess.TimeoutExpired, OSError):
+            if attempt == 2:
+                raise
+            time.sleep(1)
+
+
 def sync_images(directory):
     # The instrumentation has finished, so the remote set and bytes must remain stable.
     command = 'cd ' + REMOTE + ' && sha256sum -- *.png'
-    before = parse_manifest(output(['adb', 'shell', command], timeout=60))
+    before = device_manifest(command)
     for name, digest in before.items():
         pull_image(directory, name, digest)
-    after = parse_manifest(output(['adb', 'shell', command], timeout=60))
+    after = device_manifest(command)
     require(before == after, 'Device screenshot files changed during final transfer')
     local = {path.name: sha(path) for path in directory.glob('*.png')}
     require(local == before, 'Complete device/local screenshot manifests differ')
