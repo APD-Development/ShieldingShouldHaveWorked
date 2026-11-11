@@ -26,6 +26,7 @@ import androidx.test.platform.app.InstrumentationRegistry;
 import com.shatteredpixel.shatteredpixeldungeon.*;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.items.*;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.*;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sword;
@@ -324,6 +325,73 @@ public class QolItemFeedbackDeviceTest {
             calculationWindow(()->new WndInfoArmorAbility(type,ability),expected[0],"qol-reviewed-ability-all-"+ability.getClass().getSimpleName()+".png");
         }}finally{TopScoresDeviceTest.render(()->{Dungeon.hero.heroClass=oldClass[0];Dungeon.hero.subClass=oldSubclass[0];Dungeon.hero.armorAbility=oldAbility[0];Dungeon.hero.belongings.weapon=oldWeapon[0];com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.Ratmogrify.useRatroicEnergy=oldRatEnergy[0];for(int tier=0;tier<oldTalents.size();tier++){Dungeon.hero.talents.get(tier).clear();Dungeon.hero.talents.get(tier).putAll(oldTalents.get(tier));}});}
     }
+    private static void ordinaryTalentWindowRenders(Talent talent,int rank,HeroClass heroClass,
+                                                   HeroSubClass subclass,String... expected)throws Exception{
+        AtomicReference<WndInfoTalent> shown=new AtomicReference<>();
+        HeroClass[] previousClass=new HeroClass[1];HeroSubClass[] previousSubclass=new HeroSubClass[1];
+        java.util.LinkedHashMap<Talent,Talent> previousMetamorphs=new java.util.LinkedHashMap<>();
+        float[] time=new float[1];int[] hp=new int[1];
+        String screenshot="qol-ordinary-talent-"+talent.name();
+        try{
+            TopScoresDeviceTest.render(()->{
+                previousClass[0]=Dungeon.hero.heroClass;previousSubclass[0]=Dungeon.hero.subClass;
+                previousMetamorphs.putAll(Dungeon.hero.metamorphedTalents);
+                time[0]=Dungeon.hero.cooldown();hp[0]=Dungeon.hero.HP;
+                Dungeon.hero.heroClass=heroClass;Dungeon.hero.subClass=subclass;
+                Dungeon.hero.metamorphedTalents.clear();
+                WndInfoTalent window=new WndInfoTalent(talent,rank,null);
+                GameScene.show(window);shown.set(window);
+            });
+            Thread.sleep(300);
+            TopScoresDeviceTest.render(()->{try{
+                assertDescriptionViewport(shown.get());
+                ScrollPane scroll=TopScoresDeviceTest.find(shown.get(),ScrollPane.class).get(0);
+                boolean found=false;
+                for(RenderedTextBlock body:TopScoresDeviceTest.find(scroll.content(),RenderedTextBlock.class)){
+                    String text=body.text();
+                    if(text.equals(talent.desc(false))){
+                        found=true;
+                        String plain=text.replace("_","");
+                        for(String fragment:expected)assertTrue(talent+" ordinary window contains "+fragment,plain.contains(fragment));
+                        assertFalse("Capture stays in the ordinary talent description",text.contains("Calculations and explanation"));
+                    }
+                    assertFalse("Ordinary talent contains no missing-message placeholder",text.contains("!!!NO TEXT FOUND!!!"));
+                }
+                assertTrue("Actual ordinary talent text is rendered for "+talent,found);
+                scroll.scrollTo(0,0);
+                assertEquals(time[0],Dungeon.hero.cooldown(),0);assertEquals(hp[0],Dungeon.hero.HP);
+            }catch(Exception e){throw new RuntimeException(e);}});
+            TopScoresDeviceTest.screenshot(screenshot+".png");
+            TopScoresDeviceTest.render(()->{try{
+                ScrollPane scroll=TopScoresDeviceTest.find(shown.get(),ScrollPane.class).get(0);
+                float bottom=Math.max(0,scroll.content().height()-scroll.height());scroll.scrollTo(0,bottom);
+                assertEquals("Ordinary talent can scroll to its final line",bottom,scroll.content().camera.scroll.y,.001f);
+                for(RenderedTextBlock body:TopScoresDeviceTest.find(scroll.content(),RenderedTextBlock.class)){
+                    assertTrue("Ordinary talent reserves final-line padding",scroll.content().height()>=Math.ceil(body.height())+2);
+                    assertTrue("Ordinary talent final line remains reachable",body.bottom()-bottom<=scroll.content().camera.height-2);
+                }
+                assertEquals(time[0],Dungeon.hero.cooldown(),0);assertEquals(hp[0],Dungeon.hero.HP);
+            }catch(Exception e){throw new RuntimeException(e);}});
+            Thread.sleep(120);TopScoresDeviceTest.render(()->assertDescriptionViewport(shown.get()));
+            TopScoresDeviceTest.screenshot(screenshot+"-bottom.png");
+        }finally{TopScoresDeviceTest.render(()->{
+            if(shown.get()!=null)shown.get().hide();
+            if(previousClass[0]!=null){
+                Dungeon.hero.heroClass=previousClass[0];Dungeon.hero.subClass=previousSubclass[0];
+                Dungeon.hero.metamorphedTalents.clear();Dungeon.hero.metamorphedTalents.putAll(previousMetamorphs);
+            }
+        });}
+    }
+    private static void ordinaryTalentAuditWindowsRender()throws Exception{
+        ordinaryTalentWindowRenders(Talent.VETERANS_INTUITION,1,HeroClass.WARRIOR,HeroSubClass.NONE,
+                "weapons 1.75x faster","armor 2x faster","when he equips it");
+        ordinaryTalentWindowRenders(Talent.PROVOKED_ANGER,2,HeroClass.WARRIOR,HeroSubClass.NONE,
+                "3 bonus damage","5 bonus damage","lasts 5 turns","adds 5 turns to its remaining duration");
+        ordinaryTalentWindowRenders(Talent.LINGERING_MAGIC,2,HeroClass.MAGE,HeroSubClass.NONE,
+                "1-2 bonus damage","2 bonus damage","lasts 5 turns","Another zap refreshes that duration");
+        ordinaryTalentWindowRenders(Talent.SPEEDY_STEALTH,3,HeroClass.ROGUE,HeroSubClass.FREERUNNER,
+                "up to 10","freerunning is inactive and off cooldown","moves at 2x speed");
+    }
     private static void counterAbilityNormalWindowRenders()throws Exception{
         AtomicReference<WndInfoTalent> shown=new AtomicReference<>();float[] time=new float[1];int[] hp=new int[1];
         try{
@@ -368,6 +436,7 @@ public class QolItemFeedbackDeviceTest {
     }
     private static void calculationWindowsRenderAndRespond()throws Exception{
         counterAbilityNormalWindowRenders();
+        ordinaryTalentAuditWindowsRender();
         String[] conciseBuffNames={"Haste","Slow","Speed","Chill","Weakness","Vulnerable","Recharging","ArtifactRecharge","Poison","Bleeding","Barrier","Combo","Paralysis","Foresight","AscensionChallenge","Bless","Hex","Daze","ChampionEnemy$Growing","ChampionEnemy$AntiMagic"};
         String[] conciseBuffExpected={"Walk three times as fast","Actions take twice as long","Actions take half their usual time","Current action speed:","Attacks deal 33% less","Attacks deal 33% more","Extra wand charging","Extra artifact charging","Next turn:","randomly weakens","Barrier gradually fades","Time left:","Escape check","Foresight-assisted searching","Amulet's curse","Strengthens attack and dodge rolls","Weakens attack and dodge rolls","Weakens attack and dodge rolls","1 percentage point every four turns","including Hex, Weakness, Charm and Magical Sleep"};
         for(int i=0;i<conciseBuffNames.length;i++){

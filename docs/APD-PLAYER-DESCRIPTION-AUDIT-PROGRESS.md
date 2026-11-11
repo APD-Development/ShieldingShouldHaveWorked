@@ -1,3 +1,13 @@
+## APD442 source continuation, November 11, 2026
+
+The latest completed APK remains APD441. This checkpoint records newer source verification, not Android or APK acceptance. The alternate thrown-weapon Seer Shot handler omitted the current branch. A real throw plus real field-of-view regression failed on branch 1 while four controls passed. Adding the existing branch assignment, as already used by SpiritBow, makes all five methods pass. The existing saved branch/depth/position fields, duration, cooldown, eligibility and main-branch behavior are preserved.
+
+Four ordinary talent descriptions now match their existing handlers: Veteran's Intuition rank-one armor identification is 2x; Speedy Stealth gains up to ten momentum only when freerunning is inactive and off cooldown; Provoked Anger lasts five turns and another shield break adds five remaining turns; Lingering Magic lasts five turns and another zap refreshes it. Actual shield-break, wand-use, attack-consumption and scheduler-expiry tests verify the two timers. No damage, identification, movement or timing formula changed.
+
+Fresh production and test compilation followed by the full local core suite passed 3,197 tests across 464 suites, zero failures, errors or skips. Eight additional ordinary-window captures and three actual branch-specific reveal frames are prepared within the existing native cases. Android compilation, exact-APK native execution, original-image review, source scan and delivery remain pending. See APD-442-LOCAL-SOURCE-VERIFICATION-2026-11-11.json and the three bounded review records for exact scope, hashes and retained failure evidence.
+
+The inventory still has 445 source units, 442 complete and three partial. The remaining ordinary talent audit and owner decisions for Cursed Wand and existing mechanic-specific panels are not complete. The historical checkpoints below retain their original context and do not supersede this newer source-only status.
+
 Latest verified source:443source units,443full/partialreviewed,357corrected,435own-sourcecomplete,8open;5346Englishentries/2432itemkeys. Full3138core457all0.415latestpublished;416held after actual Drowsy grammar defect, corrected in417source. Native417 pending. Counts are source units, not distinct items or complete Android coverage.
 
 ## Current status — November 9, 2026, active owner-authorized development

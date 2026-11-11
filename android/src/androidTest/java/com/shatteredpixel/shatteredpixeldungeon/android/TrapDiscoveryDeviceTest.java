@@ -30,9 +30,11 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.*;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.*;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.apd.settings.ApdSettingsSection;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingKnife;
 import com.shatteredpixel.shatteredpixeldungeon.levels.*;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.OozeTrap;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.*;
+import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTilemap;
 import com.shatteredpixel.shatteredpixeldungeon.ui.*;
 import com.shatteredpixel.shatteredpixeldungeon.windows.*;
 import com.watabou.noosa.*;
@@ -63,6 +65,95 @@ public class TrapDiscoveryDeviceTest {
         TopScoresDeviceTest.render(()->point.set(box.camera().cameraToScreen(box.left()+box.width()/2,box.top()+box.height()/2)));
         android.app.Instrumentation in=InstrumentationRegistry.getInstrumentation();long down=SystemClock.uptimeMillis();for(int action:new int[]{MotionEvent.ACTION_DOWN,MotionEvent.ACTION_UP}){MotionEvent event=MotionEvent.obtain(down,SystemClock.uptimeMillis(),action,point.get().x,point.get().y,0);event.setSource(InputDevice.SOURCE_TOUCHSCREEN);in.sendPointerSync(event);event.recycle();Thread.sleep(120);}Thread.sleep(500);
     }
+    private static final class SeerShotKnife extends ThrowingKnife {
+        void land(Hero user,int cell){
+            Hero previousUser=curUser;
+            // Exercise the real empty-cell handler; omit only the unrelated heap drawing tail.
+            spawnedForEffect=true;curUser=user;
+            try{super.onThrow(cell);}finally{curUser=previousUser;}
+        }
+    }
+    private static final class SeerShotProbe {
+        final Hero hero=Dungeon.hero;
+        final Level level=Dungeon.level;
+        final int branch=Dungeon.branch,depth=Dungeon.depth,vision=hero.viewDistance,hp=hero.HP;
+        final float time=hero.cooldown();
+        final HeroClass heroClass=hero.heroClass;
+        final ArrayList<LinkedHashMap<Talent,Integer>> talents=hero.talents;
+        final LinkedHashMap<Talent,Talent> metamorphs=hero.metamorphedTalents;
+        final ArrayList<Mob> mindEnemies=hero.mindVisionEnemies;
+        final boolean[] fov=level.heroFOV,visited=level.visited,mapped=level.mapped,heroFov=hero.fieldOfView;
+        final PointF cameraScroll=Camera.main.scroll.clone();
+        final Field mindFovField;
+        final Object mindFov;
+        // The earlier trap detour can move the hero off-center; stay inside its cleared 19x19 arena.
+        final int target=level.width()*(level.height()/2)+level.width()/2+6;
+        final HashSet<Buff> originalBuffs=new HashSet<>(hero.buffs());
+        RevealedArea reveal;
+        Talent.SeerShotCooldown cooldown;
+        SeerShotProbe()throws Exception{
+            mindFovField=Level.class.getDeclaredField("heroMindFov");mindFovField.setAccessible(true);mindFov=mindFovField.get(null);
+        }
+        void prepare()throws Exception{
+            assertTrue("The retained trap arena has no mobs",level.mobs.isEmpty());
+            assertNull(hero.buff(RevealedArea.class));assertNull(hero.buff(Talent.SeerShotCooldown.class));
+            hero.heroClass=HeroClass.WARRIOR;hero.metamorphedTalents=new LinkedHashMap<>();
+            hero.metamorphedTalents.put(Talent.HOLD_FAST,Talent.SEER_SHOT);
+            hero.talents=new ArrayList<>();Talent.initClassTalents(hero);
+            assertTrue(hero.talents.get(2).containsKey(Talent.SEER_SHOT));hero.talents.get(2).put(Talent.SEER_SHOT,1);
+            hero.viewDistance=0;hero.mindVisionEnemies=new ArrayList<>();Dungeon.branch=1;
+            level.heroFOV=fov.clone();level.visited=visited.clone();level.mapped=mapped.clone();hero.fieldOfView=level.heroFOV;
+            mindFovField.set(null,new boolean[level.length()]);
+            assertNull("The throw target is empty",Actor.findChar(target));
+            for(int offset:PathFinder.NEIGHBOURS9){
+                int cell=target+offset;assertTrue(cell>=0&&cell<level.length());
+                assertEquals("The whole reveal footprint is inside the cleared arena",Terrain.EMPTY,level.map[cell]);
+                assertTrue(level.discoverable[cell]);level.visited[cell]=false;level.mapped[cell]=false;
+            }
+            view(false,"before");
+        }
+        void view(boolean visible,String stage){
+            level.updateFieldOfView(hero,level.heroFOV);
+            for(int offset:PathFinder.NEIGHBOURS9)assertEquals(stage+" reveal cell "+(target+offset),visible,level.heroFOV[target+offset]);
+            assertEquals("Probe keeps the same depth",depth,Dungeon.depth);
+            assertEquals("Probe does not spend hero time",time,hero.cooldown(),0);assertEquals("Probe does not change HP",hp,hero.HP);
+            // Keep the same actual map location centered in all three proof frames.
+            PointF center=DungeonTilemap.tileCenterToWorld(target);Camera.main.snapTo(center);
+            Point screen=Camera.main.cameraToScreen(center.x,center.y);
+            assertTrue("Reveal target is visibly inside the viewport",screen.x>0&&screen.x<Game.width&&screen.y>0&&screen.y<Game.height);
+            GameScene.updateFog();
+            System.out.println("SEER_SHOT_BRANCH_PROBE stage="+stage+" depth="+Dungeon.depth+" branch="+Dungeon.branch+" target="+target+" visible="+visible+" screen="+screen.x+","+screen.y);
+        }
+        void throwAndReveal(){
+            new SeerShotKnife().land(hero,target);reveal=hero.buff(RevealedArea.class);cooldown=hero.buff(Talent.SeerShotCooldown.class);
+            assertNotNull(reveal);assertNotNull(cooldown);assertEquals(target,reveal.pos);assertEquals(depth,reveal.depth);assertEquals(1,reveal.branch);
+            assertEquals(5f,reveal.cooldown(),0);assertEquals(20f,cooldown.cooldown(),0);
+            view(true,"side-branch-revealed");
+        }
+        void foreignBranch(){
+            Dungeon.branch=0;view(false,"foreign-branch-hidden");
+            assertSame(reveal,hero.buff(RevealedArea.class));assertSame(cooldown,hero.buff(Talent.SeerShotCooldown.class));
+            assertEquals(1,reveal.branch);assertEquals(5f,reveal.cooldown(),0);assertEquals(20f,cooldown.cooldown(),0);
+        }
+        void restore()throws Exception{
+            for(Buff buff:hero.buffs())if(!originalBuffs.contains(buff)&&(buff instanceof RevealedArea||buff instanceof Talent.SeerShotCooldown))buff.detach();
+            Dungeon.branch=branch;hero.viewDistance=vision;hero.heroClass=heroClass;hero.talents=talents;hero.metamorphedTalents=metamorphs;hero.mindVisionEnemies=mindEnemies;
+            level.heroFOV=fov;level.visited=visited;level.mapped=mapped;hero.fieldOfView=heroFov;mindFovField.set(null,mindFov);
+            Camera.main.snapTo(hero.sprite.center());Camera.main.scroll.set(cameraScroll);GameScene.updateFog();
+        }
+    }
+    private static void alternateSeerShotHonorsBranch()throws Exception{
+        AtomicReference<SeerShotProbe> ref=new AtomicReference<>();
+        TopScoresDeviceTest.render(()->{try{ref.set(new SeerShotProbe());}catch(Exception e){throw new RuntimeException(e);}});
+        try{
+            TopScoresDeviceTest.render(()->{try{ref.get().prepare();}catch(Exception e){throw new RuntimeException(e);}});
+            Thread.sleep(400);TopScoresDeviceTest.screenshot("trap-discovery-seer-shot-side-branch-before.png");
+            TopScoresDeviceTest.render(()->ref.get().throwAndReveal());
+            Thread.sleep(400);TopScoresDeviceTest.screenshot("trap-discovery-seer-shot-side-branch-revealed.png");
+            TopScoresDeviceTest.render(()->ref.get().foreignBranch());
+            Thread.sleep(400);TopScoresDeviceTest.screenshot("trap-discovery-seer-shot-foreign-branch-hidden.png");
+        }finally{TopScoresDeviceTest.render(()->{try{ref.get().restore();}catch(Exception e){throw new RuntimeException(e);}});}
+    }
     @Test public void a_controlWritesEnabledPreference()throws Exception{
         try(ActivityScenario<AndroidLauncher> app=ActivityScenario.launch(AndroidLauncher.class)){title();assertFalse("Fresh disposable emulator keeps the original default",SPDSettings.continueOnTrapDiscovery());WndAPDSettings window=settings();CheckBox box=checkbox(window);assertFalse(box.checked());touchControl(window,box);assertTrue(box.checked());assertTrue(SPDSettings.continueOnTrapDiscovery());System.out.println("TRAP_PERSIST_SEED_PID="+android.os.Process.myPid());TopScoresDeviceTest.screenshot("trap-discovery-setting-on.png");TopScoresDeviceTest.render(window::hide);}
         // Intentionally leaves On for b, which CI runs after an actual force-stop/new process.
@@ -89,6 +180,7 @@ public class TrapDiscoveryDeviceTest {
                 OozeTrap stepped=new OozeTrap();stepped.set(hero.pos+1);level.traps.put(stepped.pos,stepped);Level.set(stepped.pos,Terrain.SECRET_TRAP);level.discover(stepped.pos);hero.curAction=new HeroAction.Move(stepped.pos);path.set(hero,null);assertTrue((Boolean)closer.invoke(hero,stepped.pos));assertEquals(stepped.pos,hero.pos);assertNull(hero.curAction);assertFalse(stepped.active);assertNotNull("The actual Ooze trap must apply its actual effect",hero.buff(Ooze.class));hero.lastAction=null;GameScene.updateMap();
             }catch(Exception error){throw new RuntimeException(error);}});
             Thread.sleep(500);TopScoresDeviceTest.screenshot("trap-discovery-runtime-actual-ooze.png");
+            alternateSeerShotHonorsBranch();
         }finally{SPDSettings.continueOnTrapDiscovery(oldContinue);SPDSettings.confirmKnownTraps(oldConfirm);SPDSettings.intro(oldIntro);if(created[0]>0)Dungeon.deleteGame(created[0],true);GamesInProgress.curSlot=oldSlot;GamesInProgress.selectedClass=oldClass;}
     }
 }

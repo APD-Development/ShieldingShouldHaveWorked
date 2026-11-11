@@ -1,1 +1,5 @@
-November 11, 2026 approved APD continuation. Require the complete3190-test/463-suite core inventory plus Android debug/release/instrumentation and desktop compilation. Recover the exact four ExcessCharge handler regressions from a14cf151638c7863a07f533d3a3de423bbe136e8, add six actual pylon-targeting call-site regressions, correct only the ordinary ExcessCharge wording to match existing effective-wand and rounding behavior, and compile the exact-window native screenshot assertions. No gameplay formulas, saves, boss mechanics, balance, or signing changes. Local fresh-source complete suite passed3190/463 with zero failures/errors/skips; native runtime acceptance of the description remains pending. Prepared 2026-11-11T07:35:08.405969-05:00 Eastern.
+APD442 source verification requested 2026-11-11T15:00:33.940138+00:00
+Base: 31e66d6c5bb9f8602f97dd051ec6d8f45c7929f3
+Scope: alternate Seer Shot branch binding, four ordinary talent descriptions, real regression and additive native fixtures.
+Expected full core: 3197 tests, 464 suites, zero failures/errors/skips.
+Compile core, desktop, Android debug/release and instrumentation. No APK assembly in this request.

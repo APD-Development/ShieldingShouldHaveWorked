@@ -2083,6 +2083,96 @@ public class MechanicsExplanationTest {
   String third=MechanicsDetails.talent(Talent.PRECISE_ASSAULT,3,"");assertTrue(third.contains("guaranteed-hit accuracy"));assertTrue(third.contains("1.3"));assertTrue(third.contains("Guaranteed evasion wins"));
  }
 
+ private static class TalentExpiryGame extends com.watabou.noosa.Game {
+  TalentExpiryGame(){super(com.watabou.noosa.Scene.class,com.watabou.noosa.Game.platform);requestedReset=false;}
+ }
+ private static class TalentExpiryBoundary extends com.shatteredpixel.shatteredpixeldungeon.actors.Actor {
+  boolean reached;
+  TalentExpiryBoundary(){actPriority=BUFF_PRIO-1;}
+  @Override protected boolean act(){reached=true;remove(this);keepActorThreadAlive=false;return true;}
+ }
+ /** Runs the real buff scheduler, with the ordinary hero parked beyond the test interval. */
+ private static class TalentExpiryClock implements AutoCloseable {
+  private final java.util.Map<java.lang.reflect.Field,Object> previous=new java.util.LinkedHashMap<>();
+  private final com.watabou.noosa.Game oldGame=com.watabou.noosa.Game.instance;
+  private final boolean oldKeepAlive=com.shatteredpixel.shatteredpixeldungeon.actors.Actor.keepActorThreadAlive;
+  TalentExpiryClock()throws Exception{
+   for(String name:new String[]{"all","chars","ids","current","now","nextID"}){
+    java.lang.reflect.Field field=com.shatteredpixel.shatteredpixeldungeon.actors.Actor.class.getDeclaredField(name);field.setAccessible(true);previous.put(field,field.get(null));
+    if(name.equals("all")||name.equals("chars"))field.set(null,new java.util.HashSet<>());
+    else if(name.equals("ids"))field.set(null,new com.watabou.utils.SparseArray<>());
+    else if(name.equals("current"))field.set(null,null);
+    else if(name.equals("now"))field.setFloat(null,0);
+    else field.setInt(null,1);
+   }
+   java.lang.reflect.Field scene=com.watabou.noosa.Game.class.getDeclaredField("sceneClass");scene.setAccessible(true);previous.put(scene,scene.get(null));
+   new TalentExpiryGame();
+  }
+  void advanceTo(float deadline)throws Exception{
+   assertTrue(deadline>=com.shatteredpixel.shatteredpixeldungeon.actors.Actor.now());
+   TalentExpiryBoundary boundary=new TalentExpiryBoundary();
+   com.shatteredpixel.shatteredpixeldungeon.actors.Actor.addDelayed(boundary,deadline-com.shatteredpixel.shatteredpixeldungeon.actors.Actor.now());
+   java.util.concurrent.atomic.AtomicReference<Throwable> failure=new java.util.concurrent.atomic.AtomicReference<>();
+   Thread worker=new Thread(com.shatteredpixel.shatteredpixeldungeon.actors.Actor::process,"talent-expiry-regression");worker.setDaemon(true);worker.setUncaughtExceptionHandler((thread,error)->failure.set(error));
+   com.shatteredpixel.shatteredpixeldungeon.actors.Actor.keepActorThreadAlive=true;worker.start();worker.join(5000);
+   if(worker.isAlive()){com.shatteredpixel.shatteredpixeldungeon.actors.Actor.keepActorThreadAlive=false;worker.interrupt();synchronized(worker){worker.notifyAll();}worker.join(1000);}
+   assertFalse("Talent expiry scheduler must terminate",worker.isAlive());assertNull("Real scheduler failed",failure.get());assertTrue(boundary.reached);
+   assertEquals(deadline,com.shatteredpixel.shatteredpixeldungeon.actors.Actor.now(),0);
+  }
+  @Override public void close()throws Exception{
+   for(java.util.Map.Entry<java.lang.reflect.Field,Object> entry:previous.entrySet())entry.getKey().set(null,entry.getValue());
+   com.shatteredpixel.shatteredpixeldungeon.actors.Actor.keepActorThreadAlive=oldKeepAlive;com.watabou.noosa.Game.instance=oldGame;
+  }
+ }
+ @Test public void provokedAngerRealShieldBreakAddsFiveTurnsAndExpiresWithoutAnAttack()throws Exception{
+  try(TalentExpiryClock clock=new TalentExpiryClock()){
+   hero.sprite=quietSprite();com.shatteredpixel.shatteredpixeldungeon.actors.Actor.addDelayed(hero,10000);
+   PlainStatusTarget enemy=new PlainStatusTarget();enemy.HP=enemy.HT=100;
+   for(int rank=1;rank<=2;rank++){
+    hero.talents.get(0).put(Talent.PROVOKED_ANGER,rank);
+    Buff.affect(hero,Barrier.class).setShield(3);
+    assertEquals(0,ShieldBuff.processDamage(hero,2,new Object()));assertNull(hero.buff(Talent.ProvokedAngerTracker.class));
+    assertEquals(0,ShieldBuff.processDamage(hero,1,new Object()));
+    Talent.ProvokedAngerTracker tracker=hero.buff(Talent.ProvokedAngerTracker.class);assertNotNull(tracker);assertEquals(5,tracker.cooldown(),0);
+    assertEquals(10+1+2*rank,Talent.onAttackProc(hero,enemy,10));assertNull(hero.buff(Talent.ProvokedAngerTracker.class));assertEquals(10,Talent.onAttackProc(hero,enemy,10));
+
+    Buff.affect(hero,Barrier.class).setShield(1);ShieldBuff.processDamage(hero,1,new Object());
+    tracker=hero.buff(Talent.ProvokedAngerTracker.class);float start=com.shatteredpixel.shatteredpixeldungeon.actors.Actor.now();
+    clock.advanceTo(start+4);assertSame(tracker,hero.buff(Talent.ProvokedAngerTracker.class));assertEquals(1,tracker.cooldown(),0);
+    Buff.affect(hero,Barrier.class).setShield(1);ShieldBuff.processDamage(hero,1,new Object());
+    assertSame(tracker,hero.buff(Talent.ProvokedAngerTracker.class));assertEquals("Another real break adds five turns to the one remaining",6,tracker.cooldown(),0);
+    clock.advanceTo(start+9.75f);assertSame(tracker,hero.buff(Talent.ProvokedAngerTracker.class));assertEquals(.25f,tracker.cooldown(),0);
+    clock.advanceTo(start+10);assertNull(hero.buff(Talent.ProvokedAngerTracker.class));assertEquals(10,Talent.onAttackProc(hero,enemy,10));assertEquals(20,hero.HP);
+   }
+  }
+ }
+ @Test public void lingeringMagicRealWandUseRefreshesFiveTurnsAndExpiresWithoutAnAttack()throws Exception{
+  java.lang.reflect.Field user=com.shatteredpixel.shatteredpixeldungeon.items.Item.class.getDeclaredField("curUser"),item=com.shatteredpixel.shatteredpixeldungeon.items.Item.class.getDeclaredField("curItem");user.setAccessible(true);item.setAccessible(true);
+  Object oldUser=user.get(null),oldItem=item.get(null);boolean oldRefresh=com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene.updateItemDisplays;
+  try(TalentExpiryClock clock=new TalentExpiryClock()){
+   hero.heroClass=HeroClass.MAGE;hero.sprite=quietSprite();com.shatteredpixel.shatteredpixeldungeon.actors.Actor.addDelayed(hero,10000);
+   PlainStatusTarget enemy=new PlainStatusTarget();enemy.HP=enemy.HT=100;
+   for(int rank=1;rank<=2;rank++)for(boolean imbued:new boolean[]{false,true}){
+    hero.talents.get(0).put(Talent.LINGERING_MAGIC,rank);
+    com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfFrost wand=new com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfFrost();wand.levelKnown=wand.cursedKnown=wand.curChargeKnown=true;wand.maxCharges=10;wand.curCharges=10;
+    if(imbued){
+     com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff staff=new com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff();
+     java.lang.reflect.Field embedded=com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff.class.getDeclaredField("wand");embedded.setAccessible(true);embedded.set(staff,wand);hero.belongings.weapon=staff;staff.applyWandChargeBuff(hero);
+    }else{hero.belongings.weapon=null;hero.belongings.backpack.items.add(wand);wand.charge(hero);}
+    wand.setCurrent(hero);float time=hero.cooldown();wand.wandUsed();assertEquals(9,wand.curCharges);assertEquals(time+1,hero.cooldown(),0);
+    Talent.LingeringMagicTracker tracker=hero.buff(Talent.LingeringMagicTracker.class);assertNotNull(tracker);assertEquals(5,tracker.cooldown(),0);
+    Random.pushGenerator(44210+rank);int bonus;try{bonus=Talent.onAttackProc(hero,enemy,10)-10;}finally{Random.popGenerator();}
+    assertTrue(bonus>=rank&&bonus<=2);assertNull(hero.buff(Talent.LingeringMagicTracker.class));assertEquals(10,Talent.onAttackProc(hero,enemy,10));
+
+    wand.wandUsed();tracker=hero.buff(Talent.LingeringMagicTracker.class);float start=com.shatteredpixel.shatteredpixeldungeon.actors.Actor.now();
+    clock.advanceTo(start+4);assertSame(tracker,hero.buff(Talent.LingeringMagicTracker.class));assertEquals(1,tracker.cooldown(),0);
+    wand.wandUsed();assertSame(tracker,hero.buff(Talent.LingeringMagicTracker.class));assertEquals("Another real zap refreshes five turns without adding the old remainder",5,tracker.cooldown(),0);
+    clock.advanceTo(start+8.75f);assertSame(tracker,hero.buff(Talent.LingeringMagicTracker.class));assertEquals(.25f,tracker.cooldown(),0);
+    clock.advanceTo(start+9);assertNull(hero.buff(Talent.LingeringMagicTracker.class));assertEquals(10,Talent.onAttackProc(hero,enemy,10));assertEquals(20,hero.HP);
+    wand.stopCharging();hero.belongings.backpack.items.remove(wand);hero.belongings.weapon=null;
+   }
+  }finally{user.set(null,oldUser);item.set(null,oldItem);com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene.updateItemDisplays=oldRefresh;}
+ }
  @Test public void flatAttackTalentDescriptionsMatchRealProcAndConsumeOnlyActualAttack(){
   com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Rat enemy=new com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Rat();enemy.HP=enemy.HT=20;
   for(int rank=1;rank<=2;rank++){
