@@ -58,6 +58,8 @@ The first local APD444 final checker resolved a relative metadata path after cha
 
 The immutable automated native and owner receipts retain their original `manual_visual_review_complete=false` state. Later manual and delivery receipts add the observed acceptance without rewriting those earlier proofs. The source/history scans retain their redacted historical findings; no zero-findings claim is made. Older APD442 Ooze capture limitations remain attached to that build rather than being carried forward to the now-reviewed APD443 and APD444 images.
 
+The APD442-444 raw verification evidence is now preserved in `APD-Verification-Evidence-442-444-2026-11-11.zip`: 5,858 files plus its manifest, 344,983,318 bytes, SHA-256 `27c59c6baa148d4ea1d47cf8d15852d34ef56927c0d33409d4386ac645217ef3`. Every archived member was read back and checked, then the saved archive was downloaded back with the same size and SHA-256. See the [preservation receipt](APD-442-444-EVIDENCE-PRESERVATION-2026-11-11.json) for exact saved-file identity and snapshot boundaries. The earlier archive and all delivered game/source files remain unchanged.
+
 ## Next execution steps
 
 1. Retain the delivered APD444 game/source at 2b8787a2 and the separately accepted corrected pylon test at b5ba1c00, with both original and corrected evidence. Resume from the latest verified branch head recorded above; later test-only or receipt commits do not change the delivered game.
