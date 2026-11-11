@@ -223,7 +223,9 @@ public final class SeedHistory {
 
         Summary finish() {
             int attempts = 0, unfinished = 0, known = 0, deepest = -1;
-            // Only a null/empty selection means generated locally. A supplied numeric -1\n            // is a valid recorded seed; never reuse the empty-selection sentinel here.\n            // Validate exact identities before filtering by the requested seed. A conflicting copy
+            // Only a null/empty selection means generated locally. A supplied numeric -1
+            // is a valid recorded seed; never reuse the empty-selection sentinel here.
+            // Validate exact identities before filtering by the requested seed. A conflicting copy
             // must not become trustworthy simply because the other seed was filtered out first.
             Map<String, Long> rankingSeeds = new HashMap<>();
             for (Attempt run : runs.values()) {
