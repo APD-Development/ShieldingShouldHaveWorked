@@ -4,6 +4,7 @@ from contextlib import contextmanager, redirect_stdout
 import hashlib
 import io
 import json
+import subprocess
 from pathlib import Path
 import tempfile
 from types import SimpleNamespace
@@ -78,6 +79,40 @@ class NativeScreenshotTransferTest(unittest.TestCase):
             with patch.object(transfer, 'output', side_effect=[first, first]), \
                  patch.object(transfer, 'pull_image'):
                 self.assertEqual(transfer.sync_images(directory), {'a.png': digest})
+
+    def test_manifest_transport_recovers_without_weakening_hash_checks(self):
+        digest = 'a' * 64
+        manifest = digest + '  valid.png\\n'
+        transient = subprocess.CalledProcessError(1, ['adb', 'shell', 'sha256sum'])
+        with patch.object(transfer, 'output', side_effect=[transient, manifest, manifest]) as command, \\
+             patch.object(transfer.time, 'sleep') as pause, \\
+             patch.object(transfer, 'pull_image'):
+            with tempfile.TemporaryDirectory() as temporary:
+                file = Path(temporary) / 'valid.png'
+                file.write_bytes(b'fixture')
+                with patch.object(transfer, 'sha', return_value=digest):
+                    self.assertEqual(transfer.sync_images(Path(temporary)), {'valid.png': digest})
+            self.assertEqual(command.call_count, 3)
+            pause.assert_called_once_with(1)
+
+    def test_manifest_transport_fails_closed_after_three_errors(self):
+        transient = subprocess.CalledProcessError(1, ['adb', 'shell', 'sha256sum'])
+        with patch.object(transfer, 'output', side_effect=[transient] * 3) as command, \\
+             patch.object(transfer.time, 'sleep') as pause, \\
+             patch.object(transfer, 'pull_image') as pull:
+            with self.assertRaises(subprocess.CalledProcessError):
+                transfer.device_manifest('sha256sum -- *.png')
+            self.assertEqual(command.call_count, 3)
+            self.assertEqual(pause.call_count, 2)
+            pull.assert_not_called()
+
+    def test_malformed_manifest_is_not_retried(self):
+        with patch.object(transfer, 'output', return_value='invalid') as command, \\
+             patch.object(transfer.time, 'sleep') as pause:
+            with self.assertRaisesRegex(RuntimeError, 'Malformed device screenshot digest'):
+                transfer.device_manifest('sha256sum -- *.png')
+            command.assert_called_once()
+            pause.assert_not_called()
 
     def test_collector_close_cannot_claim_a_live_transfer_stopped(self):
         with tempfile.TemporaryDirectory() as temporary, patch.object(transfer.threading, 'Thread') as thread:
