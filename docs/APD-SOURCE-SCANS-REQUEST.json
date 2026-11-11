@@ -2,24 +2,14 @@
   "schema": 1,
   "builds": [
     {
-      "number": 439,
-      "source_commit": "8224872be92c44827282ff8ba6bde363d67f0826",
-      "artifact_run": 43021022953,
-      "artifact_head": "45b4520ced7bf719db2678bdb123f0de88de5019",
-      "artifact_name": "apd-recovery-439-original-pair-and-source",
-      "artifact_id": 13855500630,
-      "artifact_sha256": "427da4a2b2877c6db11ec293c18e20fa172e621b87d6956a3c6cfd7580548104",
-      "source_sha256": "d9f48050cad0929739f7689fb3c6890949bfd997acc56945d122cf9eae8d3ae0"
-    },
-    {
-      "number": 440,
-      "source_commit": "293b5a0d5fed957c1d953b301fadf576a766611b",
-      "artifact_run": 43021022953,
-      "artifact_head": "45b4520ced7bf719db2678bdb123f0de88de5019",
-      "artifact_name": "apd-recovery-440-original-pair-and-source",
-      "artifact_id": 13854014441,
-      "artifact_sha256": "fa559df5a1faa29b84f3e748bfe68f7b12e097910f5ef8303e18885f01db64c6",
-      "source_sha256": "c934cc74b8d6d4c995442e3ae86a7f16c72737d153b03407bfc86d7702a4f571"
+      "number": 441,
+      "source_commit": "748f9c990284b61f74b39c5111646bcb1d395183",
+      "artifact_run": 43026044936,
+      "artifact_head": "748f9c990284b61f74b39c5111646bcb1d395183",
+      "artifact_name": "apd441-built-pair",
+      "artifact_id": 13860480452,
+      "artifact_sha256": "a2f9775712bbe777239ba2c220a5ee972e360e44da79a97c9f0f6d9e9950acfc",
+      "source_sha256": "41b4ca10a168a49c3afcf4afc4f66c2facfff53b22668444c47ab9f5c303d1d0"
     }
   ]
 }
