@@ -2702,6 +2702,13 @@ public class Hero extends Char {
 		boolean smthFound = false;
         boolean nonTrapFound = false;
 
+        // Decide once, before the normal search updates discoveries or wall memory.
+        // An open room still receives the full ordinary Search; only checkmark
+        // recording uses the adaptive, observed wall context.
+        boolean recordWallChecks = intentional
+                && !com.shatteredpixel.shatteredpixeldungeon.apd.qol.DoorSearchEligibility.insideGatedRoom(Dungeon.level,pos)
+                && com.shatteredpixel.shatteredpixeldungeon.apd.qol.SearchControlContext.hasMeaningfulWall(this,Dungeon.level);
+
 		boolean circular = pointsInTalent(Talent.WIDE_SEARCH) == 1;
 		int distance = heroClass == HeroClass.ROGUE ? 2 : 1;
 		if (hasTalent(Talent.WIDE_SEARCH)) distance++;
@@ -2816,8 +2823,8 @@ public class Hero extends Char {
                         boolean guaranteed = foresight || searchedTrap == null || searchedTrap.canBeSearched;
                         // Searching inside a keyed/barricaded special room never adds wall checkmarks.
                         // Discovery, search costs and completed-door-check evidence remain unchanged.
-                        if (!com.shatteredpixel.shatteredpixeldungeon.apd.qol.DoorSearchEligibility.insideGatedRoom(Dungeon.level,pos)
-                                && Dungeon.level.searchedWalls.mark(Dungeon.level,curr)) GameScene.updateSearchedWall(curr);
+                        if (recordWallChecks && Dungeon.level.searchedWalls.mark(Dungeon.level,curr))
+                            GameScene.updateSearchedWall(curr);
                         Dungeon.level.searchedWalls.recordCompletedDoorCheck(Dungeon.level,curr,guaranteed);
                     }
 
