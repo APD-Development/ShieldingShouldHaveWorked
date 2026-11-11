@@ -54,9 +54,12 @@ public class TrapDiscoveryDeviceTest {
     private static Object field(Object object,String name)throws Exception{Field f=object.getClass().getDeclaredField(name);f.setAccessible(true);return f.get(object);}
     private static WndAPDSettings settings()throws Exception{AtomicReference<WndAPDSettings> ref=new AtomicReference<>();TopScoresDeviceTest.render(()->{ref.set(new WndAPDSettings(ApdSettingsSection.GAMEPLAY));Game.scene().addToFront(ref.get());});Thread.sleep(500);return ref.get();}
     private static CheckBox checkbox(WndAPDSettings window)throws Exception{APDSettingsPane pane=TopScoresDeviceTest.find(window,APDSettingsPane.class).get(0);assertEquals(ApdSettingsSection.GAMEPLAY,pane.section());return (CheckBox)field(pane,"chkContinueTrapDiscovery");}
-    private static void touchControl(WndAPDSettings window,CheckBox box)throws Exception{
-        ScrollPane scroll=TopScoresDeviceTest.find(window,ScrollPane.class).get(0);AtomicReference<Point> point=new AtomicReference<>();
+    private static void revealControl(WndAPDSettings window,CheckBox box)throws Exception{
+        ScrollPane scroll=TopScoresDeviceTest.find(window,ScrollPane.class).get(0);
         TopScoresDeviceTest.render(()->{((APDSettingsPane)box.parent).reveal(box);scroll.scrollTo(0,Math.max(0,box.top()-20));});Thread.sleep(400);
+    }
+    private static void touchControl(WndAPDSettings window,CheckBox box)throws Exception{
+        revealControl(window,box);AtomicReference<Point> point=new AtomicReference<>();
         TopScoresDeviceTest.render(()->point.set(box.camera().cameraToScreen(box.left()+box.width()/2,box.top()+box.height()/2)));
         android.app.Instrumentation in=InstrumentationRegistry.getInstrumentation();long down=SystemClock.uptimeMillis();for(int action:new int[]{MotionEvent.ACTION_DOWN,MotionEvent.ACTION_UP}){MotionEvent event=MotionEvent.obtain(down,SystemClock.uptimeMillis(),action,point.get().x,point.get().y,0);event.setSource(InputDevice.SOURCE_TOUCHSCREEN);in.sendPointerSync(event);event.recycle();Thread.sleep(120);}Thread.sleep(500);
     }
@@ -65,7 +68,7 @@ public class TrapDiscoveryDeviceTest {
         // Intentionally leaves On for b, which CI runs after an actual force-stop/new process.
     }
     @Test public void b_freshProcessReadsEnabledAndCanDisable()throws Exception{
-        try(ActivityScenario<AndroidLauncher> app=ActivityScenario.launch(AndroidLauncher.class)){title();assertTrue("Enabled state must come from the previous process's saved preferences",SPDSettings.continueOnTrapDiscovery());WndAPDSettings window=settings();CheckBox box=checkbox(window);assertTrue(box.checked());System.out.println("TRAP_PERSIST_VERIFY_PID="+android.os.Process.myPid());TopScoresDeviceTest.screenshot("trap-discovery-setting-restarted.png");touchControl(window,box);assertFalse(box.checked());assertFalse(SPDSettings.continueOnTrapDiscovery());TopScoresDeviceTest.render(()->{window.hide();GameSettings.set(null);});assertFalse("Fresh Android preference wrapper reads the saved Off value",SPDSettings.continueOnTrapDiscovery());WndAPDSettings reopened=settings();assertFalse(checkbox(reopened).checked());TopScoresDeviceTest.screenshot("trap-discovery-setting-off.png");TopScoresDeviceTest.render(reopened::hide);}
+        try(ActivityScenario<AndroidLauncher> app=ActivityScenario.launch(AndroidLauncher.class)){title();assertTrue("Enabled state must come from the previous process's saved preferences",SPDSettings.continueOnTrapDiscovery());WndAPDSettings window=settings();CheckBox box=checkbox(window);assertTrue(box.checked());System.out.println("TRAP_PERSIST_VERIFY_PID="+android.os.Process.myPid());revealControl(window,box);TopScoresDeviceTest.screenshot("trap-discovery-setting-restarted.png");touchControl(window,box);assertFalse(box.checked());assertFalse(SPDSettings.continueOnTrapDiscovery());TopScoresDeviceTest.render(()->{window.hide();GameSettings.set(null);});assertFalse("Fresh Android preference wrapper reads the saved Off value",SPDSettings.continueOnTrapDiscovery());WndAPDSettings reopened=settings();CheckBox offBox=checkbox(reopened);assertFalse(offBox.checked());revealControl(reopened,offBox);TopScoresDeviceTest.screenshot("trap-discovery-setting-off.png");TopScoresDeviceTest.render(reopened::hide);}
     }
     @Test public void c_runtimeDiscoveryRouteAndActualTrapEffect()throws Exception{
         final boolean oldContinue=SPDSettings.continueOnTrapDiscovery(),oldConfirm=SPDSettings.confirmKnownTraps(),oldIntro=SPDSettings.intro();final int oldSlot=GamesInProgress.curSlot;final HeroClass oldClass=GamesInProgress.selectedClass;final int[] created={-1};

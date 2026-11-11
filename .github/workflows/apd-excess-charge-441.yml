@@ -1,6 +1,6 @@
 # ADHD Pixel Dungeon; Copyright (C) 2026 Chris Charlton
 # SPDX-License-Identifier: GPL-3.0-or-later
-name: Build and qualify APD441 Excess Charge description and runtime coverage
+name: Build and qualify APD441 talent descriptions and runtime coverage
 on:
   push:
     branches: [codex/apd-phone-fixes-2026-10-09]
@@ -21,6 +21,7 @@ jobs:
         run: |
           python3 tools/apd_candidate441.py self-test
           python3 -m unittest discover -s tools -p 'test_apd_recover439_440.py' -v
+          python3 -m unittest discover -s tools -p 'test_apd_native_screenshot_transfer.py' -v
       - name: Require completed recovery and preserve exact APD440 compiled history
         env: {GH_TOKEN: '${{ github.token }}'}
         run: python3 tools/apd_candidate441.py history
@@ -29,6 +30,7 @@ jobs:
           "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "platforms;android-36"
           ./gradlew :core:test :desktop:classes :android:compileDebugJavaWithJavac :android:compileReleaseJavaWithJavac :android:compileDebugAndroidTestJavaWithJavac -PapdTestBuild -PapdBuild=C441
           python3 tools/apd_candidate441.py core
+          python3 tools/check_android_json_abi.py .
       - name: Assemble one Developer and Alpha-Testers pair with original signing
         run: |
           mkdir -p candidate441/built/owner-delivery
@@ -37,6 +39,7 @@ jobs:
           cp android/build/outputs/apk/androidTest/debug/android-debug-androidTest.apk candidate441/built/evidence/instrumentation.apk
           ./gradlew :android:assembleDebug -PapdBuild=P441
           cp android/build/outputs/apk/debug/android-debug.apk candidate441/built/owner-delivery/APD-Alpha-Testers-441.apk
+          python3 tools/check_android_json_abi.py .
           python3 tools/apd_candidate441.py freeze
       - uses: actions/upload-artifact@v4
         with:
@@ -72,7 +75,7 @@ jobs:
           echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
           sudo udevadm control --reload-rules
           sudo udevadm trigger --name-match=kvm
-      - name: Test all six native cases including actual Excess Charge windows
+      - name: Test all six native cases including both corrected talent windows
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: 34
@@ -104,7 +107,7 @@ jobs:
           pattern: apd441-native-*
           path: native-evidence
           merge-multiple: false
-      - name: Require all12 cases and four Excess Charge captures per variant
+      - name: Require all12 cases and six affected talent captures per variant
         run: python3 tools/apd_candidate441.py finalize --output owner-review441
       - uses: actions/upload-artifact@v4
         with:

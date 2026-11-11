@@ -324,7 +324,50 @@ public class QolItemFeedbackDeviceTest {
             calculationWindow(()->new WndInfoArmorAbility(type,ability),expected[0],"qol-reviewed-ability-all-"+ability.getClass().getSimpleName()+".png");
         }}finally{TopScoresDeviceTest.render(()->{Dungeon.hero.heroClass=oldClass[0];Dungeon.hero.subClass=oldSubclass[0];Dungeon.hero.armorAbility=oldAbility[0];Dungeon.hero.belongings.weapon=oldWeapon[0];com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.Ratmogrify.useRatroicEnergy=oldRatEnergy[0];for(int tier=0;tier<oldTalents.size();tier++){Dungeon.hero.talents.get(tier).clear();Dungeon.hero.talents.get(tier).putAll(oldTalents.get(tier));}});}
     }
+    private static void counterAbilityNormalWindowRenders()throws Exception{
+        AtomicReference<WndInfoTalent> shown=new AtomicReference<>();float[] time=new float[1];int[] hp=new int[1];
+        try{
+            TopScoresDeviceTest.render(()->{
+                time[0]=Dungeon.hero.cooldown();hp[0]=Dungeon.hero.HP;
+                WndInfoTalent window=new WndInfoTalent(com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent.COUNTER_ABILITY,2,null);
+                GameScene.show(window);shown.set(window);
+            });
+            Thread.sleep(300);
+            TopScoresDeviceTest.render(()->{try{
+                assertDescriptionViewport(shown.get());
+                ScrollPane scroll=TopScoresDeviceTest.find(shown.get(),ScrollPane.class).get(0);
+                boolean found=false;
+                for(RenderedTextBlock body:TopScoresDeviceTest.find(scroll.content(),RenderedTextBlock.class)){
+                    String text=body.text();
+                    if(text.contains("0.75 charges")){
+                        found=true;
+                        assertFalse("Counter Ability normal copy does not overstate the rank-two refund",text.contains("0.77"));
+                        assertTrue("All four normal ranks remain present",text.contains("0.38 charges")&&text.contains("1.13 charges")&&text.contains("1.5 charges"));
+                        assertFalse("Counter Ability capture remains the ordinary description",text.contains("Calculations and explanation"));
+                    }
+                    assertFalse("Normal Counter Ability contains no missing-message placeholder",text.contains("!!!NO TEXT FOUND!!!"));
+                }
+                assertTrue("Actual Counter Ability talent window shows the 0.75-charge rank-two refund",found);
+                scroll.scrollTo(0,0);
+                assertEquals(time[0],Dungeon.hero.cooldown(),0);assertEquals(hp[0],Dungeon.hero.HP);
+            }catch(Exception e){throw new RuntimeException(e);}});
+            TopScoresDeviceTest.screenshot("qol-counter-ability-normal.png");
+            TopScoresDeviceTest.render(()->{try{
+                ScrollPane scroll=TopScoresDeviceTest.find(shown.get(),ScrollPane.class).get(0);
+                float bottom=Math.max(0,scroll.content().height()-scroll.height());scroll.scrollTo(0,bottom);
+                assertEquals("Ordinary Counter Ability can scroll to its final line",bottom,scroll.content().camera.scroll.y,.001f);
+                for(RenderedTextBlock body:TopScoresDeviceTest.find(scroll.content(),RenderedTextBlock.class)){
+                    assertTrue("Ordinary Counter Ability reserves final-line padding",scroll.content().height()>=Math.ceil(body.height())+2);
+                    assertTrue("Ordinary Counter Ability final line remains reachable",body.bottom()-bottom<=scroll.content().camera.height-2);
+                }
+                assertEquals(time[0],Dungeon.hero.cooldown(),0);assertEquals(hp[0],Dungeon.hero.HP);
+            }catch(Exception e){throw new RuntimeException(e);}});
+            Thread.sleep(120);TopScoresDeviceTest.render(()->assertDescriptionViewport(shown.get()));
+            TopScoresDeviceTest.screenshot("qol-counter-ability-normal-bottom.png");
+        }finally{TopScoresDeviceTest.render(()->{if(shown.get()!=null)shown.get().hide();});}
+    }
     private static void calculationWindowsRenderAndRespond()throws Exception{
+        counterAbilityNormalWindowRenders();
         String[] conciseBuffNames={"Haste","Slow","Speed","Chill","Weakness","Vulnerable","Recharging","ArtifactRecharge","Poison","Bleeding","Barrier","Combo","Paralysis","Foresight","AscensionChallenge","Bless","Hex","Daze","ChampionEnemy$Growing","ChampionEnemy$AntiMagic"};
         String[] conciseBuffExpected={"Walk three times as fast","Actions take twice as long","Actions take half their usual time","Current action speed:","Attacks deal 33% less","Attacks deal 33% more","Extra wand charging","Extra artifact charging","Next turn:","randomly weakens","Barrier gradually fades","Time left:","Escape check","Foresight-assisted searching","Amulet's curse","Strengthens attack and dodge rolls","Weakens attack and dodge rolls","Weakens attack and dodge rolls","1 percentage point every four turns","including Hex, Weakness, Charm and Magical Sleep"};
         for(int i=0;i<conciseBuffNames.length;i++){

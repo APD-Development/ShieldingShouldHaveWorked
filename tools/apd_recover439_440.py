@@ -3,6 +3,7 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 """Recover original APD439/440 evidence and source without rebuilding or publishing."""
 import argparse
+from datetime import datetime, timezone
 import hashlib
 import io
 import json
@@ -13,13 +14,13 @@ import shutil
 import struct
 import subprocess
 import tarfile
-import threading
 import time
 import xml.etree.ElementTree as ET
 import zipfile
 import zlib
 
 from validate_android_visuals import validate as validate_png
+from apd_native_screenshot_transfer import IncrementalImages, REMOTE, sync_images
 
 REPO = 'APD-Development/ShieldingShouldHaveWorked'
 APP = 'com.charltonchris29.adhdpixeldungeon.indev'
@@ -371,35 +372,6 @@ def prepare(number, root):
     print(f'APD{number} original pair, core evidence, signatures and corresponding source verified; native recovery pending.')
 
 
-class ScreenshotCollector:
-    """Retain completed images while the long test runs; final pulls remain mandatory."""
-    def __init__(self, directory):
-        self.directory = directory
-        self.directory.mkdir(parents=True, exist_ok=True)
-        self.stop = threading.Event()
-        self.thread = threading.Thread(target=self.collect, daemon=True)
-
-    def collect(self):
-        while not self.stop.wait(20):
-            try:
-                names = output(['adb', 'shell', 'ls', '-1', '/sdcard/Pictures/APD-Test-Visuals'],
-                               stderr=subprocess.DEVNULL, timeout=15).splitlines()
-                for name in names:
-                    if not re.fullmatch(r'[A-Za-z0-9_.-]+\.png', name) or (self.directory / name).exists():
-                        continue
-                    temporary = self.directory / (name + '.partial')
-                    subprocess.run(['adb', 'pull', '/sdcard/Pictures/APD-Test-Visuals/' + name, str(temporary)],
-                                   stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, timeout=30, check=True)
-                    temporary.replace(self.directory / name)
-            except (subprocess.SubprocessError, OSError):
-                # Best-effort checkpoints never substitute for final screenshot acceptance.
-                pass
-
-    def close(self):
-        self.stop.set()
-        self.thread.join(timeout=45)
-
-
 def native(number, variant, root, destination):
     assets, proof = check_pair(root / 'built', number)
     del assets
@@ -409,14 +381,18 @@ def native(number, variant, root, destination):
     subprocess.run(['adb', 'logcat', '-c'], check=True, timeout=20)
     log_stream = (destination / 'native-logcat.txt').open('w')
     logcat = subprocess.Popen(['adb', 'logcat', '-v', 'time'], stdout=log_stream, stderr=subprocess.STDOUT)
-    collector = ScreenshotCollector(destination / 'visuals')
-    collector.thread.start()
+    collector = None
     completed = []
     try:
         subprocess.run(['adb', 'install', '-r', str(apk)], check=True, timeout=120)
         subprocess.run(['adb', 'install', '-r', str(instrumentation)], check=True, timeout=120)
+        # This directory belongs to disposable emulator evidence, never player saves.
+        subprocess.run(['adb', 'shell', 'rm', '-rf', REMOTE], check=True, timeout=20)
         for label, short_class, method, seconds in CASES:
             subprocess.run(['adb', 'shell', 'am', 'force-stop', APP], check=True, timeout=30)
+            collector = IncrementalImages(destination / 'visuals')
+            collector.thread.start()
+            started = datetime.now(timezone.utc).isoformat()
             class_name = CLASS_PREFIX + short_class
             report = destination / (label + '.txt')
             with report.open('w') as stream:
@@ -424,19 +400,24 @@ def native(number, variant, root, destination):
                                 class_name + '#' + method, APP + '.test/androidx.test.runner.AndroidJUnitRunner'],
                                stdout=stream, stderr=subprocess.STDOUT, check=True, timeout=seconds)
             check_instrumentation(report.read_text(), class_name, method)
+            collector.close()
+            collector = None
+            remote_images = sync_images(destination / 'visuals')
             completed.append(label)
-            # Collect after each case so a later emulator loss does not erase earlier evidence.
-            subprocess.run(['adb', 'pull', '/sdcard/Pictures/APD-Test-Visuals/.', str(destination / 'visuals')],
-                           check=True, timeout=180)
-        collector.close()
+            write_json(destination / (label + '-transfer.json'), dict(started=started,
+                       completed=datetime.now(timezone.utc).isoformat(), remote_images=remote_images))
+            print(f'{label}: one passed case; {len(remote_images)} complete screenshots matched device SHA-256.', flush=True)
         images = check_images(destination / 'visuals')
+        require(images == remote_images, 'Final remote manifest differs from accepted images')
         write_json(destination / 'native-verification.json', dict(number=number, variant=variant,
                    source_commit=SPECS[number]['source'], apk_sha256=sha(apk),
                    instrumentation_sha256=proof['instrumentation_sha256'], completed_cases=completed,
                    images=images, native_recovery_complete=True, manual_visual_review_complete=False,
-                   application_rebuilt=False, instrumentation_rebuilt=False, physical_phone_verified=False))
+                   application_rebuilt=False, instrumentation_rebuilt=False, physical_phone_verified=False,
+                   complete_remote_image_manifest_verified=True))
     finally:
-        collector.close()
+        if collector is not None:
+            collector.close()
         try:
             with (destination / 'device-after.txt').open('w') as stream:
                 subprocess.run(['adb', 'devices', '-l'], stdout=stream, stderr=subprocess.STDOUT, timeout=15)
