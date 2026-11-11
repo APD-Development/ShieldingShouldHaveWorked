@@ -21,10 +21,10 @@ jobs:
           set -euo pipefail
           python3 - <<'PY'
           import json,os,subprocess,time
-          source='19f5166aa597f806e73c2286b6eca3a61102bdbd'
+          source='81c4405ed98c7ca98118a884a00bf7be7f000bbf'
           for attempt in range(100):
               run=json.loads(subprocess.check_output(['gh','api',
-                  'repos/APD-Development/ShieldingShouldHaveWorked/actions/runs/43113204371']))
+                  'repos/APD-Development/ShieldingShouldHaveWorked/actions/runs/43113392174']))
               assert run['head_sha']==source
               if run['status']=='completed':
                   assert run['conclusion']=='success', 'Final wall-marker source verification failed'
@@ -71,7 +71,7 @@ jobs:
               files[variant]={'bytes':path.stat().st_size,'sha256':hashlib.sha256(path.read_bytes()).hexdigest(),'package':package}
           instrument=pathlib.Path('candidate449/APD-Instrumentation-449.apk')
           files['Instrumentation']={'bytes':instrument.stat().st_size,'sha256':hashlib.sha256(instrument.read_bytes()).hexdigest()}
-          pathlib.Path('candidate449/receipt.json').write_text(json.dumps({'build':449,'source':'19f5166aa597f806e73c2286b6eca3a61102bdbd','status':'candidate_unaccepted','physical_phone_tested':False,'native_accepted':False,'files':files},indent=2)+'\n')
+          pathlib.Path('candidate449/receipt.json').write_text(json.dumps({'build':449,'source':'81c4405ed98c7ca98118a884a00bf7be7f000bbf','status':'candidate_unaccepted','physical_phone_tested':False,'native_accepted':False,'files':files},indent=2)+'\n')
           PY
       - name: Preserve candidate source and hashes
         run: |
