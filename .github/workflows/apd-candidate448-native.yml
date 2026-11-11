@@ -9,7 +9,9 @@ jobs:
   android-native:
     strategy:
       fail-fast: false
-      matrix: {variant: [Developer, Alpha-Testers]}
+      matrix:
+        variant: [Developer, Alpha-Testers]
+        case: [WallGeometryDeviceTest, SearchContextDeviceTest, SeedHistoryDeviceTest]
     runs-on: ubuntu-latest
     timeout-minutes: 75
     steps:
@@ -60,33 +62,18 @@ jobs:
           disable-animations: true
           emulator-options: -no-snapshot -no-window -gpu swiftshader -feature -Vulkan -noaudio -no-boot-anim -camera-back none -skin 320x640
           script: |
-            set -euo pipefail
             mkdir -p native448
             adb install -r candidate448/APD-${{ matrix.variant }}-448.apk
             adb install -r candidate448/APD-Instrumentation-448.apk
             adb logcat -c
-            timeout 1200 adb shell am instrument -w -r -e class 'com.shatteredpixel.shatteredpixeldungeon.android.WallGeometryDeviceTest,com.shatteredpixel.shatteredpixeldungeon.android.SearchContextDeviceTest,com.shatteredpixel.shatteredpixeldungeon.android.SeedHistoryDeviceTest' com.charltonchris29.adhdpixeldungeon.indev.test/androidx.test.runner.AndroidJUnitRunner > native448/instrumentation.txt 2>&1
+            timeout 1200 adb shell am instrument -w -r -e class 'com.shatteredpixel.shatteredpixeldungeon.android.${{ matrix.case }}' com.charltonchris29.adhdpixeldungeon.indev.test/androidx.test.runner.AndroidJUnitRunner > native448/instrumentation.txt 2>&1
             cat native448/instrumentation.txt
-            python3 - <<'PY'
-            from pathlib import Path
-            s=Path('native448/instrumentation.txt').read_text()
-            assert 'OK (3 tests)' in s,s[-3000:]
-            assert all(marker not in s for marker in ('FAILURES!!!','INSTRUMENTATION_FAILED','Process crashed.'))
-            PY
-            python3 - <<'PY'
-            import json,pathlib,sys
-            sys.path.insert(0,'tools')
-            from apd_native_screenshot_transfer import sync_images
-            images=sync_images(pathlib.Path('native448/visuals'))
-            pathlib.Path('native448/image-proof.json').write_text(json.dumps(
-                {'variant':'${{ matrix.variant }}','complete_remote_device_hash_manifest':True,
-                 'png_count':len(images),'sha256':images},indent=2)+'\n')
-            PY
+            python3 tools/apd448_native_postcheck.py --variant '${{ matrix.variant }}' --case '${{ matrix.case }}' --directory native448
             adb logcat -d -v time > native448/logcat.txt
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: apd448-native-${{ matrix.variant }}
+          name: apd448-native-${{ matrix.variant }}-${{ matrix.case }}
           path: native448/
           if-no-files-found: warn
           retention-days: 30
