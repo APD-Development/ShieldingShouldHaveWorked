@@ -56,7 +56,7 @@ jobs:
           arch: x86_64
           target: default
           disable-animations: true
-          emulator-options: -no-snapshot -no-window -gpu swiftshader -feature -Vulkan -noaudio -no-boot-anim -camera-back none -skin 320x640
+          emulator-options: -no-snapshot -no-window -gpu swiftshader -feature -Vulkan -noaudio -no-boot-anim -camera-back none -memory 3072 -skin 320x640
           script: |
             mkdir -p native456
             adb install -r candidate456/APD-${{ matrix.variant }}-456.apk
