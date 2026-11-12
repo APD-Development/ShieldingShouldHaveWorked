@@ -12,6 +12,7 @@ import org.junit.rules.TemporaryFolder;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
@@ -291,6 +292,47 @@ public class RunIndexTest {
 		byte[] enc = e.encode();
 		byte[] withExtra = LogTestSupport.concat(enc, new byte[]{42, 43, 44});
 		assertEquals(e, RunIndexEntry.decode(withExtra));
+	}
+
+	@Test
+	public void recoveryNeverTruncatesSymlinkedRunLogs() throws Exception {
+		StatsStore store = new StatsStore(tmp.newFolder("recovery-link-boundary"));
+		RunLogWriter writer = store.startRun("source", "test", 1);
+		for (int i = 0; i < 9; i++) writer.event(LogTestSupport.T_PLAIN).clock(i).unsigned(i).emit();
+		writer.close(false);
+		byte[] original = LogTestSupport.bytes(store.logFile("source"));
+		assertTrue(original.length > 2);
+		// Close(false) leaves a healthy open log. Damage its tail explicitly, as in
+		// the established recoverAll damaged-log control, before testing recovery.
+		LogTestSupport.write(store.logFile("source"), Arrays.copyOf(original, original.length - 2));
+
+		// A valid, damaged run log outside runs/ must remain untouched even if linked
+		// into runs/ with a plausible name. The old isFile() check followed this link.
+		File external = new File(store.root(), "external.apdlog");
+		byte[] damagedExternal = Arrays.copyOf(original, original.length - 2);
+		LogTestSupport.write(external, damagedExternal);
+		File outsideAlias = new File(store.runsDir(), "outside-alias.apdlog");
+		Files.createSymbolicLink(outsideAlias.toPath(), external.toPath());
+
+		// An in-directory alias also must not cause the same log to be repaired twice
+		// or cause its damage backup to be written under an unrelated run's name.
+		File localAlias = new File(store.runsDir(), "local-alias.apdlog");
+		Files.createSymbolicLink(localAlias.toPath(), store.logFile("source").toPath());
+		List<LogRecovery.RepairReport> reports = store.recoverAll();
+		assertEquals(1, reports.size());
+		assertEquals(store.logFile("source"), reports.get(0).file);
+		assertTrue("real damaged log remains repairable", reports.get(0).truncated);
+		assertTrue("local repair retains damaged tail", reports.get(0).savedTail.isFile());
+		assertTrue(Arrays.equals(damagedExternal, LogTestSupport.bytes(external)));
+		assertTrue(Files.isSymbolicLink(outsideAlias.toPath()));
+		assertTrue(Files.isSymbolicLink(localAlias.toPath()));
+		assertFalse("external link may not produce damage sidecars",
+				new File(outsideAlias.getPath() + ".tail-" + (original.length - 4) + ".damaged").exists());
+		for (File child : store.runsDir().listFiles()){
+			assertFalse("external alias created a tail file", child.getName().startsWith("outside-alias.apdlog.tail-"));
+			assertFalse("local alias created a tail file", child.getName().startsWith("local-alias.apdlog.tail-"));
+		}
+		assertNotNull("legitimate source remains indexed", store.index().get("source"));
 	}
 
 	@Test
