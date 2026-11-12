@@ -16,6 +16,14 @@ public final class PlaybackGroup extends Group {
     private static float speed = 1f;
     private static int updating;
 
+    /**
+     * Visual overlays that must remain legible at normal speed even when
+     * dungeon animation playback is accelerated.
+     */
+    public static Group normalSpeedGroup() {
+        return new Group();
+    }
+
     public static int choiceCount() {
         return FACTORS.length;
     }

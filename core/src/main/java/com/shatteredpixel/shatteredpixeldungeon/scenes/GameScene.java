@@ -320,7 +320,7 @@ public class GameScene extends PixelScene {
 		emitters = new com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup();
 		effects = new com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup();
 		healthIndicators = new com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup();
-		emoicons = new com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup();
+		emoicons = com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup.normalSpeedGroup();
 		overFogEffects = new com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup();
 		
 		mobs = new com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup();
@@ -356,7 +356,7 @@ public class GameScene extends PixelScene {
 		add( emitters );
 		add( effects );
 
-		gases = new com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup();
+		gases = com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup.normalSpeedGroup();
 		add( gases );
 
 		for (Blob blob : Dungeon.level.blobs.values()) {
@@ -396,7 +396,7 @@ public class GameScene extends PixelScene {
 			addCustomWall(visual);
 		}
 		
-		statuses = new com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup();
+		statuses = com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup.normalSpeedGroup();
 		add( statuses );
 		
 		add( healthIndicators );
