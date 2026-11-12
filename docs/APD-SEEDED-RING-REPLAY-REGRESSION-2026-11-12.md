@@ -1,0 +1,19 @@
+# APD seeded ring replay regression, November 12, 2026, Eastern
+
+## Scope and verified baseline
+The owner previously reported one item in a repeated seed was a Ring of Accuracy on five attempts, then a Ring of Arcana on the sixth. That is first-hand bug evidence, but the exact entered seed, item/floor, game binary, RNG history and native reproduction are not present in this execution. **Do not claim the original in-game discrepancy has been reproduced or fixed from this regression alone.**
+
+Started **approximately 2:00 PM EST, November 12** on authoritative established `codex/apd-phone-fixes-2026-10-09` remote head `609a583105889c2ceb49eb7e2d85bde803f7b30b`, not `main`. Checked `AGENTS.md`, recent native pylon and normal-speed-well handoffs, completed-work ledger, live open PRs, branches, commits, Actions runs and release receipts. PR #20 holds hero-select difficulty fade, PR #6 holds malformed door-observation/APD461, PR #22 is a duplicate draft of merged well activation fix PR #23. Completed native DM-300 assertion work (PR #25/#26) is preserved. No active seed-deck PR or claim was found. Do not overlap or redo those packages. No external upstream searches were performed.
+
+## Actual bounded source-test work
+Isolated branch `chatgpt/apd-seeded-ring-replay-regression-20261112-1400` and draft [PR #27](https://github.com/APD-Development/ShieldingShouldHaveWorked/pull/27):
+- `0e4fe1b621a0eac5e957c034c6c922554db00a4d`: add `SeededRingDeckConsistencyTest` in the core suite. It reinitializes the **existing** `Generator.Category.RING` seeded deck six times for one numerical seed, draws sixteen ordered ring types on every attempt, deliberately changes incidental random calls and independently uses the non-deck default ring generator, then requires the ordered seeded ring-type sequence to remain identical to the first attempt. This proves only deck ordinal behavior, not exact floor-generation placement.
+- `d524bf1e66a95838651ba48d8a604be419a3ff77`: add isolated GitHub Actions workflow for static scope assertions, complete core JUnit, desktop classes, Android debug/release/instrumentation Java compilation and strict new-test/total-count assertions.
+
+**Production gameplay and APIs are unchanged**. No seed normalization, numerical balance, RNG behavior, ring drop probabilities, scoring, save/history, app identifiers, original signer or previous releases were edited.
+
+## Initial gate status, not a completion claim
+GitHub Actions [43287095034](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/43287095034) was **in progress** on exact code/workflow head `d524bf1e66a95838651ba48d8a604be419a3ff77` when first inspected. Static scope assertion passed; full Gradle compilation/core suite was still running. No test success may be claimed until final conclusion and JUnit/log verification. No APK candidate or native Android floor recreation was assembled. Latest independently verified published signed pair remains [APD460](https://github.com/APD-Development/ShieldingShouldHaveWorked/releases/tag/apd-460); APD461's separate publisher history remains blocked/unreconciled, and no gates may be bypassed.
+
+## Next safe action
+Read exact CI conclusion, failure logs if any, and JUnit test totals. Correct any demonstrated regression without weakening assertions. If green, inspect live established branch head and PR conflicts before guarded non-force integration, and record exact merge/readback. To diagnose the owner's specific changed ground item, a later independent **same-version, same-seed, same-floor, same generation state** on-device or level-generation reproduction is still needed; don't quietly change the RNG or seed-reuse scoring in its absence. Preserve original signing, release checks, previous builds and all other work claims.
