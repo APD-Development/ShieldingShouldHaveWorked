@@ -65,6 +65,9 @@ public final class DoorSearchEligibility {
         if(p<w||p>=l.length()-w||p%w==0||p%w==w-1)return false;
         if(!known(l,p))return true;
         int t=l.map[p];
+        // A damaged or unsupported observed terrain ID is not a traversable doorway
+        // approach. Unknown terrain is still handled above without looking at its value.
+        if(t<0||t>=Terrain.flags.length)return false;
         // Ordinary room/connection entrances have an interior tile between successive doorways.
         // A visible door immediately in front/behind is not an interior passage tile.
         return (Terrain.flags[t]&Terrain.SOLID)==0&&t!=Terrain.DOOR&&t!=Terrain.OPEN_DOOR&&t!=Terrain.HERO_LKD_DR;
