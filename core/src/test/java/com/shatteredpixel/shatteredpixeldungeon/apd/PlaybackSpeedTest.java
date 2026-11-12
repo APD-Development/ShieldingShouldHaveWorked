@@ -4,6 +4,8 @@ import com.badlogic.gdx.backends.headless.HeadlessPreferences;
 import com.badlogic.gdx.files.FileHandle;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
+import com.watabou.utils.RectF;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.watabou.noosa.particles.Emitter;
 import com.watabou.noosa.*;
@@ -154,6 +156,25 @@ public class PlaybackSpeedTest {
    assertEquals(.016f,Game.elapsed,0f);
   } finally {
    sceneField.set(null,oldScene);
+  }
+ }
+ @Test public void realCharacterSpriteFramesUseSelectedSpeedWhileRestoringGlobalElapsed(){
+  class ProbeSprite extends CharSprite {
+   @Override public void frame(RectF rect) { /* no texture needed in headless test */ }
+   float advance(){updateAnimation();return frameTimer;}
+  }
+  float[] factors={.5f,1f,2f,4f,8f,16f,32f,64f,100f,1000f};
+  for(int mode=0;mode<factors.length;mode++){
+   PlaybackGroup.speed(mode);Game.elapsed=.016f;
+   ProbeSprite sprite=new ProbeSprite();
+   MovieClip.Animation animation=new MovieClip.Animation(1,false);
+   animation.delay=1000f;
+   animation.frames(new RectF(0,0,1,1),new RectF(0,0,1,1));
+   sprite.play(animation);
+   assertEquals("Actual character frame timer at "+PlaybackGroup.label(mode),
+     .016f*factors[mode],sprite.advance(),.0001f);
+   assertEquals("Character update must not accelerate the surrounding scene",
+     .016f,Game.elapsed,0f);
   }
  }
  @Test public void heroAndEnemySpriteFramesFollowAllTenSpeedsWithoutChangingSceneElapsed(){
