@@ -1,0 +1,91 @@
+name: Native proof of APD hero-select difficulty fade
+on:
+  push:
+    branches: [chatgpt/apd-hero-fade-native-regression-20261112-1445]
+    paths: [.github/workflows/apd-hero-fade-native-proof-20261112.yml]
+permissions: {contents: read}
+concurrency:
+  group: apd-hero-fade-native-proof-20261112
+  cancel-in-progress: false
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 65
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with: {distribution: temurin, java-version: '21'}
+      - uses: gradle/actions/setup-gradle@v4
+      - name: Verify exact native test and previously approved fade fix
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          test=Path('android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/HeroSelectDifficultyFadeDeviceTest.java').read_text()
+          scene=Path('core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/HeroSelectScene.java').read_text()
+          bar=Path('core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/DifficultyBar.java').read_text()
+          assert 'difficultyLabelAndAllFiveSegmentsFollowFadeAndRestore' in test
+          assert 'setFade(0f, false)' in test and 'setFade(2f, true)' in test
+          assert 'capture("fully-faded")' in test and 'capture("restored")' in test
+          assert 'difficultyBar.fade(alpha);' in scene
+          assert 'segment.alpha(alpha);' in bar and 'label.alpha(alpha);' in bar
+          print('Exact native assertion, real screenshots and original composite fade are present')
+          PY
+      - name: Install SDK and build disposable test APKs without publishing
+        run: |
+          "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "platforms;android-36"
+          ./gradlew :core:test :android:assembleDebug :android:assembleDebugAndroidTest -PapdTestBuild
+          python3 - <<'PY'
+          from pathlib import Path
+          import xml.etree.ElementTree as ET
+          roots=[ET.parse(p).getroot() for p in Path('core/build/test-results/test').glob('TEST-*.xml')]
+          assert roots,'no core XML'
+          totals={k:sum(int(r.get(k,0)) for r in roots) for k in ('tests','failures','errors','skipped')}
+          assert totals['tests'] >= 3304 and totals['failures'] == totals['errors'] == totals['skipped'] == 0,totals
+          print('Complete core suite:',totals,'from',len(roots),'suites')
+          PY
+      - name: Enable KVM
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+      - name: Run actual hero menu fade controls and capture Android screens
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 34
+          arch: x86_64
+          target: default
+          disable-animations: true
+          emulator-options: -no-snapshot -no-window -gpu swiftshader -feature -Vulkan -noaudio -no-boot-anim -camera-back none -skin 320x640
+          script: |
+            set -euo pipefail
+            mkdir -p native-fade/screenshots
+            mapfile -t app < <(find android/build/outputs/apk/debug -maxdepth 1 -name '*.apk' -type f)
+            mapfile -t instrumentation < <(find android/build/outputs/apk/androidTest/debug -maxdepth 1 -name '*.apk' -type f)
+            test "${#app[@]}" -eq 1
+            test "${#instrumentation[@]}" -eq 1
+            adb install -r "${app[0]}"
+            adb install -r "${instrumentation[0]}"
+            adb logcat -c
+            timeout 1200 adb shell am instrument -w -r -e class com.shatteredpixel.shatteredpixeldungeon.android.HeroSelectDifficultyFadeDeviceTest com.charltonchris29.adhdpixeldungeon.indev.test/androidx.test.runner.AndroidJUnitRunner | tee native-fade/instrumentation.txt
+            grep -q 'OK (1 test)' native-fade/instrumentation.txt
+            ! grep -q 'FAILURES!!!' native-fade/instrumentation.txt
+            adb pull /sdcard/Pictures/APD-Hero-Fade native-fade/screenshots
+            python3 - <<'PY'
+            from pathlib import Path
+            root=Path('native-fade/screenshots/APD-Hero-Fade')
+            for name in ('fully-visible.png','fully-faded.png','restored.png'):
+                f=root/name
+                assert f.is_file() and f.stat().st_size>1000,(name,'missing screenshot evidence')
+            print('Native assertion passed and all three real PNGs transferred')
+            PY
+            adb logcat -d -v time > native-fade/logcat.txt
+      - name: Preserve exact native and test evidence even on failure
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: apd-hero-fade-native-test-evidence
+          path: |
+            native-fade/
+            core/build/test-results/test/
+          if-no-files-found: warn
+          retention-days: 30
