@@ -21,3 +21,19 @@ GitHub Actions run [43296176816](https://github.com/APD-Development/ShieldingSho
 
 ## Next safe step
 Check Actions run 43296176816 including exact failing step and logs. If a gate fails, fix only that gate or source defect on isolated branch, then trigger a fresh exact pipeline run with updated frozen source, without presenting unaccepted APKs as qualified. If all gates succeed, read back release `apd-462`, verify asset names and direct GitHub download URLs, and deliver links in originating regular APD conversation immediately. Coordinate any concurrent project changes before merging the branch into the authoritative dev head; do not force-write.
+
+
+## Verified qualified APD462 publication (November 12, 2026, Eastern)
+Source and candidate workflow [43296176816](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/43296176816) passed the source suite, desktop/Android Java compilation, original-signer candidate build, package identity, versionCode 920 and variant checks on frozen application source `e26663f5cb8f13c74c312f318c881e79236fbf87`. That combined workflow's first native attempt failed screenshot device-transfer gates, **not** source/compile/signature gates; preserve that failed evidence.
+
+Recovery [43297884679](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/43297884679) reused the *same* signed APK bytes and verified five complete native Android cases, transferring screenshot bytes with validation against device SHA-256. Developer SeedHistory's emulator disconnected during screenshot transfer; do not claim that attempt passed. The six-case publisher correctly stayed blocked.
+
+One-case recovery and publisher [43298764431](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/43298764431) successfully completed Developer SeedHistory from a fresh emulator, retained the five earlier valid receipts, required six exact frozen-APK accepted native cases, and published `apd-462`. The final publisher step read back all published Developer/Alpha APK and matching source bytes and checked every SHA-256 against the original candidate receipt. GitHub workflow conclusion **success** at 2026-11-12T20:20:28Z (3:20:28 PM Eastern).
+
+Verified APK download URLs:
+- https://github.com/APD-Development/ShieldingShouldHaveWorked/releases/download/apd-462/APD-Developer-462.apk (39,211,116 bytes)
+- https://github.com/APD-Development/ShieldingShouldHaveWorked/releases/download/apd-462/APD-Alpha-Testers-462.apk (39,211,092 bytes)
+- https://github.com/APD-Development/ShieldingShouldHaveWorked/releases/download/apd-462/APD-Source-462.zip (111,285,540 bytes)
+Published release: https://github.com/APD-Development/ShieldingShouldHaveWorked/releases/tag/apd-462.
+
+The exact verified source is `e26663f5cb8f13c74c312f318c881e79236fbf87`; subsequent documentation and recovery-workflow commits are source-neutral and did not rebuild the frozen APKs. No APK460 or older release was overwritten, and the blocked APD461 candidate remained untouched. Original signer/package/edition differences and save compatibility retained. Physical RedMagic installation and subjective 1000x animation acceptance remain owner phone checks, **not** verified by emulator screenshots alone.
