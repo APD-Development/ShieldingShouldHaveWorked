@@ -48,6 +48,49 @@ public class SearchedWallsTest {
     @Test public void marksFollowFogMemoryAndDisappearWhenWallIsOpened(){level.searchedWalls.mark(level,16);level.heroFOV[16]=false;assertFalse(level.searchedWalls.shows(level,16));level.visited[16]=true;assertTrue(level.searchedWalls.shows(level,16));level.map[16]=Terrain.DOOR;assertFalse(level.searchedWalls.shows(level,16));}
     @Test public void floorResetAndSeparateFloorsHaveIndependentMemory(){level.searchedWalls.mark(level,16);Level other=new GrassDewPickupTest.TestLevel();other.setSize(7,7);assertFalse(other.searchedWalls.shows(other,16));level.setSize(7,7);assertFalse(level.searchedWalls.shows(level,16));}
     @Test public void damagedOutOfRangeIndicesDoNotBreakLoading(){Bundle b=new Bundle();b.put("apd_searched_walls_v1",new int[]{-1,16,16,Integer.MAX_VALUE});level.searchedWalls.restore(b,49);assertTrue(level.searchedWalls.shows(level,16));assertFalse(level.searchedWalls.shows(level,17));}
+    /** Simulates Bundle.getIntArray returning null after it encounters corrupt saved data. */
+    private static class UnreadableArrayBundle extends Bundle {
+        private final String unreadableKey;
+        UnreadableArrayBundle(String unreadableKey) { this.unreadableKey = unreadableKey; }
+        @Override public int[] getIntArray(String key) {
+            return unreadableKey.equals(key) ? null : super.getIntArray(key);
+        }
+    }
+    @Test public void unreadableDoorChecksDoNotDiscardValidSearchMarks() {
+        Bundle damaged = new UnreadableArrayBundle("apd_door_checks_v1");
+        damaged.put("apd_door_checks_v1", new int[]{16});
+        damaged.put("apd_searched_walls_v1", new int[]{16, -1, 49});
+        level.searchedWalls.restore(damaged, level.length());
+        assertTrue(level.searchedWalls.attempted(16));
+        Bundle saved = new Bundle();
+        level.searchedWalls.store(saved);
+        assertFalse("Malformed checkmarks must not be fabricated", saved.contains("apd_door_checks_v1"));
+        assertArrayEquals(new int[]{16}, saved.getIntArray("apd_searched_walls_v1"));
+    }
+    @Test public void unreadableSearchMarksDoNotDiscardValidDoorChecks() {
+        Bundle damaged = new UnreadableArrayBundle("apd_searched_walls_v1");
+        damaged.put("apd_door_checks_v1", new int[]{16, -1, 49});
+        damaged.put("apd_searched_walls_v1", new int[]{16});
+        level.searchedWalls.restore(damaged, level.length());
+        assertFalse(level.searchedWalls.attempted(16));
+        Bundle saved = new Bundle();
+        level.searchedWalls.store(saved);
+        assertArrayEquals(new int[]{16}, saved.getIntArray("apd_door_checks_v1"));
+        assertFalse("Malformed marks must not be fabricated", saved.contains("apd_searched_walls_v1"));
+    }
+    @Test public void unreadableArraysClearOldMemoryWithoutChangingFloor() {
+        level.searchedWalls.mark(level, 16);
+        int[] before = level.map.clone();
+        Bundle damaged = new UnreadableArrayBundle("apd_searched_walls_v1");
+        damaged.put("apd_searched_walls_v1", new int[]{16});
+        level.searchedWalls.restore(damaged, level.length());
+        assertFalse(level.searchedWalls.attempted(16));
+        assertArrayEquals(before, level.map);
+        Bundle saved = new Bundle();
+        level.searchedWalls.store(saved);
+        assertFalse(saved.contains("apd_searched_walls_v1"));
+        assertFalse(saved.contains("apd_door_checks_v1"));
+    }
     @Test public void recordingDoesNotConsumeRandomness(){Random.pushGenerator(71);long expected=Random.Long();Random.popGenerator();Random.pushGenerator(71);try{level.searchedWalls.mark(level,16);assertEquals(expected,Random.Long());}finally{Random.popGenerator();}}
     @Test public void realManualSearchMarksOnlyItsVisibleRadiusAndKeepsNormalTurnCost()throws Exception{SearchHero h=hero();float before=h.cooldown();assertFalse(h.search(true));assertTrue(level.searchedWalls.shows(level,16));assertFalse(level.searchedWalls.shows(level,10));assertEquals(before+2f,h.cooldown(),0);}
     @Test public void realAutomaticSearchDoesNotAddAnyMarkersOrExtraTurn()throws Exception{SearchHero h=hero();float before=h.cooldown();assertFalse(h.search(false));Bundle b=new Bundle();level.searchedWalls.store(b);assertEquals("{}",b.toString());assertEquals(before,h.cooldown(),0);}
