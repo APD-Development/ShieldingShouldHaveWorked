@@ -64,20 +64,22 @@ public class MovementOnlyPlaybackDeviceTest {
                         assertFalse(fieldName + " must not inherit accelerated playback",
                                 layer instanceof PlaybackGroup);
                     }
-                    for (int i = 0; i < SPEEDS.length; i++) {
-                        PlaybackGroup.speed(i);
-                        assertEquals("Walking speed at mode " + i,
-                                .1f / SPEEDS[i],
-                                PlaybackGroup.movementDuration(.1f), .000001f);
-                        // The actual movement implementation constructs a PosTweener
-                        // using this duration; effects and enemy attacks are in 1x layers.
-                        PosTweener movement = new PosTweener(
-                                new Visual(0, 0, 16, 16), new PointF(16, 0),
-                                PlaybackGroup.movementDuration(.1f));
-                        assertEquals("Tween interval at mode " + i,
-                                .1f / SPEEDS[i], movement.interval, .000001f);
+                    try {
+                        for (int i = 0; i < SPEEDS.length; i++) {
+                            PlaybackGroup.speed(i);
+                            assertEquals("Walking speed at mode " + i,
+                                    .1f / SPEEDS[i],
+                                    PlaybackGroup.movementDuration(.1f), .000001f);
+                            // Walking uses this tweener duration, unlike the 1x effect layers.
+                            PosTweener movement = new PosTweener(
+                                    new Visual(0, 0, 16, 16), new PointF(16, 0),
+                                    PlaybackGroup.movementDuration(.1f));
+                            assertEquals("Tween interval at mode " + i,
+                                    .1f / SPEEDS[i], movement.interval, .000001f);
+                        }
+                    } finally {
+                        PlaybackGroup.speed(previousSelection[0]);
                     }
-                    PlaybackGroup.speed(previousSelection[0]);
                 });
                 TopScoresDeviceTest.screenshot("movement-only-real-android-dungeon.png");
                 SearchContextDeviceTest.render(() -> {
