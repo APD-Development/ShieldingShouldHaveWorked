@@ -209,13 +209,13 @@ public class PlaybackSpeedTest {
   Game.elapsed=.016f;
   for(int mode=0;mode<PlaybackGroup.choiceCount();mode++){
    PlaybackGroup.speed(mode);
-   ApdFeatures.parse("testBuild\\n");
+   ApdFeatures.parse("testBuild\n");
    Group personal=PlaybackGroup.personalSpeedGroup();
    float[] personalElapsed={0};
    personal.add(observe(personalElapsed));personal.update();
    assertEquals("Personal group matches selected game speed",.016f*
      new float[]{.5f,1f,2f,4f,8f,16f,32f,64f,100f,1000f}[mode],personalElapsed[0],.0001f);
-   ApdFeatures.parse("extendedPlayback\\n");
+   ApdFeatures.parse("extendedPlayback\n");
    Group alpha=PlaybackGroup.personalSpeedGroup();
    float[] normalElapsed={0};
    alpha.add(observe(normalElapsed));alpha.update();
