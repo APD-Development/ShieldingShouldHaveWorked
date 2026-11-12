@@ -1,4 +1,4 @@
-name: Recover APD462 frozen native evidence without rebuilding APKs
+name: Recover APD462 frozen native evidence with local capture directory fix
 on:
   push:
     branches: [chatgpt/apd462-frozen-native-transfer-recovery-20261112-1511]
