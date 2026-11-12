@@ -1,5 +1,10 @@
 # AGENTS.md: ADHD Pixel Dungeon (APD), start here
 
+## Post-APD460 source-only continuation (November 12, 2026)
+
+Read `docs/APD-POST460-FORESIGHT-CACHE-2026-11-12.md` and check live GitHub state before new coding. PR #7 was merged at `0ece96536ec3026eb709b90ca14404ac65c5abf4` after complete source CI run `43241975098` passed **3,267 core tests across 470 suites**, zero failures/errors/skips, and required desktop/Android Java compilation. Its contextual Search scan caches one observed Foresight state; class ranges, Search behavior, scoring, saves, signing identities and gameplay rules are unchanged. This is **verified source work only, not a new APK release**. Preserve the separately pending APD461 malformed-observed-terrain pipeline and do not produce a successor candidate until both approved fixes are included. APD460 remains the latest independently verified GitHub release at this source checkpoint, subject to a fresh releases check.
+
+
 ## Current verified baseline: APD460, November 12, 2026
 
 **APD460 is the latest independently verified and GitHub-published Developer/Alpha-Testers pair.** Read `docs/APD-460-SEARCH-RADIUS-CONTINUATION-2026-11-12.md` before any older status paragraphs below. It was produced once from exact frozen source `7c6a10e2db7c82f38297f5d5e38a62ceba27c962` and published at https://github.com/APD-Development/ShieldingShouldHaveWorked/releases/tag/apd-460. The full source gate passed 3,266 core tests across 470 suites, zero failures/errors/skips, desktop/Android compilation, and acquired-radius regression coverage; signed Developer/Alpha candidate build passed and six isolated Android cases succeeded after an Alpha emulator transport-only retry. The publisher succeeded on attempt 2 and read back exact original asset SHA-256 values. Original attempt-1 failures remain preserved.
