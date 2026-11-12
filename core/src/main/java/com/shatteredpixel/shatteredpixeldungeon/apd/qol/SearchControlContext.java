@@ -105,13 +105,14 @@ public final class SearchControlContext {
         // Scan only the existing class/acquired-talent footprint rather than always
         // walking a Rogue rank-2 square. covers still enforces rounded corners,
         // visibility and Foresight's unchanged observed/mapped-terrain rules.
-        int radius = WallSearchSession.searchRadius(hero, hero.buff(Foresight.class) != null);
+        boolean foresight = hero.buff(Foresight.class) != null;
+        int radius = WallSearchSession.searchRadius(hero, foresight);
         int width = level.width();
         int x = hero.pos % width, y = hero.pos / width;
         for (int row = Math.max(0, y - radius); row <= Math.min(level.height() - 1, y + radius); row++) {
             for (int col = Math.max(0, x - radius); col <= Math.min(width - 1, x + radius); col++) {
                 int cell = row * width + col;
-                if (WallSearchSession.covers(hero, level, hero.pos, cell)
+                if (WallSearchSession.covers(hero, level, hero.pos, cell, foresight)
                         && DoorSearchEligibility.candidate(level, cell)
                         && !level.searchedWalls.confirmed(level, cell)) return true;
             }
