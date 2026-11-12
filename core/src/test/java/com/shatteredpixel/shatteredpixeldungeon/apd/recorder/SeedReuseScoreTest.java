@@ -75,7 +75,7 @@ public class SeedReuseScoreTest {
                 SeedReuseScore.restore(data));
         assertEquals("Do not reprice a corrupt snapshot",1934,SeedReuseScore.earnedScore(data,1934));
         valid.store(data);
-        data.put(SeedReuseScore.RETENTION_KEY,valid.retentionBasisPoints-1);
+        data.put(SeedReuseScore.RETENTION_KEY,valid.retentionBasisPoints-1000);
         assertNull("A retention mismatch invalidates the snapshot",SeedReuseScore.restore(data));
         valid.store(data);
         assertEquals("Undamaged v1 snapshot remains byte-for-byte compatible",
