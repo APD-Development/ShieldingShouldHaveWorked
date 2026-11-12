@@ -34,6 +34,12 @@ public final class SearchControlContext {
 
     public enum Action { SEARCH, WALL_SEARCH, RESUME_MOVEMENT, SHOW_SAVED, FORGET, CANCEL }
 
+    // Reuse the chooser's fixed ordering instead of allocating an array on each open.
+    private static final Action[] CHOICE_ORDER = {
+            Action.SEARCH, Action.WALL_SEARCH, Action.SHOW_SAVED,
+            Action.RESUME_MOVEMENT, Action.FORGET, Action.CANCEL
+    };
+
     public static Action preferred(Hero hero, Level level) {
         if (SPDSettings.adaptiveSearchChoice() && hero != null
                 && hero.wallSearch.matches(level) && hasMeaningfulWall(hero, level)) {
@@ -46,8 +52,7 @@ public final class SearchControlContext {
         ArrayList<Action> choices = new ArrayList<>();
         choices.add(preferred(hero, level));
         boolean saved = hero != null && hero.wallSearch.exists();
-        for (Action action : new Action[]{Action.SEARCH, Action.WALL_SEARCH, Action.SHOW_SAVED,
-                Action.RESUME_MOVEMENT, Action.FORGET, Action.CANCEL}) {
+        for (Action action : CHOICE_ORDER) {
             if ((action == Action.WALL_SEARCH || action == Action.SHOW_SAVED || action == Action.FORGET) && !saved) continue;
             if (action == Action.RESUME_MOVEMENT && (hero == null || hero.lastAction == null)) continue;
             if (!choices.contains(action)) choices.add(action);
