@@ -1321,6 +1321,16 @@ public class GameScene extends PixelScene {
 		}
 	}
 
+	// Well activation particles share the unscaled blob/well visual layer.
+	public static synchronized Emitter wellEmitter() {
+		if (scene != null) {
+			Emitter emitter = (Emitter)scene.gases.recycle( Emitter.class );
+			emitter.revive();
+			return emitter;
+		}
+		return null;
+	}
+
 	public static synchronized Emitter floorEmitter() {
 		if (scene != null) {
 			Emitter emitter = (Emitter)scene.floorEmitters.recycle( Emitter.class );
