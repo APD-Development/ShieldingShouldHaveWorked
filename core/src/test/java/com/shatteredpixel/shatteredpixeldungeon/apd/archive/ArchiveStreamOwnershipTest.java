@@ -1,5 +1,6 @@
 package com.shatteredpixel.shatteredpixeldungeon.apd.archive;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -61,4 +62,20 @@ public class ArchiveStreamOwnershipTest {
 		assertTrue(directReport.summary(), directReport.ok);
 		assertTrue("an importer-owned ZIP wrapper is always released", zip.closed);
 	}
+	@Test
+	public void missingArchiveStreamsReturnAReportWithoutCreatingHistory() throws Exception {
+		File root = tmp.newFolder("missing-streams");
+		ArchiveImporter.Report source = ArchiveImporter.importArchive(root, null);
+		assertFalse(source.summary(), source.ok);
+		assertEquals(0, source.imported);
+		assertTrue(source.summary(), source.problem.contains("source is not available"));
+		assertEquals("refusing a missing source must not create files", 0, root.list().length);
+
+		ArchiveImporter.Report zip = ArchiveImporter.importZip(root, null);
+		assertFalse(zip.summary(), zip.ok);
+		assertEquals(0, zip.imported);
+		assertTrue(zip.summary(), zip.problem.contains("ZIP stream is not available"));
+		assertEquals("refusing a missing ZIP must not create files", 0, root.list().length);
+	}
+
 }
