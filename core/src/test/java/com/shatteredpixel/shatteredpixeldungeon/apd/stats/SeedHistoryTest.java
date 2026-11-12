@@ -87,6 +87,26 @@ public class SeedHistoryTest {
 
     private SeedHistory.Summary lookup(String text) { return SeedHistory.lookup(root(), text, null); }
 
+    @Test public void currentRunIsExcludedFromScoringHistoryWithoutLosingEarlierAttempts() {
+        run("prior-death", SEED, LifecycleEvents.SEED_CUSTOM, LifecycleEvents.OUTCOME_DIED, 3, null);
+        RunLogWriter active = start("current", "current", 0, SEED,
+                LifecycleEvents.SEED_CUSTOM, "fixture");
+        enter(active, 1, 9, 0);
+        assertTrue(active.close(false, 10000));
+
+        SeedHistory.Summary all=lookup(Long.toString(SEED));
+        assertEquals(2, all.attempts);
+        SeedHistory.Summary earlier=SeedHistory.lookup(root(), Long.toString(SEED), null, "current");
+        assertEquals(SeedHistory.Kind.MATCHING_LOCAL_HISTORY, earlier.kind);
+        assertEquals(1, earlier.attempts);
+        assertEquals(3, earlier.deepestFloor);
+        assertEquals(0, earlier.unfinishedAttempts);
+        assertEquals(2, SeedHistory.lookup(root(), Long.toString(SEED), null, null).attempts);
+        // The excluded active run is not a reusable history source for the next score.
+        SeedHistory.Summary first=SeedHistory.lookup(root(), Long.toString(SEED+1), null, "current");
+        assertEquals(0, first.attempts);
+    }
+
     @Test public void completedAndFailedAttemptsUseTheExactSeedAndDeepestRecordedFloor() {
         run("random-death", SEED, LifecycleEvents.SEED_RANDOM, LifecycleEvents.OUTCOME_DIED, 3, null);
         run("custom-win", SEED, LifecycleEvents.SEED_CUSTOM, LifecycleEvents.OUTCOME_WON, 26, null);
