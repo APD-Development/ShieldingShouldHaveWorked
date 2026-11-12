@@ -4,6 +4,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.*;
 import com.shatteredpixel.shatteredpixeldungeon.levels.*;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.WornDartTrap;
+import com.shatteredpixel.shatteredpixeldungeon.levels.traps.Trap;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Fire;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.ToxicGas;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.BlobImmunity;
@@ -129,6 +130,37 @@ public class StairNavigationTest {
  @Test public void undiscoveredStairDoesNotExposeItsLocation(){stairs();level.visited[11]=false;assertEquals(-1,StairNavigation.discoveredStair(level,true));assertEquals(13,StairNavigation.discoveredStair(level,false));}
  @Test public void mappedStairsAreAlreadyKnown(){stairs();level.visited[11]=false;level.mapped[11]=true;assertEquals(11,StairNavigation.discoveredStair(level,true));}
  @Test public void missingDirectionCannotFallBackToOtherStair(){level.transitions.add(new LevelTransition(level,13,LevelTransition.Type.REGULAR_EXIT));assertEquals(-1,StairNavigation.discoveredStair(level,true));}
+ @Test public void truncatedVisibilityMetadataBlocksStairShortcutWithoutSpendingATurn(){
+  stairs();
+  hero.fieldOfView=new boolean[13]; // The remembered exit is at cell 13.
+  float before=hero.cooldown();
+  assertFalse(StairNavigation.safeStep(level,hero,13));
+  assertEquals("No safe discovered route reaches those stairs.",StairNavigation.begin(hero,false));
+  assertNull(hero.curAction);
+  assertEquals(before,hero.cooldown(),0f);
+  hero.fieldOfView=new boolean[level.length()];
+  assertTrue(StairNavigation.safeStep(level,hero,13));
+  assertNull(StairNavigation.begin(hero,false));
+  assertTrue(hero.curAction instanceof StairNavigation.Walk);
+ }
+ @Test public void missingTrapMetadataBlocksStairShortcutWithoutSpendingATurn(){
+  stairs();
+  com.watabou.utils.SparseArray<Trap> previous=level.traps;
+  level.traps=null;
+  float before=hero.cooldown();
+  try {
+   assertFalse(StairNavigation.safeStep(level,hero,13));
+   assertEquals("No safe discovered route reaches those stairs.",StairNavigation.begin(hero,false));
+   assertNull(hero.curAction);
+   assertEquals(before,hero.cooldown(),0f);
+  } finally {level.traps=previous;}
+  assertTrue(StairNavigation.safeStep(level,hero,13));
+  assertNull(StairNavigation.begin(hero,false));
+  assertTrue(hero.curAction instanceof StairNavigation.Walk);
+ }
+ @Test public void nullHeroNeverAuthorizesStairRouting(){
+  assertFalse(StairNavigation.safeStep(level,null,13));
+ }
  @Test public void knownTrapsAndPitsAreUnsafeButSecretTrapsAreNotRevealed(){WornDartTrap trap=new WornDartTrap();trap.pos=13;trap.visible=true;level.traps.put(13,trap);assertFalse(StairNavigation.safeStep(level,hero,13));trap.visible=false;assertTrue(StairNavigation.safeStep(level,hero,13));level.pit[13]=true;assertFalse(StairNavigation.safeStep(level,hero,13));}
  @Test public void blockedAvoidedAndUnknownTilesAreUnsafe(){level.passable[13]=false;assertFalse(StairNavigation.safeStep(level,hero,13));level.passable[13]=true;level.avoid[13]=true;assertFalse(StairNavigation.safeStep(level,hero,13));level.avoid[13]=false;level.visited[13]=false;assertFalse(StairNavigation.safeStep(level,hero,13));}
  @Test public void visibleFireIsUnsafeWithoutRevealingUnseenGas(){Fire fire=new Fire();fire.cur=new int[25];fire.cur[13]=1;level.blobs.put(Fire.class,fire);assertTrue(StairNavigation.safeStep(level,hero,13));hero.fieldOfView[13]=true;assertFalse(StairNavigation.safeStep(level,hero,13));}
