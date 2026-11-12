@@ -176,7 +176,11 @@ public final class ArchiveManifest {
 		}
 		if (!header) throw new IllegalArgumentException("this is not an APD history archive");
 		long total = 0;
-		for (Entry e : m.files) total += e.size;
+		for (Entry e : m.files){
+			//A valid checksum must not let an impossible file-size sum wrap into a plausible total.
+			if (e.size > Long.MAX_VALUE - total) throw new IllegalArgumentException("the manifest's file sizes overflow");
+			total += e.size;
+		}
 		if (!counted || countFiles != m.files.size() || countBytes != total) throw new IllegalArgumentException("the manifest's totals do not match its file list");
 		return m;
 	}
