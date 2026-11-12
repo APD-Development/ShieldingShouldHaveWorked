@@ -16,6 +16,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.InputStream;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
@@ -56,6 +57,50 @@ public class ArchiveHostileTest {
 			assertEquals(0, r.imported);
 			assertNothingWritten();
 		}
+	}
+
+	@Test
+	public void aSymlinkedHistoryDirectoryCannotSendImportedLogsOutsideTheRoot() throws Exception {
+		byte[] log = good("a", "run-a");
+		File history = tmp.newFolder("symlink-history");
+		File external = tmp.newFolder("symlink-external");
+		File marker = new File(external, "existing.txt");
+		byte[] original = "keep untouched".getBytes("UTF-8");
+		Files.write(marker.toPath(), original);
+		Files.createSymbolicLink(new File(history, "runs").toPath(), external.toPath());
+
+		Map<String, byte[]> logs = new LinkedHashMap<>();
+		logs.put("runs/a.apdlog", log);
+		byte[] archive = archiveOf(logs, java.util.Collections.singletonMap("runs/a.apdlog", "run-a"));
+		ArchiveImporter.Report result = ArchiveImporter.importArchive(history, new ByteArrayInputStream(archive));
+		assertFalse(result.summary(), result.ok);
+		assertEquals(0, result.imported);
+		assertFalse("symlinked folder must not receive a log", new File(external, "a.apdlog").exists());
+		assertArrayEquals(original, Files.readAllBytes(marker.toPath()));
+		assertFalse(new File(history, "import-tmp").exists());
+	}
+
+	@Test
+	public void anExistingSymlinkedLogCannotBeReadAsAlreadyImported() throws Exception {
+		byte[] log = good("a", "run-a");
+		File history = tmp.newFolder("symlink-log-history");
+		File runs = new File(history, "runs");
+		assertTrue(runs.mkdir());
+		File external = tmp.newFolder("symlink-log-external");
+		File externalLog = new File(external, "outside.apdlog");
+		Files.write(externalLog.toPath(), log);
+		Files.createSymbolicLink(new File(runs, "a.apdlog").toPath(), externalLog.toPath());
+
+		Map<String, byte[]> logs = new LinkedHashMap<>();
+		logs.put("runs/a.apdlog", log);
+		byte[] archive = archiveOf(logs, java.util.Collections.singletonMap("runs/a.apdlog", "run-a"));
+		ArchiveImporter.Report result = ArchiveImporter.importArchive(history, new ByteArrayInputStream(archive));
+		assertFalse(result.summary(), result.ok);
+		assertEquals(0, result.imported);
+		assertEquals("a symlink is not an already-imported history log", 0, result.skippedAlreadyHere);
+		assertArrayEquals(log, Files.readAllBytes(externalLog.toPath()));
+		assertTrue("the original link remains untouched", Files.isSymbolicLink(new File(runs, "a.apdlog").toPath()));
+		assertFalse(new File(history, "import-tmp").exists());
 	}
 
 	@Test
