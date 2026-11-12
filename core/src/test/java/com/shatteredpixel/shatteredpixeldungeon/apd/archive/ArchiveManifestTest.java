@@ -84,6 +84,22 @@ public class ArchiveManifestTest {
 	}
 
 	@Test
+	public void checksumValidFileSizeOverflowIsRejectedButExactLongLimitParses(){
+		ArchiveManifest m = sample();
+		m.files.get(0).size = Long.MAX_VALUE;
+		ArchiveManifest.Entry second = new ArchiveManifest.Entry();
+		second.path = "legacy/second.apdlog";
+		second.kind = ArchiveManifest.KIND_IMPORTED;
+		second.size = 1;
+		m.files.add(second);
+		//The encoded checksum and count are both valid, but signed addition wraps to a negative total.
+		rejects(m.encode().getBytes(ArchiveManifest.utf8()), "overflowed signed manifest total");
+		m.files.get(0).size = Long.MAX_VALUE - 1;
+		ArchiveManifest boundary = ArchiveManifest.parse(m.encode().getBytes(ArchiveManifest.utf8()));
+		assertEquals(Long.MAX_VALUE, boundary.totalBytes());
+	}
+
+	@Test
 	public void onlyPlainRunAndImportedLogPathsAreEverAllowed(){
 		assertTrue(ArchiveManifest.isValidPath("runs/run-1.apdlog"));
 		assertTrue(ArchiveManifest.isValidPath("legacy/import-1.apdlog"));
