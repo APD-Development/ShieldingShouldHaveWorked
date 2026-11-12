@@ -1,5 +1,9 @@
 # AGENTS.md: ADHD Pixel Dungeon (APD), start here
 
+## Latest verified source-only stair-route metadata guard (November 12, 2026)
+
+Read `docs/APD-STAIR-INCOMPLETE-METADATA-2026-11-12.md` and check live GitHub before coding. PR #9 merged at `23364f1ede5752d23de34e6138973873de473187` after CI run `43247774516` passed **3,272 core tests across 470 suites**, zero failures/errors/skips, with required desktop and Android debug/release/instrumentation Java compilation. `StairNavigation.safeStep` now fails closed for a null hero, missing trap collection or truncated non-null FOV; three new regressions prove no action/turn and normal routing after data restoration. This is verified **source-only**, not a new APK. APD461's separate native run `43240714587` failed one Alpha WallGeometry case and publisher `43240803227` failed its prerequisite; preserve PR #6, frozen candidates and APD460 as the last verified published pair at this checkpoint. No scoring, mechanics, save schema, signing or older APK changes were approved.
+
 ## Post-APD460 verified stair transition source fix (November 12, 2026)
 
 Read `docs/APD-STAIR-NULL-TRANSITION-2026-11-12.md` before older handoffs and check live GitHub state. PR #8 merged at `790bdb7d2e919d27be3479e73664451433f2c5cf` after exact CI run `43244355419` passed **3,269 tests across 470 suites**, zero failures/errors/skips and desktop/Android Java compilation. The read-only stair shortcut now safely skips null transition entries; two regressions preserve known/mapped target choices and no-turn failure. This is verified **source-only** work, not a new APK. Preserve the parallel APD461 malformed-terrain candidate/PR #6 until its own Android and release gates complete. APD460 was the latest independently confirmed published release at this checkpoint. Do not invent APD462 or claim newer APK delivery without actual verification. All approved mechanics, saves, scoring and signer identity remain unchanged.
