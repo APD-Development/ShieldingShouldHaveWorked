@@ -79,6 +79,14 @@ public class WallGeometryDeviceTest {
             QolItemFeedbackDeviceTest.prepareSearchableFloor();TopScoresDeviceTest.render(()->{SPDSettings.searchedWallColor(4);GameScene.updateSearchedWallAppearance();});Thread.sleep(300);waitForBanners();
             TopScoresDeviceTest.render(()->{try{
                 Hero hero=Dungeon.hero;Level l=Dungeon.level;int w=l.width(),anchor=w*(l.height()/2)+w/2,p=anchor-w;wall[0]=p;
+                // This is synthetic geometry, not a test of randomly generated rooms.
+                // Isolate the fixture from seeded special-room perimeters: otherwise
+                // a naturally gated room can suppress an unrelated synthetic marker.
+                assertTrue(l instanceof RegularLevel);
+                Field originalRooms=RegularLevel.class.getDeclaredField("rooms");
+                originalRooms.setAccessible(true);
+                originalRooms.set(l,new ArrayList<Room>());
+                assertNull("synthetic wall has no generated room",((RegularLevel)l).room(p));
                 for(Mob mob:new ArrayList<>(l.mobs)){Actor.remove(mob);if(mob.sprite!=null)mob.sprite.killAndErase();}l.mobs.clear();
                 for(int y=-5;y<=5;y++)for(int x=-5;x<=5;x++){int c=anchor+y*w+x;Level.set(c,Terrain.EMPTY);l.heroFOV[c]=l.visited[c]=l.discoverable[c]=true;}
                 for(int x=-3;x<=3;x++)Level.set(p+x,Terrain.WALL);
