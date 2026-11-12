@@ -26,13 +26,6 @@ import static org.junit.Assert.assertFalse;
  */
 public class SeededFloorRingReplayTest {
 
-    private static List<String> floorRingSignature(long seed) throws Exception {
-        List<String> rings = new ArrayList<>();
-        LevelGenerationHarness.generate(seed, 0, HeroClass.WARRIOR,
-                LevelGenerationHarness.Context.RETURNING, 8);
-        return rings;
-    }
-
     @Test public void sixNewRunsKeepGroundRingTypesAndLocationsForIdenticalSeedAndContext()
             throws Exception {
         int oldChallenges = SPDSettings.challenges();
