@@ -64,6 +64,24 @@ public class SeedReuseScoreTest {
         assertEquals(932,SeedReuseScore.earnedScore(old,932));
     }
 
+    @Test public void damagedSnapshotCannotSilentlyChangeRankingScore() {
+        Bundle data=new Bundle();
+        SeedReuseScore.Result valid=SeedReuseScore.calculate(1934,1,5,5,true);
+        valid.store(data);
+        assertNotNull(SeedReuseScore.restore(data));
+        assertEquals(valid.earned, SeedReuseScore.earnedScore(data,1934));
+        data.put(SeedReuseScore.EARNED_KEY,valid.earned+1);
+        assertNull("An earned-score mismatch invalidates the entire snapshot",
+                SeedReuseScore.restore(data));
+        assertEquals("Do not reprice a corrupt snapshot",1934,SeedReuseScore.earnedScore(data,1934));
+        valid.store(data);
+        data.put(SeedReuseScore.RETENTION_KEY,valid.retentionBasisPoints-1);
+        assertNull("A retention mismatch invalidates the snapshot",SeedReuseScore.restore(data));
+        valid.store(data);
+        assertEquals("Undamaged v1 snapshot remains byte-for-byte compatible",
+                valid.earned,SeedReuseScore.earnedScore(data,1934));
+    }
+
     @Test public void snapshotNeverRepricesWhenCurrentHistoryChanges() {
         Bundle saved=new Bundle();
         SeedReuseScore.calculate(10000,1,5,5,true).store(saved);
