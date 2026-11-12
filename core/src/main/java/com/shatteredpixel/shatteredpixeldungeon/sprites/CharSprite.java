@@ -21,6 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.sprites;
 
+import com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
@@ -221,7 +222,7 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 
 		play( run );
 		
-		motion = new PosTweener( this, worldToCamera( to ), moveInterval );
+		motion = new PosTweener( this, worldToCamera( to ), PlaybackGroup.movementDuration(moveInterval) );
 		motion.listener = this;
 		parent.add( motion );
 
@@ -571,6 +572,20 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 		}
 	}
 	
+	@Override
+	protected synchronized void updateAnimation() {
+		// Only the character's sprite frames accelerate. The surrounding
+		// 1x scene group still updates movement tweens, overlays and effects
+		// with their own original frame time.
+		float elapsed = Game.elapsed;
+		try {
+			Game.elapsed = PlaybackGroup.characterAnimationElapsed();
+			super.updateAnimation();
+		} finally {
+			Game.elapsed = elapsed;
+		}
+	}
+
 	@Override
 	public void update() {
 		if (paused && ch != null && curAnim != null && !curAnim.looped && !finished){

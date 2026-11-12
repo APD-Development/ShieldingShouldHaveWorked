@@ -161,29 +161,6 @@ public class HeroSprite extends CharSprite {
 		super.update();
 	}
 	
-    @Override
-    protected synchronized void updateAnimation() {
-        if (curAnim != idle) {
-            super.updateAnimation();
-            return;
-        }
-
-        // 1000x otherwise toggles the hero's two idle frames many times per
-        // render, making their head appear to vibrate. Only idle uses real time.
-        float visualElapsed = Game.elapsed;
-        float idleElapsed = com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup.heroIdleElapsed();
-        if (visualElapsed == idleElapsed) {
-            super.updateAnimation();
-            return;
-        }
-        try {
-            Game.elapsed = idleElapsed;
-            super.updateAnimation();
-        } finally {
-            Game.elapsed = visualElapsed;
-        }
-    }
-
 	public void sprint( float speed ) {
 		run.delay = 1f / speed / RUN_FRAMERATE;
 	}

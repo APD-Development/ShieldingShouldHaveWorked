@@ -40,6 +40,17 @@ public final class PlaybackGroup extends Group {
         speed = FACTORS[allowed(selection) ? selection : NORMAL];
     }
 
+    /** Character sprite frames alone follow selected playback speed.
+     * Scene layers, particles, alert icons and UI retain normal frame time. */
+    public static float characterAnimationElapsed() {
+        return Game.elapsed * speed;
+    }
+
+    /** Scale walking/traversal durations, not frame time or other animations. */
+    public static float movementDuration(float normalDuration) {
+        return normalDuration / speed;
+    }
+
     /** Unscaled wall-frame delta even when this group's visuals are accelerated.
      * Audio cadence must not be tied to selected visual playback speed. */
     public static float realElapsed() {

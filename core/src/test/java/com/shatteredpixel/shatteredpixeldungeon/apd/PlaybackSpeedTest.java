@@ -4,6 +4,8 @@ import com.badlogic.gdx.backends.headless.HeadlessPreferences;
 import com.badlogic.gdx.files.FileHandle;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
+import com.watabou.utils.RectF;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.watabou.noosa.particles.Emitter;
 import com.watabou.noosa.*;
@@ -155,6 +157,53 @@ public class PlaybackSpeedTest {
   } finally {
    sceneField.set(null,oldScene);
   }
+ }
+ @Test public void realCharacterSpriteFramesUseSelectedSpeedWhileRestoringGlobalElapsed(){
+  class ProbeSprite extends CharSprite {
+   @Override public void frame(RectF rect) { /* no texture needed in headless test */ }
+   float advance(){updateAnimation();return frameTimer;}
+  }
+  float[] factors={.5f,1f,2f,4f,8f,16f,32f,64f,100f,1000f};
+  for(int mode=0;mode<factors.length;mode++){
+   PlaybackGroup.speed(mode);Game.elapsed=.016f;
+   ProbeSprite sprite=new ProbeSprite();
+   MovieClip.Animation animation=new MovieClip.Animation(1,false);
+   animation.delay=1000f;
+   animation.frames(new RectF(0,0,1,1),new RectF(0,0,1,1));
+   sprite.play(animation);
+   assertEquals("Actual character frame timer at "+PlaybackGroup.label(mode),
+     .016f*factors[mode],sprite.advance(),.0001f);
+   assertEquals("Character update must not accelerate the surrounding scene",
+     .016f,Game.elapsed,0f);
+  }
+ }
+ @Test public void heroAndEnemySpriteFramesFollowAllTenSpeedsWithoutChangingSceneElapsed(){
+  float[] factors={.5f,1f,2f,4f,8f,16f,32f,64f,100f,1000f};
+  for(int mode=0;mode<factors.length;mode++){
+   PlaybackGroup.speed(mode);Game.elapsed=.016f;
+   assertEquals("Character frames scale at "+PlaybackGroup.label(mode),
+     .016f*factors[mode],PlaybackGroup.characterAnimationElapsed(),.0001f);
+   Group scene=PlaybackGroup.normalSpeedGroup();
+   float[] overlay={0f};
+   scene.add(observe(overlay));scene.update();
+   assertEquals("Surrounding visuals stay 1x",.016f,overlay[0],0f);
+   assertEquals("No global timing changes",.016f,Game.elapsed,0f);
+  }
+ }
+ @Test public void onlyMovementDurationFollowsAllTenSpeedSelections(){
+  float[] speeds={.5f,1f,2f,4f,8f,16f,32f,64f,100f,1000f};
+  for(int mode=0;mode<speeds.length;mode++){
+   PlaybackGroup.speed(mode);
+   Game.elapsed=.016f;
+   assertEquals("Only walking duration scales at "+PlaybackGroup.label(mode),
+      .1f/speeds[mode],PlaybackGroup.movementDuration(.1f),.000001f);
+   Group environment=PlaybackGroup.normalSpeedGroup();
+   float[] observed={0};
+   environment.add(observe(observed));environment.update();
+   assertEquals("Environment remains 1x at "+PlaybackGroup.label(mode),.016f,observed[0],0f);
+   assertEquals(.016f,Game.elapsed,0f);
+  }
+  assertEquals(0.0001f,PlaybackGroup.movementDuration(.1f),.000001f);
  }
  @Test public void invalidChoicesUseNormalSpeed(){
   for(int mode:new int[]{-1,10,Integer.MIN_VALUE,Integer.MAX_VALUE}){GameSettings.put("apd_playback_speed",mode);assertEquals(1,SPDSettings.playbackSpeed());SPDSettings.playbackSpeed(mode);assertEquals(1,SPDSettings.playbackSpeed());}
