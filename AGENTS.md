@@ -1,5 +1,12 @@
 # AGENTS.md: ADHD Pixel Dungeon (APD), start here
 
+## Current verified baseline: APD459, November 12, 2026
+
+**APD459 is the latest verified and GitHub-published Developer/Alpha-Testers APK pair.** Read `docs/APD-459-CONTINUATION-2026-11-12.md` before all older release-status paragraphs below. Release `apd-459` was verified after 3,265 core tests across 470 suites, Android/desktop compilation, six isolated native Android cases and actual publication/download hash readback. Its exact frozen source is `2b1abfd52bd397dbfe7887b5ae5c52cd5695444e`; original-signer APKs and source are at https://github.com/APD-Development/ShieldingShouldHaveWorked/releases/tag/apd-459. The implementation reduces transient Search chooser allocations to one exact-length caller-owned array without changing action order, saved data, search geometry, scoring or balance.
+
+The isolated APD459 development branch was merged into the established `codex/apd-phone-fixes-2026-10-09` development branch as PR #4 at `c4e6843b3e555ca2fbf19e6d8bc036ae7c36d0b4`. Later receipt/handoff commits do not rebuild or change the frozen release. Prior APD458, APD457 and earlier releases and evidence remain preserved. Device-specific RedMagic install-over and audio remain unverified. Check live branch heads and workflows for any newer work before coding; do not restart completed investigations or assume old APD446 status paragraphs are current.
+
+
 ## APD458 verified, signed and published, November 12, 2026
 
 APD458 is the latest **verified GitHub prerelease**, not APD446 or APD457. Its frozen application source is `8c74997210585191d12603ad5e2ee398b1c54fe7`, release tag `apd-458`, with direct Developer and Alpha-Testers APKs and matching source archive at https://github.com/APD-Development/ShieldingShouldHaveWorked/releases/tag/apd-458. Original signing identity and application ID are preserved. The new `docs/APD-458-DELIVERY-2026-11-12.json` records the actual asset SHA-256 hashes and all verification run IDs. Full source run 43231740279 passed 3,264 tests across 470 suites with zero failures/errors/skips and required Android and desktop compilation. Candidate run 43231889687 succeeded, all six frozen-APK emulator cases passed in 43232032203, and publication/readback run 43232110277 succeeded. This is a completed published release, not an awaiting candidate. Physical RedMagic install-over and audio remain unverified. Never rebuild, overwrite, or claim a newer release without fresh evidence. Existing APD457 and prior builds remain preserved.
