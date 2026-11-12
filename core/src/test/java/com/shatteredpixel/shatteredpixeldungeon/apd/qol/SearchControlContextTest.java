@@ -835,4 +835,76 @@ public class SearchControlContextTest {
         assertEquals(0, hero.nextCalls);
         assertEquals(0f, hero.cooldown(), 0f);
     }
+
+    @Test public void incompleteObservationArraysCannotPromoteAdaptiveWallChoice() {
+        boolean prior = SPDSettings.adaptiveSearchChoice();
+        boolean[] fov = level.heroFOV, visited = level.visited, mapped = level.mapped;
+        int[] terrain = level.map;
+        try {
+            SPDSettings.adaptiveSearchChoice(true);
+            candidate(1, 0);
+            assertEquals(Action.WALL_SEARCH, SearchControlContext.preferred(hero, level));
+
+            level.heroFOV = null;
+            assertFalse(SearchControlContext.hasMeaningfulWall(hero, level));
+            assertEquals(Action.SEARCH, SearchControlContext.preferred(hero, level));
+            assertArrayEquals(new Action[]{Action.SEARCH, Action.WALL_SEARCH, Action.SHOW_SAVED,
+                    Action.FORGET, Action.CANCEL}, SearchControlContext.choices(hero, level));
+
+            level.heroFOV = new boolean[hero.pos + 1];
+            assertFalse(SearchControlContext.hasMeaningfulWall(hero, level));
+            level.heroFOV = fov;
+
+            level.visited = null;
+            assertFalse(SearchControlContext.hasMeaningfulWall(hero, level));
+            level.visited = visited;
+            level.visited = new boolean[hero.pos + 1];
+            assertFalse(SearchControlContext.hasMeaningfulWall(hero, level));
+            level.visited = visited;
+
+            level.mapped = null;
+            assertFalse(SearchControlContext.hasMeaningfulWall(hero, level));
+            level.mapped = mapped;
+            level.mapped = new boolean[hero.pos + 1];
+            assertFalse(SearchControlContext.hasMeaningfulWall(hero, level));
+            level.mapped = mapped;
+
+            level.map = null;
+            assertFalse(SearchControlContext.hasMeaningfulWall(hero, level));
+            level.map = new int[hero.pos + 1];
+            assertFalse(SearchControlContext.hasMeaningfulWall(hero, level));
+            level.map = terrain;
+
+            assertEquals("complete observed metadata restores normal adaptive selection",
+                    Action.WALL_SEARCH, SearchControlContext.preferred(hero, level));
+            assertNull(hero.curAction);
+            assertEquals(0f, hero.cooldown(), 0f);
+        } finally {
+            SPDSettings.adaptiveSearchChoice(prior);
+            level.heroFOV = fov;
+            level.visited = visited;
+            level.mapped = mapped;
+            level.map = terrain;
+        }
+    }
+
+    @Test public void roomCenterCheckHandlesMissingAndShortVisibilityWithoutReadingHiddenTiles() {
+        boolean[] fov = level.heroFOV;
+        EmptyRoom room = new EmptyRoom();
+        room.set(7, 7, 13, 13);
+        try {
+            level.setRooms(room);
+            assertTrue("complete observed room center is still recognized",
+                    SearchControlContext.openRoomInterior(hero, level));
+            level.heroFOV = null;
+            assertFalse(SearchControlContext.openRoomInterior(hero, level));
+            level.heroFOV = new boolean[hero.pos + 1];
+            assertFalse(SearchControlContext.openRoomInterior(hero, level));
+            assertNull(hero.curAction);
+            assertEquals(0f, hero.cooldown(), 0f);
+        } finally {
+            level.heroFOV = fov;
+            level.setRooms();
+        }
+    }
 }
