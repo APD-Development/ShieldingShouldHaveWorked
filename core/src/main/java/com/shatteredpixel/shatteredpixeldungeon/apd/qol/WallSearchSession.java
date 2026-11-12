@@ -46,7 +46,8 @@ public final class WallSearchSession {
      * This still uses the exact ordinary Search footprint and visibility rules. */
     static boolean covers(Hero hero,Level level,int from,int cell,boolean foresight){
         if(hero==null||level==null||from<0||from>=level.length()||cell<0||cell>=level.length()||cell==from)return false;
-        return footprint(hero,level,from,cell,foresight)&&(foresight||level.heroFOV[cell]);
+        return footprint(hero,level,from,cell,foresight)
+                && (foresight || (level.heroFOV != null && cell < level.heroFOV.length && level.heroFOV[cell]));
     }
     /** Maximum radius of the existing Hero.search footprint, not an expanded range.
      * Shared with contextual scans so ordinary classes do not inspect Rogue-only cells. */
@@ -74,7 +75,7 @@ public final class WallSearchSession {
     }
     public boolean select(Hero hero,int cell){
         Level l=Dungeon.level;
-        if(hero==null||!hero.isAlive()||!hero.ready||l==null||cell<0||cell>=l.length()||!l.heroFOV[cell]||!DoorSearchEligibility.candidate(l,cell)||!covers(hero,l,hero.pos,cell))return false;
+        if(hero==null||!hero.isAlive()||!hero.ready||l==null||cell<0||cell>=l.length()||l.heroFOV==null||cell>=l.heroFOV.length||!l.heroFOV[cell]||!DoorSearchEligibility.candidate(l,cell)||!covers(hero,l,hero.pos,cell))return false;
         if(!matches(l)||anchor!=hero.pos||target!=cell)begin(hero,cell);return true;
     }
     public void searched(Hero hero){
