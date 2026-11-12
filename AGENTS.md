@@ -1,5 +1,12 @@
 # AGENTS.md: ADHD Pixel Dungeon (APD), start here
 
+## APD458 verified, signed and published, November 12, 2026
+
+APD458 is the latest **verified GitHub prerelease**, not APD446 or APD457. Its frozen application source is `8c74997210585191d12603ad5e2ee398b1c54fe7`, release tag `apd-458`, with direct Developer and Alpha-Testers APKs and matching source archive at https://github.com/APD-Development/ShieldingShouldHaveWorked/releases/tag/apd-458. Original signing identity and application ID are preserved. The new `docs/APD-458-DELIVERY-2026-11-12.json` records the actual asset SHA-256 hashes and all verification run IDs. Full source run 43231740279 passed 3,264 tests across 470 suites with zero failures/errors/skips and required Android and desktop compilation. Candidate run 43231889687 succeeded, all six frozen-APK emulator cases passed in 43232032203, and publication/readback run 43232110277 succeeded. This is a completed published release, not an awaiting candidate. Physical RedMagic install-over and audio remain unverified. Never rebuild, overwrite, or claim a newer release without fresh evidence. Existing APD457 and prior builds remain preserved.
+
+The only new application behavior since the published APD457 source is an allocation optimization inside Search chooser implementation; selectable actions, preferred action, save/scoring/balance and game logic remain unchanged. Fresh-result/ordering regression was added. See `docs/APD-458-CHOOSER-CONTINUATION-2026-11-12.md` for original frozen workflow references (its pending-state text is historical) and the delivery receipt for the final outcome. The scoring and Cleric design decisions remain owner-controlled.
+
+
 ## APD446 verified and delivered, November 11
 
 APD446 is the latest verified and delivered game. The exact Developer APK, Alpha-Testers APK and matching source archive were separately saved and downloaded back with matching bytes and SHA-256 at `2026-11-11T19:20:46.706716+00:00`, then all three direct links were delivered immediately in chat. See `docs/APD-446-DELIVERY-2026-11-11.json`. The earlier dated status paragraphs below are preserved historical snapshots; they do not override this current result. APD444 remains the accepted predecessor and APD445 remains unaccepted.
