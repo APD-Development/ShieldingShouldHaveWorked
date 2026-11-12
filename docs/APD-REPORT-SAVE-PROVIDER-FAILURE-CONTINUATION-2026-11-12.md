@@ -1,0 +1,20 @@
+# APD report-save provider-failure continuation, November 12, 2026 (America/New_York)
+
+## Starting state and isolated ownership
+Execution began about **3:08 PM EST**. Read the live authoritative development branch `codex/apd-phone-fixes-2026-10-09` at **`6dcb0ad0d797ee2519621f44922637dd817554ac`**, not stale `main`; inspected `AGENTS.md`, current handoffs/ledger/known issues, open PRs, release receipts and live Actions. Created isolated branch `chatgpt/apd-report-save-provider-failure-20261112-1508` from that exact commit. No shared-branch writes and no overlap with active APD462 movement, hero difficulty fade, DM-300 targeting, Search, archive importer safety or APD461 publication work.
+
+## Evidenced source issue and bounded production correction
+`ReportExport.save` promises a completion message for file saving and writes asynchronously to a player-chosen Android or desktop provider stream. Its existing try-with-resources correctly closes the stream but its `catch (IOException)` did not catch unchecked `RuntimeException` thrown by an external document provider during `OutputStream.write` or `close`. In that case the worker could terminate before calling `Done.finished`, leaving no report-save error or result. This is a source-proven error path, **not** a claim of a reproduced user-device crash.
+
+- Production commit **`13179455eeadddce8673dfe11abaaf9ea383822e`**: catch `IOException | RuntimeException` at that precise write/close boundary. Existing success wording, bytes, file picker, one-shot callback, format rendering and normal export behavior stay unchanged.
+- Test commit **`ea2465b5399ee3a0bc34d6386d246149bf3c9452`**: three `ReportSaveProviderFailureTest` cases for unchecked write rejection (close and one failure callback), unchecked close rejection (failure instead of false success, one callback), and successful original UTF-8 bytes/normal message/one close.
+- Source CI workflow commit **`8fb74bfba2393725bb8fff0a2c44320b750e4748`**: independent scoped [full core and Android/desktop Java source verification](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/43298225662), including exact three-case JUnit gate, minimum 3,309 total clean core cases, no skipped/failures/errors, and Android debug/release/instrumentation plus desktop Java targets. It does **not** build or publish any game APK.
+- Draft [PR #35](https://github.com/APD-Development/ShieldingShouldHaveWorked/pull/35) targets the established development branch for a guarded merge after exact terminal CI and fresh base/head reinspection.
+
+## Verified versus pending at 3:15 PM EST
+The GitHub workflow was confirmed **in progress** at exact head `8fb74bfba2393725bb8fff0a2c44320b750e4748`. Its source-shape assertion step already passed, but the full Gradle suite and JUnit XML verification were **not yet terminal**. Do not call the three tests or whole workflow passed until raw jobs and XML gate finish. No local emulator, physical phone, signed APK, native acceptance, release or installation was performed. APD460 was confirmed as a **published** prerelease with Developer, Alpha-Testers and matching source assets; APD461 remained gated, and the independent APD462 movement release workflow had a reported failed overall conclusion. Do not alter any of these.
+
+The change is report-save error handling only. No APD gameplay, talents, balance, scores, seed RNG, run/saved history, content, signing certificate, application/edition ID, release receipt or source-history policy was changed.
+
+## Next safe execution
+Read exact workflow run `43298225662` and job logs, correct demonstrated failures **only** on this isolated branch, and reverify clean exact-head CI if necessary. After green run, re-read development branch plus PR #35 base/head SHA; do not overwrite newer work and do not merge a stale PR. Record exact terminal test totals and outcome here. Preserve APD460 and all failed candidates; do not publish another game APK without established original-signer, native screenshot, source and publisher gates.
