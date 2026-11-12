@@ -1,0 +1,59 @@
+name: Verify APD well activation 1x effects
+on:
+  push:
+    branches: [chatgpt/apd-well-activation-normal-speed-20261112]
+    paths: [.github/workflows/apd-well-activation-speed-ci-20261112.yml]
+permissions: {contents: read}
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 55
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with: {distribution: temurin, java-version: '21'}
+      - uses: gradle/actions/setup-gradle@v4
+      - name: Verify separate well activation particle routing
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          scene=Path('core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/GameScene.java').read_text()
+          cell=Path('core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/effects/CellEmitter.java').read_text()
+          well=Path('core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/blobs/WaterOfHealth.java').read_text()
+          aware=Path('core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/blobs/WaterOfAwareness.java').read_text()
+          gas=Path('core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/blobs/ToxicGas.java').read_text()
+          assert 'gases = com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup.normalSpeedGroup();' in scene
+          assert 'emoicons = com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup.normalSpeedGroup();' in scene
+          assert 'statuses = com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup.normalSpeedGroup();' in scene
+          assert 'scene.gases.recycle( Emitter.class )' in scene
+          assert 'Emitter emitter = GameScene.wellEmitter();' in cell
+          assert 'CellEmitter.get(' not in well
+          assert well.count('CellEmitter.well(') == 4
+          assert 'healingEffect.pos(hero.sprite);' in well
+          assert 'emitter.parent.add( new Identification(' in aware
+          assert 'emitter.pour( Speck.factory( Speck.QUESTION ), 0.3f );' in aware
+          assert 'emitter.pour( Speck.factory( Speck.TOXIC ), 0.4f );' in gas
+          print('Verified only well activation particles are redirected, persistent well and gas blobs and alert/status layers are 1x')
+          PY
+      - name: Compile and run complete core suite
+        run: |
+          "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "platforms;android-36"
+          ./gradlew :core:test :desktop:classes :android:compileDebugJavaWithJavac :android:compileReleaseJavaWithJavac :android:compileDebugAndroidTestJavaWithJavac
+      - name: Require clean core regression suite
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import xml.etree.ElementTree as ET
+          reports=[ET.parse(p).getroot() for p in Path('core/build/test-results/test').glob('TEST-*.xml')]
+          assert reports, 'Missing core test results'
+          total={k:sum(int(r.get(k,0)) for r in reports) for k in ('tests','failures','errors','skipped')}
+          assert total['tests']>=3301 and all(total[k]==0 for k in ('failures','errors','skipped')), total
+          print(total, len(reports),'test suites verified')
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: apd-well-normal-speed-core-results
+          path: core/build/test-results/test/
+          if-no-files-found: warn
+          retention-days: 14
