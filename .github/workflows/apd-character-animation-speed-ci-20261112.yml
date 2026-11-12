@@ -1,4 +1,5 @@
 name: APD character-only animation playback source verification
+# Rerun after fixing all renamed monster-playback test helper call sites.
 on:
   push:
     branches: [chatgpt/apd-character-animation-speed-20261112]
