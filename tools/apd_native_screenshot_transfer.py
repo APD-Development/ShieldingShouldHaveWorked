@@ -5,6 +5,7 @@
 import hashlib
 from pathlib import Path
 import re
+import shlex
 import subprocess
 import threading
 import time
@@ -57,8 +58,22 @@ def pull_image(directory, name, digest=None):
         return
     temporary = directory / (name + '.partial')
     try:
-        subprocess.run(['adb', 'pull', REMOTE + '/' + name, str(temporary)],
-                       stdout=subprocess.DEVNULL, stderr=subprocess.PIPE, timeout=30, check=True)
+        remote = REMOTE + '/' + name
+        try:
+            subprocess.run(['adb', 'pull', remote, str(temporary)],
+                           stdout=subprocess.DEVNULL, stderr=subprocess.PIPE, timeout=30, check=True)
+        except subprocess.CalledProcessError as pull_error:
+            # Android shell can hash readable MediaStore files even when adb sync
+            # refuses to pull them. Read the same exact path through the shell
+            # as raw bytes, then require the original device SHA-256 manifest.
+            # No screenshot acceptance is relaxed by this fallback.
+            with temporary.open('wb') as result:
+                try:
+                    subprocess.run(['adb', 'exec-out', 'cat -- ' + shlex.quote(remote)],
+                                   stdout=result, stderr=subprocess.PIPE, timeout=40, check=True)
+                except (subprocess.CalledProcessError, subprocess.TimeoutExpired) as fallback_error:
+                    raise RuntimeError('Both adb pull and binary-safe shell read failed: '
+                                       + str(pull_error.stderr) + '; ' + str(getattr(fallback_error, 'stderr', ''))) from fallback_error
         validate_png(temporary.read_bytes())
         require(digest is None or sha(temporary) == digest, 'Transferred screenshot digest differs')
         temporary.replace(target)
