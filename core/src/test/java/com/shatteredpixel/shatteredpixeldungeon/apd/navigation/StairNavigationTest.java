@@ -104,6 +104,28 @@ public class StairNavigationTest {
  }
  @Test public void offscreenAndObscuredKnownStairsStillHaveExactDestinations(){stairs();Arrays.fill(hero.fieldOfView,false);assertNull(StairNavigation.begin(hero,false));assertEquals(13,hero.curAction.dst);assertTrue(com.shatteredpixel.shatteredpixeldungeon.effects.StairHighlight.known(13));level.visited[11]=false;assertFalse(com.shatteredpixel.shatteredpixeldungeon.effects.StairHighlight.known(11));}
  @Test public void bothDirectionsChooseOnlyTheirOwnStair(){stairs();assertEquals(11,StairNavigation.discoveredStair(level,true));assertEquals(13,StairNavigation.discoveredStair(level,false));}
+ @Test public void nullTransitionEntryDoesNotCrashOrInventDiscoveredStairs(){
+  level.transitions.add(null);
+  float before=hero.cooldown();
+  assertEquals(-1,StairNavigation.discoveredStair(level,true));
+  assertEquals(-1,StairNavigation.discoveredStair(level,false));
+  assertEquals(-1,StairNavigation.discoveredTarget(level,StairNavigation.Route.RETURN_TO_MAIN_DUNGEON));
+  assertEquals("Those stairs have not been discovered.",StairNavigation.begin(hero,false));
+  assertNull(hero.curAction);
+  assertEquals(before,hero.cooldown(),0f);
+ }
+ @Test public void nullTransitionEntryDoesNotHideValidOrMappedStairs(){
+  level.transitions.add(null);
+  stairs();
+  level.transitions.add(null);
+  assertEquals(11,StairNavigation.discoveredStair(level,true));
+  assertEquals(13,StairNavigation.discoveredStair(level,false));
+  level.visited[13]=false;
+  level.mapped[13]=true;
+  assertEquals(13,StairNavigation.discoveredStair(level,false));
+  level.visited[11]=false;
+  assertEquals(-1,StairNavigation.discoveredStair(level,true));
+ }
  @Test public void undiscoveredStairDoesNotExposeItsLocation(){stairs();level.visited[11]=false;assertEquals(-1,StairNavigation.discoveredStair(level,true));assertEquals(13,StairNavigation.discoveredStair(level,false));}
  @Test public void mappedStairsAreAlreadyKnown(){stairs();level.visited[11]=false;level.mapped[11]=true;assertEquals(11,StairNavigation.discoveredStair(level,true));}
  @Test public void missingDirectionCannotFallBackToOtherStair(){level.transitions.add(new LevelTransition(level,13,LevelTransition.Type.REGULAR_EXIT));assertEquals(-1,StairNavigation.discoveredStair(level,true));}

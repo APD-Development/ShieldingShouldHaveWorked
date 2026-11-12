@@ -59,8 +59,11 @@ public final class StairNavigation {
     public static int discoveredTarget(Level level, Route route) {
         if (level==null || level.transitions==null || route==null) return -1;
         for (LevelTransition transition:level.transitions) {
+            // Check the route before accessing the cell: an incomplete transition
+            // collection must not crash the read-only stair shortcut.
+            if (!matchesRoute(transition, route)) continue;
             int cell=transition.cell();
-            if (matchesRoute(transition, route) && cell>=0 && cell<level.length()
+            if (cell>=0 && cell<level.length()
                     && (level.visited[cell] || level.mapped[cell])) return cell;
         }
         return -1;
