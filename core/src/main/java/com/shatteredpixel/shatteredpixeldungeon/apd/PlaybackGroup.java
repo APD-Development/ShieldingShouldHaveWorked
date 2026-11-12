@@ -24,6 +24,12 @@ public final class PlaybackGroup extends Group {
         return new Group();
     }
 
+    /** Personal Developer build visual groups only. Alpha/community remains unchanged.
+     * Only use this where an entire group has owner-approved accelerated visuals. */
+    public static Group personalSpeedGroup() {
+        return ApdFeatures.testBuild() ? new PlaybackGroup() : normalSpeedGroup();
+    }
+
     public static int choiceCount() {
         return FACTORS.length;
     }

@@ -205,6 +205,24 @@ public class PlaybackSpeedTest {
   }
   assertEquals(0.0001f,PlaybackGroup.movementDuration(.1f),.000001f);
  }
+ @Test public void personalPlaybackGroupsAreAcceleratedOnlyInDeveloperEdition() {
+  Game.elapsed=.016f;
+  for(int mode=0;mode<PlaybackGroup.choiceCount();mode++){
+   PlaybackGroup.speed(mode);
+   ApdFeatures.parse("testBuild\\n");
+   Group personal=PlaybackGroup.personalSpeedGroup();
+   float[] personalElapsed={0};
+   personal.add(observe(personalElapsed));personal.update();
+   assertEquals("Personal group matches selected game speed",.016f*
+     new float[]{.5f,1f,2f,4f,8f,16f,32f,64f,100f,1000f}[mode],personalElapsed[0],.0001f);
+   ApdFeatures.parse("extendedPlayback\\n");
+   Group alpha=PlaybackGroup.personalSpeedGroup();
+   float[] normalElapsed={0};
+   alpha.add(observe(normalElapsed));alpha.update();
+   assertEquals("Alpha visuals stay unchanged",.016f,normalElapsed[0],0f);
+   assertEquals(.016f,Game.elapsed,0f);
+  }
+ }
  @Test public void invalidChoicesUseNormalSpeed(){
   for(int mode:new int[]{-1,10,Integer.MIN_VALUE,Integer.MAX_VALUE}){GameSettings.put("apd_playback_speed",mode);assertEquals(1,SPDSettings.playbackSpeed());SPDSettings.playbackSpeed(mode);assertEquals(1,SPDSettings.playbackSpeed());}
  }

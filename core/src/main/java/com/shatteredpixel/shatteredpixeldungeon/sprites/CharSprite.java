@@ -572,6 +572,11 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 		}
 	}
 	
+	/** Individual character states can preserve their original visual speed. */
+	protected float animationFrameElapsed() {
+		return PlaybackGroup.characterAnimationElapsed();
+	}
+
 	@Override
 	protected synchronized void updateAnimation() {
 		// Only the character's sprite frames accelerate. The surrounding
@@ -579,7 +584,7 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 		// with their own original frame time.
 		float elapsed = Game.elapsed;
 		try {
-			Game.elapsed = PlaybackGroup.characterAnimationElapsed();
+			Game.elapsed = animationFrameElapsed();
 			super.updateAnimation();
 		} finally {
 			Game.elapsed = elapsed;
