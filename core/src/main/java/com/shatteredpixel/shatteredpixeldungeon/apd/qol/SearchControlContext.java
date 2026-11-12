@@ -39,6 +39,16 @@ public final class SearchControlContext {
             Action.RESUME_MOVEMENT, Action.FORGET, Action.CANCEL
     };
 
+    /** Malformed restored level data must not crash a read-only chooser or reveal hidden tiles. */
+    private static boolean completeObservedMetadata(Level level) {
+        if (level == null || level.width() <= 0 || level.height() <= 0) return false;
+        int length = level.length();
+        return level.map != null && level.map.length >= length
+                && level.heroFOV != null && level.heroFOV.length >= length
+                && level.visited != null && level.visited.length >= length
+                && level.mapped != null && level.mapped.length >= length;
+    }
+
     public static Action preferred(Hero hero, Level level) {
         if (SPDSettings.adaptiveSearchChoice() && hero != null
                 && hero.wallSearch.matches(level) && hasMeaningfulWall(hero, level)) {
@@ -70,7 +80,8 @@ public final class SearchControlContext {
      * wall reached through Wide Search does not turn the whole room into wall mode.
      * This is read-only and never inspects hidden terrain behind a wall. */
     public static boolean openRoomInterior(Hero hero, Level level) {
-        if (hero == null || level == null || hero.pos < 0 || hero.pos >= level.length()
+        if (hero == null || !completeObservedMetadata(level)
+                || hero.pos < 0 || hero.pos >= level.length()
                 || !(level instanceof RegularLevel) || !((RegularLevel)level).apdHasRooms())
             return false;
         Room room = ((RegularLevel)level).room(hero.pos);
@@ -92,7 +103,8 @@ public final class SearchControlContext {
     }
 
     public static boolean hasMeaningfulWall(Hero hero, Level level) {
-        if (hero == null || level == null || hero.pos < 0 || hero.pos >= level.length()
+        if (hero == null || !completeObservedMetadata(level)
+                || hero.pos < 0 || hero.pos >= level.length()
                 || !DoorSearchEligibility.supportsDoors(level)) return false;
 
         // Only the room the hero currently occupies affects this presentation decision.
