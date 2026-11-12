@@ -1,0 +1,23 @@
+# APD checksummed duplicate archive-manifest identity guard (November 12, 2026, EST)
+
+## Authoritative starting checkpoint and coordination
+Execution began at approximately **2:31 PM EST**, November 12, 2026 (Thursday). Directly inspected the live repository rather than assuming main: authoritative `codex/apd-phone-fixes-2026-10-09` head `57ee2946a4ace56f04c5758d17c1737f8358ea62` (2:31:13 PM EST latest merge), current `AGENTS.md`, real-floor ring continuation, open PRs, branches, recent full CI, releases and stalled APD461 draft PR #6. Verified APD460 published Developer/Alpha/source assets and absence of `apd-461` published tag. Last ring deck and real-floor investigations already complete; do not repeat them. Draft #20 owns hero difficulty fade, #6 owns APD461 malformed search terrain and the pending release pipeline; #22 remains old draft but Well of Health animation fix was already merged as #23. No duplicate archive-manifest work claim found.
+
+This work is entirely isolated on `chatgpt/apd-archive-duplicate-manifest-20261112-1430`; [draft PR #31](https://github.com/APD-Development/ShieldingShouldHaveWorked/pull/31), base frozen at `57ee2946...`. Do not write directly to the established shared branch while awaiting the isolated exact gate.
+
+## Evidence and bounded actual code change
+Reading current `ArchiveManifest.parse` and `ArchiveImporter.importZip` established an integrity gap: a checksummed manifest with two `file` rows naming the same path could pass its declared count and checksum, yet the importer creates `byPath` using the first path and `seen` only once per ZIP name. It could accept a one-file ZIP as complete even though the manifest declared two files, without separately verifying the second record. This does **not** establish that any actual user history has been damaged; it establishes that the importer could wrongly accept a malformed manifest.
+
+- Production commit `3599b4905ded705247d1abbc957fdb0999e7ce0a`: track declared manifest paths in a HashSet while parsing; immediately reject any second declaration of the same literal pathname before importing. Existing file-size overflow guard, checksum verification, all valid archive records, ZIP streaming, history integrity, normal imported/run namespaces and formats remain intact.
+- Regression commit `4b39b7d0dafb188b37ef9762f4eb2caec50d5273`: new `ArchiveManifestTest.checksummedDuplicatePathsAreRejectedRatherThanSilentlyCountedTwice` checks identical and contradictory duplicate records with valid manifest checksums and confirms distinct legitimate run/legacy paths continue to parse.
+- Regression commit `b9ed72091391c799be68997ccf068a8b7be8f1ee`: new `ArchiveHostileTest.duplicateChecksummedManifestPathsRefuseEntireImportBeforeDiskMutation` constructs a real single-payload ZIP with a duplicate checksummed declaration and requires refusal and no imported/temporary files.
+- CI commit `de7aee08b419e71350bfb052da881637bedd8df6`: isolated [Actions workflow 43291827047](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/43291827047) runs full core tests, desktop and Android debug/release/instrumentation Java compilation and exact XML assertions for both regressions (minimum 3,306 tests).
+
+## Verification and deliverables at this handoff commit
+At this handoff checkpoint run `43291827047` was **in progress**, so **no test pass** is yet claimed for this work. No Android emulator, native device, APK assembly, original signer, save migration, score logic, rules, RNG, gameplay or publication were touched. Earlier CI 43290110540 (3,304 core passing tests) belongs to the prior real-floor ring work and is not this change. APD460 remains the last verified published original-signed pair; APD461 native attempt 2 had individual successes but publisher run 43240803227 remained failed, and this session does not bypass its separate native/publisher gates.
+
+## Next safe actions
+1. Check the completed exact isolated CI run `43291827047`, inspect raw failures if any, fix only failures and rerun all tests. Do not claim success prematurely.
+2. If green, re-read the live established head and PR overlap; integrate only with expected-head non-force merge, recording actual merge SHA/readback, or preserve isolated PR if base moved into conflicting edits.
+3. Persist final test and merge receipts, including Eastern times, exact tested head, JUnit totals, and APK blocker; do not duplicate completed source work.
+4. Continue independently approved development later without treating source-only CI as native installation or owner-phone verification.
