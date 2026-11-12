@@ -18,3 +18,10 @@ Isolated GitHub Actions [run 43281202873](https://github.com/APD-Development/Shi
 
 ## Next safe action
 Read the final CI outcome for run 43281202873 and investigate any failures before merge. Inspect live development head for overlapping work. If exact CI is green, integrate source-only PR using no-force integration with a reverified base; preserve APD461 and owner-approved balance. The next **qualified** signed APK requires established frozen candidate, native Android acceptance, original-signer and publication gates. Actual RedMagic animations remain unverified until such a build is installed and observed.
+
+
+## First CI failure and correction (November 12, Eastern)
+Initial run [43281202873](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/43281202873) failed at `:core:compileJava` because `WaterOfHealth` was missing the explicit `GameScene` import used by its new well-only healing emitter. Static routing checks passed but no core tests ran. Do not count it as a passing build.
+- `fc33b68b6e7afa47ca09d6642f339482217bef40` adds the exact missing import.
+- `48ea0434f4d8406bcd541ad42aa9c83d6982f6a5` strengthens the isolated workflow's import assertion and triggers full retry [43281486580](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/43281486580).
+Retry status was queued when observed; await its real outcome before merge/release. No APK was built.
