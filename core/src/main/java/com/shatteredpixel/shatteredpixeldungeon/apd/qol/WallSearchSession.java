@@ -40,7 +40,12 @@ public final class WallSearchSession {
     /** Same footprint arithmetic as Hero.search; unseen map contents are never consulted. */
     public static boolean covers(Hero hero,Level level,int from,int cell){
         if(hero==null||level==null||from<0||from>=level.length()||cell<0||cell>=level.length()||cell==from)return false;
-        boolean foresight=hero.buff(Foresight.class)!=null;
+        return covers(hero,level,from,cell,hero.buff(Foresight.class)!=null);
+    }
+    /** Contextual scanning may reuse a single already-observed Foresight state.
+     * This still uses the exact ordinary Search footprint and visibility rules. */
+    static boolean covers(Hero hero,Level level,int from,int cell,boolean foresight){
+        if(hero==null||level==null||from<0||from>=level.length()||cell<0||cell>=level.length()||cell==from)return false;
         return footprint(hero,level,from,cell,foresight)&&(foresight||level.heroFOV[cell]);
     }
     /** Maximum radius of the existing Hero.search footprint, not an expanded range.

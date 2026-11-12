@@ -735,6 +735,36 @@ public class SearchControlContextTest {
         assertTrue(SearchControlContext.hasMeaningfulWall(hero, level));
     }
 
+    @Test public void cachedForesightScanMatchesOrdinaryCoverageForEveryClassAndAcquiredRank() {
+        // Compare every grid cell against the original public cover calculation.
+        // Nothing in this comparison spends a Search turn or exposes hidden map data.
+        int from = hero.pos;
+        for (HeroClass heroClass : HeroClass.values()) {
+            for (int rank = 0; rank <= 2; rank++) {
+                talents(heroClass, heroClass != HeroClass.ROGUE, rank);
+                for (int cell = 0; cell < level.length(); cell++) {
+                    assertEquals("ordinary class=" + heroClass + " rank=" + rank + " cell=" + cell,
+                            WallSearchSession.covers(hero, level, from, cell),
+                            WallSearchSession.covers(hero, level, from, cell, false));
+                }
+            }
+        }
+
+        talents(HeroClass.WARRIOR, false, 0);
+        Buff.affect(hero, Foresight.class);
+        assertNotNull(hero.buff(Foresight.class));
+        for (boolean visible : new boolean[]{true, false}) {
+            Arrays.fill(level.heroFOV, visible);
+            for (int cell = 0; cell < level.length(); cell++) {
+                assertEquals("foresight visible=" + visible + " cell=" + cell,
+                        WallSearchSession.covers(hero, level, from, cell),
+                        WallSearchSession.covers(hero, level, from, cell, true));
+            }
+        }
+        assertNull(hero.curAction);
+        assertEquals(0f, hero.cooldown(), 0f);
+    }
+
     @Test public void existingForesightFootprintIsPreservedWithoutRevealingUnknownWalls() {
         candidate(8, 0);
         assertFalse(SearchControlContext.hasMeaningfulWall(hero, level));
