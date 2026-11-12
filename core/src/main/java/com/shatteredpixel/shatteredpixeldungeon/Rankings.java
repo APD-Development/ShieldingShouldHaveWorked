@@ -148,6 +148,24 @@ public enum Rankings {
 		Badges.validateHighScore( rec.score );
 		
 		INSTANCE.saveGameData(rec);
+        // Freeze the real seed-reuse deduction with this record. It is based on
+        // earlier local attempts, not future attempts or today's preferences.
+        if (rec.gameData != null && !rec.daily) {
+            String seedText=rec.customSeed;
+            if (seedText!=null && !seedText.isEmpty()) {
+                com.shatteredpixel.shatteredpixeldungeon.apd.recorder.SeedHistory.Summary history =
+                    com.shatteredpixel.shatteredpixeldungeon.apd.recorder.SeedHistory.lookup(
+                        com.shatteredpixel.shatteredpixeldungeon.apd.recorder.ApdRecorder.historyRoot(),
+                        seedText,
+                        com.shatteredpixel.shatteredpixeldungeon.apd.recorder.LegacyImporter.extractRankingsFile(System.currentTimeMillis()),
+                        com.shatteredpixel.shatteredpixeldungeon.apd.recorder.ApdRecorder.currentRunId());
+                long before=com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomScorePresentation.earnedScore(rec.gameData,rec.score);
+                com.shatteredpixel.shatteredpixeldungeon.apd.recorder.SeedReuseScore.calculate(
+                    before, history.attempts, history.deepestFloor, Statistics.deepestFloor,
+                    history.kind==com.shatteredpixel.shatteredpixeldungeon.apd.recorder.SeedHistory.Kind.MATCHING_LOCAL_HISTORY)
+                    .store(rec.gameData);
+            }
+        }
 
 		rec.gameID = UUID.randomUUID().toString();
 
@@ -559,7 +577,10 @@ public enum Rankings {
 		public String date;
 		public String version;
 
-		public long earnedScore(){return com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomScorePresentation.earnedScore(gameData,score);}
+		public long earnedScore(){
+            long adjusted=com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomScorePresentation.earnedScore(gameData,score);
+            return com.shatteredpixel.shatteredpixeldungeon.apd.recorder.SeedReuseScore.earnedScore(gameData,adjusted);
+        }
 
 		public String desc(){
 			if (win){
