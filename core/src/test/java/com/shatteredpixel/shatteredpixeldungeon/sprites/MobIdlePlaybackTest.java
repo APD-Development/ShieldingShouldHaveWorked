@@ -67,15 +67,15 @@ public class MobIdlePlaybackTest {
         assertEquals("Idle character animation follows selected 4x speed",
                 0.08f, insideNormalSceneGroup(3, true), 0.000001f);
         assertEquals("Action animation must retain the selected 4x visual speed",
-                0.08f, insidePlaybackGroup(3, false), 0.000001f);
+                0.08f, insideNormalSceneGroup(3, false), 0.000001f);
     }
 
     @Test
     public void allOriginalSpeedsScaleMonsterIdleAndActionTiming() {
         float[] expected = {0.01f, 0.02f, 0.04f};
         for (int mode = 0; mode < 3; mode++) {
-            assertEquals(expected[mode], insidePlaybackGroup(mode, true), 0.000001f);
-            assertEquals(expected[mode], insidePlaybackGroup(mode, false), 0.000001f);
+            assertEquals(expected[mode], insideNormalSceneGroup(mode, true), 0.000001f);
+            assertEquals(expected[mode], insideNormalSceneGroup(mode, false), 0.000001f);
         }
     }
 }
