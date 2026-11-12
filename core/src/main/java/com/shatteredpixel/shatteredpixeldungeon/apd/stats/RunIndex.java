@@ -214,6 +214,9 @@ public final class RunIndex {
 		for (long i = 0; i < count; i++){
 			int len = src.readUnsignedInt();
 			RunIndexEntry e = RunIndexEntry.decode(src.readBytes(len));
+			// Duplicate identities in a valid-CRC derived index cannot be trusted: the
+			// later summary would silently replace the first and hide original history.
+			if (entries.containsKey(e.runId)) throw new FormatException("duplicate run index entry");
 			entries.put(e.runId, e);
 		}
 		// A checksum-valid index with uncounted bytes is still malformed derived data.

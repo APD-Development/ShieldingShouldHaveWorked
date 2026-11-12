@@ -56,6 +56,44 @@ public class RunIndexCountValidationTest {
         assertFalse("rebuilt clean index must parse normally", reloaded.wasRebuilt());
         assertNotNull(reloaded.get("preserved"));
     }
+
+    @Test public void checksumValidDuplicateRunEntriesRebuildFromOriginalLogs() throws Exception {
+        File root = tmp.newFolder("duplicate-index-entry");
+        StatsStore store = new StatsStore(root);
+        RunLogWriter writer = store.startRun("preserved", "test", 1);
+        writer.event(LogTestSupport.T_PLAIN).clock(3).unsigned(17).emit();
+        assertTrue(writer.close());
+        assertTrue(store.refreshIndex("preserved"));
+        byte[] original = Files.readAllBytes(store.logFile("preserved").toPath());
+        RunIndexEntry correct = store.index().get("preserved");
+        assertEquals(1, correct.eventCount);
+
+        // Both entries have a valid encoding and the entire index has a valid CRC.
+        // Without duplicate rejection the later zero-count summary silently wins.
+        RunIndexEntry falseSummary = new RunIndexEntry(correct.runId, correct.telemetryVersion,
+                correct.newerThanReader, correct.logFile, correct.createdAtMillis, correct.status,
+                0, correct.lastClock, correct.validBytes, correct.fileLength);
+        byte[] first = correct.encode();
+        byte[] second = falseSummary.encode();
+        ByteSink body = new ByteSink().writeBytes(RunIndex.MAGIC).writeByte(RunIndex.FORMAT)
+                .writeUnsigned(2);
+        body.writeUnsigned(first.length).writeBytes(first);
+        body.writeUnsigned(second.length).writeBytes(second);
+        body.writeInt32((int) LogFormat.crc(body.rawBuffer(), 0, body.size()));
+        File indexFile = new File(root, "index.apdi");
+        Files.write(indexFile.toPath(), body.toByteArray());
+
+        RunIndex loaded = RunIndex.load(indexFile, store.runsDir());
+        assertTrue("duplicate run IDs must rebuild from original logs", loaded.wasRebuilt());
+        assertEquals(1, loaded.size());
+        assertEquals(1, loaded.get("preserved").eventCount);
+        assertArrayEquals("the sealed original log must be unchanged", original,
+                Files.readAllBytes(store.logFile("preserved").toPath()));
+        RunIndex reloaded = RunIndex.load(indexFile, store.runsDir());
+        assertFalse("the clean rebuilt index remains compatible", reloaded.wasRebuilt());
+        assertEquals(1, reloaded.get("preserved").eventCount);
+    }
+
     @Test public void legitimateEmptyIndexRemainsValidWithoutRebuilding() throws Exception {
         File root=tmp.newFolder();File runs=new File(root,"runs");assertTrue(runs.mkdir());
         File index=new File(root,"index.apdi");new RunIndex(index,runs).save();
