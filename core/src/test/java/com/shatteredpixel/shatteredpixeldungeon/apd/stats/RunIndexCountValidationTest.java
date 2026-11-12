@@ -27,6 +27,35 @@ public class RunIndexCountValidationTest {
         assertNotNull(loaded.get("preserved"));
         assertArrayEquals(original,Files.readAllBytes(log.toPath()));
     }
+    @Test public void checksumValidUncountedTailRebuildsFromOriginalLogs() throws Exception {
+        File root = tmp.newFolder("checksum-valid-tail");
+        StatsStore store = new StatsStore(root);
+        RunLogWriter writer = store.startRun("preserved", "test", 1);
+        writer.event(LogTestSupport.T_PLAIN).clock(3).unsigned(1).emit();
+        writer.close();
+        assertTrue(store.refreshIndex("preserved"));
+        byte[] original = Files.readAllBytes(store.logFile("preserved").toPath());
+
+        // The index body claims zero entries while carrying extra data under a fresh, valid CRC.
+        // Previously this was accepted and hid the preserved run until an explicit rebuild.
+        ByteSink body = new ByteSink().writeBytes(RunIndex.MAGIC).writeByte(RunIndex.FORMAT);
+        body.writeUnsigned(0);
+        body.writeByte(0x5A);
+        body.writeInt32((int) LogFormat.crc(body.rawBuffer(), 0, body.size()));
+        File indexFile = new File(root, "index.apdi");
+        Files.write(indexFile.toPath(), body.toByteArray());
+
+        RunIndex loaded = RunIndex.load(indexFile, store.runsDir());
+        assertTrue("extra checksum-valid payload must rebuild from logs", loaded.wasRebuilt());
+        assertEquals(1, loaded.size());
+        assertNotNull(loaded.get("preserved"));
+        assertEquals(1, loaded.get("preserved").eventCount);
+        assertArrayEquals("original log is immutable evidence", original, Files.readAllBytes(store.logFile("preserved").toPath()));
+
+        RunIndex reloaded = RunIndex.load(indexFile, store.runsDir());
+        assertFalse("rebuilt clean index must parse normally", reloaded.wasRebuilt());
+        assertNotNull(reloaded.get("preserved"));
+    }
     @Test public void legitimateEmptyIndexRemainsValidWithoutRebuilding() throws Exception {
         File root=tmp.newFolder();File runs=new File(root,"runs");assertTrue(runs.mkdir());
         File index=new File(root,"index.apdi");new RunIndex(index,runs).save();
