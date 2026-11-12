@@ -60,15 +60,18 @@ public final class SearchControlContext {
     public static Action[] choices(Hero hero, Level level) {
         Action first = preferred(hero, level);
         boolean saved = hero != null && hero.wallSearch.exists();
+        boolean wallResume = saved && DoorSearchEligibility.supportsDoors(level);
         boolean movement = hero != null && hero.lastAction != null;
-        // SEARCH and CANCEL are always present; memory adds three options and a
-        // saved movement adds one. The preferred action is already among these.
+        // On floors where concealed doors cannot generate, ordinary Search and
+        // saved-position management remain available, but wall resume must not
+        // appear merely because a previous floor left a remembered session.
         // Allocate only the caller-owned result, not a list and its backing array.
-        Action[] options = new Action[2 + (saved ? 3 : 0) + (movement ? 1 : 0)];
+        Action[] options = new Action[2 + (saved ? 2 : 0) + (wallResume ? 1 : 0) + (movement ? 1 : 0)];
         int next = 0;
         options[next++] = first;
         for (Action action : CHOICE_ORDER) {
-            if ((action == Action.WALL_SEARCH || action == Action.SHOW_SAVED || action == Action.FORGET) && !saved) continue;
+            if (action == Action.WALL_SEARCH && !wallResume) continue;
+            if ((action == Action.SHOW_SAVED || action == Action.FORGET) && !saved) continue;
             if (action == Action.RESUME_MOVEMENT && !movement) continue;
             if (action != first) options[next++] = action;
         }
