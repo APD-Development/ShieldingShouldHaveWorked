@@ -1321,6 +1321,18 @@ public class GameScene extends PixelScene {
 		}
 	}
 
+	// Well-use particles share the 1x gas/well visual layer, rather than
+	// the accelerated general-effects emitter layer.
+	public static synchronized Emitter normalSpeedEmitter() {
+		if (scene != null) {
+			Emitter emitter = (Emitter)scene.gases.recycle( Emitter.class );
+			emitter.revive();
+			return emitter;
+		} else {
+			return null;
+		}
+	}
+
 	public static synchronized Emitter floorEmitter() {
 		if (scene != null) {
 			Emitter emitter = (Emitter)scene.floorEmitters.recycle( Emitter.class );

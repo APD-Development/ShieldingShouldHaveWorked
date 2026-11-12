@@ -4,6 +4,8 @@ import com.badlogic.gdx.backends.headless.HeadlessPreferences;
 import com.badlogic.gdx.files.FileHandle;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
+import com.watabou.noosa.particles.Emitter;
 import com.watabou.noosa.*;
 import com.watabou.noosa.tweeners.Tweener;
 import com.watabou.utils.GameSettings;
@@ -133,6 +135,25 @@ public class PlaybackSpeedTest {
    assertEquals("Other visuals still follow selected speed",.016f*
       new float[]{.5f,1f,2f,4f,8f,16f,32f,64f,100f,1000f}[mode],visual[0],.0001f);
    assertEquals("Global frame time must remain unchanged",.016f,Game.elapsed,0f);
+  }
+ }
+ @Test public void magicalWellActivationEmitterActuallyBelongsToNormalSpeedLayer() throws Exception {
+  Field sceneField=GameScene.class.getDeclaredField("scene");
+  Field gasField=GameScene.class.getDeclaredField("gases");
+  sceneField.setAccessible(true);gasField.setAccessible(true);
+  Object oldScene=sceneField.get(null);
+  GameScene fixture=new GameScene();
+  Group normal=PlaybackGroup.normalSpeedGroup();
+  gasField.set(fixture,normal);
+  try{
+   sceneField.set(null,fixture);
+   PlaybackGroup.speed(9);Game.elapsed=.016f;
+   Emitter effect=GameScene.normalSpeedEmitter();
+   assertSame("Well-use emission must join the 1x gas/well layer",normal,effect.parent);
+   assertEquals("The layer itself must not accelerate visual time",Group.class,normal.getClass());
+   assertEquals(.016f,Game.elapsed,0f);
+  } finally {
+   sceneField.set(null,oldScene);
   }
  }
  @Test public void invalidChoicesUseNormalSpeed(){
