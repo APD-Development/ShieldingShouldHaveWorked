@@ -20,3 +20,8 @@ Independently verified current published fallback is [APD460](https://github.com
 2. If green, inspect current remote development head and PR diff for overlap and use an expected-head/no-force merge. Preserve the original five captures and all earlier native checks.
 3. Native emulator execution of the new sixth assertion remains required to call **that state** device-verified; full natural boss gameplay and phone installation remain unverified.
 4. Do not build or publish APD461 by bypassing its original signer/save/history/native/release gates; do not duplicate animation visual fixes or current Search/fade packages.
+
+## Verified source/compile completion, 1:56 PM EST
+[Actions run 43284373215](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/43284373215) completed **success** at 1:56:04 PM EST (2026-11-12T18:56:04Z) on exact fixture/workflow source `7a9b7dcc3d5b25c00cc467a2594a166744bb0dc4`. Read actual successful job log `131413729236`: the static five-screenshot list/new-case wiring guard passed, full core JUnit passed **3,302 tests across 472 suites, zero failures, errors or skips**, desktop classes, core, Android debug/release and Android instrumentation Java compilation passed; Gradle reported `BUILD SUCCESSFUL in 2m 47s`. Results artifact was uploaded successfully. All later documentation commits are handoff-only, not part of tested application/instrumentation source; verify any later code changes with a fresh gate.
+
+This is **source and instrumentation Java compilation evidence only**. The new sixth state has NOT run on Android. It is not a published or original-signed APK and no screenshots beyond the original five are claimed. The original APD460 fallback and blocked APD461 publication are unchanged.
