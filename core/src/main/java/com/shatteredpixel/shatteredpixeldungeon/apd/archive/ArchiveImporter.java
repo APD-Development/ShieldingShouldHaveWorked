@@ -323,12 +323,23 @@ public final class ArchiveImporter {
 	//Puts the verified files in place. A name that is taken is never replaced. If something fails half way, everything this import
 	//put in place is taken out again.
 	private static void commit( File root, List<Staged> staged, Report report ) throws IOException {
+		// Resolve the supplied history root once. An existing runs/legacy directory
+		// or log file can be a symbolic link even when the manifest path itself
+		// has no traversal components.
+		File canonicalRoot = root.getCanonicalFile();
 		List<File> placed = new ArrayList<>();
 		int imported = 0, already = 0, kept = 0, redacted = 0, redactedKept = 0, newer = 0;
 		List<String> notes = new ArrayList<>();
 		try {
 			for (Staged st : staged){
 				File target = new File(root, st.entry.path);
+				// Never follow a pre-existing symlink to another folder or file.
+				// ArchiveManifest.isValidPath has already restricted this to a
+				// direct runs/ or legacy/ child with a plain log ID.
+				File expectedTarget = new File(canonicalRoot, st.entry.path).getAbsoluteFile();
+				if (!expectedTarget.equals(target.getCanonicalFile())){
+					throw new IOException("history archive target resolves outside its designated path: " + st.entry.path);
+				}
 				File folder = target.getParentFile();
 				if (!folder.isDirectory() && !folder.mkdirs()) throw new IOException("cannot create " + folder);
 				//claim the name atomically: an existing log is never replaced
