@@ -23,7 +23,9 @@ package com.shatteredpixel.shatteredpixeldungeon.apd.archive;
 
 import java.security.MessageDigest;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 //The first entry of an APD history archive: what the archive holds and a checksum of every file, so an import can check
 //everything before it keeps anything. A plain text format (tab separated lines, UTF-8), versioned, that ignores lines it does not know:
@@ -134,6 +136,7 @@ public final class ArchiveManifest {
 		if (!sha256Hex(body.getBytes(utf8())).equalsIgnoreCase(claimed)) throw new IllegalArgumentException("the manifest does not match its checksum");
 		ArchiveManifest m = new ArchiveManifest();
 		boolean header = false, counted = false;
+		Set<String> filePaths = new HashSet<>();
 		long countFiles = -1, countBytes = -1;
 		for (String line : body.split("\n")){
 			if (line.isEmpty()) continue;
@@ -162,6 +165,9 @@ public final class ArchiveManifest {
 						e.events = Long.parseLong(p[9]);
 						e.status = p.length > 10 ? p[10] : "";
 						if (e.size < 0) throw new IllegalArgumentException("a file has a negative size");
+						// Every declared file must have exactly one identity: the importer cannot
+						// verify a second manifest record for the same ZIP entry.
+						if (!filePaths.add(e.path)) throw new IllegalArgumentException("the manifest lists a file more than once: " + e.path);
 						m.files.add(e);
 						if (m.files.size() > MAX_FILES) throw new IllegalArgumentException("the manifest lists too many files");
 						break;
