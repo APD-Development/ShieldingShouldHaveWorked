@@ -262,6 +262,23 @@ public class BossPylonTargetingDeviceTest {
             assertEquals(-1, QuickSlotButton.autoAim(pylon));
         }
 
+        // This was not covered by the original five native captures: an active
+        // pylon must not steal selection from DM-300 after its shield ends.
+        // No extra capture is emitted, retaining the original native evidence
+        // inventory and all five published screenshot names.
+        void vulnerableBoss() throws Exception {
+            for (int x = -5; x <= 5; x++) {
+                Level.set(anchor - 2 * width + x, Terrain.EMPTY);
+            }
+            movePylon(anchor - width);
+            boss.supercharged = false;
+            GameScene.updateMap();
+            assertFalse(boss.isSupercharged());
+            assertEquals(Char.Alignment.ENEMY, pylon.alignment);
+            assertTrue(hero.canAttack(pylon));
+            refresh("vulnerable-boss-retains-target", boss, boss, boss, true, true);
+        }
+
         void assertTargets(boolean rendered) throws Exception {
             assertHeldHeroTurn();
             assertEquals(bossHp, boss.HP);
@@ -392,6 +409,8 @@ public class BossPylonTargetingDeviceTest {
                 capture(probe.get(), "pylon-native-ranged-pylon-melee-boss.png");
                 render(() -> probe.get().hidden());
                 capture(probe.get(), "pylon-native-hidden-excluded.png");
+                // Assertion-only sixth state, preserving the five existing PNG receipts.
+                render(() -> probe.get().vulnerableBoss());
             } finally {
                 render(() -> {
                     try { if (probe.get() != null) probe.get().close(); }
