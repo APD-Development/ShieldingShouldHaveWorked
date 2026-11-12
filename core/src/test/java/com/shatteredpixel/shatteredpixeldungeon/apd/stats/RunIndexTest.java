@@ -302,6 +302,9 @@ public class RunIndexTest {
 		writer.close(false);
 		byte[] original = LogTestSupport.bytes(store.logFile("source"));
 		assertTrue(original.length > 2);
+		// Close(false) leaves a healthy open log. Damage its tail explicitly, as in
+		// the established recoverAll damaged-log control, before testing recovery.
+		LogTestSupport.write(store.logFile("source"), Arrays.copyOf(original, original.length - 2));
 
 		// A valid, damaged run log outside runs/ must remain untouched even if linked
 		// into runs/ with a plausible name. The old isFile() check followed this link.
