@@ -26,7 +26,7 @@ jobs:
           paths=subprocess.check_output(['git','diff','--name-only',base,'HEAD'],text=True).splitlines()
           expected='android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/WallGeometryDeviceTest.java'
           assert expected in paths,paths
-          assert all(p.startswith(('android/src/androidTest/','.github/workflows/')) for p in paths),paths
+          assert all(p.startswith(('android/src/androidTest/','.github/workflows/')) or p=='tools/apd456_native_postcheck.py' for p in paths),paths
           print('Game production sources are frozen. Changed files:',paths)
           PY
       - name: Get original signed APKs from the completed public release
