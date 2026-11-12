@@ -203,6 +203,7 @@ public class GameScene extends PixelScene {
 	private Group gases;
 	private Group spells;
 	private Group statuses;
+	private Group combatStatuses;
 	private Group emoicons;
 	private Group overFogEffects;
 	private Group checkedCells;
@@ -310,7 +311,7 @@ public class GameScene extends PixelScene {
 		floorEmitters = com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup.normalSpeedGroup();
 		add(floorEmitters);
 
-		heaps = com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup.normalSpeedGroup();
+		heaps = com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup.personalSpeedGroup();
 		add( heaps );
 		
 		for ( Heap heap : Dungeon.level.heaps.valueList() ) {
@@ -319,7 +320,7 @@ public class GameScene extends PixelScene {
 
 		emitters = com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup.normalSpeedGroup();
 		effects = com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup.normalSpeedGroup();
-		healthIndicators = com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup.normalSpeedGroup();
+		healthIndicators = com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup.personalSpeedGroup();
 		emoicons = com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup.normalSpeedGroup();
 		overFogEffects = com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup.normalSpeedGroup();
 		
@@ -368,15 +369,15 @@ public class GameScene extends PixelScene {
 		fog = new FogOfWar( Dungeon.level.width(), Dungeon.level.height() );
 		add( fog );
 
-		spells = com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup.normalSpeedGroup();
+		spells = com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup.personalSpeedGroup();
 		add( spells );
 
 		add(overFogEffects);
 
-		checkedCells = com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup.normalSpeedGroup();
+		checkedCells = com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup.personalSpeedGroup();
 		add(checkedCells);
 
-		targetedCells = com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup.normalSpeedGroup();
+		targetedCells = com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup.personalSpeedGroup();
 		add(targetedCells);
 		for (TargetedCell cell : TargetedCell.cells.valueList()){
 			cell.reset(cell.pos, cell.time);
@@ -398,6 +399,11 @@ public class GameScene extends PixelScene {
 		
 		statuses = com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup.normalSpeedGroup();
 		add( statuses );
+		// Personal-only numeric combat text, not ordinary floating status messages.
+		combatStatuses = com.shatteredpixel.shatteredpixeldungeon.apd.ApdFeatures.testBuild()
+				? com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup.personalSpeedGroup()
+				: statuses;
+		if (combatStatuses != statuses) add(combatStatuses);
 		
 		add( healthIndicators );
 		//always appears ontop of other health indicators
@@ -1345,6 +1351,11 @@ public class GameScene extends PixelScene {
 	
 	public static FloatingText status() {
 		return scene != null ? (FloatingText)scene.statuses.recycle( FloatingText.class ) : null;
+	}
+
+	/** Numeric combat feedback uses the selected personal playback speed only. */
+	public static FloatingText combatStatus() {
+		return scene != null ? (FloatingText)scene.combatStatuses.recycle( FloatingText.class ) : null;
 	}
 	
 	public static void pickUp( Item item, int pos ) {

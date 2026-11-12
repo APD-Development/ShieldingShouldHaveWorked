@@ -258,7 +258,7 @@ public class FloatingText extends RenderedTextBlock {
 		Game.runOnRenderThread(new Callback() {
 			@Override
 			public void call() {
-				FloatingText txt = GameScene.status();
+				FloatingText txt = isNumericFeedback(text) ? GameScene.combatStatus() : GameScene.status();
 				if (txt != null){
 					txt.reset(x, y, text, color, iconIdx, left);
 					if (key != -1) push(txt, key);
@@ -267,6 +267,19 @@ public class FloatingText extends RenderedTextBlock {
 		});
 	}
 	
+	/** Only numeric combat/healing values accelerate; ordinary words remain 1x.
+	 * This predicate is presentation-only, never an interpretation of damage. */
+	static boolean isNumericFeedback(String message) {
+		if (message == null || message.length() == 0) return false;
+		boolean digit = false;
+		for (int i = 0; i < message.length(); i++) {
+			char c = message.charAt(i);
+			if (c >= '0' && c <= '9') digit = true;
+			else if (c != '+' && c != '-' && c != '.' && c != ',') return false;
+		}
+		return digit;
+	}
+
 	private static void push( FloatingText txt, int key ) {
 		
 		synchronized (stacks) {

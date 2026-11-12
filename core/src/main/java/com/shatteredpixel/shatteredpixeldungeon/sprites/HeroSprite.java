@@ -161,6 +161,18 @@ public class HeroSprite extends CharSprite {
 		super.update();
 	}
 	
+	@Override
+	protected float animationFrameElapsed() {
+		// Personal preference: standing, death, and flight/jump pose run at 1x.
+		// Hero movement/attacks, wand casting, reading and item use still scale.
+		// Never alter the published Alpha-Testers edition's behavior here.
+		if (com.shatteredpixel.shatteredpixeldungeon.apd.ApdFeatures.testBuild()
+				&& (curAnim == idle || curAnim == die || curAnim == fly)) {
+			return Game.elapsed;
+		}
+		return super.animationFrameElapsed();
+	}
+
 	public void sprint( float speed ) {
 		run.delay = 1f / speed / RUN_FRAMERATE;
 	}
