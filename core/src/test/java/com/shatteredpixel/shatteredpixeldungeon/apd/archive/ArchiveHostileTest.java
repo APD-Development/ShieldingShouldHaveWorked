@@ -268,6 +268,26 @@ public class ArchiveHostileTest {
 	}
 
 	@Test
+	public void checksumValidManifestSizeOverflowCannotTouchHistory() throws Exception {
+		ArchiveManifest m = new ArchiveManifest();
+		ArchiveManifest.Entry first = new ArchiveManifest.Entry();
+		first.path = "runs/one.apdlog";
+		first.size = Long.MAX_VALUE;
+		m.files.add(first);
+		ArchiveManifest.Entry second = new ArchiveManifest.Entry();
+		second.path = "runs/two.apdlog";
+		second.size = 1;
+		m.files.add(second);
+		byte[] archive = zip(names(ArchiveManifest.ENTRY_NAME),
+				Arrays.asList(m.encode().getBytes(ArchiveManifest.utf8())));
+		ArchiveImporter.Report result = run(archive);
+		assertFalse(result.summary(), result.ok);
+		assertEquals(0, result.imported);
+		assertTrue(result.summary(), result.problem.contains("file sizes overflow"));
+		assertNothingWritten();
+	}
+
+	@Test
 	public void aListedFileThatNeverArrivedIsReportedAndNothingIsImported() throws Exception {
 		byte[] a = good("a", "run-a"), b = good("b", "run-b");
 		Map<String, byte[]> files = new LinkedHashMap<>();

@@ -1,5 +1,10 @@
 # AGENTS.md: ADHD Pixel Dungeon (APD), start here
 
+## Verified archive manifest file-size overflow refusal (November 12, 2026)
+
+Read `docs/APD-MANIFEST-SIZE-OVERFLOW-CONTINUATION-2026-11-12.md` and inspect live GitHub status before repeating. Isolated source-only [Actions run 43275984687](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/43275984687), exact tested commit `3e90e1a8`, passed **3,300 core tests / 472 suites**, zero failures/errors/skips, desktop and Android Java compilation, and two regressions. `ArchiveManifest.parse` now rejects a correctly checksummed manifest whose unsigned-looking file-size sum overflows signed `long`; exact non-overflowing long boundary still parses, and hostile imports leave history untouched. This is **not an APK**. Original signing, saves, scoring, valid archives and gameplay remain unchanged. Do not duplicate this completed source fix or bypass APD461 native/publisher gates. Preserve APD460's verified release.
+
+
 ## Verified archive missing-stream refusal (November 12, 2026)
 
 Read `docs/APD-ARCHIVE-MISSING-STREAM-CONTINUATION-2026-11-12.md` and inspect live GitHub state before repeating this work. Source-only isolated CI [run 43272737266](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/43272737266) passed **3,298 core tests across 472 suites, zero failures/errors/skips**, desktop and Android Java compilation, and a regression proving that missing raw/ZIP archive streams return a refusal Report without writing any history. No save, scoring, balance, signing or APK changes were made. The verified application-code commit is `f3ebd6ce`; the exact successful CI head is `2f70c542`. Preserve APD460 as the most recently independently verified published pair, and preserve the separate unaccepted APD461 draft PR #6 and its native acceptance blocker. Check live branch head, releases, PRs and work claims before new work.
