@@ -1,3 +1,4 @@
+# Exact rerun after fixing only the synthetic local damaged-log fixture; failed first CI retained.
 name: APD destructive recovery symlink guard
 on:
   push:
