@@ -62,6 +62,13 @@ public final class SeedHistory {
      * Call on a worker: no cache, index, ranking, preference or save file is written.
      */
     public static Summary lookup(File root, String seedText, LegacyImporter.Extract rankings) {
+        return lookup(root, seedText, rankings, null);
+    }
+
+    /** The active run may already exist as an unfinished log when its final score is saved.
+     * Exclude that exact run ID so only earlier attempts affect its reuse score. */
+    public static Summary lookup(File root, String seedText, LegacyImporter.Extract rankings,
+                                 String excludeRunId) {
         if (seedText == null || seedText.isEmpty()) {
             return new Summary(Kind.GENERATED_LOCALLY, -1, 0, 0, -1, 0, false);
         }
@@ -75,6 +82,7 @@ public final class SeedHistory {
             scan.incomplete |= rankings.unreadable > 0;
             for (LegacyEvents.Record record : rankings.fresh) scan.legacy(record);
         }
+        if (excludeRunId != null && realId(excludeRunId)) scan.runs.remove(excludeRunId);
         return scan.finish();
     }
 
