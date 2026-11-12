@@ -48,6 +48,14 @@ public class CellEmitter {
 		return emitter;
 	}
 	
+	/** One-off magical-well effects use wall-frame time at every playback speed. */
+	public static Emitter normalSpeed( int cell ) {
+		PointF p = DungeonTilemap.tileToWorld( cell );
+		Emitter emitter = GameScene.normalSpeedEmitter();
+		emitter.pos( p.x, p.y, DungeonTilemap.SIZE, DungeonTilemap.SIZE );
+		return emitter;
+	}
+
 	public static Emitter center( int cell ) {
 		
 		PointF p = DungeonTilemap.tileToWorld( cell );
