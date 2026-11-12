@@ -155,5 +155,71 @@ public class SearchedWallsTest {
         Random.pushGenerator(8673);long expected=Random.Long();Random.popGenerator();Random.pushGenerator(8673);
         try{SearchedWallMarkers.couldBeDoor(level,24);SearchedWallMarkers.visual(level,24);assertEquals(expected,Random.Long());}finally{Random.popGenerator();}
     }
+
+    @Test public void missingOrTruncatedObservationCannotCreateWallMarks() {
+        int[] originalMap = level.map;
+        boolean[] originalFov = level.heroFOV;
+        level.heroFOV = null;
+        assertFalse(level.searchedWalls.mark(level, 16));
+        level.heroFOV = new boolean[16];
+        assertFalse(level.searchedWalls.mark(level, 16));
+        level.heroFOV = originalFov;
+        level.map = new int[16];
+        assertFalse(level.searchedWalls.mark(level, 16));
+        level.map = originalMap;
+        assertTrue(level.searchedWalls.mark(level, 16));
+    }
+
+    @Test public void existingWallMarksRemainReadableFromAvailableFogMemory() {
+        assertTrue(level.searchedWalls.mark(level, 16));
+        boolean[] originalFov = level.heroFOV;
+        boolean[] originalVisited = level.visited;
+        boolean[] originalMapped = level.mapped;
+        level.heroFOV = null;
+        level.visited[16] = true;
+        assertTrue(level.searchedWalls.shows(level, 16));
+        level.visited = null;
+        level.mapped[16] = true;
+        assertTrue(level.searchedWalls.shows(level, 16));
+        level.mapped = null;
+        assertFalse(level.searchedWalls.shows(level, 16));
+        level.heroFOV = originalFov;
+        level.visited = originalVisited;
+        level.mapped = originalMapped;
+        assertTrue(level.searchedWalls.shows(level, 16));
+    }
+
+    @Test public void incompleteDoorCheckInputsClearUnprovenNegativeResult() {
+        level.map[17] = Terrain.EMPTY;
+        level.map[31] = Terrain.EMPTY;
+        assertTrue(DoorSearchEligibility.candidate(level, 24));
+        level.searchedWalls.recordCompletedDoorCheck(level, 24, true);
+        assertTrue(level.searchedWalls.confirmed(level, 24));
+        boolean[] originalSecret = level.secret;
+        level.secret = null;
+        level.searchedWalls.recordCompletedDoorCheck(level, 24, true);
+        assertFalse(level.searchedWalls.confirmed(level, 24));
+        level.secret = originalSecret;
+        level.searchedWalls.recordCompletedDoorCheck(level, 24, true);
+        assertTrue(level.searchedWalls.confirmed(level, 24));
+    }
+
+    @Test public void incompleteNeighbourObservationsCannotCertifyDoorGeometry() {
+        level.map[17] = Terrain.EMPTY;
+        level.map[31] = Terrain.EMPTY;
+        level.searchedWalls.recordCompletedDoorCheck(level, 24, true);
+        assertTrue(level.searchedWalls.confirmed(level, 24));
+        boolean[] originalVisited = level.visited;
+        level.visited = new boolean[24];
+        assertFalse(level.searchedWalls.confirmed(level, 24));
+        level.visited = null;
+        assertFalse(level.searchedWalls.confirmed(level, 24));
+        level.visited = originalVisited;
+        int[] originalMap = level.map;
+        level.map = new int[24];
+        assertFalse(level.searchedWalls.confirmed(level, 24));
+        level.map = originalMap;
+        assertTrue(level.searchedWalls.confirmed(level, 24));
+    }
     private SearchHero hero()throws Exception{Field u=Class.forName("sun.misc.Unsafe").getDeclaredField("theUnsafe");u.setAccessible(true);Object unsafe=u.get(null);SearchHero h=new SearchHero();h.heroClass=HeroClass.WARRIOR;h.pos=24;h.fieldOfView=level.heroFOV;h.sprite=(NoopSprite)unsafe.getClass().getMethod("allocateInstance",Class.class).invoke(unsafe,NoopSprite.class);Dungeon.hero=h;level.locked=true;return h;}
 }
