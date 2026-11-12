@@ -1,0 +1,55 @@
+name: Verify personal APD playback preferences source
+on:
+  push:
+    branches: [chatgpt/apd-personal-playback-preferences-20261112]
+    paths: [.github/workflows/apd-personal-playback-ci.yml]
+permissions: {contents: read}
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with: {distribution: temurin, java-version: '21'}
+      - uses: gradle/actions/setup-gradle@v4
+      - name: Verify developer-only speed routing and unchanged alpha source
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          scene=Path('core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/GameScene.java').read_text()
+          hero=Path('core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/sprites/HeroSprite.java').read_text()
+          char=Path('core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/sprites/CharSprite.java').read_text()
+          group=Path('core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/PlaybackGroup.java').read_text()
+          assert 'ApdFeatures.testBuild() ? new PlaybackGroup() : normalSpeedGroup()' in group
+          for label in ('heaps','healthIndicators','checkedCells','targetedCells'):
+              assert label+' = com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup.personalSpeedGroup();' in scene
+          for label in ('terrain','gases','statuses','emoicons'):
+              assert label+' = com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup.normalSpeedGroup();' in scene
+          assert 'curAnim == idle || curAnim == die || curAnim == fly' in hero
+          assert 'Game.elapsed = animationFrameElapsed();' in char
+          print('Personal state-specific hero and UI layers; original Alpha fallback and ambient 1x preserved')
+          PY
+      - name: Complete core tests and Android desktop compilation
+        run: |
+          "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "platforms;android-36"
+          ./gradlew :core:test :desktop:classes :android:compileDebugJavaWithJavac :android:compileReleaseJavaWithJavac :android:compileDebugAndroidTestJavaWithJavac
+      - name: Require all passing core tests including personal routing
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import xml.etree.ElementTree as ET
+          reports=[ET.parse(p).getroot() for p in Path('core/build/test-results/test').glob('TEST-*.xml')]
+          assert reports,'No JUnit results'
+          counts={k:sum(int(x.get(k,0)) for x in reports) for k in ('tests','failures','errors','skipped')}
+          assert counts['tests']>=3310 and all(counts[k]==0 for k in ('failures','errors','skipped')),counts
+          cases={c.get('name') for r in reports for c in r.findall('testcase')}
+          assert 'personalPlaybackGroupsAreAcceleratedOnlyInDeveloperEdition' in cases
+          print('Core tests',counts,'suites',len(reports))
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: personal-playback-core-xml
+          path: core/build/test-results/test/
+          if-no-files-found: warn
