@@ -234,6 +234,61 @@ public class SearchControlContextTest {
         assertEquals(0f, hero.cooldown(), 0f);
     }
 
+    @Test public void singleResultArrayPreservesEveryChooserStateWithoutGapsOrAliases() {
+        boolean previousAdaptive = SPDSettings.adaptiveSearchChoice();
+        try {
+            SPDSettings.adaptiveSearchChoice(true);
+            Action[][] expected = new Action[6][];
+            Action[][] observed = new Action[6][];
+
+            expected[0] = new Action[]{Action.SEARCH, Action.WALL_SEARCH, Action.SHOW_SAVED,
+                    Action.FORGET, Action.CANCEL};
+            observed[0] = SearchControlContext.choices(hero, level);
+
+            hero.lastAction = new HeroAction.Move(hero.pos + 1);
+            expected[1] = new Action[]{Action.RESUME_MOVEMENT, Action.SEARCH, Action.WALL_SEARCH,
+                    Action.SHOW_SAVED, Action.FORGET, Action.CANCEL};
+            observed[1] = SearchControlContext.choices(hero, level);
+
+            candidate(1, 0);
+            assertEquals(Action.WALL_SEARCH, SearchControlContext.preferred(hero, level));
+            expected[2] = new Action[]{Action.WALL_SEARCH, Action.SEARCH, Action.SHOW_SAVED,
+                    Action.RESUME_MOVEMENT, Action.FORGET, Action.CANCEL};
+            observed[2] = SearchControlContext.choices(hero, level);
+
+            SPDSettings.adaptiveSearchChoice(false);
+            expected[3] = expected[1];
+            observed[3] = SearchControlContext.choices(hero, level);
+
+            hero.wallSearch.clear();
+            expected[4] = new Action[]{Action.RESUME_MOVEMENT, Action.SEARCH, Action.CANCEL};
+            observed[4] = SearchControlContext.choices(hero, level);
+
+            hero.lastAction = null;
+            expected[5] = new Action[]{Action.SEARCH, Action.CANCEL};
+            observed[5] = SearchControlContext.choices(hero, level);
+
+            for (int i = 0; i < expected.length; i++) {
+                assertEquals("exact result length for chooser state " + i,
+                        expected[i].length, observed[i].length);
+                assertArrayEquals("stable ordering for chooser state " + i, expected[i], observed[i]);
+                assertEquals("no duplicates or unfilled slots in chooser state " + i,
+                        observed[i].length, new HashSet<>(Arrays.asList(observed[i])).size());
+                for (Action action : observed[i]) assertNotNull(action);
+            }
+            assertArrayEquals(new Action[]{Action.SEARCH, Action.CANCEL},
+                    SearchControlContext.choices(null, level));
+            observed[0][0] = Action.CANCEL;
+            assertArrayEquals("a caller cannot mutate future chooser options",
+                    expected[5], SearchControlContext.choices(hero, level));
+            assertNull(hero.curAction);
+            assertEquals(0, hero.nextCalls);
+            assertEquals(0f, hero.cooldown(), 0f);
+        } finally {
+            SPDSettings.adaptiveSearchChoice(previousAdaptive);
+        }
+    }
+
     @Test public void onlyUnconfirmedObservedCandidatePrioritizesWallSearch() {
         int wall = candidate(1, 0);
         String saved = memory();

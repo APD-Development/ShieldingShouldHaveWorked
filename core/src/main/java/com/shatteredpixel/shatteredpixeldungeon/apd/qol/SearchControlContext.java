@@ -26,7 +26,6 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.Room;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.CrystalChoiceRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.CrystalVaultRoom;
 
-import java.util.ArrayList;
 
 /** Chooser presentation only. Reading the context never starts or changes an action. */
 public final class SearchControlContext {
@@ -49,15 +48,21 @@ public final class SearchControlContext {
     }
 
     public static Action[] choices(Hero hero, Level level) {
-        ArrayList<Action> choices = new ArrayList<>();
-        choices.add(preferred(hero, level));
+        Action first = preferred(hero, level);
         boolean saved = hero != null && hero.wallSearch.exists();
+        boolean movement = hero != null && hero.lastAction != null;
+        // SEARCH and CANCEL are always present; memory adds three options and a
+        // saved movement adds one. The preferred action is already among these.
+        // Allocate only the caller-owned result, not a list and its backing array.
+        Action[] options = new Action[2 + (saved ? 3 : 0) + (movement ? 1 : 0)];
+        int next = 0;
+        options[next++] = first;
         for (Action action : CHOICE_ORDER) {
             if ((action == Action.WALL_SEARCH || action == Action.SHOW_SAVED || action == Action.FORGET) && !saved) continue;
-            if (action == Action.RESUME_MOVEMENT && (hero == null || hero.lastAction == null)) continue;
-            if (!choices.contains(action)) choices.add(action);
+            if (action == Action.RESUME_MOVEMENT && !movement) continue;
+            if (action != first) options[next++] = action;
         }
-        return choices.toArray(new Action[0]);
+        return options;
     }
 
     /** A known, open part of a generated room is not a wall-search position.
