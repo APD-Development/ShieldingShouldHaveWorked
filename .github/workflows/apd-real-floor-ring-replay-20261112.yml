@@ -2,7 +2,7 @@ name: Verify APD six-new-run real-floor ring identity
 on:
   push:
     branches: [chatgpt/apd-real-floor-ring-replay-20261112-1415]
-    paths: [.github/workflows/apd-real-floor-ring-replay-20261112.yml]
+    paths: [.github/workflows/apd-real-floor-ring-replay-20261112.yml, core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/loot/SeededFloorRingReplayTest.java]
 permissions: {contents: read}
 jobs:
   verify:
@@ -22,6 +22,7 @@ jobs:
           assert 'LevelGenerationHarness.Context.RETURNING, 8);' in src
           assert 'item instanceof Ring' in src
           assert 'heap.pos' in src and 'item.getClass().getName()' in src
+          assert 'HeadlessTestSupport.start();' in src
           assert 'replay < 6' in src
           assert 'Collections.sort(found);' in src
           print('Real Level-generation six-replay seeded ground-ring test present')
