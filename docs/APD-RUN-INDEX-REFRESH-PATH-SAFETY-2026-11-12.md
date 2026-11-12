@@ -29,3 +29,9 @@ No changes to valid run IDs, gameplay, scoring, RNG, log/index encoding, stored 
 ## Safe continuation
 
 The isolated change is source-verified. Before integrating, freshly recheck both the authoritative branch head and PR head, inspect newly merged competing work, and use a non-force expected-head guarded update. If the base changed, reconcile without overwriting another session. After integration, record its exact merge/ref result here or in a follow-up receipt and retain the CI evidence. No recurring work is implied between executions.
+
+## Final guarded integration receipt, 3:27 PM EST
+
+Freshly rechecked authoritative head `0ca26dd72b7b8151847ad02c3557e4ebe83d945c`, exact successful source workflow head `f2ba3a058e7a2d47173105c157217220a3e1c3e3`, isolated feature head `c6b78fd9adcf8a696eedc9c98c3e8e9802ac3aa6` and the complete five-path diff. The later two feature commits only add this continuation and index it in `AGENTS.md`; no application/test/workflow code changed after the successful source gate.
+
+Created two-parent [merge commit `1b388645`](https://github.com/APD-Development/ShieldingShouldHaveWorked/commit/1b388645f51dcd90f3fdd7a752f86632d689ed12) and advanced authoritative `codex/apd-phone-fixes-2026-10-09` **without force**, with `expected_sha=0ca26dd72b7b8151847ad02c3557e4ebe83d945c`; GitHub reported success. Re-read remote head and both changed production/test files; the run-ID guard and this record were present. [PR #37](https://github.com/APD-Development/ShieldingShouldHaveWorked/pull/37) was confirmed **closed and merged** with the exact merge SHA. All other concurrent work and APKs remained intact. The next execution must read the *live* branch again; neither this source gate nor APD462's separate release includes native acceptance for this new index change.
