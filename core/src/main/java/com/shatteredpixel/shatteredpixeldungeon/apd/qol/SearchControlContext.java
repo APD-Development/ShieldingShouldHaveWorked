@@ -68,8 +68,12 @@ public final class SearchControlContext {
         int width = level.width(), x = hero.pos % width, y = hero.pos / width;
         if (x < room.left + 2 || x > room.right - 2
                 || y < room.top + 2 || y > room.bottom - 2) return false;
-        for (int neighbour : new int[]{hero.pos-width, hero.pos+width,
-                hero.pos-1, hero.pos+1}) {
+        // No temporary array in this frequently queried UI and Search path.
+        // Keep the same north, south, west, east order and visibility checks.
+        for (int direction=0; direction<4; direction++) {
+            int neighbour=direction==0 ? hero.pos-width
+                    : direction==1 ? hero.pos+width
+                    : direction==2 ? hero.pos-1 : hero.pos+1;
             if (neighbour >= 0 && neighbour < level.length()
                     && level.heroFOV[neighbour]
                     && DoorSearchEligibility.candidate(level, neighbour)) return false;
