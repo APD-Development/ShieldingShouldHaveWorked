@@ -6,10 +6,16 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.traps.Trap;
 /** Permission belongs to one exact voluntary step, trap, level and action; never serialized. */
 public final class TrapStepPermit {
     private Level level; private Trap trap; private HeroAction action; private int from,to;
-    public void allow(Level level,Trap trap,HeroAction action,int from,int to){this.level=level;this.trap=trap;this.action=action;this.from=from;this.to=to;}
+    public void allow(Level level,Trap trap,HeroAction action,int from,int to){
+        // An incomplete confirmation must revoke any older grant, never authorize null identities.
+        clear();
+        if (level==null || trap==null || action==null) return;
+        this.level=level;this.trap=trap;this.action=action;this.from=from;this.to=to;
+    }
     public void clear(){level=null;trap=null;action=null;}
     public boolean consume(Level level,Trap trap,HeroAction action,int from,int to){
-        boolean allowed=this.level==level && this.trap==trap && this.action==action && this.from==from && this.to==to && this.action!=null;
+        boolean allowed=this.level!=null && this.trap!=null && this.action!=null
+                && this.level==level && this.trap==trap && this.action==action && this.from==from && this.to==to;
         clear();return allowed;
     }
     public static boolean needsWarning(boolean enabled,Level level,Hero hero,int step){
