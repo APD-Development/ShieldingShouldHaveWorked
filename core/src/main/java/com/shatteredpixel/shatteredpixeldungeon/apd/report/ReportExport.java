@@ -84,7 +84,7 @@ public final class ReportExport {
 								target.write(bytes);
 								target.flush();
 								message = "Saved " + f.label.split(" \\(")[0] + " report to " + displayName + " (" + bytes.length + " bytes).";
-							} catch (IOException e){
+							} catch (IOException | RuntimeException e){
 								message = "The report could not be saved: " + e;
 							}
 							done.finished(message);
