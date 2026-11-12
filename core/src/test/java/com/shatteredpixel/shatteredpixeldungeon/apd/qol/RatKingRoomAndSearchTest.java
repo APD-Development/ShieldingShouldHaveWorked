@@ -108,6 +108,49 @@ public class RatKingRoomAndSearchTest {
     @Test public void unpriceableEffectsDoNotProduceAFalselyCheapQuote(){enable();Buff.affect(hero,Cripple.class,10f);assertTrue(RatKingQuickSearch.start(hero));assertNull(hero.ratSearch);assertEquals(0,hero.cooldown(),0.001f);}
     @Test public void paymentAndPreferenceAreNotCustomDungeonRules(){enable();Bundle before=new Bundle();Dungeon.apdStoreCustomRules(before);RatKingQuickSearch.start(hero);Bundle after=new Bundle();Dungeon.apdStoreCustomRules(after);assertEquals(before.toString(),after.toString());assertEquals(18,com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomDungeonRules.Slider.values().length);}
     @Test public void partialPaymentRoundTripsWithoutAnActiveAction(){enable();RatKingQuickSearch.Payment p=new RatKingQuickSearch.Payment(door(),5,hero.pos,14,14);p.remaining=3;hero.ratSearch=p;Bundle save=new Bundle();RatKingQuickSearch.store(hero,save);hero.ratSearch=null;RatKingQuickSearch.restore(hero,save);assertEquals(3,hero.ratSearch.remaining,0.001f);assertNull(hero.curAction);}
+    // A partially written payment must never become a zero-cell / zero-time action.
+    // All required fields have existed since this payment format was introduced;
+    // only search_cost is optional for older saves.
+    private Bundle paymentMissing(String omitted) {
+        Bundle payment=new Bundle();
+        if(!"door".equals(omitted))payment.put("door",door());
+        if(!"anchor".equals(omitted))payment.put("anchor",hero.pos);
+        if(!"width".equals(omitted))payment.put("width",14);
+        if(!"height".equals(omitted))payment.put("height",14);
+        if(!"total".equals(omitted))payment.put("total",5f);
+        if(!"search_cost".equals(omitted))payment.put("search_cost",2f);
+        if(!"remaining".equals(omitted))payment.put("remaining",3f);
+        if(!"hunger".equals(omitted))payment.put("hunger",true);
+        Bundle save=new Bundle();
+        save.put("apd_rat_search_payment_v1",payment);
+        return save;
+    }
+    private void assertInvalidPaymentIsDiscarded(String field) {
+        hero.ratSearch=new RatKingQuickSearch.Payment(door(),5f,hero.pos,14,14);
+        float before=hero.cooldown();
+        int[] terrain=level.map.clone();
+        RatKingQuickSearch.restore(hero,paymentMissing(field));
+        assertNull("Incomplete "+field+" must not restore pending payment",hero.ratSearch);
+        assertNull("Loading memory never starts an action",hero.curAction);
+        assertEquals(before,hero.cooldown(),0.001f);
+        assertArrayEquals(terrain,level.map);
+    }
+    @Test public void missingDoorCannotRestorePaidQuickSearch(){assertInvalidPaymentIsDiscarded("door");}
+    @Test public void missingAnchorCannotRestorePaidQuickSearch(){assertInvalidPaymentIsDiscarded("anchor");}
+    @Test public void missingRemainingCannotRestoreFreeCompletion(){assertInvalidPaymentIsDiscarded("remaining");}
+    @Test public void missingHungerStateCannotRestorePaidQuickSearch(){assertInvalidPaymentIsDiscarded("hunger");}
+    @Test public void legacyPaidSearchWithoutOptionalSearchCostStillRestores(){
+        hero.ratSearch=null;
+        RatKingQuickSearch.restore(hero,paymentMissing("search_cost"));
+        assertNotNull(hero.ratSearch);
+        assertEquals(door(),hero.ratSearch.door);
+        assertEquals(hero.pos,hero.ratSearch.anchor);
+        assertEquals(5f,hero.ratSearch.total,0.001f);
+        assertEquals(3f,hero.ratSearch.remaining,0.001f);
+        assertEquals(2f,hero.ratSearch.searchCost,0.001f);
+        assertTrue(hero.ratSearch.hungerCharged);
+        assertNull(hero.curAction);
+    }
     @Test public void malformedOrLegacySaveHasNoInventedPaidSearch(){RatKingQuickSearch.restore(hero,new Bundle());assertNull(hero.ratSearch);Bundle b=new Bundle();b.put("apd_rat_search_payment_v1",new Bundle());RatKingQuickSearch.restore(hero,b);assertNull(hero.ratSearch);}
     @Test public void quickSearchRevealsOnlyTargetAfterFullActorClockPaymentAndHungerRuns()throws Exception{runClock(false);}
     @Test public void timedStatusExpiresDuringRealSearchPayment()throws Exception{runClock(true);}
