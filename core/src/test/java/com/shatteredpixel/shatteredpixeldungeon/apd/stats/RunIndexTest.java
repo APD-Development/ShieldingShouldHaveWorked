@@ -298,7 +298,7 @@ public class RunIndexTest {
 	public void recoveryNeverTruncatesSymlinkedRunLogs() throws Exception {
 		StatsStore store = new StatsStore(tmp.newFolder("recovery-link-boundary"));
 		RunLogWriter writer = store.startRun("source", "test", 1);
-		writer.event(LogTestSupport.T_PLAIN).clock(3).unsigned(1).emit();
+		for (int i = 0; i < 9; i++) writer.event(LogTestSupport.T_PLAIN).clock(i).unsigned(i).emit();
 		writer.close(false);
 		byte[] original = LogTestSupport.bytes(store.logFile("source"));
 		assertTrue(original.length > 2);
