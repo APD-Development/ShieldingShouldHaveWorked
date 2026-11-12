@@ -1,5 +1,19 @@
 # APD460 isolated contextual Search scan continuation, November 12, 2026
 
+## Final APD460 release verification, November 12
+
+**APD460 is now verified and published**, superseding the pending status snapshot below. The exact original Developer and Alpha-Testers APKs and matching source are published in [release apd-460](https://github.com/APD-Development/ShieldingShouldHaveWorked/releases/tag/apd-460), targeting frozen source `7c6a10e2db7c82f38297f5d5e38a62ceba27c962`. Original signer, package identity and versionCode 920 passed the original candidate-build gates. This release did not alter save schema, score, RNG, challenge balance, talent values, action costs or Search mechanics.
+
+- Full source CI [43237301847](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/43237301847) succeeded: **3,266 core tests, 470 suites, zero failures/errors/skips**, required desktop and Android Java compilation, and the exact new bounded-radius regression.
+- One original signed Developer/Alpha pair and instrumentation were assembled in successful [candidate run 43237859054](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/43237859054); original package/certificate/variant digests passed.
+- [Native run 43238039604](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/43238039604), attempt 1, recorded five successful emulator cases and an Alpha WallGeometry instrumentation **pass** whose screenshot manifest failed after an emulator disconnect (`error: closed`, device not found). The failed transfer is not accepted as image evidence. Attempt 2 reran only that failed job, consumed the same frozen application/instrumentation APKs, and succeeded. Latest accepted evidence has all **six native cases** successful, complete device-screenshot transfer receipts and image hashes. The underlying emulator disconnect cause is not established.
+- [Publisher run 43238146009](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/43238146009), attempt 1, correctly failed because native attempt 1 was incomplete. Attempt 2 succeeded after successful native recovery. It required exact source/build/native IDs and jobs, checked the original candidate hashes, published a new `apd-460` prerelease without overwriting another tag, downloaded all three published assets back, and verified matching SHA-256 hashes.
+- **Developer:** `APD-Developer-460.apk`, 39,211,116 bytes, SHA-256 `8298eeabe3a6d372acddc5eaeb424247ebbcb14779e00224f2f8d80e744549a4`.
+- **Alpha-Testers:** `APD-Alpha-Testers-460.apk`, 39,211,092 bytes, SHA-256 `d97a7c10d223412ec66509d715e985c9db0c31c132cc56c39ba035f41c7bd35c`.
+- **Matching source:** `APD-Source-460.zip`, 111,179,958 bytes, SHA-256 `0e7307be2e3f71387c2929dc720c77b488f46fbd4c36f85d9a5d67c05aa1d552`.
+
+These are confirmed GitHub release assets and publisher-readback checks, not physical RedMagic device installation or audio acceptance. Retain APD459 and all earlier release artifacts. The original native transport failure and failed publisher attempt remain historical evidence; do not rewrite them as initial successes. All follow-on agents should use APD460 as the latest verified published baseline until a newer independently verified release exists.
+
 ## Status at this checkpoint
 APD459 remains the latest confirmed published Developer/Alpha pair until the APD460 release workflow actually completes and its assets are read back. This session started from the established development head `9a653930b135538958a8592fe829f7e39161aeeb` after verifying AGENTS.md, the APD459 handoff, active branch and release history. All work is isolated on `codex/apd-search-radius-scan-20261112` to avoid colliding with staggered coding sessions. Do not rebuild or overwrite APD459.
 
