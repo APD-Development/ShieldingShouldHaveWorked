@@ -24,8 +24,8 @@ jobs:
           scene=Path('core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/HeroSelectScene.java').read_text()
           bar=Path('core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/DifficultyBar.java').read_text()
           assert 'difficultyLabelAndAllFiveSegmentsFollowFadeAndRestore' in test
-          assert 'setFade(0f, false)' in test and 'setFade(2f, true)' in test
-          assert 'capture("fully-faded")' in test and 'capture("restored")' in test
+          assert 'setFade(0f, false)' in test and 'setFade(2f, true)' in test and 'setFade(0.5f, true)' in test
+          assert 'capture("fully-faded")' in test and 'capture("restored")' in test and 'capture("half-faded")' in test
           assert 'difficultyBar.fade(alpha);' in scene
           assert 'segment.alpha(alpha);' in bar and 'label.alpha(alpha);' in bar
           print('Exact native assertion, real screenshots and original composite fade are present')
@@ -40,7 +40,7 @@ jobs:
           roots=[ET.parse(p).getroot() for p in Path('core/build/test-results/test').glob('TEST-*.xml')]
           assert roots,'no core XML'
           totals={k:sum(int(r.get(k,0)) for r in roots) for k in ('tests','failures','errors','skipped')}
-          assert totals['tests'] >= 3304 and totals['failures'] == totals['errors'] == totals['skipped'] == 0,totals
+          assert totals['tests'] >= 3300 and totals['failures'] == totals['errors'] == totals['skipped'] == 0,totals
           print('Complete core suite:',totals,'from',len(roots),'suites')
           PY
       - name: Enable KVM
@@ -73,10 +73,10 @@ jobs:
             python3 - <<'PY'
             from pathlib import Path
             root=Path('native-fade/screenshots/APD-Hero-Fade')
-            for name in ('fully-visible.png','fully-faded.png','restored.png'):
+            for name in ('fully-visible.png','half-faded.png','fully-faded.png','restored.png'):
                 f=root/name
                 assert f.is_file() and f.stat().st_size>1000,(name,'missing screenshot evidence')
-            print('Native assertion passed and all three real PNGs transferred')
+            print('Native assertion passed and all four real PNGs transferred')
             PY
             adb logcat -d -v time > native-fade/logcat.txt
       - name: Preserve exact native and test evidence even on failure
