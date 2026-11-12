@@ -59,6 +59,28 @@ public class ArchiveHostileTest {
 	}
 
 	@Test
+	public void duplicateChecksummedManifestPathsRefuseEntireImportBeforeDiskMutation() throws Exception {
+		byte[] log = good("a", "run-a");
+		ArchiveManifest m = new ArchiveManifest();
+		ArchiveManifest.Entry listed = new ArchiveManifest.Entry();
+		listed.path = "runs/a.apdlog";
+		listed.runId = "run-a";
+		listed.size = log.length;
+		listed.sha256 = ArchiveManifest.sha256Hex(log);
+		m.files.add(listed);
+		m.files.add(listed);
+		// A single real entry cannot satisfy two manifest records, even if their
+		// bytes, size, checksum and outer manifest checksum are all consistent.
+		ArchiveImporter.Report result = run(zip(
+				names(ArchiveManifest.ENTRY_NAME, listed.path),
+				Arrays.asList(m.encode().getBytes(ArchiveManifest.utf8()), log)));
+		assertFalse(result.summary(), result.ok);
+		assertEquals(0, result.imported);
+		assertTrue(result.problem, result.problem.contains("more than once"));
+		assertNothingWritten();
+	}
+
+	@Test
 	public void aZipWithoutAManifestFirstIsRefused() throws Exception {
 		byte[] log = good("a", "run-a");
 		ArchiveImporter.Report r = run(zip(names("runs/a.apdlog"), Arrays.asList(log)));
