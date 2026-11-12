@@ -84,6 +84,12 @@ public final class SeedReuseScore {
         boolean known=data.getBoolean(KNOWN_KEY);
         if (before<0 || earned<0 || earned>before || bps<0 || bps>10000 || attempts<0
                 || (!known && before!=earned)) return null;
+        // A ranking snapshot must be self-consistent. Damage to an earned-score
+        // field must never silently reprice a saved run or contradict its UI
+        // retention percentage. Do not regenerate history or change valid scores.
+        long expected = BigInteger.valueOf(before).multiply(BigInteger.valueOf(bps))
+                .divide(BigInteger.valueOf(10000)).longValueExact();
+        if (earned != expected) return null;
         return new Result(attempts, prior, current, bps, before, earned, known);
     }
 
