@@ -156,6 +156,19 @@ public class PlaybackSpeedTest {
    sceneField.set(null,oldScene);
   }
  }
+ @Test public void heroAndEnemySpriteFramesFollowAllTenSpeedsWithoutChangingSceneElapsed(){
+  float[] factors={.5f,1f,2f,4f,8f,16f,32f,64f,100f,1000f};
+  for(int mode=0;mode<factors.length;mode++){
+   PlaybackGroup.speed(mode);Game.elapsed=.016f;
+   assertEquals("Character frames scale at "+PlaybackGroup.label(mode),
+     .016f*factors[mode],PlaybackGroup.characterAnimationElapsed(),.0001f);
+   Group scene=PlaybackGroup.normalSpeedGroup();
+   float[] overlay={0f};
+   scene.add(observe(overlay));scene.update();
+   assertEquals("Surrounding visuals stay 1x",.016f,overlay[0],0f);
+   assertEquals("No global timing changes",.016f,Game.elapsed,0f);
+  }
+ }
  @Test public void onlyMovementDurationFollowsAllTenSpeedSelections(){
   float[] speeds={.5f,1f,2f,4f,8f,16f,32f,64f,100f,1000f};
   for(int mode=0;mode<speeds.length;mode++){
