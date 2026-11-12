@@ -2,6 +2,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.apd.recorder;
 
 import com.shatteredpixel.shatteredpixeldungeon.Rankings;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.watabou.utils.Bundle;
 import org.junit.Test;
 
@@ -34,6 +35,11 @@ public class SeedReuseScoreTest {
     @Test public void genuineScoreSnapshotPowersRankingScoreAndSurvivesBundle() {
         Rankings.Record record=new Rankings.Record();
         record.score=2000;
+        record.heroClass=HeroClass.WARRIOR;
+        record.customSeed="ABC-DEF-GHI";
+        record.gameID="seed-reuse-score-fixture";
+        record.date="2026-11-11";
+        record.version="v4.0.8";
         record.gameData=new Bundle();
         SeedReuseScore.Result result=SeedReuseScore.calculate(2000,2,10,10,true);
         assertEquals(3000,result.retentionBasisPoints);
