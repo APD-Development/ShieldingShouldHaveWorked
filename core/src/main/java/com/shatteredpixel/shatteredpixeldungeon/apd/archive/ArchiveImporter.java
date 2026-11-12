@@ -171,6 +171,12 @@ public final class ArchiveImporter {
 
 				tmpDir = new File(root, "import-tmp");
 				deleteTree(tmpDir);
+				// Staging may not follow a leftover symbolic link after cleanup.
+				// The history root itself is allowed to have a canonical parent.
+				if (!tmpDir.getCanonicalFile().equals(new File(root.getCanonicalFile(), "import-tmp"))){
+					report.problem = "the archive temporary folder is not inside history.";
+					return report;
+				}
 				if (!tmpDir.mkdirs() && !tmpDir.isDirectory()){
 					report.problem = "cannot create a working folder.";
 					return report;
@@ -461,6 +467,18 @@ public final class ArchiveImporter {
 	}
 
 	private static void deleteTree( File f ){
+		// File.listFiles() follows directory symlinks. Never recurse into a
+		// leftover staging link whose target is outside its canonical parent.
+		try {
+			File parent = f.getAbsoluteFile().getParentFile();
+			if (parent != null && !f.getCanonicalFile().equals(new File(parent.getCanonicalFile(), f.getName()))){
+				f.delete(); //remove the link itself, not the files it points at
+				return;
+			}
+		} catch (IOException ignored){
+			// Unknown canonical destination: leave it untouched.
+			return;
+		}
 		File[] kids = f.listFiles();
 		if (kids != null) for (File k : kids) deleteTree(k);
 		f.delete();

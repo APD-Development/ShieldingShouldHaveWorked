@@ -103,6 +103,50 @@ public class ArchiveHostileTest {
 		assertFalse(new File(history, "import-tmp").exists());
 	}
 
+
+	@Test
+	public void importTempDirectorySymlinkDoesNotDeleteExternalFiles() throws Exception {
+		byte[] log = good("a", "run-a");
+		File history = tmp.newFolder("temp-link-history");
+		File external = tmp.newFolder("temp-link-external");
+		File marker = new File(external, "precious.txt");
+		byte[] original = "original external content".getBytes("UTF-8");
+		Files.write(marker.toPath(), original);
+		Files.createSymbolicLink(new File(history, "import-tmp").toPath(), external.toPath());
+		Map<String, byte[]> logs = new LinkedHashMap<>();
+		logs.put("runs/a.apdlog", log);
+		ArchiveImporter.Report result = ArchiveImporter.importArchive(history, new ByteArrayInputStream(
+				archiveOf(logs, java.util.Collections.singletonMap("runs/a.apdlog", "run-a"))));
+		assertTrue(result.summary(), result.ok);
+		assertEquals(1, result.imported);
+		assertArrayEquals(original, Files.readAllBytes(marker.toPath()));
+		assertTrue(new File(history, "runs/a.apdlog").isFile());
+		assertFalse(new File(history, "import-tmp").exists());
+	}
+
+	@Test
+	public void nestedStaleImportTempSymlinkDoesNotDeleteExternalFiles() throws Exception {
+		byte[] log = good("a", "run-a");
+		File history = tmp.newFolder("nested-temp-history");
+		File scratch = new File(history, "import-tmp");
+		assertTrue(scratch.mkdir());
+		Files.write(new File(scratch, "leftover.tmp").toPath(), "stale".getBytes("UTF-8"));
+		File external = tmp.newFolder("nested-temp-external");
+		File marker = new File(external, "keep.txt");
+		byte[] original = "must survive import cleanup".getBytes("UTF-8");
+		Files.write(marker.toPath(), original);
+		Files.createSymbolicLink(new File(scratch, "external").toPath(), external.toPath());
+		Map<String, byte[]> logs = new LinkedHashMap<>();
+		logs.put("runs/a.apdlog", log);
+		ArchiveImporter.Report result = ArchiveImporter.importArchive(history, new ByteArrayInputStream(
+				archiveOf(logs, java.util.Collections.singletonMap("runs/a.apdlog", "run-a"))));
+		assertTrue(result.summary(), result.ok);
+		assertEquals(1, result.imported);
+		assertArrayEquals(original, Files.readAllBytes(marker.toPath()));
+		assertTrue(new File(history, "runs/a.apdlog").isFile());
+		assertFalse(scratch.exists());
+	}
+
 	@Test
 	public void aZipWithoutAManifestFirstIsRefused() throws Exception {
 		byte[] log = good("a", "run-a");
