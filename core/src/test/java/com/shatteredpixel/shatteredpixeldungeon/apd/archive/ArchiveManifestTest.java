@@ -100,6 +100,27 @@ public class ArchiveManifestTest {
 	}
 
 	@Test
+	public void checksummedDuplicatePathsAreRejectedRatherThanSilentlyCountedTwice(){
+		ArchiveManifest identical = sample();
+		identical.files.add(identical.files.get(0));
+		rejects(identical.encode().getBytes(ArchiveManifest.utf8()), "same path and same contents counted twice");
+
+		ArchiveManifest conflicting = sample();
+		ArchiveManifest.Entry different = new ArchiveManifest.Entry();
+		different.path = conflicting.files.get(0).path;
+		different.size = 12;
+		different.sha256 = ArchiveManifest.sha256Hex(new byte[]{ 9 });
+		different.runId = "run-2";
+		conflicting.files.add(different);
+		rejects(conflicting.encode().getBytes(ArchiveManifest.utf8()), "same path but different declared contents");
+
+		// A genuinely separate log in the imported namespace is still supported.
+		different.path = "legacy/run-1.apdlog";
+		different.kind = ArchiveManifest.KIND_IMPORTED;
+		assertEquals(2, ArchiveManifest.parse(conflicting.encode().getBytes(ArchiveManifest.utf8())).files.size());
+	}
+
+	@Test
 	public void onlyPlainRunAndImportedLogPathsAreEverAllowed(){
 		assertTrue(ArchiveManifest.isValidPath("runs/run-1.apdlog"));
 		assertTrue(ArchiveManifest.isValidPath("legacy/import-1.apdlog"));
