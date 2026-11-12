@@ -11,9 +11,10 @@ SCORING = ROOT / "core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ap
 class ScoreBreakdownDisclosureTest(unittest.TestCase):
     def test_rankings_display_an_explicit_seed_reuse_line(self):
         source = WINDOW.read_text(encoding="utf-8")
-        self.assertIn('statSlot(content,"Seed reuse deduction","Not recorded"', source)
-        self.assertIn('The custom-rules adjusted score above does not include one.', source)
+        self.assertIn('statSlot(content,"Seed reuse deduction","-"+num.format(reuse.deduction)', source)
+        self.assertIn('SeedReuseScore.restore(recordedGameData)', source)
         self.assertIn('statSlot(content,"Custom-rules adjusted score"', source)
+        self.assertIn('statSlot(content,"Final earned score",num.format(reuse.earned)', source)
 
     def test_existing_custom_score_is_unchanged_and_never_passed_off_as_penalized(self):
         window = WINDOW.read_text(encoding="utf-8")
