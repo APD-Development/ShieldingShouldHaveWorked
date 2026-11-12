@@ -391,6 +391,48 @@ public class SearchControlContextTest {
         }
     }
 
+    @Test public void boundedAdaptiveScanMatchesOriginalExhaustiveCoverageAcrossClasses() {
+        // Use actual talent acquisition. The independent reference examines the entire
+        // visible level, just as the original oversized candidate scan effectively did.
+        HeroClass[] classes = {HeroClass.WARRIOR, HeroClass.ROGUE, HeroClass.WARRIOR,
+                HeroClass.ROGUE, HeroClass.WARRIOR};
+        boolean[] metamorphed = {false, false, true, false, true};
+        int[] ranks = {0, 0, 1, 1, 2};
+        int[] expectedRadii = {1, 2, 2, 3, 2};
+        for (int state = 0; state < classes.length; state++) {
+            talents(classes[state], metamorphed[state], ranks[state]);
+            assertEquals("exact acquired Search radius for state " + state,
+                    expectedRadii[state], WallSearchSession.searchRadius(hero, false));
+            for (int dy = 0; dy <= 3; dy++) {
+                for (int dx = 1; dx <= 8; dx++) {
+                    clearTerrain();
+                    candidate(dx, dy);
+                    boolean exhaustive = false;
+                    for (int tile = 0; tile < level.length(); tile++) {
+                        if (WallSearchSession.covers(hero, level, hero.pos, tile)
+                                && DoorSearchEligibility.candidate(level, tile)
+                                && !level.searchedWalls.confirmed(level, tile)) {
+                            exhaustive = true;
+                            break;
+                        }
+                    }
+                    assertEquals("bounded radius must match old full scan at state " + state
+                                    + ", dx " + dx + ", dy " + dy,
+                            exhaustive, SearchControlContext.hasMeaningfulWall(hero, level));
+                }
+            }
+        }
+        // Foresight overrides the normal class/talent radius, without changing
+        // the remembered-room or observed-terrain search rules.
+        talents(HeroClass.WARRIOR, false, 0);
+        clearTerrain();
+        candidate(8, 0);
+        assertFalse(SearchControlContext.hasMeaningfulWall(hero, level));
+        Buff.affect(hero, Foresight.class);
+        assertEquals(Foresight.DISTANCE, WallSearchSession.searchRadius(hero, true));
+        assertTrue(SearchControlContext.hasMeaningfulWall(hero, level));
+    }
+
     @Test public void baseClassDoesNotPretendWideSearchWasAcquired() {
         candidate(2, 0);
         for (HeroClass heroClass : HeroClass.values()) {
