@@ -1,5 +1,10 @@
 # AGENTS.md: ADHD Pixel Dungeon (APD), start here
 
+## Latest verified trap-confirmation identity safety (November 12, 2026)
+
+Read `docs/APD-TRAP-PERMIT-IDENTITY-CONTINUATION-2026-11-12.md` and check live GitHub before new coding. PR #10 merged at `b10ae1d3d5c975f74a2cea4adb77d56ddb641ed9` after isolated Actions run `43250200835` passed **3,276 core tests / 471 suites**, zero failures/errors/skips, and required desktop and Android Java compilation. `TrapStepPermit` now rejects absent level/trap/action confirmation identities and revokes stale grants; four new regressions preserve legitimate exact single-use confirmation. This is **verified source-only**, not a new APK. Leave separately failed APD461 Alpha native WallGeometry and pending PR #6 unaltered; APD460 remains the last independently confirmed published APK pair. Preserve existing gameplay, scoring, saves, original signer and all earlier builds.
+
+
 ## Latest verified source-only stair-route metadata guard (November 12, 2026)
 
 Read `docs/APD-STAIR-INCOMPLETE-METADATA-2026-11-12.md` and check live GitHub before coding. PR #9 merged at `23364f1ede5752d23de34e6138973873de473187` after CI run `43247774516` passed **3,272 core tests across 470 suites**, zero failures/errors/skips, with required desktop and Android debug/release/instrumentation Java compilation. `StairNavigation.safeStep` now fails closed for a null hero, missing trap collection or truncated non-null FOV; three new regressions prove no action/turn and normal routing after data restoration. This is verified **source-only**, not a new APK. APD461's separate native run `43240714587` failed one Alpha WallGeometry case and publisher `43240803227` failed its prerequisite; preserve PR #6, frozen candidates and APD460 as the last verified published pair at this checkpoint. No scoring, mechanics, save schema, signing or older APK changes were approved.
