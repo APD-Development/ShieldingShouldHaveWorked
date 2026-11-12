@@ -118,6 +118,8 @@ public final class RunIndex {
 
 	//Re-reads one log and updates its entry. Returns the new entry, or null if the log is not there.
 	public synchronized RunIndexEntry refresh( String runId ) throws IOException {
+		// Run IDs are filenames, not paths. Never let a caller read another folder through the derived index.
+		if (!StatsStore.isValidRunId(runId)) throw new IOException("invalid run ID for index refresh");
 		File log = new File(runsDir, runId + LOG_SUFFIX);
 		if (!log.isFile()){
 			entries.remove(runId);

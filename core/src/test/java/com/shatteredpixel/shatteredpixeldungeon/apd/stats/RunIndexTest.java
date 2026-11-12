@@ -11,6 +11,7 @@ import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
@@ -252,6 +253,35 @@ public class RunIndexTest {
 		assertTrue(store.logFile("live").delete());
 		assertNull(store.index().refresh("live"));
 		assertNull(store.index().get("live"));
+	}
+
+	@Test
+	public void refreshRejectsPathLikeRunIdsWithoutReadingOutsideHistory() throws Exception {
+		StatsStore store = new StatsStore(tmp.newFolder("index-refresh-boundary"));
+		RunLogWriter writer = store.startRun("legit", "test", 1);
+		writer.close();
+		RunIndex index = store.index();
+		assertNotNull(index.refresh("legit"));
+
+		// Reuse genuine log bytes outside runs/ so the unguarded refresh would accept this path.
+		File outside = new File(store.root(), "outside.apdlog");
+		LogTestSupport.write(outside, LogTestSupport.bytes(store.logFile("legit")));
+		byte[] original = LogTestSupport.bytes(outside);
+		String[] invalidIds = {"../outside", "bad/name", "", null};
+		for (String id : invalidIds){
+			boolean rejected = false;
+			try {
+				index.refresh(id);
+			} catch (IOException expected){
+				rejected = true;
+			}
+			assertTrue("invalid run ID must be rejected: " + id, rejected);
+			assertFalse("store must report an invalid refresh: " + id, store.refreshIndex(id));
+			assertEquals(1, index.size());
+			assertNull(index.get(id));
+		}
+		assertTrue(Arrays.equals(original, LogTestSupport.bytes(outside)));
+		assertEquals("legit", index.all().get(0).runId);
 	}
 
 	@Test
