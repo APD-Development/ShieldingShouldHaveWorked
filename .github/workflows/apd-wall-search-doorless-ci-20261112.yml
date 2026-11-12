@@ -26,7 +26,10 @@ jobs:
           test=Path('core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/qol/SearchControlContextTest.java').read_text()
           assert 'doorlessFloorsOmitWallResumeButKeepNormalSearchAndSavedPosition' in test
           assert 'new int[]{1, 10, 15, 20, 25, 26}' in test
-          print('Doorless-floor chooser guard and regression present')
+          window=Path('core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/WndWallSearchResume.java').read_text()
+          assert 'DoorSearchEligibility.supportsDoors(level)' in window
+          assert 'Resume wall search is unavailable on this floor.' in window
+          print('Doorless-floor chooser, dialog and regression present')
           PY
       - name: Run complete core tests and compile desktop and Android Java
         run: |
