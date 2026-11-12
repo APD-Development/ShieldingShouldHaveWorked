@@ -71,4 +71,30 @@ public class WallSearchSessionTest {
         assertEquals(2,hero.cooldown()-turn,0.001f);assertEquals(41,hero.wallSearch.target());assertEquals(2,hero.wallSearch.searches());
     }
 
+
+    @Test public void missingVisibilityCannotCrashOrClearRememberedWallSearch(){
+        assertTrue(hero.wallSearch.select(hero,41));
+        level.heroFOV=null;
+        assertFalse(WallSearchSession.covers(hero,level,40,41));
+        assertFalse(hero.wallSearch.select(hero,41));
+        assertEquals(40,hero.wallSearch.anchor());
+        assertEquals(41,hero.wallSearch.target());
+    }
+
+    @Test public void truncatedVisibilityRejectsUnrepresentedCellWithoutCreatingMemory(){
+        level.heroFOV=new boolean[41];
+        assertFalse(WallSearchSession.covers(hero,level,40,41));
+        assertFalse(hero.wallSearch.select(hero,41));
+        assertFalse(hero.wallSearch.exists());
+    }
+
+    @Test public void restoredVisibilityKeepsOriginalWallCoverageAndForesightBypass(){
+        assertTrue(WallSearchSession.covers(hero,level,40,41));
+        assertTrue(hero.wallSearch.select(hero,41));
+        level.heroFOV=null;
+        // An already-observed Foresight state has always bypassed ordinary FOV in covers.
+        assertTrue(WallSearchSession.covers(hero,level,40,41,true));
+        assertFalse(WallSearchSession.covers(hero,level,40,41,false));
+    }
+
 }
