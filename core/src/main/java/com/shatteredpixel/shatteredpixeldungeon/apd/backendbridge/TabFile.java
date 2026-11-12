@@ -41,6 +41,8 @@ final class TabFile {
 	private TabFile(){}
 
 	static void write( File file, List<String[]> rows ) throws IOException {
+		// A record destination must never be replaced if it is a directory.
+		if (file.isDirectory()) throw new IOException("not a record file: " + file);
 		File tmp = new File(file.getPath() + ".tmp");
 		try (BufferedWriter w = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(tmp), StandardCharsets.UTF_8))){
 			for (String[] row : rows){
@@ -53,10 +55,9 @@ final class TabFile {
 				w.newLine();
 			}
 		}
-		if (!tmp.renameTo(file)){
-			if (file.exists() && !file.delete()) throw new IOException("cannot replace " + file);
-			if (!tmp.renameTo(file)) throw new IOException("cannot write " + file);
-		}
+		// A failed atomic replacement must leave the previous records intact.
+		// Never delete the old file just to retry a rename.
+		if (!tmp.renameTo(file)) throw new IOException("cannot replace " + file);
 	}
 
 	//rows with exactly 'fields' fields; anything else is skipped
@@ -71,9 +72,14 @@ final class TabFile {
 					String[] p = line.split("\t", -1);
 					if (p.length != fields) throw new IllegalArgumentException("fields");
 					String[] row = new String[fields];
-					for (int i = 0; i < fields; i++) row[i] = new String(Base64.getDecoder().decode(p[i]), StandardCharsets.UTF_8);
+					for (int i = 0; i < fields; i++){
+						// Base64 can contain malformed UTF-8. Do not fabricate record text with U+FFFD.
+						byte[] bytes = Base64.getDecoder().decode(p[i]);
+						row[i] = StandardCharsets.UTF_8.newDecoder()
+								.decode(java.nio.ByteBuffer.wrap(bytes)).toString();
+					}
 					out.add(row);
-				} catch (RuntimeException e){
+				} catch (RuntimeException | java.nio.charset.CharacterCodingException e){
 					//skip the damaged line
 				}
 			}
