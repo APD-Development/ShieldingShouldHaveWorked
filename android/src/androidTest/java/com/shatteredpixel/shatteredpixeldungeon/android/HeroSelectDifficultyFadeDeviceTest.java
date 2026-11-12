@@ -54,7 +54,7 @@ public class HeroSelectDifficultyFadeDeviceTest {
         assertTrue("hero-select scene did not start", Game.scene() instanceof HeroSelectScene);
     }
 
-    private static void assertInputs(DifficultyBar bar, boolean enabled) throws Exception {
+    private static void assertInputs(DifficultyBar bar, boolean enabled, float expectedAlpha) throws Exception {
         assertTrue("selected difficulty control stays in the layout", bar.visible);
         assertEquals("difficulty composite input", enabled, bar.active);
         Field labelField = DifficultyBar.class.getDeclaredField("label");
@@ -62,12 +62,14 @@ public class HeroSelectDifficultyFadeDeviceTest {
         StyledButton label = (StyledButton) labelField.get(bar);
         assertNotNull("difficulty explanation label", label);
         assertEquals("difficulty explanation input", enabled, label.active);
+        assertEquals("difficulty explanation opacity", expectedAlpha, label.alpha(), 0.01f);
         Field segmentsField = DifficultyBar.class.getDeclaredField("segments");
         segmentsField.setAccessible(true);
         DifficultyBar.Segment[] segments = (DifficultyBar.Segment[]) segmentsField.get(bar);
         assertEquals("all five difficulty levels", 5, segments.length);
         for (int i = 0; i < segments.length; i++) {
             assertEquals("difficulty " + (i + 1) + " input", enabled, segments[i].active);
+            assertEquals("difficulty " + (i + 1) + " opacity", expectedAlpha, segments[i].alpha(), 0.01f);
         }
     }
 
@@ -83,7 +85,8 @@ public class HeroSelectDifficultyFadeDeviceTest {
                 updateFade.invoke(scene);
                 Field difficultyField = HeroSelectScene.class.getDeclaredField("difficultyBar");
                 difficultyField.setAccessible(true);
-                assertInputs((DifficultyBar) difficultyField.get(scene), enabled);
+                assertInputs((DifficultyBar) difficultyField.get(scene), enabled,
+                        Math.max(0f, Math.min(1f, alpha)));
             } catch (Exception e) { throw new RuntimeException(e); }
         });
     }
@@ -123,6 +126,8 @@ public class HeroSelectDifficultyFadeDeviceTest {
             });
             setFade(2f, true);
             capture("fully-visible");
+            setFade(0.5f, true);
+            capture("half-faded");
             setFade(0f, false);
             capture("fully-faded");
             setFade(2f, true);
