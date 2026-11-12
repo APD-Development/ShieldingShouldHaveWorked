@@ -2,7 +2,10 @@ name: APD local record integrity source gate
 on:
   push:
     branches: [chatgpt/apd-tabfile-integrity-20261112-1545]
-    paths: [.github/workflows/apd-tabfile-integrity-ci-20261112.yml]
+    paths:
+      - .github/workflows/apd-tabfile-integrity-ci-20261112.yml
+      - core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/backendbridge/TabFile.java
+      - core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/backendbridge/TabFileIntegrityTest.java
 permissions: {contents: read}
 concurrency:
   group: apd-tabfile-integrity-20261112-1545
