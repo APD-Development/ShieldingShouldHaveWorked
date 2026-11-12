@@ -92,7 +92,12 @@ public class WndScoreBreakdown extends Window {
 		pos = statSlot(content, "Original score", num.format(originalScore), pos, false);
         Long adjusted=com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomScorePresentation.adjustedIdentityScore(recordedGameData,originalScore);
         String unavailable="Not applied".equals(com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomScorePresentation.multiplier(recordedGameData))?"Not applied":"?";
-        pos=statSlot(content,"Adjusted score",adjusted==null?unavailable:num.format(adjusted),pos,false);
+        pos=statSlot(content,"Custom-rules adjusted score",adjusted==null?unavailable:num.format(adjusted),pos,false);
+        // A seed-history match is not a deduction. The current APD ranking snapshot
+        // contains no seed-reuse scoring authority, so never infer or invent a penalty
+        // from the custom-rules multiplier or the selected run's present-day history.
+        pos=statSlot(content,"Seed reuse deduction","Not recorded",pos,false);
+        pos=addInfo(content,"No seed-reuse deduction is recorded for this run. The custom-rules adjusted score above does not include one.",pos);
 
 		if (Dungeon.initialVersion <= ShatteredPixelDungeon.v1_2_3){
 			pos = addInfo(content, Messages.get(this, "old_score_desc"), pos);
