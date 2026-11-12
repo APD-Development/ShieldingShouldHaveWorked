@@ -48,6 +48,14 @@ public class CellEmitter {
 		return emitter;
 	}
 	
+	// Only well activation particles use the unscaled gas/well visual layer.
+	public static Emitter well( int cell ) {
+		PointF p = DungeonTilemap.tileToWorld( cell );
+		Emitter emitter = GameScene.wellEmitter();
+		emitter.pos( p.x, p.y, DungeonTilemap.SIZE, DungeonTilemap.SIZE );
+		return emitter;
+	}
+
 	public static Emitter center( int cell ) {
 		
 		PointF p = DungeonTilemap.tileToWorld( cell );
