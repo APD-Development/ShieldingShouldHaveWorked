@@ -53,6 +53,7 @@ def parse_manifest(text):
 
 def pull_image(directory, name, digest=None):
     name = image_name(name)
+    directory.mkdir(parents=True, exist_ok=True)
     target = directory / name
     if target.exists() and (digest is None or sha(target) == digest):
         return
