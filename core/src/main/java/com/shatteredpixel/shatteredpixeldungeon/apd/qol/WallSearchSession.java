@@ -43,12 +43,16 @@ public final class WallSearchSession {
         boolean foresight=hero.buff(Foresight.class)!=null;
         return footprint(hero,level,from,cell,foresight)&&(foresight||level.heroFOV[cell]);
     }
+    /** Exact maximum footprint radius, shared by Search geometry and its read-only chooser scan. */
+    public static int searchRadius(Hero hero,boolean foresight){
+        if(foresight)return Foresight.DISTANCE;
+        int radius=hero.heroClass==HeroClass.ROGUE?2:1;
+        return hero.hasTalent(Talent.WIDE_SEARCH)?radius+1:radius;
+    }
     public static boolean footprint(Hero hero,Level level,int from,int cell,boolean foresight){
         if(hero==null||level==null||from<0||from>=level.length()||cell<0||cell>=level.length()||cell==from)return false;
-        int distance=hero.heroClass==HeroClass.ROGUE?2:1;
-        if(hero.hasTalent(Talent.WIDE_SEARCH))distance++;
-        boolean circular=hero.pointsInTalent(Talent.WIDE_SEARCH)==1;
-        if(foresight){distance=Foresight.DISTANCE;circular=true;}
+        int distance=searchRadius(hero,foresight);
+        boolean circular=foresight||hero.pointsInTalent(Talent.WIDE_SEARCH)==1;
         int cx=from%level.width(),cy=from/level.width(),x=cell%level.width(),y=cell/level.width();
         if(Math.abs(y-cy)>distance)return false;
         int left;
