@@ -206,6 +206,34 @@ public class SearchControlContextTest {
         assertEquals(0f, hero.cooldown(), 0f);
     }
 
+    @Test public void chooserReturnsFreshOrderAfterCallerChangesItsArrayAndMemoryState() {
+        Action[] first = SearchControlContext.choices(hero, level);
+        assertArrayEquals(new Action[]{Action.SEARCH, Action.WALL_SEARCH,
+                Action.SHOW_SAVED, Action.FORGET, Action.CANCEL}, first);
+        first[0] = Action.CANCEL;
+        first[1] = Action.CANCEL;
+        Action[] second = SearchControlContext.choices(hero, level);
+        assertNotSame("a caller must never receive shared mutable chooser storage", first, second);
+        assertArrayEquals("the first caller cannot change the next chooser's options",
+                new Action[]{Action.SEARCH, Action.WALL_SEARCH,
+                        Action.SHOW_SAVED, Action.FORGET, Action.CANCEL}, second);
+
+        hero.wallSearch.clear();
+        assertArrayEquals("without remembered wall search, only ordinary search and cancel remain",
+                new Action[]{Action.SEARCH, Action.CANCEL},
+                SearchControlContext.choices(hero, level));
+        hero.lastAction = new HeroAction.Move(hero.pos + 1);
+        assertArrayEquals("movement is preferred and retained without wall-search memory",
+                new Action[]{Action.RESUME_MOVEMENT, Action.SEARCH, Action.CANCEL},
+                SearchControlContext.choices(hero, level));
+        assertArrayEquals("a missing hero has no remembered or movement choices",
+                new Action[]{Action.SEARCH, Action.CANCEL},
+                SearchControlContext.choices(null, level));
+        assertNull(hero.curAction);
+        assertEquals(0, hero.nextCalls);
+        assertEquals(0f, hero.cooldown(), 0f);
+    }
+
     @Test public void onlyUnconfirmedObservedCandidatePrioritizesWallSearch() {
         int wall = candidate(1, 0);
         String saved = memory();
