@@ -216,5 +216,8 @@ public final class RunIndex {
 			RunIndexEntry e = RunIndexEntry.decode(src.readBytes(len));
 			entries.put(e.runId, e);
 		}
+		// A checksum-valid index with uncounted bytes is still malformed derived data.
+		// Rebuild from the original logs rather than hiding valid history behind it.
+		if (src.hasRemaining()) throw new FormatException("trailing data in run index");
 	}
 }
