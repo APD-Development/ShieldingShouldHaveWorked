@@ -105,8 +105,13 @@ public final class StairNavigation {
     }
 
     public static boolean safeStep(Level level, Hero hero, int cell) {
-        if (level==null || cell<0 || cell>=level.length() || !(level.visited[cell] || level.mapped[cell])
+        if (level==null || hero==null || cell<0 || cell>=level.length()
+                || !(level.visited[cell] || level.mapped[cell])
                 || !level.passable[cell] || level.avoid[cell] || level.pit[cell]) return false;
+        // A partially restored level or shorter-than-map FOV must not turn a
+        // shortcut into an unsafe move or crash before ordinary play resumes.
+        // Fully initialized levels keep the exact prior routing checks.
+        if (level.traps==null || (hero.fieldOfView!=null && cell>=hero.fieldOfView.length)) return false;
         Trap trap=level.traps.get(cell);
         if (trap!=null && trap.visible && trap.active) return false;
         if (hero.fieldOfView!=null && hero.fieldOfView[cell]) {
