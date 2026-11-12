@@ -30,15 +30,36 @@ public final class SearchedWalls {
     private static final String CHECKS_KEY="apd_door_checks_v1";
 
     public boolean mark(Level level, int cell) {
-        if (!DoorSearchEligibility.supportsDoors(level) || cell < 0 || cell >= level.length() || !level.heroFOV[cell]
+        if (!DoorSearchEligibility.supportsDoors(level) || cell < 0 || cell >= level.length()
+                || level.map == null || cell >= level.map.length
+                || level.heroFOV == null || cell >= level.heroFOV.length || !level.heroFOV[cell]
                 || !wall(level.map[cell]) || cells.get(cell)) return false;
         cells.set(cell);
         return true;
     }
 
+    /** Existing memories may be displayed from any *available* observed fog source.
+     * Missing arrays never justify reading unobserved terrain or creating new marks. */
     public boolean shows(Level level, int cell) {
-        return cell >= 0 && cell < level.length() && cells.get(cell) && wall(level.map[cell])
-                && (level.heroFOV[cell] || level.visited[cell] || level.mapped[cell]);
+        return level != null && cell >= 0 && cell < level.length()
+                && level.map != null && cell < level.map.length
+                && cells.get(cell) && wall(level.map[cell]) && observed(level, cell);
+    }
+
+    private static boolean observed(Level level, int cell) {
+        return (level.heroFOV != null && cell < level.heroFOV.length && level.heroFOV[cell])
+                || (level.visited != null && cell < level.visited.length && level.visited[cell])
+                || (level.mapped != null && cell < level.mapped.length && level.mapped[cell]);
+    }
+
+    /** Door geometry checks inspect adjacent observed tiles, not just the selected cell. */
+    private static boolean completeObservation(Level level) {
+        if (level == null) return false;
+        int length = level.length();
+        return level.map != null && level.map.length >= length
+                && level.heroFOV != null && level.heroFOV.length >= length
+                && level.visited != null && level.visited.length >= length
+                && level.mapped != null && level.mapped.length >= length;
     }
 
     private static boolean wall(int tile) {
@@ -51,13 +72,18 @@ public final class SearchedWalls {
     public void clear() { cells.clear(); doorChecks.clear(); }
     public void invalidate(int cell){if(cell>=0){cells.clear(cell);doorChecks.clear(cell);}}
     public void recordCompletedDoorCheck(Level level,int cell,boolean guaranteed){
-        if(cell<0||cell>=level.length())return;
+        if(level==null||cell<0||cell>=level.length())return;
         doorChecks.clear(cell);
-        // A paid check must actually have resolved; an unresolved hidden tile is never a negative result.
+        // A partial restoration cannot certify that a wall has no hidden door.
+        // Keep the original paid-check semantics when all observed inputs are present.
+        if(!completeObservation(level)||level.secret==null||level.secret.length<level.length())return;
         if(DoorSearchEligibility.supportsDoors(level)&&guaranteed&&level.heroFOV[cell]&&wall(level.map[cell])&&!level.secret[cell]
                 &&level.map[cell]!=Terrain.SECRET_DOOR)doorChecks.set(cell);
     }
-    public boolean confirmed(Level level,int cell){return DoorSearchEligibility.candidate(level,cell)&&level.heroFOV[cell]&&doorChecks.get(cell);}
+    public boolean confirmed(Level level,int cell){
+        return completeObservation(level) && cell >= 0 && cell < level.length()
+                && DoorSearchEligibility.candidate(level,cell) && level.heroFOV[cell] && doorChecks.get(cell);
+    }
     public boolean attempted(int cell){return cell>=0&&cells.get(cell);}
 
 
