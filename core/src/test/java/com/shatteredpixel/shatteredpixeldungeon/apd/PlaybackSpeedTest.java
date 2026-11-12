@@ -156,6 +156,21 @@ public class PlaybackSpeedTest {
    sceneField.set(null,oldScene);
   }
  }
+ @Test public void onlyMovementDurationFollowsAllTenSpeedSelections(){
+  float[] speeds={.5f,1f,2f,4f,8f,16f,32f,64f,100f,1000f};
+  for(int mode=0;mode<speeds.length;mode++){
+   PlaybackGroup.speed(mode);
+   Game.elapsed=.016f;
+   assertEquals("Only walking duration scales at "+PlaybackGroup.label(mode),
+      .1f/speeds[mode],PlaybackGroup.movementDuration(.1f),.000001f);
+   Group environment=PlaybackGroup.normalSpeedGroup();
+   float[] observed={0};
+   environment.add(observe(observed));environment.update();
+   assertEquals("Environment remains 1x at "+PlaybackGroup.label(mode),.016f,observed[0],0f);
+   assertEquals(.016f,Game.elapsed,0f);
+  }
+  assertEquals(0.0001f,PlaybackGroup.movementDuration(.1f),.000001f);
+ }
  @Test public void invalidChoicesUseNormalSpeed(){
   for(int mode:new int[]{-1,10,Integer.MIN_VALUE,Integer.MAX_VALUE}){GameSettings.put("apd_playback_speed",mode);assertEquals(1,SPDSettings.playbackSpeed());SPDSettings.playbackSpeed(mode);assertEquals(1,SPDSettings.playbackSpeed());}
  }
