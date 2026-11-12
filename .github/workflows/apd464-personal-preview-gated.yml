@@ -1,7 +1,7 @@
 name: APD464 personal preview original-signer gated APK delivery
 on:
   push:
-    branches: [chatgpt/apd464-character-animations-integrated-20261112]
+    branches: [chatgpt/apd-personal-playback-preferences-20261112]
     paths: [.github/workflows/apd464-personal-preview-gated.yml]
 permissions: {contents: write, actions: read}
 concurrency: {group: apd464-exact-candidate-and-delivery, cancel-in-progress: false}
