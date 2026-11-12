@@ -1,5 +1,10 @@
 # AGENTS.md: ADHD Pixel Dungeon (APD), start here
 
+## Latest verified malformed wall-search save restore guard (November 12, 2026)
+
+Read `docs/APD-WALL-MEMORY-NULL-ARRAY-CONTINUATION-2026-11-12.md` and check the live branch before coding. PR #11 was merged at `b1f253026a2d2ded385fc129534c7283f0154de2` after exact source-only GitHub Actions run `43252279501` passed 3,279 core tests across 471 suites, zero failures/errors/skips, and required desktop and Android Java compilation. `SearchedWalls.restore` now handles null decoded arrays from damaged optional memory fields without losing independently valid history or fabricating marks. Three new regression cases passed. No APK was built here. APD460 remains the last independently confirmed published APK pair at this checkpoint; APD461 draft PR #6 retains its failed Alpha native WallGeometry gate. Preserve original saves, mechanics, scoring, signer, and releases. Do not repeat completed work.
+
+
 ## Latest verified trap-confirmation identity safety (November 12, 2026)
 
 Read `docs/APD-TRAP-PERMIT-IDENTITY-CONTINUATION-2026-11-12.md` and check live GitHub before new coding. PR #10 merged at `b10ae1d3d5c975f74a2cea4adb77d56ddb641ed9` after isolated Actions run `43250200835` passed **3,276 core tests / 471 suites**, zero failures/errors/skips, and required desktop and Android Java compilation. `TrapStepPermit` now rejects absent level/trap/action confirmation identities and revokes stale grants; four new regressions preserve legitimate exact single-use confirmation. This is **verified source-only**, not a new APK. Leave separately failed APD461 Alpha native WallGeometry and pending PR #6 unaltered; APD460 remains the last independently confirmed published APK pair. Preserve existing gameplay, scoring, saves, original signer and all earlier builds.
