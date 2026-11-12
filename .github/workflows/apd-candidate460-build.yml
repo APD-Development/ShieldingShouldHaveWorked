@@ -1,7 +1,7 @@
 name: Build APD460 bounded contextual Search scan candidate
 on:
   push:
-    branches: [codex/apd-chooser-single-array-20261112]
+    branches: [codex/apd-search-radius-scan-20261112]
     paths: [.github/workflows/apd-candidate460-build.yml]
 permissions: {contents: read, actions: read}
 concurrency: {group: apd460-single-candidate, cancel-in-progress: false}
