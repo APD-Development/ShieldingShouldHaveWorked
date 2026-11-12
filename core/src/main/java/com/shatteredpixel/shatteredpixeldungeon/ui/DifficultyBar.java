@@ -95,6 +95,17 @@ public class DifficultyBar extends Component {
 		for (Segment s : segments) s.setSelected(s.level == level);
 	}
 
+	// Follow the existing character-select fade for the label and five buttons.
+	public void fade(float alpha){
+		boolean enabled = alpha > 0f;
+		label.enable(enabled);
+		label.alpha(alpha);
+		for (Segment segment : segments){
+			segment.enable(enabled);
+			segment.alpha(alpha);
+		}
+	}
+
 	@Override
 	protected void layout(){
 		float labelH = 11f;
