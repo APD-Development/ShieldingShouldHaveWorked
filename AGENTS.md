@@ -1,5 +1,10 @@
 # AGENTS.md: ADHD Pixel Dungeon (APD), start here
 
+## Post-APD460 verified stair transition source fix (November 12, 2026)
+
+Read `docs/APD-STAIR-NULL-TRANSITION-2026-11-12.md` before older handoffs and check live GitHub state. PR #8 merged at `790bdb7d2e919d27be3479e73664451433f2c5cf` after exact CI run `43244355419` passed **3,269 tests across 470 suites**, zero failures/errors/skips and desktop/Android Java compilation. The read-only stair shortcut now safely skips null transition entries; two regressions preserve known/mapped target choices and no-turn failure. This is verified **source-only** work, not a new APK. Preserve the parallel APD461 malformed-terrain candidate/PR #6 until its own Android and release gates complete. APD460 was the latest independently confirmed published release at this checkpoint. Do not invent APD462 or claim newer APK delivery without actual verification. All approved mechanics, saves, scoring and signer identity remain unchanged.
+
+
 ## Post-APD460 source-only continuation (November 12, 2026)
 
 Read `docs/APD-POST460-FORESIGHT-CACHE-2026-11-12.md` and check live GitHub state before new coding. PR #7 was merged at `0ece96536ec3026eb709b90ca14404ac65c5abf4` after complete source CI run `43241975098` passed **3,267 core tests across 470 suites**, zero failures/errors/skips, and required desktop/Android Java compilation. Its contextual Search scan caches one observed Foresight state; class ranges, Search behavior, scoring, saves, signing identities and gameplay rules are unchanged. This is **verified source work only, not a new APK release**. Preserve the separately pending APD461 malformed-observed-terrain pipeline and do not produce a successor candidate until both approved fixes are included. APD460 remains the latest independently verified GitHub release at this source checkpoint, subject to a fresh releases check.
