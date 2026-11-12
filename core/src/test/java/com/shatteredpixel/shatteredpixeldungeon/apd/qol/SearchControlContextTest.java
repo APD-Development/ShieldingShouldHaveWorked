@@ -472,6 +472,35 @@ public class SearchControlContextTest {
         }
     }
 
+    @Test public void doorlessFloorsOmitWallResumeButKeepNormalSearchAndSavedPosition() {
+        String saved = memory();
+        HeroAction.Move movement = new HeroAction.Move(hero.pos + 2);
+        for (int depth : new int[]{1, 10, 15, 20, 25, 26}) {
+            Dungeon.depth = depth;
+            assertFalse("hidden doors cannot generate on floor " + depth,
+                    DoorSearchEligibility.supportsDoors(level));
+            assertEquals(Action.SEARCH, SearchControlContext.preferred(hero, level));
+            assertArrayEquals("no wall resume on floor " + depth,
+                    new Action[]{Action.SEARCH, Action.SHOW_SAVED, Action.FORGET, Action.CANCEL},
+                    SearchControlContext.choices(hero, level));
+
+            hero.lastAction = movement;
+            assertArrayEquals("movement and saved-position controls survive on floor " + depth,
+                    new Action[]{Action.RESUME_MOVEMENT, Action.SEARCH, Action.SHOW_SAVED,
+                            Action.FORGET, Action.CANCEL},
+                    SearchControlContext.choices(hero, level));
+            hero.lastAction = null;
+            assertEquals("viewing choices must not erase earlier wall-search memory", saved, memory());
+        }
+        Dungeon.depth = 3;
+        assertTrue(DoorSearchEligibility.supportsDoors(level));
+        assertArrayEquals("eligible floors retain the existing explicit wall resume",
+                new Action[]{Action.SEARCH, Action.WALL_SEARCH, Action.SHOW_SAVED,
+                        Action.FORGET, Action.CANCEL}, SearchControlContext.choices(hero, level));
+        assertEquals(0, hero.nextCalls);
+        assertEquals(0f, hero.cooldown(), 0f);
+    }
+
     @Test public void bothActualCrystalRoomTypesApplyOnlyWhileHeroIsInside() {
         candidate(1, 0);
         for (Room room : new Room[]{new CrystalVaultRoom(), new CrystalChoiceRoom()}) {
