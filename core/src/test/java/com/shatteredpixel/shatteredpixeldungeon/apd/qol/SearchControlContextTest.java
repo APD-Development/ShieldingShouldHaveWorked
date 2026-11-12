@@ -684,6 +684,57 @@ public class SearchControlContextTest {
         assertTrue(level.searchedWalls.attempted(ordinaryWall));
     }
 
+    @Test public void contextualScanBoundsMatchActualClassTalentAndForesightFootprints() {
+        // Each in-range wall must still be found; an immediately out-of-range
+        // eligible wall must not be advertised, even when it is visible.
+        for (HeroClass heroClass : HeroClass.values()) {
+            talents(heroClass, false, 0);
+            int base = heroClass == HeroClass.ROGUE ? 2 : 1;
+            assertEquals(heroClass.toString(), base, WallSearchSession.searchRadius(hero, false));
+            clearTerrain();
+            candidate(base, 0);
+            assertTrue(heroClass.toString(), SearchControlContext.hasMeaningfulWall(hero, level));
+            clearTerrain();
+            candidate(base + 1, 0);
+            assertFalse(heroClass.toString(), SearchControlContext.hasMeaningfulWall(hero, level));
+        }
+
+        talents(HeroClass.WARRIOR, true, 1);
+        assertEquals(2, WallSearchSession.searchRadius(hero, false));
+        clearTerrain();
+        candidate(2, 0);
+        assertTrue(SearchControlContext.hasMeaningfulWall(hero, level));
+        clearTerrain();
+        candidate(2, 2); // Wide Search rank 1 has rounded corners.
+        assertFalse(SearchControlContext.hasMeaningfulWall(hero, level));
+        hero.upgradeTalent(Talent.WIDE_SEARCH);
+        assertEquals(2, WallSearchSession.searchRadius(hero, false));
+        assertTrue(SearchControlContext.hasMeaningfulWall(hero, level));
+        clearTerrain();
+        candidate(3, 0);
+        assertFalse(SearchControlContext.hasMeaningfulWall(hero, level));
+
+        talents(HeroClass.ROGUE, false, 1);
+        assertEquals(3, WallSearchSession.searchRadius(hero, false));
+        clearTerrain();
+        candidate(3, 0);
+        assertTrue(SearchControlContext.hasMeaningfulWall(hero, level));
+        clearTerrain();
+        candidate(3, 3);
+        assertFalse(SearchControlContext.hasMeaningfulWall(hero, level));
+        hero.upgradeTalent(Talent.WIDE_SEARCH);
+        assertEquals(3, WallSearchSession.searchRadius(hero, false));
+        assertTrue(SearchControlContext.hasMeaningfulWall(hero, level));
+
+        talents(HeroClass.WARRIOR, false, 0);
+        clearTerrain();
+        candidate(8, 0);
+        assertFalse(SearchControlContext.hasMeaningfulWall(hero, level));
+        Buff.affect(hero, Foresight.class);
+        assertEquals(Foresight.DISTANCE, WallSearchSession.searchRadius(hero, true));
+        assertTrue(SearchControlContext.hasMeaningfulWall(hero, level));
+    }
+
     @Test public void existingForesightFootprintIsPreservedWithoutRevealingUnknownWalls() {
         candidate(8, 0);
         assertFalse(SearchControlContext.hasMeaningfulWall(hero, level));

@@ -102,9 +102,10 @@ public final class SearchControlContext {
             if (openRoomInterior(hero, level)) return false;
         }
 
-        // Bound the scan to the existing maximum footprint; covers retains the exact class,
-        // acquired talent rank, rounded corners, visibility, and Foresight rules.
-        int radius = hero.buff(Foresight.class) != null ? Foresight.DISTANCE : 3;
+        // Scan only the existing class/acquired-talent footprint rather than always
+        // walking a Rogue rank-2 square. covers still enforces rounded corners,
+        // visibility and Foresight's unchanged observed/mapped-terrain rules.
+        int radius = WallSearchSession.searchRadius(hero, hero.buff(Foresight.class) != null);
         int width = level.width();
         int x = hero.pos % width, y = hero.pos / width;
         for (int row = Math.max(0, y - radius); row <= Math.min(level.height() - 1, y + radius); row++) {

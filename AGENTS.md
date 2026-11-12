@@ -1,5 +1,11 @@
 # AGENTS.md: ADHD Pixel Dungeon (APD), start here
 
+## Current verified baseline: APD460, November 12, 2026
+
+**APD460 is the latest independently verified and GitHub-published Developer/Alpha-Testers pair.** Read `docs/APD-460-SEARCH-RADIUS-CONTINUATION-2026-11-12.md` before any older status paragraphs below. It was produced once from exact frozen source `7c6a10e2db7c82f38297f5d5e38a62ceba27c962` and published at https://github.com/APD-Development/ShieldingShouldHaveWorked/releases/tag/apd-460. The full source gate passed 3,266 core tests across 470 suites, zero failures/errors/skips, desktop/Android compilation, and acquired-radius regression coverage; signed Developer/Alpha candidate build passed and six isolated Android cases succeeded after an Alpha emulator transport-only retry. The publisher succeeded on attempt 2 and read back exact original asset SHA-256 values. Original attempt-1 failures remain preserved.
+
+APD460 reduces unnecessary contextual Search candidate scans by bounding them to the hero's **existing** class/acquired-talent/Foresight footprint. No new Search geometry, scoring, gameplay mechanic, balance, save format, action cost, certificate, application ID or version code change. APD459 remains the accepted previous release. Check the actual active GitHub branch and latest releases before coding, prevent staggered workers from repeating this completed optimization, and do not treat physical RedMagic installation or audio as verified.
+
 ## Current verified baseline: APD459, November 12, 2026
 
 **APD459 is the latest verified and GitHub-published Developer/Alpha-Testers APK pair.** Read `docs/APD-459-CONTINUATION-2026-11-12.md` before all older release-status paragraphs below. Release `apd-459` was verified after 3,265 core tests across 470 suites, Android/desktop compilation, six isolated native Android cases and actual publication/download hash readback. Its exact frozen source is `2b1abfd52bd397dbfe7887b5ae5c52cd5695444e`; original-signer APKs and source are at https://github.com/APD-Development/ShieldingShouldHaveWorked/releases/tag/apd-459. The implementation reduces transient Search chooser allocations to one exact-length caller-owned array without changing action order, saved data, search geometry, scoring or balance.
