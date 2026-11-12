@@ -20,6 +20,10 @@ public final class TrapStepPermit {
     }
     public static boolean needsWarning(boolean enabled,Level level,Hero hero,int step){
         if(!enabled || level==null || hero==null || hero.flying || hero.buff(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness.class)!=null || step<0 || step>=level.length())return false;
+        // Incomplete restored visibility, terrain or trap data cannot establish
+        // an observed, identified trap. Avoid indexing partial level metadata.
+        if(level.traps==null || level.map==null || step>=level.map.length
+                || level.heroFOV==null || step>=level.heroFOV.length)return false;
         Trap trap=level.traps.get(step);
         // A revealed TRAP tile is SPD's identified trap representation. Knowledge in fog is insufficient.
         return trap!=null && trap.visible && trap.active && level.map[step]==Terrain.TRAP
