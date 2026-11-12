@@ -1,5 +1,10 @@
 # AGENTS.md: ADHD Pixel Dungeon (APD), start here
 
+## Latest verified Rat King Quick Search payment restore guard (November 12, 2026)
+
+Read `docs/APD-RAT-PAYMENT-RESTORE-CONTINUATION-2026-11-12.md` and inspect the live branch before coding. Source-only [PR #12](https://github.com/APD-Development/ShieldingShouldHaveWorked/pull/12) merged at `0a0d1498bdaedfd1d732b0b0636c89538e53beff` after isolated [Actions run 43255119039](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/43255119039) passed **3,284 core tests across 471 suites**, zero failures/errors/skips and desktop/Android debug/release/instrumentation Java compilation. Five new regression cases show that missing mandatory `RatKingQuickSearch` payment fields cannot fabricate a resumed action; original complete payments and the legacy optional `search_cost` default remain valid. Preserve scoring, normal payment, saved game schema, original signer and APK history. No new APK was built here. APD461's separate draft PR #6 and failed Alpha WallGeometry native gate remain unresolved; APD460 was last independently confirmed published at this checkpoint. Check live releases rather than assuming this statement is still current. Avoid reopening this completed fix.
+
+
 ## Latest verified malformed wall-search save restore guard (November 12, 2026)
 
 Read `docs/APD-WALL-MEMORY-NULL-ARRAY-CONTINUATION-2026-11-12.md` and check the live branch before coding. PR #11 was merged at `b1f253026a2d2ded385fc129534c7283f0154de2` after exact source-only GitHub Actions run `43252279501` passed 3,279 core tests across 471 suites, zero failures/errors/skips, and required desktop and Android Java compilation. `SearchedWalls.restore` now handles null decoded arrays from damaged optional memory fields without losing independently valid history or fabricating marks. Three new regression cases passed. No APK was built here. APD460 remains the last independently confirmed published APK pair at this checkpoint; APD461 draft PR #6 retains its failed Alpha native WallGeometry gate. Preserve original saves, mechanics, scoring, signer, and releases. Do not repeat completed work.
