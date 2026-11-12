@@ -35,29 +35,6 @@ public class MobSprite extends CharSprite {
 	private static final float FALL_TIME	= 1f;
 	
 	@Override
-	protected synchronized void updateAnimation() {
-		if (idle == null || curAnim != idle) {
-			super.updateAnimation();
-			return;
-		}
-
-		// Developer speeds above 2x can make standing monsters flicker
-		// between their idle poses. Leave movement/attacks/effects accelerated.
-		float visualElapsed = Game.elapsed;
-		float idleElapsed = com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup.heroIdleElapsed();
-		if (visualElapsed == idleElapsed) {
-			super.updateAnimation();
-			return;
-		}
-		try {
-			Game.elapsed = idleElapsed;
-			super.updateAnimation();
-		} finally {
-			Game.elapsed = visualElapsed;
-		}
-	}
-
-	@Override
 	public void update() {
 		sleeping = ch != null && ch.isAlive() && ((Mob)ch).state == ((Mob)ch).SLEEPING;
 		super.update();
