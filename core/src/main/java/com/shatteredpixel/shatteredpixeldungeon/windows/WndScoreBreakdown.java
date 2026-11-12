@@ -93,11 +93,20 @@ public class WndScoreBreakdown extends Window {
         Long adjusted=com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomScorePresentation.adjustedIdentityScore(recordedGameData,originalScore);
         String unavailable="Not applied".equals(com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomScorePresentation.multiplier(recordedGameData))?"Not applied":"?";
         pos=statSlot(content,"Custom-rules adjusted score",adjusted==null?unavailable:num.format(adjusted),pos,false);
-        // A seed-history match is not a deduction. The current APD ranking snapshot
-        // contains no seed-reuse scoring authority, so never infer or invent a penalty
-        // from the custom-rules multiplier or the selected run's present-day history.
-        pos=statSlot(content,"Seed reuse deduction","Not recorded",pos,false);
-        pos=addInfo(content,"No seed-reuse deduction is recorded for this run. The custom-rules adjusted score above does not include one.",pos);
+        com.shatteredpixel.shatteredpixeldungeon.apd.recorder.SeedReuseScore.Result reuse =
+                com.shatteredpixel.shatteredpixeldungeon.apd.recorder.SeedReuseScore.restore(recordedGameData);
+        if (reuse != null) {
+            pos=statSlot(content,"Seed reuse retention",
+                    Messages.decimalFormat("#.##",reuse.retentionBasisPoints/100f)+"%",pos,false);
+            pos=statSlot(content,"Seed reuse deduction","-"+num.format(reuse.deduction),pos,false);
+            pos=statSlot(content,"Final earned score",num.format(reuse.earned),pos,false);
+            pos=addInfo(content,"Earlier local attempts: "+reuse.priorAttempts
+                    +". Deepest earlier floor: "+(reuse.deepestBefore<0?"unknown":reuse.deepestBefore)
+                    +". Current deepest floor: "+reuse.currentDepth+".",pos);
+        } else {
+            // Historical records predate this score snapshot. Do not retroactively reprice.
+            pos=addInfo(content,"This run predates the recorded seed-reuse scoring system.",pos);
+        }
 
 		if (Dungeon.initialVersion <= ShatteredPixelDungeon.v1_2_3){
 			pos = addInfo(content, Messages.get(this, "old_score_desc"), pos);
