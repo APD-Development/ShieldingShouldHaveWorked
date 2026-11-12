@@ -193,7 +193,15 @@ public final class RatKingQuickSearch {
         Payment p=hero.ratSearch;if(p==null)return;Bundle b=new Bundle();b.put("door",p.door);b.put("anchor",p.anchor);b.put("width",p.width);b.put("height",p.height);b.put("total",p.total);b.put("search_cost",p.searchCost);b.put("remaining",p.remaining);b.put("hunger",p.hungerCharged);bundle.put("apd_rat_search_payment_v1",b);
     }
     public static void restore(Hero hero,Bundle bundle){
-        hero.ratSearch=null;if(!bundle.contains("apd_rat_search_payment_v1"))return;Bundle b=bundle.getBundle("apd_rat_search_payment_v1");
+        hero.ratSearch=null;
+        if(bundle==null||!bundle.contains("apd_rat_search_payment_v1"))return;
+        Bundle b=bundle.getBundle("apd_rat_search_payment_v1");
+        // A damaged partial payment must not create a valid-looking zero-valued
+        // door, anchor or remaining time via Bundle's missing-field defaults.
+        // search_cost alone remains optional for the original legacy payment format.
+        if(b==null||!b.contains("width")||!b.contains("height")||!b.contains("door")
+                ||!b.contains("anchor")||!b.contains("total")||!b.contains("remaining")
+                ||!b.contains("hunger"))return;
         int w=b.getInt("width"),h=b.getInt("height"),door=b.getInt("door"),anchor=b.getInt("anchor");float total=b.getFloat("total"),left=b.getFloat("remaining"),phase=b.contains("search_cost")?b.getFloat("search_cost"):2f;
         if(w<1||h<1||(long)w*h>Integer.MAX_VALUE||door<0||door>=(long)w*h||anchor<0||anchor>=(long)w*h||!Float.isFinite(total)||!Float.isFinite(phase)||phase<=0||phase>2||total<phase||!Float.isFinite(left)||left<0||left>total)return;
         Payment p=new Payment(door,total,anchor,w,h,phase);p.remaining=left;p.hungerCharged=b.getBoolean("hunger");hero.ratSearch=p;
