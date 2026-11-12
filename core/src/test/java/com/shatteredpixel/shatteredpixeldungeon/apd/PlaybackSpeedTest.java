@@ -119,6 +119,22 @@ public class PlaybackSpeedTest {
    assertEquals(timeTotal,Game.timeTotal,0f);
   }
  }
+ @Test public void persistentDungeonOverlaysKeepNormalSpeedAtEveryPlaybackSetting(){
+  for(int mode=0;mode<PlaybackGroup.choiceCount();mode++){
+   PlaybackGroup.speed(mode);Game.elapsed=.016f;
+   Group scene=new Group();
+   PlaybackGroup accelerated=new PlaybackGroup();
+   Group normalOverlay=PlaybackGroup.normalSpeedGroup();
+   float[] visual={0},overlay={0};
+   accelerated.add(observe(visual));normalOverlay.add(observe(overlay));
+   scene.add(accelerated);scene.add(normalOverlay);
+   scene.update();
+   assertEquals("Overlay must use wall-frame time at "+PlaybackGroup.label(mode),.016f,overlay[0],0f);
+   assertEquals("Other visuals still follow selected speed",.016f*
+      new float[]{.5f,1f,2f,4f,8f,16f,32f,64f,100f,1000f}[mode],visual[0],.0001f);
+   assertEquals("Global frame time must remain unchanged",.016f,Game.elapsed,0f);
+  }
+ }
  @Test public void invalidChoicesUseNormalSpeed(){
   for(int mode:new int[]{-1,10,Integer.MIN_VALUE,Integer.MAX_VALUE}){GameSettings.put("apd_playback_speed",mode);assertEquals(1,SPDSettings.playbackSpeed());SPDSettings.playbackSpeed(mode);assertEquals(1,SPDSettings.playbackSpeed());}
  }
