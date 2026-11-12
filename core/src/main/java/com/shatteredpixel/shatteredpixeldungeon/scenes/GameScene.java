@@ -203,6 +203,7 @@ public class GameScene extends PixelScene {
 	private Group gases;
 	private Group spells;
 	private Group statuses;
+	private Group combatStatuses;
 	private Group emoicons;
 	private Group overFogEffects;
 	private Group checkedCells;
@@ -368,7 +369,7 @@ public class GameScene extends PixelScene {
 		fog = new FogOfWar( Dungeon.level.width(), Dungeon.level.height() );
 		add( fog );
 
-		spells = com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup.normalSpeedGroup();
+		spells = com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup.personalSpeedGroup();
 		add( spells );
 
 		add(overFogEffects);
@@ -398,6 +399,11 @@ public class GameScene extends PixelScene {
 		
 		statuses = com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup.normalSpeedGroup();
 		add( statuses );
+		// Personal-only numeric combat text, not ordinary floating status messages.
+		combatStatuses = com.shatteredpixel.shatteredpixeldungeon.apd.ApdFeatures.testBuild()
+				? com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup.personalSpeedGroup()
+				: statuses;
+		if (combatStatuses != statuses) add(combatStatuses);
 		
 		add( healthIndicators );
 		//always appears ontop of other health indicators
@@ -1345,6 +1351,11 @@ public class GameScene extends PixelScene {
 	
 	public static FloatingText status() {
 		return scene != null ? (FloatingText)scene.statuses.recycle( FloatingText.class ) : null;
+	}
+
+	/** Numeric combat feedback uses the selected personal playback speed only. */
+	public static FloatingText combatStatus() {
+		return scene != null ? (FloatingText)scene.combatStatuses.recycle( FloatingText.class ) : null;
 	}
 	
 	public static void pickUp( Item item, int pos ) {
