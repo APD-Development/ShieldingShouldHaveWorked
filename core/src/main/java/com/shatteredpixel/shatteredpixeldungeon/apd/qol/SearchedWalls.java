@@ -69,9 +69,18 @@ public final class SearchedWalls {
 
     public void restore(Bundle bundle, int length) {
         clear();
-        if (bundle.contains(CHECKS_KEY))for(int cell:bundle.getIntArray(CHECKS_KEY))if(cell>=0&&cell<length)doorChecks.set(cell);
+        if (bundle.contains(CHECKS_KEY)) {
+            // Bundle.getIntArray returns null when an existing save field is malformed.
+            // Keep the other memory field independent rather than aborting floor load.
+            int[] checks = bundle.getIntArray(CHECKS_KEY);
+            if (checks != null) for (int cell : checks) {
+                if (cell >= 0 && cell < length) doorChecks.set(cell);
+            }
+        }
         if (!bundle.contains(KEY)) return; // Legacy saves have no fabricated search history.
-        for (int cell : bundle.getIntArray(KEY)) {
+        int[] marks = bundle.getIntArray(KEY);
+        if (marks == null) return;
+        for (int cell : marks) {
             if (cell >= 0 && cell < length) cells.set(cell);
         }
     }
