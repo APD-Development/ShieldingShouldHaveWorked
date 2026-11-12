@@ -103,9 +103,11 @@ public class WndScoreBreakdown extends Window {
             pos=addInfo(content,"Earlier local attempts: "+reuse.priorAttempts
                     +". Deepest earlier floor: "+(reuse.deepestBefore<0?"unknown":reuse.deepestBefore)
                     +". Current deepest floor: "+reuse.currentDepth+".",pos);
-        } else {
-            // Historical records predate this score snapshot. Do not retroactively reprice.
-            pos=addInfo(content,"This run predates the recorded seed-reuse scoring system.",pos);
+        } else if (recordedGameData != null && recordedGameData.contains("custom_seed")
+                && !recordedGameData.getString("custom_seed").isEmpty()) {
+            // Only historical seeded records lack an earlier reuse-scoring snapshot.
+            // Ordinary and daily games never used a custom seed and need no disclaimer.
+            pos=addInfo(content,"This seeded run predates recorded seed-reuse scoring.",pos);
         }
 
 		if (Dungeon.initialVersion <= ShatteredPixelDungeon.v1_2_3){
