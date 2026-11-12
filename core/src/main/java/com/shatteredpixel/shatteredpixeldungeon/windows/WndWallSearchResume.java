@@ -19,6 +19,7 @@ package com.shatteredpixel.shatteredpixeldungeon.windows;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.apd.qol.DoorSearchEligibility;
 import com.shatteredpixel.shatteredpixeldungeon.apd.qol.SearchControlContext;
 import com.shatteredpixel.shatteredpixeldungeon.apd.qol.SearchControlContext.Action;
 import com.shatteredpixel.shatteredpixeldungeon.apd.qol.WallSearchSession;
@@ -36,7 +37,11 @@ public final class WndWallSearchResume {
         if (hero == null || level == null || !hero.isAlive() || !hero.ready || !hero.wallSearch.exists()) return;
         WallSearchSession saved = hero.wallSearch;
         String note = "Saved search on Floor " + saved.floor() + ". Manual searches completed here: " + saved.searches()
-                + ".\n\nSearch here performs one normal manual search at your current position. Resume wall search returns by a safe discovered route and searches once. Movement and searching keep their normal costs. Visible enemies or danger stop the return; your saved position is kept.";
+                + ".\n\nSearch here performs one normal manual search at your current position. "
+                + (DoorSearchEligibility.supportsDoors(level)
+                ? "Resume wall search returns by a safe discovered route and searches once. "
+                : "Resume wall search is unavailable on this floor. ")
+                + "Movement and searching keep their normal costs. Visible enemies or danger stop the return; your saved position is kept.";
         Action[] actions = SearchControlContext.choices(hero, level);
         String[] options = new String[actions.length];
         for (int i = 0; i < actions.length; i++) options[i] = label(actions[i]);
