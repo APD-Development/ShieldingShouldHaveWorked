@@ -257,7 +257,7 @@ public class GameScene extends PixelScene {
 
 		scene = this;
 
-		terrain = new com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup();
+		terrain = com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup.normalSpeedGroup();
 		add( terrain );
 
 		water = new SkinnedBlock(
@@ -281,7 +281,7 @@ public class GameScene extends PixelScene {
 		water.autoAdjust = true;
 		terrain.add( water );
 
-		ripples = new com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup();
+		ripples = com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup.normalSpeedGroup();
 		terrain.add( ripples );
 
 		DungeonTileSheet.setupVariance(Dungeon.level.map.length, Dungeon.seedCurDepth());
@@ -289,7 +289,7 @@ public class GameScene extends PixelScene {
 		tiles = new DungeonTerrainTilemap();
 		terrain.add( tiles );
 
-		customTiles = new com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup();
+		customTiles = com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup.normalSpeedGroup();
 		terrain.add(customTiles);
 
 		visualGrid = new GridTileMap();
@@ -301,29 +301,29 @@ public class GameScene extends PixelScene {
 		terrainFeatures = new TerrainFeaturesTilemap(Dungeon.level.plants, Dungeon.level.traps);
 		terrain.add(terrainFeatures);
 
-		customTerrain = new com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup();
+		customTerrain = com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup.normalSpeedGroup();
 		terrain.add(customTerrain);
 
 		levelVisuals = Dungeon.level.addVisuals();
 		add(levelVisuals);
 
-		floorEmitters = new com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup();
+		floorEmitters = com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup.normalSpeedGroup();
 		add(floorEmitters);
 
-		heaps = new com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup();
+		heaps = com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup.normalSpeedGroup();
 		add( heaps );
 		
 		for ( Heap heap : Dungeon.level.heaps.valueList() ) {
 			addHeapSprite( heap );
 		}
 
-		emitters = new com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup();
-		effects = new com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup();
-		healthIndicators = new com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup();
+		emitters = com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup.normalSpeedGroup();
+		effects = com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup.normalSpeedGroup();
+		healthIndicators = com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup.normalSpeedGroup();
 		emoicons = com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup.normalSpeedGroup();
-		overFogEffects = new com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup();
+		overFogEffects = com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup.normalSpeedGroup();
 		
-		mobs = new com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup();
+		mobs = com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup.normalSpeedGroup();
 		add( mobs );
 
 		hero = new HeroSprite();
@@ -341,7 +341,7 @@ public class GameScene extends PixelScene {
 		walls = new DungeonWallsTilemap();
 		add(walls);
 
-		customWalls = new com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup();
+		customWalls = com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup.normalSpeedGroup();
 		add(customWalls);
 
 		levelWallVisuals = Dungeon.level.addWallVisuals();
@@ -368,15 +368,15 @@ public class GameScene extends PixelScene {
 		fog = new FogOfWar( Dungeon.level.width(), Dungeon.level.height() );
 		add( fog );
 
-		spells = new com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup();
+		spells = com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup.normalSpeedGroup();
 		add( spells );
 
 		add(overFogEffects);
 
-		checkedCells = new com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup();
+		checkedCells = com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup.normalSpeedGroup();
 		add(checkedCells);
 
-		targetedCells = new com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup();
+		targetedCells = com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup.normalSpeedGroup();
 		add(targetedCells);
 		for (TargetedCell cell : TargetedCell.cells.valueList()){
 			cell.reset(cell.pos, cell.time);
