@@ -29,6 +29,7 @@ jobs:
           assert 'Emitter emitter = GameScene.wellEmitter();' in cell
           assert 'CellEmitter.get(' not in well
           assert well.count('CellEmitter.well(') == 4
+          assert 'import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;' in well
           assert 'healingEffect.pos(hero.sprite);' in well
           assert 'emitter.parent.add( new Identification(' in aware
           assert 'emitter.pour( Speck.factory( Speck.QUESTION ), 0.3f );' in aware
