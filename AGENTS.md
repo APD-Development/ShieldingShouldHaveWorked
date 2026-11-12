@@ -1,5 +1,10 @@
 # AGENTS.md: ADHD Pixel Dungeon (APD), start here
 
+## Verified normal-speed overlay fix, November 12, 2026
+
+Read `docs/APD-NORMAL-SPEED-OVERLAYS-CONTINUATION-2026-11-12.md` before editing playback groups. Owner reported enemy alert/status symbols, both magical wells, and toxic gas effects running at extreme speed. [PR #19](https://github.com/APD-Development/ShieldingShouldHaveWorked/pull/19) merged at `41ef71ae4be981875335be22d6f7d17c002425c0` after exact [Actions run 43277685870](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/43277685870) passed the complete core suite (at least 3,301 tests; zero failures/errors/skips), the ten-speed normal-overlay regression and Android/desktop Java compilation. GameScene's status, awareness-icon and gas/well-blob visual groups now run at normal unscaled frame speed, leaving all other playback settings and gameplay untouched. Source-only: **no new APK**, no Android device acceptance, no signer or save changes. Preserve APD460 published APKs and separately gated APD461. Avoid duplicating this completed work.
+
+
 ## Verified archive manifest file-size overflow refusal (November 12, 2026)
 
 Read `docs/APD-MANIFEST-SIZE-OVERFLOW-CONTINUATION-2026-11-12.md` and inspect live GitHub status before repeating. Isolated source-only [Actions run 43275984687](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/43275984687), exact tested commit `3e90e1a8`, passed **3,300 core tests / 472 suites**, zero failures/errors/skips, desktop and Android Java compilation, and two regressions. `ArchiveManifest.parse` now rejects a correctly checksummed manifest whose unsigned-looking file-size sum overflows signed `long`; exact non-overflowing long boundary still parses, and hostile imports leave history untouched. This is **not an APK**. Original signing, saves, scoring, valid archives and gameplay remain unchanged. Do not duplicate this completed source fix or bypass APD461 native/publisher gates. Preserve APD460's verified release.
