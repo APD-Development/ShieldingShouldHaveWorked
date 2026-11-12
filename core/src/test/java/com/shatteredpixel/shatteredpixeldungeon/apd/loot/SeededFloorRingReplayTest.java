@@ -3,6 +3,7 @@ package com.shatteredpixel.shatteredpixeldungeon.apd.loot;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.apd.LevelGenerationHarness;
+import com.shatteredpixel.shatteredpixeldungeon.apd.HeadlessTestSupport;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.Ring;
@@ -28,6 +29,7 @@ public class SeededFloorRingReplayTest {
 
     @Test public void sixNewRunsKeepGroundRingTypesAndLocationsForIdenticalSeedAndContext()
             throws Exception {
+        HeadlessTestSupport.start();
         int oldChallenges = SPDSettings.challenges();
         int oldDifficulty = SPDSettings.apdDifficulty();
         boolean oldIntro = SPDSettings.intro();
