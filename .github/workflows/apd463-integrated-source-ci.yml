@@ -3,7 +3,7 @@ name: Verify APD463 integrated animation and current source
 on:
   push:
     branches: [chatgpt/apd463-character-animations-integrated-20261112]
-    paths: [.github/workflows/apd-character-animation-speed-ci-20261112.yml]
+    paths: [.github/workflows/apd463-integrated-source-ci.yml]
 permissions: {contents: read}
 jobs:
   verify:
