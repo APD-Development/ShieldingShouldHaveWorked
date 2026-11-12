@@ -1,0 +1,28 @@
+name: Compile independent APD movement-only real-Android regression
+on:
+  push:
+    branches: [chatgpt/apd-movement-only-native-proof-20261112-1500]
+    paths: [.github/workflows/apd-movement-only-native-proof-compile-20261112.yml]
+permissions: {contents: read}
+jobs:
+  android-test-compile:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with: {distribution: temurin, java-version: '21'}
+      - uses: gradle/actions/setup-gradle@v4
+      - name: Compile independent native fixture without building or releasing any game APK
+        run: |
+          "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "platforms;android-36"
+          ./gradlew :android:compileDebugAndroidTestJavaWithJavac
+      - name: Require exact new regression class compiled
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          paths = list(Path('android/build/intermediates').rglob('MovementOnlyPlaybackDeviceTest.class'))
+          assert len(paths)==1, paths
+          assert paths[0].stat().st_size > 200
+          print('Android test source compiles, without native execution or a new APK')
+          PY
