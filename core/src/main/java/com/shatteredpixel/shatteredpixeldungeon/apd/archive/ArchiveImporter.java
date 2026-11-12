@@ -101,12 +101,21 @@ public final class ArchiveImporter {
 	private static final Object LOCK = new Object();
 
 	public static Report importArchive( File root, InputStream in ){
+		if (in == null){
+			Report report = new Report();
+			report.problem = "the archive source is not available.";
+			return report;
+		}
 		return importZip(root, new ZipInputStream(new ProgressGuardInputStream(new NonClosingInputStream(in))));
 	}
 
 	//the same, from an already opened zip stream (tests give it streams that misbehave the way old Android's does)
 	static Report importZip( File root, ZipInputStream zip ){
 		Report report = new Report();
+		if (zip == null){
+			report.problem = "the archive ZIP stream is not available.";
+			return report;
+		}
 		File tmpDir = null;
 		synchronized (LOCK){
 			try {
