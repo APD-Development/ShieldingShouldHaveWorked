@@ -1,5 +1,10 @@
 # AGENTS.md: ADHD Pixel Dungeon (APD), start here
 
+## Latest verified trap warning incomplete-metadata safety (November 12, 2026)
+
+Read `docs/APD-TRAP-WARNING-METADATA-CONTINUATION-2026-11-12.md` and inspect live GitHub state first. Isolated source-only [PR #14](https://github.com/APD-Development/ShieldingShouldHaveWorked/pull/14) merged at `373e588beee580e915604385c1a2ec5b0d5d574f` after [Actions run 43260208218](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/43260208218) completed **3,288 core tests / 472 suites, zero failures/errors/skips**, and desktop/Android debug/release/instrumentation Java compilation. Four new regressions show a visible identified active trap still warns, while missing or truncated trap collection/terrain/FOV metadata is handled without crashing. Preserve normal trap warning behavior and every approved gameplay rule. This is **verified source only**, not an APK. APD461 remains blocked by the separate failed Alpha WallGeometry native gate and draft PR #6; APD460 remains the last independently checked published pair. The completed parallel wall-search PR #13 was not overwritten. Check current branch/release state before further work; do not repeat this fix.
+
+
 
 ## Latest verified WallSearchSession incomplete-visibility guard (November 12, 2026)
 
