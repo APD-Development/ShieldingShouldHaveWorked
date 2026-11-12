@@ -2,7 +2,7 @@ name: Native proof of APD hero-select difficulty fade
 on:
   push:
     branches: [chatgpt/apd-hero-fade-native-regression-20261112-1445]
-    paths: [.github/workflows/apd-hero-fade-native-proof-20261112.yml]
+    paths: [.github/workflows/apd-hero-fade-native-proof-20261112.yml, .github/ci/apd-hero-fade-native-proof.sh]
 permissions: {contents: read}
 concurrency:
   group: apd-hero-fade-native-proof-20261112
@@ -26,6 +26,7 @@ jobs:
           assert 'difficultyLabelAndAllFiveSegmentsFollowFadeAndRestore' in test
           assert 'setFade(0f, false)' in test and 'setFade(2f, true)' in test and 'setFade(0.5f, true)' in test
           assert 'capture("fully-faded")' in test and 'capture("restored")' in test and 'capture("half-faded")' in test
+          assert Path('.github/ci/apd-hero-fade-native-proof.sh').is_file()
           assert 'difficultyBar.fade(alpha);' in scene
           assert 'segment.alpha(alpha);' in bar and 'label.alpha(alpha);' in bar
           print('Exact native assertion, real screenshots and original composite fade are present')
@@ -56,29 +57,7 @@ jobs:
           target: default
           disable-animations: true
           emulator-options: -no-snapshot -no-window -gpu swiftshader -feature -Vulkan -noaudio -no-boot-anim -camera-back none -skin 320x640
-          script: |
-            set -euo pipefail
-            mkdir -p native-fade/screenshots
-            mapfile -t app < <(find android/build/outputs/apk/debug -maxdepth 1 -name '*.apk' -type f)
-            mapfile -t instrumentation < <(find android/build/outputs/apk/androidTest/debug -maxdepth 1 -name '*.apk' -type f)
-            test "${#app[@]}" -eq 1
-            test "${#instrumentation[@]}" -eq 1
-            adb install -r "${app[0]}"
-            adb install -r "${instrumentation[0]}"
-            adb logcat -c
-            timeout 1200 adb shell am instrument -w -r -e class com.shatteredpixel.shatteredpixeldungeon.android.HeroSelectDifficultyFadeDeviceTest com.charltonchris29.adhdpixeldungeon.indev.test/androidx.test.runner.AndroidJUnitRunner | tee native-fade/instrumentation.txt
-            grep -q 'OK (1 test)' native-fade/instrumentation.txt
-            ! grep -q 'FAILURES!!!' native-fade/instrumentation.txt
-            adb pull /sdcard/Pictures/APD-Hero-Fade native-fade/screenshots
-            python3 - <<'PY'
-            from pathlib import Path
-            root=Path('native-fade/screenshots/APD-Hero-Fade')
-            for name in ('fully-visible.png','half-faded.png','fully-faded.png','restored.png'):
-                f=root/name
-                assert f.is_file() and f.stat().st_size>1000,(name,'missing screenshot evidence')
-            print('Native assertion passed and all four real PNGs transferred')
-            PY
-            adb logcat -d -v time > native-fade/logcat.txt
+          script: bash .github/ci/apd-hero-fade-native-proof.sh
       - name: Preserve exact native and test evidence even on failure
         if: always()
         uses: actions/upload-artifact@v4
