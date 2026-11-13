@@ -3,6 +3,7 @@ package com.shatteredpixel.shatteredpixeldungeon.apd.report;
 import com.shatteredpixel.shatteredpixeldungeon.apd.query.CellText;
 
 import java.util.List;
+import java.util.Locale;
 
 //Turns a Report into text: Markdown, plain text, a self-contained web page, or CSV. Pure and deterministic (the same Report gives the same
 //bytes). The marks stay in the values themselves (?, >=, ~, hidden); each renderer adds the legend for the marks that appear, and a
@@ -160,7 +161,7 @@ public final class ReportRenderer {
 	public static String text( Report r ){
 		StringBuilder sb = new StringBuilder();
 		if (r.synthetic) sb.append(SYNTHETIC_NOTICE).append("\n\n");
-		sb.append(r.title.toUpperCase()).append("\n");
+		sb.append(r.title.toUpperCase(Locale.ROOT)).append("\n");
 		for (int i = 0; i < r.title.length(); i++) sb.append('=');
 		sb.append("\n");
 		for (String a : r.about) sb.append(a).append("\n");
@@ -169,7 +170,7 @@ public final class ReportRenderer {
 		for (Report.Block b : r.blocks){
 			if (b instanceof Report.Heading){
 				Report.Heading h = (Report.Heading) b;
-				sb.append("\n").append(h.level == 1 ? h.text.toUpperCase() : h.text).append("\n");
+				sb.append("\n").append(h.level == 1 ? h.text.toUpperCase(Locale.ROOT) : h.text).append("\n");
 			} else if (b instanceof Report.Note){
 				Report.Note n = (Report.Note) b;
 				sb.append(n.kind == Report.NoteKind.WARN ? "WARNING: " : n.kind == Report.NoteKind.NOTE ? "Note: " : "").append(n.text).append("\n");
