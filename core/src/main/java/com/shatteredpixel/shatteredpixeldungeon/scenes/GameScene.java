@@ -321,7 +321,7 @@ public class GameScene extends PixelScene {
 
 		emitters = com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup.normalSpeedGroup();
 		combatEmitters = com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup.personalSpeedGroup();
-		effects = com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup.normalSpeedGroup();
+		effects = com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup.personalSpeedGroup();
 		healthIndicators = com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup.personalSpeedGroup();
 		emoicons = com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup.normalSpeedGroup();
 		overFogEffects = com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup.normalSpeedGroup();
