@@ -15,3 +15,12 @@ Implementation, isolated source CI, and merge have not yet been performed. No An
 ## Next safe steps
 
 Implement strict validation and regression tests for both flags, including an import rejection without history mutation. Run the complete core suite and compile desktop/Android debug/release/instrumentation Java through an isolated branch-scoped CI gate. Inspect terminal run, job logs and JUnit results, then recheck live PR and base SHA before any expected-head non-force integration. Record accurate outcomes and blockers before exit.
+
+## Implementation checkpoint, 11/12/2026, 20:19:44 EST
+
+- Source fix commit: `39fe2633375ad350f6eafdce2dae307f97cfa216`, strict v1 token validation for both boolean manifest fields; no changes to valid 0/1 fields or log bytes.
+- Test commits: `67e028ca08d188d23bf0e7697e5d0051bc5b8ccb` and literal-escaping correction `be39884783137d895f6b31b2cfa127f552595a5c`; four regression methods in `ArchiveManifestFlagValidationTest`, including real-file non-mutation test.
+- Isolated full-source gate commit: `aca14c8343d2268d07def90c729106d3e53aab96`. [GitHub Actions run 43343938960](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/43343938960) was independently observed **in progress**, not yet complete. At this checkpoint, the targeted source/static step succeeded, while core tests and the Android/desktop Java compilation remained in progress.
+- [Draft PR #57](https://github.com/APD-Development/ShieldingShouldHaveWorked/pull/57) targets only the authoritative development branch. No merged code, passed full suite, APK, signer acceptance, device run, or publication is claimed yet. Preserve original accepted APD464 Developer APK and previous Alpha releases; this branch does not produce a new APK.
+
+Next safe step: check the terminal exact-source workflow and JUnit report, repair any failures, then re-read live PR/base refs and integrate only by an expected-head guarded merge. Record the merged SHA, results and limits. Do not treat the workflow trigger as proof of success.
