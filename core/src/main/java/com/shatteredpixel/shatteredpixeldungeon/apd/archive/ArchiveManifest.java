@@ -142,6 +142,7 @@ public final class ArchiveManifest {
 				switch (p[0]){
 					case "APD-ARCHIVE":
 						m.format = Integer.parseInt(p[1]);
+						if (m.format < 1) throw new IllegalArgumentException("the archive has an invalid format version (" + m.format + ")");
 						if (m.format > FORMAT) throw new IllegalArgumentException("this archive is from a newer version of APD (format " + m.format + ")");
 						header = true;
 						break;
