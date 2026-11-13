@@ -105,38 +105,46 @@ public class HeroSelectDifficultyFadeDeviceTest {
 
     @Test
     public void difficultyLabelAndAllFiveSegmentsFollowFadeAndRestore() throws Exception {
-        int originalDifficulty = SPDSettings.apdDifficulty();
-        boolean originalIntro = SPDSettings.intro();
-        HeroClass originalClass = GamesInProgress.selectedClass;
+        // Preferences need the live Gdx application; ActivityScenario must initialize it first.
         try (ActivityScenario<AndroidLauncher> scenario = ActivityScenario.launch(AndroidLauncher.class)) {
             long end = System.currentTimeMillis() + 120000;
             while ((Gdx.app == null || Game.scene() == null) && System.currentTimeMillis() < end) Thread.sleep(200);
-            assertNotNull("actual game has launched", Game.scene());
-            onRender(() -> {
-                SPDSettings.intro(false);
-                ShatteredPixelDungeon.switchNoFade(HeroSelectScene.class);
-            });
-            waitForHeroScene();
-            onRender(() -> {
-                try {
-                    Method pick = HeroSelectScene.class.getDeclaredMethod("setSelectedHero", HeroClass.class);
-                    pick.setAccessible(true);
-                    pick.invoke(Game.scene(), HeroClass.WARRIOR);
-                } catch (Exception e) { throw new RuntimeException(e); }
-            });
-            setFade(2f, true);
-            capture("fully-visible");
-            setFade(0.5f, true);
-            capture("half-faded");
-            setFade(0f, false);
-            capture("fully-faded");
-            setFade(2f, true);
-            capture("restored");
-            assertEquals("no change to the next run's difficulty", originalDifficulty, SPDSettings.apdDifficulty());
-        } finally {
-            SPDSettings.apdDifficulty(originalDifficulty);
-            SPDSettings.intro(originalIntro);
-            GamesInProgress.selectedClass = originalClass;
+            assertNotNull("actual game has launched", Gdx.app);
+            assertNotNull("actual game scene has started", Game.scene());
+
+            final int originalDifficulty = SPDSettings.apdDifficulty();
+            final boolean originalIntro = SPDSettings.intro();
+            final HeroClass originalClass = GamesInProgress.selectedClass;
+            try {
+                onRender(() -> {
+                    SPDSettings.intro(false);
+                    ShatteredPixelDungeon.switchNoFade(HeroSelectScene.class);
+                });
+                waitForHeroScene();
+                onRender(() -> {
+                    try {
+                        Method pick = HeroSelectScene.class.getDeclaredMethod("setSelectedHero", HeroClass.class);
+                        pick.setAccessible(true);
+                        pick.invoke(Game.scene(), HeroClass.WARRIOR);
+                    } catch (Exception e) { throw new RuntimeException(e); }
+                });
+                setFade(2f, true);
+                capture("fully-visible");
+                setFade(0.5f, true);
+                capture("half-faded");
+                setFade(0f, false);
+                capture("fully-faded");
+                setFade(2f, true);
+                capture("restored");
+                assertEquals("no change to the next run's difficulty", originalDifficulty, SPDSettings.apdDifficulty());
+            } finally {
+                // Restore while the launcher still owns Gdx.app, not after ActivityScenario closes.
+                onRender(() -> {
+                    SPDSettings.apdDifficulty(originalDifficulty);
+                    SPDSettings.intro(originalIntro);
+                    GamesInProgress.selectedClass = originalClass;
+                });
+            }
         }
     }
 }
