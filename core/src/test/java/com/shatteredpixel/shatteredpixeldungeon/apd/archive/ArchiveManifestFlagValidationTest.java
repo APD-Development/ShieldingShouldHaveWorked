@@ -43,18 +43,18 @@ public class ArchiveManifestFlagValidationTest {
 	// Recalculate the real SHA-256, so only field validation can refuse the input.
 	private static byte[] withFlags( ArchiveManifest manifest, String sealed, String redacted ){
 		StringBuilder body = new StringBuilder();
-		for (String line : manifest.encode().split("\\n")){
-			if (line.startsWith("check\\t")) break;
-			if (line.startsWith("file\\t")){
-				String[] p = line.split("\\t", -1);
+		for (String line : manifest.encode().split("\n")){
+			if (line.startsWith("check\t")) break;
+			if (line.startsWith("file\t")){
+				String[] p = line.split("\t", -1);
 				p[7] = sealed;
 				p[8] = redacted;
-				line = String.join("\\t", p);
+				line = String.join("\t", p);
 			}
-			body.append(line).append('\\n');
+			body.append(line).append('\n');
 		}
-		String text = body + "check\\t"
-				+ ArchiveManifest.sha256Hex(body.toString().getBytes(ArchiveManifest.utf8())) + "\\n";
+		String text = body + "check\t"
+				+ ArchiveManifest.sha256Hex(body.toString().getBytes(ArchiveManifest.utf8())) + "\n";
 		return text.getBytes(ArchiveManifest.utf8());
 	}
 
