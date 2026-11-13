@@ -52,6 +52,17 @@ public final class PlaybackGroup extends Group {
         return Game.elapsed * speed;
     }
 
+    /** Playback multiplier applied to the personal camera's pan and shake only. */
+    public static float personalFactor() {
+        return ApdFeatures.testBuild() ? speed : 1f;
+    }
+
+    /** Visual-only elapsed time for effects that are personal-preview accelerated.
+     * Never apply to actor scheduling, turn costs, hunger or buff clocks. */
+    public static float personalVisualElapsed() {
+        return ApdFeatures.testBuild() ? Game.elapsed * speed : Game.elapsed;
+    }
+
     /** Scale walking/traversal durations, not frame time or other animations. */
     public static float movementDuration(float normalDuration) {
         return normalDuration / speed;

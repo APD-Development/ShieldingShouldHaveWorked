@@ -130,7 +130,7 @@ public class WandOfPrismaticLight extends DamageWand {
 				}
 			}
 
-			CellEmitter.center(c).burst( RainbowParticle.BURST, Random.IntRange( 1, 2 ) );
+			CellEmitter.combatCenter(c).burst( RainbowParticle.BURST, Random.IntRange( 1, 2 ) );
 		}
 		if (noticed)
 			Sample.INSTANCE.play( Assets.Sounds.SECRET );

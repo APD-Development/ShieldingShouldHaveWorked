@@ -182,7 +182,7 @@ public class Bomb extends Item {
 			ArrayList<Char> affectedChars = new ArrayList<>();
 			
 			if (Dungeon.level.heroFOV[cell]) {
-				CellEmitter.center(cell).burst(BlastParticle.FACTORY, 30);
+				CellEmitter.combatCenter(cell).burst(BlastParticle.FACTORY, 30);
 			}
 			
 			boolean terrainAffected = false;

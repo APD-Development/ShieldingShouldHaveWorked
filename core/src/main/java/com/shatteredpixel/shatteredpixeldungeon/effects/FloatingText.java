@@ -270,14 +270,22 @@ public class FloatingText extends RenderedTextBlock {
 	/** Only numeric combat/healing values accelerate; ordinary words remain 1x.
 	 * This predicate is presentation-only, never an interpretation of damage. */
 	static boolean isNumericFeedback(String message) {
-		if (message == null || message.length() == 0) return false;
-		boolean digit = false;
-		for (int i = 0; i < message.length(); i++) {
+		if (message == null || message.isEmpty()) return false;
+		int start = (message.charAt(0) == '+' || message.charAt(0) == '-') ? 1 : 0;
+		if (start == message.length()) return false;
+		boolean decimal = false;
+		for (int i = start; i < message.length(); i++) {
 			char c = message.charAt(i);
-			if (c >= '0' && c <= '9') digit = true;
-			else if (c != '+' && c != '-' && c != '.' && c != ',') return false;
+			if (c >= '0' && c <= '9') continue;
+			if (c == '.' || c == ',') {
+				if (c == '.' && decimal) return false;
+				if (i == start || i == message.length() - 1
+						|| message.charAt(i-1) < '0' || message.charAt(i-1) > '9'
+						|| message.charAt(i+1) < '0' || message.charAt(i+1) > '9') return false;
+				if (c == '.') decimal = true;
+			} else return false;
 		}
-		return digit;
+		return true;
 	}
 
 	private static void push( FloatingText txt, int key ) {

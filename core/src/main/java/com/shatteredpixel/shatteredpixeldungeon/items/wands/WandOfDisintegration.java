@@ -113,7 +113,7 @@ public class WandOfDisintegration extends DamageWand {
 				
 			}
 			
-			CellEmitter.center( c ).burst( PurpleParticle.BURST, Random.IntRange( 1, 2 ) );
+			CellEmitter.combatCenter( c ).burst( PurpleParticle.BURST, Random.IntRange( 1, 2 ) );
 		}
 		
 		if (terrainAffected) {

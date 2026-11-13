@@ -76,7 +76,7 @@ public class Lightning extends Group {
 	
 	@Override
 	public void update() {
-		if ((life -= Game.elapsed) < 0) {
+		if ((life -= com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup.personalVisualElapsed()) < 0) {
 			
 			killAndErase();
 			if (callback != null) {

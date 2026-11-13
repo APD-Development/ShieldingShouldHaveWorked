@@ -188,7 +188,7 @@ public class WandOfLightning extends DamageWand {
 			arc(ch);
 		} else {
 			arcs.add( new Lightning.Arc(curUser.sprite.center(), DungeonTilemap.raisedTileCenterToWorld(bolt.collisionPos)));
-			CellEmitter.center( cell ).burst( SparkParticle.FACTORY, 3 );
+			CellEmitter.combatCenter( cell ).burst( SparkParticle.FACTORY, 3 );
 		}
 
 		//don't want to wait for the effect before processing damage.

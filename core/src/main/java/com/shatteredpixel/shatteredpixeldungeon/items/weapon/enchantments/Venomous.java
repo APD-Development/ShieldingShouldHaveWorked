@@ -54,7 +54,7 @@ public class Venomous extends Weapon.Enchantment {
 			if (poison != null){
 				poison.extendAttributed(powerMulti*((level/2f)+3),attacker);
 			}
-			CellEmitter.center(defender.pos).burst(PoisonParticle.SPLASH, 5);
+			CellEmitter.combatCenter(defender.pos).burst(PoisonParticle.SPLASH, 5);
 
 		}
 

@@ -199,7 +199,9 @@ public class GameScene extends PixelScene {
 	private Group mobs;
 	private Group floorEmitters;
 	private Group emitters;
+	private Group combatEmitters;
 	private Group effects;
+	private Group combatEffects;
 	private Group gases;
 	private Group spells;
 	private Group statuses;
@@ -319,7 +321,9 @@ public class GameScene extends PixelScene {
 		}
 
 		emitters = com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup.normalSpeedGroup();
+		combatEmitters = com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup.personalSpeedGroup();
 		effects = com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup.normalSpeedGroup();
+		combatEffects = com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup.personalSpeedGroup();
 		healthIndicators = com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup.personalSpeedGroup();
 		emoicons = com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup.normalSpeedGroup();
 		overFogEffects = com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup.normalSpeedGroup();
@@ -355,7 +359,9 @@ public class GameScene extends PixelScene {
 		add (wallBlocking);
 
 		add( emitters );
+		add( combatEmitters );
 		add( effects );
+		add( combatEffects );
 
 		gases = com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup.normalSpeedGroup();
 		add( gases );
@@ -833,6 +839,7 @@ public class GameScene extends PixelScene {
 		}
 
 		Emitter.freezeEmitters = false;
+		if (Camera.main != null) Camera.main.visualTimeScale = 1f;
 		
 		scene = null;
 		Badges.saveGlobal();
@@ -895,6 +902,7 @@ public class GameScene extends PixelScene {
 	@Override
 	public synchronized void update() {
         com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup.speed(SPDSettings.playbackSpeed());
+		if (Camera.main != null) Camera.main.visualTimeScale = com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup.personalFactor();
 		lastOffset = null;
 
 		if (updateItemDisplays){
@@ -1266,6 +1274,11 @@ public class GameScene extends PixelScene {
 	public static void effect( Visual effect ) {
 		if (scene != null) scene.effects.add( effect );
 	}
+	/** Only visual shields/barriers and explicit combat FX, never ambient or status halos. */
+	public static void combatEffect(Visual effect) {
+		if (scene != null) (scene.combatEffects != null ? scene.combatEffects : scene.effects).add(effect);
+	}
+
 
 	public static void effectOverFog( Visual effect ) {
 		if (scene != null) scene.overFogEffects.add( effect );
@@ -1325,6 +1338,18 @@ public class GameScene extends PixelScene {
 		} else {
 			return null;
 		}
+	}
+
+	/** Explicit impact particles only. Keep ambient, traps and wells on 1x. */
+	public static synchronized Emitter combatEmitter() {
+		if (scene == null) return null;
+		// Headless combat tests may retain an older partial scene fixture.
+		// Preserve the previously existing normal emitter in that case.
+		Group layer = scene.combatEmitters != null ? scene.combatEmitters : scene.emitters;
+		if (layer == null) return null;
+		Emitter emitter = (Emitter) layer.recycle(Emitter.class);
+		emitter.revive();
+		return emitter;
 	}
 
 	// Well-use particles share the 1x gas/well visual layer, rather than

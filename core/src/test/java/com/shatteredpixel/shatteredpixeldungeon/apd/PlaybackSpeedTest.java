@@ -205,6 +205,70 @@ public class PlaybackSpeedTest {
   }
   assertEquals(0.0001f,PlaybackGroup.movementDuration(.1f),.000001f);
  }
+ @Test public void partialHeadlessCombatFixtureRetainsExistingEmitterWithoutNewLayer() throws Exception {
+  Field sf=GameScene.class.getDeclaredField("scene");
+  Field ef=GameScene.class.getDeclaredField("emitters");
+  sf.setAccessible(true);ef.setAccessible(true);
+  Object old=sf.get(null);
+  GameScene scene=new GameScene();
+  Group original=PlaybackGroup.normalSpeedGroup();
+  ef.set(scene,original);
+  try {
+   sf.set(null,scene);
+   Emitter impact=GameScene.combatEmitter();
+   assertNotNull(impact);
+   assertSame("No game outcome depends on a missing visual-only group",original,impact.parent);
+  } finally {sf.set(null,old);}
+ }
+ @Test public void combatEmitterUsesSeparatePersonalLayerFromAmbientAndMagicalWells() throws Exception{
+  Field sf=GameScene.class.getDeclaredField("scene");
+  Field cf=GameScene.class.getDeclaredField("combatEmitters");
+  Field gf=GameScene.class.getDeclaredField("gases");
+  sf.setAccessible(true);cf.setAccessible(true);gf.setAccessible(true);
+  Object old=sf.get(null);
+  GameScene fixture=new GameScene();
+  ApdFeatures.parse("testBuild\\n".replace("\\n","\n"));
+  Group combat=PlaybackGroup.personalSpeedGroup(),ambient=PlaybackGroup.normalSpeedGroup();
+  cf.set(fixture,combat);gf.set(fixture,ambient);
+  try{
+   sf.set(null,fixture);PlaybackGroup.speed(5);Game.elapsed=.016f;
+   Emitter hit=GameScene.combatEmitter();
+   Emitter well=GameScene.normalSpeedEmitter();
+   assertSame(combat,hit.parent);assertSame(ambient,well.parent);
+   combat.remove(hit);ambient.remove(well);
+   float[] hitElapsed={0},ambientElapsed={0};
+   combat.add(observe(hitElapsed));ambient.add(observe(ambientElapsed));
+   combat.update();ambient.update();
+   assertEquals(.256f,hitElapsed[0],.0001f);
+   assertEquals(.016f,ambientElapsed[0],0f);
+   assertEquals(.016f,Game.elapsed,0f);
+  } finally {sf.set(null,old);}
+ }
+ @Test public void personalCameraFactorNeverChangesAlphaOrActorTiming(){
+  float originalClock=Actor.now(),originalScale=Game.timeScale;
+  float[] factors={.5f,1f,2f,4f,8f,16f,32f,64f,100f,1000f};
+  for(int mode=0;mode<factors.length;mode++){
+   PlaybackGroup.speed(mode);Game.elapsed=.016f;
+   ApdFeatures.parse("testBuild\\n".replace("\\n","\n"));
+   assertEquals(factors[mode],PlaybackGroup.personalFactor(),.0001f);
+   ApdFeatures.parse("extendedPlayback\\n".replace("\\n","\n"));
+   assertEquals(1f,PlaybackGroup.personalFactor(),0f);
+   assertEquals(.016f,Game.elapsed,0f);
+  }
+  assertEquals(originalClock,Actor.now(),0f);
+  assertEquals(originalScale,Game.timeScale,0f);
+ }
+ @Test public void onlyPrivatePickupVisualTimeAcceleratesAndRestoresSourceFrameClock(){
+  float[] factors={.5f,1f,2f,4f,8f,16f,32f,64f,100f,1000f};
+  for(int mode=0;mode<factors.length;mode++){
+   PlaybackGroup.speed(mode);Game.elapsed=.016f;
+   ApdFeatures.parse("testBuild\\n".replace("\\n","\n"));
+   assertEquals(.016f*factors[mode],PlaybackGroup.personalVisualElapsed(),.0001f);
+   ApdFeatures.parse("extendedPlayback\\n".replace("\\n","\n"));
+   assertEquals("Alpha stays unchanged",.016f,PlaybackGroup.personalVisualElapsed(),0f);
+   assertEquals("Original scene elapsed stays unchanged",.016f,Game.elapsed,0f);
+  }
+ }
  @Test public void personalPlaybackGroupsAreAcceleratedOnlyInDeveloperEdition() {
   Game.elapsed=.016f;
   for(int mode=0;mode<PlaybackGroup.choiceCount();mode++){

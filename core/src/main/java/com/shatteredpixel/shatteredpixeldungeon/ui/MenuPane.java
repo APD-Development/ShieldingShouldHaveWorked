@@ -288,7 +288,7 @@ public class MenuPane extends Component {
 			super.update();
 
 			if (flashingPage != null){
-				journalIcon.am = (float)Math.abs(Math.cos( StatusPane.FLASH_RATE * (time += Game.elapsed) ));
+				journalIcon.am = (float)Math.abs(Math.cos( StatusPane.FLASH_RATE * (time += com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup.personalVisualElapsed()) ));
 				keyIcon.am = journalIcon.am;
 				bg.brightness(0.5f + journalIcon.am);
 				if (time >= Math.PI/StatusPane.FLASH_RATE) {

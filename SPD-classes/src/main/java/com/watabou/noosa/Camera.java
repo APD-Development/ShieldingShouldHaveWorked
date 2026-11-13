@@ -202,6 +202,8 @@ public class Camera extends Gizmo {
 	//camera moves at a speed such that it will pan to its current target in 1/intensity seconds
 	//keep in mind though that this speed is constantly decreasing, so actual pan time is higher
 	float panIntensity = 0f;
+	/** Visual-only camera pan and shake rate; independent of scene and actor clocks. */
+	public float visualTimeScale = 1f;
 
 	//what percentage of the screen to ignore when follow panning.
 	// 0% means always keep in the center, 50% would mean pan until target is within center 50% of screen
@@ -243,13 +245,13 @@ public class Camera extends Gizmo {
 				panY = 0;
 			}
 
-			panX *= Math.min(1f, Game.elapsed * panIntensity);
-			panY *= Math.min(1f, Game.elapsed * panIntensity);
+			panX *= Math.min(1f, Game.elapsed * visualTimeScale * panIntensity);
+			panY *= Math.min(1f, Game.elapsed * visualTimeScale * panIntensity);
 
 			scroll.offset(panX, panY);
 		}
 		
-		if ((shakeTime -= Game.elapsed) > 0) {
+		if ((shakeTime -= Game.elapsed * visualTimeScale) > 0) {
 			float damping = shakeTime / shakeDuration;
 			shakeX = Random.Float( -shakeMagX, +shakeMagX ) * damping;
 			shakeY = Random.Float( -shakeMagY, +shakeMagY ) * damping;

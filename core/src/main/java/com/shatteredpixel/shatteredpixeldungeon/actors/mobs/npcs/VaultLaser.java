@@ -97,7 +97,7 @@ public class VaultLaser extends NPC {
 					ch.damage(Random.NormalIntRange(10, 20), new Eye.DeathGaze());
 					if (ch.sprite.visible){
 						ch.sprite.flash();
-						CellEmitter.center( pos ).burst( PurpleParticle.BURST, Random.IntRange( 1, 2 ) );
+						CellEmitter.combatCenter( pos ).burst( PurpleParticle.BURST, Random.IntRange( 1, 2 ) );
 					}
 					if (ch == Dungeon.hero){
 						Sample.INSTANCE.play( Assets.Sounds.RAY );

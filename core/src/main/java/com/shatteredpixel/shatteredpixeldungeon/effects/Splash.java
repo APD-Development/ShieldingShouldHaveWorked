@@ -37,6 +37,34 @@ public class Splash {
 		at( DungeonTilemap.tileCenterToWorld( cell ), color, n );
 	}
 	
+	/** Combat-hit splashes are distinct from terrain, water and status effects. */
+	public static void combatAt(PointF p, final int color, int n) {
+		if (n <= 0) return;
+		Emitter emitter = GameScene.combatEmitter();
+		if (emitter == null) return;
+		emitter.pos(p);
+		if (!FACTORIES.containsKey(color)) FACTORIES.put(color, new SplashFactory());
+		SplashFactory fact = FACTORIES.get(color);
+		fact.color = color;
+		fact.dir = -3.1415926f / 2;
+		fact.cone = 3.1415926f;
+		emitter.burst(fact,n);
+	}
+
+	/** Directional blood/hit splashes use only personal combat visual time. */
+	public static void combatAt(PointF p, float dir, float cone, int color, int n) {
+		if (n <= 0) return;
+		Emitter emitter = GameScene.combatEmitter();
+		if (emitter == null) return;
+		emitter.pos(p);
+		if (!FACTORIES.containsKey(color)) FACTORIES.put(color, new SplashFactory());
+		SplashFactory fact = FACTORIES.get(color);
+		fact.color = color;
+		fact.dir = dir;
+		fact.cone = cone;
+		emitter.burst(fact,n);
+	}
+
 	public static void at( PointF p, final int color, int n ) {
 		
 		if (n <= 0) {
