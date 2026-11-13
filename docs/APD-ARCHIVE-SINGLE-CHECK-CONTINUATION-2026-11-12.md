@@ -13,3 +13,14 @@ Add checksum-valid manifest regression cases plus a ZIP import safety regression
 ### Execution checkpoint
 
 At claim time: no production change, tests, APK build, signer test, native device acceptance, release or publication has occurred. APD464 is an earlier published release; this package must not overwrite it or independently claim a new APK. Use an isolated PR, inspect live heads, and merge only after exact-source verified successful CI via non-force expected-head integration. Record all actual results, blockers and next work below.
+
+## Source and verification checkpoint (Thursday, November 12, 2026, 10:38 PM EST)
+
+- Initial work claim `701be480227c2f24af034de0529ef08bee33d91c`.
+- Production parser fix `bb65aa47cd32e76f351653802dc81f3d179b594f`: explicit refusal of a second `check` record in the protected body, without modifying the normal final checksum computation or format.
+- New four-method regression class `22aa5bbce86b8b763f1142c0e236f293c89ea9b8`: duplicated correct final check, conflicting earlier check with a newly correct final check, standard/unknown metadata compatibility, and ZIP refusal preserving existing history.
+- Dedicated full core and desktop/Android Java source gate at `4a1e3710658282d70e81e40531c67f585f82a1e5`; [Actions run 43360199699](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/43360199699) was **in progress** at this checkpoint, not yet a passed test claim.
+- [Draft PR #72](https://github.com/APD-Development/ShieldingShouldHaveWorked/pull/72), four scoped paths only. Compare with original authoritative head: four commits ahead, zero behind, no unrelated files.
+- No APK assembled or signed, no native device tests run, no new release published, no recurring APD tasks changed. Prior APD464 remains intact.
+
+Next: obtain terminal exact-source CI evidence including actual JUnit counts; fix evidenced failures if any. Only then re-read live authoritative target, open PR claims and tested source head, and integrate non-force with expected-head guard. Preserve failure records and independent native/release work.
