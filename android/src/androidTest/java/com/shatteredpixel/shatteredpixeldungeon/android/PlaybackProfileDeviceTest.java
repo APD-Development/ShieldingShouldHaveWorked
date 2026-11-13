@@ -72,7 +72,7 @@ public class PlaybackProfileDeviceTest {
                     expectGroup(scene,"effects",false);
                     expectGroup(scene,"floorEmitters",false);
                     for(String n:new String[]{"heaps","spells","checkedCells","targetedCells",
-                            "healthIndicators","combatEmitters"}) expectGroup(scene,n,personal);
+                            "healthIndicators","combatEmitters","combatEffects"}) expectGroup(scene,n,personal);
                     if(personal) {
                         expectGroup(scene,"combatStatuses",true);
                         assertNotSame("Combat labels must be separate from 1x statuses",

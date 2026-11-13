@@ -436,12 +436,13 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 				break;
 			case HEALING:
 				if (healing != null) healing.on = false;
-				healing = emitter();
+				healing = GameScene.combatEmitter();
+				healing.pos(this);
 				healing.pour(Speck.factory(Speck.HEALING), 0.5f);
 				break;
 			case SHIELDED:
 				if (shield != null) shield.killAndErase();
-				GameScene.effect(shield = new ShieldHalo(this));
+				GameScene.combatEffect(shield = new ShieldHalo(this));
 				break;
 			case HEARTS:
 				if (hearts != null) hearts.on = false;
