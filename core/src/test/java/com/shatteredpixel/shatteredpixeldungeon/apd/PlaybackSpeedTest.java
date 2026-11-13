@@ -205,6 +205,17 @@ public class PlaybackSpeedTest {
   }
   assertEquals(0.0001f,PlaybackGroup.movementDuration(.1f),.000001f);
  }
+ @Test public void onlyPrivatePickupVisualTimeAcceleratesAndRestoresSourceFrameClock(){
+  float[] factors={.5f,1f,2f,4f,8f,16f,32f,64f,100f,1000f};
+  for(int mode=0;mode<factors.length;mode++){
+   PlaybackGroup.speed(mode);Game.elapsed=.016f;
+   ApdFeatures.parse("testBuild\\n".replace("\\n","\n"));
+   assertEquals(.016f*factors[mode],PlaybackGroup.personalVisualElapsed(),.0001f);
+   ApdFeatures.parse("extendedPlayback\\n".replace("\\n","\n"));
+   assertEquals("Alpha stays unchanged",.016f,PlaybackGroup.personalVisualElapsed(),0f);
+   assertEquals("Original scene elapsed stays unchanged",.016f,Game.elapsed,0f);
+  }
+ }
  @Test public void personalPlaybackGroupsAreAcceleratedOnlyInDeveloperEdition() {
   Game.elapsed=.016f;
   for(int mode=0;mode<PlaybackGroup.choiceCount();mode++){

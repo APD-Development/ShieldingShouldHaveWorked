@@ -1021,9 +1021,13 @@ public class Toolbar extends Component {
 		
 		@Override
 		public void update() {
-			super.update();
-			
-			if ((left -= Game.elapsed) <= 0) {
+			// Only the flying pickup sprite follows personal playback. Input,
+			// toolbar buttons and other UI remain on the original frame clock.
+			float originalElapsed = Game.elapsed;
+			try {
+				Game.elapsed = com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup.personalVisualElapsed();
+				super.update();
+				if ((left -= Game.elapsed) <= 0) {
 				
 				visible =
 				active =
@@ -1036,6 +1040,9 @@ public class Toolbar extends Component {
 				
 				x = startX*p + endX*(1-p);
 				y = startY*p + endY*(1-p);
+				}
+			} finally {
+				Game.elapsed = originalElapsed;
 			}
 		}
 	}
