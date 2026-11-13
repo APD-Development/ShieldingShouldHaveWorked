@@ -141,6 +141,8 @@ public final class ArchiveManifest {
 			try {
 				switch (p[0]){
 					case "APD-ARCHIVE":
+						// Format 1 has one authoritative header; later headers must not replace it.
+						if (header) throw new IllegalArgumentException("the manifest has repeated headers");
 						m.format = Integer.parseInt(p[1]);
 						if (m.format < 1) throw new IllegalArgumentException("the archive has an invalid format version (" + m.format + ")");
 						if (m.format > FORMAT) throw new IllegalArgumentException("this archive is from a newer version of APD (format " + m.format + ")");
