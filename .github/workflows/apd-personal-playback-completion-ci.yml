@@ -82,9 +82,11 @@ jobs:
           reports=[ET.parse(p).getroot() for p in Path('core/build/test-results/test').glob('TEST-*.xml')]
           assert reports,'Missing reports'
           totals={k:sum(int(x.get(k,0)) for x in reports) for k in ('tests','failures','errors','skipped')}
-          assert totals['tests']>=3328 and all(totals[k]==0 for k in ('failures','errors','skipped')),totals
+          assert totals['tests']>=3330 and all(totals[k]==0 for k in ('failures','errors','skipped')),totals
           cases={c.get('name') for r in reports for c in r.findall('testcase')}
           for n in ('combatEmitterUsesSeparatePersonalLayerFromAmbientAndMagicalWells','partialHeadlessCombatFixtureRetainsExistingEmitterWithoutNewLayer','personalCameraFactorNeverChangesAlphaOrActorTiming','onlyPrivatePickupVisualTimeAcceleratesAndRestoresSourceFrameClock','personalPlaybackGroupsAreAcceleratedOnlyInDeveloperEdition'):
+              assert n in cases,n
+          for n in ('numericDamageAndHealingLabelsUseCombatLayer','countdownsStatusWordsAndMessagesStayAtNormalSpeed'):
               assert n in cases,n
           print(totals,'suites',len(reports))
           PY
