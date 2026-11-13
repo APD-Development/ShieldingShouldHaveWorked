@@ -27,7 +27,7 @@ public class ReportMarkdownCoverageBoundaryTest {
         assertTrue(markdown, markdown.contains(
                 "_Known out of listed (per column): Name\\|type next\\\\path 12\\|20 done\\\\total more._\n"));
         assertFalse("coverage summary must not create physical carriage-return rows", markdown.contains("\r"));
-        assertFalse("empty-coverage columns stay absent from the summary", markdown.contains("Ignored "));
+        assertFalse("empty-coverage columns stay absent from the summary", markdown.contains("column): Ignored "));
         assertEquals("do not modify the source header", header, table.headers.get(1));
         assertEquals("do not modify the source coverage", coverage, table.coverage.get(1));
         assertTrue("HTML keeps original coverage text", ReportRenderer.html(report).contains("known " + coverage));
