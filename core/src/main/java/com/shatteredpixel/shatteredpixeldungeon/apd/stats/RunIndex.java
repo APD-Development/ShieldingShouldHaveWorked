@@ -128,7 +128,7 @@ public final class RunIndex {
 		// A filename can be a symlink to another run or outside the configured history.
 		// Match the canonical direct-child rule used by destructive log recovery.
 		if (!isDirectRunLog(log)) throw new IOException("run index refresh refused linked log");
-		RunIndexEntry e = RunIndexEntry.describe(log, runId);
+		RunIndexEntry e = describeDirectLog(log, runId);
 		entries.put(runId, e);
 		return e;
 	}
@@ -146,13 +146,23 @@ public final class RunIndex {
 			if (!f.isFile() || !isValidLogFileName(name) || !isDirectRunLog(f)) continue;
 			String stem = name.substring(0, name.length() - LOG_SUFFIX.length());
 			try {
-				RunIndexEntry e = RunIndexEntry.describe(f, stem);
+				RunIndexEntry e = describeDirectLog(f, stem);
 				entries.put(e.runId, e);
 			} catch (Throwable t){
 				entries.put(stem, new RunIndexEntry(stem, null, false, name, 0, RunIndexEntry.Status.UNREADABLE, 0, 0, 0,
 						f.length()));
 			}
 		}
+	}
+
+	// The on-disk filename is the run's identity for the derived index. A copied
+	// log whose readable header names another run remains visible as unreadable,
+	// rather than impersonating that other run or overwriting its summary.
+	private static RunIndexEntry describeDirectLog( File log, String fileRunId ) throws IOException {
+		RunIndexEntry described = RunIndexEntry.describe(log, fileRunId);
+		if (fileRunId.equals(described.runId)) return described;
+		return new RunIndexEntry(fileRunId, null, false, log.getName(), 0,
+				RunIndexEntry.Status.UNREADABLE, 0, 0, 0, log.length());
 	}
 
 	// Allow ordinary symlinked storage roots, but never treat a linked individual log
@@ -255,6 +265,8 @@ public final class RunIndex {
 			int len = src.readUnsignedInt();
 			RunIndexEntry e = RunIndexEntry.decode(src.readBytes(len));
 			if (!isValidLogFileName(e.logFile)) throw new FormatException("invalid indexed run log filename");
+			String fileRunId = e.logFile.substring(0, e.logFile.length() - LOG_SUFFIX.length());
+			if (!fileRunId.equals(e.runId)) throw new FormatException("indexed run ID differs from log filename");
 			// Duplicate identities in a valid-CRC derived index cannot be trusted: the
 			// later summary would silently replace the first and hide original history.
 			if (entries.containsKey(e.runId)) throw new FormatException("duplicate run index entry");
