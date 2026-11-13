@@ -1,0 +1,11 @@
+# APD Markdown orphan-coverage boundary, November 13, 2026 (Eastern)
+
+## Independent source work claim, approximately 05:13 EST
+
+Continue the owner's existing APD repository and regular ChatGPT development, not a new game or separately owned implementation. Before editing, read AGENTS.md, current development-branch head, current open PRs/work claims, the final Markdown coverage receipt, recent source CI and releases. The authoritative branch `codex/apd-phone-fixes-2026-10-09` was verified at `c519643dece90e80b51d12dbe7b132a9e4ab122e`. This isolated work branch was created directly from that commit. No live open PR owns malformed report-table coverage-list resilience. Draft playback, HeroSelect, release/native, GPL and challenge work are independent.
+
+**Source-evidenced failure:** `Report.Table.headers` and `Report.Table.coverage` are independently mutable public lists. HTML already bounds coverage lookup by headers, but `ReportRenderer.markdown` loops over `t.coverage.size()` and unconditionally indexes `t.headers.get(i)`. A report with one valid header and an extra orphan coverage entry therefore throws `IndexOutOfBoundsException`, preventing export. This is a source-deduced input-shape defect, not a claimed observed incident; legitimate generated reports are expected to have parallel lists.
+
+**Approved bounded reliability scope:** Make Markdown summarize coverage for header-backed columns only. Preserve ordinary table text, valid coverage strings, empty coverage handling, HTML, CSV, plain text, source report values, gameplay, balance, saves, history, scores, signing, app IDs, editions, release gates and all other work packages. Add focused test cases for an extra coverage item and legitimate/absent coverage. Verify exact-source full core tests and Android/desktop Java compilation on an isolated CI workflow. Integrate only after terminal passing evidence and a fresh expected-head non-force check. Never publish an APK from a source-only test.
+
+**Initial execution state:** branch created. Production change, tests and source CI still pending; no APK assembled or published by this execution. This record must be completed with exact commit IDs, tested source, verified outcomes, blockers and next safe work before ending.
