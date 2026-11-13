@@ -220,6 +220,7 @@ public class PlaybackSpeedTest {
    Emitter hit=GameScene.combatEmitter();
    Emitter well=GameScene.normalSpeedEmitter();
    assertSame(combat,hit.parent);assertSame(ambient,well.parent);
+   combat.remove(hit);ambient.remove(well);
    float[] hitElapsed={0},ambientElapsed={0};
    combat.add(observe(hitElapsed));ambient.add(observe(ambientElapsed));
    combat.update();ambient.update();
