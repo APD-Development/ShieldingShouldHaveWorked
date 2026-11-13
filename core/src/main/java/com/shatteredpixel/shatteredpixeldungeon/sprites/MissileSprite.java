@@ -172,9 +172,22 @@ public class MissileSprite extends ItemSprite implements Tweener.Listener {
 			speed *= 1.5f;
 		}
 		
-		PosTweener tweener = new PosTweener( this, to, d.length() / speed );
+		PosTweener tweener = new PosTweener( this, to, d.length() / (speed * com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup.personalFactor()) );
 		tweener.listener = this;
 		parent.add( tweener );
+	}
+
+	@Override
+	public void update() {
+		// Spin and sprite frames follow projectile flight speed only in
+		// the owner's Developer edition. Restore shared time on every exit.
+		float elapsed = com.watabou.noosa.Game.elapsed;
+		try {
+			com.watabou.noosa.Game.elapsed = com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup.personalVisualElapsed();
+			super.update();
+		} finally {
+			com.watabou.noosa.Game.elapsed = elapsed;
+		}
 	}
 
 	@Override

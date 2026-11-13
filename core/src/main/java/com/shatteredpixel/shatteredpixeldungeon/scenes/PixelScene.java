@@ -504,7 +504,7 @@ public class PixelScene extends Scene {
 			
 			super.update();
 			
-			if ((time -= Game.elapsed) <= 0) {
+			if ((time -= com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup.personalVisualElapsed()) <= 0) {
 				alpha( 0f );
 				parent.remove( this );
 				destroy();

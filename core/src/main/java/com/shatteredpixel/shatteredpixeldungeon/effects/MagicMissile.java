@@ -302,15 +302,23 @@ public class MagicMissile extends Emitter {
 
 	@Override
 	public void update() {
-		super.update();
-		if (on) {
-			float d = Game.elapsed;
-			x += sx * d;
-			y += sy * d;
-			if ((time -= d) <= 0) {
-				on = false;
-				if (callback != null ) callback.call();
+		// An explicit wand/magic bolt is a combat projectile, not ambient
+		// fog, well, gas, plant or status-effect playback.
+		float elapsed = Game.elapsed;
+		try {
+			Game.elapsed = com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup.personalVisualElapsed();
+			super.update();
+			if (on) {
+				float d = Game.elapsed;
+				x += sx * d;
+				y += sy * d;
+				if ((time -= d) <= 0) {
+					on = false;
+					if (callback != null ) callback.call();
+				}
 			}
+		} finally {
+			Game.elapsed = elapsed;
 		}
 	}
 	
