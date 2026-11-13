@@ -206,6 +206,10 @@ public final class ArchiveManifest {
 						if (m.files.size() > MAX_FILES) throw new IllegalArgumentException("the manifest lists too many files");
 						break;
 					}
+					case "check":
+						// The sole checksum belongs after the body, never inside it.
+						// A second valid final checksum must not disguise an earlier check record.
+						throw new IllegalArgumentException("the manifest has repeated checksums");
 					case "note": m.notes.add(p.length > 1 ? p[1] : ""); break;
 					case "count":
 						// The format-1 writer emits exactly one totals record. A second
