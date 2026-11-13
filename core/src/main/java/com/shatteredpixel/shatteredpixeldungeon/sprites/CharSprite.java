@@ -341,7 +341,7 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 	
 	public void burst( final int color, int n ) {
 		if (visible) {
-			Splash.at( center(), color, n );
+			Splash.combatAt( center(), color, n );
 		}
 	}
 	
@@ -349,7 +349,7 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 		if (visible) {
 			PointF c = center();
 			int n = (int)Math.min( 9 * Math.sqrt( (double)damage / ch.HT ), 9 );
-			Splash.at( c, PointF.angle( from, c ), 3.1415926f / 2, blood(), n );
+			Splash.combatAt( c, PointF.angle( from, c ), 3.1415926f / 2, blood(), n );
 		}
 	}
 
@@ -600,7 +600,7 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 		
 		super.update();
 		
-		if (flashTime > 0 && (flashTime -= Game.elapsed) <= 0) {
+		if (flashTime > 0 && (flashTime -= PlaybackGroup.personalVisualElapsed()) <= 0) {
 			resetColor();
 		}
 
