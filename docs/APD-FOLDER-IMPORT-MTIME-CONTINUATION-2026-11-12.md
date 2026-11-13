@@ -23,3 +23,9 @@ APD464 was independently published before this work; it is not a build containin
 ## Next safe work
 
 Read exact terminal CI and test artifacts, correct any evidenced failures without weakening gates, read current primary and PR head and conflict state, and only then integrate with a non-force expected-head check. Preserve a terminal result and accurate start/end evidence here. Do not claim work continues between executions.
+
+## Exact CI receipt, 8:05 PM EST
+
+[GitHub Actions run 43341753462](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/43341753462), attempt 1, completed **success** on exact source/test/workflow commit `b3d07b1562a96ff4224e6a5bf9c9152d61872f2f`. Decoded job `131611476473` reports `BUILD SUCCESSFUL in 2m 41s`, then the required JUnit gate confirms **3,330 core tests across 480 suites, zero failures, errors or skipped tests**, including both new real-filesystem regressions. Desktop Java classes and Android debug, release and instrumentation Java compilation succeeded. JUnit artifact `13999063709` (`apd-folder-import-mtime-junit`, 537,533 bytes) was uploaded, GitHub SHA-256 `14fdeece464f6c615abfc92bf826d1d76e6b16cc736064ef61faf04fa9551a37`.
+
+The log contains expected exception traces printed by negative-case tests; they do not represent failed test results. CI did not build any APK, run emulator/device native cases, verify an original signer or publish a release. Later documentation-only commits do not change the exact tested application source, regression code or workflow. Preserve the distinction when integrating.
