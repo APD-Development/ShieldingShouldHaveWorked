@@ -79,20 +79,29 @@ public final class ReportRenderer {
 	//---- Markdown ----
 
 	private static String md( String s ){
-		// Preserve literal backslashes and table-pipe escapes. Encode raw HTML openers, code ticks, links and emphasis delimiters so recorded text stays literal; normalize table-cell line endings.
-		return s.replace("\\", "\\\\").replace("|", "\\|").replace("<", "&lt;")
-				.replace("`", "&#96;").replace("[", "&#91;").replace("]", "&#93;")
-				.replace("*", "&#42;").replace("_", "&#95;").replace("~", "&#126;")
-				.replace("\r\n", " ").replace("\r", " ").replace("\n", " ");
+		// Encode paired emphasis markers from data, but keep ordinary uncertainty
+		// marks (~6), single asterisks and underscores intact for older reports.
+		String escaped = s.replace("\\", "\\\\").replace("|", "\\|").replace("<", "&lt;")
+				.replace("`", "&#96;").replace("[", "&#91;").replace("]", "&#93;");
+		if (pairedMarker(s, '*')) escaped = escaped.replace("*", "&#42;");
+		if (pairedMarker(s, '_')) escaped = escaped.replace("_", "&#95;");
+		if (s.contains("~~")) escaped = escaped.replace("~", "&#126;");
+		return escaped.replace("\r\n", " ").replace("\r", " ").replace("\n", " ");
 	}
 
-	// A note is one Markdown blockquote even across lines; literal HTML, links, code ticks and emphasis stay inert.
+	private static boolean pairedMarker( String s, char mark ){
+		int first = s.indexOf(mark);
+		return first >= 0 && s.indexOf(mark, first + 1) >= 0;
+	}
+
+	// Notes intentionally retain existing inline Markdown emphasis (see prior tests).
+	// They remain one blockquote; literal HTML, links and code ticks stay inert.
 	private static String quotedNoteLines( String s ){
 		return String.valueOf(s).replace("<", "&lt;").replace("`", "&#96;").replace("[", "&#91;").replace("]", "&#93;")
-				.replace("*", "&#42;").replace("_", "&#95;").replace("~", "&#126;").replace("\r\n", "\n").replace("\r", "\n").replace("\n", "\n> ");
+				.replace("\r\n", "\n").replace("\r", "\n").replace("\n", "\n> ");
 	}
 
-	public static String markdown( Report r ){
+		public static String markdown( Report r ){
 		StringBuilder sb = new StringBuilder();
 		sb.append("# ").append(md(r.title)).append("\n\n");
 		if (r.synthetic) sb.append("> **").append(SYNTHETIC_NOTICE).append("**\n\n");
