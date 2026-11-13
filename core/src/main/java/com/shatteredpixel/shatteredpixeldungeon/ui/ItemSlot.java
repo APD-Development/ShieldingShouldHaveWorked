@@ -105,12 +105,27 @@ public class ItemSlot extends Button {
 		item( item );
 	}
 		
+	/** The item's appearance can animate faster, but slot input and text
+	 * retain their normal independent clock and interaction timing. */
+	private static class PersonalSlotSprite extends ItemSprite {
+		@Override public synchronized void update() {
+			float elapsed = com.watabou.noosa.Game.elapsed;
+			try {
+				com.watabou.noosa.Game.elapsed =
+					com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup.personalVisualElapsed();
+				super.update();
+			} finally {
+				com.watabou.noosa.Game.elapsed = elapsed;
+			}
+		}
+	}
+
 	@Override
 	protected void createChildren() {
 		
 		super.createChildren();
 		
-		sprite = new ItemSprite();
+		sprite = new PersonalSlotSprite();
 		add(sprite);
 		
 		status = new BitmapText( PixelScene.pixelFont);
