@@ -26,11 +26,13 @@ jobs:
           source=Path('core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/archive/ArchiveExporter.java').read_text()
           tests=Path('core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/archive/ArchiveTerminalEndPrivacyTest.java').read_text()
           assert 'r.sealed && r.status.isClean() && !r.events.isEmpty()' in source
-          assert 'last.type == EventTypes.RUN_END' in source
+          assert 'possibleEnd.type == EventTypes.RUN_END' in source
+          assert 'LegacyEvents.decodeRankingLink(last, r)' in source
           for name in (
               'unsealedLogWithReadableRunEndStillRedactsHiddenFacts',
               'sealedLogWithEventsAfterRunEndStillRedactsHiddenFacts',
               'cleanSealedTerminalRunEndStillExportsOriginalBytes',
+              'completedRunWithNormalRankingLinkTrailerStaysLossless',
           ):
               assert 'void '+name+'(' in tests, name
           print('Bounded terminal archive completion guard and three regressions present')
@@ -47,13 +49,14 @@ jobs:
           reports=[ET.parse(p).getroot() for p in Path('core/build/test-results/test').glob('TEST-*.xml')]
           assert reports, 'missing JUnit reports'
           totals={k:sum(int(r.get(k,0)) for r in reports) for k in ('tests','failures','errors','skipped')}
-          assert totals['tests']>=3384, totals
+          assert totals['tests']>=3385, totals
           assert all(totals[k]==0 for k in ('failures','errors','skipped')), totals
           cases={c.get('name') for r in reports for c in r.findall('testcase')}
           for case in (
               'unsealedLogWithReadableRunEndStillRedactsHiddenFacts',
               'sealedLogWithEventsAfterRunEndStillRedactsHiddenFacts',
               'cleanSealedTerminalRunEndStillExportsOriginalBytes',
+              'completedRunWithNormalRankingLinkTrailerStaysLossless',
               'resumedRunWithSameTimestampKeepsEverySegmentRedacted',
               'finishedRunWithSameTimestampKeepsEverySegmentLossless',
               'nothingHiddenIsInTheRedactedCopyAndTheCopyIsExactlyWhatThePlayerCouldKnow',
