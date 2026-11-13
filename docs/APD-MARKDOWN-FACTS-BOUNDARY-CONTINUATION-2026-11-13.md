@@ -1,0 +1,9 @@
+# APD Markdown fact-list line-boundary continuation, November 13, 2026 (Eastern)
+
+## Independent claim, approximately 06:25 EST
+
+Original regular ChatGPT APD development context. Live authoritative branch `codex/apd-phone-fixes-2026-10-09` was verified at `0249e7697df292b70f2bfe0001fc8210a596982d`; isolated branch `chatgpt/apd-markdown-facts-boundary-20261113-0630` starts at that SHA. Inspected root AGENTS.md, current open PRs/claims, latest report short-row and null-cell handoffs, the live ReportRenderer and report tests, release/native workflows, and latest CI. Personal playback, native signed APD465, hero selection, Search, GPL, and other open changes are independent and untouched. No open PR claims this narrow Markdown Facts path.
+
+Source-observed defect: ReportRenderer.markdown escapes table cells and coverage but emits Report.Facts labels, displayed values, details and section labels raw. CR, CRLF or LF inside one of these inline values can create an unintended Markdown line or heading, making an existing recorded fact appear as multiple report entries. This is a code finding, not a claimed phone reproduction. Use the existing md() inline escaping to flatten embedded line endings and preserve literal backslash and pipe within Markdown Facts only. Preserve ordinary output, source Report data, provenance warnings and all other formats, gameplay, scoring, stats, history, save compatibility, signing, app IDs, editions and known-good releases. Add focused regressions and a separate exact-source CI gate; do not duplicate recently merged table/coverage/note/null/short-row repairs.
+
+At claim creation: no production commit, tests, APK, native acceptance, signer verification or publication yet. Build a source-only candidate on the isolated branch; integrate only after terminal full core and desktop/Android Java CI, current claim/head reconciliation, and expected-head non-force update. No APD automation changes.
