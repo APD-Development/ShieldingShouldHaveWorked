@@ -1,0 +1,75 @@
+name: Verify APD personal playback category routing
+on:
+  push:
+    branches: [chatgpt/apd-personal-playback-completion-20261113]
+    paths: [.github/workflows/apd-personal-playback-completion-ci.yml]
+permissions: {contents: read}
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with: {distribution: temurin, java-version: '21'}
+      - uses: gradle/actions/setup-gradle@v4
+      - name: Verify isolated personal visuals, combat effects, 1x environment and real clocks
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          root=Path('core/src/main/java/com/shatteredpixel/shatteredpixeldungeon')
+          scene=(root/'scenes/GameScene.java').read_text()
+          camera=Path('SPD-classes/src/main/java/com/watabou/noosa/Camera.java').read_text()
+          playback=(root/'apd/PlaybackGroup.java').read_text()
+          cell=(root/'effects/CellEmitter.java').read_text()
+          hero=(root/'sprites/HeroSprite.java').read_text()
+          missile=(root/'sprites/MissileSprite.java').read_text()
+          magic=(root/'effects/MagicMissile.java').read_text()
+          toolbar=(root/'ui/Toolbar.java').read_text()
+          floating=(root/'effects/FloatingText.java').read_text()
+          pixel=(root/'scenes/PixelScene.java').read_text()
+          assert 'ApdFeatures.testBuild() ? new PlaybackGroup() : normalSpeedGroup()' in playback
+          assert 'Camera.main.visualTimeScale = com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup.personalFactor()' in scene
+          assert 'Game.elapsed * visualTimeScale * panIntensity' in camera
+          assert 'shakeTime -= Game.elapsed * visualTimeScale' in camera
+          for name in ('gases','emoicons','statuses','floorEmitters','ripples','terrain'):
+              assert name+' = com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup.normalSpeedGroup();' in scene,name
+          assert 'curAnim == idle || curAnim == die || curAnim == fly' in hero
+          assert 'GameScene.combatEmitter()' in cell
+          assert 'combatEmitters = com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup.personalSpeedGroup();' in scene
+          assert 'personalVisualElapsed()' in toolbar and 'Game.elapsed = originalElapsed;' in toolbar
+          assert 'isNumericFeedback(text) ? GameScene.combatStatus() : GameScene.status()' in floating
+          assert 'PlaybackGroup.personalFactor()' in missile and 'Game.elapsed = elapsed;' in magic
+          assert 'PlaybackGroup.personalVisualElapsed()' in pixel
+          assert 'return ApdFeatures.testBuild() ? speed : 1f;' in playback
+          for name in ('WandOfLightning','WandOfDisintegration'):
+              assert 'CellEmitter.combatCenter(' in (root/('items/wands/'+name+'.java')).read_text()
+          for name in ('BurningTrap','RockfallTrap'):
+              assert 'CellEmitter.combatCenter(' not in (root/('levels/traps/'+name+'.java')).read_text()
+          print('No accelerated fog, plant, traps, wells, alert or non-Developer visual group')
+          PY
+      - name: Complete core regression suite and required Android and desktop compilation
+        run: |
+          "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "platforms;android-36"
+          ./gradlew :core:test :desktop:classes :android:compileDebugJavaWithJavac :android:compileReleaseJavaWithJavac :android:compileDebugAndroidTestJavaWithJavac
+      - name: Require clean real JUnit XML and personal playback checks
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import xml.etree.ElementTree as ET
+          reports=[ET.parse(p).getroot() for p in Path('core/build/test-results/test').glob('TEST-*.xml')]
+          assert reports,'Missing reports'
+          totals={k:sum(int(x.get(k,0)) for x in reports) for k in ('tests','failures','errors','skipped')}
+          assert totals['tests']>=3326 and all(totals[k]==0 for k in ('failures','errors','skipped')),totals
+          cases={c.get('name') for r in reports for c in r.findall('testcase')}
+          for n in ('combatEmitterUsesSeparatePersonalLayerFromAmbientAndMagicalWells','personalCameraFactorNeverChangesAlphaOrActorTiming','onlyPrivatePickupVisualTimeAcceleratesAndRestoresSourceFrameClock','personalPlaybackGroupsAreAcceleratedOnlyInDeveloperEdition'):
+              assert n in cases,n
+          print(totals,'suites',len(reports))
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: personal-playback-completion-junit
+          path: core/build/test-results/test/
+          if-no-files-found: warn
+          retention-days: 30
