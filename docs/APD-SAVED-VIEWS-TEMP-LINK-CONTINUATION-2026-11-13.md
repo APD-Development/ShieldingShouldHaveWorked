@@ -1,0 +1,11 @@
+# APD saved-view temporary-link write boundary, Friday November 13, 2026 (Eastern)
+
+## Isolated work claim, 05:07 EST
+
+Continue the owner's existing APD project, not a new game or separate task. Verified authoritative development branch `codex/apd-phone-fixes-2026-10-09` at `c519643dece90e80b51d12dbe7b132a9e4ab122e` before creating this isolated branch from that exact head. Read `AGENTS.md`, completed-work ledger, known-issues guide, latest Markdown continuation, current open PRs, recent Actions and APD464 release receipt. The outstanding open PRs own separate animation/playback, UI, Search, licensing and challenge packages; none owns `SavedViews.store`. Do not touch any of those packages.
+
+**Source-evidenced defect:** `SavedViews.store` opens its fixed sibling `saved_views.txt.tmp` with `new FileOutputStream(tmp)`. If that path already names a symbolic link, opening truncates the link's target, which may be another local file or a file outside history. The existing shared writer lock prevents APD instance races but does not prevent following an existing filesystem link. This is distinct from completed RunIndex and archive symlink fixes.
+
+**Bounded approved data-preservation correction:** Open the fixed temporary path without following symbolic links, preserving normal atomic replacement, existing saved views, errors on unavailable temporary paths, symlinked *storage roots*, and the established shared lock. Add real-filesystem regressions proving both an external link target and an in-folder link target remain unchanged, the previous saved views survive, and a normal save succeeds after removing the link. Do not change query schemas, report data, save files, history, stats, scoring, gameplay, balance, application identities, signing or release gates.
+
+Run full `:core:test` plus desktop/Android debug/release/instrumentation Java compilation on exact committed source through isolated source-only GitHub CI. Any source CI is NOT an APK, original-signer check, device acceptance, install-over, or publication. Before possible integration, recheck remote heads and claims, integrate only via non-force expected-head update, and preserve independent APD464 release/candidates. Record exact outcome here; never equate trigger with coding.
