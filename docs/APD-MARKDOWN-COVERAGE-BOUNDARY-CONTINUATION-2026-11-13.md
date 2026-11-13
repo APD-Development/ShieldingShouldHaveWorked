@@ -1,0 +1,11 @@
+# APD Markdown coverage-line escaping, Friday, November 13, 2026 (Eastern)
+
+## Independent work claim (approximately 04:32 EST)
+
+This work continues the owner's existing regular ChatGPT APD development conversation. GitHub authoritative branch `codex/apd-phone-fixes-2026-10-09` was freshly confirmed at `090daebc8f9e81044655fe77b3a1a30d6081ed1a`, newer than PR #106/#107 and the previous archive, CSV and Markdown fixes. Branch `chatgpt/apd-markdown-coverage-boundary-20261113-0430` was created from exactly that SHA. Read `AGENTS.md`, completed-work/source guide, PR #106/#107 continuation, current open PR claims, release status and current `ReportRenderer` source and tests. No live open PR owns the coverage-summary formatting path. Other active drafts own playback, hero selection/native, Search, licensing and challenge work. Preserve those independent claims.
+
+**Source-evidenced bug:** `ReportRenderer.markdown` correctly escapes table header and cell pipe/backslash/newline sequences via `md(String)`, including the latest CR fix, but concatenates raw `t.headers.get(i)` and `t.coverage.get(i)` into its separate italicized `_Known out of listed..._` summary. A header/coverage value containing `|`, CR, CRLF, LF or backslash can therefore break Markdown summary formatting or change the displayed text. This does not claim the owner observed such a malformed report.
+
+**Bounded work:** Apply the existing Markdown cell escaping to only the two values appended to the coverage summary; do not change ordinary header rows, stored report values, empty-coverage filtering, other formats, gameplay, saves, statistics, history, scoring, signer or application identities. Add focused JUnit regression cases for special characters, ordinary numeric coverage, and report immutability. Verify exact committed source with full core JUnit and desktop/Android Java compilation before guarded integration. No APK release or native acceptance is claimed at start.
+
+**Integration rule:** Never write to `main` or overwrite a shared head. Re-read live authoritative and feature heads, open work claims, and CI status; only integrate through an expected-head non-force update after all required source gates pass. Keep APD464 and prior candidate builds intact. Leave any failure evidence and complete this record with actual commits, tests, builds, blockers and safe next work.
