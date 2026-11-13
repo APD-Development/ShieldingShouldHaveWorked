@@ -247,6 +247,9 @@ public final class ArchiveExporter {
 	//the bytes an entry holds: the file itself, or its redacted copy
 	private static byte[] content( Plan p ){
 		try {
+			// A log may be replaced between manifest planning and ZIP writing.
+			// Never follow a new filesystem alias even if its bytes happen to match.
+			if (!isDirectHistoryFile(p.file)) return null;
 			if (p.snapshot != null) return p.snapshot;
 			byte[] raw = readAll(p.file);
 			if (!p.redact) return raw;
@@ -258,7 +261,24 @@ public final class ArchiveExporter {
 		}
 	}
 
-	private static void collect( File dir, boolean imported, List<LogInfo> out, Report report ){
+	// The caller may supply a history root through a symlink, but its runs/
+	// and legacy/ children and log entries must be direct children of that root.
+	// File.isFile() follows symlinks, so check canonical destinations first.
+	private static boolean isDirectHistoryFolder( File dir ) throws IOException {
+		File parent = dir.getParentFile();
+		return parent != null && dir.getCanonicalFile().equals(new File(parent.getCanonicalFile(), dir.getName()));
+	}
+
+	private static boolean isDirectHistoryFile( File f ) throws IOException {
+		File folder = f.getParentFile();
+		return folder != null && isDirectHistoryFolder(folder)
+				&& f.getCanonicalFile().equals(new File(folder.getCanonicalFile(), f.getName()));
+	}
+
+	private static void collect( File dir, boolean imported, List<LogInfo> out, Report report ) throws IOException {
+		if (!isDirectHistoryFolder(dir)){
+			throw new IOException("history folder resolves outside its designated path: " + dir.getName());
+		}
 		File[] files = dir.listFiles();
 		if (files == null) return;
 		Arrays.sort(files);
@@ -267,6 +287,9 @@ public final class ArchiveExporter {
 			if (!f.isFile() || !n.endsWith(RunIndex.LOG_SUFFIX)) continue;
 			String id = n.substring(0, n.length() - RunIndex.LOG_SUFFIX.length());
 			if (!StatsStore.isValidRunId(id)) continue;
+			if (!isDirectHistoryFile(f)){
+				throw new IOException("history log resolves outside its designated path: " + n);
+			}
 			if (id.startsWith(DatasetStore.DEMO_LOG_PREFIX)){
 				report.skippedDemo++;
 				continue;
