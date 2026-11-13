@@ -137,7 +137,13 @@ public final class ArchiveExporter {
 				if (l.imported || !l.readable) continue;
 				LogInfo n = newest.get(l.runId);
 				// Match DatasetStore: the run-start segment breaks same-millisecond ties.
-				if (n == null || l.created > n.created || (l.created == n.created && l.segment > n.segment)) newest.put(l.runId, l);
+				// Two distinct logs may still claim the same timestamp and segment.
+				// If their completion states disagree, treat that ambiguity as unfinished
+				// instead of releasing hidden facts based on filename ordering.
+				if (n == null || l.created > n.created || (l.created == n.created
+						&& (l.segment > n.segment || (l.segment == n.segment && !l.ended && n.ended)))){
+					newest.put(l.runId, l);
+				}
 			}
 			List<Plan> plans = new ArrayList<>();
 			for (LogInfo l : logs){
