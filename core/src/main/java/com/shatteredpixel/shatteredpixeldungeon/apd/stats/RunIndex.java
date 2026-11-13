@@ -66,7 +66,7 @@ public final class RunIndex {
 	public static RunIndex load( File indexFile, File runsDir ){
 		RunIndex idx = new RunIndex(indexFile, runsDir);
 		boolean ok = false;
-		if (indexFile.isFile()){
+		if (indexFile.isFile() && isDirectIndexFile(indexFile)){
 			try {
 				idx.readFrom(RunLogReader.readFully(indexFile));
 				ok = true;
@@ -165,6 +165,19 @@ public final class RunIndex {
 		}
 	}
 
+	// A derived cache must not be loaded or written through an individual symbolic
+	// link. Resolve the parent independently so symlinked history roots still work.
+	private static boolean isDirectIndexFile( File file ){
+		try {
+			File absolute = file.getAbsoluteFile();
+			File parent = absolute.getParentFile();
+			return parent != null && absolute.getCanonicalFile().equals(
+					new File(parent.getCanonicalFile(), absolute.getName()));
+		} catch (IOException ignored){
+			return false;
+		}
+	}
+
 	//Writes the index atomically: a complete temp file is written first, then moved over the old one.
 	public synchronized void save() throws IOException {
 		save(null);
@@ -190,6 +203,9 @@ public final class RunIndex {
 				throw new IOException("cannot create " + parent);
 			}
 			File tmp = new File(indexFile.getPath() + ".tmp");
+			// The predictable leftover temp name must never redirect writes to
+			// another file or outside this index's storage directory.
+			if (!isDirectIndexFile(tmp)) throw new IOException("refusing linked run index temp file");
 			FileOutputStream out = new FileOutputStream(tmp);
 			try {
 				if (hook != null){
