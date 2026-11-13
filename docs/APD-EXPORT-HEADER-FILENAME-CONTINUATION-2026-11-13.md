@@ -15,3 +15,11 @@ Add real-filesystem/real-writer/real-ZIP regressions for a mismatched local run 
 ### Initial status
 
 Work claim only; at this point no production edits, tests, build, publication or merge have occurred. Later sections must record verified commits, actual terminal test results and blockers. No recurring APD tasks changed.
+
+## Source and test implementation, approximately 02:06 EST
+
+- Claim commit: `abe40c697199d5f49672d74cf4465eafa5685826`.
+- One production-file guard commit: `3281382368663820dcb435e6050fbcb0e5636b95`. `ArchiveExporter.collect` requires `id.equals(r.header.runId)` only for `runs/` logs, without changing the public archive format or the `legacy/` compatibility path.
+- Regression commit: `113cf64f3418bfef6a63400b1a4c1dc619e8eb23`. New `ArchiveExporterHeaderIdentityTest` contains four real file/writer/ZIP cases: copied alias with two valid neighboring logs and import roundtrip; alias-only refusal without source mutation; genuine two-segment shared logical run export/import; unchanged legacy export.
+- Exact CI workflow commit: `295560da0d38e82d04d85c6579307afc758a85e3`. Dedicated [Actions run 43383321461](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/43383321461) was seen **in progress**, not passed, at this checkpoint. Its gate runs all `:core:test`, `:desktop:classes`, Android debug/release/instrumentation Java compilation, JUnit XML totals and each named new test.
+- [Draft PR #91](https://github.com/APD-Development/ShieldingShouldHaveWorked/pull/91) targets the authoritative branch, from the unchanged base SHA `97b66dbee095fbd33cd418a8e16b3f58bccd7712`. Do not merge until exact-source terminal success, renewed live remote-head checks and claim reconciliation. No new APK, signer, native/phone acceptance or release.
