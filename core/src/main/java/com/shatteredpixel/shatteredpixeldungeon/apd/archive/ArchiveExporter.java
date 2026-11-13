@@ -302,7 +302,11 @@ public final class ArchiveExporter {
 			try {
 				byte[] bytes = readAll(f);
 				ReadResult r = RunLogReader.parse(bytes);
-				if (r.header != null){
+				// A copied log renamed under another runs/<id>.apdlog name must not
+				// enter an archive the importer will reject. The header's ID is
+				// per-file; RUN_START may name a different shared logical run.
+				// Imported legacy files retain their existing compatibility rules.
+				if (r.header != null && (imported || id.equals(r.header.runId))){
 					l.readable = true;
 					l.runId = r.header.runId;
 					l.created = r.header.createdAtMillis;
