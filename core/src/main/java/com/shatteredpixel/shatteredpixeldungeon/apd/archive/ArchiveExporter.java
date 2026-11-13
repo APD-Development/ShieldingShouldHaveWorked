@@ -325,15 +325,22 @@ public final class ArchiveExporter {
 								//Keep looking: an unreadable typed start must not hide the first readable one.
 							}
 						}
-						if (e.type == EventTypes.RUN_END){
-							try {
-								LifecycleEvents.decodeRunEnd(e, r);
-								l.ended = true;
-							} catch (RuntimeException ignored){
-								//A malformed typed end does not authorize exporting hidden run data.
+						}
+						//A run is demonstrably finished only if its log was completed cleanly
+						//and the last event is a readable RUN_END. An earlier end marker in
+						//an unsealed/interrupted or subsequently appended log must not
+						//authorize exporting the run's hidden facts in raw form.
+						if (r.sealed && r.status.isClean() && !r.events.isEmpty()){
+							ApdEvent last = r.events.get(r.events.size() - 1);
+							if (last.type == EventTypes.RUN_END){
+								try {
+									LifecycleEvents.decodeRunEnd(last, r);
+									l.ended = true;
+								} catch (RuntimeException ignored){
+									//Malformed terminal end cannot prove completion.
+								}
 							}
 						}
-					}
 				}
 			} catch (Throwable t){
 				l.readable = false;
