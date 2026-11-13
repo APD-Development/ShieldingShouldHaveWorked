@@ -90,6 +90,18 @@ public class ArchiveTerminalEndPrivacyTest {
         assertProtected(root, log, "trailing-hidden");
     }
 
+    @Test public void completedRunWithNormalRankingLinkTrailerStaysLossless() throws Exception {
+        File root = tmp.newFolder();
+        TestLogs log = log(root, "finished-ranked");
+        log.end(LifecycleEvents.OUTCOME_WON, "", 26, 20, 500);
+        log.rankingLink("matching-ranking-id").close(true);
+        byte[] original = Files.readAllBytes(log.file.toPath());
+        Archived archived = archive(root, "finished-ranked");
+        assertFalse("normal RunRecorder ranking trailer is a valid completed log", archived.manifest.redacted);
+        assertArrayEquals("normal completed ranked history stays exact", original, archived.bytes);
+        assertArrayEquals(original, Files.readAllBytes(log.file.toPath()));
+    }
+
     @Test public void cleanSealedTerminalRunEndStillExportsOriginalBytes() throws Exception {
         File root = tmp.newFolder();
         TestLogs log = log(root, "ended-cleanly");
