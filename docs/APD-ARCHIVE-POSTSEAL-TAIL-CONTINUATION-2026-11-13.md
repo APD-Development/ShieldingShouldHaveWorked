@@ -26,3 +26,9 @@ At claim: no production code changed, tests run, APK assembled/signed, native ch
 - No scheduled task prompts or schedules changed. Retain earlier native/release/playback claims, blocked builds and owners' game design decisions.
 
 Next: read terminal exact-source workflow status and actual JUnit results; correct only evidenced failures. If passed, refresh live authoritative head and open claims and integrate using a guarded, non-force operation. Never use this source-only CI as Android native or original-signer acceptance.
+
+## Exact terminal source verification, Friday November 13, 2026, approximately 1:36 AM EST
+
+[GitHub Actions run 43379508117](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/43379508117), attempt 1, completed with **success** at 2026-11-13T06:36:03Z. Exact tested production/test/workflow commit: `8cb23884ae3ab37ea82fbb8373fdf1fcb6c481b7`. The terminal job `131733726054` logs `BUILD SUCCESSFUL in 2m 7s` for the full `:core:test` plus desktop and Android debug, release and instrumentation Java compilation. JUnit XML gate directly counted **3,390 core tests across 496 suites; zero failures, zero errors, zero skipped**. Both new post-SEAL regressions and all four prior terminal-end privacy/normal ranked-run compatibility regressions were required to be present and passed. The retention artifact `14016431315` (`apd-archive-postseal-tail-junit`) is 547,903 bytes with reported SHA-256 `c82e2286e0edde2dc21e9fa47368b315fece54b0a7566770599a2aac923e3fbf`.
+
+This documentation-only evidence commit does not change compiled code and is not a second executable test run. Next: fresh live PR/base check and guarded non-force integration. Do not claim a newly built/signed APK or native/physical-phone acceptance from this source gate.
