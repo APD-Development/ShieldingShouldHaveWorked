@@ -79,15 +79,15 @@ public final class ReportRenderer {
 	//---- Markdown ----
 
 	private static String md( String s ){
-		// Preserve literal backslashes and table-pipe escapes. Encode raw HTML openers and bracket delimiters so report text cannot become active Markdown links or images; normalize table-cell line endings.
+		// Preserve literal backslashes and table-pipe escapes. Encode raw HTML openers, code ticks and bracket delimiters so report text cannot become active Markdown or links/images; normalize table-cell line endings.
 		return s.replace("\\", "\\\\").replace("|", "\\|").replace("<", "&lt;")
-				.replace("[", "&#91;").replace("]", "&#93;")
+				.replace("`", "&#96;").replace("[", "&#91;").replace("]", "&#93;")
 				.replace("\r\n", " ").replace("\r", " ").replace("\n", " ");
 	}
 
-	// A note is one Markdown blockquote even across lines; its raw HTML stays literal too.
+	// A note is one Markdown blockquote even across lines; its literal HTML, links and code ticks stay inert.
 	private static String quotedNoteLines( String s ){
-		return String.valueOf(s).replace("<", "&lt;").replace("[", "&#91;").replace("]", "&#93;").replace("\r\n", "\n").replace("\r", "\n").replace("\n", "\n> ");
+		return String.valueOf(s).replace("<", "&lt;").replace("`", "&#96;").replace("[", "&#91;").replace("]", "&#93;").replace("\r\n", "\n").replace("\r", "\n").replace("\n", "\n> ");
 	}
 
 	public static String markdown( Report r ){
