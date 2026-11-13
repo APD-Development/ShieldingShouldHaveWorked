@@ -73,9 +73,14 @@ public class PlaybackProfileDeviceTest {
                     expectGroup(scene,"floorEmitters",false);
                     for(String n:new String[]{"heaps","spells","checkedCells","targetedCells",
                             "healthIndicators","combatEmitters"}) expectGroup(scene,n,personal);
-                    assertSame("Alpha numeric text retains ordinary status group",
-                            personal ? group(scene,"combatStatuses") : group(scene,"statuses"),
-                            group(scene,personal ? "combatStatuses" : "combatStatuses"));
+                    if(personal) {
+                        expectGroup(scene,"combatStatuses",true);
+                        assertNotSame("Combat labels must be separate from 1x statuses",
+                                group(scene,"statuses"),group(scene,"combatStatuses"));
+                    } else {
+                        assertSame("Alpha combat labels preserve their original 1x group",
+                                group(scene,"statuses"),group(scene,"combatStatuses"));
+                    }
                     assertEquals(personal?16f:1f,PlaybackGroup.personalFactor(),0f);
                 });
                 TopScoresDeviceTest.screenshot("apd-personal-16x-dungeon-layers.png");
