@@ -106,7 +106,7 @@ public final class ApdFiles {
 					Arrays.sort(zips);
 					// Prefer the newest file by modification time. Keep the previous name order for ties.
 					for (File z : zips){
-						if (z.isFile() && z.getName().endsWith(".zip")
+						if (z.isFile() && z.getName().endsWith(".zip") && isDirectImportFile(dir, z)
 								&& (newest == null || z.lastModified() >= newest.lastModified())) newest = z;
 					}
 				}
@@ -117,6 +117,17 @@ public final class ApdFiles {
 				source.onStream(new FileInputStream(newest), newest.getPath());
 			} catch (Exception e){
 				source.onFailed(String.valueOf(e));
+			}
+		}
+
+		// A .zip alias can point outside imports/ even though isFile() says true.
+		// Allow a symlinked base storage root, but only select direct files inside
+		// its canonical imports/ directory, matching APD's history ownership rule.
+		private static boolean isDirectImportFile( File dir, File file ){
+			try {
+				return file.getCanonicalFile().equals(new File(dir.getCanonicalFile(), file.getName()));
+			} catch (java.io.IOException unreadable){
+				return false;
 			}
 		}
 
