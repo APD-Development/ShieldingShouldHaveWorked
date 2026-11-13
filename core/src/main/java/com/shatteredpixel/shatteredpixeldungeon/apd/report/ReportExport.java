@@ -47,9 +47,14 @@ public final class ReportExport {
 		}
 	}
 
+	// Keep the entire suggested filename below common 255-byte filesystem component limits.
+	// Slugs contain only ASCII, leaving room for "apd-", the UTC timestamp and every extension.
+	private static final int MAX_SLUG_LENGTH = 180;
+
 	static String slug( String title ){
 		StringBuilder sb = new StringBuilder();
 		for (char c : title.toLowerCase(Locale.ROOT).toCharArray()){
+			if (sb.length() >= MAX_SLUG_LENGTH) break;
 			if ((c >= 'a' && c <= 'z') || (c >= '0' && c <= '9')) sb.append(c);
 			else if (sb.length() > 0 && sb.charAt(sb.length() - 1) != '-') sb.append('-');
 		}
