@@ -10,6 +10,7 @@ import org.junit.rules.TemporaryFolder;
 
 import java.io.File;
 import java.io.RandomAccessFile;
+import java.nio.file.Files;
 
 public class StorageMeterTest {
 
@@ -69,6 +70,84 @@ public class StorageMeterTest {
 	private static boolean containsLarge( StorageMeter.Report r ){
 		for (String w : r.warnings) if (w.contains("large")) return true;
 		return false;
+	}
+
+	@Test
+	public void derivedCacheSymlinkCycleAndExternalFilesDoNotInflateTotals() throws Exception {
+		File root = tmp.newFolder("meter-caches");
+		size(new File(root, "derived/rows/owned.apdr"), 17);
+		File external = tmp.newFolder("meter-external-cache");
+		File externalFile = new File(external, "outside.apdr");
+		size(externalFile, 10000);
+		File derived = new File(root, "derived");
+		File loop = new File(derived, "loop");
+		File outsideLink = new File(derived, "external");
+		File indexLink = new File(root, "index.apdi");
+		Files.createSymbolicLink(loop.toPath(), derived.toPath());
+		Files.createSymbolicLink(outsideLink.toPath(), external.toPath());
+		Files.createSymbolicLink(indexLink.toPath(), externalFile.toPath());
+
+		try {
+			StorageMeter.Report result = StorageMeter.measure(root);
+			assertEquals(17, result.derivedBytes);
+			assertEquals(17, result.totalBytes());
+			assertTrue(Files.isSymbolicLink(loop.toPath()));
+			assertTrue(Files.isSymbolicLink(outsideLink.toPath()));
+			assertTrue(Files.isSymbolicLink(indexLink.toPath()));
+			assertEquals(10000, externalFile.length());
+		} finally {
+			// Do not let TemporaryFolder cleanup follow the test's deliberate cycle.
+			Files.deleteIfExists(loop.toPath());
+			Files.deleteIfExists(outsideLink.toPath());
+			Files.deleteIfExists(indexLink.toPath());
+		}
+	}
+
+	@Test
+	public void runAndLegacyAliasesAreNotReportedAsOwnedHistory() throws Exception {
+		File root = tmp.newFolder("meter-logs");
+		size(new File(root, "runs/real.apdlog"), 21);
+		size(new File(root, "runs/real.apdlog.tail-1.damaged"), 3);
+		size(new File(root, "legacy/real.apdlog"), 8);
+		File external = tmp.newFolder("meter-external-logs");
+		File externalLog = new File(external, "outside.apdlog");
+		size(externalLog, 1000);
+		Files.createSymbolicLink(new File(root, "runs/linked.apdlog").toPath(), externalLog.toPath());
+		Files.createSymbolicLink(new File(root, "legacy/linked.apdlog").toPath(), externalLog.toPath());
+		Files.createSymbolicLink(new File(root, "runs/linked.tail-1.damaged").toPath(), externalLog.toPath());
+
+		StorageMeter.Report result = StorageMeter.measure(root);
+		assertEquals(1, result.runLogs);
+		assertEquals(21, result.runLogBytes);
+		assertEquals(3, result.damagedTailBytes);
+		assertEquals(1, result.importedFiles);
+		assertEquals(8, result.importedBytes);
+		assertEquals(32, result.historyBytes());
+		assertEquals(1000, externalLog.length());
+
+		File aliasRoot = tmp.newFolder("meter-aliased-folder");
+		Files.createSymbolicLink(new File(aliasRoot, "runs").toPath(), external.toPath());
+		assertEquals(0, StorageMeter.measure(aliasRoot).runLogs);
+		assertTrue(new File(aliasRoot, "runs").isDirectory());
+	}
+
+	@Test
+	public void canonicalStorageRootCanItselfBeASymlink() throws Exception {
+		File original = tmp.newFolder("meter-real-root");
+		size(new File(original, "runs/owned.apdlog"), 41);
+		size(new File(original, "legacy/owned.apdlog"), 11);
+		size(new File(original, "derived/owned.apdr"), 7);
+		size(new File(original, "index.apdi"), 5);
+		File alias = new File(tmp.getRoot(), "meter-root-alias");
+		Files.createSymbolicLink(alias.toPath(), original.toPath());
+
+		StorageMeter.Report result = StorageMeter.measure(alias);
+		assertEquals(1, result.runLogs);
+		assertEquals(41, result.runLogBytes);
+		assertEquals(1, result.importedFiles);
+		assertEquals(11, result.importedBytes);
+		assertEquals(12, result.derivedBytes);
+		assertEquals(64, result.totalBytes());
 	}
 
 	@Test
