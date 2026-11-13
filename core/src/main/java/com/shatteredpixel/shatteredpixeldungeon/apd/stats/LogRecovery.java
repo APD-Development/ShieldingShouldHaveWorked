@@ -58,8 +58,14 @@ public final class LogRecovery {
 		}
 	}
 
-	//Never throws.
+	//Never throws. Callers without an on-disk identity use the original repair behavior.
 	public static RepairReport repair( File file ){
+		return repair(file, null);
+	}
+
+	//Destructive store recovery passes its validated filename ID. The parsed header must
+	//identify that same log before any damaged bytes are copied or truncated.
+	static RepairReport repair( File file, String expectedRunId ){
 		byte[] data;
 		ReadResult r;
 		try {
@@ -67,6 +73,11 @@ public final class LogRecovery {
 			r = RunLogReader.parse(data);
 		} catch (Throwable t){
 			return new RepairReport(file, ReadStatus.BAD_HEADER, 0, 0, null, false, "could not read: " + t);
+		}
+
+		if (expectedRunId != null && r.header != null && !expectedRunId.equals(r.header.runId)){
+			return new RepairReport(file, r.status, r.validBytes, 0, null, false,
+					"run log header ID differs from on-disk filename");
 		}
 
 		boolean damaged = r.status == ReadStatus.TRUNCATED || r.status == ReadStatus.CORRUPT
