@@ -374,8 +374,14 @@ public final class ArchiveExporter {
 							ApdEvent possibleEnd = r.events.get(end);
 							if (possibleEnd.type == EventTypes.RUN_END){
 								try {
-									LifecycleEvents.decodeRunEnd(possibleEnd, r);
-									l.ended = true;
+									// Decoding alone does not validate the outcome enum. Only a
+									// recognized terminal result proves hidden history is safe to export.
+									LifecycleEvents.RunEnd runEnd = LifecycleEvents.decodeRunEnd(possibleEnd, r);
+									if (runEnd.outcome == LifecycleEvents.OUTCOME_DIED
+											|| runEnd.outcome == LifecycleEvents.OUTCOME_WON
+											|| runEnd.outcome == LifecycleEvents.OUTCOME_ABANDONED){
+										l.ended = true;
+									}
 								} catch (RuntimeException ignored){
 									//Malformed run end cannot prove completion.
 								}
