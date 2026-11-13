@@ -69,6 +69,11 @@ public final class ReportRenderer {
 				+ ". Figures are what this device recorded; they are not verified and not a ranking.";
 	}
 
+	// A sparse report table may contain a null cell; render it as blank without inventing an unknown statistic.
+	private static String displayText( Report.Cell c ){
+		return c == null ? "" : c.text;
+	}
+
 	//---- Markdown ----
 
 	private static String md( String s ){
@@ -121,7 +126,7 @@ public final class ReportRenderer {
 				sb.append("\n");
 				for (Report.Cell[] row : t.rows){
 					sb.append("|");
-					for (Report.Cell c : row) sb.append(' ').append(md(c.text)).append(c.small ? " (small sample)" : "").append(" |");
+					for (Report.Cell c : row) sb.append(' ').append(md(displayText(c))).append(c != null && c.small ? " (small sample)" : "").append(" |");
 					sb.append("\n");
 				}
 				if (t.omitted > 0) sb.append("\n_").append(t.omitted).append(" more entries are not listed._\n");
@@ -179,7 +184,7 @@ public final class ReportRenderer {
 					for (int i = 0; i < row.length; i++){
 						if (i > 0) sb.append(" | ");
 						if (i < t.headers.size() && !t.headers.get(i).isEmpty()) sb.append(t.headers.get(i)).append(' ');
-						sb.append(row[i].text);
+						sb.append(displayText(row[i]));
 					}
 					sb.append("\n");
 				}
@@ -209,6 +214,7 @@ public final class ReportRenderer {
 	}
 
 	private static String cls( Report.Cell c ){
+		if (c == null) return "exact";
 		String k;
 		switch (c.state){
 			case CellText.LOWER: k = "lower"; break;
@@ -267,7 +273,7 @@ public final class ReportRenderer {
 				sb.append("</tr>\n");
 				for (Report.Cell[] row : t.rows){
 					sb.append("<tr>");
-					for (Report.Cell c : row) sb.append("<td class=\"").append(cls(c)).append("\">").append(esc(c.text)).append("</td>");
+					for (Report.Cell c : row) sb.append("<td class=\"").append(cls(c)).append("\">").append(esc(displayText(c))).append("</td>");
 					sb.append("</tr>\n");
 				}
 				sb.append("</table>\n");
@@ -346,7 +352,7 @@ public final class ReportRenderer {
 			for (int i = 0; i < t.headers.size(); i++) sb.append(i > 0 ? "," : "").append(csv(t.headers.get(i)));
 			sb.append("\r\n");
 			for (Report.Cell[] row : t.rows){
-				for (int i = 0; i < row.length; i++) sb.append(i > 0 ? "," : "").append(csv(row[i].text));
+				for (int i = 0; i < row.length; i++) sb.append(i > 0 ? "," : "").append(csv(displayText(row[i])));
 				sb.append("\r\n");
 			}
 			if (t.omitted > 0) sb.append("# ").append(t.omitted).append(" more entries are not listed.\r\n");
