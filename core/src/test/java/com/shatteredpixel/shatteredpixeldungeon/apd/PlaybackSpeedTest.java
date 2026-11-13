@@ -229,6 +229,20 @@ public class PlaybackSpeedTest {
    assertEquals(.016f,Game.elapsed,0f);
   } finally {sf.set(null,old);}
  }
+ @Test public void personalCameraFactorNeverChangesAlphaOrActorTiming(){
+  float originalClock=Actor.now(),originalScale=Game.timeScale;
+  float[] factors={.5f,1f,2f,4f,8f,16f,32f,64f,100f,1000f};
+  for(int mode=0;mode<factors.length;mode++){
+   PlaybackGroup.speed(mode);Game.elapsed=.016f;
+   ApdFeatures.parse("testBuild\\n".replace("\\n","\n"));
+   assertEquals(factors[mode],PlaybackGroup.personalFactor(),.0001f);
+   ApdFeatures.parse("extendedPlayback\\n".replace("\\n","\n"));
+   assertEquals(1f,PlaybackGroup.personalFactor(),0f);
+   assertEquals(.016f,Game.elapsed,0f);
+  }
+  assertEquals(originalClock,Actor.now(),0f);
+  assertEquals(originalScale,Game.timeScale,0f);
+ }
  @Test public void onlyPrivatePickupVisualTimeAcceleratesAndRestoresSourceFrameClock(){
   float[] factors={.5f,1f,2f,4f,8f,16f,32f,64f,100f,1000f};
   for(int mode=0;mode<factors.length;mode++){

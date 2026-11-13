@@ -836,6 +836,7 @@ public class GameScene extends PixelScene {
 		}
 
 		Emitter.freezeEmitters = false;
+		if (Camera.main != null) Camera.main.visualTimeScale = 1f;
 		
 		scene = null;
 		Badges.saveGlobal();
@@ -898,6 +899,7 @@ public class GameScene extends PixelScene {
 	@Override
 	public synchronized void update() {
         com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup.speed(SPDSettings.playbackSpeed());
+		if (Camera.main != null) Camera.main.visualTimeScale = com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup.personalFactor();
 		lastOffset = null;
 
 		if (updateItemDisplays){
