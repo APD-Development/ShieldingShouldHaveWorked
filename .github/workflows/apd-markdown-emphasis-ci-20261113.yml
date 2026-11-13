@@ -37,7 +37,7 @@ jobs:
           assert all(totals[k] == 0 for k in ('failures', 'errors', 'skipped')), totals
           cases = {c.get('name') for root in roots for c in root.findall('testcase')}
           for name in ('reportFieldsDisplayEmphasisDelimitersLiterally',
-                       'multilineNotesKeepTheirLinesWhileFormattingIsLiteral'):
+                       'multilineNotesRetainExistingInlineEmphasisAndSafeLinks'):
               assert name in cases, name
           print('EXACT_APD_MARKDOWN_EMPHASIS_JUNIT', totals, 'suites', len(files))
           PY
