@@ -134,6 +134,7 @@ public final class ArchiveManifest {
 		if (!sha256Hex(body.getBytes(utf8())).equalsIgnoreCase(claimed)) throw new IllegalArgumentException("the manifest does not match its checksum");
 		ArchiveManifest m = new ArchiveManifest();
 		boolean header = false, counted = false, containerSeen = false;
+		boolean createdSeen = false, appSeen = false, telemetrySeen = false;
 		long countFiles = -1, countBytes = -1;
 		for (String line : body.split("\n")){
 			if (line.isEmpty()) continue;
@@ -148,9 +149,21 @@ public final class ArchiveManifest {
 						if (m.format > FORMAT) throw new IllegalArgumentException("this archive is from a newer version of APD (format " + m.format + ")");
 						header = true;
 						break;
-					case "created": m.createdMillis = Long.parseLong(p[1]); break;
-					case "app": m.app = p[1]; break;
-					case "telemetry": m.telemetry = p[1]; break;
+					case "created":
+						if (createdSeen) throw new IllegalArgumentException("the manifest has repeated created metadata");
+						m.createdMillis = Long.parseLong(p[1]);
+						createdSeen = true;
+						break;
+					case "app":
+						if (appSeen) throw new IllegalArgumentException("the manifest has repeated app metadata");
+						m.app = p[1];
+						appSeen = true;
+						break;
+					case "telemetry":
+						if (telemetrySeen) throw new IllegalArgumentException("the manifest has repeated telemetry metadata");
+						m.telemetry = p[1];
+						telemetrySeen = true;
+						break;
 					case "container":
 						// One authoritative log-container version per format-1 archive.
 						if (containerSeen) throw new IllegalArgumentException("the manifest has repeated container metadata");
