@@ -11,3 +11,12 @@ Originating regular ChatGPT APD development, not a separate Codex task. Inspecte
 ### Verification claim at start
 
 No files have been modified other than this claim. No tests, APK assembly, native Android tests, original-signer checks or publication have been performed. Plan: add exact production guard, real-filesystem regression tests, and scoped full-core/desktop/Android Java source CI; review terminal evidence before any integration; use fresh live expected-head non-force update and durable result here. Existing APD464 is an independently published prior build and must not be relabeled or overwritten. No automations may be changed.
+
+
+## Exact source CI, Thursday November 12, 2026, 11:31 PM EST
+
+Production fix commit `d728566242e956a24a7df100dbf584fe66724a99`; two real-filesystem regressions `1b0f9ccd6ac85b6cf086eace9eb3250d026c3fca`; workflow and exact executable tested head `00abcfc0598c62fc8f674ea463ed4a1f4015a4b6`. [Actions run 43365752452](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/43365752452), attempt 1, job `131689641947`, completed **success**. Raw job logs show `BUILD SUCCESSFUL in 2m 12s` for complete `:core:test`, `:desktop:classes`, Android debug/release Java and debug AndroidTest Java compilation. Terminal JUnit XML gate reported **3,373 tests across 492 suites, zero failures/errors/skips**, including both new invalid-name recovery cases and existing symlink, valid damaged-log recovery, filename identity and index cache compatibility regressions. JUnit artifact `14009664805` (`apd-recovery-invalid-run-id-junit`, 545,002 bytes) uploaded successfully. The post-CI documentation commit is **not** the test-executed source head.
+
+Source-only gate: no assembled APK, original signer, Android emulator instrumentation, physical-phone test, install-over/save integrity, manual screenshots, or publication in this execution. Previously published APD464 is unchanged and predates this source fix. Dedicated source CI does not qualify a release.
+
+After CI, fresh readback found authoritative base `7ee78e1af25a4e181f92c48755ad416fc5052dfe`, feature at exact tested head `00abcfc0598c62fc8f674ea463ed4a1f4015a4b6`, and only independent playback, search, GPL or gameplay PRs open. PR #78 was clean/mergeable. Next: record this document, verify a fresh exact base/head and use expected-head non-force integration; inspect resulting merge and leave a terminal receipt. If base changes, reconcile rather than overwrite.
