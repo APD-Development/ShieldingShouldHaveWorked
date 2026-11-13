@@ -125,6 +125,9 @@ public final class RunIndex {
 			entries.remove(runId);
 			return null;
 		}
+		// A filename can be a symlink to another run or outside the configured history.
+		// Match the canonical direct-child rule used by destructive log recovery.
+		if (!isDirectRunLog(log)) throw new IOException("run index refresh refused linked log");
 		RunIndexEntry e = RunIndexEntry.describe(log, runId);
 		entries.put(runId, e);
 		return e;
@@ -138,7 +141,7 @@ public final class RunIndex {
 		if (files == null) return;
 		for (File f : files){
 			String name = f.getName();
-			if (!f.isFile() || !name.endsWith(LOG_SUFFIX)) continue;
+			if (!f.isFile() || !name.endsWith(LOG_SUFFIX) || !isDirectRunLog(f)) continue;
 			String stem = name.substring(0, name.length() - LOG_SUFFIX.length());
 			try {
 				RunIndexEntry e = RunIndexEntry.describe(f, stem);
@@ -147,6 +150,18 @@ public final class RunIndex {
 				entries.put(stem, new RunIndexEntry(stem, null, false, name, 0, RunIndexEntry.Status.UNREADABLE, 0, 0, 0,
 						f.length()));
 			}
+		}
+	}
+
+	// Allow ordinary symlinked storage roots, but never treat a linked individual log
+	// (including an alias to another local log) as its own run-history source.
+	private boolean isDirectRunLog( File log ){
+		try {
+			File canonical = log.getCanonicalFile();
+			return canonical.getParentFile().equals(runsDir.getCanonicalFile())
+					&& canonical.getName().equals(log.getName());
+		} catch (IOException ignored){
+			return false;
 		}
 	}
 
