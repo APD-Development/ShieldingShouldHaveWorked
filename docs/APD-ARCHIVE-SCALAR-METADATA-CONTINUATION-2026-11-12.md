@@ -21,3 +21,11 @@ The initial work claim above is preserved; verification results and integration 
 - APK/native/publisher boundary: no original-signed APK built, Android native/device acceptance performed or release published in this package. APD464 is the previously verified release and does not include this source change. No other active PR or automation changed.
 
 Next: inspect terminal CI and JUnit XML/job logs; if exact source passes, perform fresh authoritative-branch and PR-head checks, integrate only via expected-head non-force merge; record terminal result and commit in this document. If source CI fails, correct only demonstrated test/source errors, preserving failure evidence. 
+
+## Terminal exact-source verification (Thursday, November 12, 2026 at 9:47:49 PM EST)
+
+[GitHub Actions run 43354238559](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/43354238559), attempt 1, completed **success** on exact source/test/workflow SHA `88bed85317474b494068469ffc9803adbd01736f`, job `131652310103`. Decoded job logs confirm `BUILD SUCCESSFUL in 2m 10s` for the full `:core:test`, `:desktop:classes`, `:android:compileDebugJavaWithJavac`, `:android:compileReleaseJavaWithJavac`, and `:android:compileDebugAndroidTestJavaWithJavac` gate. JUnit XML acceptance reported **3,354 tests across 486 suites, zero failures, zero errors and zero skipped**. All five new singleton regression methods and the previously required archive compatibility methods passed. Artifact: `14005521876`, `apd-archive-scalar-singletons-junit`, 540,314 bytes; uploaded successfully. This document-only update is NOT a newly compiled source head and does not re-run CI.
+
+Only the parser, scoped regression class, dedicated workflow and this handoff are in PR #66. No APK was assembled or signed, no Android instrumentation/emulator or physical RedMagic tests executed, and no native manual/signer/save-compatibility/publication gate passed in this execution. Source verification must not be mistaken for new qualified APK delivery. Preserve existing APD464 and all independent pending release work.
+
+Next: fresh live authoritative and PR-head check, expected-head non-force merge if clean and no competing package, then verify actual integration commit and append exact completion receipt.
