@@ -262,7 +262,7 @@ public class ReportTest {
 		SeedFloors.install(c, SeedFloors.assemble(spec(), recorded, canonical));
 		Report r = ReportBuilder.seedFloors(c, "run-x", RULES.id, NOW, "test");
 		assertTrue(r.hasCanonical());
-		for (String out : new String[]{ ReportRenderer.markdown(r), ReportRenderer.text(r), ReportRenderer.html(r), ReportRenderer.csv(r).isEmpty() ? "" : ReportRenderer.markdown(r) }){
+		for (String out : new String[]{ ReportRenderer.markdown(r), ReportRenderer.text(r), ReportRenderer.html(r), ReportRenderer.csv(r) }){
 			assertTrue("canonical notice missing", out.contains("CANONICAL DATA"));
 			assertTrue("not the exact counterfactual", out.contains("NOT what this run would have met"));
 		}
