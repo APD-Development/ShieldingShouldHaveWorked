@@ -197,7 +197,7 @@ public class Eye extends Mob {
 
 				if (Dungeon.level.heroFOV[pos]) {
 					ch.sprite.flash();
-					CellEmitter.center( pos ).burst( PurpleParticle.BURST, Random.IntRange( 1, 2 ) );
+					CellEmitter.combatCenter( pos ).burst( PurpleParticle.BURST, Random.IntRange( 1, 2 ) );
 				}
 
 				if (!ch.isAlive() && ch == Dungeon.hero) {

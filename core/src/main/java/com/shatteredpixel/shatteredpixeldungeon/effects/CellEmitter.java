@@ -48,6 +48,14 @@ public class CellEmitter {
 		return emitter;
 	}
 	
+	/** Explicit combat impact, never used for ambient or trap effects. */
+	public static Emitter combatCenter( int cell ) {
+		PointF p = DungeonTilemap.tileToWorld( cell );
+		Emitter emitter = GameScene.combatEmitter();
+		emitter.pos( p.x + DungeonTilemap.SIZE / 2, p.y + DungeonTilemap.SIZE / 2 );
+		return emitter;
+	}
+
 	/** One-off magical-well effects use wall-frame time at every playback speed. */
 	public static Emitter normalSpeed( int cell ) {
 		PointF p = DungeonTilemap.tileToWorld( cell );

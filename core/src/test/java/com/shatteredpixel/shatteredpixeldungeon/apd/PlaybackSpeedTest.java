@@ -205,6 +205,29 @@ public class PlaybackSpeedTest {
   }
   assertEquals(0.0001f,PlaybackGroup.movementDuration(.1f),.000001f);
  }
+ @Test public void combatEmitterUsesSeparatePersonalLayerFromAmbientAndMagicalWells() throws Exception{
+  Field sf=GameScene.class.getDeclaredField("scene");
+  Field cf=GameScene.class.getDeclaredField("combatEmitters");
+  Field gf=GameScene.class.getDeclaredField("gases");
+  sf.setAccessible(true);cf.setAccessible(true);gf.setAccessible(true);
+  Object old=sf.get(null);
+  GameScene fixture=new GameScene();
+  ApdFeatures.parse("testBuild\\n".replace("\\n","\n"));
+  Group combat=PlaybackGroup.personalSpeedGroup(),ambient=PlaybackGroup.normalSpeedGroup();
+  cf.set(fixture,combat);gf.set(fixture,ambient);
+  try{
+   sf.set(null,fixture);PlaybackGroup.speed(5);Game.elapsed=.016f;
+   Emitter hit=GameScene.combatEmitter();
+   Emitter well=GameScene.normalSpeedEmitter();
+   assertSame(combat,hit.parent);assertSame(ambient,well.parent);
+   float[] hitElapsed={0},ambientElapsed={0};
+   combat.add(observe(hitElapsed));ambient.add(observe(ambientElapsed));
+   combat.update();ambient.update();
+   assertEquals(.256f,hitElapsed[0],.0001f);
+   assertEquals(.016f,ambientElapsed[0],0f);
+   assertEquals(.016f,Game.elapsed,0f);
+  } finally {sf.set(null,old);}
+ }
  @Test public void onlyPrivatePickupVisualTimeAcceleratesAndRestoresSourceFrameClock(){
   float[] factors={.5f,1f,2f,4f,8f,16f,32f,64f,100f,1000f};
   for(int mode=0;mode<factors.length;mode++){

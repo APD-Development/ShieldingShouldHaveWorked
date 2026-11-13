@@ -199,6 +199,7 @@ public class GameScene extends PixelScene {
 	private Group mobs;
 	private Group floorEmitters;
 	private Group emitters;
+	private Group combatEmitters;
 	private Group effects;
 	private Group gases;
 	private Group spells;
@@ -319,6 +320,7 @@ public class GameScene extends PixelScene {
 		}
 
 		emitters = com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup.normalSpeedGroup();
+		combatEmitters = com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup.personalSpeedGroup();
 		effects = com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup.normalSpeedGroup();
 		healthIndicators = com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup.personalSpeedGroup();
 		emoicons = com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup.normalSpeedGroup();
@@ -355,6 +357,7 @@ public class GameScene extends PixelScene {
 		add (wallBlocking);
 
 		add( emitters );
+		add( combatEmitters );
 		add( effects );
 
 		gases = com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup.normalSpeedGroup();
@@ -1325,6 +1328,14 @@ public class GameScene extends PixelScene {
 		} else {
 			return null;
 		}
+	}
+
+	/** Explicit impact particles only. Keep ambient, traps and wells on 1x. */
+	public static synchronized Emitter combatEmitter() {
+		if (scene == null) return null;
+		Emitter emitter = (Emitter) scene.combatEmitters.recycle(Emitter.class);
+		emitter.revive();
+		return emitter;
 	}
 
 	// Well-use particles share the 1x gas/well visual layer, rather than
