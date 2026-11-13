@@ -322,6 +322,7 @@ public final class ReportRenderer {
 		StringBuilder sb = new StringBuilder();
 		boolean any = false;
 		if (r.synthetic) sb.append("# ").append(SYNTHETIC_NOTICE).append("\r\n");
+		if (r.hasCanonical()) sb.append("# ").append(csvComment(CANONICAL_NOTICE)).append("\r\n");
 		for (Report.Block b : r.blocks){
 			if (b instanceof Report.Facts){
 				Report.Facts facts = (Report.Facts) b;
