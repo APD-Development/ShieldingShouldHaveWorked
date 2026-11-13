@@ -141,7 +141,9 @@ public final class RunIndex {
 		if (files == null) return;
 		for (File f : files){
 			String name = f.getName();
-			if (!f.isFile() || !name.endsWith(LOG_SUFFIX) || !isDirectRunLog(f)) continue;
+			// A direct child with an invalid filename is not an APD run ID. Never
+			// let its header supply another ID and impersonate a genuine run.
+			if (!f.isFile() || !isValidLogFileName(name) || !isDirectRunLog(f)) continue;
 			String stem = name.substring(0, name.length() - LOG_SUFFIX.length());
 			try {
 				RunIndexEntry e = RunIndexEntry.describe(f, stem);
@@ -163,6 +165,13 @@ public final class RunIndex {
 		} catch (IOException ignored){
 			return false;
 		}
+	}
+
+	// Index entries are derived from direct runs/<id>.apdlog files only. This
+	// also checks old checksum-valid caches made before rebuild rejected bad names.
+	private static boolean isValidLogFileName( String name ){
+		return name != null && name.endsWith(LOG_SUFFIX)
+				&& StatsStore.isValidRunId(name.substring(0, name.length() - LOG_SUFFIX.length()));
 	}
 
 	// A derived cache must not be loaded or written through an individual symbolic
@@ -245,6 +254,7 @@ public final class RunIndex {
 		for (long i = 0; i < count; i++){
 			int len = src.readUnsignedInt();
 			RunIndexEntry e = RunIndexEntry.decode(src.readBytes(len));
+			if (!isValidLogFileName(e.logFile)) throw new FormatException("invalid indexed run log filename");
 			// Duplicate identities in a valid-CRC derived index cannot be trusted: the
 			// later summary would silently replace the first and hide original history.
 			if (entries.containsKey(e.runId)) throw new FormatException("duplicate run index entry");
