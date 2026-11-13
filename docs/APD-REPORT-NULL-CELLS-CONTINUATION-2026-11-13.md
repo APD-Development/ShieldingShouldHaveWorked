@@ -19,7 +19,15 @@ This claim is distinct from already integrated CSV canonical disclosure, Markdow
 
 **Integration pending at this checkpoint.** Any next documentation change is non-executable; exact source CI pertains to `09904c50`. Re-read authoritative and PR heads, check work claims, ensure the source tree is unchanged, and perform a guarded, expected-head, non-force integration only if compatible.
 
-## Final source integration
+## Final source integration, 06:07 EST
 
-Pending.
+- Immediately before integration, remote authoritative head remained `55b7168bdc66190ae395abe3e91a6770e5e050a0`, the isolated candidate was `42c3b2c430b8751df29570a8daff57c1153da00f`, and [PR #116](https://github.com/APD-Development/ShieldingShouldHaveWorked/pull/116) was open. The only commit after successful source CI `09904c50` changed this documentation, as confirmed by a one-file commit comparison.
+- GitHub Git merge object `41e1085d507ed545707bf2ee2f3c7aac1d964388` has parents [authoritative `55b7168`, isolated `42c3b2c`] and exactly the isolated branch tree `18c5d2fd29d38e90b181ed9a754ae58a607b22ff`. Live heads were re-read immediately before writing.
+- `update_ref(force=false, expected_sha=55b7168...)` succeeded, independently read back `41e1085d` as the authoritative `codex/apd-phone-fixes-2026-10-09` head, with original source blob `e78f86057763a6abc7e2d94c4cb0cbc1a44a96de`, regression blob `ed7fbb95870ffc4b3d38ac3df0bdca31033af219` and workflow blob `b3665ce6a525f0e54d5a31f628fcbf74dd95744d`. GitHub marked PR #116 merged at 06:07:41 EST on November 13, 2026.
+- The **only actual tests run in this execution** were [CI run 43413818105](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/43413818105) at exact tested source `09904c50`: 3,427 JUnit tests across 508 suites, zero failures/errors/skips; desktop and Android debug/release/instrumentation Java compilation passed. The later documentation does not represent an additional test execution.
+- No Android application APK was assembled or signed. No original signing-key continuity, native emulator acceptance, installation over prior data, saved-game migration or release publication was attempted. Local runtime has no network access to clone the private repository and has no verified original private signing inputs. The independent [APD464 release](https://github.com/APD-Development/ShieldingShouldHaveWorked/releases/tag/apd-464), published November 12 at 19:07:51 EST, stays intact and does **not** include this correction. Existing APKs and all unrelated active claims remain untouched.
+- Next safe work: start from a newly verified authoritative branch head; check updated work claims, AGENTS.md, PRs and handoffs first. Do not repeat the completed null-cell rendering fix or recently merged provenance/Markdown work. If planning a new playable APK, use the original signer, full native acceptance, install-over/save integrity and established gated publication procedure.
+
+The final documentation receipt is intentionally non-executable and does not change the tested source. Recurring APD task schedules were not modified.
+
 
