@@ -46,6 +46,20 @@ jobs:
               assert 'CellEmitter.combatCenter(' in (root/('items/wands/'+name+'.java')).read_text()
           for name in ('BurningTrap','RockfallTrap'):
               assert 'CellEmitter.combatCenter(' not in (root/('levels/traps/'+name+'.java')).read_text()
+          assert 'effects = com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup.normalSpeedGroup();' in scene
+          assert '(flashTime -= PlaybackGroup.personalVisualElapsed())' in (root/'sprites/CharSprite.java').read_text()
+          assert 'Splash.combatAt(' in (root/'sprites/CharSprite.java').read_text()
+          assert 'GameScene.combatEmitter()' in (root/'effects/Splash.java').read_text()
+          assert 'personalVisualElapsed()' in (root/'effects/Lightning.java').read_text()
+          assert 'personalVisualElapsed()' in (root/'effects/MagicMissile.java').read_text()
+          assert 'personalVisualElapsed()' in (root/'ui/ItemSlot.java').read_text()
+          assert 'personalVisualElapsed()' in (root/'ui/StatusPane.java').read_text()
+          for name in ('Bomb','FlashBangBomb','ShrapnelBomb'):
+              assert 'CellEmitter.combatCenter(' in (root/('items/bombs/'+name+'.java')).read_text()
+          for name in ('WandOfCorrosion','WandOfPrismaticLight'):
+              assert 'CellEmitter.combatCenter(' in (root/('items/wands/'+name+'.java')).read_text()
+          assert 'CellEmitter.combatCenter(' not in (root/'items/bombs/Noisemaker.java').read_text()
+          assert 'CellEmitter.combatCenter(' not in (root/'items/stones/StoneOfAggression.java').read_text()
           print('No accelerated fog, plant, traps, wells, alert or non-Developer visual group')
           PY
       - name: Complete core regression suite and required Android and desktop compilation
