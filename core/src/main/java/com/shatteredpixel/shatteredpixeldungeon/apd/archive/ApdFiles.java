@@ -104,7 +104,11 @@ public final class ApdFiles {
 				File newest = null;
 				if (zips != null){
 					Arrays.sort(zips);
-					for (File z : zips) if (z.isFile() && z.getName().endsWith(".zip")) newest = z;
+					// Prefer the newest file by modification time. Keep the previous name order for ties.
+					for (File z : zips){
+						if (z.isFile() && z.getName().endsWith(".zip")
+								&& (newest == null || z.lastModified() >= newest.lastModified())) newest = z;
+					}
 				}
 				if (newest == null){
 					source.onFailed("put an archive (a .zip) in " + dir + " first");
