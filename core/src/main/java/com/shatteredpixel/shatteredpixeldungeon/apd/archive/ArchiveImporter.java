@@ -316,9 +316,15 @@ public final class ArchiveImporter {
 		}
 		boolean runMatches = !e.kind.equals(ArchiveManifest.KIND_RUN)
 				|| (startedRun != null && startedRun.length() > 0 ? startedRun.equals(e.runId) : r.header.runId.equals(e.runId));
+		// A run's typed RUN_START identifies its logical run (shared by resume
+		// segments), but the log header identifies this individual file. Both
+		// identities must survive import, or RunIndex later marks the copied
+		// history file unreadable under its on-disk filename.
+		boolean headerMatchesFilename = !e.kind.equals(ArchiveManifest.KIND_RUN)
+				|| e.logId().equals(r.header.runId);
 		if (!StatsStore.isValidRunId(r.header.runId) || r.header.runId.startsWith(DatasetStore.DEMO_LOG_PREFIX)
 				|| (startedRun != null && startedRun.startsWith(DatasetStore.DEMO_LOG_PREFIX))
-				|| r.header.writerBuild.contains("SYNTHETIC-DEMO") || !runMatches){
+				|| r.header.writerBuild.contains("SYNTHETIC-DEMO") || !runMatches || !headerMatchesFilename){
 			tmp.delete();
 			report.details.add(e.path + ": its header does not match the manifest, or it is demo data.");
 			return null;
