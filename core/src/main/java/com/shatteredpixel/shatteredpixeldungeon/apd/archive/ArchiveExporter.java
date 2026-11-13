@@ -25,6 +25,7 @@ import com.shatteredpixel.shatteredpixeldungeon.apd.query.DatasetStore;
 import com.shatteredpixel.shatteredpixeldungeon.apd.stats.ApdEvent;
 import com.shatteredpixel.shatteredpixeldungeon.apd.stats.EventTypes;
 import com.shatteredpixel.shatteredpixeldungeon.apd.stats.LifecycleEvents;
+import com.shatteredpixel.shatteredpixeldungeon.apd.stats.LegacyEvents;
 import com.shatteredpixel.shatteredpixeldungeon.apd.stats.LogFormat;
 import com.shatteredpixel.shatteredpixeldungeon.apd.stats.ReadResult;
 import com.shatteredpixel.shatteredpixeldungeon.apd.stats.RunIndex;
@@ -326,21 +327,33 @@ public final class ArchiveExporter {
 							}
 						}
 						}
-						//A run is demonstrably finished only if its log was completed cleanly
-						//and the last event is a readable RUN_END. An earlier end marker in
-						//an unsealed/interrupted or subsequently appended log must not
-						//authorize exporting the run's hidden facts in raw form.
-						if (r.sealed && r.status.isClean() && !r.events.isEmpty()){
-							ApdEvent last = r.events.get(r.events.size() - 1);
-							if (last.type == EventTypes.RUN_END){
+					//The normal recorder may write one RANKING_LINK after RUN_END,
+					//before sealing. That verified trailer is not gameplay progress.
+					//An unsealed, damaged, or otherwise extended log is ambiguous:
+					//never export its hidden history in raw form.
+					if (r.sealed && r.status.isClean() && !r.events.isEmpty()){
+						int end = r.events.size() - 1;
+						ApdEvent last = r.events.get(end);
+						if (last.type == EventTypes.RANKING_LINK){
+							try {
+								LegacyEvents.decodeRankingLink(last, r);
+								end--;
+							} catch (RuntimeException ignored){
+								end = -1; //A malformed trailer cannot prove completion.
+							}
+						}
+						if (end >= 0){
+							ApdEvent possibleEnd = r.events.get(end);
+							if (possibleEnd.type == EventTypes.RUN_END){
 								try {
-									LifecycleEvents.decodeRunEnd(last, r);
+									LifecycleEvents.decodeRunEnd(possibleEnd, r);
 									l.ended = true;
 								} catch (RuntimeException ignored){
-									//Malformed terminal end cannot prove completion.
+									//Malformed run end cannot prove completion.
 								}
 							}
 						}
+					}
 				}
 			} catch (Throwable t){
 				l.readable = false;
