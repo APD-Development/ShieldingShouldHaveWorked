@@ -307,6 +307,12 @@ public final class ArchiveExporter {
 				// per-file; RUN_START may name a different shared logical run.
 				// Imported legacy files retain their existing compatibility rules.
 				if (r.header != null && (imported || id.equals(r.header.runId))){
+					// Demo provenance can survive under an ordinary filename. The importer
+					// already rejects synthetic writer builds, so exclude them here too.
+					if (r.header.writerBuild.contains("SYNTHETIC-DEMO")){
+						report.skippedDemo++;
+						continue;
+					}
 					l.readable = true;
 					l.runId = r.header.runId;
 					l.created = r.header.createdAtMillis;
@@ -331,6 +337,12 @@ public final class ArchiveExporter {
 							}
 						}
 						}
+					// The typed RUN_START carries the logical ID for all segments.
+					// A copied demo log must never escape simply by using a plain filename.
+					if (l.runId.startsWith(DatasetStore.DEMO_LOG_PREFIX)){
+						report.skippedDemo++;
+						continue;
+					}
 					//The normal recorder may write one RANKING_LINK after RUN_END,
 					//before sealing. That verified trailer is not gameplay progress.
 					//An unsealed, damaged, or otherwise extended log is ambiguous:
