@@ -1276,7 +1276,7 @@ public class GameScene extends PixelScene {
 	}
 	/** Only visual shields/barriers and explicit combat FX, never ambient or status halos. */
 	public static void combatEffect(Visual effect) {
-		if (scene != null) scene.combatEffects.add(effect);
+		if (scene != null) (scene.combatEffects != null ? scene.combatEffects : scene.effects).add(effect);
 	}
 
 
@@ -1343,7 +1343,11 @@ public class GameScene extends PixelScene {
 	/** Explicit impact particles only. Keep ambient, traps and wells on 1x. */
 	public static synchronized Emitter combatEmitter() {
 		if (scene == null) return null;
-		Emitter emitter = (Emitter) scene.combatEmitters.recycle(Emitter.class);
+		// Headless combat tests may retain an older partial scene fixture.
+		// Preserve the previously existing normal emitter in that case.
+		Group layer = scene.combatEmitters != null ? scene.combatEmitters : scene.emitters;
+		if (layer == null) return null;
+		Emitter emitter = (Emitter) layer.recycle(Emitter.class);
 		emitter.revive();
 		return emitter;
 	}
