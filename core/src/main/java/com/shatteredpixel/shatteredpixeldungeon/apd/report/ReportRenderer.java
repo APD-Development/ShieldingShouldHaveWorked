@@ -89,9 +89,9 @@ public final class ReportRenderer {
 
 	public static String markdown( Report r ){
 		StringBuilder sb = new StringBuilder();
-		sb.append("# ").append(r.title).append("\n\n");
+		sb.append("# ").append(md(r.title)).append("\n\n");
 		if (r.synthetic) sb.append("> **").append(SYNTHETIC_NOTICE).append("**\n\n");
-		for (String a : r.about) sb.append(a).append("  \n");
+		for (String a : r.about) sb.append(md(a)).append("  \n");
 		if (!r.about.isEmpty()) sb.append("\n");
 		if (r.hasCanonical()) sb.append("> **").append(CANONICAL_NOTICE).append("**\n\n");
 		for (Report.Block b : r.blocks){
@@ -99,7 +99,7 @@ public final class ReportRenderer {
 				Report.Heading h = (Report.Heading) b;
 				sb.append("\n");
 				for (int i = 0; i < h.level + 1; i++) sb.append('#');
-				sb.append(' ').append(h.text).append("\n\n");
+				sb.append(' ').append(md(h.text)).append("\n\n");
 			} else if (b instanceof Report.Note){
 				Report.Note n = (Report.Note) b;
 				sb.append("> ").append(n.kind == Report.NoteKind.WARN ? "**Warning:** " : n.kind == Report.NoteKind.NOTE ? "Note: " : "").append(quotedNoteLines(n.text)).append("\n\n");
@@ -118,7 +118,7 @@ public final class ReportRenderer {
 				sb.append("\n");
 			} else if (b instanceof Report.Table){
 				Report.Table t = (Report.Table) b;
-				if (!t.title.isEmpty()) sb.append("**").append(t.title).append("**  \n");
+				if (!t.title.isEmpty()) sb.append("**").append(md(t.title)).append("**  \n");
 				sb.append("_").append(provLabel(t.provenance)).append("_\n\n");
 				sb.append("|");
 				for (String h : t.headers) sb.append(' ').append(md(h)).append(" |");
@@ -144,7 +144,7 @@ public final class ReportRenderer {
 			}
 		}
 		appendLegend(sb, r, "\n---\n\n**Marks:**\n\n", "- ", ": ", "\n");
-		sb.append("\n---\n").append(footer(r)).append("\n");
+		sb.append("\n---\n").append(md(footer(r))).append("\n");
 		return sb.toString();
 	}
 
