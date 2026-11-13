@@ -20,3 +20,11 @@ This execution is in the originating regular APD ChatGPT conversation. Authentic
 - No new signed APK, original-signer or certificate check, native Android/RedMagic acceptance, screenshot review, install-over/save integrity or gated publication was run by this source-only package. The previously published APD464 source and assets remain unchanged. No recurring tasks were modified.
 
 Next action: inspect terminal exact-source CI including real JUnit XML and jobs, repair any failed source/test if needed, verify fresh authoritative and feature heads and open work claims, and only then consider expected-head non-force integration. No execution between triggered runs is claimed.
+
+## Verified exact-source CI, Friday November 13, 2026, approximately 03:44 EST
+
+[Actions run 43395131151](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/43395131151), attempt 1, completed **success** on exact source/test/workflow SHA `64e8e4248221c50027a2ff2908c1ed0d95a9cb55`. Its job `131784096592` concluded success. Actual GitHub job log reports `BUILD SUCCESSFUL in 2m 47s`, then full parsed JUnit XML **3,409 core tests across 501 suites; zero failures, zero errors, zero skipped** including each named new archive-start-proof regression. `:core:test`, `:desktop:classes`, `:android:compileDebugJavaWithJavac`, `:android:compileReleaseJavaWithJavac`, and `:android:compileDebugAndroidTestJavaWithJavac` passed. Artifact ID `14023025799`, `apd-run-start-privacy-junit`, 554,707 bytes, SHA-256 `99116c25c33e7c02124168ae6760bb6b43a60ea0fe4c5675a1f05c9ffa76c2f2`, uploaded successfully and retained for 14 days.
+
+This source-only CI does **not** establish original-signed Developer/Alpha APK assembly, native Android execution, install-over/save history verification, visual review, physical RedMagic acceptance, or release publication. APD464 remains the earlier published APK and cannot be described as containing this change. This documentation-only receipt does not change tested executable/test/workflow source.
+
+**Integration pending at this checkpoint:** compare live authoritative branch and isolated branch heads and inspect current claims and PR. Use only an expected-head, non-force merge if still clean; otherwise reconcile without overwriting other work. Do not modify recurring APD tasks.
