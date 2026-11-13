@@ -9,4 +9,15 @@ Source-evidenced defect: `ArchiveManifest.encode()` emits exactly one of each re
 At claim: no production change, no tests executed, no APK assembly, no native Android/phone acceptance, no original signer and no publication. Create a dedicated source-only CI gate for complete `:core:test`, desktop and Android Java compiles. Merge only after exact-source terminal success and fresh live authoritative and PR checks with expected-head non-force merge. Previously published APD464 remains unchanged; release records checked independently. No recurring tasks changed.
 
 ## Continuation
-Pending source/test/workflow commits and exact verification results. This initial claim is not evidence of completion.
+The initial work claim above is preserved; verification results and integration are documented below.
+
+## Production and source CI checkpoint (Thursday, November 12, 2026 at 9:45:21 PM EST)
+
+- Work-claim commit: `f5285e04872fbff12c97ccb59a5ac242852ff44c`.
+- Production parser correction: `25ad2ca71a5350776ed8644a0f9bf192ffc2c1cb`. The three scalar metadata keys now have independent seen guards. No format, scoring, save, gameplay, Android identity or asset changes.
+- Regression class: `b9d0bf16dd92313b9ac18058cdbf096aca6f0cac`. Five test methods cover all three checksum-valid duplicate record types (identical and contradictory), unknown/omitted key compatibility, and ZIP import refusal without history mutation.
+- Dedicated source/Java verification workflow: `88bed85317474b494068469ffc9803adbd01736f`. [Actions run 43354238559](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/43354238559), first attempt and exact source head `88bed85317474b494068469ffc9803adbd01736f`, **still in progress** at this checkpoint; no success or full test-count claim.
+- [Draft PR #66](https://github.com/APD-Development/ShieldingShouldHaveWorked/pull/66), exactly four scoped paths: parser, regression test, workflow and this handoff. Compare against original authoritative head showed four commits ahead with no unrelated changes.
+- APK/native/publisher boundary: no original-signed APK built, Android native/device acceptance performed or release published in this package. APD464 is the previously verified release and does not include this source change. No other active PR or automation changed.
+
+Next: inspect terminal CI and JUnit XML/job logs; if exact source passes, perform fresh authoritative-branch and PR-head checks, integrate only via expected-head non-force merge; record terminal result and commit in this document. If source CI fails, correct only demonstrated test/source errors, preserving failure evidence. 
