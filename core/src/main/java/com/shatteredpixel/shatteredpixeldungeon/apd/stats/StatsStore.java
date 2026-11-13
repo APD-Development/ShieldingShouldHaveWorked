@@ -132,7 +132,7 @@ public final class StatsStore {
 				if (f.isFile() && name.endsWith(RunIndex.LOG_SUFFIX)
 						&& isValidRunId(name.substring(0, name.length() - RunIndex.LOG_SUFFIX.length()))
 						&& isDirectRunLog(f)){
-					reports.add(LogRecovery.repair(f));
+					reports.add(LogRecovery.repair(f, name.substring(0, name.length() - RunIndex.LOG_SUFFIX.length())));
 				}
 			}
 		}
