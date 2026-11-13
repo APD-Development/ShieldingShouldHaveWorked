@@ -1,0 +1,100 @@
+name: APD465 REST publisher retry of accepted frozen Developer bytes
+on:
+  push:
+    branches: [chatgpt/apd465-frozen-recovery-20261113]
+    paths: [.github/workflows/apd465-frozen-publish-rest-retry.yml]
+permissions: {contents: write, actions: read}
+concurrency: {group: apd465-exact-candidate-and-delivery, cancel-in-progress: false}
+jobs:
+  publish_frozen:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      GH_TOKEN: '${{ github.token }}'
+    steps:
+      - uses: actions/checkout@v4
+      - name: Read back exact frozen candidate and all eight accepted native receipts, without rebuilding
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p candidate465 previous-native recovered-native
+          gh run download 43414835573 --repo "$GITHUB_REPOSITORY" --name apd465-frozen-candidate --dir candidate465
+          gh run download 43414835573 --repo "$GITHUB_REPOSITORY" --pattern 'apd465-native-*' --dir previous-native
+          gh run download 43416465219 --repo "$GITHUB_REPOSITORY" --pattern 'apd465-native-*' --dir recovered-native
+          python3 - <<'PY'
+          from pathlib import Path
+          import hashlib,json
+          source='c2fb3af855afa358d76d687bcf180ee031281f55'
+          root=Path('candidate465')
+          receipt=json.loads((root/'receipt.json').read_text())
+          assert receipt['source']==source and receipt['build']==465,receipt
+          for key,info in receipt['files'].items():
+              name='APD-'+key+'-465.apk' if key in ('Developer','Alpha-Testers') else key
+              f=root/name
+              assert f.is_file() and f.stat().st_size==info['bytes'],name
+              assert hashlib.sha256(f.read_bytes()).hexdigest()==info['sha256'],name
+          assert hashlib.sha256((root/'APD-Developer-465.apk').read_bytes()).hexdigest()=='bb6fa53913579a03f0353af1bd7138dbe31047fc9361caffff9aace8aa6e5e52'
+          assert (root/'APD-Developer-465.apk').stat().st_size==39211120
+          assert hashlib.sha256((root/'APD-Source-465.zip').read_bytes()).hexdigest()=='b705b14bba35ed67daee160a907bd65618f3f8da6e38b40d218aa69c3ff58b9e'
+          old=list(Path('previous-native').rglob('native-verification.json'))
+          new=list(Path('recovered-native').rglob('native-verification.json'))
+          assert len(old)==7 and len(new)==1,(len(old),len(new))
+          expected={(edition,test) for edition in ('Developer','Alpha-Testers') for test in ('WallGeometryDeviceTest','SearchContextDeviceTest','SeedHistoryDeviceTest','PlaybackProfileDeviceTest')}
+          found=set()
+          for p in old+new:
+              d=json.loads(p.read_text())
+              assert d['source']==source and d['build']==465 and d['tests']==1
+              assert d['device_transfer_complete'] and d['screenshots'],p
+              found.add((d['variant'],d['case']))
+          assert found==expected,(found,expected)
+          print('Frozen signed Developer and source exact original SHA-256; all eight native acceptance receipts verified.')
+          PY
+          if gh release view apd-465 --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            echo "Release already exists: abort rather than overwrite." >&2
+            exit 1
+          fi
+          if gh api "repos/$GITHUB_REPOSITORY/git/ref/tags/apd-465" >/dev/null 2>&1; then
+            echo "Tag already exists: abort rather than modify." >&2
+            exit 1
+          fi
+      - name: Create draft GitHub Release using direct REST API instead of previous failing CLI publisher
+        shell: bash
+        run: |
+          set -euo pipefail
+          gh api --method POST "repos/$GITHUB_REPOSITORY/releases" \
+            -f tag_name=apd-465 \
+            -f target_commitish=c2fb3af855afa358d76d687bcf180ee031281f55 \
+            -f name='APD465 Personal: verified individual playback categories' \
+            -f body='Owner personal Developer playback categories. Frozen original-signed source c2fb3af855afa358d76d687bcf180ee031281f55; 3,330 passed core tests, eight accepted Android native Developer/Alpha checks. Personal Developer APK only; Alpha is verification only and is not published. Physical RedMagic installation not yet verified. Game balance, turn costs, hunger, scoring and save version unchanged.' \
+            -f make_latest=false -F draft=true -F prerelease=true \
+            --jq '.id' > release-id.txt
+          test -s release-id.txt
+      - name: Upload only Developer APK and frozen source, verify byte-for-byte download, publish
+        shell: bash
+        run: |
+          set -euo pipefail
+          gh release upload apd-465 candidate465/APD-Developer-465.apk candidate465/APD-Source-465.zip --repo "$GITHUB_REPOSITORY"
+          mkdir -p readback
+          gh release download apd-465 --repo "$GITHUB_REPOSITORY" --dir readback
+          python3 - <<'PY'
+          import hashlib,json,pathlib
+          receipt=json.loads(pathlib.Path('candidate465/receipt.json').read_text())
+          for key in ('Developer','APD-Source-465.zip'):
+              name='APD-Developer-465.apk' if key=='Developer' else key
+              f=pathlib.Path('readback')/name
+              assert f.is_file() and f.stat().st_size==receipt['files'][key]['bytes'],name
+              assert hashlib.sha256(f.read_bytes()).hexdigest()==receipt['files'][key]['sha256'],name
+          print('Uploaded assets downloaded verbatim and exact frozen SHA-256 confirmed')
+          PY
+          gh api --method PATCH "repos/$GITHUB_REPOSITORY/releases/$(cat release-id.txt)" -F draft=false -F prerelease=true -f make_latest=false --jq '.html_url'
+          gh api "repos/$GITHUB_REPOSITORY/releases/tags/apd-465" > published.json
+          python3 - <<'PY'
+          import json
+          r=json.load(open('published.json'))
+          assert r['tag_name']=='apd-465' and not r['draft'] and r['prerelease']
+          names={a['name'] for a in r['assets']}
+          assert names=={'APD-Developer-465.apk','APD-Source-465.zip'},names
+          print('Published release confirmed:',r['html_url'])
+          PY
+          test "$(gh api "repos/$GITHUB_REPOSITORY/git/ref/tags/apd-465" --jq .object.sha)" = c2fb3af855afa358d76d687bcf180ee031281f55
+          echo 'Published tag targets exact frozen source commit.'
