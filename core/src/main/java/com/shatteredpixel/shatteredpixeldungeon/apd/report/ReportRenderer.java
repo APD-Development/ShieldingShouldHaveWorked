@@ -72,8 +72,8 @@ public final class ReportRenderer {
 	//---- Markdown ----
 
 	private static String md( String s ){
-		// Preserve literal backslashes before adding Markdown's pipe escapes.
-		return s.replace("\\", "\\\\").replace("|", "\\|").replace("\n", " ");
+		// Preserve literal backslashes before adding Markdown's pipe escapes. Normalize all line endings in table cells.
+		return s.replace("\\", "\\\\").replace("|", "\\|").replace("\r\n", " ").replace("\r", " ").replace("\n", " ");
 	}
 
 	public static String markdown( Report r ){
