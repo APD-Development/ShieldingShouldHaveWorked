@@ -10,6 +10,12 @@ Origin: existing regular APD ChatGPT conversation, not a separate development ta
 
 **No scope:** no gameplay, balance, history/seed scoring, save schema, app identifiers, signing, edition boundary, release candidate, active playback or search work. Original-signed APK publication and physical/native/install-over acceptance remain separately gated and not established in this package.
 
-## Pending verification and continuation
+## Executable source completed and exact-source gate passed, 05:13–05:17 EST
 
-Record exact commits, terminal CI, target integration and build/release blockers before closing. If CI or collision blocks safe integration, leave this isolated candidate and all evidence intact.
+- Isolated branch source commit `f363bad7528b66e2b63ec861b1c2a3a0029c9aa1` adjusts only `ReportRenderer.markdown` note blockquote continuation using `quotedNoteLines`. Saved note text and other formats remain unmodified. Two focused tests were added in commit `b43a396684f89658597aadde5694084dd3a21e2b`.
+- Source/test/workflow exact CI head `8cfe82d61a8d333ea764872c982fbf06897b4160`. The dedicated [GitHub Actions run 43407714313](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/43407714313), job `131826044041`, completed **success**. Raw decoded job logs record `BUILD SUCCESSFUL in 1m 44s` and `EXACT_APD_MARKDOWN_NOTE_QUOTE_JUNIT {'tests': 3418, 'failures': 0, 'errors': 0, 'skipped': 0} suites 505`. Both named regression methods were required by the successful gate; complete `:core:test`, desktop classes, Android debug/release and Android instrumentation Java compilation passed.
+- Uploaded JUnit artifact `14028117356`, `apd-markdown-note-quote-junit`, 552,664 bytes, digest `sha256:1db18ea2577ca6dad211134d07e85a9d1d6a228de68e34e45a91e277f85e05f7`.
+- Compared the isolated branch to starting authoritative `c519643dece90e80b51d12dbe7b132a9e4ab122e`: four commits ahead, zero behind, exactly four intended paths (production Java, two-test Java class, dedicated CI workflow, coordination handoff). No APK assembled, signed, natively tested, installed over prior data or published.
+- While exact CI was running, independent PR #111 was opened on the same starting branch. Its source patch changes only a separate Markdown coverage loop in the same `ReportRenderer.java` file; this PR #110 changes only note quotation lines and is not a duplicate of that active work. Do not overwrite #111's branch; its owner must recheck the advancing authoritative base before integration.
+
+**Integration still pending at this documentation checkpoint.** Recheck both remote heads, PR state, open overlapping claims, then integrate only if the source gate is still terminal green and expected-head non-force update can be performed safely. Preserve APD464, all signer/native/publication gates and existing saves, history and scores.
