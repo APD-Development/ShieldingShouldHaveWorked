@@ -81,13 +81,28 @@ public final class DerivedStore {
 		cacheFile().delete();
 	}
 
+	//Only canonical direct children are source records. Per-file symlinks can otherwise
+	//inject an outside log or count a local alias twice; a linked storage root is allowed.
 	private List<File> logs( File dir ){
 		List<File> out = new ArrayList<>();
+		File canonicalDir;
+		try {
+			canonicalDir = dir.getCanonicalFile();
+		} catch (IOException | SecurityException ignored){
+			return out;
+		}
 		File[] files = dir.listFiles();
 		if (files != null){
 			Arrays.sort(files);
 			for (File f : files){
-				if (f.isFile() && f.getName().endsWith(RunIndex.LOG_SUFFIX)) out.add(f);
+				if (!f.getName().endsWith(RunIndex.LOG_SUFFIX)) continue;
+				try {
+					File canonical = f.getCanonicalFile();
+					if (f.isFile() && canonicalDir.equals(canonical.getParentFile())
+							&& f.getName().equals(canonical.getName())) out.add(f);
+				} catch (IOException | SecurityException ignored){
+					//Never derive facts from an unresolvable source path.
+				}
 			}
 		}
 		return out;
