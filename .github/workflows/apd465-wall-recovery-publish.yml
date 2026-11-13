@@ -1,0 +1,127 @@
+name: APD465 original-signed frozen Alpha wall recovery and personal Developer release
+on:
+  push:
+    branches: [chatgpt/apd465-frozen-recovery-20261113]
+    paths: [.github/workflows/apd465-wall-recovery-publish.yml]
+permissions: {contents: write, actions: read}
+concurrency: {group: apd465-exact-candidate-and-delivery, cancel-in-progress: false}
+jobs:
+  native:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - variant: Alpha-Testers
+            case: WallGeometryDeviceTest
+    runs-on: ubuntu-latest
+    timeout-minutes: 75
+    steps:
+      - uses: actions/checkout@v4
+      - name: Obtain only original frozen candidate bytes
+        env: {GH_TOKEN: '${{ github.token }}'}
+        run: |
+          mkdir -p candidate465
+          gh run download 43414835573 --repo "$GITHUB_REPOSITORY" --name apd465-frozen-candidate --dir candidate465
+          python3 - <<'PY'
+          import hashlib,json,pathlib,os
+          d=pathlib.Path('candidate465'); receipt=json.loads((d/'receipt.json').read_text())
+          assert receipt['source']=='c2fb3af855afa358d76d687bcf180ee031281f55' and receipt['build']==465
+          for key,info in receipt['files'].items():
+              name='APD-'+key+'-465.apk' if key in ('Developer','Alpha-Testers') else key
+              f=d/name
+              assert f.stat().st_size==info['bytes'] and hashlib.sha256(f.read_bytes()).hexdigest()==info['sha256']
+          PY
+      - name: Enable KVM
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+      - name: Test exact original Developer/Alpha APK on Android with native visual receipts
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 34
+          arch: x86_64
+          target: default
+          disable-animations: true
+          emulator-options: -no-snapshot -no-window -gpu swiftshader -feature -Vulkan -noaudio -no-boot-anim -camera-back none -skin 320x640
+          script: |
+            mkdir -p native465
+            adb install -r candidate465/APD-${{ matrix.variant }}-465.apk
+            adb install -r candidate465/APD-Instrumentation-465.apk
+            adb logcat -c
+            timeout 1200 adb shell am instrument -w -r -e class 'com.shatteredpixel.shatteredpixeldungeon.android.${{ matrix.case }}' com.charltonchris29.adhdpixeldungeon.indev.test/androidx.test.runner.AndroidJUnitRunner > native465/instrumentation.txt 2>&1
+            cat native465/instrumentation.txt
+            python3 tools/apd465_native_postcheck.py --variant '${{ matrix.variant }}' --case '${{ matrix.case }}' --directory native465 --source c2fb3af855afa358d76d687bcf180ee031281f55
+            adb logcat -d -v time > native465/logcat.txt
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: apd465-native-${{ matrix.variant }}-${{ matrix.case }}
+          path: native465/
+          if-no-files-found: warn
+          retention-days: 30
+
+  publish:
+    needs: native
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - name: Require exact eight original-frozen native receipts across recovery runs
+        env: {GH_TOKEN: '${{ github.token }}'}
+        run: |
+          set -e
+          mkdir -p candidate465 native-receipts
+          gh run download 43414835573 --repo "$GITHUB_REPOSITORY" --name apd465-frozen-candidate --dir candidate465
+          gh run download 43414835573 --repo "$GITHUB_REPOSITORY" --pattern 'apd465-native-*' --dir previous-native
+          gh run download "$GITHUB_RUN_ID" --repo "$GITHUB_REPOSITORY" --pattern 'apd465-native-*' --dir native-receipts
+          python3 - <<'PY'
+          from pathlib import Path
+          import hashlib,json,os
+          source='c2fb3af855afa358d76d687bcf180ee031281f55'
+          receipt=json.loads(Path('candidate465/receipt.json').read_text())
+          assert receipt['source']==source
+          previous=list(Path('previous-native').rglob('native-verification.json'))
+          recovered=list(Path('native-receipts').rglob('native-verification.json'))
+          assert len(previous)==7,len(previous)
+          assert len(recovered)==1,len(recovered)
+          verified=previous+recovered
+          expected={(variant,case) for variant in ('Developer','Alpha-Testers')
+                    for case in ('WallGeometryDeviceTest','SearchContextDeviceTest','SeedHistoryDeviceTest','PlaybackProfileDeviceTest')}
+          seen=set()
+          for p in verified:
+              d=json.loads(p.read_text())
+              assert d['source']==source and d['build']==465 and d['tests']==1
+              assert d['device_transfer_complete'] and d['screenshots']
+              seen.add((d['variant'],d['case']))
+          assert seen==expected,(seen,expected)
+          for key,info in receipt['files'].items():
+              name='APD-'+key+'-465.apk' if key in ('Developer','Alpha-Testers') else key
+              f=Path('candidate465')/name
+              assert f.stat().st_size==info['bytes']
+              assert hashlib.sha256(f.read_bytes()).hexdigest()==info['sha256']
+          print('Exact frozen source, original signed APKs and eight complete native visual test receipts verified')
+          PY
+          if gh release view apd-465 --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            echo "Refusing to overwrite existing APD465 release" >&2
+            exit 1
+          fi
+      - name: Publish only qualified original-signer APKs
+        env: {GH_TOKEN: '${{ github.token }}'}
+        run: |
+          gh release create apd-465 candidate465/APD-Developer-465.apk candidate465/APD-Source-465.zip --repo "$GITHUB_REPOSITORY" --target c2fb3af855afa358d76d687bcf180ee031281f55 --title 'APD465 Personal: verified individual playback categories' --notes 'Owner personal Developer playback: hero idle/death/flying at 1x; hero actions and enemy character animations, combat impact/healing/shields, projectiles, numeric damage, pickups, search highlights, camera/shake, inventory icons and menu fades follow selected speed. Ambient vegetation, wells, gases, traps, status effects and exclamation icons stay 1x. Turn costs, buff turns, hunger, scoring and sound clock unchanged; eight Android native receipts and original signer verified.  Signed using the original APD identity. Source tests, Android/desktop compilation, original signer/package checks and eight frozen APK native visual regressions are required before publishing. Physical RedMagic installation remains unverified.' --prerelease --latest=false
+      - name: Read back published assets and check byte-for-byte hashes
+        env: {GH_TOKEN: '${{ github.token }}'}
+        run: |
+          mkdir -p readback
+          gh release download apd-465 --repo "$GITHUB_REPOSITORY" --dir readback
+          python3 - <<'PY'
+          import hashlib,json,pathlib
+          receipt=json.loads(pathlib.Path('candidate465/receipt.json').read_text())
+          for key,info in receipt['files'].items():
+              if key in ('APD-Instrumentation-465.apk','Alpha-Testers'):continue
+              name='APD-'+key+'-465.apk' if key in ('Developer','Alpha-Testers') else key
+              f=pathlib.Path('readback')/name
+              assert f.stat().st_size==info['bytes'] and hashlib.sha256(f.read_bytes()).hexdigest()==info['sha256']
+          print('Published APKs and corresponding source read back and matched original frozen bytes')
+          PY
