@@ -202,7 +202,8 @@ public final class ArchiveExporter {
 			if (report.skippedDamagedTails > 0) manifest.notes.add(report.skippedDamagedTails + " saved damaged tails were not exported.");
 
 			//second pass: write
-			ZipOutputStream zip = new ZipOutputStream(new NonClosingOutputStream(out));
+			CountingOutputStream counted = new CountingOutputStream(new NonClosingOutputStream(out));
+			ZipOutputStream zip = new ZipOutputStream(counted);
 			try {
 				byte[] text = manifest.encode().getBytes(ArchiveManifest.utf8());
 				put(zip, ArchiveManifest.ENTRY_NAME, text);
@@ -213,12 +214,13 @@ public final class ArchiveExporter {
 						throw new IOException(p.entry.path + " changed while exporting. The archive is incomplete; export again.");
 					}
 					put(zip, p.entry.path, bytes);
-					report.bytes += bytes.length;
+					// Report the number of ZIP bytes actually written, not this entry's uncompressed size.
 					if (p.entry.kind.equals(ArchiveManifest.KIND_IMPORTED)) report.importedFiles++;
 					else report.runLogs++;
 				}
 				zip.finish();
 				zip.flush();
+				report.bytes = counted.bytesWritten;
 				report.ok = true;
 				return report;
 			} finally {
@@ -229,6 +231,21 @@ public final class ArchiveExporter {
 			report.ok = false;
 			report.problem = String.valueOf(t);
 			return report;
+		}
+	}
+
+	// Counts the actual compressed ZIP bytes, including the manifest, entry headers,
+	// central directory and ZIP footer. The caller still owns its output stream.
+	private static final class CountingOutputStream extends FilterOutputStream {
+		long bytesWritten;
+		CountingOutputStream( OutputStream out ){ super(out); }
+		@Override public void write( int value ) throws IOException {
+			out.write(value);
+			bytesWritten++;
+		}
+		@Override public void write( byte[] bytes, int off, int length ) throws IOException {
+			out.write(bytes, off, length);
+			bytesWritten += length;
 		}
 	}
 
