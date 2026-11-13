@@ -10,3 +10,11 @@
 ## Verification and integration
 
 - Pending source/test edits, exact CI and isolated review. Check the shared remote head and overlapping claims before any integration. Use only expected-head non-force updates, never overwrite concurrent work.
+
+## Actual source changes and pending exact verification (09:42–09:43 EST)
+
+- Production commit `4b5e3c8eecb51eb43907aab88e7c6290515bed22` updates `ApdFiles.FolderProvider.chooseImport`: after checking that a candidate is a file and ends in `.zip`, it now checks the ZIP's canonical file is the direct child of the canonical imports directory. Canonical failures refuse just that candidate. It retains original newest-modification-time precedence and alphabetical tie break. A symlinked base root still qualifies when the ZIP is a real direct file.
+- Regression commit `beab19776d948ed01c8071ec1a6287d2becfa2bc` creates `ApdFilesFallbackSymlinkTest` with three real filesystem tests: a newer external ZIP alias must not outrank a valid local ZIP; an external alias alone must not count as an importable file; a symlinked base root still finds its real ZIP. No changes to the existing folder-picker timestamp tests.
+- Exact source/test/workflow commit `e75bf93e7735c76cec93cab804067631ad596be2` includes a dedicated branch-scoped workflow `.github/workflows/apd-fallback-zip-symlink-ci-20261113.yml`. It requires full core JUnit (>=3,446 tests, zero failures/errors/skips), all three new regressions and desktop/Android debug, release and instrumentation Java compilation. [Exact CI run 43445355536](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/43445355536) was observed **in progress**, not accepted yet.
+- [Draft PR #140](https://github.com/APD-Development/ShieldingShouldHaveWorked/pull/140) holds this isolated work. At PR creation the authoritative branch had advanced from starting `7c8678c` to `6a76950d2500f0cf6fede489a51ff1561ba351ef` through independent work; this branch has not overwritten it.
+- No local Android SDK, original signing input, native screenshot/device acceptance, install-over/save test, signed APK assembly or gated publication has been established by this source-only work. APD464 is not modified.
