@@ -165,6 +165,8 @@ public final class ArchiveManifest {
 						e.sealed = p[7].equals("1");
 						e.redacted = p[8].equals("1");
 						e.events = Long.parseLong(p[9]);
+						// Event counts represent observed records and can never be negative.
+						if (e.events < 0) throw new IllegalArgumentException("a file has a negative event count");
 						e.status = p.length > 10 ? p[10] : "";
 						if (e.size < 0) throw new IllegalArgumentException("a file has a negative size");
 						m.files.add(e);
