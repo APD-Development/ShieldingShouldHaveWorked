@@ -25,6 +25,7 @@ import com.shatteredpixel.shatteredpixeldungeon.apd.query.DatasetStore;
 import com.shatteredpixel.shatteredpixeldungeon.apd.stats.ApdEvent;
 import com.shatteredpixel.shatteredpixeldungeon.apd.stats.EventTypes;
 import com.shatteredpixel.shatteredpixeldungeon.apd.stats.LifecycleEvents;
+import com.shatteredpixel.shatteredpixeldungeon.apd.stats.LegacyEvents;
 import com.shatteredpixel.shatteredpixeldungeon.apd.stats.LogFormat;
 import com.shatteredpixel.shatteredpixeldungeon.apd.stats.ReadResult;
 import com.shatteredpixel.shatteredpixeldungeon.apd.stats.RunIndex;
@@ -325,12 +326,31 @@ public final class ArchiveExporter {
 								//Keep looking: an unreadable typed start must not hide the first readable one.
 							}
 						}
-						if (e.type == EventTypes.RUN_END){
+						}
+					//The normal recorder may write one RANKING_LINK after RUN_END,
+					//before sealing. That verified trailer is not gameplay progress.
+					//An unsealed, damaged, or otherwise extended log is ambiguous:
+					//never export its hidden history in raw form.
+					if (r.sealed && r.status.isClean() && !r.events.isEmpty()){
+						int end = r.events.size() - 1;
+						ApdEvent last = r.events.get(end);
+						if (last.type == EventTypes.RANKING_LINK){
 							try {
-								LifecycleEvents.decodeRunEnd(e, r);
-								l.ended = true;
+								LegacyEvents.decodeRankingLink(last, r);
+								end--;
 							} catch (RuntimeException ignored){
-								//A malformed typed end does not authorize exporting hidden run data.
+								end = -1; //A malformed trailer cannot prove completion.
+							}
+						}
+						if (end >= 0){
+							ApdEvent possibleEnd = r.events.get(end);
+							if (possibleEnd.type == EventTypes.RUN_END){
+								try {
+									LifecycleEvents.decodeRunEnd(possibleEnd, r);
+									l.ended = true;
+								} catch (RuntimeException ignored){
+									//Malformed run end cannot prove completion.
+								}
 							}
 						}
 					}
