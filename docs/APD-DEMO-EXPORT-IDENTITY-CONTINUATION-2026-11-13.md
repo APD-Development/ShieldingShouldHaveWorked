@@ -1,0 +1,9 @@
+# APD demo provenance export boundary, November 13, 2026 (Eastern)
+
+## Isolated work claim, approximately 2:25 AM EST
+
+Originating regular ChatGPT APD conversation. Authoritative development branch `codex/apd-phone-fixes-2026-10-09` verified at `d4fe5f803a2b6d8c321ad8830e80d22001da93ab` before creating this isolated branch `chatgpt/apd-demo-export-identity-20261113-0225`. Read AGENTS.md, current completion ledger, latest #91/#92 exporter header-identity fix, #89/#90 post-seal privacy, open draft PRs, actual ArchiveExporter, ArchiveImporter, RunLogReader, and existing archive tests. No open PR claims this exact demo-provenance exclusion. Preserve independent playback, native, release and GPL claims. No recurring tasks touched.
+
+Source-evidenced defect: ArchiveExporter.collect excludes `demo-` **filenames** but can accept a valid normal-named runs/<id>.apdlog whose typed RUN_START logical run ID starts `demo-` or whose header writerBuild contains `SYNTHETIC-DEMO`. It may export raw finished synthetic data, contradicting the established prohibition on exporting demo history. ArchiveImporter.stage already rejects demo logical run IDs and synthetic writer-build provenance, so exporter may also produce an archive importer refuses. Fix only export-side provenance rejection while preserving legitimate segment-vs-log IDs, existing raw history, and every existing demo-marker policy. Tests will use actual writer/filesystem/archive ZIP and demonstrate excluded disguised identities, importable normal neighbors, and byte-identical originals.
+
+At claim: no production code changed, tests run, build, native acceptance, APK or release. Next: scoped production patch and real-file regressions, exact-source full core/desktop/Android Java compilation, then guarded expected-head integration only if verified. No changes to gameplay, balance, saves, scoring, archive format, original signing, app IDs, editions, existing releases, other work packages or schedules.
