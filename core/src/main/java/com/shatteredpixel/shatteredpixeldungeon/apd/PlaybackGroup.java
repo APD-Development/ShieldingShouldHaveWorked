@@ -16,6 +16,11 @@ public final class PlaybackGroup extends Group {
     private static float speed = 1f;
     private static int updating;
 
+    /** Only five owner-exempt visual categories use the normal frame clock. */
+    public static Group normalSpeedGroup() {
+        return new Group();
+    }
+
     public static int choiceCount() {
         return FACTORS.length;
     }

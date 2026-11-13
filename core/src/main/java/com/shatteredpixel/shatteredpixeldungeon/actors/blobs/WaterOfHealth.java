@@ -66,11 +66,13 @@ public class WaterOfHealth extends WellWater {
 			int apdHpBefore = hero.HP;
 			hero.HP = Math.min(hero.HT, com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomHealingHooks.fullHealth(hero));
 			ApdCombat.onHeal( hero, apdHpBefore, ApdCombat.HEAL_OTHER_WELL_OF_HEALTH, -1 );
-			hero.sprite.emitter().start(Speck.factory(Speck.HEALING), 0.4f, 4);
+			com.watabou.noosa.particles.Emitter healingEffect = GameScene.wellEmitter();
+			healingEffect.pos(hero.sprite);
+			healingEffect.start(Speck.factory(Speck.HEALING), 0.4f, 4);
 			hero.sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomHealingHooks.display(hero, apdHpBefore, hero.HT)), FloatingText.HEALING);
 		}
 		
-		CellEmitter.get( hero.pos ).start( ShaftParticle.FACTORY, 0.2f, 3 );
+		CellEmitter.well( hero.pos ).start( ShaftParticle.FACTORY, 0.2f, 3 );
 
 		Dungeon.hero.interrupt();
 	
@@ -83,17 +85,17 @@ public class WaterOfHealth extends WellWater {
 	protected Item affectItem( Item item, int pos ) {
 		if (item instanceof Waterskin && !((Waterskin)item).isFull()) {
 			((Waterskin)item).fill();
-			CellEmitter.get( pos ).start( Speck.factory( Speck.HEALING ), 0.4f, 4 );
+			CellEmitter.well( pos ).start( Speck.factory( Speck.HEALING ), 0.4f, 4 );
 			Sample.INSTANCE.play( Assets.Sounds.DRINK );
 			return item;
 		} else if ( item instanceof Ankh && !(((Ankh) item).isBlessed())){
 			((Ankh) item).bless();
-			CellEmitter.get( pos ).start(Speck.factory(Speck.LIGHT), 0.2f, 3);
+			CellEmitter.well( pos ).start(Speck.factory(Speck.LIGHT), 0.2f, 3);
 			Sample.INSTANCE.play( Assets.Sounds.DRINK );
 			return item;
 		} else if (ScrollOfRemoveCurse.uncursable(item)) {
 			if (ScrollOfRemoveCurse.uncurse( null, item )){
-				CellEmitter.get( pos ).start( ShadowParticle.UP, 0.05f, 10 );
+				CellEmitter.well( pos ).start( ShadowParticle.UP, 0.05f, 10 );
 			}
 			Sample.INSTANCE.play( Assets.Sounds.DRINK );
 			return item;
