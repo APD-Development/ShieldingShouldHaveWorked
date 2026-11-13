@@ -1,0 +1,9 @@
+# APD archive container metadata singleton, November 12, 2026 (Eastern)
+
+## Isolated work claim (9:30 PM EST)
+
+This execution in the existing regular ChatGPT APD project verified the live authoritative `codex/apd-phone-fixes-2026-10-09` branch at `7b2af9d86f61370589034c10c9bb7bf08eb3a19d`, not main. It read AGENTS.md, the owner-approved archive contract, current parser/import/export source, the completed repeated-header/duplicate-count handoffs, open PRs, source CI and release inventory. Isolated branch: `chatgpt/apd-archive-container-singleton-20261112-2130`. No open PR or issue claimed this container-record repair. Other ongoing playback, wall-search and original-signed APK/native/release work remain independently owned and untouched.
+
+Source-evidenced defect: `ArchiveManifest.encode` writes exactly one `container` metadata record for the raw log container format; `ArchiveManifest.parse` silently accepts and overwrites repeated `container` values even when the manifest checksum is correct. A duplicated contradictory record makes the archive's authoritative metadata ambiguous. Correct only this integrity boundary: reject a second recognized `container` line, including identical duplicates, while preserving a single valid container value, unknown future records, the existing first-wins duplicated file-path compatibility, saves, original history, scoring, gameplay, format, signing and edition identity.
+
+At claim time: no production edits, tests, CI, native acceptance, APK build or publication. The repository's original private signing inputs/native qualification gates are not available through a source-only test workflow. Follow isolated branch source/JUnit+desktop/Android Java CI, inspect terminal receipts, then use fresh target/PR heads and expected-head non-force merge only if verified safe. No scheduled tasks were changed.
