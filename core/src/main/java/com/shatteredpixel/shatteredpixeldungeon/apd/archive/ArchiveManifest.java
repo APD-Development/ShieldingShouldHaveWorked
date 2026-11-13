@@ -174,7 +174,14 @@ public final class ArchiveManifest {
 						break;
 					}
 					case "note": m.notes.add(p.length > 1 ? p[1] : ""); break;
-					case "count": countFiles = Long.parseLong(p[1]); countBytes = Long.parseLong(p[2]); counted = true; break;
+					case "count":
+						// The format-1 writer emits exactly one totals record. A second
+						// record cannot silently override contradictory archive totals.
+						if (counted) throw new IllegalArgumentException("the manifest has repeated totals");
+						countFiles = Long.parseLong(p[1]);
+						countBytes = Long.parseLong(p[2]);
+						counted = true;
+						break;
 					default: //a line from a newer writer
 				}
 			} catch (IndexOutOfBoundsException | NumberFormatException bad){
