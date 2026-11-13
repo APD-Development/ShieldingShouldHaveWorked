@@ -32,6 +32,7 @@ jobs:
           assert 'Emitter emitter = GameScene.wellEmitter();' in cell
           assert water.count('CellEmitter.well(')==4
           assert 'healingEffect = GameScene.wellEmitter()' in water
+          assert 'import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;' in water
           assert 'personalSpeedGroup' not in group
           print('Original APD458 playback retained except 1x statuses, notice icons, both wells and gas')
           PY
