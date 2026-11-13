@@ -205,6 +205,21 @@ public class PlaybackSpeedTest {
   }
   assertEquals(0.0001f,PlaybackGroup.movementDuration(.1f),.000001f);
  }
+ @Test public void partialHeadlessCombatFixtureRetainsExistingEmitterWithoutNewLayer() throws Exception {
+  Field sf=GameScene.class.getDeclaredField("scene");
+  Field ef=GameScene.class.getDeclaredField("emitters");
+  sf.setAccessible(true);ef.setAccessible(true);
+  Object old=sf.get(null);
+  GameScene scene=new GameScene();
+  Group original=PlaybackGroup.normalSpeedGroup();
+  ef.set(scene,original);
+  try {
+   sf.set(null,scene);
+   Emitter impact=GameScene.combatEmitter();
+   assertNotNull(impact);
+   assertSame("No game outcome depends on a missing visual-only group",original,impact.parent);
+  } finally {sf.set(null,old);}
+ }
  @Test public void combatEmitterUsesSeparatePersonalLayerFromAmbientAndMagicalWells() throws Exception{
   Field sf=GameScene.class.getDeclaredField("scene");
   Field cf=GameScene.class.getDeclaredField("combatEmitters");
