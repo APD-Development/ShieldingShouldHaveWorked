@@ -22,6 +22,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.apd.archive;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -71,10 +72,11 @@ public final class StorageMeter {
 	public static Report measure( File root ){
 		Report r = new Report();
 		if (root == null || !root.isDirectory()) return r;
-		File[] runs = new File(root, "runs").listFiles();
+		File runsDir = new File(root, "runs");
+		File[] runs = isOwnedChild(root, runsDir) ? runsDir.listFiles() : null;
 		if (runs != null){
 			for (File f : runs){
-				if (!f.isFile()) continue;
+				if (!f.isFile() || !isOwnedChild(runsDir, f)) continue;
 				if (f.getName().endsWith(".apdlog")){
 					r.runLogs++;
 					r.runLogBytes += f.length();
@@ -83,16 +85,19 @@ public final class StorageMeter {
 				}
 			}
 		}
-		File[] legacy = new File(root, "legacy").listFiles();
+		File legacyDir = new File(root, "legacy");
+		File[] legacy = isOwnedChild(root, legacyDir) ? legacyDir.listFiles() : null;
 		if (legacy != null){
 			for (File f : legacy){
-				if (f.isFile() && f.getName().endsWith(".apdlog")){
+				if (f.isFile() && isOwnedChild(legacyDir, f) && f.getName().endsWith(".apdlog")){
 					r.importedFiles++;
 					r.importedBytes += f.length();
 				}
 			}
 		}
-		r.derivedBytes = size(new File(root, "derived")) + new File(root, "index.apdi").length();
+		File index = new File(root, "index.apdi");
+		r.derivedBytes = size(new File(root, "derived"))
+				+ (isOwnedChild(root, index) && index.isFile() ? index.length() : 0);
 		try {
 			long free = root.getUsableSpace();
 			r.freeBytes = free > 0 ? free : -1;
@@ -110,7 +115,20 @@ public final class StorageMeter {
 		return r;
 	}
 
+	// Resolve the storage root itself normally, but never follow an alias at any
+	// child boundary. This also keeps derived/ cache symlink cycles out of the scan.
+	private static boolean isOwnedChild( File parent, File child ){
+		try {
+			return child.getCanonicalFile().equals(new File(parent.getCanonicalFile(), child.getName()).getAbsoluteFile());
+		} catch (IOException unreadable){
+			// A failed path check must not make external files look like APD history.
+			return false;
+		}
+	}
+
 	private static long size( File f ){
+		File parent = f.getParentFile();
+		if (parent == null || !isOwnedChild(parent, f)) return 0;
 		if (f.isFile()) return f.length();
 		long n = 0;
 		File[] kids = f.listFiles();
