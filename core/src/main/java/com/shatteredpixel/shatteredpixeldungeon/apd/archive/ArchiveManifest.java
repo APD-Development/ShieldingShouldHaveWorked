@@ -21,6 +21,9 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.apd.archive;
 
+import java.nio.ByteBuffer;
+import java.nio.charset.CharacterCodingException;
+import java.nio.charset.CodingErrorAction;
 import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.List;
@@ -126,7 +129,17 @@ public final class ArchiveManifest {
 
 	//Parses a manifest. Throws IllegalArgumentException with a reason when it is damaged, from a newer format, or fails its checksum.
 	public static ArchiveManifest parse( byte[] data ){
-		String text = new String(data, utf8());
+		// Invalid byte sequences must not turn into replacement characters before
+		// checksum validation: the archive manifest is a byte-level integrity record.
+		String text;
+		try {
+			text = utf8().newDecoder()
+					.onMalformedInput(CodingErrorAction.REPORT)
+					.onUnmappableCharacter(CodingErrorAction.REPORT)
+					.decode(ByteBuffer.wrap(data)).toString();
+		} catch (CharacterCodingException damaged){
+			throw new IllegalArgumentException("the manifest has invalid UTF-8", damaged);
+		}
 		int checkAt = text.lastIndexOf("check\t");
 		if (checkAt < 0 || (checkAt > 0 && text.charAt(checkAt - 1) != '\n')) throw new IllegalArgumentException("the manifest has no checksum");
 		String body = text.substring(0, checkAt);
