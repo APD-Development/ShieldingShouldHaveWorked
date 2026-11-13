@@ -133,7 +133,7 @@ public final class ArchiveManifest {
 		String claimed = text.substring(checkAt + "check\t".length()).trim();
 		if (!sha256Hex(body.getBytes(utf8())).equalsIgnoreCase(claimed)) throw new IllegalArgumentException("the manifest does not match its checksum");
 		ArchiveManifest m = new ArchiveManifest();
-		boolean header = false, counted = false;
+		boolean header = false, counted = false, containerSeen = false;
 		long countFiles = -1, countBytes = -1;
 		for (String line : body.split("\n")){
 			if (line.isEmpty()) continue;
@@ -151,7 +151,12 @@ public final class ArchiveManifest {
 					case "created": m.createdMillis = Long.parseLong(p[1]); break;
 					case "app": m.app = p[1]; break;
 					case "telemetry": m.telemetry = p[1]; break;
-					case "container": m.container = Integer.parseInt(p[1]); break;
+					case "container":
+						// One authoritative log-container version per format-1 archive.
+						if (containerSeen) throw new IllegalArgumentException("the manifest has repeated container metadata");
+						m.container = Integer.parseInt(p[1]);
+						containerSeen = true;
+						break;
 					case "file": {
 						Entry e = new Entry();
 						e.path = p[1];
