@@ -46,17 +46,17 @@ public class ReportMarkdownEmphasisBoundaryTest {
     }
 
     @Test
-    public void multilineNotesKeepTheirLinesWhileFormattingIsLiteral() {
+    public void multilineNotesRetainExistingInlineEmphasisAndSafeLinks() {
         final String note = "first *italic*\r\n__bold__ and ~~strike~~\r[last](link)\nfinal";
         Report report = new Report("Normal", 0L, "1.0");
         report.add(new Report.Note(Report.NoteKind.WARN, note));
 
         String md = ReportRenderer.markdown(report);
         assertTrue(md, md.contains(
-                "> **Warning:** first &#42;italic&#42;\n> &#95;&#95;bold&#95;&#95; and &#126;&#126;strike&#126;&#126;\n> &#91;last&#93;(link)\n> final\n\n"));
-        assertFalse(md, md.contains("*italic*"));
-        assertFalse(md, md.contains("__bold__"));
-        assertFalse(md, md.contains("~~strike~~"));
+                "> **Warning:** first *italic*\n> __bold__ and ~~strike~~\n> &#91;last&#93;(link)\n> final\n\n"));
+        assertTrue(md, md.contains("*italic*"));
+        assertTrue(md, md.contains("__bold__"));
+        assertTrue(md, md.contains("~~strike~~"));
         assertEquals(note, ((Report.Note) report.blocks.get(0)).text);
         assertTrue(ReportRenderer.text(report).contains(note));
         assertTrue(ReportRenderer.html(report).contains(note));
