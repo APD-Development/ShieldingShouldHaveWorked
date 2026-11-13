@@ -306,6 +306,12 @@ public final class ReportRenderer {
 
 	//Every table in turn: a "# title [provenance]" line, the header row, the rows. Marks stay in the cell text, and a column after each value
 	//column would double the file, so the state words are in the legend of the other formats and the marks are in the data.
+	//CSV comments are not quoted fields. Keep metadata on one physical line even when a
+	//saved report title or version contains line breaks; ordinary data cells stay untouched.
+	private static String csvComment( String value ){
+		return value.replace('\r', ' ').replace('\n', ' ');
+	}
+
 	public static String csv( Report r ){
 		StringBuilder sb = new StringBuilder();
 		boolean any = false;
@@ -315,7 +321,7 @@ public final class ReportRenderer {
 				Report.Facts facts = (Report.Facts) b;
 				if (any) sb.append("\r\n");
 				any = true;
-				sb.append("# ").append(r.title).append(" facts [").append(provLabel(facts.provenance)).append("]\r\n");
+				sb.append("# ").append(csvComment(r.title)).append(" facts [").append(provLabel(facts.provenance)).append("]\r\n");
 				sb.append("Section,Field,Value,Detail\r\n");
 				String section = "";
 				for (Report.Fact fact : facts.facts){
@@ -329,7 +335,7 @@ public final class ReportRenderer {
 			Report.Table t = (Report.Table) b;
 			if (any) sb.append("\r\n");
 			any = true;
-			sb.append("# ").append(t.title.isEmpty() ? r.title : t.title).append(" [").append(provLabel(t.provenance)).append("]\r\n");
+			sb.append("# ").append(csvComment(t.title.isEmpty() ? r.title : t.title)).append(" [").append(provLabel(t.provenance)).append("]\r\n");
 			for (int i = 0; i < t.headers.size(); i++) sb.append(i > 0 ? "," : "").append(csv(t.headers.get(i)));
 			sb.append("\r\n");
 			for (Report.Cell[] row : t.rows){
@@ -338,8 +344,8 @@ public final class ReportRenderer {
 			}
 			if (t.omitted > 0) sb.append("# ").append(t.omitted).append(" more entries are not listed.\r\n");
 		}
-		if (!any) sb.append("# ").append(r.title).append(" has no table\r\n");
-		sb.append("# marks: ? unknown, >=N at least N, ~N inferred or canonical, hidden = hidden information. ").append(footer(r)).append("\r\n");
+		if (!any) sb.append("# ").append(csvComment(r.title)).append(" has no table\r\n");
+		sb.append("# marks: ? unknown, >=N at least N, ~N inferred or canonical, hidden = hidden information. ").append(csvComment(footer(r))).append("\r\n");
 		return sb.toString();
 	}
 }
