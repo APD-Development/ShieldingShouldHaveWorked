@@ -1,7 +1,7 @@
 name: APD short report-row exact-source verification
 on:
   push:
-    branches: [chatgpt/chatgpt/apd-report-short-rows-20261113-0615]
+    branches: [chatgpt/apd-report-short-rows-20261113-0615]
     paths:
       - .github/workflows/apd-report-short-rows-ci-20261113.yml
       - core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/report/ReportRenderer.java
