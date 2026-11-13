@@ -76,6 +76,11 @@ public final class ReportRenderer {
 		return s.replace("\\", "\\\\").replace("|", "\\|").replace("\r\n", " ").replace("\r", " ").replace("\n", " ");
 	}
 
+	// A note is one Markdown blockquote, even when its saved text contains more than one logical line.
+	private static String quotedNoteLines( String s ){
+		return String.valueOf(s).replace("\r\n", "\n").replace("\r", "\n").replace("\n", "\n> ");
+	}
+
 	public static String markdown( Report r ){
 		StringBuilder sb = new StringBuilder();
 		sb.append("# ").append(r.title).append("\n\n");
@@ -91,7 +96,7 @@ public final class ReportRenderer {
 				sb.append(' ').append(h.text).append("\n\n");
 			} else if (b instanceof Report.Note){
 				Report.Note n = (Report.Note) b;
-				sb.append("> ").append(n.kind == Report.NoteKind.WARN ? "**Warning:** " : n.kind == Report.NoteKind.NOTE ? "Note: " : "").append(n.text).append("\n\n");
+				sb.append("> ").append(n.kind == Report.NoteKind.WARN ? "**Warning:** " : n.kind == Report.NoteKind.NOTE ? "Note: " : "").append(quotedNoteLines(n.text)).append("\n\n");
 			} else if (b instanceof Report.Facts){
 				Report.Facts f = (Report.Facts) b;
 				if (f.provenance != Report.Provenance.RECORDED) sb.append("_").append(provLabel(f.provenance)).append("_\n\n");
