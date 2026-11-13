@@ -24,3 +24,11 @@ At claim time: no production change, tests, APK build, signer test, native devic
 - No APK assembled or signed, no native device tests run, no new release published, no recurring APD tasks changed. Prior APD464 remains intact.
 
 Next: obtain terminal exact-source CI evidence including actual JUnit counts; fix evidenced failures if any. Only then re-read live authoritative target, open PR claims and tested source head, and integrate non-force with expected-head guard. Preserve failure records and independent native/release work.
+
+## Exact terminal source CI (Thursday, November 12, 2026, 10:41 PM EST)
+
+[Actions run 43360199699](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/43360199699) on **exact executable source/test/workflow commit** `4a1e3710658282d70e81e40531c67f585f82a1e5`, attempt 1, completed **success**. Job `131671609118` logs: `BUILD SUCCESSFUL in 2m 22s` for `:core:test`, `:desktop:classes`, `:android:compileDebugJavaWithJavac`, `:android:compileReleaseJavaWithJavac`, `:android:compileDebugAndroidTestJavaWithJavac`. Terminal JUnit XML gate: **3,364 tests across 489 suites; 0 failures, 0 errors, 0 skipped**, including all four new checksum singleton regressions, the existing strict-UTF8 manifest regression, old scalar metadata and duplicate-path first-wins compatibility tests. Evidence artifact `14007463319` (`apd-archive-single-check-junit`, 543,150 bytes) uploaded successfully.
+
+Post-CI documentation-only commit `78f283b13d58f884a6f6aa4d4a55e6ed441a69e2` records initial pending status and is not the source tested by CI. The next documentation commit similarly does not modify compiled code. A fresh pre-merge read confirmed authoritative branch still at `e70424ad41d1ccc36991497e703a2334be877214`, only this checksum PR claims the area, and proposed diff is limited to the parser, test, dedicated workflow and handoff.
+
+**Not executed:** no assembled or original-signed APK, no Android instrumentation/emulator or physical phone tests, no install-over signer/save integrity acceptance, and no release publication. Previous APD464 remains unchanged. Next: make PR review-ready, perform non-force expected-head merge after another live PR/base check, then verify integration and record final receipt. 
