@@ -306,10 +306,13 @@ public final class ArchiveExporter {
 				// enter an archive the importer will reject. The header's ID is
 				// per-file; RUN_START may name a different shared logical run.
 				// Imported legacy files retain their existing compatibility rules.
-				if (r.header != null && (imported || id.equals(r.header.runId))){
-					// Demo provenance can survive under an ordinary filename. The importer
-					// already rejects synthetic writer builds, so exclude them here too.
-					if (r.header.writerBuild.contains("SYNTHETIC-DEMO")){
+				if (r.header != null && StatsStore.isValidRunId(r.header.runId)
+						&& (imported || id.equals(r.header.runId))){
+					// Both header ID and typed RUN_START identity matter. For legacy logs
+					// the typed ID may differ, but it cannot erase demo header provenance.
+					// Match the importer's independent header-ID and writer checks.
+					if (r.header.runId.startsWith(DatasetStore.DEMO_LOG_PREFIX)
+							|| r.header.writerBuild.contains("SYNTHETIC-DEMO")){
 						report.skippedDemo++;
 						continue;
 					}
