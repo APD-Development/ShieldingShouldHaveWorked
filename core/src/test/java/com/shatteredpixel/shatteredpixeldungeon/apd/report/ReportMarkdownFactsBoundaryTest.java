@@ -35,7 +35,7 @@ public class ReportMarkdownFactsBoundaryTest {
         assertFalse(report.statesUsed()[CellText.UNKNOWN]);
 
         assertTrue("plain text remains unmodified", ReportRenderer.text(report).contains(label + ": " + value));
-        assertTrue("HTML retains the original logical text after escaping", ReportRenderer.html(report).contains("invented|raw\\\\path"));
+        assertTrue("HTML retains the original logical text after escaping", ReportRenderer.html(report).contains("invented|raw\\path"));
         assertTrue("CSV retains multiline fact data", ReportRenderer.csv(report).contains("\"" + value + "\""));
     }
 
