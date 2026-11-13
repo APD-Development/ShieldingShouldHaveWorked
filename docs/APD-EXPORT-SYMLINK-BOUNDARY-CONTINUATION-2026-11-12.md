@@ -27,3 +27,14 @@ At the source-verification read, authoritative development remained `bf9b86c697d
 ## Next safe work
 
 Inspect the latest live authoritative and PR heads; if unchanged and conflict-free, mark #49 ready and use an expected-PR-head non-force merge. Otherwise leave the verified draft intact. Document any actual integration in a follow-up receipt. Preserve all earlier source and release receipts, previous signed APKs, original saved history, and unrelated native/playback work.
+
+
+## Final verified integration receipt, November 12, 2026, 7:09 PM EST
+
+The exact-source CI run [43334098035](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/43334098035) succeeded before integration. Source files and workflow were unchanged after the exact tested SHA `6f28fabf027ad4d58429fbe5fdf4e2699b1a9fe7`; only the handoff text was updated in `6bbb46f59c0cc72b2398e80e9744975dbd5449c5` and `154e98c36ddb62c966f766f3cf378675553f023c`.
+
+The primary authoritative branch was re-read immediately before merge at `bf9b86c697d15237a868c4958473eda1043cae42`. GitHub confirmed [PR #49](https://github.com/APD-Development/ShieldingShouldHaveWorked/pull/49) was non-draft, `mergeable=true`, `mergeable_state=clean`, with exact expected head `154e98c36ddb62c966f766f3cf378675553f023c`. The non-force PR merge with `expected_head_sha` succeeded, reporting **merge commit `795e099f0054a440e11f33321263820781e57c6f`**. A subsequent independent readback confirmed the authoritative branch head and PR merge SHA both equal `795e099...`, and PR #49 is merged.
+
+Completed during this execution: one bounded archive export canonical-path fix, three real-filesystem regressions, one isolated CI gate, source handoff and guarded integration. Final verified source test result: **3,323 tests in 477 suites, zero failures/errors/skips**, desktop and Android debug/release/instrumentation Java compilation. No application or instrumentation APK was assembled; no native emulator, real phone or original-signer acceptance was run, and no APK was published. The original APD463 signed release remains intact as verified after merge; the concurrently owned APD464 personal playback build remains outside this package. No change to original saves, logs, game mechanics, scoring, signing identities, app IDs, edition boundaries or old release assets.
+
+This additional documentation-only receipt commit is not part of the earlier exact CI and cannot be called an extra tested source change. Next source work must read the *then-live* authoritative head, AGENTS, current claims and PRs instead of repeating this completed exporter fix. Future release aggregation must follow native signer/save and publication gates on a single separately owned qualified frozen pair.
