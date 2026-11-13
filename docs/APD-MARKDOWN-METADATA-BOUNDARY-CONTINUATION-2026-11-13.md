@@ -1,0 +1,11 @@
+# APD Markdown report metadata line-boundary continuation, November 13, 2026 (Eastern)
+
+## Isolated work claim, approximately 07:03 EST
+
+Continuing the originating regular ChatGPT APD conversation. Authenticated GitHub readback verified authoritative branch `codex/apd-phone-fixes-2026-10-09` at `43a1031bb314538553c84f89ac4aa7daf845c498`. Independent isolated branch `chatgpt/apd-markdown-metadata-20261113-0700` starts at that commit. Read `AGENTS.md`, existing work ledger, current PR/branch/release claims and recent report formatter continuations (Markdown Facts, coverage, notes, carriage-return table boundary, CSV comments, null cells, short rows). Open independent draft PRs cover playback, native/hero-selection, search, licensing and challenge work. No existing open PR claims this narrow metadata path.
+
+Source-observed distinct bug: `ReportRenderer.markdown` still writes report titles, About scope lines, Heading text, table titles and the app-version footer without flattening CR/LF, unlike its recently corrected table cells, notes, coverage and Facts. A metadata value containing an embedded newline can fabricate a new Markdown heading or section in the exported report. This is source evidence, not a claimed owner phone reproduction. Correct only Markdown presentation using the existing inline `md()` line-boundary escape; leave underlying report strings and other export formats untouched. Add independent core regressions for all five metadata sources and ordinary data/provenance stability. No gameplay, scoring, saves, history, signing, application IDs, editions, balance or known-good APK changes.
+
+Current state: isolated work claim only. No production change, test success, APK, native test, original-signer proof or release yet. Plan exact-source all-core JUnit and desktop/Android debug/release/instrumentation Java compile gate via the established narrow isolated workflow pattern. Do not duplicate an independent APD465 original-signed/native workflow, do not publish without full native acceptance and signer/install-over/readback gates, and do not touch other claims.
+
+Integrate only after CI is terminal and successful, with renewed remote-head/claim checks, expected-head non-force update and readback. Maintain the final Eastern-timestamped continuation record, distinguishing prior test counts and pending CI from this execution.
