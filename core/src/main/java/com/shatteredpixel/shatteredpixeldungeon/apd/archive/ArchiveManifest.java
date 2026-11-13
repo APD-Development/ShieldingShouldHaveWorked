@@ -158,6 +158,10 @@ public final class ArchiveManifest {
 						e.kind = p[4];
 						e.runId = p[5];
 						e.telemetry = p[6];
+						// Format 1 defines these metadata flags as exactly 0 or 1.
+						// Never silently change damaged/foreign values to false.
+						if (!p[7].equals("0") && !p[7].equals("1")) throw new IllegalArgumentException("a file has an invalid sealed flag");
+						if (!p[8].equals("0") && !p[8].equals("1")) throw new IllegalArgumentException("a file has an invalid redacted flag");
 						e.sealed = p[7].equals("1");
 						e.redacted = p[8].equals("1");
 						e.events = Long.parseLong(p[9]);
