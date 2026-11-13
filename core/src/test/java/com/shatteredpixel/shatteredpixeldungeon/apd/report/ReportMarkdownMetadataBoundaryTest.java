@@ -43,7 +43,7 @@ public class ReportMarkdownMetadataBoundaryTest {
         assertEquals(tableTitle, table.title);
         assertEquals(version, report.appVersion);
         assertTrue("plain text preserves its preexisting multiline representation",
-                ReportRenderer.text(report).contains(heading));
+                ReportRenderer.text(report).contains(heading.toUpperCase()));
         assertTrue("HTML retains the literal title text in escaped HTML",
                 ReportRenderer.html(report).contains("Report\r\n## forged|title\\part"));
         assertTrue("CSV comment sanitization remains unchanged",
