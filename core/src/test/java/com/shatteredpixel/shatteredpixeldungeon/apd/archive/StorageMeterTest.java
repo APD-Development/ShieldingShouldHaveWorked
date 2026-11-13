@@ -87,13 +87,20 @@ public class StorageMeterTest {
 		Files.createSymbolicLink(outsideLink.toPath(), external.toPath());
 		Files.createSymbolicLink(indexLink.toPath(), externalFile.toPath());
 
-		StorageMeter.Report result = StorageMeter.measure(root);
-		assertEquals(17, result.derivedBytes);
-		assertEquals(17, result.totalBytes());
-		assertTrue(Files.isSymbolicLink(loop.toPath()));
-		assertTrue(Files.isSymbolicLink(outsideLink.toPath()));
-		assertTrue(Files.isSymbolicLink(indexLink.toPath()));
-		assertEquals(10000, externalFile.length());
+		try {
+			StorageMeter.Report result = StorageMeter.measure(root);
+			assertEquals(17, result.derivedBytes);
+			assertEquals(17, result.totalBytes());
+			assertTrue(Files.isSymbolicLink(loop.toPath()));
+			assertTrue(Files.isSymbolicLink(outsideLink.toPath()));
+			assertTrue(Files.isSymbolicLink(indexLink.toPath()));
+			assertEquals(10000, externalFile.length());
+		} finally {
+			// Do not let TemporaryFolder cleanup follow the test's deliberate cycle.
+			Files.deleteIfExists(loop.toPath());
+			Files.deleteIfExists(outsideLink.toPath());
+			Files.deleteIfExists(indexLink.toPath());
+		}
 	}
 
 	@Test
