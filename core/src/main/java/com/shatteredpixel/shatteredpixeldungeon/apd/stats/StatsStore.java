@@ -125,7 +125,13 @@ public final class StatsStore {
 		File[] files = runsDir.listFiles();
 		if (files != null){
 			for (File f : files){
-				if (f.isFile() && f.getName().endsWith(RunIndex.LOG_SUFFIX) && isDirectRunLog(f)){
+				String name = f.getName();
+				// Recovery can truncate damaged logs. Only a recognized on-disk run ID
+				// may be repaired, matching the direct-file rules of the derived index.
+				// Foreign .apdlog files remain untouched, even with parseable headers.
+				if (f.isFile() && name.endsWith(RunIndex.LOG_SUFFIX)
+						&& isValidRunId(name.substring(0, name.length() - RunIndex.LOG_SUFFIX.length()))
+						&& isDirectRunLog(f)){
 					reports.add(LogRecovery.repair(f));
 				}
 			}
