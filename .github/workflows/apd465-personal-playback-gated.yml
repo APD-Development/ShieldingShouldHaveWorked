@@ -1,0 +1,245 @@
+name: APD465 personal playback original-signer and native-gated delivery
+on:
+  push:
+    branches: [chatgpt/apd-personal-playback-completion-20261113]
+    paths: [.github/workflows/apd465-personal-playback-gated.yml]
+permissions: {contents: write, actions: read}
+concurrency: {group: apd465-exact-candidate-and-delivery, cancel-in-progress: false}
+jobs:
+  source:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with: {distribution: temurin, java-version: '21'}
+      - uses: gradle/actions/setup-gradle@v4
+      - name: Verify personal category routing without changing Alpha
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          scene=Path('core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/scenes/GameScene.java').read_text()
+          hero=Path('core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/sprites/HeroSprite.java').read_text()
+          sprite=Path('core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/sprites/CharSprite.java').read_text()
+          group=Path('core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/PlaybackGroup.java').read_text()
+          floating=Path('core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/effects/FloatingText.java').read_text()
+          assert 'ApdFeatures.testBuild() ? new PlaybackGroup() : normalSpeedGroup()' in group
+          for name in ('heaps','healthIndicators','checkedCells','targetedCells','spells'):
+              assert name+' = com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup.personalSpeedGroup();' in scene,name
+          for name in ('terrain','gases','statuses','emoicons'):
+              assert name+' = com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup.normalSpeedGroup();' in scene,name
+          assert 'curAnim == idle || curAnim == die || curAnim == fly' in hero
+          assert 'Game.elapsed = animationFrameElapsed();' in sprite
+          assert 'isNumericFeedback(text) ? GameScene.combatStatus() : GameScene.status()' in floating
+          assert 'PlaybackGroup.movementDuration(moveInterval)' in sprite
+          assert 'combatEffects = com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup.personalSpeedGroup();' in scene
+          assert 'combatEmitters = com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup.personalSpeedGroup();' in scene
+          assert 'effects = com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup.normalSpeedGroup();' in scene
+          assert 'GameScene.combatEffect(shield = new ShieldHalo(this));' in sprite
+          assert 'healing = GameScene.combatEmitter();' in sprite
+          assert 'PlaybackGroup.personalFactor()' in Path('core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/sprites/MissileSprite.java').read_text()
+          assert 'personalVisualElapsed()' in Path('core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/effects/MagicMissile.java').read_text()
+          assert 'personalVisualElapsed()' in Path('core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/StatusPane.java').read_text()
+          assert 'personalVisualElapsed()' in Path('core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/ItemSlot.java').read_text()
+          assert 'Game.elapsed = originalElapsed;' in Path('core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/Toolbar.java').read_text()
+          assert 'Camera.main.visualTimeScale = com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup.personalFactor()' in scene
+          assert 'PlaybackProfileDeviceTest' in Path('android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/PlaybackProfileDeviceTest.java').read_text()
+          print('Developer-only personal visual routing, untouched Alpha and ambient groups')
+          PY
+      - name: Run complete core regression suite and compile Android and desktop Java
+        run: |
+          "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "platforms;android-36"
+          ./gradlew :core:test :desktop:classes :android:compileDebugJavaWithJavac :android:compileReleaseJavaWithJavac :android:compileDebugAndroidTestJavaWithJavac
+      - name: Require all core tests, hero/enemy frame speed and 1x effects regressions
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import xml.etree.ElementTree as ET
+          r=[ET.parse(p).getroot() for p in Path('core/build/test-results/test').glob('TEST-*.xml')]
+          assert r,'Missing test reports'
+          totals={k:sum(int(x.get(k,0)) for x in r) for k in ('tests','failures','errors','skipped')}
+          assert totals['tests']>=3330 and all(totals[k]==0 for k in ('failures','errors','skipped')), totals
+          names={c.get('name') for suite in r for c in suite.findall('testcase')}
+          for case in ('numericDamageAndHealingLabelsUseCombatLayer','countdownsStatusWordsAndMessagesStayAtNormalSpeed','combatEmitterUsesSeparatePersonalLayerFromAmbientAndMagicalWells','partialHeadlessCombatFixtureRetainsExistingEmitterWithoutNewLayer','personalCameraFactorNeverChangesAlphaOrActorTiming','personalPlaybackGroupsAreAcceleratedOnlyInDeveloperEdition','onlyMovementDurationFollowsAllTenSpeedSelections','persistentDungeonOverlaysKeepNormalSpeedAtEveryPlaybackSetting','realCharacterSpriteFramesUseSelectedSpeedWhileRestoringGlobalElapsed','heroAndEnemySpriteFramesFollowAllTenSpeedsWithoutChangingSceneElapsed','fourXAcceleratesMonsterStandingAndActionFrames','allOriginalSpeedsScaleMonsterIdleAndActionTiming'):
+              assert case in names, case
+          print('Core suite',totals,'suites',len(r))
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: apd465-core-test-reports
+          path: core/build/test-results/test/
+          if-no-files-found: warn
+          retention-days: 30
+
+  candidate:
+    needs: source
+    runs-on: ubuntu-latest
+    timeout-minutes: 70
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with: {distribution: temurin, java-version: '21'}
+      - uses: gradle/actions/setup-gradle@v4
+      - name: Build matched signed Developer/Alpha candidates and instrumentation (release Developer only)
+        run: |
+          set -e
+          "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "platforms;android-36"
+          mkdir -p candidate465
+          ./gradlew :android:assembleDebug :android:assembleDebugAndroidTest -PapdTestBuild -PapdBuild=C465
+          cp android/build/outputs/apk/debug/android-debug.apk candidate465/APD-Developer-465.apk
+          cp android/build/outputs/apk/androidTest/debug/android-debug-androidTest.apk candidate465/APD-Instrumentation-465.apk
+          ./gradlew :android:assembleDebug -PapdBuild=P465
+          cp android/build/outputs/apk/debug/android-debug.apk candidate465/APD-Alpha-Testers-465.apk
+          git archive --format=zip --output=candidate465/APD-Source-465.zip HEAD
+      - name: Require original package signer and saved-game version compatibility
+        run: |
+          python3 - <<'PY'
+          import hashlib,json,os,pathlib,re,subprocess
+          build=pathlib.Path(os.environ['ANDROID_HOME'])/'build-tools'
+          tools=sorted(build.iterdir())[-1]
+          while not (tools/'apksigner').exists(): tools=sorted(p for p in build.iterdir() if (p/'apksigner').exists())[-1];break
+          expected='067688b3ab6bd5820a67f4c1ba7d5859db578173771cf31d3252b3e4e012246e'
+          files={}
+          for variant in ('Developer','Alpha-Testers'):
+              f=pathlib.Path('candidate465')/('APD-'+variant+'-465.apk')
+              assert f.stat().st_size>1000000
+              sign=subprocess.check_output([str(tools/'apksigner'),'verify','--print-certs',str(f)],text=True)
+              digest=re.search(r'SHA-256 digest:\s*([0-9a-fA-F:]+)',sign).group(1).replace(':','').lower()
+              assert digest==expected,(variant,digest)
+              badge=subprocess.check_output([str(tools/'aapt'),'dump','badging',str(f)],text=True)
+              pkg=next(line for line in badge.splitlines() if line.startswith('package:'))
+              assert "name='com.charltonchris29.adhdpixeldungeon.indev'" in pkg,pkg
+              assert "versionCode='920'" in pkg,pkg
+              assert ('-bC465-TEST' if variant=='Developer' else '-bP465') in pkg,pkg
+              files[variant]={'sha256':hashlib.sha256(f.read_bytes()).hexdigest(),'bytes':f.stat().st_size,'package':pkg}
+          for name in ('APD-Instrumentation-465.apk','APD-Source-465.zip'):
+              f=pathlib.Path('candidate465')/name
+              assert f.stat().st_size>100000
+              files[name]={'sha256':hashlib.sha256(f.read_bytes()).hexdigest(),'bytes':f.stat().st_size}
+          receipt={'source':os.environ['GITHUB_SHA'],'build':465,'native_accepted':False,'published':False,'files':files}
+          pathlib.Path('candidate465/receipt.json').write_text(json.dumps(receipt,indent=2)+'\n')
+          print('Original signing certificate and both identities verified')
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: apd465-frozen-candidate
+          path: candidate465/
+          if-no-files-found: error
+          retention-days: 30
+
+  native:
+    needs: candidate
+    strategy:
+      fail-fast: false
+      matrix:
+        variant: [Developer, Alpha-Testers]
+        case: [WallGeometryDeviceTest, SearchContextDeviceTest, SeedHistoryDeviceTest, PlaybackProfileDeviceTest]
+    runs-on: ubuntu-latest
+    timeout-minutes: 75
+    steps:
+      - uses: actions/checkout@v4
+      - name: Obtain only original frozen candidate bytes
+        env: {GH_TOKEN: '${{ github.token }}'}
+        run: |
+          mkdir -p candidate465
+          gh run download "$GITHUB_RUN_ID" --repo "$GITHUB_REPOSITORY" --name apd465-frozen-candidate --dir candidate465
+          python3 - <<'PY'
+          import hashlib,json,pathlib,os
+          d=pathlib.Path('candidate465'); receipt=json.loads((d/'receipt.json').read_text())
+          assert receipt['source']==os.environ['GITHUB_SHA'] and receipt['build']==465
+          for key,info in receipt['files'].items():
+              name='APD-'+key+'-465.apk' if key in ('Developer','Alpha-Testers') else key
+              f=d/name
+              assert f.stat().st_size==info['bytes'] and hashlib.sha256(f.read_bytes()).hexdigest()==info['sha256']
+          PY
+      - name: Enable KVM
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+      - name: Test exact original Developer/Alpha APK on Android with native visual receipts
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 34
+          arch: x86_64
+          target: default
+          disable-animations: true
+          emulator-options: -no-snapshot -no-window -gpu swiftshader -feature -Vulkan -noaudio -no-boot-anim -camera-back none -skin 320x640
+          script: |
+            mkdir -p native465
+            adb install -r candidate465/APD-${{ matrix.variant }}-465.apk
+            adb install -r candidate465/APD-Instrumentation-465.apk
+            adb logcat -c
+            timeout 1200 adb shell am instrument -w -r -e class 'com.shatteredpixel.shatteredpixeldungeon.android.${{ matrix.case }}' com.charltonchris29.adhdpixeldungeon.indev.test/androidx.test.runner.AndroidJUnitRunner > native465/instrumentation.txt 2>&1
+            cat native465/instrumentation.txt
+            python3 tools/apd465_native_postcheck.py --variant '${{ matrix.variant }}' --case '${{ matrix.case }}' --directory native465 --source "$GITHUB_SHA"
+            adb logcat -d -v time > native465/logcat.txt
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: apd465-native-${{ matrix.variant }}-${{ matrix.case }}
+          path: native465/
+          if-no-files-found: warn
+          retention-days: 30
+
+  publish:
+    needs: [source, candidate, native]
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - name: Require exact six accepted native receipts from this build
+        env: {GH_TOKEN: '${{ github.token }}'}
+        run: |
+          set -e
+          mkdir -p candidate465 native-receipts
+          gh run download "$GITHUB_RUN_ID" --repo "$GITHUB_REPOSITORY" --name apd465-frozen-candidate --dir candidate465
+          gh run download "$GITHUB_RUN_ID" --repo "$GITHUB_REPOSITORY" --pattern 'apd465-native-*' --dir native-receipts
+          python3 - <<'PY'
+          from pathlib import Path
+          import hashlib,json,os
+          source=os.environ['GITHUB_SHA']
+          receipt=json.loads(Path('candidate465/receipt.json').read_text())
+          assert receipt['source']==source
+          verified=list(Path('native-receipts').rglob('native-verification.json'))
+          assert len(verified)==8,len(verified)
+          expected={(variant,case) for variant in ('Developer','Alpha-Testers')
+                    for case in ('WallGeometryDeviceTest','SearchContextDeviceTest','SeedHistoryDeviceTest','PlaybackProfileDeviceTest')}
+          seen=set()
+          for p in verified:
+              d=json.loads(p.read_text())
+              assert d['source']==source and d['build']==465 and d['tests']==1
+              assert d['device_transfer_complete'] and d['screenshots']
+              seen.add((d['variant'],d['case']))
+          assert seen==expected,(seen,expected)
+          for key,info in receipt['files'].items():
+              name='APD-'+key+'-465.apk' if key in ('Developer','Alpha-Testers') else key
+              f=Path('candidate465')/name
+              assert f.stat().st_size==info['bytes']
+              assert hashlib.sha256(f.read_bytes()).hexdigest()==info['sha256']
+          print('Exact frozen source, original signed APKs and eight complete native visual test receipts verified')
+          PY
+          if gh release view apd-465 --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            echo "Refusing to overwrite existing APD465 release" >&2
+            exit 1
+          fi
+      - name: Publish only qualified Developer personal APK
+        env: {GH_TOKEN: '${{ github.token }}'}
+        run: |
+          gh release create apd-465 candidate465/APD-Developer-465.apk candidate465/APD-Source-465.zip --repo "$GITHUB_REPOSITORY" --target "$GITHUB_SHA" --title 'APD465 Personal: owner-selected playback categories' --notes 'Owner personal Developer playback: hero idle/death/flying at 1x, hero actions and all enemy sprite frames at selected speed, combat damage/healing/shields, projectiles, bombs, numeric damage, pickups, searches, camera/shake, UI icon/notification and menu fade visuals accelerated; ambient plants, wells, gas, traps, ongoing status, enemy alerts, and text status stay 1x. Turn costs, buffs, hunger, scores, balance, saves and original audio clock unchanged. Android native category routing/screenshot cases plus original signer and hashes required; actual RedMagic subjective playback remains separate. Signed using the original APD identity. Source tests, Android/desktop compilation, original signer/package checks and six frozen APK native visual regressions are required before publishing. Physical RedMagic installation remains unverified.' --prerelease --latest=false
+      - name: Read back published assets and check byte-for-byte hashes
+        env: {GH_TOKEN: '${{ github.token }}'}
+        run: |
+          mkdir -p readback
+          gh release download apd-465 --repo "$GITHUB_REPOSITORY" --dir readback
+          python3 - <<'PY'
+          import hashlib,json,pathlib
+          receipt=json.loads(pathlib.Path('candidate465/receipt.json').read_text())
+          for key,info in receipt['files'].items():
+              if key in ('APD-Instrumentation-465.apk','Alpha-Testers'):continue
+              name='APD-'+key+'-465.apk' if key in ('Developer','Alpha-Testers') else key
+              f=pathlib.Path('readback')/name
+              assert f.stat().st_size==info['bytes'] and hashlib.sha256(f.read_bytes()).hexdigest()==info['sha256']
+          print('Published APKs and corresponding source read back and matched original frozen bytes')
+          PY
