@@ -20,3 +20,9 @@ This work continues the owner's existing regular ChatGPT APD development convers
 - No new APK assembled, signed, native-tested, installed over an existing save or published. The local container had `ANDROID_HOME` unset; the original private signer and native acceptance were not established. Preserve prior releases, including APD464, and all unrelated work claims.
 
 Next: inspect terminal CI logs, parsed JUnit totals and artifact, recheck live authoritative head and PR claims, then perform a guarded expected-head non-force integration only if exact-source acceptance passed. Record terminal evidence below. 
+
+## Verified exact-source acceptance (approximately 04:39 EST)
+
+[GitHub Actions run 43402647454](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/43402647454), job `131809068638`, concluded **success** on exact executable source/test/workflow commit `feed5d0c38f2ba7aa16953f4900f10c253f60672`. Decoded raw job logs confirm `BUILD SUCCESSFUL in 2m 46s`; parsed JUnit XML reports **3,416 tests across 504 suites**, zero failures, errors or skips. Both new test names were required by the completed source gate. `:core:test`, `:desktop:classes`, Android debug, release and debug instrumentation Java compilation all succeeded. JUnit artifact `14025213678` (`apd-markdown-coverage-junit`), 558,701 bytes, digest `sha256:8d7d91cdfe2890bf2eb325aad433fbc5fd44847ea99ab40edecbba690dd29521`, retained.
+
+An independent pre-integration check found the authoritative branch still at the originally expected `090daebc8f9e81044655fe77b3a1a30d6081ed1a`, with no new overlapping open pull requests. The feature was six commits ahead and zero behind; only its four intended paths differ. This verification establishes **source compilation and tests, not an APK, original signer, native Android test, install-over/save proof, screenshot acceptance or publication**. Do not conflate this source-gate result with previously qualified APD464.
