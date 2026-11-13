@@ -1,0 +1,28 @@
+# APD Markdown coverage-line escaping, Friday, November 13, 2026 (Eastern)
+
+## Independent work claim (approximately 04:32 EST)
+
+This work continues the owner's existing regular ChatGPT APD development conversation. GitHub authoritative branch `codex/apd-phone-fixes-2026-10-09` was freshly confirmed at `090daebc8f9e81044655fe77b3a1a30d6081ed1a`, newer than PR #106/#107 and the previous archive, CSV and Markdown fixes. Branch `chatgpt/apd-markdown-coverage-boundary-20261113-0430` was created from exactly that SHA. Read `AGENTS.md`, completed-work/source guide, PR #106/#107 continuation, current open PR claims, release status and current `ReportRenderer` source and tests. No live open PR owns the coverage-summary formatting path. Other active drafts own playback, hero selection/native, Search, licensing and challenge work. Preserve those independent claims.
+
+**Source-evidenced bug:** `ReportRenderer.markdown` correctly escapes table header and cell pipe/backslash/newline sequences via `md(String)`, including the latest CR fix, but concatenates raw `t.headers.get(i)` and `t.coverage.get(i)` into its separate italicized `_Known out of listed..._` summary. A header/coverage value containing `|`, CR, CRLF, LF or backslash can therefore break Markdown summary formatting or change the displayed text. This does not claim the owner observed such a malformed report.
+
+**Bounded work:** Apply the existing Markdown cell escaping to only the two values appended to the coverage summary; do not change ordinary header rows, stored report values, empty-coverage filtering, other formats, gameplay, saves, statistics, history, scoring, signer or application identities. Add focused JUnit regression cases for special characters, ordinary numeric coverage, and report immutability. Verify exact committed source with full core JUnit and desktop/Android Java compilation before guarded integration. No APK release or native acceptance is claimed at start.
+
+**Integration rule:** Never write to `main` or overwrite a shared head. Re-read live authoritative and feature heads, open work claims, and CI status; only integrate through an expected-head non-force update after all required source gates pass. Keep APD464 and prior candidate builds intact. Leave any failure evidence and complete this record with actual commits, tests, builds, blockers and safe next work.
+
+## Implemented on isolated branch, approximately 04:35–04:38 EST
+
+- Starting authoritative SHA `090daebc8f9e81044655fe77b3a1a30d6081ed1a`; work-claim commit `1fa2dd8508af75798b457985f31c439edf40d7a7`.
+- Production `ReportRenderer.java` change `851b36db3616584f7633c977e004bd8482e125df` escapes only two Markdown coverage-summary values using the existing `md()` routine. One production line changed; all other renderers and files unchanged.
+- Focused test source commit `369dadd1e0f5b227c34632b9eedaaa10d444fd3f`, with assertion-scoping correction `ce9a0bf2ccefd0f60697d137042f545c3d335d28`. Two regression methods protect CR/CRLF/LF, pipes, backslashes, empty columns and ordinary numeric coverage without changing the in-memory report.
+- Exact executable source/test/workflow commit `feed5d0c38f2ba7aa16953f4900f10c253f60672` adds dedicated push CI. [Actions run 43402647454](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/43402647454) was **in progress** at this checkpoint. Its completion/result is **not** inferred from this document. Draft [PR #108](https://github.com/APD-Development/ShieldingShouldHaveWorked/pull/108) remains isolated; no authoritative merge claimed yet.
+- Comparison against exact starting SHA showed five feature commits ahead, zero behind and only four intended paths: one production line, one new test class, this handoff and dedicated source-only workflow.
+- No new APK assembled, signed, native-tested, installed over an existing save or published. The local container had `ANDROID_HOME` unset; the original private signer and native acceptance were not established. Preserve prior releases, including APD464, and all unrelated work claims.
+
+Next: inspect terminal CI logs, parsed JUnit totals and artifact, recheck live authoritative head and PR claims, then perform a guarded expected-head non-force integration only if exact-source acceptance passed. Record terminal evidence below. 
+
+## Verified exact-source acceptance (approximately 04:39 EST)
+
+[GitHub Actions run 43402647454](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/43402647454), job `131809068638`, concluded **success** on exact executable source/test/workflow commit `feed5d0c38f2ba7aa16953f4900f10c253f60672`. Decoded raw job logs confirm `BUILD SUCCESSFUL in 2m 46s`; parsed JUnit XML reports **3,416 tests across 504 suites**, zero failures, errors or skips. Both new test names were required by the completed source gate. `:core:test`, `:desktop:classes`, Android debug, release and debug instrumentation Java compilation all succeeded. JUnit artifact `14025213678` (`apd-markdown-coverage-junit`), 558,701 bytes, digest `sha256:8d7d91cdfe2890bf2eb325aad433fbc5fd44847ea99ab40edecbba690dd29521`, retained.
+
+An independent pre-integration check found the authoritative branch still at the originally expected `090daebc8f9e81044655fe77b3a1a30d6081ed1a`, with no new overlapping open pull requests. The feature was six commits ahead and zero behind; only its four intended paths differ. This verification establishes **source compilation and tests, not an APK, original signer, native Android test, install-over/save proof, screenshot acceptance or publication**. Do not conflate this source-gate result with previously qualified APD464.

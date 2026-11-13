@@ -122,7 +122,7 @@ public final class ReportRenderer {
 				if (t.omitted > 0) sb.append("\n_").append(t.omitted).append(" more entries are not listed._\n");
 				StringBuilder cov = new StringBuilder();
 				for (int i = 0; i < t.coverage.size(); i++){
-					if (!t.coverage.get(i).isEmpty()) cov.append(cov.length() > 0 ? "; " : "").append(t.headers.get(i)).append(" ").append(t.coverage.get(i));
+					if (!t.coverage.get(i).isEmpty()) cov.append(cov.length() > 0 ? "; " : "").append(md(t.headers.get(i))).append(" ").append(md(t.coverage.get(i)));
 				}
 				if (cov.length() > 0) sb.append("\n_Known out of listed (per column): ").append(cov).append("._\n");
 				sb.append("\n");
