@@ -90,6 +90,31 @@ public class ArchiveTerminalEndPrivacyTest {
         assertProtected(root, log, "trailing-hidden");
     }
 
+    @Test public void sealedLogWithPostSealGarbageCannotExportHiddenHistoryRaw() throws Exception {
+        File root = tmp.newFolder();
+        TestLogs log = log(root, "postseal-garbage");
+        log.end(LifecycleEvents.OUTCOME_DIED, "Rat", 1, 1, 10).close(true);
+        Files.write(log.file.toPath(), new byte[]{0, 1, 2, 3},
+                java.nio.file.StandardOpenOption.APPEND);
+        com.shatteredpixel.shatteredpixeldungeon.apd.stats.ReadResult read = RunLogReader.read(log.file);
+        assertEquals(com.shatteredpixel.shatteredpixeldungeon.apd.stats.ReadStatus.SEALED, read.status);
+        assertEquals(4, read.damagedBytes());
+        assertProtected(root, log, "postseal-garbage");
+    }
+
+    @Test public void validFrameAfterSealCannotExportHiddenHistoryRaw() throws Exception {
+        File root = tmp.newFolder();
+        TestLogs log = log(root, "postseal-frame");
+        log.end(LifecycleEvents.OUTCOME_DIED, "Rat", 1, 1, 10).close(true);
+        byte[] extraFrame = com.shatteredpixel.shatteredpixeldungeon.apd.stats.LogFormat.clockFrame(42);
+        Files.write(log.file.toPath(), extraFrame,
+                java.nio.file.StandardOpenOption.APPEND);
+        com.shatteredpixel.shatteredpixeldungeon.apd.stats.ReadResult read = RunLogReader.read(log.file);
+        assertEquals(com.shatteredpixel.shatteredpixeldungeon.apd.stats.ReadStatus.SEALED, read.status);
+        assertEquals(extraFrame.length, read.damagedBytes());
+        assertProtected(root, log, "postseal-frame");
+    }
+
     @Test public void completedRunWithNormalRankingLinkTrailerStaysLossless() throws Exception {
         File root = tmp.newFolder();
         TestLogs log = log(root, "finished-ranked");
