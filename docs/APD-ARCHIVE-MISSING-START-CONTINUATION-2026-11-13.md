@@ -1,0 +1,11 @@
+# APD missing typed RUN_START archive privacy continuation, November 13, 2026 (Eastern)
+
+## Isolated source claim, 03:39 AM EST
+
+Originating regular APD conversation. Authenticated GitHub readback established authoritative branch `codex/apd-phone-fixes-2026-10-09` at `4c7e960ab55b9c25c02b1cb0494ee3d7a7f063fe` (after merged #99/#100). The isolated branch `chatgpt/apd-missing-run-start-archive-privacy-20261113-0339` was created at exactly that SHA. Root AGENTS.md, current archive handoffs, completed ledger, prior CI and APD464 release limitations, and all nine open pull requests were inspected. None of those PRs claims this narrow archive privacy predicate; do not touch their source, candidate builds, or branches.
+
+**Evidence in source before patch:** `ArchiveExporter.collect` marks a clean sealed log as ended when its last verified event is a recognized terminal `RUN_END`, even when the log has no valid typed `RUN_START`. Thus a seal plus a synthetic end event alone can cause hidden item generation facts to leave the app unredacted. The decoder already distinguishes a valid typed start using `started`, but that state is not part of the release-of-hidden-information predicate.
+
+**Approved policy and scope:** Keep hidden facts protected until a real recorded run is proven complete. Only use the existing `started` predicate when considering raw archive disclosure; logs lacking a valid typed start use the existing unfinished-run redaction path. Preserve original bytes, older imported legacy records, completed logs with valid typed starts, scoring, stats, saves, archive formats, signer/app IDs, edition boundaries, release artifacts and parallel work claims. Three actual writer/filesystem/ZIP tests cover a sealed terminal log without a typed start, a log with malformed typed start and valid end, and unchanged valid completed export.
+
+No native APK assembly, original-signer check, physical Android acceptance, install-over/save verification, or release publication is claimed. Prior 3,406-test Actions run 43392500211 belongs to separate completed PR #99, not this work. The isolated exact-source gate must pass before integration. Keep all existing APD automations untouched.

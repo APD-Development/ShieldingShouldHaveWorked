@@ -359,7 +359,10 @@ public final class ArchiveExporter {
 					// A seal does not prove a complete physical log if bytes follow it.
 					// The reader stops at SEAL; recovery treats those bytes as a damaged tail.
 					// Never export hidden history raw until the actual file ends at that seal.
-					if (r.sealed && r.status.isClean() && r.damagedBytes() == 0 && !r.events.isEmpty()){
+					// A valid typed RUN_START ties this file to an actual recorded run.
+					// Without one, even a syntactically valid terminal RUN_END cannot
+					// establish that its hidden history is safe to disclose.
+					if (started && r.sealed && r.status.isClean() && r.damagedBytes() == 0 && !r.events.isEmpty()){
 						int end = r.events.size() - 1;
 						ApdEvent last = r.events.get(end);
 						if (last.type == EventTypes.RANKING_LINK){
