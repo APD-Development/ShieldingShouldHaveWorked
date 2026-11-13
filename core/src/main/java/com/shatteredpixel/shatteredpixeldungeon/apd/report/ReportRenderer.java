@@ -108,11 +108,11 @@ public final class ReportRenderer {
 				if (f.provenance != Report.Provenance.RECORDED) sb.append("_").append(provLabel(f.provenance)).append("_\n\n");
 				for (Report.Fact x : f.facts){
 					if (x.value == null){
-						sb.append("\n**").append(x.label).append("**\n\n");
+						sb.append("\n**").append(md(x.label)).append("**\n\n");
 						continue;
 					}
-					sb.append("- ").append(x.label).append(": ").append(x.value.text);
-					if (!x.detail.isEmpty()) sb.append(" (").append(x.detail).append(")");
+					sb.append("- ").append(md(x.label)).append(": ").append(md(x.value.text));
+					if (!x.detail.isEmpty()) sb.append(" (").append(md(x.detail)).append(")");
 					sb.append("\n");
 				}
 				sb.append("\n");
