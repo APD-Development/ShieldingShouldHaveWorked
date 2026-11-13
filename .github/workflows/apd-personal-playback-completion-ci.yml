@@ -47,6 +47,13 @@ jobs:
           for name in ('BurningTrap','RockfallTrap'):
               assert 'CellEmitter.combatCenter(' not in (root/('levels/traps/'+name+'.java')).read_text()
           assert 'effects = com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup.normalSpeedGroup();' in scene
+          assert 'combatEffects = com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup.personalSpeedGroup();' in scene
+          assert 'GameScene.combatEffect(shield = new ShieldHalo(this))' in (root/'sprites/CharSprite.java').read_text()
+          assert 'healing = GameScene.combatEmitter();' in (root/'sprites/CharSprite.java').read_text()
+          assert 'personalVisualElapsed()' in (root/'ui/StatusPane.java').read_text()
+          assert 'PersonalSlotSprite extends ItemSprite' in (root/'ui/ItemSlot.java').read_text()
+          assert 'PlaybackProfileDeviceTest' in Path('android/src/androidTest/java/com/shatteredpixel/shatteredpixeldungeon/android/PlaybackProfileDeviceTest.java').read_text()
+
           assert '(flashTime -= PlaybackGroup.personalVisualElapsed())' in (root/'sprites/CharSprite.java').read_text()
           assert 'Splash.combatAt(' in (root/'sprites/CharSprite.java').read_text()
           assert 'GameScene.combatEmitter()' in (root/'effects/Splash.java').read_text()
