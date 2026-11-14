@@ -1,0 +1,74 @@
+name: APD C467 exact-owner-formula Alpha Testers APK
+on:
+  push:
+    branches: [chatgpt/apd-owner-exact-seed-formula-20261114]
+    paths: [.github/workflows/apd-owner-exact-seed-formula-alpha.yml]
+permissions: {contents: read}
+concurrency: {group: apd-c467-original-signed-alpha-only, cancel-in-progress: false}
+jobs:
+  alpha:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with: {fetch-depth: 0}
+      - name: Pin exact tested C467 application source
+        run: |
+          set -euo pipefail
+          FROZEN=f746eea06b0e64f022e143f7faeba4265003c3e0
+          git merge-base --is-ancestor "$FROZEN" HEAD
+          git diff --name-only "$FROZEN" HEAD | tee /tmp/c467-diff.txt
+          if grep -v '^.github/workflows/' /tmp/c467-diff.txt; then
+            echo "Unexpected application source changes after verified Developer build" >&2
+            exit 1
+          fi
+          git checkout --detach "$FROZEN"
+          test "$(git rev-parse HEAD)" = "$FROZEN"
+      - uses: actions/setup-java@v4
+        with: {distribution: temurin, java-version: '21'}
+      - uses: gradle/actions/setup-gradle@v4
+      - name: Build Alpha variant from exactly verified C467 source
+        run: |
+          set -euo pipefail
+          "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "platforms;android-36"
+          ./gradlew :android:assembleDebug -PapdBuild=P467 --no-daemon
+          mkdir -p deliverable
+          cp android/build/outputs/apk/debug/android-debug.apk deliverable/APD-Alpha-Testers-SeedFormula-P467.apk
+      - name: Verify original signer, Alpha-only configuration, package and integrity
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import hashlib,json,os,pathlib,re,subprocess,zipfile
+          apk=pathlib.Path('deliverable/APD-Alpha-Testers-SeedFormula-P467.apk')
+          assert apk.is_file() and apk.stat().st_size>30000000
+          tools=sorted((pathlib.Path(os.environ['ANDROID_HOME'])/'build-tools').glob('*/apksigner'))[-1].parent
+          output=subprocess.check_output([str(tools/'apksigner'),'verify','--print-certs',str(apk)],text=True)
+          match=re.search(r'SHA-256 digest:\s*([0-9a-fA-F:]+)',output)
+          assert match, output
+          signer=match.group(1).replace(':','').lower()
+          assert signer=='067688b3ab6bd5820a67f4c1ba7d5859db578173771cf31d3252b3e4e012246e',signer
+          badge=subprocess.check_output([str(tools/'aapt'),'dump','badging',str(apk)],text=True)
+          package=next(x for x in badge.splitlines() if x.startswith('package:'))
+          assert "name='com.charltonchris29.adhdpixeldungeon.indev'" in package,package
+          assert "versionCode='920'" in package,package
+          assert "-bP467" in package and "-TEST" not in package,package
+          with zipfile.ZipFile(apk) as z:
+              asset=z.read('assets/apd/features.txt').decode('utf-8')
+          assert asset.strip().splitlines()==['extendedPlayback','grudge'],asset
+          receipt={'application_source':'f746eea06b0e64f022e143f7faeba4265003c3e0',
+                   'source_test_run':'https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/43599957411',
+                   'edition':'Alpha Testers P467','signer_sha256':signer,'package':package,
+                   'feature_flags':asset.strip().splitlines(),'apk_bytes':apk.stat().st_size,
+                   'apk_sha256':hashlib.sha256(apk.read_bytes()).hexdigest(),
+                   'native_device_tests':'not run for Alpha P467',
+                   'physical_phone_tested':False}
+          pathlib.Path('deliverable/receipt.json').write_text(json.dumps(receipt,indent=2)+'\n')
+          print(json.dumps(receipt,indent=2))
+          PY
+          sha256sum deliverable/*.apk > deliverable/sha256sums.txt
+      - uses: actions/upload-artifact@v4
+        with:
+          name: apd-c467-original-signed-alpha-testers
+          path: deliverable/
+          retention-days: 30
+          if-no-files-found: error
