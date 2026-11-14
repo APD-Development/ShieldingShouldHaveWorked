@@ -89,4 +89,64 @@ public class SeedReuseScoreTest {
         assertEquals(6000,SeedReuseScore.earnedScore(saved,10000));
         assertEquals(9999,SeedReuseScore.earnedScore(saved,9999));
     }
+
+    @Test public void sevenEarlierAttemptsFloorNineToTwentySixRecoverActualRankingPoints() {
+        SeedReuseScore.Result result=SeedReuseScore.calculate(330393,7,9,26,true);
+        assertEquals(1700,result.retentionBasisPoints);
+        assertEquals(56166,result.earned);
+        assertEquals(274227,result.deduction);
+        Rankings.Record run=new Rankings.Record();
+        run.score=330393;
+        run.gameID="deep-progress";
+        run.customSeed="SEED-EXAMPLE";
+        run.gameData=new Bundle();
+        result.store(run.gameData);
+        assertEquals(56166,run.earnedScore());
+        Rankings.Record lower=new Rankings.Record();
+        lower.score=50000;
+        lower.customSeed="SEED-EXAMPLE";
+        lower.gameID="lower";
+        assertTrue("Real ranking order uses earned points",Rankings.scoreComparator.compare(run,lower)<0);
+    }
+
+    @Test public void replayDeathsAndNewDepthProgression() {
+        assertEquals(0,SeedReuseScore.calculate(330393,7,9,9,true).earned);
+        SeedReuseScore.Result small=SeedReuseScore.calculate(330393,7,9,10,true);
+        assertEquals(100,small.retentionBasisPoints);
+        assertEquals(3303,small.earned);
+        assertEquals(56166,SeedReuseScore.calculate(330393,7,9,26,true).earned);
+        SeedReuseScore.Result early=SeedReuseScore.calculate(330393,1,5,5,true);
+        SeedReuseScore.Result deep=SeedReuseScore.calculate(330393,1,25,25,true);
+        assertTrue(early.earned>deep.earned);
+        assertEquals(3303,SeedReuseScore.calculate(330393,7,25,26,true).earned);
+    }
+
+    @Test public void oldZeroReceiptRetroactivelyUpgradesAndPersistsWithoutRecounting() {
+        Bundle old=new Bundle();
+        SeedReuseScore.Result original=SeedReuseScore.calculate(330393,7,9,9,true);
+        original.store(old);
+        old.put(SeedReuseScore.VERSION_KEY,1);
+        old.put(SeedReuseScore.CURRENT_DEPTH_KEY,26);
+        assertEquals(56166,SeedReuseScore.earnedScore(old,330393));
+        assertTrue(SeedReuseScore.migrate(old));
+        assertEquals(SeedReuseScore.VERSION,old.getInt(SeedReuseScore.VERSION_KEY));
+        assertEquals(56166,old.getLong(SeedReuseScore.EARNED_KEY));
+        assertEquals(1700,old.getInt(SeedReuseScore.RETENTION_KEY));
+        assertFalse(SeedReuseScore.migrate(old));
+        assertEquals(56166,SeedReuseScore.earnedScore(old,330393));
+        // The saved original record is still authoritative and must not be recomputed
+        // from today's local seed history.
+        assertEquals(56166,SeedReuseScore.earnedScore(old,330393));
+        assertEquals(330392,SeedReuseScore.earnedScore(old,330392));
+    }
+
+    @Test public void forgedLegacyReceiptDoesNotMigrateOrOverwriteHistoricalScore() {
+        Bundle forged=new Bundle();
+        SeedReuseScore.calculate(330393,7,9,9,true).store(forged);
+        forged.put(SeedReuseScore.VERSION_KEY,1);
+        forged.put(SeedReuseScore.CURRENT_DEPTH_KEY,26);
+        forged.put(SeedReuseScore.RETENTION_KEY,2500);
+        assertNull(SeedReuseScore.restore(forged));
+        assertFalse(SeedReuseScore.migrate(forged));
+    }
 }
