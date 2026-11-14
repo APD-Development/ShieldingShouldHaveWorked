@@ -333,7 +333,7 @@ public final class SeedHistory {
                 if (depth >= 0) { known++; deepest = Math.max(deepest, depth); }
             }
             int[] completeDepths = null;
-            if (!incomplete && known == attempts && depths.size() == attempts) {
+            if (attempts > 0 && !incomplete && known == attempts && depths.size() == attempts) {
                 completeDepths = new int[depths.size()];
                 for (int i = 0; i < depths.size(); i++) completeDepths[i] = depths.get(i);
             }
