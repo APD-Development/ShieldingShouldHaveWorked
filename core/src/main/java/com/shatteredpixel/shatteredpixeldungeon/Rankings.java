@@ -502,7 +502,7 @@ public enum Rankings {
                     migrated=true;
                 }
             }
-            Collections.sort(records, scoreComparator);
+            if (migrated) Collections.sort(records, scoreComparator);
             lastRecord=latest==null ? oldLast : records.indexOf(latest);
 			
 			totalNumber = bundle.getInt( TOTAL );
