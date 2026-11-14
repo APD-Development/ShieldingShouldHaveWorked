@@ -491,7 +491,19 @@ public enum Rankings {
 			for (Bundlable record : bundle.getCollection( RECORDS )) {
 				records.add( (Record)record );
 			}
-			lastRecord = bundle.getInt( LATEST );
+            // Preserve latest-run identity while legacy v1 seed receipts are upgraded
+            // and the actual earned-score ranking order is rebuilt.
+            int oldLast=bundle.getInt( LATEST );
+            Record latest=oldLast>=0 && oldLast<records.size() ? records.get(oldLast) : null;
+            boolean migrated=false;
+            for (Record record : records) {
+                if (record.gameData != null &&
+                        com.shatteredpixel.shatteredpixeldungeon.apd.recorder.SeedReuseScore.migrate(record.gameData)) {
+                    migrated=true;
+                }
+            }
+            if (migrated) Collections.sort(records, scoreComparator);
+            lastRecord=latest==null ? oldLast : records.indexOf(latest);
 			
 			totalNumber = bundle.getInt( TOTAL );
 			if (totalNumber == 0) {
@@ -506,6 +518,11 @@ public enum Rankings {
 					}
 				}
 			}
+
+            if (migrated) {
+                // Persist the one-time upgrade only after loading completes below.
+                migratedSeedScores=true;
+            }
 
 			if (bundle.contains(LATEST_DAILY)){
 				latestDaily = (Record) bundle.get(LATEST_DAILY);
@@ -534,10 +551,19 @@ public enum Rankings {
 				}
 			}
 
-		} catch (IOException e) {
-		}
-	}
-	
+            if (latestDaily != null && latestDaily.gameData != null) {
+                migratedSeedScores |= com.shatteredpixel.shatteredpixeldungeon.apd.recorder.SeedReuseScore.migrate(latestDaily.gameData);
+            }
+            if (migratedSeedScores) {
+                migratedSeedScores=false;
+                save();
+            }
+        } catch (IOException e) {
+        }
+    }
+
+    private boolean migratedSeedScores;
+
 	public static class Record implements Bundlable {
 
 		private static final String CAUSE   = "cause";
