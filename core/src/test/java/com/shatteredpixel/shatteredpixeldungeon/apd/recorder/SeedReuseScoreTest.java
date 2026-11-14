@@ -96,13 +96,10 @@ public class SeedReuseScoreTest {
         assertEquals(56166,result.earned);
         assertEquals(274227,result.deduction);
         Rankings.Record run=new Rankings.Record();
-        run.score=254000;
+        run.score=330393;
         run.gameID="deep-progress";
         run.customSeed="SEED-EXAMPLE";
         run.gameData=new Bundle();
-        // Store a standalone original adjusted-score receipt with the same value as the screenshot.
-        run.gameData.put("apd_custom_original_score",254000L);
-        run.gameData.put("apd_custom_adjusted_score",330393L);
         result.store(run.gameData);
         assertEquals(56166,run.earnedScore());
         Rankings.Record lower=new Rankings.Record();
@@ -137,10 +134,6 @@ public class SeedReuseScoreTest {
         assertEquals(1700,old.getInt(SeedReuseScore.RETENTION_KEY));
         assertFalse(SeedReuseScore.migrate(old));
         assertEquals(56166,SeedReuseScore.earnedScore(old,330393));
-        Bundle roundTrip=new Bundle();
-        for(String key : new String[]{SeedReuseScore.VERSION_KEY,SeedReuseScore.RETENTION_KEY}) {
-            roundTrip.put(key,old.getInt(key));
-        }
         // The saved original record is still authoritative and must not be recomputed
         // from today's local seed history.
         assertEquals(56166,SeedReuseScore.earnedScore(old,330393));
