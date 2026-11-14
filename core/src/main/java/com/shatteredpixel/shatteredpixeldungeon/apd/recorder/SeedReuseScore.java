@@ -15,7 +15,8 @@ import java.math.BigInteger;
 public final class SeedReuseScore {
     private SeedReuseScore() { }
 
-    public static final int VERSION = 1;
+    public static final int VERSION = 2;
+    private static final int LEGACY_VERSION = 1;
     public static final String VERSION_KEY = "apd_seed_reuse_score_version";
     public static final String BASE_KEY = "apd_seed_reuse_base_score";
     public static final String EARNED_KEY = "apd_seed_reuse_earned_score";
@@ -61,8 +62,17 @@ public final class SeedReuseScore {
         // Limit x to 25 before division: at Yog all earlier floors are known.
         // A new deepest floor restores the portion genuinely unexplored on earlier attempts.
         int depthShare = Math.min(25, 25-old+improved);
+        int previousRetention = (tier*depthShare + 12)/25;
+        // The existing 25% fourth-attempt tier is the recovery ceiling for genuinely
+        // new floors. It is independent of the zeroed fifth+ replay tier: otherwise
+        // no amount of first-time progress can ever earn a point after four retries.
+        // Floors previously reached keep the established replay/depth deduction.
+        // Floor 26 counts as a real new deepest floor, even though the original
+        // exploration odds cap the old-depth penalty at floor 25.
+        int newlyReached=Math.max(0,Math.min(26,currentDeepest)-Math.max(0,Math.min(26,previousDeepest)));
+        int newFloorRetention = (2500*Math.min(25,newlyReached) + 12)/25;
         int bps = !historyKnown || priorAttempts == 0 ? 10000
-                : (tier*depthShare + 12)/25;
+                : Math.max(previousRetention, newFloorRetention);
         long earned = BigInteger.valueOf(scoreBeforeReuse)
                 .multiply(BigInteger.valueOf(bps))
                 .divide(BigInteger.valueOf(10000)).longValueExact();
@@ -70,10 +80,11 @@ public final class SeedReuseScore {
                 scoreBeforeReuse, earned, historyKnown);
     }
 
-    /** A recorded snapshot never gets repriced by later history or settings changes. */
+    /** A recorded snapshot is evaluated from its frozen per-run history, never later attempts. */
     public static Result restore(Bundle data) {
         if (data == null || !data.contains(VERSION_KEY)) return null;
-        if (data.getInt(VERSION_KEY) != VERSION
+        int version=data.getInt(VERSION_KEY);
+        if ((version != VERSION && version != LEGACY_VERSION)
                 || !data.contains(BASE_KEY) || !data.contains(EARNED_KEY)
                 || !data.contains(ATTEMPTS_KEY) || !data.contains(PRIOR_DEPTH_KEY)
                 || !data.contains(CURRENT_DEPTH_KEY) || !data.contains(RETENTION_KEY)
@@ -90,7 +101,31 @@ public final class SeedReuseScore {
         long expected = BigInteger.valueOf(before).multiply(BigInteger.valueOf(bps))
                 .divide(BigInteger.valueOf(10000)).longValueExact();
         if (earned != expected) return null;
+        Result recalculated=calculate(before,attempts,prior,current,known);
+        if (version == LEGACY_VERSION) {
+            // A v1 receipt is valid only if it matches the historical formula.
+            // Its frozen attempts/depths supply the retroactive correction.
+            int old=Math.max(0,Math.min(25,prior));
+            int now=Math.max(0,Math.min(25,current));
+            int improved=Math.max(0,now-old);
+            int tier=10000-Math.min(attempts,4)*2500;
+            int oldBps=!known || attempts==0 ? 10000
+                    : (tier*Math.min(25,25-old+improved)+12)/25;
+            if (bps != oldBps) return null;
+            return recalculated;
+        }
+        if (recalculated.retentionBasisPoints != bps || recalculated.earned != earned) return null;
         return new Result(attempts, prior, current, bps, before, earned, known);
+    }
+
+    /** Upgrade an authentic v1 receipt in-place, without inspecting mutable run history. */
+    public static boolean migrate(Bundle data) {
+        if (data == null || !data.contains(VERSION_KEY)
+                || data.getInt(VERSION_KEY) != LEGACY_VERSION) return false;
+        Result corrected=restore(data);
+        if (corrected == null) return false;
+        corrected.store(data);
+        return true;
     }
 
     public static long earnedScore(Bundle data, long normalEarnedScore) {
