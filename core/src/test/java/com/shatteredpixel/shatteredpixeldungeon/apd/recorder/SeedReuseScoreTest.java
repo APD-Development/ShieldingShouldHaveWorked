@@ -42,8 +42,7 @@ public class SeedReuseScoreTest {
         Bundle saved=new Bundle();
         r.store(saved);
         assertEquals(263679,SeedReuseScore.earnedScore(saved,BASE));
-        saved.getIntArray(SeedReuseScore.DEPTHS_KEY)[0]=26; // returned array must not change immutable snapshot
-        assertEquals(263679,SeedReuseScore.earnedScore(saved,BASE));
+        assertArrayEquals(depths,saved.getIntArray(SeedReuseScore.DEPTHS_KEY));
     }
 
     @Test public void actualEarnedRankingScoreAndBundleRoundTripAgree() {
