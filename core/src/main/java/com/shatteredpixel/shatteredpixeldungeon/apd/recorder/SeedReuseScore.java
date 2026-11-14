@@ -4,19 +4,21 @@ import com.watabou.utils.Bundle;
 import java.math.BigInteger;
 
 /**
- * Frozen, per-run score adjustment from the player's OWN earlier seed attempts.
- * An unchanged seed does not imply shared authorship. No online database is used.
- *
- * Approved replay tiers: first use 100%, second 75%, third 50%, fourth 25%,
- * fifth and later 0%. Exploration uses the specified x/(25-x) odds, bounded
- * at floor 25; unvisited floors remain eligible. Reaching beyond one's
- * previous deepest floor restores the corresponding unexplored-floor share.
+ * Frozen, per-run seed-reuse score adjustment. Uses the owner's exact equation:
+ * R (%) = 100 - 75 * (D / 25)^3 - 5 * (A - 1).
+ * D is the deepest floor on earlier local attempts (bounded to 0..25);
+ * A is the number of earlier local attempts. First/unknown use is unpenalized.
+ * Retention is bounded to 0..100%. Current floor does not appear in the
+ * owner's equation and is saved only for diagnostics.
  */
 public final class SeedReuseScore {
     private SeedReuseScore() { }
 
-    public static final int VERSION = 2;
-    private static final int LEGACY_VERSION = 1;
+    public static final int VERSION = 3;
+    private static final int LEGACY_V1 = 1;
+    private static final int LEGACY_V2 = 2;
+    private static final long DEPTH_DENOMINATOR = 15625L; // 25 cubed
+    private static final long SCORE_DENOMINATOR = DEPTH_DENOMINATOR * 100;
     public static final String VERSION_KEY = "apd_seed_reuse_score_version";
     public static final String BASE_KEY = "apd_seed_reuse_base_score";
     public static final String EARNED_KEY = "apd_seed_reuse_earned_score";
@@ -48,89 +50,94 @@ public final class SeedReuseScore {
         }
     }
 
-    /** Previous attempts, not including the current run. Score is already custom-rule adjusted. */
+    /** A is the number of earlier attempts, excluding this run. */
     public static Result calculate(long scoreBeforeReuse, int priorAttempts, int previousDeepest,
                                    int currentDeepest, boolean historyKnown) {
         if (scoreBeforeReuse < 0) throw new IllegalArgumentException("Negative score");
         if (priorAttempts < 0) throw new IllegalArgumentException("Negative attempt count");
-        int attempts = Math.min(priorAttempts, 4);
-        int tier = 10000 - attempts * 2500;
-        int old = Math.max(0, Math.min(25, previousDeepest));
-        int current = Math.max(0, Math.min(25, currentDeepest));
-        int improved = Math.max(0, current-old);
-        // Odds x/(25-x) imply remaining-floor share 1/(1+x/(25-x)).
-        // Limit x to 25 before division: at Yog all earlier floors are known.
-        // A new deepest floor restores the portion genuinely unexplored on earlier attempts.
-        int depthShare = Math.min(25, 25-old+improved);
-        int previousRetention = (tier*depthShare + 12)/25;
-        // The existing 25% fourth-attempt tier is the recovery ceiling for genuinely
-        // new floors. It is independent of the zeroed fifth+ replay tier: otherwise
-        // no amount of first-time progress can ever earn a point after four retries.
-        // Floors previously reached keep the established replay/depth deduction.
-        // Floor 26 counts as a real new deepest floor, even though the original
-        // exploration odds cap the old-depth penalty at floor 25.
-        int newlyReached=Math.max(0,Math.min(26,currentDeepest)-Math.max(0,Math.min(26,previousDeepest)));
-        int newFloorRetention = (2500*Math.min(25,newlyReached) + 12)/25;
-        int bps = !historyKnown || priorAttempts == 0 ? 10000
-                : Math.max(previousRetention, newFloorRetention);
-        long earned = BigInteger.valueOf(scoreBeforeReuse)
-                .multiply(BigInteger.valueOf(bps))
-                .divide(BigInteger.valueOf(10000)).longValueExact();
+        // Calculate the owner's cubic polynomial as a rational integer to avoid
+        // floating-point drift and retain the entire 66.5008% in earned points.
+        int depth = Math.max(0, Math.min(25, previousDeepest));
+        long depthCubed = (long)depth * depth * depth;
+        BigInteger numerator;
+        if (!historyKnown || priorAttempts == 0) {
+            numerator = BigInteger.valueOf(100L * DEPTH_DENOMINATOR);
+        } else {
+            numerator = BigInteger.valueOf(100L * DEPTH_DENOMINATOR)
+                    .subtract(BigInteger.valueOf(75L * depthCubed))
+                    .subtract(BigInteger.valueOf(5L * DEPTH_DENOMINATOR)
+                            .multiply(BigInteger.valueOf((long)priorAttempts - 1)));
+            if (numerator.signum() < 0) numerator = BigInteger.ZERO;
+            BigInteger max = BigInteger.valueOf(100L * DEPTH_DENOMINATOR);
+            if (numerator.compareTo(max) > 0) numerator = max;
+        }
+        long earned = BigInteger.valueOf(scoreBeforeReuse).multiply(numerator)
+                .divide(BigInteger.valueOf(SCORE_DENOMINATOR)).longValueExact();
+        int bps = numerator.multiply(BigInteger.valueOf(100))
+                .add(BigInteger.valueOf(DEPTH_DENOMINATOR / 2))
+                .divide(BigInteger.valueOf(DEPTH_DENOMINATOR)).intValueExact();
         return new Result(priorAttempts, previousDeepest, currentDeepest, bps,
                 scoreBeforeReuse, earned, historyKnown);
     }
 
-    /** A recorded snapshot is evaluated from its frozen per-run history, never later attempts. */
+    private static int legacyBps(int version, int attempts, int prior, int current, boolean known) {
+        if (!known || attempts == 0) return 10000;
+        int tier = 10000 - Math.min(attempts, 4) * 2500;
+        int old = Math.max(0, Math.min(25, prior));
+        int now = Math.max(0, Math.min(25, current));
+        int improved = Math.max(0, now - old);
+        int depthShare = Math.min(25, 25 - old + improved);
+        int previousRetention = (tier * depthShare + 12) / 25;
+        if (version == LEGACY_V1) return previousRetention;
+        int newFloors = Math.max(0, Math.min(26, current) - Math.max(0, Math.min(26, prior)));
+        return Math.max(previousRetention, (2500 * Math.min(25, newFloors) + 12) / 25);
+    }
+
+    /**
+     * Validate the stored receipt against the formula of its recorded version.
+     * Valid v1/v2 receipts are re-evaluated using the owner's formula from the
+     * immutable run-local A/D values. Missing/corrupted receipts are untouched.
+     */
     public static Result restore(Bundle data) {
         if (data == null || !data.contains(VERSION_KEY)) return null;
-        int version=data.getInt(VERSION_KEY);
-        if ((version != VERSION && version != LEGACY_VERSION)
+        int version = data.getInt(VERSION_KEY);
+        if ((version != LEGACY_V1 && version != LEGACY_V2 && version != VERSION)
                 || !data.contains(BASE_KEY) || !data.contains(EARNED_KEY)
                 || !data.contains(ATTEMPTS_KEY) || !data.contains(PRIOR_DEPTH_KEY)
                 || !data.contains(CURRENT_DEPTH_KEY) || !data.contains(RETENTION_KEY)
                 || !data.contains(KNOWN_KEY)) return null;
-        long before=data.getLong(BASE_KEY), earned=data.getLong(EARNED_KEY);
-        int attempts=data.getInt(ATTEMPTS_KEY), prior=data.getInt(PRIOR_DEPTH_KEY),
-                current=data.getInt(CURRENT_DEPTH_KEY), bps=data.getInt(RETENTION_KEY);
-        boolean known=data.getBoolean(KNOWN_KEY);
-        if (before<0 || earned<0 || earned>before || bps<0 || bps>10000 || attempts<0
-                || (!known && before!=earned)) return null;
-        // A ranking snapshot must be self-consistent. Damage to an earned-score
-        // field must never silently reprice a saved run or contradict its UI
-        // retention percentage. Do not regenerate history or change valid scores.
-        long expected = BigInteger.valueOf(before).multiply(BigInteger.valueOf(bps))
-                .divide(BigInteger.valueOf(10000)).longValueExact();
-        if (earned != expected) return null;
-        Result recalculated=calculate(before,attempts,prior,current,known);
-        if (version == LEGACY_VERSION) {
-            // A v1 receipt is valid only if it matches the historical formula.
-            // Its frozen attempts/depths supply the retroactive correction.
-            int old=Math.max(0,Math.min(25,prior));
-            int now=Math.max(0,Math.min(25,current));
-            int improved=Math.max(0,now-old);
-            int tier=10000-Math.min(attempts,4)*2500;
-            int oldBps=!known || attempts==0 ? 10000
-                    : (tier*Math.min(25,25-old+improved)+12)/25;
-            if (bps != oldBps) return null;
-            return recalculated;
+        long before = data.getLong(BASE_KEY), earned = data.getLong(EARNED_KEY);
+        int attempts = data.getInt(ATTEMPTS_KEY), prior = data.getInt(PRIOR_DEPTH_KEY),
+                current = data.getInt(CURRENT_DEPTH_KEY), bps = data.getInt(RETENTION_KEY);
+        boolean known = data.getBoolean(KNOWN_KEY);
+        if (before < 0 || earned < 0 || earned > before || attempts < 0
+                || bps < 0 || bps > 10000 || (!known && earned != before)) return null;
+
+        Result corrected = calculate(before, attempts, prior, current, known);
+        if (version == VERSION) {
+            if (bps != corrected.retentionBasisPoints || earned != corrected.earned) return null;
+            return corrected;
         }
-        if (recalculated.retentionBasisPoints != bps || recalculated.earned != earned) return null;
-        return new Result(attempts, prior, current, bps, before, earned, known);
+        if (bps != legacyBps(version, attempts, prior, current, known)) return null;
+        long legacyEarned = BigInteger.valueOf(before).multiply(BigInteger.valueOf(bps))
+                .divide(BigInteger.valueOf(10000)).longValueExact();
+        if (earned != legacyEarned) return null;
+        return corrected;
     }
 
-    /** Upgrade an authentic v1 receipt in-place, without inspecting mutable run history. */
+    /** Persist one-time v1/v2 historical score correction without reading later history. */
     public static boolean migrate(Bundle data) {
-        if (data == null || !data.contains(VERSION_KEY)
-                || data.getInt(VERSION_KEY) != LEGACY_VERSION) return false;
-        Result corrected=restore(data);
+        if (data == null || !data.contains(VERSION_KEY)) return false;
+        int version = data.getInt(VERSION_KEY);
+        if (version != LEGACY_V1 && version != LEGACY_V2) return false;
+        Result corrected = restore(data);
         if (corrected == null) return false;
         corrected.store(data);
         return true;
     }
 
     public static long earnedScore(Bundle data, long normalEarnedScore) {
-        Result snapshot=restore(data);
-        // Legacy records have no reuse snapshot. Do not rewrite their historical earnings.
+        Result snapshot = restore(data);
         return snapshot == null || snapshot.before != normalEarnedScore
                 ? normalEarnedScore : snapshot.earned;
     }
