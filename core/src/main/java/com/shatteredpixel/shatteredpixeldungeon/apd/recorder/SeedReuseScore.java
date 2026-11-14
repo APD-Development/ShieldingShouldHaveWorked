@@ -6,17 +6,17 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 
 /**
- * Owner-specified exponential per-floor seed familiarity:
- * R = (100/C) * sum(f=1..C, exp(-0.5*n_f)).
- * C is current deepest floor and n_f is prior visits reaching that floor.
- * Earned score = roundHalfUp(base * R / 100).
+ * Owner-approved exact rational per-floor familiarity:
+ * R = (1/C) * sum(f=1..C, (3/5)^n_f).
+ * C is current deepest floor, n_f is distinct earlier runs reaching that floor.
+ * Score = max(1, roundHalfUp(base * R)) for positive base; zero stays zero.
  * A zero/missing earlier history is never fabricated.
  */
 public final class SeedReuseScore {
     private SeedReuseScore() { }
 
-    public static final int VERSION = 5;
-    private static final int V1 = 1, V2 = 2, V3 = 3, V4 = 4;
+    public static final int VERSION = 6;
+    private static final int V1 = 1, V2 = 2, V3 = 3, V4 = 4, V5 = 5;
     private static final long CUBIC_DENOMINATOR = 15625L;
     public static final String VERSION_KEY = "apd_seed_reuse_score_version";
     public static final String BASE_KEY = "apd_seed_reuse_base_score";
@@ -93,26 +93,61 @@ public final class SeedReuseScore {
         int bps=10000;
         long earned=score;
         if (historyKnown && attempts>0 && current>0 && previousDeepest>=1) {
-            double credits=0.0;
+            // Sum 3^n * 5^(A-n) over floors, denominator C*5^A.
+            // Work with integers only, including one final HALF_UP score rounding.
+            BigInteger powerFive=BigInteger.valueOf(5).pow(attempts);
+            BigInteger[] powersThree=new BigInteger[attempts+1];
+            BigInteger[] powersFive=new BigInteger[attempts+1];
+            powersThree[0]=BigInteger.ONE;
+            powersFive[0]=BigInteger.ONE;
+            for (int i=1;i<=attempts;i++) {
+                powersThree[i]=powersThree[i-1].multiply(BigInteger.valueOf(3));
+                powersFive[i]=powersFive[i-1].multiply(BigInteger.valueOf(5));
+            }
+            BigInteger weight=BigInteger.ZERO;
             for (int floor=1;floor<=current;floor++) {
                 int visits=0;
                 if (previousDepths!=null) {
                     for (int depth:previousDepths) if (depth>=floor) visits++;
                 } else if (floor<=previousDeepest) {
-                    // Conservative fallback: unknown earlier depths must not be invented.
+                    // Proven summary only: do not invent exact individual depths.
                     visits=attempts;
                 }
-                credits+=Math.exp(-0.5d*visits);
+                weight=weight.add(powersThree[visits].multiply(powersFive[attempts-visits]));
             }
-            double ratio=credits/current;
-            // Round only once at the final earned score, with the original base score.
-            earned=BigDecimal.valueOf(ratio).multiply(BigDecimal.valueOf(score))
-                    .setScale(0,RoundingMode.HALF_UP).longValueExact();
-            bps=BigDecimal.valueOf(ratio).multiply(BigDecimal.valueOf(10000))
-                    .setScale(0,RoundingMode.HALF_UP).intValueExact();
+            BigInteger denominator=powerFive.multiply(BigInteger.valueOf(current));
+            // Half-up: floor((2*N+D)/(2*D)), for nonnegative N.
+            BigInteger scoreNumerator=BigInteger.valueOf(score).multiply(weight);
+            earned=scoreNumerator.shiftLeft(1).add(denominator)
+                    .divide(denominator.shiftLeft(1)).longValueExact();
+            if (score>0 && earned==0) earned=1;
+            bps=weight.multiply(BigInteger.valueOf(10000)).shiftLeft(1)
+                    .add(denominator).divide(denominator.shiftLeft(1)).intValueExact();
         }
         return new Result(attempts,previousDeepest,currentDeepest,bps,score,earned,
                 historyKnown,previousDepths);
+    }
+
+    /** Authenticate v5 Math.exp(-0.5*n) receipts using their original floating-point steps. */
+    private static long[] oldV5(long score, int attempts, int previousDeepest,
+                                int currentDeepest, boolean historyKnown, int[] previousDepths) {
+        int current=Math.max(0,Math.min(26,currentDeepest));
+        if (!historyKnown || attempts==0 || current<=0 || previousDeepest<1)
+            return new long[]{10000,score};
+        double credits=0.0;
+        for (int floor=1;floor<=current;floor++) {
+            int visits=0;
+            if (previousDepths!=null) {
+                for (int depth:previousDepths) if (depth>=floor) visits++;
+            } else if (floor<=previousDeepest) visits=attempts;
+            credits+=Math.exp(-0.5d*visits);
+        }
+        double ratio=credits/current;
+        long earned=BigDecimal.valueOf(ratio).multiply(BigDecimal.valueOf(score))
+                .setScale(0,RoundingMode.HALF_UP).longValueExact();
+        int bps=BigDecimal.valueOf(ratio).multiply(BigDecimal.valueOf(10000))
+                .setScale(0,RoundingMode.HALF_UP).intValueExact();
+        return new long[]{bps,earned};
     }
 
     /** Exact v4 integer-quarter credit, solely to authenticate historical receipts. */
@@ -150,7 +185,7 @@ public final class SeedReuseScore {
     public static Result restore(Bundle data) {
         if (data==null || !data.contains(VERSION_KEY)) return null;
         int version=data.getInt(VERSION_KEY);
-        if (version!=V1 && version!=V2 && version!=V3 && version!=V4 && version!=VERSION) return null;
+        if (version!=V1 && version!=V2 && version!=V3 && version!=V4 && version!=V5 && version!=VERSION) return null;
         if (!data.contains(BASE_KEY) || !data.contains(EARNED_KEY)
                 || !data.contains(ATTEMPTS_KEY) || !data.contains(PRIOR_DEPTH_KEY)
                 || !data.contains(CURRENT_DEPTH_KEY) || !data.contains(RETENTION_KEY)
@@ -170,6 +205,20 @@ public final class SeedReuseScore {
             try {
                 Result checked=calculate(before,attempts,prior,current,known,depths);
                 return checked.retentionBasisPoints==bps && checked.earned==stored ? checked : null;
+            } catch (IllegalArgumentException invalid) {
+                return null;
+            }
+        }
+        if (version==V5) {
+            if (!data.contains(EXACT_KEY)) return null;
+            boolean exact=data.getBoolean(EXACT_KEY);
+            if (exact && !data.contains(DEPTHS_KEY)) return null;
+            if (!exact && data.contains(DEPTHS_KEY)) return null;
+            int[] depths=exact ? data.getIntArray(DEPTHS_KEY) : null;
+            try {
+                Result corrected=calculate(before,attempts,prior,current,known,depths);
+                long[] previous=oldV5(before,attempts,prior,current,known,depths);
+                return previous[0]==bps && previous[1]==stored ? corrected : null;
             } catch (IllegalArgumentException invalid) {
                 return null;
             }
