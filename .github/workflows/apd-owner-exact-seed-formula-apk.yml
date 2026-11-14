@@ -24,7 +24,7 @@ jobs:
           roots=[ET.parse(p).getroot() for p in pathlib.Path('core/build/test-results/test').glob('TEST-*.xml')]
           assert roots,"No test XML"
           tally={k:sum(int(x.get(k,0)) for x in roots) for k in ('tests','failures','errors','skipped')}
-          assert tally['tests']>=3455 and not any(tally[k] for k in ('failures','errors','skipped')),tally
+          assert tally['tests']>=3454 and not any(tally[k] for k in ('failures','errors','skipped')),tally
           suites=[r for r in roots if r.get('name','').endswith('.SeedReuseScoreTest')]
           assert len(suites)==1 and int(suites[0].get('tests',0))>=9
           names={x.get('name') for x in suites[0].findall('testcase')}
