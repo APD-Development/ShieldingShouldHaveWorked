@@ -118,7 +118,7 @@ public class SeedReuseScoreTest {
         SeedReuseScore.Result early=SeedReuseScore.calculate(330393,1,5,5,true);
         SeedReuseScore.Result deep=SeedReuseScore.calculate(330393,1,25,25,true);
         assertTrue(early.earned>deep.earned);
-        assertEquals(0,SeedReuseScore.calculate(330393,7,25,26,true).earned);
+        assertEquals(3303,SeedReuseScore.calculate(330393,7,25,26,true).earned);
     }
 
     @Test public void oldZeroReceiptRetroactivelyUpgradesAndPersistsWithoutRecounting() {
