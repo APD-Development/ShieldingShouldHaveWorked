@@ -59,6 +59,10 @@ final class RecorderTestSupport {
 	}
 
 	static void newRun( Session s, long seed ){
+		newRun(s, seed, HeroClass.WARRIOR);
+	}
+
+	static void newRun( Session s, long seed, HeroClass heroClass ){
 		HeadlessTestSupport.start();
 		SPDSettings.challenges(0);
 		SPDSettings.intro(false);
@@ -66,7 +70,7 @@ final class RecorderTestSupport {
 		Dungeon.dailyReplay = false;
 		Dungeon.customSeedText = "";
 		Dungeon.seed = seed;
-		GamesInProgress.selectedClass = HeroClass.WARRIOR;
+		GamesInProgress.selectedClass = heroClass;
 		GamesInProgress.randomizedClass = false;
 		GamesInProgress.curSlot = s.slot;
 		Dungeon.init();

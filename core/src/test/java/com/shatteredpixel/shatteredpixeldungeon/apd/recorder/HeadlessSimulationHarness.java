@@ -4,6 +4,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Goo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Rat;
@@ -30,6 +31,10 @@ final class HeadlessSimulationHarness {
 	private HeadlessSimulationHarness(){}
 
 	static List<String> run( long seed ) throws Exception {
+		return run(seed, HeroClass.WARRIOR);
+	}
+
+	static List<String> run( long seed, HeroClass heroClass ) throws Exception {
 		Game previousGame = Game.instance;
 		com.watabou.utils.PlatformSupport previousPlatform = Game.platform;
 		new Game(null, previousPlatform){
@@ -39,7 +44,7 @@ final class HeadlessSimulationHarness {
 		};
 		RecorderTestSupport.Session session = new RecorderTestSupport.Session();
 		try {
-			RecorderTestSupport.newRun(session, seed);
+				RecorderTestSupport.newRun(session, seed, heroClass);
 			Random.pushGenerator(seed);
 			try {
 			RecorderTestSupport.enterLevel(1);
@@ -49,6 +54,7 @@ final class HeadlessSimulationHarness {
 			hero.damageInterrupt = false;
 			Level level = Dungeon.level;
 			List<String> transcript = new ArrayList<>();
+						transcript.add("run:class=" + heroClass.name() + ":seed=" + seed);
 			PotionOfHealing startingPotion = new PotionOfHealing();
 			startingPotion.identify();
 			startingPotion.collect();
