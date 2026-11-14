@@ -67,7 +67,10 @@ public final class SeedReuseScore {
         // new floors. It is independent of the zeroed fifth+ replay tier: otherwise
         // no amount of first-time progress can ever earn a point after four retries.
         // Floors previously reached keep the established replay/depth deduction.
-        int newFloorRetention = (2500*improved + 12)/25;
+        // Floor 26 counts as a real new deepest floor, even though the original
+        // exploration odds cap the old-depth penalty at floor 25.
+        int newlyReached=Math.max(0,Math.min(26,currentDeepest)-Math.max(0,Math.min(26,previousDeepest)));
+        int newFloorRetention = (2500*Math.min(25,newlyReached) + 12)/25;
         int bps = !historyKnown || priorAttempts == 0 ? 10000
                 : Math.max(previousRetention, newFloorRetention);
         long earned = BigInteger.valueOf(scoreBeforeReuse)
