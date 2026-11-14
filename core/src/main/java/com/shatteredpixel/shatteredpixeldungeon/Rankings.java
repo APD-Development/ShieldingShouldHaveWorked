@@ -162,7 +162,8 @@ public enum Rankings {
                 long before=com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomScorePresentation.earnedScore(rec.gameData,rec.score);
                 com.shatteredpixel.shatteredpixeldungeon.apd.recorder.SeedReuseScore.calculate(
                     before, history.attempts, history.deepestFloor, Statistics.deepestFloor,
-                    history.kind==com.shatteredpixel.shatteredpixeldungeon.apd.recorder.SeedHistory.Kind.MATCHING_LOCAL_HISTORY)
+                    history.kind==com.shatteredpixel.shatteredpixeldungeon.apd.recorder.SeedHistory.Kind.MATCHING_LOCAL_HISTORY,
+                    history.priorDepths)
                     .store(rec.gameData);
             }
         }

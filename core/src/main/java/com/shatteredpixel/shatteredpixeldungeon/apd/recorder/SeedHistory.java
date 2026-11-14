@@ -20,6 +20,7 @@ import com.shatteredpixel.shatteredpixeldungeon.utils.DungeonSeed;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -43,9 +44,11 @@ public final class SeedHistory {
         public final int deepestFloor;
         public final int attemptsWithKnownDepth;
         public final boolean incompleteHistory;
+        /** Exact deduplicated per-attempt deepest floors, only when ALL prior depths are known. */
+        public final int[] priorDepths;
 
         private Summary(Kind kind, long seed, int attempts, int unfinishedAttempts, int deepestFloor,
-                        int attemptsWithKnownDepth, boolean incompleteHistory) {
+                        int attemptsWithKnownDepth, boolean incompleteHistory, int[] priorDepths) {
             this.kind = kind;
             this.seed = seed;
             this.attempts = attempts;
@@ -53,6 +56,7 @@ public final class SeedHistory {
             this.deepestFloor = deepestFloor;
             this.attemptsWithKnownDepth = attemptsWithKnownDepth;
             this.incompleteHistory = incompleteHistory;
+            this.priorDepths = priorDepths == null ? null : priorDepths.clone();
         }
     }
 
@@ -70,7 +74,7 @@ public final class SeedHistory {
     public static Summary lookup(File root, String seedText, LegacyImporter.Extract rankings,
                                  String excludeRunId) {
         if (seedText == null || seedText.isEmpty()) {
-            return new Summary(Kind.GENERATED_LOCALLY, -1, 0, 0, -1, 0, false);
+            return new Summary(Kind.GENERATED_LOCALLY, -1, 0, 0, -1, 0, false, new int[0]);
         }
         long seed = DungeonSeed.convertFromText(seedText);
         Scan scan = new Scan(seed);
@@ -231,6 +235,7 @@ public final class SeedHistory {
 
         Summary finish() {
             int attempts = 0, unfinished = 0, known = 0, deepest = -1;
+            ArrayList<Integer> depths = new ArrayList<>();
             // Only a null/empty selection means generated locally. A supplied numeric -1
             // is a valid recorded seed; never reuse the empty-selection sentinel here.
             // Validate exact identities before filtering by the requested seed. A conflicting copy
@@ -301,6 +306,7 @@ public final class SeedHistory {
                     }
                 }
                 attempts++;
+                depths.add(run.deepest);
                 if (run.deepest >= 0) { known++; deepest = Math.max(deepest, run.deepest); }
             }
             for (Map.Entry<String, Attempt> entry : open.entrySet()) {
@@ -314,6 +320,7 @@ public final class SeedHistory {
                 // is available; an older terminal copy or ranking must not supply a final result.
                 attempts++;
                 unfinished++;
+                depths.add(run.deepest);
                 if (run.deepest >= 0) { known++; deepest = Math.max(deepest, run.deepest); }
             }
             for (Map.Entry<String, RunFacts> entry : oldRecords.entrySet()) {
@@ -322,10 +329,16 @@ public final class SeedHistory {
                 if (facts.numOr(FactKeys.SEED, -1) != seed || exactRankingIds.contains(entry.getKey())) continue;
                 attempts++;
                 int depth = deepest(facts);
+                depths.add(depth);
                 if (depth >= 0) { known++; deepest = Math.max(deepest, depth); }
             }
+            int[] completeDepths = null;
+            if (attempts > 0 && !incomplete && known == attempts && depths.size() == attempts) {
+                completeDepths = new int[depths.size()];
+                for (int i = 0; i < depths.size(); i++) completeDepths[i] = depths.get(i);
+            }
             return new Summary(attempts > 0 ? Kind.MATCHING_LOCAL_HISTORY : Kind.UNKNOWN_IMPORTED,
-                    seed, attempts, unfinished, deepest, known, incomplete);
+                    seed, attempts, unfinished, deepest, known, incomplete, completeDepths);
         }
 
         private void rememberSeed(Map<String, Long> seeds, String id, long seed) {

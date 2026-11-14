@@ -103,6 +103,11 @@ public class WndScoreBreakdown extends Window {
             pos=addInfo(content,"Earlier local attempts: "+reuse.priorAttempts
                     +". Deepest earlier floor: "+(reuse.deepestBefore<0?"unknown":reuse.deepestBefore)
                     +". Current deepest floor: "+reuse.currentDepth+".",pos);
+            if (reuse.known && reuse.priorAttempts > 0) {
+                pos=addInfo(content,reuse.individualDepthsKnown
+                        ? "Replay scoring: verified individual earlier depths."
+                        : "Replay scoring: conservative fallback; individual earlier depths unavailable.",pos);
+            }
         } else if (recordedGameData != null && recordedGameData.contains("custom_seed")
                 && !recordedGameData.getString("custom_seed").isEmpty()) {
             // Only historical seeded records lack an earlier reuse-scoring snapshot.
