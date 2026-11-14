@@ -2,19 +2,21 @@ package com.shatteredpixel.shatteredpixeldungeon.apd.recorder;
 
 import com.watabou.utils.Bundle;
 import java.math.BigInteger;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 /**
- * Per-floor seed familiarity as approved in the November 14 fairness review.
- * For current depth C, prior visits n_f to floor f, credit per floor is
- * max(0, 4-n_f) quarters. All C floors have equal weight.
- * Earned score = roundHalfUp(base * sum(creditQuarters) / (4*C)).
+ * Owner-specified exponential per-floor seed familiarity:
+ * R = (100/C) * sum(f=1..C, exp(-0.5*n_f)).
+ * C is current deepest floor and n_f is prior visits reaching that floor.
+ * Earned score = roundHalfUp(base * R / 100).
  * A zero/missing earlier history is never fabricated.
  */
 public final class SeedReuseScore {
     private SeedReuseScore() { }
 
-    public static final int VERSION = 4;
-    private static final int V1 = 1, V2 = 2, V3 = 3;
+    public static final int VERSION = 5;
+    private static final int V1 = 1, V2 = 2, V3 = 3, V4 = 4;
     private static final long CUBIC_DENOMINATOR = 15625L;
     public static final String VERSION_KEY = "apd_seed_reuse_score_version";
     public static final String BASE_KEY = "apd_seed_reuse_base_score";
@@ -91,22 +93,45 @@ public final class SeedReuseScore {
         int bps=10000;
         long earned=score;
         if (historyKnown && attempts>0 && current>0 && previousDeepest>=1) {
-            long quarters=0;
+            double credits=0.0;
             for (int floor=1;floor<=current;floor++) {
                 int visits=0;
                 if (previousDepths!=null) {
                     for (int depth:previousDepths) if (depth>=floor) visits++;
                 } else if (floor<=previousDeepest) {
+                    // Conservative fallback: unknown earlier depths must not be invented.
                     visits=attempts;
                 }
-                quarters+=Math.max(0,4-visits);
+                credits+=Math.exp(-0.5d*visits);
             }
-            long denominator=4L*current;
-            bps=(int)roundRatio(BigInteger.valueOf(quarters).multiply(BigInteger.valueOf(10000)),denominator);
-            earned=roundRatio(BigInteger.valueOf(score).multiply(BigInteger.valueOf(quarters)),denominator);
+            double ratio=credits/current;
+            // Round only once at the final earned score, with the original base score.
+            earned=BigDecimal.valueOf(ratio).multiply(BigDecimal.valueOf(score))
+                    .setScale(0,RoundingMode.HALF_UP).longValueExact();
+            bps=BigDecimal.valueOf(ratio).multiply(BigDecimal.valueOf(10000))
+                    .setScale(0,RoundingMode.HALF_UP).intValueExact();
         }
         return new Result(attempts,previousDeepest,currentDeepest,bps,score,earned,
                 historyKnown,previousDepths);
+    }
+
+    /** Exact v4 integer-quarter credit, solely to authenticate historical receipts. */
+    private static long[] oldV4(long base, int attempts, int prior, int depth, boolean known,
+                                int[] depths) {
+        if (!known || attempts==0 || depth<=0 || prior<1) return new long[]{10000,base};
+        int current=Math.max(0,Math.min(26,depth));
+        long quarters=0;
+        for (int floor=1;floor<=current;floor++) {
+            int visits=0;
+            if (depths!=null) {
+                for (int reached:depths) if (reached>=floor) visits++;
+            } else if (floor<=prior) visits=attempts;
+            quarters+=Math.max(0,4-visits);
+        }
+        long denominator=4L*current;
+        return new long[]{
+                roundRatio(BigInteger.valueOf(quarters).multiply(BigInteger.valueOf(10000)),denominator),
+                roundRatio(BigInteger.valueOf(base).multiply(BigInteger.valueOf(quarters)),denominator)};
     }
 
     private static int oldBps(int version, int attempts, int prior, int current, boolean known) {
@@ -125,7 +150,7 @@ public final class SeedReuseScore {
     public static Result restore(Bundle data) {
         if (data==null || !data.contains(VERSION_KEY)) return null;
         int version=data.getInt(VERSION_KEY);
-        if (version!=V1 && version!=V2 && version!=V3 && version!=VERSION) return null;
+        if (version!=V1 && version!=V2 && version!=V3 && version!=V4 && version!=VERSION) return null;
         if (!data.contains(BASE_KEY) || !data.contains(EARNED_KEY)
                 || !data.contains(ATTEMPTS_KEY) || !data.contains(PRIOR_DEPTH_KEY)
                 || !data.contains(CURRENT_DEPTH_KEY) || !data.contains(RETENTION_KEY)
@@ -145,6 +170,22 @@ public final class SeedReuseScore {
             try {
                 Result checked=calculate(before,attempts,prior,current,known,depths);
                 return checked.retentionBasisPoints==bps && checked.earned==stored ? checked : null;
+            } catch (IllegalArgumentException invalid) {
+                return null;
+            }
+        }
+        if (version==V4) {
+            if (!data.contains(EXACT_KEY)) return null;
+            boolean exact=data.getBoolean(EXACT_KEY);
+            if (exact && !data.contains(DEPTHS_KEY)) return null;
+            if (!exact && data.contains(DEPTHS_KEY)) return null;
+            int[] depths=exact ? data.getIntArray(DEPTHS_KEY) : null;
+            try {
+                // Verify exact recorded depths and the original quarter-credit receipt
+                // before recalculating. Preserve complete v4 depths during migration.
+                Result corrected=calculate(before,attempts,prior,current,known,depths);
+                long[] original=oldV4(before,attempts,prior,current,known,depths);
+                return original[0]==bps && original[1]==stored ? corrected : null;
             } catch (IllegalArgumentException invalid) {
                 return null;
             }
