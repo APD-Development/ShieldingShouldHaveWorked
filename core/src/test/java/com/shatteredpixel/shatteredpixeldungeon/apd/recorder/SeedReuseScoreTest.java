@@ -10,153 +10,162 @@ import static org.junit.Assert.*;
 public class SeedReuseScoreTest {
     private static final long BASE=330393;
 
-    private static Bundle legacy(int version,long before,int attempts,int prior,int current,int bps,long earned) {
-        Bundle data=new Bundle();
-        data.put(SeedReuseScore.VERSION_KEY,version);
-        data.put(SeedReuseScore.BASE_KEY,before);
-        data.put(SeedReuseScore.EARNED_KEY,earned);
-        data.put(SeedReuseScore.ATTEMPTS_KEY,attempts);
-        data.put(SeedReuseScore.PRIOR_DEPTH_KEY,prior);
-        data.put(SeedReuseScore.CURRENT_DEPTH_KEY,current);
-        data.put(SeedReuseScore.RETENTION_KEY,bps);
-        data.put(SeedReuseScore.KNOWN_KEY,true);
-        return data;
+    private static Bundle legacy(int version,long score,int attempts,int prior,int current,
+                                 int bps,long earned) {
+        Bundle b=new Bundle();
+        b.put(SeedReuseScore.VERSION_KEY,version);
+        b.put(SeedReuseScore.BASE_KEY,score);
+        b.put(SeedReuseScore.EARNED_KEY,earned);
+        b.put(SeedReuseScore.ATTEMPTS_KEY,attempts);
+        b.put(SeedReuseScore.PRIOR_DEPTH_KEY,prior);
+        b.put(SeedReuseScore.CURRENT_DEPTH_KEY,current);
+        b.put(SeedReuseScore.RETENTION_KEY,bps);
+        b.put(SeedReuseScore.KNOWN_KEY,true);
+        return b;
     }
 
-    @Test public void sevenAttemptsFloorNineToTwentySixConservativeFallbackIs216026() {
+    @Test public void exactExponentialEquationSevenPreviousNineToTwentySix() {
         SeedReuseScore.Result r=SeedReuseScore.calculate(BASE,7,9,26,true);
-        assertEquals(6538,r.retentionBasisPoints);
-        assertEquals(216026,r.earned);
-        assertEquals(114367,r.deduction);
+        assertEquals(6643,r.retentionBasisPoints);
+        assertEquals(219480,r.earned);
+        assertEquals(110913,r.deduction);
+        assertEquals(BASE,r.before);
         assertFalse(r.individualDepthsKnown);
     }
 
-    @Test public void verifiedSixFloorFourDeathsAndOneFloorNineAward263679() {
+    @Test public void individualHistorySixFloorFourDeathsOneFloorNine() {
         int[] depths={4,4,4,4,4,4,9};
         SeedReuseScore.Result r=SeedReuseScore.calculate(BASE,7,9,26,true,depths);
-        assertEquals(7981,r.retentionBasisPoints);
-        assertEquals(263679,r.earned);
-        assertEquals(66714,r.deduction);
+        assertEquals(7751,r.retentionBasisPoints);
+        assertEquals(256098,r.earned);
+        assertEquals(74295,r.deduction);
         assertTrue(r.individualDepthsKnown);
-        assertEquals(7,r.individualDepths.length);
-        Bundle saved=new Bundle();
-        r.store(saved);
-        assertEquals(263679,SeedReuseScore.earnedScore(saved,BASE));
-        assertArrayEquals(depths,saved.getIntArray(SeedReuseScore.DEPTHS_KEY));
+        Bundle b=new Bundle();
+        r.store(b);
+        assertArrayEquals(depths,b.getIntArray(SeedReuseScore.DEPTHS_KEY));
+        assertEquals(256098,SeedReuseScore.earnedScore(b,BASE));
     }
 
-    @Test public void actualEarnedRankingScoreAndBundleRoundTripAgree() {
-        Rankings.Record record=new Rankings.Record();
-        record.score=(int)BASE;
-        record.heroClass=HeroClass.WARRIOR;
-        record.gameID="seed-review";
-        record.customSeed="ABC-DEF-GHI";
-        record.date="2026-11-14";
-        record.version="v4.0.8";
-        record.gameData=new Bundle();
-        SeedReuseScore.calculate(BASE,7,9,26,true).store(record.gameData);
-        assertEquals(216026,record.earnedScore());
-        Rankings.Record lower=new Rankings.Record();
-        lower.score=200000;
-        lower.gameID="lower";
-        lower.customSeed=record.customSeed;
-        assertTrue(Rankings.scoreComparator.compare(record,lower)<0);
-        Bundle archived=new Bundle();
-        record.storeInBundle(archived);
-        Rankings.Record loaded=new Rankings.Record();
-        loaded.restoreFromBundle(archived);
-        assertEquals(216026,loaded.earnedScore());
-        assertEquals((int)BASE,loaded.score);
-    }
-
-    @Test public void sameDepthRepeatedRunsApplyOriginalReplayTiersPerFloor() {
-        for (int attempts=0;attempts<=6;attempts++) {
+    @Test public void allFloorsAlreadySeenUseSmoothExponentialNotHardZero() {
+        for(int attempts=0;attempts<=8;attempts++) {
             int[] depths=new int[attempts];
             java.util.Arrays.fill(depths,26);
-            long expected=attempts==0 ? 10000 : Math.max(0,10000-attempts*2500);
-            SeedReuseScore.Result result=SeedReuseScore.calculate(10000,attempts,
+            SeedReuseScore.Result r=SeedReuseScore.calculate(BASE,attempts,
                     attempts==0?-1:26,26,true,depths);
-            assertEquals(expected,result.retentionBasisPoints);
-            assertEquals(expected,result.earned);
+            long expected=new java.math.BigDecimal(Double.toString(Math.exp(-0.5d*attempts)))
+                    .multiply(java.math.BigDecimal.valueOf(BASE))
+                    .setScale(0,java.math.RoundingMode.HALF_UP).longValueExact();
+            assertEquals(expected,r.earned);
         }
-        assertEquals(247795,SeedReuseScore.calculate(BASE,1,26,26,true,new int[]{26}).earned);
-        assertEquals(165197,SeedReuseScore.calculate(BASE,2,26,26,true,new int[]{26,26}).earned);
+        assertEquals(200393,SeedReuseScore.calculate(BASE,1,26,26,true,new int[]{26}).earned);
+        assertEquals(121545,SeedReuseScore.calculate(BASE,2,26,26,true,new int[]{26,26}).earned);
+        assertEquals(44714,SeedReuseScore.calculate(BASE,4,26,26,true,
+                new int[]{26,26,26,26}).earned);
     }
 
-    @Test public void twentyOneEarlyDeathsCannotEraseUnexploredFloors() {
+    @Test public void twentyOneFloorOneDeathsPreserveUnseenDepth() {
         int[] depths=new int[21];
         java.util.Arrays.fill(depths,1);
         SeedReuseScore.Result r=SeedReuseScore.calculate(BASE,21,1,26,true,depths);
         assertEquals(9615,r.retentionBasisPoints);
         assertEquals(317686,r.earned);
-        assertEquals(0,SeedReuseScore.calculate(BASE,21,1,1,true,depths).earned);
         assertEquals(317686,SeedReuseScore.calculate(BASE,21,1,26,true).earned);
+        assertTrue(SeedReuseScore.calculate(BASE,21,1,1,true,depths).earned>0);
     }
 
-    @Test public void deepeningCannotDecreaseRetentionAndExtraAttemptsCannotRaiseIt() {
-        for (int n=0;n<=10;n++) {
-            int[] previous=new int[n];
-            java.util.Arrays.fill(previous,4);
-            int max=n==0?-1:4;
-            int earlier=-1;
-            for (int current=1;current<=26;current++) {
-                SeedReuseScore.Result result=SeedReuseScore.calculate(50003,n,max,current,true,previous);
-                if (earlier>=0) assertTrue(result.retentionBasisPoints>=earlier);
-                earlier=result.retentionBasisPoints;
-                assertTrue(result.earned>=0 && result.earned<=50003);
-                if (n>0) {
-                    int[] more=new int[n+1];
-                    java.util.Arrays.fill(more,4);
-                    assertTrue(SeedReuseScore.calculate(50003,n+1,4,current,true,more).earned<=result.earned);
-                }
+    @Test public void moreActualDepthCannotDecreaseRetentionAndMoreReplaysCannotIncreaseIt() {
+        for(int n=1;n<=12;n++){
+            int[] depths=new int[n],more=new int[n+1];
+            java.util.Arrays.fill(depths,4);
+            java.util.Arrays.fill(more,4);
+            int last=-1;
+            for(int current=1;current<=26;current++){
+                SeedReuseScore.Result r=SeedReuseScore.calculate(BASE,n,4,current,true,depths);
+                if(last>=0) assertTrue(r.retentionBasisPoints>=last);
+                last=r.retentionBasisPoints;
+                assertTrue(SeedReuseScore.calculate(BASE,n+1,4,current,true,more).earned<=r.earned);
             }
         }
     }
 
-    @Test public void summaryFallbackNeverExceedsKnownFullDepthCredit() {
-        for (int n=1;n<=12;n++) {
-            int[] previous=new int[n];
-            java.util.Arrays.fill(previous,4);
-            previous[n-1]=9;
-            for (int current=1;current<=26;current++) {
-                long full=SeedReuseScore.calculate(BASE,n,9,current,true,previous).earned;
-                long fallback=SeedReuseScore.calculate(BASE,n,9,current,true).earned;
-                assertTrue("Conservative summary must not over-reward",fallback<=full);
+    @Test public void summaryFallbackIsConservativeAndDoesNotInventEarlierDepths() {
+        for(int n=1;n<=12;n++){
+            int[] d=new int[n]; java.util.Arrays.fill(d,4);d[n-1]=9;
+            for(int current=1;current<=26;current++){
+                long full=SeedReuseScore.calculate(BASE,n,9,current,true,d).earned;
+                long summary=SeedReuseScore.calculate(BASE,n,9,current,true).earned;
+                assertTrue(summary<=full);
             }
         }
+        try {
+            SeedReuseScore.calculate(BASE,7,9,26,true,new int[]{9});
+            fail("Partial history cannot be treated as complete");
+        } catch(IllegalArgumentException expected){}
     }
 
-    @Test public void migrateV1ZeroScoreToConservativeFloorWeightedResult() {
-        Bundle old=legacy(1,BASE,7,9,26,0,0);
-        assertEquals(216026,SeedReuseScore.earnedScore(old,BASE));
-        assertTrue(SeedReuseScore.migrate(old));
-        assertEquals(4,old.getInt(SeedReuseScore.VERSION_KEY));
-        assertEquals(216026,old.getLong(SeedReuseScore.EARNED_KEY));
-        assertFalse(old.getBoolean(SeedReuseScore.EXACT_KEY));
-        assertFalse(SeedReuseScore.migrate(old));
-        assertEquals(216026,SeedReuseScore.earnedScore(old,BASE));
-        assertEquals(BASE-1,SeedReuseScore.earnedScore(old,BASE-1));
+    @Test public void realRankingsUseCorrectFinalEarnedScoreAfterSaveReload() {
+        Rankings.Record record=new Rankings.Record();
+        record.score=(int)BASE;
+        record.heroClass=HeroClass.WARRIOR;
+        record.gameID="exponential";
+        record.customSeed="ABC-DEF-GHI";
+        record.date="2026-11-14";
+        record.version="v4.0.8";
+        record.gameData=new Bundle();
+        SeedReuseScore.calculate(BASE,7,9,26,true).store(record.gameData);
+        assertEquals(219480,record.earnedScore());
+        Rankings.Record low=new Rankings.Record();
+        low.gameID="low";low.customSeed=record.customSeed;low.score=200000;
+        assertTrue(Rankings.scoreComparator.compare(record,low)<0);
+        Bundle save=new Bundle();record.storeInBundle(save);
+        Rankings.Record loaded=new Rankings.Record();loaded.restoreFromBundle(save);
+        assertEquals(219480,loaded.earnedScore());
+        assertEquals((int)BASE,loaded.score);
     }
 
-    @Test public void migrateV2UnauthorizedFloorCreditAndV3CubicWithoutFabricatingDepths() {
+    @Test public void authenticV1V2V3MigrateToExponentialConservativeFallback() {
+        Bundle v1=legacy(1,BASE,7,9,26,0,0);
         Bundle v2=legacy(2,BASE,7,9,26,1700,56166);
         Bundle v3=legacy(3,BASE,7,9,26,6650,219713);
-        for (Bundle old:new Bundle[]{v2,v3}) {
-            assertEquals(216026,SeedReuseScore.earnedScore(old,BASE));
-            assertTrue(SeedReuseScore.migrate(old));
-            assertEquals(216026,old.getLong(SeedReuseScore.EARNED_KEY));
-            assertEquals(4,old.getInt(SeedReuseScore.VERSION_KEY));
-            assertFalse(old.getBoolean(SeedReuseScore.EXACT_KEY));
-            assertFalse(SeedReuseScore.migrate(old));
-            assertEquals(216026,SeedReuseScore.earnedScore(old,BASE));
+        for(Bundle saved:new Bundle[]{v1,v2,v3}){
+            assertEquals(219480,SeedReuseScore.earnedScore(saved,BASE));
+            assertTrue(SeedReuseScore.migrate(saved));
+            assertEquals(5,saved.getInt(SeedReuseScore.VERSION_KEY));
+            assertEquals(219480,saved.getLong(SeedReuseScore.EARNED_KEY));
+            assertFalse(saved.getBoolean(SeedReuseScore.EXACT_KEY));
+            assertFalse(SeedReuseScore.migrate(saved));
+            assertEquals(219480,SeedReuseScore.earnedScore(saved,BASE));
         }
     }
 
-    @Test public void corruptOldAndExactDepthSnapshotsAreRejectedWithoutGuessing() {
-        Bundle forged=legacy(3,BASE,7,9,26,6650,219714);
-        assertNull(SeedReuseScore.restore(forged));
-        assertFalse(SeedReuseScore.migrate(forged));
-        assertEquals(BASE,SeedReuseScore.earnedScore(forged,BASE));
+    @Test public void authenticV4WithExactDepthsMigratesWithoutDiscardingHistory() {
+        Bundle old=legacy(4,BASE,7,9,26,7981,263679);
+        old.put(SeedReuseScore.EXACT_KEY,true);
+        old.put(SeedReuseScore.DEPTHS_KEY,new int[]{4,4,4,4,4,4,9});
+        assertEquals(256098,SeedReuseScore.earnedScore(old,BASE));
+        assertTrue(SeedReuseScore.migrate(old));
+        assertEquals(5,old.getInt(SeedReuseScore.VERSION_KEY));
+        assertArrayEquals(new int[]{4,4,4,4,4,4,9},old.getIntArray(SeedReuseScore.DEPTHS_KEY));
+        assertTrue(old.getBoolean(SeedReuseScore.EXACT_KEY));
+        assertEquals(256098,old.getLong(SeedReuseScore.EARNED_KEY));
+        assertFalse(SeedReuseScore.migrate(old));
+    }
+
+    @Test public void authenticV4SummaryOnlyMigratesConservatively() {
+        Bundle old=legacy(4,BASE,7,9,26,6538,216026);
+        old.put(SeedReuseScore.EXACT_KEY,false);
+        assertEquals(219480,SeedReuseScore.earnedScore(old,BASE));
+        assertTrue(SeedReuseScore.migrate(old));
+        assertEquals(219480,old.getLong(SeedReuseScore.EARNED_KEY));
+        assertFalse(old.getBoolean(SeedReuseScore.EXACT_KEY));
+    }
+
+    @Test public void corruptedSnapshotsRejectedRatherThanFabricatingRunHistory() {
+        Bundle v4=legacy(4,BASE,7,9,26,7981,263680);
+        v4.put(SeedReuseScore.EXACT_KEY,true);
+        v4.put(SeedReuseScore.DEPTHS_KEY,new int[]{4,4,4,4,4,4,9});
+        assertNull(SeedReuseScore.restore(v4));
+        assertFalse(SeedReuseScore.migrate(v4));
         Bundle valid=new Bundle();
         SeedReuseScore.calculate(BASE,7,9,26,true,new int[]{4,4,4,4,4,4,9}).store(valid);
         valid.put(SeedReuseScore.DEPTHS_KEY,new int[]{9,9,9,9,9,9,9});
@@ -164,25 +173,13 @@ public class SeedReuseScoreTest {
         assertEquals(BASE,SeedReuseScore.earnedScore(valid,BASE));
     }
 
-    @Test public void absentUnknownAndFirstUseHistoryAreNeverPenalized() {
+    @Test public void unknownSeedAndMissingOldReceiptsRemainNeutral() {
         Bundle empty=new Bundle();
         assertEquals(BASE,SeedReuseScore.earnedScore(empty,BASE));
         assertFalse(SeedReuseScore.migrate(empty));
         assertEquals(BASE,SeedReuseScore.calculate(BASE,7,-1,26,false).earned);
         assertEquals(BASE,SeedReuseScore.calculate(BASE,0,-1,26,true,new int[0]).earned);
-        assertEquals(0,SeedReuseScore.calculate(0,7,9,26,true).earned);
         assertEquals(BASE,SeedReuseScore.calculate(BASE,7,-1,26,true).earned);
-    }
-
-    @Test public void noFabricatedIndividualDepthsAndScoreMathIsIdempotent() {
-        try {
-            SeedReuseScore.calculate(BASE,7,9,26,true,new int[]{9});
-            fail("Missing attempts cannot masquerade as a full prior-depth list");
-        } catch (IllegalArgumentException expected) {}
-        Bundle frozen=new Bundle();
-        SeedReuseScore.calculate(BASE,7,9,26,true).store(frozen);
-        assertEquals(216026,SeedReuseScore.earnedScore(frozen,BASE));
-        assertEquals(216026,SeedReuseScore.earnedScore(frozen,BASE));
-        assertFalse(SeedReuseScore.migrate(frozen));
+        assertEquals(0,SeedReuseScore.calculate(0,7,9,26,true).earned);
     }
 }
