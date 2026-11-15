@@ -1,14 +1,14 @@
-name: APD466 adaptive wall search Alpha Testers APK
+name: APD466 corrected adaptive search Alpha Testers APK
 on:
   push:
     branches:
-      - fix/apd466-adaptive-wall-apk-20261115
+      - fix/apd466-adaptive-room-context-complete-20261115
     paths:
       - .github/workflows/apd466-adaptive-wall-alpha-apk-20261115.yml
 permissions:
   contents: write
 concurrency:
-  group: apd466-adaptive-wall-alpha-test
+  group: apd466-adaptive-wall-alpha-corrected
   cancel-in-progress: false
 jobs:
   verify-and-publish:
@@ -16,6 +16,14 @@ jobs:
     timeout-minutes: 80
     steps:
       - uses: actions/checkout@v4
+      - name: Require source identical to the passed 3268-test revision
+        run: |
+          set -euo pipefail
+          verified=b60ad9dc6ba3e3f234a4864838773165d7654e5f
+          test "$(git rev-parse HEAD^)" = "$verified"
+          changes="$(git diff --name-only "$verified" HEAD)"
+          test "$changes" = ".github/workflows/apd466-adaptive-wall-alpha-apk-20261115.yml"
+          echo "Only the Alpha packaging workflow differs from the fully passed source."
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
@@ -29,7 +37,7 @@ jobs:
       - name: Run core regression suite and assemble Alpha Testers APK
         run: |
           set -euo pipefail
-          ./gradlew :core:test :android:assembleDebug -PapdBuild=P466W1
+          ./gradlew :core:test :android:assembleDebug -PapdBuild=P466W2
       - name: Require real gated-room and adaptive search regression results
         run: |
           python3 - <<'PY'
@@ -39,25 +47,29 @@ jobs:
           assert reports, 'No JUnit XML reports'
           roots=[ET.parse(x).getroot() for x in reports]
           totals={k:sum(int(r.attrib.get(k,0)) for r in roots) for k in ('tests','errors','failures','skipped')}
-          assert totals['tests']>0 and totals['errors']==totals['failures']==totals['skipped']==0, totals
-          checks={'SearchControlContextTest':'actualSearchFromInsideKeyedRoomDoesNotCreateCheckmarks',
-                  'GatedRoomWallMarkerTest':'observedIronKeyCrystalAndBarricadedRoomsHidePerimeterChecks'}
+          assert totals['tests']>=3268 and totals['errors']==totals['failures']==totals['skipped']==0, totals
+          checks={'SearchControlContextTest':{'actualSearchFromInsideKeyedRoomDoesNotCreateCheckmarks',
+                  'floorTwelveOpenRoomCenterCannotOfferOrStartWallSearch',
+                  'staleSavedFloorNeverOffersWallResumeEvenBesideCandidate',
+                  'previousFloorOrBranchMemoryNeverPrioritizesAnUnavailableWallResume'},
+                  'GatedRoomWallMarkerTest':{'observedIronKeyCrystalAndBarricadedRoomsHidePerimeterChecks'}}
           for suite, testcase in checks.items():
               matches=[r for r in roots if r.attrib.get('name','').endswith('.'+suite)]
               assert len(matches)==1, ('missing suite',suite)
-              assert testcase in {x.attrib.get('name') for x in matches[0].findall('testcase')},('missing test',testcase)
+              found={x.attrib.get('name') for x in matches[0].findall('testcase')}
+              assert testcase <= found,('missing tests',suite,testcase-found)
           print('Core JUnit results',totals,'required gated-room suites found')
           PY
       - name: Verify APK package and original signer, then prepare immutable hashes
         run: |
           set -euo pipefail
           mkdir -p private-apk
-          cp android/build/outputs/apk/debug/android-debug.apk private-apk/APD466-Adaptive-Wall-Alpha-Testers.apk
-          test -s private-apk/APD466-Adaptive-Wall-Alpha-Testers.apk
+          cp android/build/outputs/apk/debug/android-debug.apk private-apk/APD466-Corrected-Adaptive-Wall-Alpha-Testers.apk
+          test -s private-apk/APD466-Corrected-Adaptive-Wall-Alpha-Testers.apk
           python3 - <<'PY'
           import glob,hashlib,json,os,pathlib,re,subprocess
           tools=pathlib.Path(sorted(glob.glob(os.environ['ANDROID_HOME']+'/build-tools/*'))[-1])
-          apk=pathlib.Path('private-apk/APD466-Adaptive-Wall-Alpha-Testers.apk')
+          apk=pathlib.Path('private-apk/APD466-Corrected-Adaptive-Wall-Alpha-Testers.apk')
           out=subprocess.check_output([str(tools/'apksigner'),'verify','--print-certs',str(apk)],text=True)
           matches=re.findall(r'SHA-256 digest:\s*([0-9a-fA-F:]+)',out)
           assert matches, 'Signer missing'
@@ -68,7 +80,7 @@ jobs:
           pkg=next(x for x in badging.splitlines() if x.startswith('package:'))
           assert "name='com.charltonchris29.adhdpixeldungeon.indev'" in pkg, pkg
           assert "versionCode='920'" in pkg, pkg
-          assert '-bP466W1' in pkg,pkg
+          assert '-bP466W2' in pkg,pkg
           assert '-TEST' not in pkg,pkg
           data={'commit':os.environ['GITHUB_SHA'],'alphaTesters':True,'sourceBranch':os.environ['GITHUB_REF_NAME'],
                 'signerSHA256':signer,'apkSHA256':hashlib.sha256(apk.read_bytes()).hexdigest(),'bytes':apk.stat().st_size,'packageBadging':pkg,
@@ -79,9 +91,9 @@ jobs:
       - name: Publish private APK as downloadable Actions artifact
         uses: actions/upload-artifact@v4
         with:
-          name: APD466-Adaptive-Wall-Alpha-Testers
+          name: APD466-Corrected-Adaptive-Wall-Alpha-Testers
           path: |
-            private-apk/APD466-Adaptive-Wall-Alpha-Testers.apk
+            private-apk/APD466-Corrected-Adaptive-Wall-Alpha-Testers.apk
             private-apk/verification.json
           retention-days: 30
           if-no-files-found: error
