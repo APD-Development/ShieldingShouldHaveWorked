@@ -20,7 +20,6 @@ package com.shatteredpixel.shatteredpixeldungeon.apd.query;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
@@ -84,6 +83,13 @@ public final class UimsdWarmCache {
 
     private static final char[] HEX = "0123456789abcdef".toCharArray();
 
+    // Uses File canonicalization rather than newer filesystem APIs: core supports Android 5.
+    // A symlinked storage root is valid; only aliases below that root are refused.
+    private static boolean directChild(File parent, File child) throws IOException {
+        return child.getCanonicalFile().equals(
+                new File(parent.getCanonicalFile(), child.getName()).getAbsoluteFile());
+    }
+
     private static String stamp(File root) {
         try {
             StringBuilder out = new StringBuilder(root.getAbsolutePath());
@@ -93,14 +99,14 @@ public final class UimsdWarmCache {
             for (String folder : new String[]{"runs", "legacy"}) {
                 File directory = new File(root, folder);
                 // An alias below the chosen root is not a source of this history.
-                if (Files.isSymbolicLink(directory.toPath())) return null;
+                if (!directChild(root, directory)) return null;
                 out.append('|').append(folder).append('=').append(directory.isDirectory());
                 File[] files = directory.listFiles();
                 if (files == null) continue;
                 Arrays.sort(files, Comparator.comparing(File::getName));
                 for (File file : files) {
                     if (file.getName().endsWith(".apdlog")) {
-                        if (Files.isSymbolicLink(file.toPath())) return null;
+                        if (!directChild(directory, file)) return null;
                         if (file.isFile()) stampOne(out, file, buffer);
                     }
                 }
@@ -113,7 +119,7 @@ public final class UimsdWarmCache {
     private static void stampOne(StringBuilder out, File file, byte[] buffer)
             throws IOException, NoSuchAlgorithmException {
         // Layout/marker aliases also must not make optional title work read outside data.
-        if (Files.isSymbolicLink(file.toPath())) throw new IOException("Aliased preload source");
+        if (!directChild(file.getParentFile(), file)) throw new IOException("Aliased preload source");
         out.append('|').append(file.getName()).append(':').append(file.exists())
                 .append(':').append(file.isFile()).append(':').append(file.length())
                 .append(':').append(file.lastModified());
@@ -141,10 +147,10 @@ public final class UimsdWarmCache {
         long bytes=0;
         for(String folder:new String[]{"runs","legacy"}){
             File directory=new File(root,folder);
-            if(Files.isSymbolicLink(directory.toPath()))return false;
+            try{if(!directChild(root,directory))return false;}catch(IOException failure){return false;}
             File[] files=directory.listFiles();
             if(files!=null)for(File file:files)if(file.getName().endsWith(".apdlog")){
-                if(Files.isSymbolicLink(file.toPath()))return false;
+                try{if(!directChild(directory,file))return false;}catch(IOException failure){return false;}
                 if(file.isFile()){
                     long length=file.length();if(length>Long.MAX_VALUE-bytes)return false;bytes+=length;
                 }
