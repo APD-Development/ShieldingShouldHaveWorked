@@ -602,6 +602,8 @@ public class SearchControlContextTest {
             assertSame(room, level.room(hero.pos));
             assertTrue(DoorSearchEligibility.candidate(level, wall));
             assertTrue(DoorSearchEligibility.insideGatedRoom(level, hero.pos));
+            assertFalse("Gated rooms must never suggest adaptive wall-search context",
+                    SearchControlContext.hasMeaningfulWall(hero, level));
             // A previous build may already have stored this mark in a saved game.
             assertTrue(level.searchedWalls.mark(level, wall));
             assertEquals("Previously saved checkmark must also be invisible inside a gated room",
