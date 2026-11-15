@@ -433,7 +433,13 @@ public class SearchControlContextTest {
                 // Same room exclusion applies with the optional adaptive preference off.
                 SPDSettings.adaptiveSearchChoice(false);
                 assertFalse(SearchControlContext.hasMeaningfulWall(hero, level));
-                assertFalse(level.searchedWalls.attempted(wall));
+                hero.ready = true;
+                float beforeDisabledSearch = hero.cooldown();
+                select(Action.SEARCH);
+                assertEquals("ordinary Search keeps its normal cost with adaptive mode off",
+                        beforeDisabledSearch + 2f, hero.cooldown(), 0f);
+                assertFalse("wall checks remain disabled inside rooms regardless of preference",
+                        level.searchedWalls.attempted(wall));
                 SPDSettings.adaptiveSearchChoice(true);
                 hero.ready = true;
             }
