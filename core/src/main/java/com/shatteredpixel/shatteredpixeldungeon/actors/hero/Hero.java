@@ -2709,6 +2709,10 @@ public class Hero extends Char {
                 && !com.shatteredpixel.shatteredpixeldungeon.apd.qol.DoorSearchEligibility.insideGatedRoom(Dungeon.level,pos)
                 && (!SPDSettings.adaptiveSearchChoice()
                 || !com.shatteredpixel.shatteredpixeldungeon.apd.qol.SearchControlContext.openRoomInterior(this,Dungeon.level));
+        // Only a relevant observed wall context creates a remembered wall search.
+        // Decide before the paid Search updates completed-door evidence.
+        boolean rememberWallSearch = intentional && recordWallChecks
+                && com.shatteredpixel.shatteredpixeldungeon.apd.qol.SearchControlContext.hasMeaningfulWall(this,Dungeon.level);
 
 		boolean circular = pointsInTalent(Talent.WIDE_SEARCH) == 1;
 		int distance = heroClass == HeroClass.ROGUE ? 2 : 1;
@@ -2834,7 +2838,7 @@ public class Hero extends Char {
 		}
 		
 		if (intentional) {
-            wallSearch.searched(this);
+            if (rememberWallSearch) wallSearch.searched(this);
 			sprite.showStatus( CharSprite.DEFAULT, Messages.get(this, "search") );
 			sprite.operate( pos );
 			if (!Dungeon.level.locked) {
