@@ -89,7 +89,7 @@ public class SupportDiagnosticsTest {
         SupportDiagnostics.memoryEvent("uimsd.open_begin");SupportDiagnostics.memoryEvent("uimsd.model_READY");
         assertTrue(SupportDiagnostics.awaitWrites(5000));
         String report=SupportDiagnostics.report("");
-        java.util.regex.Matcher samples=java.util.regex.Pattern.compile("(?m)^(\\d+) memory.sample phase=(uimsd\\.\\w+) used_bytes=(\\d+) committed_bytes=(\\d+) limit_bytes=(\\d+)$").matcher(report);
+        java.util.regex.Matcher samples=java.util.regex.Pattern.compile("(?m)^(\\d+) memory.sample phase=(uimsd\\.\\w+) used_bytes=(\\d+) committed_bytes=(\\d+) limit_bytes=(\\d+)$").matcher(report.substring(report.indexOf("MEMORY HISTORY"),report.indexOf("RECENT EVENTS")));
         int count=0;
         while(samples.find()){
             assertTrue(Long.parseLong(samples.group(1))>0);
