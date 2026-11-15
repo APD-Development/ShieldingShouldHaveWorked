@@ -109,6 +109,9 @@ public final class SearchControlContext {
         if (hero == null || !completeObservedMetadata(level)
                 || hero.pos < 0 || hero.pos >= level.length()
                 || !DoorSearchEligibility.supportsDoors(level)) return false;
+        // A key-, crystal- or barricade-gated special room is never a wall-search context.
+        // Match the existing Hero.search guard; leave ordinary search unchanged.
+        if (DoorSearchEligibility.insideGatedRoom(level, hero.pos)) return false;
 
         // Only the room the hero currently occupies affects this presentation decision.
         if (level instanceof RegularLevel && ((RegularLevel) level).apdHasRooms()) {
