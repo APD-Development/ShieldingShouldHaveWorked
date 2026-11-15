@@ -171,6 +171,11 @@ public final class ReportRenderer {
 
 	//---- plain text ----
 
+	// Version metadata belongs to the footer, never to an extra report line.
+	private static String textFooter( Report r ){
+		return footer(r).replace("\r\n", " ").replace('\r', ' ').replace('\n', ' ');
+	}
+
 	public static String text( Report r ){
 		StringBuilder sb = new StringBuilder();
 		if (r.synthetic) sb.append(SYNTHETIC_NOTICE).append("\n\n");
@@ -210,7 +215,7 @@ public final class ReportRenderer {
 			}
 		}
 		appendLegend(sb, r, "\nMARKS\n", "  ", " = ", "\n");
-		sb.append("\n").append(footer(r)).append("\n");
+		sb.append("\n").append(textFooter(r)).append("\n");
 		return sb.toString();
 	}
 
