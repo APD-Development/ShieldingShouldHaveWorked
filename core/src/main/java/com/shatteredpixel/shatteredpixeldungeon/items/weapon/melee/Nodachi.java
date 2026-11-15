@@ -29,11 +29,10 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 
 //APD katana family, tier 5. Same rules as the tier 4 Katana: reduced damage, a guard
 //that blocks 4 + half the weapon level, and the Duelist's lunge.
-//Placeholder sprite until final art exists.
 public class Nodachi extends MeleeWeapon {
 
 	{
-		image = ItemSpriteSheet.KATANA;
+		image = ItemSpriteSheet.NODACHI;
 		hitSound = Assets.Sounds.HIT_SLASH;
 		hitSoundPitch = 1.0f;
 

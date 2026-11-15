@@ -29,11 +29,10 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 
 //APD katana family, tier 3. Same rules as the tier 4 Katana: reduced damage, a guard
 //that blocks 2 + half the weapon level, and the Duelist's lunge.
-//Placeholder sprite until final art exists.
 public class Tachi extends MeleeWeapon {
 
 	{
-		image = ItemSpriteSheet.KATANA;
+		image = ItemSpriteSheet.TACHI;
 		hitSound = Assets.Sounds.HIT_SLASH;
 		hitSoundPitch = 1.15f;
 

@@ -28,11 +28,10 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 
 //APD shield, tier 4. Same shape as Round Shield (tier 3) and Greatshield (tier 5):
 //low damage, blocking that scales with upgrades, and the Duelist's guard.
-//Placeholder sprite until final art exists.
 public class KiteShield extends MeleeWeapon {
 
 	{
-		image = ItemSpriteSheet.GREATSHIELD;
+		image = ItemSpriteSheet.KITE_SHIELD;
 
 		tier = 4;
 	}

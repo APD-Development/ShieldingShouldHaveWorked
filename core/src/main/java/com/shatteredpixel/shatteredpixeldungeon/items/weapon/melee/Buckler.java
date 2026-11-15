@@ -28,11 +28,10 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 
 //APD shield, tier 1. Same shape as Round Shield (tier 3) and Greatshield (tier 5):
 //low damage, blocking that scales with upgrades, and the Duelist's guard.
-//Placeholder sprite until final art exists.
 public class Buckler extends MeleeWeapon {
 
 	{
-		image = ItemSpriteSheet.ROUND_SHIELD;
+		image = ItemSpriteSheet.BUCKLER;
 
 		tier = 1;
 	}

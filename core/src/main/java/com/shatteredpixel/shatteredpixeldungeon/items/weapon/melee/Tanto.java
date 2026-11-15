@@ -29,11 +29,10 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 
 //APD katana family, tier 1. Same rules as the tier 4 Katana: reduced damage, a guard
 //that blocks 1 + half the weapon level, and the Duelist's lunge.
-//Placeholder sprite until final art exists.
 public class Tanto extends MeleeWeapon {
 
 	{
-		image = ItemSpriteSheet.KATANA;
+		image = ItemSpriteSheet.TANTO;
 		hitSound = Assets.Sounds.HIT_SLASH;
 		hitSoundPitch = 1.3f;
 
