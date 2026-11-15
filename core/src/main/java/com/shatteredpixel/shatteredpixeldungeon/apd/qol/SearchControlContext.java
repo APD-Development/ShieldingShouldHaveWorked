@@ -65,6 +65,15 @@ public final class SearchControlContext {
         return choices.toArray(new Action[0]);
     }
 
+    /** All generated room interiors are excluded from Wall Search regardless of
+     * room subclass, doorway geometry, talent radius, or adaptive preference.
+     * Only the existing public room layout is consulted. Corridors remain eligible. */
+    public static boolean insideGeneratedRoom(Level level, int heroPos) {
+        return level instanceof RegularLevel && ((RegularLevel) level).apdHasRooms()
+                && heroPos >= 0 && heroPos < level.length()
+                && ((RegularLevel) level).room(heroPos) != null;
+    }
+
     /** A known, open part of a generated room is not a wall-search position.
      * Only observed cardinal walls can override the room-center rule; a distant
      * wall reached through Wide Search does not turn the whole room into wall mode.
@@ -96,7 +105,7 @@ public final class SearchControlContext {
                 || !DoorSearchEligibility.supportsDoors(level)) return false;
         // A gated special room is never an adaptive wall-search context.
         // Keep ordinary paid Search and discovered-door evidence unchanged.
-        if (DoorSearchEligibility.insideGatedRoom(level, hero.pos)) return false;
+        if (insideGeneratedRoom(level, hero.pos)) return false;
 
         // Only the room the hero currently occupies affects this presentation decision.
         if (level instanceof RegularLevel && ((RegularLevel) level).apdHasRooms()) {
