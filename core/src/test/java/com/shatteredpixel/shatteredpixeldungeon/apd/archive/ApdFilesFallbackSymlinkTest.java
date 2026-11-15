@@ -93,4 +93,19 @@ public class ApdFilesFallbackSymlinkTest {
         assertNull("a symlinked storage root remains supported", selected.failure);
         assertArrayEquals(new byte[]{44}, selected.bytes);
     }
+    @Test
+    public void symlinkedImportsDirectoryCannotReadExternalZip() throws Exception {
+        File base = temporaryFolder.newFolder("import-directory-alias");
+        File external = temporaryFolder.newFolder("unrelated-data");
+        File outside = new File(external, "external.zip");
+        Files.write(outside.toPath(), new byte[]{55, 66});
+        Files.createSymbolicLink(new File(base, "imports").toPath(), external.toPath());
+
+        Selection selected = select(base);
+        assertNull("aliased imports/ must not hand an external ZIP to the importer", selected.bytes);
+        assertNotNull("aliased directory must report a failure", selected.failure);
+        assertTrue(selected.failure.contains("unsafe import directory"));
+        assertArrayEquals("external data must remain untouched", new byte[]{55, 66}, Files.readAllBytes(outside.toPath()));
+    }
+
 }
