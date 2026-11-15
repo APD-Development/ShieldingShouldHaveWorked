@@ -39,7 +39,7 @@ public class ArchiveInvalidPathDiagnosticTest {
         return manifest.encode().getBytes(ArchiveManifest.utf8());
     }
 
-    private static byte[] zipWithPath(String path) {
+    private static byte[] zipWithPath(String path) throws Exception {
         return ArchiveSupport.zip(
                 ArchiveSupport.names(ArchiveManifest.ENTRY_NAME),
                 Collections.singletonList(manifestWithPath(path)));
