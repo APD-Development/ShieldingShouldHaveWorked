@@ -33,12 +33,13 @@ jobs:
           assert reports,'No test results'
           roots=[ET.parse(p).getroot() for p in reports]
           totals={k:sum(int(r.attrib.get(k,0)) for r in roots) for k in ('tests','failures','errors','skipped')}
-          assert totals['tests']>=3269 and totals['failures']==totals['errors']==totals['skipped']==0, totals
+          assert totals['tests']>=3270 and totals['failures']==totals['errors']==totals['skipped']==0, totals
           suite=next((r for r in roots if r.attrib.get('name','').endswith('.SearchControlContextTest')),None)
           assert suite is not None
           expected={'floorTwelveOpenRoomCenterCannotOfferOrStartWallSearch',
                     'staleSavedFloorNeverOffersWallResumeEvenBesideCandidate',
                     'everyGeneratedRoomTypeDisablesWallSearchButCorridorsRetainIt',
+                    'floorOneStartingRoomAllowsOrdinarySearchButNeverWallSearch',
                     'previousFloorOrBranchMemoryNeverPrioritizesAnUnavailableWallResume',
                     'floorTwoOrdinaryRoomCenterPrefersSearchEvenWhenWideSearchReachesWall',
                     'actualSearchInMiddleOfFloorTwoRoomDoesNotMakeWallCheckmarks',
