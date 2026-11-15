@@ -19,7 +19,7 @@ jobs:
           yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --licenses >/dev/null || true
           "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "platforms;android-36"
       - name: Core tests and Developer APK
-        run: ./gradlew :core:test :android:assembleDebug -PapdTestBuild -PapdBuild=C466R4
+        run: ./gradlew :core:test :android:assembleDebug -PapdTestBuild -PapdBuild=C466R5
       - name: Verify signer and package
         run: |
           set -euo pipefail
