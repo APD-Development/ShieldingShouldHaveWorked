@@ -55,7 +55,7 @@ public final class SearchControlContext {
         // A remembered wall search is not proof that the current room has a
         // searchable wall. Keep saved-position management, but do not offer
         // Wall Search in open interiors, gated rooms, or exhausted contexts.
-        boolean eligibleWall = saved && hasMeaningfulWall(hero, level);
+        boolean eligibleWall = saved && hero.wallSearch.matches(level) && hasMeaningfulWall(hero, level);
         for (Action action : CHOICE_ORDER) {
             if (action == Action.WALL_SEARCH && !eligibleWall) continue;
             if ((action == Action.SHOW_SAVED || action == Action.FORGET) && !saved) continue;
