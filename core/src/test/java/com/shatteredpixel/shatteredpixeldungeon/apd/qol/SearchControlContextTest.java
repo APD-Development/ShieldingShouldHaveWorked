@@ -465,6 +465,45 @@ public class SearchControlContextTest {
         }
     }
 
+    @Test public void floorOneStartingRoomAllowsOrdinarySearchButNeverWallSearch() throws Exception {
+        int priorDepth = Dungeon.depth;
+        int priorBranch = Dungeon.branch;
+        try {
+            Dungeon.depth = 1;
+            Dungeon.branch = 0;
+            clearTerrain();
+            EmptyRoom startingRoom = new EmptyRoom();
+            startingRoom.set(7, 7, 13, 13);
+            level.setRooms(startingRoom);
+            hero.pos = at(10, 10);
+            hero.ready = true;
+            int wall = candidate(1, 0);
+            assertTrue("actual geometry looks like a candidate on other floors",
+                    level.map[wall] == Terrain.WALL);
+            assertFalse("floor one cannot generate concealed door candidates",
+                    DoorSearchEligibility.supportsDoors(level));
+            assertTrue(SearchControlContext.insideGeneratedRoom(level, hero.pos));
+            assertFalse(SearchControlContext.hasMeaningfulWall(hero, level));
+            assertEquals(Action.SEARCH, SearchControlContext.preferred(hero, level));
+            assertArrayEquals(new Action[]{Action.SEARCH, Action.SHOW_SAVED, Action.FORGET, Action.CANCEL},
+                    SearchControlContext.choices(hero, level));
+            assertFalse("Wall Search target selection must reject floor one",
+                    hero.wallSearch.select(hero, wall));
+            assertNotNull("Wall Search resume must reject floor one",
+                    hero.wallSearch.resume(hero));
+            float before = hero.cooldown();
+            select(Action.SEARCH);
+            assertEquals("ordinary Search is still usable", before+2f, hero.cooldown(), 0f);
+            assertFalse("ordinary Search cannot create wall markers on floor one",
+                    level.searchedWalls.attempted(wall));
+        } finally {
+            Dungeon.depth = priorDepth;
+            Dungeon.branch = priorBranch;
+            hero.pos = at(10, 10);
+            level.setRooms();
+        }
+    }
+
     @Test public void baseClassDoesNotPretendWideSearchWasAcquired() {
         candidate(2, 0);
         for (HeroClass heroClass : HeroClass.values()) {
