@@ -727,7 +727,8 @@ public class SearchControlContextTest {
             Dungeon.branch = otherBranch ? 1 : 0;
             assertTrue("a current wall still exists", SearchControlContext.hasMeaningfulWall(hero, level));
             assertFalse(hero.wallSearch.matches(level));
-            assertArrayEquals(new Action[]{Action.SEARCH, Action.WALL_SEARCH, Action.SHOW_SAVED, Action.FORGET, Action.CANCEL},
+            assertArrayEquals("a stale saved floor cannot offer a wall action",
+                    new Action[]{Action.SEARCH, Action.SHOW_SAVED, Action.FORGET, Action.CANCEL},
                     SearchControlContext.choices(hero, level));
             HeroAction.Move movement = new HeroAction.Move(hero.pos + 2);
             hero.lastAction = movement;
