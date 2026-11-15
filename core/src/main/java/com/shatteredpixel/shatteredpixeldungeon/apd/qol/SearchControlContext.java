@@ -89,6 +89,9 @@ public final class SearchControlContext {
     public static boolean hasMeaningfulWall(Hero hero, Level level) {
         if (hero == null || level == null || hero.pos < 0 || hero.pos >= level.length()
                 || !DoorSearchEligibility.supportsDoors(level)) return false;
+        // A gated special room is never an adaptive wall-search context.
+        // Keep ordinary paid Search and discovered-door evidence unchanged.
+        if (DoorSearchEligibility.insideGatedRoom(level, hero.pos)) return false;
 
         // Only the room the hero currently occupies affects this presentation decision.
         if (level instanceof RegularLevel && ((RegularLevel) level).apdHasRooms()) {
