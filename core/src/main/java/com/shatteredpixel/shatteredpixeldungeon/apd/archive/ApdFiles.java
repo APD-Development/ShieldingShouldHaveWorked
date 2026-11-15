@@ -116,6 +116,10 @@ public final class ApdFiles {
 		public void chooseImport( ImportSource source ){
 			try {
 				File dir = new File(base, "imports");
+				if (!isDirectImportDirectory(dir)){
+					source.onFailed("unsafe import directory: " + dir);
+					return;
+				}
 				File[] zips = dir.listFiles();
 				File newest = null;
 				if (zips != null){
@@ -133,6 +137,17 @@ public final class ApdFiles {
 				source.onStream(new FileInputStream(newest), newest.getPath());
 			} catch (Exception e){
 				source.onFailed(String.valueOf(e));
+			}
+		}
+
+		// The imports/ directory itself must belong directly to the configured
+		// storage root. Otherwise file-level checks would trust an external alias.
+		// A deliberately symlinked base storage root is still supported.
+		private boolean isDirectImportDirectory( File dir ){
+			try {
+				return dir.getCanonicalFile().equals(new File(base.getCanonicalFile(), "imports"));
+			} catch (java.io.IOException unreadable){
+				return false;
 			}
 		}
 
