@@ -38,6 +38,7 @@ jobs:
           assert suite is not None
           expected={'floorTwelveOpenRoomCenterCannotOfferOrStartWallSearch',
                     'staleSavedFloorNeverOffersWallResumeEvenBesideCandidate',
+                    'previousFloorOrBranchMemoryNeverPrioritizesAnUnavailableWallResume',
                     'floorTwoOrdinaryRoomCenterPrefersSearchEvenWhenWideSearchReachesWall',
                     'actualSearchInMiddleOfFloorTwoRoomDoesNotMakeWallCheckmarks',
                     'actualSearchFromInsideKeyedRoomDoesNotCreateCheckmarks'}
