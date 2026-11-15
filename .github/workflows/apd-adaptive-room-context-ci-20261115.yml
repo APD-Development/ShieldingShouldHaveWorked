@@ -37,6 +37,7 @@ jobs:
           suite=next((r for r in roots if r.attrib.get('name','').endswith('.SearchControlContextTest')),None)
           assert suite is not None
           expected={'floorTwelveOpenRoomCenterCannotOfferOrStartWallSearch',
+                    'staleSavedFloorNeverOffersWallResumeEvenBesideCandidate',
                     'floorTwoOrdinaryRoomCenterPrefersSearchEvenWhenWideSearchReachesWall',
                     'actualSearchInMiddleOfFloorTwoRoomDoesNotMakeWallCheckmarks',
                     'actualSearchFromInsideKeyedRoomDoesNotCreateCheckmarks'}
