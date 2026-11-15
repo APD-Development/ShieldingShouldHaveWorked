@@ -1,5 +1,6 @@
 name: APD heap lifecycle diagnostics C471 P471 signed pair
 on:
+  workflow_dispatch:
   push:
     branches: [chatgpt/apd-heap-lifecycle-diagnostics-20261114]
     paths: [.github/workflows/apd-heap-lifecycle-c471-p471.yml]
@@ -49,7 +50,7 @@ jobs:
           cp android/build/outputs/apk/debug/android-debug.apk deliverable/APD-Developer-HeapLifecycle-C471.apk
           ./gradlew :android:assembleDebug -PapdBuild=P471 --no-daemon
           cp android/build/outputs/apk/debug/android-debug.apk deliverable/APD-Alpha-Testers-HeapLifecycle-P471.apk
-          git archive --format=zip --output=deliverable/APD-Source-HeapLifecycle-470.zip HEAD
+          git archive --format=zip --output=deliverable/APD-Source-HeapLifecycle-471.zip HEAD
       - name: Verify original signer package and variants
         run: |
           set -euo pipefail
@@ -80,7 +81,7 @@ jobs:
                         else ['extendedPlayback','grudge']),flags
               receipt['variants'][variant]={'name':name,'bytes':p.stat().st_size,
                   'sha256':hashlib.sha256(p.read_bytes()).hexdigest(),'package':package,'flags':flags}
-          src=pathlib.Path('deliverable/APD-Source-HeapLifecycle-470.zip')
+          src=pathlib.Path('deliverable/APD-Source-HeapLifecycle-471.zip')
           receipt['source_zip_sha256']=hashlib.sha256(src.read_bytes()).hexdigest()
           pathlib.Path('deliverable/receipt.json').write_text(json.dumps(receipt,indent=2)+'\n')
           print(json.dumps(receipt,indent=2))
@@ -89,7 +90,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: success()
         with:
-          name: apd-heap-lifecycle-original-signed-c470-p470
+          name: apd-heap-lifecycle-original-signed-c471-p471
           path: deliverable/
           retention-days: 30
           if-no-files-found: error
