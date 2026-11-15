@@ -73,6 +73,9 @@ public final class ArchiveImporter {
 	// Manifest-listed ZIP members that fail validation can likewise be numerous.
 	// Preserve rejection counts without retaining every individual failure name.
 	private static final int MAX_INVALID_ENTRY_DETAILS = 100;
+	// A valid archive may contain many logs whose local filenames already hold
+	// different bytes. Keep every original log and exact counts, not every note.
+	private static final int MAX_DIFFERENT_EXISTING_DETAILS = 100;
 
 	public static final class Report {
 		public boolean ok;
@@ -392,7 +395,11 @@ public final class ArchiveImporter {
 					else {
 						kept++;
 						if (st.entry.redacted) redactedKept++;
-						notes.add(st.entry.path + ": a different log with this name is already here, yours was kept.");
+						if (kept <= MAX_DIFFERENT_EXISTING_DETAILS){
+							notes.add(st.entry.path + ": a different log with this name is already here, yours was kept.");
+						} else if (kept == MAX_DIFFERENT_EXISTING_DETAILS + 1){
+							notes.add("Additional archived files differed from existing history; original files were kept (details omitted).");
+						}
 					}
 					st.tmp.delete();
 					continue;
