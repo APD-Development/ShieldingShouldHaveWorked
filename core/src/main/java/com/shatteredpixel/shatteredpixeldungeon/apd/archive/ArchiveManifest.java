@@ -47,6 +47,9 @@ public final class ArchiveManifest {
 	public static final int FORMAT = 1;
 	public static final int MAX_BYTES = 16 * 1024 * 1024;
 	public static final int MAX_FILES = 500_000;
+	// A malformed signed manifest can contain a multi-megabyte line. Keep the
+	// refusal readable without retaining the entire attacker-controlled line.
+	private static final int MAX_DAMAGED_LINE_DETAIL_CHARS = 160;
 	public static final String KIND_RUN = "run";
 	public static final String KIND_IMPORTED = "legacy";
 
@@ -231,7 +234,9 @@ public final class ArchiveManifest {
 					default: //a line from a newer writer
 				}
 			} catch (IndexOutOfBoundsException | NumberFormatException bad){
-				throw new IllegalArgumentException("the manifest has a damaged line: " + line);
+				String excerpt = line.length() <= MAX_DAMAGED_LINE_DETAIL_CHARS ? line
+						: line.substring(0, MAX_DAMAGED_LINE_DETAIL_CHARS) + "... (truncated)";
+				throw new IllegalArgumentException("the manifest has a damaged line: " + excerpt);
 			}
 		}
 		if (!header) throw new IllegalArgumentException("this is not an APD history archive");
