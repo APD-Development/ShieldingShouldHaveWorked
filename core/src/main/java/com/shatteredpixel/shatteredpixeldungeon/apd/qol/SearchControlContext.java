@@ -23,8 +23,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.Room;
-import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.CrystalChoiceRoom;
-import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.CrystalVaultRoom;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.SpecialRoom;
 
 import java.util.ArrayList;
 
@@ -65,39 +64,17 @@ public final class SearchControlContext {
         return choices.toArray(new Action[0]);
     }
 
-    /** All generated room interiors are excluded from Wall Search regardless of
-     * room subclass, doorway geometry, talent radius, or adaptive preference.
-     * Only the existing public room layout is consulted. Corridors remain eligible. */
-    public static boolean insideGeneratedRoom(Level level, int heroPos) {
-        return level instanceof RegularLevel && ((RegularLevel) level).apdHasRooms()
-                && heroPos >= 0 && heroPos < level.length()
-                && ((RegularLevel) level).room(heroPos) != null;
-    }
-
-    /** A known, open part of a generated room is not a wall-search position.
-     * Only observed cardinal walls can override the room-center rule; a distant
-     * wall reached through Wide Search does not turn the whole room into wall mode.
-     * This is read-only and never inspects hidden terrain behind a wall. */
-    public static boolean openRoomInterior(Hero hero, Level level) {
-        if (hero == null || level == null || hero.pos < 0 || hero.pos >= level.length()
-                || !(level instanceof RegularLevel) || !((RegularLevel)level).apdHasRooms())
-            return false;
-        Room room = ((RegularLevel)level).room(hero.pos);
-        if (room == null) return false;
-        int width = level.width(), x = hero.pos % width, y = hero.pos / width;
-        if (x < room.left + 2 || x > room.right - 2
-                || y < room.top + 2 || y > room.bottom - 2) return false;
-        // No temporary array in this frequently queried UI and Search path.
-        // Keep the same north, south, west, east order and visibility checks.
-        for (int direction=0; direction<4; direction++) {
-            int neighbour=direction==0 ? hero.pos-width
-                    : direction==1 ? hero.pos+width
-                    : direction==2 ? hero.pos-1 : hero.pos+1;
-            if (neighbour >= 0 && neighbour < level.length()
-                    && level.heroFOV[neighbour]
-                    && DoorSearchEligibility.candidate(level, neighbour)) return false;
-        }
-        return true;
+    /** Rooms whose walls can never hide a door from the inside.
+     * Hidden doors only replace REGULAR doors between connected rooms. Every
+     * special room (key/crystal vaults, wells, shops, altars, labs, gardens,
+     * secret rooms, ...) has exactly one entrance, and the hero is standing
+     * inside it, so that entrance is already known. Standard rooms and
+     * hallways can still hide doors and stay eligible. */
+    public static boolean noHiddenDoorRoom(Level level, int heroPos) {
+        if (!(level instanceof RegularLevel) || !((RegularLevel) level).apdHasRooms()
+                || heroPos < 0 || heroPos >= level.length()) return false;
+        Room room = ((RegularLevel) level).room(heroPos);
+        return room instanceof SpecialRoom;
     }
 
     public static boolean hasMeaningfulWall(Hero hero, Level level) {
@@ -105,14 +82,10 @@ public final class SearchControlContext {
                 || !DoorSearchEligibility.supportsDoors(level)) return false;
         // A gated special room is never an adaptive wall-search context.
         // Keep ordinary paid Search and discovered-door evidence unchanged.
-        if (insideGeneratedRoom(level, hero.pos)) return false;
-
-        // Only the room the hero currently occupies affects this presentation decision.
-        if (level instanceof RegularLevel && ((RegularLevel) level).apdHasRooms()) {
-            Room room = ((RegularLevel) level).room(hero.pos);
-            if (room instanceof CrystalVaultRoom || room instanceof CrystalChoiceRoom) return false;
-            if (openRoomInterior(hero, level)) return false;
-        }
+        if (noHiddenDoorRoom(level, hero.pos)) return false;
+        // Room middles are handled by reach: Wall Search is only meaningful when
+        // a door-capable wall lies inside the hero's real search footprint
+        // (1 tile, 2 for Rogue, +1 with Wide Search). Otherwise it is a normal Search.
 
         // Bound the scan to the existing maximum footprint; covers retains the exact class,
         // acquired talent rank, rounded corners, visibility, and Foresight rules.
