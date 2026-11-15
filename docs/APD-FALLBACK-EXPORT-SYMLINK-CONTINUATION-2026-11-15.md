@@ -1,0 +1,9 @@
+# APD fallback export symlink boundary, November 15, 2026
+
+## Independent work claim, 04:02 EST
+- Authoritative development branch: `codex/apd-phone-fixes-2026-10-09`, verified start `dff4417148cd33d8bf3109ee7456b839da154c3b`; never use `main` as the development baseline.
+- Isolated branch: `chatgpt/apd-fallback-export-alias-20261115-0400`. Inspected AGENTS.md, prior diagnostic and fallback import handoffs, latest release/API receipts, open PRs, current CI, and the exact fallback provider source/tests. No open PR claims this fallback **export** safety issue.
+- Evidenced source defect: `ApdFiles.FolderProvider.chooseExport` opens `exports/<suggested name>` through `new FileOutputStream` without canonical-direct-file checks. A pre-existing symlink for the output filename, or an alias for the exports directory, can make the fallback writer truncate a file outside the selected storage root. The existing fallback **import** selector already rejects such aliases; Android's SAF picker is separate.
+- Scope: fail a fallback export on alias destinations, preserve legitimate symlinked *base storage roots*, unchanged direct exports, and stream ownership/error callbacks. Prove by real-filesystem regressions that external bytes remain untouched. No changes to archive formats, gameplay, balance, scoring, history, application IDs, original signing, Android picker, or published releases.
+- Parallel C471/P471 native and release candidates, playback, hero-select, seed scoring, and C467 investigation are independently owned and must not be touched.
+- This is a claim only, not test success or a published build. Next: source/tests on this isolated branch; run full core suite and desktop/Android Java compilation in an exact-source CI workflow; inspect result and artifacts before guarded integration.

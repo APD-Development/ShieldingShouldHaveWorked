@@ -90,9 +90,25 @@ public final class ApdFiles {
 					return;
 				}
 				File f = new File(dir, suggestedName);
+				if (!isDirectExportFile(dir, f)){
+					target.onFailed("unsafe export destination: " + f);
+					return;
+				}
 				target.onStream(new FileOutputStream(f), f.getPath());
 			} catch (Exception e){
 				target.onFailed(String.valueOf(e));
+			}
+		}
+
+		// Reject aliases beneath exports/ so a fallback write cannot truncate a
+		// different file. A symlinked base storage root itself remains valid.
+		private boolean isDirectExportFile( File dir, File file ){
+			try {
+				File expectedDir = new File(base.getCanonicalFile(), "exports");
+				return dir.getCanonicalFile().equals(expectedDir)
+						&& file.getCanonicalFile().equals(new File(expectedDir, file.getName()));
+			} catch (java.io.IOException unreadable){
+				return false;
 			}
 		}
 
