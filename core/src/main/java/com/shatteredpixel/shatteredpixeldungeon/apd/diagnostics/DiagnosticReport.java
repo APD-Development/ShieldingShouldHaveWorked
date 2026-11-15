@@ -11,6 +11,21 @@ import java.util.*;
 public final class DiagnosticReport {
     private DiagnosticReport(){}
     public interface Listener { void finished(String message); }
+    // Thread creation/start can fail under memory pressure after the file picker
+    // has already transferred stream ownership. Close that stream and complete
+    // the request once; do not leave the player with a silent export failure.
+    interface WorkerLauncher { void launch(Runnable job); }
+    static void launchExportWorker(OutputStream stream, Listener once, Runnable job, WorkerLauncher launcher){
+        try{
+            launcher.launch(job);
+        }catch(OutOfMemoryError exhausted){
+            try{stream.close();}catch(IOException ignored){}
+            once.finished("The diagnostic report could not start because memory was exhausted.");
+        }catch(RuntimeException failure){
+            try{stream.close();}catch(IOException ignored){}
+            once.finished("The diagnostic report could not start: "+failure.getClass().getSimpleName());
+        }
+    }
     public static void export(Listener listener){
         SupportDiagnostics.event("report.requested","");
         SimpleDateFormat date=new SimpleDateFormat("yyyyMMdd-HHmmss",Locale.ROOT);date.setTimeZone(TimeZone.getTimeZone("UTC"));
@@ -26,7 +41,7 @@ public final class DiagnosticReport {
         ApdFiles.provider(FileUtils.getFileHandle("apd-diagnostics").file()).chooseExport(name,"text/plain",new ApdFiles.ExportTarget(){
             public void onStream(OutputStream stream,String displayName){
                 streamAccepted.set(true);
-                Thread worker=new Thread(()->{
+                launchExportWorker(stream, once, ()->{
                     String result;
                     try(OutputStream out=stream){
                         out.write(SupportDiagnostics.report().getBytes(StandardCharsets.UTF_8));
@@ -34,7 +49,11 @@ public final class DiagnosticReport {
                     }catch(IOException|RuntimeException error){result="The diagnostic report could not be saved: "+error.getClass().getSimpleName();}
                     catch(OutOfMemoryError exhausted){result="The diagnostic report could not be saved because memory was exhausted during export.";}
                     once.finished(result);
-                },"apd-report-export");worker.setDaemon(true);worker.start();
+                }, job->{
+                    Thread worker=new Thread(job,"apd-report-export");
+                    worker.setDaemon(true);
+                    worker.start();
+                });
             }
             public void onCancelled(){once.finished("Diagnostic report cancelled. No report was saved.");}
             public void onFailed(String why){once.finished("The diagnostic report could not be opened for saving: "+why);}
