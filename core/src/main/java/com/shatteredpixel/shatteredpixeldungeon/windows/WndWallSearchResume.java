@@ -35,9 +35,14 @@ public final class WndWallSearchResume {
         Level level = Dungeon.level;
         if (hero == null || level == null || !hero.isAlive() || !hero.ready || !hero.wallSearch.exists()) return;
         WallSearchSession saved = hero.wallSearch;
-        String note = "Saved search on Floor " + saved.floor() + ". Manual searches completed here: " + saved.searches()
-                + ".\n\nSearch here performs one normal manual search at your current position. Resume wall search returns by a safe discovered route and searches once. Movement and searching keep their normal costs. Visible enemies or danger stop the return; your saved position is kept.";
         Action[] actions = SearchControlContext.choices(hero, level);
+        boolean canResumeWall = false;
+        for (Action action : actions) if (action == Action.WALL_SEARCH) canResumeWall = true;
+        String note = "Saved search on Floor " + saved.floor() + ". Manual searches completed here: " + saved.searches()
+                + ".\n\nSearch here performs one normal manual search at your current position. "
+                + (canResumeWall ? "Resume wall search returns by a safe discovered route and searches once. "
+                    : "No meaningful wall search is available from this position. You can still inspect or forget the saved position. ")
+                + "Movement and searching keep their normal costs. Visible enemies or danger stop the return; your saved position is kept.";
         String[] options = new String[actions.length];
         for (int i = 0; i < actions.length; i++) options[i] = label(actions[i]);
         String title = actions[0] == Action.SEARCH ? "Search"
