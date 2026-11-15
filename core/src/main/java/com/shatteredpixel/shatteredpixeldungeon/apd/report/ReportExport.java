@@ -68,51 +68,79 @@ public final class ReportExport {
 		return "apd-" + slug(r.title) + "-" + df.format(new java.util.Date(r.generatedAt)) + "." + f.extension;
 	}
 
-	//Saves through the file picker. Never throws: the outcome is passed to 'done' (which may be called on another thread).
-	public static void save( File fallbackBase, final Report r, final Format f, final Done done ){
-		final byte[] bytes;
-		try {
-			bytes = render(r, f).getBytes(Charset.forName("UTF-8"));
-		} catch (Throwable e){
-			done.finished("The report could not be made: " + e);
-			return;
-		}
-		try {
-			ApdFiles.provider(fallbackBase).chooseExport(fileName(r, f), f.mime, new ApdFiles.ExportTarget(){
-				@Override
-				public void onStream( final OutputStream out, final String displayName ){
-					Thread t = new Thread(new Runnable(){
-						@Override
-						public void run(){
-							String message;
-							try (OutputStream target = out) {
-								target.write(bytes);
-								target.flush();
-								message = "Saved " + f.label.split(" \\(")[0] + " report to " + displayName + " (" + bytes.length + " bytes).";
-							} catch (IOException | RuntimeException e){
-								message = "The report could not be saved: " + e;
-							}
-							done.finished(message);
-						}
-					}, "apd-report-save");
-					t.setDaemon(true);
-					t.start();
-				}
+    // A picker may hand off a stream before Java rejects thread construction/start.
+    // Release the stream and report one failure instead of silently leaking it.
+    interface WorkerStarter { void start(Runnable job); }
 
-				@Override
-				public void onCancelled(){
-					done.finished("Cancelled. Nothing was saved.");
-				}
+    static void startSaveWorker(OutputStream stream, Done once, Runnable job, WorkerStarter starter){
+        try {
+            starter.start(job);
+        } catch (OutOfMemoryError exhausted){
+            closeFailedStream(stream);
+            once.finished("The report could not start saving because memory was exhausted.");
+        } catch (RuntimeException failure){
+            closeFailedStream(stream);
+            once.finished("The report could not start saving: " + failure.getClass().getSimpleName());
+        }
+    }
 
-				@Override
-				public void onFailed( String why ){
-					done.finished("The report could not be saved: " + why);
-				}
-			});
-		} catch (Throwable e){
-			done.finished("The report could not be saved: " + e);
-		}
-	}
+    private static void closeFailedStream(OutputStream stream){
+        try { stream.close(); } catch (IOException | RuntimeException ignored) {}
+    }
+
+    // Saves through the file picker; an accepted stream's worker owns the final outcome.
+    public static void save(File fallbackBase, final Report r, final Format f, final Done done){
+        final byte[] bytes;
+        try {
+            bytes = render(r, f).getBytes(Charset.forName("UTF-8"));
+        } catch (Throwable e){
+            done.finished("The report could not be made: " + e);
+            return;
+        }
+        final java.util.concurrent.atomic.AtomicBoolean finished = new java.util.concurrent.atomic.AtomicBoolean();
+        final java.util.concurrent.atomic.AtomicBoolean streamAccepted = new java.util.concurrent.atomic.AtomicBoolean();
+        final Done once = message -> {
+            if (finished.compareAndSet(false, true)) done.finished(message);
+        };
+        try {
+            ApdFiles.provider(fallbackBase).chooseExport(fileName(r, f), f.mime, new ApdFiles.ExportTarget(){
+                @Override
+                public void onStream(final OutputStream out, final String displayName){
+                    streamAccepted.set(true);
+                    startSaveWorker(out, once, () -> {
+                        String message;
+                        try (OutputStream target = out){
+                            target.write(bytes);
+                            target.flush();
+                            message = "Saved " + f.label.split(" \\(")[0] + " report to " + displayName + " (" + bytes.length + " bytes).";
+                        } catch (IOException | RuntimeException e){
+                            message = "The report could not be saved: " + e;
+                        } catch (OutOfMemoryError exhausted){
+                            message = "The report could not be saved because memory was exhausted during export.";
+                        }
+                        once.finished(message);
+                    }, job -> {
+                        Thread worker = new Thread(job, "apd-report-save");
+                        worker.setDaemon(true);
+                        worker.start();
+                    });
+                }
+
+                @Override
+                public void onCancelled(){
+                    if (!streamAccepted.get()) once.finished("Cancelled. Nothing was saved.");
+                }
+
+                @Override
+                public void onFailed(String why){
+                    if (!streamAccepted.get()) once.finished("The report could not be saved: " + why);
+                }
+            });
+        } catch (Throwable e){
+            // An exception after stream handoff does not supersede the real save result.
+            if (!streamAccepted.get()) once.finished("The report could not be saved: " + e);
+        }
+    }
 
 	//Shares as plain text through the system share sheet.
 	public static void share( File fallbackBase, Report r, Done done ){
