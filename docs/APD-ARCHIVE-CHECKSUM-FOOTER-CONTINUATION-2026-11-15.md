@@ -1,0 +1,9 @@
+# APD archive checksum footer boundary, November 15, 2026 (Eastern)
+
+## Independent work claim, approximately 08:02 EST
+
+- Owner repository: APD-Development/ShieldingShouldHaveWorked. Rechecked authoritative development branch `codex/apd-phone-fixes-2026-10-09` at `10fb3b19783717ca12110717b5bfe51e37bb1843`; work isolated at `chatgpt/apd-archive-check-footer-20261115-0800`. This is not a main/default-branch continuation or an APK/release claim.
+- Reviewed AGENTS.md, work-completed ledger, known issues, active continuation from PR #167/#168, open PR ownership, source-verified CI and release blockers. No open PR claims this distinct checksum-footer behavior. Do not overlap personal playback, native/test acceptance, installer/signing, scoring or other packages.
+- Source-evidenced issue: `ArchiveManifest.parse` uses `trim()` on all text after terminal `check\t`. It accepts appended whitespace or an extra empty record after a correct checksum, even though those bytes are not covered by the checksum. Existing single-checksum and strict UTF-8 corrections are separate and must remain intact.
+- Bounded correction: require exactly the 64 hexadecimal SHA-256 characters plus at most one conventional terminal line break, retaining no-newline and CRLF compatibility if previously accepted. Do not change writer output, checksum input, unknown **checksummed** extension records, first-wins duplicates, import policy, original raw logs, scores, saves or build identities. Add core parser and original-history-preserving importer regressions; run full core and desktop/Android Java compile on exact source through isolated CI. No native/phone acceptance is claimed from compilation.
+- At claim time, no production edit, passing new test, new APK, signer/native verification, release or publication has occurred. Before integration, inspect all fresh live heads/claims and require exact-source successful CI and guarded non-force expected-head update.
