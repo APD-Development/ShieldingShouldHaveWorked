@@ -70,6 +70,9 @@ public final class ArchiveImporter {
 	// A valid but hostile manifest can list thousands of absent files.
 	// Keep their exact rejection count without retaining every path in the UI.
 	private static final int MAX_MISSING_ENTRY_DETAILS = 100;
+	// Manifest-listed ZIP members that fail validation can likewise be numerous.
+	// Preserve rejection counts without retaining every individual failure name.
+	private static final int MAX_INVALID_ENTRY_DETAILS = 100;
 
 	public static final class Report {
 		public boolean ok;
@@ -197,6 +200,7 @@ public final class ArchiveImporter {
 				ZipEntry entry;
 				int problems = 0;
 				int ignoredDetails = 0;
+				int invalidDetails = 0;
 				while ((entry = zip.getNextEntry()) != null){
 					String name = entry.getName();
 					ArchiveManifest.Entry e = byPath.get(name);
@@ -221,9 +225,14 @@ public final class ArchiveImporter {
 						}
 						continue;
 					}
-					Staged st = stage(root, tmpDir, zip, e, staged.size(), report);
-					if (st == null) problems++;
-					else staged.add(st);
+					Staged st = stage(root, tmpDir, zip, e, staged.size(), report,
+							invalidDetails < MAX_INVALID_ENTRY_DETAILS);
+					if (st == null){
+						problems++;
+						if (invalidDetails++ == MAX_INVALID_ENTRY_DETAILS){
+							report.details.add("Additional invalid manifest-listed archive files were rejected (details omitted).");
+						}
+					} else staged.add(st);
 				}
 				int missingDetails = 0;
 				for (ArchiveManifest.Entry e : manifest.files){
@@ -283,7 +292,8 @@ public final class ArchiveImporter {
 	}
 
 	//Streams one entry to a temporary file and verifies it. Returns null (and says why in the report) if it cannot be trusted.
-	private static Staged stage( File root, File tmpDir, ZipInputStream zip, ArchiveManifest.Entry e, int number, Report report ) throws IOException {
+	private static Staged stage( File root, File tmpDir, ZipInputStream zip, ArchiveManifest.Entry e, int number,
+			Report report, boolean includeDetail ) throws IOException {
 		File tmp = new File(tmpDir, "entry-" + number + ".tmp");
 		MessageDigest digest = newDigest();
 		long size = 0;
@@ -307,7 +317,7 @@ public final class ArchiveImporter {
 		}
 		if (tooBig || size != e.size || !ArchiveManifest.hex(digest.digest()).equalsIgnoreCase(e.sha256)){
 			tmp.delete();
-			report.details.add(e.path + ": does not match the manifest (size or checksum).");
+			if (includeDetail) report.details.add(e.path + ": does not match the manifest (size or checksum).");
 			return null;
 		}
 		//it must be a readable APD log, of the run the manifest says, and never demo data
@@ -319,7 +329,7 @@ public final class ArchiveImporter {
 		}
 		if (r == null || r.header == null || r.status == ReadStatus.BAD_HEADER || r.status == ReadStatus.UNSUPPORTED_CONTAINER){
 			tmp.delete();
-			report.details.add(e.path + ": not a readable APD log.");
+			if (includeDetail) report.details.add(e.path + ": not a readable APD log.");
 			return null;
 		}
 		String startedRun = null;
@@ -348,7 +358,7 @@ public final class ArchiveImporter {
 				|| (startedRun != null && startedRun.startsWith(DatasetStore.DEMO_LOG_PREFIX))
 				|| r.header.writerBuild.contains("SYNTHETIC-DEMO") || !runMatches || !headerMatchesFilename){
 			tmp.delete();
-			report.details.add(e.path + ": its header does not match the manifest, or it is demo data.");
+			if (includeDetail) report.details.add(e.path + ": its header does not match the manifest, or it is demo data.");
 			return null;
 		}
 		return new Staged(e, tmp, r.newerThanReader());
