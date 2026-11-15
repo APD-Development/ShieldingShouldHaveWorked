@@ -66,6 +66,7 @@ public final class ArchiveImporter {
 	public static final long FREE_SPACE_MARGIN = 16L * 1024 * 1024;
 	// Archive entry payloads are still fully checked/drained; only incidental
 	// diagnostic names are bounded to avoid growing an untrusted ZIP's report.
+	private static final int MAX_INVALID_PATH_DETAIL_CHARS = 160;
 	private static final int MAX_IGNORED_ENTRY_DETAILS = 100;
 	// A valid but hostile manifest can list thousands of absent files.
 	// Keep their exact rejection count without retaining every path in the UI.
@@ -159,7 +160,11 @@ public final class ArchiveImporter {
 				//every entry the manifest lists must be a path we would ever write, a plain size, and not demo data
 				for (ArchiveManifest.Entry e : manifest.files){
 					if (!ArchiveManifest.isValidPath(e.path)){
-						report.problem = "the archive lists a file it is not allowed to write: " + e.path;
+						// The manifest can contain a very long, syntactically valid but
+					// forbidden path. Do not duplicate it into the refusal report.
+					String excerpt = e.path.length() <= MAX_INVALID_PATH_DETAIL_CHARS ? e.path
+							: e.path.substring(0, MAX_INVALID_PATH_DETAIL_CHARS) + "... (truncated)";
+					report.problem = "the archive lists a file it is not allowed to write: " + excerpt;
 						return report;
 					}
 					String expectedKind = e.path.startsWith("runs/") ? ArchiveManifest.KIND_RUN : ArchiveManifest.KIND_IMPORTED;
