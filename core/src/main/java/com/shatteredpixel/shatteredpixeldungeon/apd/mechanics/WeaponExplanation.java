@@ -46,12 +46,27 @@ public final class WeaponExplanation {
             ||weapon instanceof com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Quarterstaff
             ||weapon instanceof com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Katana
             ||weapon instanceof com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.RoundShield
-            ||weapon instanceof com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Greatshield;
+            ||weapon instanceof com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Greatshield
+            ||weapon instanceof com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Tanto
+            ||weapon instanceof com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Wakizashi
+            ||weapon instanceof com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Tachi
+            ||weapon instanceof com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Nodachi
+            ||weapon instanceof com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Buckler
+            ||weapon instanceof com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Targe
+            ||weapon instanceof com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.KiteShield;
     }
     public static String blockSummary(Weapon weapon,Hero hero){
         if(!passiveBlockWeapon(weapon))return "";
         String upgrades=weapon instanceof com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.RoundShield
-                ||weapon instanceof com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Greatshield?" Upgrades improve this protection.":"";
+                ||weapon instanceof com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Greatshield
+                ||weapon instanceof com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Katana
+                ||weapon instanceof com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Tanto
+                ||weapon instanceof com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Wakizashi
+                ||weapon instanceof com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Tachi
+                ||weapon instanceof com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Nodachi
+                ||weapon instanceof com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Buckler
+                ||weapon instanceof com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Targe
+                ||weapon instanceof com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.KiteShield?" Upgrades improve this protection.":"";
         if(!weapon.levelKnown)return "Can block incoming attack damage while wielded normally."+upgrades;
         Integer strength=ArmorExplanation.knownStrength(hero);
         if(strength==null)return "Can block incoming attack damage while wielded normally."+upgrades;

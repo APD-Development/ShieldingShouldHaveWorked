@@ -245,6 +245,11 @@ public class WndUpgrade extends Window {
 					0 + "-" + ((Greatshield) toUpgrade).DRMax(levelFrom),
 					0 + "-" + ((Greatshield) toUpgrade).DRMax(levelTo),
 					bottom);
+		} else if (apdBlockMax(toUpgrade, 0) >= 0){
+			bottom = fillFields(Messages.get(this, "blocking"),
+					0 + "-" + apdBlockMax(toUpgrade, levelFrom),
+					0 + "-" + apdBlockMax(toUpgrade, levelTo),
+					bottom);
 		}
 
 		//weight (i.e. strength requirement)
@@ -551,4 +556,17 @@ public class WndUpgrade extends Window {
 		return message.bottom();
 	}
 
+
+	//APD: weapons whose block scales with level (katana family and the extra shields)
+	private static int apdBlockMax(Item item, int lvl){
+		if (item instanceof com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Katana) return ((com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Katana) item).DRMax(lvl);
+		if (item instanceof com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Tanto) return ((com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Tanto) item).DRMax(lvl);
+		if (item instanceof com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Wakizashi) return ((com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Wakizashi) item).DRMax(lvl);
+		if (item instanceof com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Tachi) return ((com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Tachi) item).DRMax(lvl);
+		if (item instanceof com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Nodachi) return ((com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Nodachi) item).DRMax(lvl);
+		if (item instanceof com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Buckler) return ((com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Buckler) item).DRMax(lvl);
+		if (item instanceof com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Targe) return ((com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Targe) item).DRMax(lvl);
+		if (item instanceof com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.KiteShield) return ((com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.KiteShield) item).DRMax(lvl);
+		return -1;
+	}
 }
