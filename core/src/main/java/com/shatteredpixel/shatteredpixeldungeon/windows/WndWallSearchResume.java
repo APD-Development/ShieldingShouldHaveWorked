@@ -54,6 +54,20 @@ public final class WndWallSearchResume {
         });
     }
 
+    /** Hold on the adaptive search button: do the opposite of what a tap prefers. */
+    public static void holdOpposite() {
+        Hero hero = Dungeon.hero;
+        Level level = Dungeon.level;
+        if (hero == null || level == null || !hero.isAlive() || !hero.ready) return;
+        if (SearchControlContext.preferred(hero, level) == Action.WALL_SEARCH) {
+            choose(hero, level, Action.SEARCH);
+        } else if (hero.wallSearch.exists()) {
+            choose(hero, level, Action.WALL_SEARCH);
+        } else {
+            GLog.w("No saved wall search to return to. Search here first.");
+        }
+    }
+
     private static String label(Action action) {
         switch (action) {
             case SEARCH: return "Search here";
