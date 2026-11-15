@@ -187,6 +187,9 @@ public final class ArchiveManifest {
 						// One authoritative log-container version per format-1 archive.
 						if (containerSeen) throw new IllegalArgumentException("the manifest has repeated container metadata");
 						m.container = Integer.parseInt(p[1]);
+						// A log-container version is an unsigned on-disk value. Preserve
+						// legacy checksummed zero, but a negative one cannot exist.
+						if (m.container < 0) throw new IllegalArgumentException("the manifest has an invalid container version (" + m.container + ")");
 						containerSeen = true;
 						break;
 					case "file": {
