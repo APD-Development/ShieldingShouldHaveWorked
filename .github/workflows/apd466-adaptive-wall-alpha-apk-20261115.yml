@@ -16,6 +16,7 @@ jobs:
     timeout-minutes: 80
     steps:
       - uses: actions/checkout@v4
+        with: {fetch-depth: 2}
       - name: Require source identical to the passed 3268-test revision
         run: |
           set -euo pipefail
