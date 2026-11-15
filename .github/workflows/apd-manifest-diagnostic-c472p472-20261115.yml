@@ -11,14 +11,15 @@ jobs:
     timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
+        with: {fetch-depth: 0}
       - uses: actions/setup-java@v4
         with: {distribution: temurin, java-version: '21'}
       - uses: gradle/actions/setup-gradle@v4
       - name: Require exactly verified production tree plus this isolated build workflow
         run: |
           set -euo pipefail
-          test "$(git rev-parse HEAD^)" = "62fcf1211c2849baba3191852373fe7e48db83af"
-          test "$(git diff --name-only HEAD^ HEAD)" = ".github/workflows/apd-manifest-diagnostic-c472p472-20261115.yml"
+          git merge-base --is-ancestor 62fcf1211c2849baba3191852373fe7e48db83af HEAD
+          test "$(git diff --name-only 62fcf1211c2849baba3191852373fe7e48db83af HEAD)" = ".github/workflows/apd-manifest-diagnostic-c472p472-20261115.yml"
           echo "Production files exactly match verified source merge 62fcf121; build workflow is the only additional change"
       - name: Assemble original-signer Developer and Alpha candidates from same source
         run: |
