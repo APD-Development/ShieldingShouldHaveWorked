@@ -86,11 +86,18 @@ public final class SupportDiagnostics {
     }
     /** A bounded phase observation, without forcing GC or inspecting player history. */
     public static void memoryEvent(String phase){
+        memoryEvent(phase, "");
+    }
+    /** Keep the OS trim severity alongside the heap sample even if touch events flood the recent-event ring. */
+    public static void memoryEvent(String phase,int trimLevel){
+        memoryEvent(phase, " trim_level="+trimLevel);
+    }
+    private static void memoryEvent(String phase,String context){
         try{
             Runtime runtime=Runtime.getRuntime();
             long committed=runtime.totalMemory(),free=runtime.freeMemory();
             event("memory.sample","phase="+shortText(phase,80)+" used_bytes="+(committed-free)
-                    +" committed_bytes="+committed+" limit_bytes="+runtime.maxMemory());
+                    +" committed_bytes="+committed+" limit_bytes="+runtime.maxMemory()+context);
         }catch(RuntimeException | OutOfMemoryError unavailable){
             writeFailure="Memory diagnostic capture unavailable";
         }
