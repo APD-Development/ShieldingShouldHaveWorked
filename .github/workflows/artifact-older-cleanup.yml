@@ -19,7 +19,7 @@ jobs:
         run: |
           python3 - <<'PY'
           import datetime as dt
-          import json, os, urllib.request, urllib.error
+          import json, os, time, urllib.request, urllib.error
           repo=os.environ["GITHUB_REPOSITORY"]
           assert repo=="APD-Development/ShieldingShouldHaveWorked"
           token=os.environ["GH_TOKEN"]
@@ -59,13 +59,25 @@ jobs:
           print("SAFE_APD_CLEANUP_PLAN="+json.dumps({"total_gib":gib(items),"eligible_gib":gib(candidates),"eligible_count":len(candidates),"batch_gib":gib(batch),"batch_count":len(batch),"newest_30_preserved":30,"last_72_hours_preserved":True,"important_name_patterns_preserved":list(protected_name_terms),"latest_three_delivery_apk_preserved":[{"name":a["name"],"id":a["id"]} for a in delivery[:3]]},separators=(",",":")),flush=True)
           deleted=[]
           for i,a in enumerate(batch,1):
-              try:call(api+"/"+str(a["id"]),"DELETE")
-              except urllib.error.HTTPError as ex:
-                  if ex.code==404:continue
-                  raise RuntimeError(f"Delete failed at {i}: {ex.code}") from ex
-              deleted.append(a)
-              if i%100==0:print("SAFE_APD_DELETED_PROGRESS="+str(i)+"/"+str(len(batch)),flush=True)
-          result={"deleted_count":len(deleted),"deleted_gib":gib(deleted),"remaining_eligible_gib":round(gib(candidates)-gib(batch),3)}
+              success=False
+              for attempt in range(6):
+                  try:
+                      call(api+"/"+str(a["id"]),"DELETE")
+                      success=True
+                      break
+                  except urllib.error.HTTPError as ex:
+                      if ex.code==404:
+                          break
+                      if ex.code in (429,500,502,503,504) and attempt<5:
+                          time.sleep(2*(attempt+1))
+                          continue
+                      raise RuntimeError(f"Delete failed at {i}, HTTP {ex.code}") from ex
+              if success:
+                  deleted.append(a)
+              if i%50==0:print("SAFE_APD_DELETED_PROGRESS="+str(i)+"/"+str(len(batch)),flush=True)
+              if gib(deleted)>=7.0:
+                  break
+          result={"deleted_count":len(deleted),"deleted_gib":gib(deleted),"remaining_eligible_gib":round(gib(candidates)-gib(deleted),3)}
           print("SAFE_APD_CLEANUP_RESULT="+json.dumps(result,separators=(",",":")),flush=True)
           s=os.environ.get("GITHUB_STEP_SUMMARY")
           if s:
