@@ -234,6 +234,21 @@ public class SearchControlContextTest {
         assertEquals(0f, hero.cooldown(), 0f);
     }
 
+    @Test public void staleSavedFloorNeverOffersWallResumeEvenBesideCandidate() {
+        int previousDepth = Dungeon.depth;
+        try {
+            Dungeon.depth = previousDepth + 1;
+            candidate(1, 0);
+            assertFalse(hero.wallSearch.matches(level));
+            assertTrue(SearchControlContext.hasMeaningfulWall(hero, level));
+            assertEquals(Action.SEARCH, SearchControlContext.preferred(hero, level));
+            assertArrayEquals(new Action[]{Action.SEARCH, Action.SHOW_SAVED, Action.FORGET, Action.CANCEL},
+                    SearchControlContext.choices(hero, level));
+        } finally {
+            Dungeon.depth = previousDepth;
+        }
+    }
+
     @Test public void onlyUnconfirmedObservedCandidatePrioritizesWallSearch() {
         int wall = candidate(1, 0);
         String saved = memory();
