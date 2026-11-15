@@ -171,6 +171,33 @@ public class SupportDiagnosticsTest {
         assertTrue(new File(dir,"session.txt").length()<=65536);
     }
 
+    @Test public void eventAndExceptionLineBreaksCannotForgeDiagnosticRecords()throws Exception{
+        File dir=Files.createTempDirectory("apd-diag-line-boundary-").toFile();
+        SupportDiagnostics.configure(dir,"line integrity fixture");
+        SupportDiagnostics.event("one\rforged.kind\nmore.kind",
+                "message\r123456 forged.entry\nstill detail");
+        SupportDiagnostics.error(new IllegalStateException("boom\r999999 forged.crash\ncontinued"));
+        assertTrue(SupportDiagnostics.awaitWrites(5000));
+        String persisted=new String(Files.readAllBytes(new File(dir,"session.txt").toPath()),StandardCharsets.UTF_8);
+        String events=persisted.substring(persisted.indexOf("RECENT EVENTS\n")+"RECENT EVENTS\n".length());
+        assertFalse(events.contains("\r"));
+        assertTrue(events.contains("one forged.kind more.kind message 123456 forged.entry still detail"));
+        assertTrue(events.contains("error java.lang.IllegalStateException: boom 999999 forged.crash continued"));
+        int eventLines=0,exceptionLines=0;
+        for(String line:events.split("\n")){
+            if(line.contains("forged.kind")){
+                assertTrue(line.matches("\\d+ one forged\\.kind more\\.kind message 123456 forged\\.entry still detail"));
+                eventLines++;
+            }
+            if(line.contains("forged.crash")){
+                assertTrue(line.matches("\\d+ error java\\.lang\\.IllegalStateException: boom 999999 forged\\.crash continued"));
+                exceptionLines++;
+            }
+        }
+        assertEquals(1,eventLines);
+        assertEquals(1,exceptionLines);
+    }
+
     private static class Provider implements ApdFiles.Provider{
         public void chooseExport(String n,ApdFiles.ExportTarget t){throw new AssertionError("MIME-aware export expected");}
         public void chooseImport(ApdFiles.ImportSource s){throw new AssertionError("Diagnostics never import or read history");}

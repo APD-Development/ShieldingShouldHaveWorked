@@ -72,7 +72,9 @@ public final class SupportDiagnostics {
     }
     public static void event(String kind,String detail){
         try { synchronized(LOCK){
-            String line=System.currentTimeMillis()+" "+shortText(kind,80)+" "+shortText(detail,700).replace('\n',' ');
+            // Keep CR and LF from turning one diagnostic record into multiple apparent events.
+            String line=System.currentTimeMillis()+" "+shortText(kind,80).replace('\r',' ').replace('\n',' ')
+                    +" "+shortText(detail,700).replace('\r',' ').replace('\n',' ');
             trace.addLast(line);traceChars+=line.length()+1;
             if ("memory.sample".equals(kind)) {
                 memoryTrace.addLast(line);
