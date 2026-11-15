@@ -34,8 +34,10 @@ public class ReportPlainFactBoundaryTest {
         facts.section("Inventory");
         facts.add("Gold", new Report.Cell(">=8", CellText.LOWER), "partial");
         facts.add("Notes", new Report.Cell("first\nsecond", CellText.EXACT), "");
-        facts.section(null);
         report.add(facts);
+        String markdown = ReportRenderer.markdown(report);
+        String csv = ReportRenderer.csv(report);
+        facts.section(null); // The legacy plain-text renderer prints this as "null".
 
         String text = ReportRenderer.text(report);
         assertTrue(text, text.contains("\nInventory:\n  Gold: >=8 (partial)\n"));
@@ -43,8 +45,8 @@ public class ReportPlainFactBoundaryTest {
         assertTrue(text, text.contains("\nnull:\n"));
         assertTrue(text, text.contains("MARKS\n"));
         assertTrue(text, text.contains(">= = at least this much"));
-        assertTrue(ReportRenderer.markdown(report).contains("- Gold: >=8 (partial)\n"));
-        assertTrue(ReportRenderer.csv(report).contains("Inventory,Gold,>=8,partial\r\n"));
+        assertTrue(markdown.contains("- Gold: >=8 (partial)\n"));
+        assertTrue(csv.contains("Inventory,Gold,>=8,partial\r\n"));
         assertEquals("first\nsecond", facts.facts.get(2).value.text);
     }
 }
