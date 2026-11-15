@@ -216,12 +216,13 @@ public class AndroidLauncher extends AndroidApplication {
 
     @Override public void onTrimMemory(int level) {
         com.watabou.utils.SupportDiagnostics.event("android.trim_memory", "level="+level);
-        com.watabou.utils.SupportDiagnostics.memoryEvent("android.trim_memory");
+        com.watabou.utils.SupportDiagnostics.memoryEvent("android.trim_memory", level);
         super.onTrimMemory(level);
     }
 
     @Override public void onLowMemory() {
         com.watabou.utils.SupportDiagnostics.event("android.low_memory", "OS memory-pressure notification");
+        com.watabou.utils.SupportDiagnostics.memoryEvent("android.low_memory");
         super.onLowMemory();
     }
 

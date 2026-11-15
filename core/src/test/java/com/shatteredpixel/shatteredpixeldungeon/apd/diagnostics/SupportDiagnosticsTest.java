@@ -141,6 +141,36 @@ public class SupportDiagnosticsTest {
         assertTrue(history.contains("limit_bytes="));
     }
 
+    @Test public void androidMemoryPressureSeveritySurvivesNoisyInputHistory()throws Exception{
+        File dir=Files.createTempDirectory("apd-android-pressure-").toFile();
+        SupportDiagnostics.configure(dir,"trim severity fixture");
+        SupportDiagnostics.memoryEvent("android.trim_memory",80);
+        SupportDiagnostics.memoryEvent("android.low_memory");
+        for(int i=0;i<500;i++)SupportDiagnostics.event("input.dispatched","id="+i+" kind=touch.DOWN");
+        assertTrue(SupportDiagnostics.awaitWrites(5000));
+        String report=SupportDiagnostics.report("");
+        String history=report.substring(report.indexOf("MEMORY HISTORY"),report.indexOf("RECENT EVENTS"));
+        boolean trimFound=false,lowFound=false;
+        for(String line:history.split("\n")){
+            if(line.contains("phase=android.trim_memory ")){
+                assertTrue(line.contains(" used_bytes="));
+                assertTrue(line.endsWith(" trim_level=80"));
+                trimFound=true;
+            }
+            if(line.contains("phase=android.low_memory ")){
+                assertTrue(line.contains(" used_bytes="));
+                assertFalse(line.contains("trim_level="));
+                lowFound=true;
+            }
+        }
+        assertTrue(trimFound);assertTrue(lowFound);
+        assertFalse(history.contains("input.dispatched"));
+        String persisted=new String(Files.readAllBytes(new File(dir,"session.txt").toPath()),StandardCharsets.UTF_8);
+        assertTrue(persisted.contains("trim_level=80"));
+        assertTrue(persisted.contains("phase=android.low_memory "));
+        assertTrue(new File(dir,"session.txt").length()<=65536);
+    }
+
     private static class Provider implements ApdFiles.Provider{
         public void chooseExport(String n,ApdFiles.ExportTarget t){throw new AssertionError("MIME-aware export expected");}
         public void chooseImport(ApdFiles.ImportSource s){throw new AssertionError("Diagnostics never import or read history");}
