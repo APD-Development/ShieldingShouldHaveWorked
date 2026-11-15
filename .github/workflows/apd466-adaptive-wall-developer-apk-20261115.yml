@@ -23,7 +23,7 @@ jobs:
           verified=b60ad9dc6ba3e3f234a4864838773165d7654e5f
           git fetch --no-tags --depth=1 origin "$verified"
           changes="$(git diff --name-only "$verified" HEAD)"
-          test "$changes" = ".github/workflows/apd466-adaptive-wall-developer-apk-20261115.yml"
+          test "$changes" = "$(printf '.github/workflows/apd466-adaptive-wall-alpha-apk-20261115.yml\n.github/workflows/apd466-adaptive-wall-developer-apk-20261115.yml')"
           echo "Only the Alpha packaging workflow differs from the fully passed source."
       - uses: actions/setup-java@v4
         with:
