@@ -27,13 +27,47 @@ public final class MetamorphosisChoices {
   }
   return Collections.unmodifiableList(choices);
  }
+ /** Shattered's original Scroll of Metamorphosis: one random talent from each other
+  * class's same tier, skipping any class whose row holds the talent being replaced or
+  * talents the hero already has. Points carry over unchanged. */
+ public static List<Choice> original(HeroClass playing,int tier,LinkedHashMap<Talent,Integer> current,Talent replacing) {
+  if(playing==null || tier<1 || tier>3 || current==null || !current.containsKey(replacing))throw new IllegalArgumentException("invalid class talent position");
+  List<Choice> choices=new ArrayList<>();
+  for(HeroClass cls:HeroClass.values()) {
+   ArrayList<LinkedHashMap<Talent,Integer>> base=new ArrayList<>();Talent.initClassTalents(cls,base);
+   ArrayList<Talent> row=new ArrayList<>(base.get(tier-1).keySet());
+   if(row.contains(replacing))continue;
+   row.removeAll(current.keySet());
+   if(row.isEmpty())continue;
+   choices.add(new Choice(cls,com.watabou.utils.Random.element(row),current.get(replacing),false));
+  }
+  return Collections.unmodifiableList(choices);
+ }
+ /** Greater Metamorphosis: every talent of every other class in the same tier.
+  * Talents already in the hero's row are listed but marked owned (cannot be picked). */
+ public static List<Choice> anyInTier(HeroClass playing,int tier,LinkedHashMap<Talent,Integer> current,Talent replacing) {
+  if(playing==null || tier<1 || tier>3 || current==null || !current.containsKey(replacing))throw new IllegalArgumentException("invalid class talent position");
+  List<Choice> choices=new ArrayList<>();
+  for(HeroClass cls:HeroClass.values()) {
+   if(cls==playing)continue;
+   ArrayList<LinkedHashMap<Talent,Integer>> base=new ArrayList<>();Talent.initClassTalents(cls,base);
+   for(Talent t:base.get(tier-1).keySet())if(t!=replacing)choices.add(new Choice(cls,t,current.get(replacing),current.containsKey(t)));
+  }
+  return Collections.unmodifiableList(choices);
+ }
  public static boolean apply(com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero hero,int tier,Talent replacing,Talent target) {
   if(hero==null||tier<1||tier>3||tier>hero.talents.size())return false;
   LinkedHashMap<Talent,Integer> row=hero.talents.get(tier-1);
+  if(!row.containsKey(replacing))return false;
+  Set<Talent> allowed=new HashSet<>();
+  for(Choice choice:atPosition(hero.heroClass,tier,row,replacing))if(!choice.alreadyOwned)allowed.add(choice.talent);
+  return applyFrom(hero,tier,replacing,target,allowed);
+ }
+ /** Applies a replacement the caller has already offered. */
+ public static boolean applyFrom(com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero hero,int tier,Talent replacing,Talent target,Collection<Talent> allowed) {
+  if(hero==null||tier<1||tier>3||tier>hero.talents.size()||allowed==null||!allowed.contains(target))return false;
+  LinkedHashMap<Talent,Integer> row=hero.talents.get(tier-1);
   if(!row.containsKey(replacing)||row.containsKey(target))return false;
-  boolean available=false;
-  for(Choice choice:atPosition(hero.heroClass,tier,row,replacing))if(choice.talent==target&&!choice.alreadyOwned)available=true;
-  if(!available)return false;
   LinkedHashMap<Talent,Integer> replacement=new LinkedHashMap<>();
   for(Talent talent:row.keySet())replacement.put(talent==replacing?target:talent,row.get(talent));
   // Keep SPD's original alias simplification and the same point count/row order.

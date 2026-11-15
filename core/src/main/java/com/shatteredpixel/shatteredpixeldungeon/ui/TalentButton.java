@@ -173,8 +173,8 @@ public class TalentButton extends Button {
                     ScrollOfMetamorphosis.WndMetamorphReplace window = ScrollOfMetamorphosis.WndMetamorphReplace.INSTANCE;
                     if (window == null || !window.canReplace(talent)) return;
                     Talent replacing = window.replacing;
-                    if (!com.shatteredpixel.shatteredpixeldungeon.apd.talents.MetamorphosisChoices.apply(
-                            Dungeon.hero, window.tier, replacing, talent)) return;
+                    if (!com.shatteredpixel.shatteredpixeldungeon.apd.talents.MetamorphosisChoices.applyFrom(
+                            Dungeon.hero, window.tier, replacing, talent, window.offeredTalents())) return;
                     ScrollOfMetamorphosis.onMetamorph(replacing, talent);
                     if (ScrollOfMetamorphosis.WndMetamorphReplace.INSTANCE != null)
                         ScrollOfMetamorphosis.WndMetamorphReplace.INSTANCE.hide();

@@ -1316,6 +1316,12 @@ public class Hero extends Char {
 					}
 
 					ready();
+					//APD: offer to swap an item out of a full backpack (same turns as doing it by hand)
+					if (Dungeon.level.getTransition(pos) == null
+							&& !(item instanceof Dewdrop || item instanceof TimekeepersHourglass.sandBag
+							|| item instanceof DriedRose.Petal || item instanceof Key)) {
+						com.shatteredpixel.shatteredpixeldungeon.apd.qol.FullPackSwap.offer(this, heap, item);
+					}
 				}
 			} else {
 				ready();

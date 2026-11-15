@@ -45,7 +45,25 @@ public class Katana extends MeleeWeapon {
 
 	@Override
 	public int defenseFactor( Char owner ) {
-		return 3;	//3 extra defence
+		return DRMax();
+	}
+
+	//APD: the guard scales slowly with upgrades, always below Round Shield (4 + lvl)
+	public int DRMax(){
+		return DRMax(buffedLvl());
+	}
+
+	public int DRMax(int lvl){
+		return 3 + Math.max(0, lvl) / 2;
+	}
+
+	@Override
+	public String statsInfo(){
+		if (isIdentified()){
+			return Messages.get(this, "stats_desc", DRMax());
+		} else {
+			return Messages.get(this, "typical_stats_desc", DRMax(0));
+		}
 	}
 
 	@Override

@@ -73,6 +73,9 @@ public class ScrollOfMetamorphosis extends ExoticScroll {
 			((ScrollOfMetamorphosis) curItem).readAnimation();
 			Sample.INSTANCE.play(Assets.Sounds.READ);
 		}
+		if (curItem instanceof com.shatteredpixel.shatteredpixeldungeon.items.spells.GreaterMetamorphosis) {
+			((com.shatteredpixel.shatteredpixeldungeon.items.spells.GreaterMetamorphosis) curItem).consume(curUser);
+		}
 		curUser.sprite.emitter().start(Speck.factory(Speck.CHANGE), 0.2f, 10);
 		Transmuting.show(curUser, oldTalent, newTalent);
 
@@ -210,8 +213,11 @@ public class ScrollOfMetamorphosis extends ExoticScroll {
 			this.tier = tier;
 
 			LinkedHashMap<Talent, Integer> options = new LinkedHashMap<>();
-            for (MetamorphosisChoices.Choice choice : MetamorphosisChoices.atPosition(
-                    Dungeon.hero.heroClass, tier, Dungeon.hero.talents.get(tier - 1), replacing)) {
+            boolean greater = curItem instanceof com.shatteredpixel.shatteredpixeldungeon.items.spells.GreaterMetamorphosis;
+            java.util.List<MetamorphosisChoices.Choice> choices = greater
+                    ? MetamorphosisChoices.anyInTier(Dungeon.hero.heroClass, tier, Dungeon.hero.talents.get(tier - 1), replacing)
+                    : MetamorphosisChoices.original(Dungeon.hero.heroClass, tier, Dungeon.hero.talents.get(tier - 1), replacing);
+            for (MetamorphosisChoices.Choice choice : choices) {
                 options.put(choice.talent, choice.transferredPoints);
                 choiceClasses.put(choice.talent, choice.heroClass);
             }
@@ -224,6 +230,10 @@ public class ScrollOfMetamorphosis extends ExoticScroll {
             return Dungeon.hero != null && tier > 0 && tier <= Dungeon.hero.talents.size()
                     && replaceOptions != null && replaceOptions.containsKey(candidate)
                     && !Dungeon.hero.talents.get(tier - 1).containsKey(candidate);
+        }
+
+        public java.util.Set<Talent> offeredTalents() {
+            return replaceOptions == null ? java.util.Collections.<Talent>emptySet() : replaceOptions.keySet();
         }
 
         public HeroClass choiceClass(Talent candidate) {
@@ -247,14 +257,31 @@ public class ScrollOfMetamorphosis extends ExoticScroll {
 
 			top = text.bottom() + 2;
 
-			TalentsPane.TalentTierPane optionsPane = new TalentsPane.TalentTierPane(replaceOptions, tier, TalentButton.Mode.METAMORPH_REPLACE);
-			add(optionsPane);
-			optionsPane.title.text(" ");
-			optionsPane.setPos(0, top);
-			optionsPane.setSize(120, optionsPane.height());
-			resize((int)optionsPane.width(), (int)optionsPane.bottom());
-
-			resize(120, (int)optionsPane.bottom());
+			if (!(curItem instanceof com.shatteredpixel.shatteredpixeldungeon.items.spells.GreaterMetamorphosis)) {
+				TalentsPane.TalentTierPane optionsPane = new TalentsPane.TalentTierPane(replaceOptions, tier, TalentButton.Mode.METAMORPH_REPLACE);
+				add(optionsPane);
+				optionsPane.title.text(" ");
+				optionsPane.setPos(0, top);
+				optionsPane.setSize(120, optionsPane.height());
+				resize(120, (int)optionsPane.bottom());
+				return;
+			}
+			//APD Greater Metamorphosis: one row of choices per other class
+			LinkedHashMap<HeroClass, LinkedHashMap<Talent, Integer>> byClass = new LinkedHashMap<>();
+			for (Talent t : replaceOptions.keySet()) {
+				HeroClass cls = choiceClasses.get(t);
+				if (!byClass.containsKey(cls)) byClass.put(cls, new LinkedHashMap<>());
+				byClass.get(cls).put(t, replaceOptions.get(t));
+			}
+			for (HeroClass cls : byClass.keySet()) {
+				TalentsPane.TalentTierPane row = new TalentsPane.TalentTierPane(byClass.get(cls), tier, TalentButton.Mode.METAMORPH_REPLACE);
+				add(row);
+				row.title.text(Messages.titleCase(cls.title()));
+				row.setPos(0, top);
+				row.setSize(120, row.height());
+				top = row.bottom() + 1;
+			}
+			resize(120, (int)top);
 		}
 
 		@Override
@@ -269,6 +296,8 @@ public class ScrollOfMetamorphosis extends ExoticScroll {
 		public void onBackPressed() {
 			if (curItem instanceof ScrollOfMetamorphosis) {
 				((ScrollOfMetamorphosis) curItem).confirmCancelation(this, false);
+			} else if (curItem instanceof com.shatteredpixel.shatteredpixeldungeon.items.spells.GreaterMetamorphosis) {
+				hide(); //nothing is consumed until a talent is picked
 			} else {
 				super.onBackPressed();
 			}
