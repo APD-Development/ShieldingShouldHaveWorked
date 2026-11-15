@@ -25,6 +25,7 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import static org.junit.Assert.*;
 
 public class SupportDiagnosticsTest {
@@ -243,6 +244,53 @@ public class SupportDiagnosticsTest {
         assertTrue(SupportDiagnostics.awaitWrites(5000));
         String persisted=new String(Files.readAllBytes(new File(root,"session.txt").toPath()),StandardCharsets.UTF_8);
         assertTrue(persisted.contains("valid.root persisted safely"));
+    }
+
+    @Test public void diagnosticPickerExceptionBeforeCallbackReportsOneFailure()throws Exception{
+        HeadlessTestSupport.start();
+        ApdFiles.Provider original=ApdFiles.provider;
+        AtomicInteger callbacks=new AtomicInteger();String[] message={null};
+        try{
+            ApdFiles.provider=new Provider(){@Override public void chooseExport(String name,String mime,ApdFiles.ExportTarget target){
+                throw new IllegalStateException("picker unavailable");
+            }};
+            DiagnosticReport.export(result->{message[0]=result;callbacks.incrementAndGet();});
+            assertEquals(1,callbacks.get());
+            assertEquals("The diagnostic report could not be opened for saving: IllegalStateException",message[0]);
+        }finally{ApdFiles.provider=original;}
+    }
+
+    @Test public void diagnosticPickerCallbackThenExceptionDoesNotDuplicateCompletion()throws Exception{
+        HeadlessTestSupport.start();
+        ApdFiles.Provider original=ApdFiles.provider;
+        AtomicInteger callbacks=new AtomicInteger();String[] message={null};
+        try{
+            ApdFiles.provider=new Provider(){@Override public void chooseExport(String name,String mime,ApdFiles.ExportTarget target){
+                target.onFailed("permission denied");
+                throw new IllegalStateException("subsequent picker failure");
+            }};
+            DiagnosticReport.export(result->{message[0]=result;callbacks.incrementAndGet();});
+            assertEquals(1,callbacks.get());
+            assertEquals("The diagnostic report could not be opened for saving: permission denied",message[0]);
+        }finally{ApdFiles.provider=original;}
+    }
+
+    @Test public void diagnosticPickerExceptionAfterStreamHandoffKeepsRealSaveResult()throws Exception{
+        HeadlessTestSupport.start();
+        ApdFiles.Provider original=ApdFiles.provider;
+        AtomicInteger callbacks=new AtomicInteger();CountDownLatch done=new CountDownLatch(1);
+        String[] message={null};ByteArrayOutputStream bytes=new ByteArrayOutputStream();
+        try{
+            ApdFiles.provider=new Provider(){@Override public void chooseExport(String name,String mime,ApdFiles.ExportTarget target){
+                target.onStream(bytes,"diagnostic result");
+                throw new IllegalStateException("picker threw after handing off stream");
+            }};
+            DiagnosticReport.export(result->{message[0]=result;callbacks.incrementAndGet();done.countDown();});
+            assertTrue("The accepted stream worker should report its real outcome",done.await(5,TimeUnit.SECONDS));
+            assertEquals(1,callbacks.get());
+            assertTrue(message[0],message[0].startsWith("Diagnostic report saved."));
+            assertTrue(bytes.toString(StandardCharsets.UTF_8.name()).startsWith("APD SUPPORT REPORT v1"));
+        }finally{ApdFiles.provider=original;}
     }
 
     private static class Provider implements ApdFiles.Provider{
