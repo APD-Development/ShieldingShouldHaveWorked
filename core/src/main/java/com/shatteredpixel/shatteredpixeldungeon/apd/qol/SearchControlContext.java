@@ -52,8 +52,13 @@ public final class SearchControlContext {
         ArrayList<Action> choices = new ArrayList<>();
         choices.add(preferred(hero, level));
         boolean saved = hero != null && hero.wallSearch.exists();
+        // A remembered wall search is not proof that the current room has a
+        // searchable wall. Keep saved-position management, but do not offer
+        // Wall Search in open interiors, gated rooms, or exhausted contexts.
+        boolean eligibleWall = saved && hasMeaningfulWall(hero, level);
         for (Action action : CHOICE_ORDER) {
-            if ((action == Action.WALL_SEARCH || action == Action.SHOW_SAVED || action == Action.FORGET) && !saved) continue;
+            if (action == Action.WALL_SEARCH && !eligibleWall) continue;
+            if ((action == Action.SHOW_SAVED || action == Action.FORGET) && !saved) continue;
             if (action == Action.RESUME_MOVEMENT && (hero == null || hero.lastAction == null)) continue;
             if (!choices.contains(action)) choices.add(action);
         }
