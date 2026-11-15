@@ -64,6 +64,9 @@ public final class ArchiveImporter {
 	public static final long MAX_FILE_BYTES = 512L * 1024 * 1024;
 	//room to keep free on the device while importing
 	public static final long FREE_SPACE_MARGIN = 16L * 1024 * 1024;
+	// Archive entry payloads are still fully checked/drained; only incidental
+	// diagnostic names are bounded to avoid growing an untrusted ZIP's report.
+	private static final int MAX_IGNORED_ENTRY_DETAILS = 100;
 
 	public static final class Report {
 		public boolean ok;
@@ -190,12 +193,21 @@ public final class ArchiveImporter {
 				List<Staged> staged = new ArrayList<>();
 				ZipEntry entry;
 				int problems = 0;
+				int ignoredDetails = 0;
 				while ((entry = zip.getNextEntry()) != null){
 					String name = entry.getName();
 					ArchiveManifest.Entry e = byPath.get(name);
 					if (e == null || !seen.add(name)){
-						//something the manifest does not list is never written, and does not spoil the rest
-						report.details.add("not in the manifest or repeated, ignored: " + safe(name));
+						//Something the manifest does not list is never written. Report a
+						//bounded sample: thousands of extra ZIP entries must not make the
+						//diagnostics consume unbounded memory. Still drain every payload.
+						if (ignoredDetails < MAX_IGNORED_ENTRY_DETAILS){
+							report.details.add("not in the manifest or repeated, ignored: " + safe(name));
+							ignoredDetails++;
+						} else if (ignoredDetails == MAX_IGNORED_ENTRY_DETAILS){
+							report.details.add("Additional unlisted or repeated archive entries were ignored (details omitted).");
+							ignoredDetails++;
+						}
 						// getNextEntry otherwise drains this payload without our size limit.
 						byte[] ignoredBuffer = new byte[16 * 1024];
 						long ignoredSize = 0;
