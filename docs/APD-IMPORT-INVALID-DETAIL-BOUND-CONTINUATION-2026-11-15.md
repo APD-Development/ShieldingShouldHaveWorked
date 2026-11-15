@@ -1,0 +1,9 @@
+# APD archive invalid-listed-entry diagnostic bound, November 15, 2026 EST
+
+## Independent work claim, approximately 12:03 EST
+
+- Repository: `APD-Development/ShieldingShouldHaveWorked`; authoritative branch: `codex/apd-phone-fixes-2026-10-09`; freshly verified starting head `fdeb109f38c89b1dabcbdb868a41732f6331b679`; independent branch `chatgpt/apd-import-invalid-details-bound-20261115-1200`. No writes to main, shared development, personal playback, native/release or unrelated PR branches at claim time.
+- Inspected current AGENTS.md, completed ledger, known issues, current importer, last completed missing/ignored ZIP diagnostic work, relevant real-ZIP regressions, source CI, open PR claims and prior gated APK receipts. No open PR claimed this particular failure path.
+- **Distinct existing bug evidenced by source:** `ArchiveImporter.stage` appends one `Report.details` string for every *manifest-listed ZIP entry that is present but invalid* (size/SHA mismatch, unreadable APD log, or invalid run/header identity). This remains unbounded up to the format's 500,000 manifest file limit despite separately bounded unlisted/repeated ZIP and manifest-listed/missing details.
+- **Narrow proposed fix:** retain the first 100 original invalid-present-entry diagnostics, add one explicit omitted-details notice, preserve total `rejected` count, full checksum/content verification, first-wins behavior, all-or-nothing rollback, existing on-disk history, and valid imports. Add two real-ZIP/filesystem regressions for short details and 250 invalid-present files plus preserved existing history. No new rules, scoring, saves or edition identity changes.
+- Need exact-source full core and desktop/Android Java compile CI before guarded integration. No tests, signed APK, native acceptance or publication are claimed at claim time; C471/P471 and previous builds must remain untouched. C467 OOM root cause remains unknown.
