@@ -78,6 +78,7 @@ public final class WallSearchSession {
         Level l=Dungeon.level;
         if(hero==null||!hero.isAlive()||!hero.ready)return "Wait until you can act.";
         if(!matches(l))return "The saved search is on another floor or is no longer available.";
+        if(SearchControlContext.insideGeneratedRoom(l,hero.pos))return "Wall Search is unavailable inside generated rooms. Ordinary Search still works.";
         if(!DoorSearchEligibility.supportsDoors(l))return "Hidden doors do not generate on this floor. Ordinary Search still works.";
         if(SearchControlContext.insideGeneratedRoom(l,anchor))return "Saved wall-search position is inside a room. Ordinary Search remains available.";
         if(target>=0&&!DoorSearchEligibility.couldHaveDoor(l,target))return "The saved tile cannot be a doorway. Ordinary Search still works.";
