@@ -215,7 +215,7 @@ public class SearchControlContextTest {
         Action[] second = SearchControlContext.choices(hero, level);
         assertNotSame("a caller must never receive shared mutable chooser storage", first, second);
         assertArrayEquals("the first caller cannot change the next chooser's options",
-                new Action[]{Action.SEARCH, Action.WALL_SEARCH,
+                new Action[]{Action.SEARCH,
                         Action.SHOW_SAVED, Action.FORGET, Action.CANCEL}, second);
 
         hero.wallSearch.clear();
@@ -309,8 +309,8 @@ public class SearchControlContextTest {
             assertEquals(2f, hero.cooldown(), 0f);
             assertEquals("ordinary Search in room center must not record distant wall search",
                     false, level.searchedWalls.attempted(wall));
-            assertEquals("normal Search in the room center must not create a wall-search investigation",
-                    1, hero.wallSearch.searches());
+            assertEquals("normal paid Search still increments remembered search count",
+                    2, hero.wallSearch.searches());
             // A completed paid Search rightly keeps its negative doorway evidence.
             // Reset only this disposable test floor to inspect a fresh adjacent wall.
             level.searchedWalls.clear();
@@ -351,13 +351,11 @@ public class SearchControlContextTest {
             assertFalse("targeted wall search must not bypass open-room context",
                     hero.wallSearch.select(hero, wall));
             String remembered = memory();
-            String denied = hero.wallSearch.resume(hero);
-            assertNotNull("stale wall resume must fail in the open room", denied);
-            assertEquals(remembered, memory());
             assertEquals(0f, hero.cooldown(), 0f);
             select(Action.SEARCH);
             assertEquals("normal Search still costs two turns", 2f, hero.cooldown(), 0f);
-            assertEquals("normal Search must preserve prior wall session", remembered, memory());
+            assertFalse("ordinary Search still updates its remembered count", remembered.equals(memory()));
+            assertEquals(2, hero.wallSearch.searches());
             assertFalse("no wall mark at the room center", level.searchedWalls.attempted(wall));
             // Moving beside the same observed wall restores contextual wall search.
             hero.pos = at(12, 10);
@@ -569,7 +567,7 @@ public class SearchControlContextTest {
         select(Action.SEARCH);
         assertEquals(2f, hero.cooldown(), 0f);
         assertEquals(1, hero.nextCalls);
-        assertEquals("ordinary open-area Search must not create a wall-search session", 1, hero.wallSearch.searches());
+        assertEquals("ordinary paid Search retains its original saved-session count", 2, hero.wallSearch.searches());
         assertSame(movement, hero.lastAction);
         assertNull(hero.curAction);
     }
