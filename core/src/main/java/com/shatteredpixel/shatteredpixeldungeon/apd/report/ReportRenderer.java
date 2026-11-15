@@ -171,6 +171,11 @@ public final class ReportRenderer {
 
 	//---- plain text ----
 
+	// Fact metadata is one line; embedded newlines must not look like additional reported facts.
+	private static String textFactMeta( String s ){
+		return s == null ? "null" : s.replace("\r\n", " ").replace('\r', ' ').replace('\n', ' ');
+	}
+
 	public static String text( Report r ){
 		StringBuilder sb = new StringBuilder();
 		if (r.synthetic) sb.append(SYNTHETIC_NOTICE).append("\n\n");
@@ -191,8 +196,9 @@ public final class ReportRenderer {
 				Report.Facts f = (Report.Facts) b;
 				if (f.provenance != Report.Provenance.RECORDED) sb.append("[").append(provLabel(f.provenance)).append("]\n");
 				for (Report.Fact x : f.facts){
-					if (x.value == null) sb.append("\n").append(x.label).append(":\n");
-					else sb.append("  ").append(x.label).append(": ").append(x.value.text).append(x.detail.isEmpty() ? "" : " (" + x.detail + ")").append("\n");
+					if (x.value == null) sb.append("\n").append(textFactMeta(x.label)).append(":\n");
+					else sb.append("  ").append(textFactMeta(x.label)).append(": ").append(x.value.text)
+							.append(x.detail.isEmpty() ? "" : " (" + textFactMeta(x.detail) + ")").append("\n");
 				}
 			} else if (b instanceof Report.Table){
 				Report.Table t = (Report.Table) b;
