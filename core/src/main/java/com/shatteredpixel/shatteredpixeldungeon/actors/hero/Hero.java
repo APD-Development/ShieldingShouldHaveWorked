@@ -2706,7 +2706,7 @@ public class Hero extends Char {
         // An open room still receives the full ordinary Search; only checkmark
         // recording uses the adaptive, observed wall context.
         boolean recordWallChecks = intentional
-                && !com.shatteredpixel.shatteredpixeldungeon.apd.qol.DoorSearchEligibility.insideGatedRoom(Dungeon.level,pos)
+                && !com.shatteredpixel.shatteredpixeldungeon.apd.qol.SearchControlContext.insideGeneratedRoom(Dungeon.level,pos)
                 && (!SPDSettings.adaptiveSearchChoice()
                 || !com.shatteredpixel.shatteredpixeldungeon.apd.qol.SearchControlContext.openRoomInterior(this,Dungeon.level));
 
