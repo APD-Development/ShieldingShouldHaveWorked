@@ -107,6 +107,40 @@ public class SupportDiagnosticsTest {
         assertTrue(report.contains("phase=phase_999 "));assertFalse(report.contains("phase=phase_0 "));
         assertTrue(new File(dir,"session.txt").length()<=65536);
     }
+    @Test public void heapHistorySurvivesBurstOfInputWithoutUnboundedRetention()throws Exception{
+        File dir=Files.createTempDirectory("apd-heap-history-").toFile();
+        SupportDiagnostics.configure(dir,"memory history fixture");
+        SupportDiagnostics.memoryEvent("activity.pause");
+        SupportDiagnostics.memoryEvent("activity.resume");
+        SupportDiagnostics.memoryEvent("game.active");
+        for(int i=0;i<500;i++)SupportDiagnostics.event("input.dispatched","id="+i+" kind=touch.DOWN");
+        assertTrue(SupportDiagnostics.awaitWrites(5000));
+        String report=SupportDiagnostics.report("");
+        assertTrue(report.contains("MEMORY HISTORY"));
+        assertTrue(report.contains("phase=activity.pause "));
+        assertTrue(report.contains("phase=activity.resume "));
+        assertTrue(report.contains("phase=game.active "));
+        assertTrue(report.contains("input.dispatched id=499"));
+        assertFalse(report.contains("input.dispatched id=0 "));
+        String persisted=new String(Files.readAllBytes(new File(dir,"session.txt").toPath()),StandardCharsets.UTF_8);
+        assertTrue(persisted.contains("MEMORY HISTORY"));
+        assertTrue(persisted.contains("phase=activity.pause "));
+        assertTrue(new File(dir,"session.txt").length()<=65536);
+    }
+
+    @Test public void periodicMemorySamplingIsRateLimited()throws Exception{
+        File dir=Files.createTempDirectory("apd-rate-limited-memory-").toFile();
+        SupportDiagnostics.configure(dir,"periodic fixture");
+        SupportDiagnostics.periodicMemoryEvent();
+        SupportDiagnostics.periodicMemoryEvent();
+        SupportDiagnostics.periodicMemoryEvent();
+        assertTrue(SupportDiagnostics.awaitWrites(5000));
+        String report=SupportDiagnostics.report("");
+        String history=report.substring(report.indexOf("MEMORY HISTORY"),report.indexOf("RECENT EVENTS"));
+        assertEquals(1,history.split("phase=game.active",-1).length-1);
+        assertTrue(history.contains("limit_bytes="));
+    }
+
     private static class Provider implements ApdFiles.Provider{
         public void chooseExport(String n,ApdFiles.ExportTarget t){throw new AssertionError("MIME-aware export expected");}
         public void chooseImport(ApdFiles.ImportSource s){throw new AssertionError("Diagnostics never import or read history");}
