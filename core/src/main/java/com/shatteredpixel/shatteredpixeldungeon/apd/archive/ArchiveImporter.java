@@ -67,6 +67,9 @@ public final class ArchiveImporter {
 	// Archive entry payloads are still fully checked/drained; only incidental
 	// diagnostic names are bounded to avoid growing an untrusted ZIP's report.
 	private static final int MAX_IGNORED_ENTRY_DETAILS = 100;
+	// A valid but hostile manifest can list thousands of absent files.
+	// Keep their exact rejection count without retaining every path in the UI.
+	private static final int MAX_MISSING_ENTRY_DETAILS = 100;
 
 	public static final class Report {
 		public boolean ok;
@@ -222,10 +225,17 @@ public final class ArchiveImporter {
 					if (st == null) problems++;
 					else staged.add(st);
 				}
+				int missingDetails = 0;
 				for (ArchiveManifest.Entry e : manifest.files){
 					if (!seen.contains(e.path)){
 						problems++;
-						report.details.add("listed but missing from the archive: " + e.path);
+						if (missingDetails < MAX_MISSING_ENTRY_DETAILS){
+							report.details.add("listed but missing from the archive: " + e.path);
+							missingDetails++;
+						} else if (missingDetails == MAX_MISSING_ENTRY_DETAILS){
+							report.details.add("Additional manifest-listed files were missing (details omitted).");
+							missingDetails++;
+						}
 					}
 				}
 				if (problems > 0){
