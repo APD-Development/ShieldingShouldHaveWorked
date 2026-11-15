@@ -309,8 +309,8 @@ public class SearchControlContextTest {
             assertEquals(2f, hero.cooldown(), 0f);
             assertEquals("ordinary Search in room center must not record distant wall search",
                     false, level.searchedWalls.attempted(wall));
-            assertEquals("normal paid Search still increments remembered search count",
-                    2, hero.wallSearch.searches());
+            assertEquals("paid Search starts a floor-local session rather than reusing the prior floor",
+                    1, hero.wallSearch.searches());
             // A completed paid Search rightly keeps its negative doorway evidence.
             // Reset only this disposable test floor to inspect a fresh adjacent wall.
             level.searchedWalls.clear();
