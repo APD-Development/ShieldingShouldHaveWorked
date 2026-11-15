@@ -198,6 +198,53 @@ public class SupportDiagnosticsTest {
         assertEquals(1,exceptionLines);
     }
 
+    @Test public void diagnosticSymlinkAliasesCannotLeakOrOverwriteExternalFiles()throws Exception{
+        File dir=Files.createTempDirectory("apd-diag-alias-").toFile();
+        File outside=Files.createTempDirectory("apd-diag-external-").toFile();
+        File privateHistory=new File(outside,"unrelated-history.txt");
+        File privateCrash=new File(outside,"unrelated-save.txt");
+        byte[] historyBytes="private-history-sentinel".getBytes(StandardCharsets.UTF_8);
+        byte[] crashBytes="private-save-sentinel".getBytes(StandardCharsets.UTF_8);
+        Files.write(privateHistory.toPath(),historyBytes);
+        Files.write(privateCrash.toPath(),crashBytes);
+        Files.createSymbolicLink(new File(dir,"session.txt").toPath(),privateHistory.toPath());
+        Files.createSymbolicLink(new File(dir,"last-crash.txt").toPath(),privateCrash.toPath());
+
+        SupportDiagnostics.configure(dir,"symlink privacy fixture");
+        assertTrue(SupportDiagnostics.awaitWrites(5000));
+        String report=SupportDiagnostics.report("");
+        assertFalse(report.contains("private-history-sentinel"));
+        assertFalse(report.contains("private-save-sentinel"));
+        SupportDiagnostics.uncaught(Thread.currentThread(),new IllegalStateException("controlled crash capture"));
+        assertTrue(SupportDiagnostics.awaitWrites(5000));
+        assertArrayEquals(historyBytes,Files.readAllBytes(privateHistory.toPath()));
+        assertArrayEquals(crashBytes,Files.readAllBytes(privateCrash.toPath()));
+    }
+
+    @Test public void diagnosticTemporarySymlinkDoesNotTruncateExternalFile()throws Exception{
+        File dir=Files.createTempDirectory("apd-diag-temp-alias-").toFile();
+        File outside=Files.createTempFile("apd-diag-foreign-temp-",".txt").toFile();
+        byte[] original="another-file-must-stay-unchanged".getBytes(StandardCharsets.UTF_8);
+        Files.write(outside.toPath(),original);
+        Files.createSymbolicLink(new File(dir,"session.txt.tmp").toPath(),outside.toPath());
+        SupportDiagnostics.configure(dir,"temporary file alias fixture");
+        SupportDiagnostics.event("alias.test","writer must not follow temporary symlinks");
+        assertTrue(SupportDiagnostics.awaitWrites(5000));
+        assertArrayEquals(original,Files.readAllBytes(outside.toPath()));
+    }
+
+    @Test public void canonicalizedSymlinkedDiagnosticsDirectoryStillWorks()throws Exception{
+        File root=Files.createTempDirectory("apd-diag-real-root-").toFile();
+        File parent=Files.createTempDirectory("apd-diag-root-alias-").toFile();
+        File alias=new File(parent,"diagnostics");
+        Files.createSymbolicLink(alias.toPath(),root.toPath());
+        SupportDiagnostics.configure(alias,"valid symlinked root fixture");
+        SupportDiagnostics.event("valid.root","persisted safely");
+        assertTrue(SupportDiagnostics.awaitWrites(5000));
+        String persisted=new String(Files.readAllBytes(new File(root,"session.txt").toPath()),StandardCharsets.UTF_8);
+        assertTrue(persisted.contains("valid.root persisted safely"));
+    }
+
     private static class Provider implements ApdFiles.Provider{
         public void chooseExport(String n,ApdFiles.ExportTarget t){throw new AssertionError("MIME-aware export expected");}
         public void chooseImport(ApdFiles.ImportSource s){throw new AssertionError("Diagnostics never import or read history");}

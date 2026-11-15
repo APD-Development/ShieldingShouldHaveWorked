@@ -70,6 +70,11 @@ public final class SupportDiagnostics {
     private static String shortText(String text,int limit){
         if(text==null)return "";return text.length()<=limit?text:text.substring(0,limit)+" [truncated]";
     }
+    // The configured root is canonical; reject aliases before reading or writing diagnostics.
+    private static File directDiagnosticFile(File file)throws IOException{
+        if(!file.getAbsoluteFile().equals(file.getCanonicalFile()))throw new IOException("Diagnostic file alias refused");
+        return file;
+    }
     public static void event(String kind,String detail){
         try { synchronized(LOCK){
             // Keep CR and LF from turning one diagnostic record into multiple apparent events.
@@ -146,11 +151,14 @@ public final class SupportDiagnostics {
     }
     private static void atomic(File file,String contents)throws IOException {
         File temp=new File(file.getPath()+".tmp");
+        directDiagnosticFile(file);
+        directDiagnosticFile(temp);
         try(FileOutputStream out=new FileOutputStream(temp)){out.write(contents.getBytes(StandardCharsets.UTF_8));}
         if(!temp.renameTo(file))throw new IOException("Cannot replace diagnostic trace");
     }
     private static String read(File file)throws IOException {
-        if(!file.isFile())return "";
+        // A symlinked session/crash file must not leak unrelated saved data into a report.
+        if(!file.getAbsoluteFile().equals(file.getCanonicalFile()) || !file.isFile())return "";
         try(InputStream in=new FileInputStream(file);ByteArrayOutputStream bytes=new ByteArrayOutputStream()){
             byte[] block=new byte[4096];int n,left=LIMIT;
             while(left>0&&(n=in.read(block,0,Math.min(block.length,left)))!=-1){bytes.write(block,0,n);left-=n;}
@@ -180,9 +188,9 @@ public final class SupportDiagnostics {
         try{
             error(failure);File root;String text;
             synchronized(LOCK){root=directory;text=snapshot();}
-            if(root!=null)try(FileOutputStream out=new FileOutputStream(new File(root,"last-crash.txt"))){out.write(text.getBytes(StandardCharsets.UTF_8));out.getFD().sync();}
+            if(root!=null)try(FileOutputStream out=new FileOutputStream(directDiagnosticFile(new File(root,"last-crash.txt")))){out.write(text.getBytes(StandardCharsets.UTF_8));out.getFD().sync();}
         }catch(Throwable captureFailed){
-            try{File root=directory;if(root!=null)try(FileOutputStream out=new FileOutputStream(new File(root,"last-crash.txt"))){out.write(EMERGENCY);}}catch(Throwable ignored){}
+            try{File root=directory;if(root!=null)try(FileOutputStream out=new FileOutputStream(directDiagnosticFile(new File(root,"last-crash.txt")))){out.write(EMERGENCY);}}catch(Throwable ignored){}
         }
     }
     public static boolean awaitWrites(long millis)throws InterruptedException {
