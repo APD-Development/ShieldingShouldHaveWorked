@@ -143,7 +143,13 @@ public final class ArchiveManifest {
 		int checkAt = text.lastIndexOf("check\t");
 		if (checkAt < 0 || (checkAt > 0 && text.charAt(checkAt - 1) != '\n')) throw new IllegalArgumentException("the manifest has no checksum");
 		String body = text.substring(0, checkAt);
-		String claimed = text.substring(checkAt + "check\t".length()).trim();
+		// The terminal checksum authenticates only the body before this line.
+		// Do not silently trim extra unchecksummed lines or whitespace after it.
+		// Keep the writer's single LF, plus previously accepted missing-newline/CRLF endings.
+		String claimed = text.substring(checkAt + "check\t".length());
+		if (claimed.endsWith("\r\n")) claimed = claimed.substring(0, claimed.length() - 2);
+		else if (claimed.endsWith("\n")) claimed = claimed.substring(0, claimed.length() - 1);
+		if (!claimed.matches("[0-9a-fA-F]{64}")) throw new IllegalArgumentException("the manifest has a damaged checksum footer");
 		if (!sha256Hex(body.getBytes(utf8())).equalsIgnoreCase(claimed)) throw new IllegalArgumentException("the manifest does not match its checksum");
 		ArchiveManifest m = new ArchiveManifest();
 		boolean header = false, counted = false, containerSeen = false;
