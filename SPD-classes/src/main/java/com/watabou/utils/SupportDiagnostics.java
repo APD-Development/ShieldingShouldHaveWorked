@@ -25,8 +25,11 @@ import java.util.concurrent.*;
 /** Small, local-only support trace. Never reads saves, player history or other apps. */
 public final class SupportDiagnostics {
     private static final Object LOCK=new Object();
-    private static final int LIMIT=65536, EVENTS=128;
+    private static final int LIMIT=65536, EVENTS=128, MEMORY_EVENTS=48;
+    private static final long MEMORY_INTERVAL_NANOS=30_000_000_000L;
     private static final ArrayDeque<String> trace=new ArrayDeque<>();
+    // Keep memory trends independently: high-volume touch events otherwise evict them.
+    private static final ArrayDeque<String> memoryTrace=new ArrayDeque<>();
     private static final ExecutorService writer=Executors.newSingleThreadExecutor(r->{Thread t=new Thread(r,"apd-diagnostics");t.setDaemon(true);return t;});
     private static File directory;
     private static String environment="Not initialized",previous="No previous session trace available.";
@@ -36,6 +39,7 @@ public final class SupportDiagnostics {
     private static final java.util.concurrent.atomic.AtomicLong inputIds=new java.util.concurrent.atomic.AtomicLong();
     public static volatile java.util.function.Supplier<String> platformSnapshot=()->"Platform details unavailable.";
     private static boolean scheduled;
+    private static long lastPeriodicMemoryNanos;
     private static final byte[] EMERGENCY="Uncaught failure; detailed capture failed, possibly because memory was exhausted. This is not proof of an out-of-memory cause.\n".getBytes(StandardCharsets.UTF_8);
     private SupportDiagnostics(){}
     public static long nextInputId(){return inputIds.incrementAndGet();}
@@ -55,7 +59,7 @@ public final class SupportDiagnostics {
                 if(!target.isDirectory()&&!target.mkdirs())throw new IOException("Cannot create diagnostics folder");
                 directory=target;environment=shortText(details,2048);
                 previous=read(new File(target,"session.txt"));
-                trace.clear();traceChars=0;revision++;
+                trace.clear();memoryTrace.clear();traceChars=0;lastPeriodicMemoryNanos=0;revision++;
                 if(!previous.isEmpty())atomic(new File(target,"previous-session.txt"),previous);
                 else previous="No previous session trace available.";
             }catch(IOException e){writeFailure=e.getClass().getSimpleName();}
@@ -70,6 +74,10 @@ public final class SupportDiagnostics {
         try { synchronized(LOCK){
             String line=System.currentTimeMillis()+" "+shortText(kind,80)+" "+shortText(detail,700).replace('\n',' ');
             trace.addLast(line);traceChars+=line.length()+1;
+            if ("memory.sample".equals(kind)) {
+                memoryTrace.addLast(line);
+                while (memoryTrace.size()>MEMORY_EVENTS) memoryTrace.removeFirst();
+            }
             while(trace.size()>EVENTS || traceChars>14000)traceChars-=trace.removeFirst().length()+1;
             revision++;
             if(directory!=null&&!scheduled){scheduled=true;writer.execute(SupportDiagnostics::drain);}
@@ -87,6 +95,15 @@ public final class SupportDiagnostics {
             writeFailure="Memory diagnostic capture unavailable";
         }
     }
+    /** On the render thread, sample at most once every 30 wall-clock seconds.
+     * Avoids per-frame allocations, forced GC and any reads of player history. */
+    public static void periodicMemoryEvent(){
+        long now=System.nanoTime();
+        if (lastPeriodicMemoryNanos!=0 && now-lastPeriodicMemoryNanos>=0
+                && now-lastPeriodicMemoryNanos<MEMORY_INTERVAL_NANOS) return;
+        lastPeriodicMemoryNanos=now;
+        memoryEvent("game.active");
+    }
     public static void error(Throwable error){
         if(error==null)return;
         try {
@@ -102,6 +119,9 @@ public final class SupportDiagnostics {
         StringBuilder out=new StringBuilder("APD diagnostic session v1\n").append(environment).append('\n');
         Runtime r=Runtime.getRuntime();
         out.append("Java heap bytes: used=").append(r.totalMemory()-r.freeMemory()).append(" committed=").append(r.totalMemory()).append(" limit=").append(r.maxMemory()).append('\n');
+        out.append("MEMORY HISTORY (bounded, most recent first not guaranteed by crash)\n");
+        for(String line:memoryTrace)out.append(line).append('\n');
+        out.append("RECENT EVENTS\n");
         for(String line:trace)out.append(line).append('\n');
         return shortText(out.toString(),LIMIT);
     }

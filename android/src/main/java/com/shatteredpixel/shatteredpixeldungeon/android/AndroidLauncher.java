@@ -194,6 +194,7 @@ public class AndroidLauncher extends AndroidApplication {
 	@Override
 	protected void onResume() {
 		com.watabou.utils.SupportDiagnostics.event("activity.resume", "");
+		com.watabou.utils.SupportDiagnostics.memoryEvent("activity.resume");
 		//prevents weird rare cases where the app is running twice
 		if (instance != this){
 			finishAndRemoveTask();
@@ -209,11 +210,13 @@ public class AndroidLauncher extends AndroidApplication {
 
     @Override protected void onPause() {
         com.watabou.utils.SupportDiagnostics.event("activity.pause", "");
+        com.watabou.utils.SupportDiagnostics.memoryEvent("activity.pause");
         super.onPause();
     }
 
     @Override public void onTrimMemory(int level) {
         com.watabou.utils.SupportDiagnostics.event("android.trim_memory", "level="+level);
+        com.watabou.utils.SupportDiagnostics.memoryEvent("android.trim_memory");
         super.onTrimMemory(level);
     }
 
