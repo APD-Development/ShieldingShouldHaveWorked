@@ -232,6 +232,9 @@ public final class ArchiveManifest {
 			}
 		}
 		if (!header) throw new IllegalArgumentException("this is not an APD history archive");
+		// The format-1 container version is essential to identifying the raw log format.
+		// Unlike optional source descriptors, the writer always supplies this record.
+		if (!containerSeen) throw new IllegalArgumentException("the manifest has no container metadata");
 		long total = 0;
 		for (Entry e : m.files){
 			//A valid checksum must not let an impossible file-size sum wrap into a plausible total.
