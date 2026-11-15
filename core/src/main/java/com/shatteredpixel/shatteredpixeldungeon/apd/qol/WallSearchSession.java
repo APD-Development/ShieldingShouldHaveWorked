@@ -64,7 +64,7 @@ public final class WallSearchSession {
     }
     public boolean select(Hero hero,int cell){
         Level l=Dungeon.level;
-        if(hero==null||!hero.isAlive()||!hero.ready||l==null||cell<0||cell>=l.length()||!l.heroFOV[cell]||!DoorSearchEligibility.candidate(l,cell)||!covers(hero,l,hero.pos,cell))return false;
+        if(hero==null||!hero.isAlive()||!hero.ready||l==null||!DoorSearchEligibility.supportsDoors(l)||cell<0||cell>=l.length()||!l.heroFOV[cell]||!DoorSearchEligibility.candidate(l,cell)||!covers(hero,l,hero.pos,cell))return false;
         // Target selection is not a licence to search distant walls from a room center.
         if(SearchControlContext.insideGeneratedRoom(l,hero.pos)||SearchControlContext.openRoomInterior(hero,l))return false;
         if(!matches(l)||anchor!=hero.pos||target!=cell)begin(hero,cell);return true;
