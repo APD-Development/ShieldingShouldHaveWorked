@@ -104,7 +104,7 @@ public class ReportExportWorkerFailureTest {
             assertEquals(1, completions.get());
             assertTrue(result[0], result[0].startsWith("Saved"));
             assertTrue(stream.closed);
-            assertTrue(stream.toString(StandardCharsets.UTF_8.name()).contains("Worker test"));
+            assertTrue(stream.toString(StandardCharsets.UTF_8.name()).contains("WORKER TEST"));
         } finally { ApdFiles.provider = previous; }
     }
 
