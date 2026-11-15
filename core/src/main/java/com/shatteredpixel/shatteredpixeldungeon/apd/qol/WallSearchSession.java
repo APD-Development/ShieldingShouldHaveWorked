@@ -65,6 +65,8 @@ public final class WallSearchSession {
     public boolean select(Hero hero,int cell){
         Level l=Dungeon.level;
         if(hero==null||!hero.isAlive()||!hero.ready||l==null||cell<0||cell>=l.length()||!l.heroFOV[cell]||!DoorSearchEligibility.candidate(l,cell)||!covers(hero,l,hero.pos,cell))return false;
+        // Target selection is not a licence to search distant walls from a room center.
+        if(SearchControlContext.openRoomInterior(hero,l)||DoorSearchEligibility.insideGatedRoom(l,hero.pos))return false;
         if(!matches(l)||anchor!=hero.pos||target!=cell)begin(hero,cell);return true;
     }
     public void searched(Hero hero){
@@ -77,6 +79,7 @@ public final class WallSearchSession {
         if(hero==null||!hero.isAlive()||!hero.ready)return "Wait until you can act.";
         if(!matches(l))return "The saved search is on another floor or is no longer available.";
         if(!DoorSearchEligibility.supportsDoors(l))return "Hidden doors do not generate on this floor. Ordinary Search still works.";
+        if(!SearchControlContext.hasMeaningfulWall(hero,l))return "No meaningful wall to search here. Ordinary Search still works.";
         if(target>=0&&!DoorSearchEligibility.couldHaveDoor(l,target))return "The saved tile cannot be a doorway. Ordinary Search still works.";
         if(hero.visibleEnemies()>0)return "An enemy is visible. Your search position is still remembered.";
         if(hero.rooted||hero.paralysed>0||l.locked)return "You cannot return to the search position right now.";
