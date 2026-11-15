@@ -198,8 +198,8 @@ public class SearchControlContextTest {
 
     private void select(Action action) throws Exception { choose.invoke(null, hero, level, action); }
 
-    @Test public void openAreaPutsSearchFirstAndRetainsEverySavedOption() {
-        assertArrayEquals(new Action[]{Action.SEARCH, Action.WALL_SEARCH, Action.SHOW_SAVED, Action.FORGET, Action.CANCEL},
+    @Test public void openAreaPutsSearchFirstAndRetainsSavedManagementWithoutWallAction() {
+        assertArrayEquals(new Action[]{Action.SEARCH, Action.SHOW_SAVED, Action.FORGET, Action.CANCEL},
                 SearchControlContext.choices(hero, level));
         assertTrue(hero.wallSearch.exists());
         assertNull(hero.curAction);
@@ -208,7 +208,7 @@ public class SearchControlContextTest {
 
     @Test public void chooserReturnsFreshOrderAfterCallerChangesItsArrayAndMemoryState() {
         Action[] first = SearchControlContext.choices(hero, level);
-        assertArrayEquals(new Action[]{Action.SEARCH, Action.WALL_SEARCH,
+        assertArrayEquals(new Action[]{Action.SEARCH,
                 Action.SHOW_SAVED, Action.FORGET, Action.CANCEL}, first);
         first[0] = Action.CANCEL;
         first[1] = Action.CANCEL;
@@ -294,8 +294,8 @@ public class SearchControlContextTest {
             assertEquals(2f, hero.cooldown(), 0f);
             assertEquals("ordinary Search in room center must not record distant wall search",
                     false, level.searchedWalls.attempted(wall));
-            assertTrue("normal Search still increments the remembered search count",
-                    hero.wallSearch.searches() > 0);
+            assertEquals("normal Search in the room center must not create a wall-search investigation",
+                    1, hero.wallSearch.searches());
             // A completed paid Search rightly keeps its negative doorway evidence.
             // Reset only this disposable test floor to inspect a fresh adjacent wall.
             level.searchedWalls.clear();
@@ -307,6 +307,50 @@ public class SearchControlContextTest {
                     level.searchedWalls.attempted(wall));
             assertEquals("Two paid searches retain their four total turns",
                     4f, hero.cooldown(), 0f);
+        } finally {
+            SPDSettings.adaptiveSearchChoice(priorChoice);
+            Dungeon.depth = priorDepth;
+            hero.pos = at(10, 10);
+            level.setRooms();
+        }
+    }
+
+    @Test public void floorTwelveOpenRoomCenterCannotOfferOrStartWallSearch() throws Exception {
+        int priorDepth = Dungeon.depth;
+        boolean priorChoice = SPDSettings.adaptiveSearchChoice();
+        try {
+            Dungeon.depth = 12;
+            SPDSettings.adaptiveSearchChoice(true);
+            hero.wallSearch.searched(hero); // Represent a saved wall search from this floor.
+            EmptyRoom room = new EmptyRoom();
+            room.set(7, 7, 13, 13);
+            level.setRooms(room);
+            talents(HeroClass.ROGUE, false, 2);
+            int wall = candidate(3, 0);
+            assertTrue(WallSearchSession.covers(hero, level, hero.pos, wall));
+            assertTrue(SearchControlContext.openRoomInterior(hero, level));
+            assertFalse(SearchControlContext.hasMeaningfulWall(hero, level));
+            assertEquals(Action.SEARCH, SearchControlContext.preferred(hero, level));
+            assertArrayEquals(new Action[]{Action.SEARCH, Action.SHOW_SAVED, Action.FORGET, Action.CANCEL},
+                    SearchControlContext.choices(hero, level));
+            assertFalse("targeted wall search must not bypass open-room context",
+                    hero.wallSearch.select(hero, wall));
+            String remembered = memory();
+            String denied = hero.wallSearch.resume(hero);
+            assertNotNull("stale wall resume must fail in the open room", denied);
+            assertEquals(remembered, memory());
+            assertEquals(0f, hero.cooldown(), 0f);
+            select(Action.SEARCH);
+            assertEquals("normal Search still costs two turns", 2f, hero.cooldown(), 0f);
+            assertEquals("normal Search must preserve prior wall session", remembered, memory());
+            assertFalse("no wall mark at the room center", level.searchedWalls.attempted(wall));
+            // Moving beside the same observed wall restores contextual wall search.
+            hero.pos = at(12, 10);
+            hero.ready = true;
+            level.searchedWalls.clear();
+            assertFalse(SearchControlContext.openRoomInterior(hero, level));
+            assertTrue(SearchControlContext.hasMeaningfulWall(hero, level));
+            assertEquals(Action.WALL_SEARCH, SearchControlContext.preferred(hero, level));
         } finally {
             SPDSettings.adaptiveSearchChoice(priorChoice);
             Dungeon.depth = priorDepth;
@@ -440,7 +484,7 @@ public class SearchControlContextTest {
     @Test public void movementFirstWhenWallsAreIrrelevantStillKeepsBothSearchChoices() throws Exception {
         HeroAction.Move movement = new HeroAction.Move(hero.pos + 2);
         hero.lastAction = movement;
-        assertArrayEquals(new Action[]{Action.RESUME_MOVEMENT, Action.SEARCH, Action.WALL_SEARCH, Action.SHOW_SAVED, Action.FORGET, Action.CANCEL},
+        assertArrayEquals(new Action[]{Action.RESUME_MOVEMENT, Action.SEARCH, Action.SHOW_SAVED, Action.FORGET, Action.CANCEL},
                 SearchControlContext.choices(hero, level));
         candidate(1, 0);
         assertArrayEquals(new Action[]{Action.WALL_SEARCH, Action.SEARCH, Action.SHOW_SAVED, Action.RESUME_MOVEMENT, Action.FORGET, Action.CANCEL},
@@ -510,7 +554,7 @@ public class SearchControlContextTest {
         select(Action.SEARCH);
         assertEquals(2f, hero.cooldown(), 0f);
         assertEquals(1, hero.nextCalls);
-        assertEquals(2, hero.wallSearch.searches());
+        assertEquals("ordinary open-area Search must not create a wall-search session", 1, hero.wallSearch.searches());
         assertSame(movement, hero.lastAction);
         assertNull(hero.curAction);
     }
