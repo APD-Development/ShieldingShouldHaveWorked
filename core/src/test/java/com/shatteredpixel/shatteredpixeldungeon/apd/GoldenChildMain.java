@@ -35,6 +35,7 @@ public final class GoldenChildMain {
 			}
 		}
 
+		LegacyGeneration.withoutApdWeapons();
 		LevelGenerationHarness.historicalTutorialFingerprint = true;
 		if (record){
 			com.shatteredpixel.shatteredpixeldungeon.apd.recorder.ApdRecorder.configure(
