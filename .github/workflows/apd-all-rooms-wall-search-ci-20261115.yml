@@ -1,4 +1,5 @@
 name: APD generated-room wall search exclusion verification
+# Verify the floor-one fixture using visible geometry, not a hidden-door candidate.
 on:
   push:
     branches: [fix/apd466-all-generated-rooms-no-wall-search-20261115]
