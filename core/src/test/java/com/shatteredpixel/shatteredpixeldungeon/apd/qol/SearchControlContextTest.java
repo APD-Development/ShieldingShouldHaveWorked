@@ -424,16 +424,17 @@ public class SearchControlContextTest {
                         SearchControlContext.choices(hero, level));
                 assertNotNull("legacy wall resume anchored in a room is rejected",
                         hero.wallSearch.resume(hero));
+                float before = hero.cooldown();
                 select(Action.SEARCH);
                 assertFalse("no permanent wall mark inside " + room.getClass().getSimpleName(),
                         level.searchedWalls.attempted(wall));
-                assertEquals(2f, hero.cooldown(), 0f);
+                assertEquals("ordinary Search retains its two-turn cost",
+                        before + 2f, hero.cooldown(), 0f);
                 // Same room exclusion applies with the optional adaptive preference off.
                 SPDSettings.adaptiveSearchChoice(false);
                 assertFalse(SearchControlContext.hasMeaningfulWall(hero, level));
                 assertFalse(level.searchedWalls.attempted(wall));
                 SPDSettings.adaptiveSearchChoice(true);
-                hero.spend(-2f); // reset only disposable fixture action time
                 hero.ready = true;
             }
             // A corridor is outside room bounds, so genuine wall investigations survive.
