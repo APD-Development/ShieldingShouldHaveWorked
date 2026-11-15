@@ -23,6 +23,7 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.Room;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.CrystalChoiceRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.CrystalVaultRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.ArmoryRoom;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.LaboratoryRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.TreasuryRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.StorageRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.SpecialRoom;
@@ -280,8 +281,8 @@ public class SearchControlContextTest {
                     Action.SEARCH, SearchControlContext.preferred(hero, level));
             assertEquals(Action.SEARCH, SearchControlContext.choices(hero, level)[0]);
             hero.pos = at(11, 10);
-            assertEquals("beside eligible wall should still prefer Wall Search",
-                    Action.WALL_SEARCH, SearchControlContext.preferred(hero, level));
+            assertEquals("even near an eligible wall, generated rooms never offer Wall Search",
+                    Action.SEARCH, SearchControlContext.preferred(hero, level));
             SPDSettings.adaptiveSearchChoice(false);
             assertEquals("optional setting disables adaptive wall preference",
                     Action.SEARCH, SearchControlContext.preferred(hero, level));
@@ -316,9 +317,9 @@ public class SearchControlContextTest {
             level.searchedWalls.clear();
             hero.pos = at(11, 10);
             hero.ready = true; // The first paid search finished the prior action.
-            assertEquals(Action.WALL_SEARCH, SearchControlContext.preferred(hero, level));
+            assertEquals(Action.SEARCH, SearchControlContext.preferred(hero, level));
             select(Action.SEARCH);
-            assertTrue("adjacent eligible wall is recorded by the actual paid Search",
+            assertFalse("room searches must not create wall checkmarks",
                     level.searchedWalls.attempted(wall));
             assertEquals("Two paid searches retain their four total turns",
                     4f, hero.cooldown(), 0f);
@@ -357,13 +358,13 @@ public class SearchControlContextTest {
             assertFalse("ordinary Search still updates its remembered count", remembered.equals(memory()));
             assertEquals(2, hero.wallSearch.searches());
             assertFalse("no wall mark at the room center", level.searchedWalls.attempted(wall));
-            // Moving beside the same observed wall restores contextual wall search.
+            // Even the edge of a generated room remains a non-wall-search context.
             hero.pos = at(12, 10);
             hero.ready = true;
             level.searchedWalls.clear();
-            assertFalse(SearchControlContext.openRoomInterior(hero, level));
-            assertTrue(SearchControlContext.hasMeaningfulWall(hero, level));
-            assertEquals(Action.WALL_SEARCH, SearchControlContext.preferred(hero, level));
+            assertTrue(SearchControlContext.insideGeneratedRoom(level, hero.pos));
+            assertFalse(SearchControlContext.hasMeaningfulWall(hero, level));
+            assertEquals(Action.SEARCH, SearchControlContext.preferred(hero, level));
         } finally {
             SPDSettings.adaptiveSearchChoice(priorChoice);
             Dungeon.depth = priorDepth;
@@ -389,6 +390,70 @@ public class SearchControlContextTest {
         } finally {
             SPDSettings.adaptiveSearchChoice(prior);
             Dungeon.depth = priorDepth;
+            level.setRooms();
+        }
+    }
+
+    @Test public void everyGeneratedRoomTypeDisablesWallSearchButCorridorsRetainIt() throws Exception {
+        int priorDepth = Dungeon.depth;
+        boolean priorToggle = SPDSettings.adaptiveSearchChoice();
+        try {
+            Dungeon.depth = 13;
+            SPDSettings.adaptiveSearchChoice(true);
+            // All room types use the same structural rule, not a growing exception list.
+            for (Room room : new Room[]{new EmptyRoom(), new LaboratoryRoom(),
+                    new ArmoryRoom(), new StorageRoom(), new CrystalVaultRoom()}) {
+                clearTerrain();
+                room.set(7, 7, 13, 13);
+                level.setRooms(room);
+                hero.pos = at(12, 10); // Adjacent to the wall, not just the center.
+                hero.ready = true;
+                hero.wallSearch.clear();
+                hero.wallSearch.searched(hero);
+                talents(HeroClass.ROGUE, false, 2);
+                int wall = candidate(1, 0);
+                assertTrue("test wall must be geometrically eligible", DoorSearchEligibility.candidate(level, wall));
+                assertTrue("normal Rogue footprint still reaches the wall",
+                        WallSearchSession.covers(hero, level, hero.pos, wall));
+                assertTrue("room type " + room.getClass().getSimpleName(),
+                        SearchControlContext.insideGeneratedRoom(level, hero.pos));
+                assertFalse(SearchControlContext.hasMeaningfulWall(hero, level));
+                assertEquals(Action.SEARCH, SearchControlContext.preferred(hero, level));
+                assertFalse("no targeted wall investigation in rooms", hero.wallSearch.select(hero, wall));
+                assertArrayEquals(new Action[]{Action.SEARCH, Action.SHOW_SAVED, Action.FORGET, Action.CANCEL},
+                        SearchControlContext.choices(hero, level));
+                assertNotNull("legacy wall resume anchored in a room is rejected",
+                        hero.wallSearch.resume(hero));
+                select(Action.SEARCH);
+                assertFalse("no permanent wall mark inside " + room.getClass().getSimpleName(),
+                        level.searchedWalls.attempted(wall));
+                assertEquals(2f, hero.cooldown(), 0f);
+                // Same room exclusion applies with the optional adaptive preference off.
+                SPDSettings.adaptiveSearchChoice(false);
+                assertFalse(SearchControlContext.hasMeaningfulWall(hero, level));
+                assertFalse(level.searchedWalls.attempted(wall));
+                SPDSettings.adaptiveSearchChoice(true);
+                hero.spend(-2f); // reset only disposable fixture action time
+                hero.ready = true;
+            }
+            // A corridor is outside room bounds, so genuine wall investigations survive.
+            clearTerrain();
+            EmptyRoom separate = new EmptyRoom();
+            separate.set(3, 3, 7, 7);
+            level.setRooms(separate);
+            hero.pos = at(12, 10);
+            hero.ready = true;
+            hero.wallSearch.clear();
+            hero.wallSearch.searched(hero);
+            int corridorWall = candidate(1, 0);
+            assertFalse(SearchControlContext.insideGeneratedRoom(level, hero.pos));
+            assertTrue(DoorSearchEligibility.candidate(level, corridorWall));
+            assertTrue(SearchControlContext.hasMeaningfulWall(hero, level));
+            assertEquals(Action.WALL_SEARCH, SearchControlContext.preferred(hero, level));
+        } finally {
+            SPDSettings.adaptiveSearchChoice(priorToggle);
+            Dungeon.depth = priorDepth;
+            hero.pos = at(10, 10);
             level.setRooms();
         }
     }
@@ -675,7 +740,7 @@ public class SearchControlContextTest {
             assertEquals("Every completed Search spends precisely two normal turns",
                     timeBefore + 2f, hero.cooldown(), 0f);
         }
-        // Locking an ordinary room is not a license to suppress its wall markers.
+        // Ordinary rooms also exclude wall checkmarks; this is not gated-room-only.
         clearTerrain();
         int ordinaryWall = candidate(1, 0);
         EmptyRoom ordinary = new EmptyRoom();
@@ -685,7 +750,7 @@ public class SearchControlContextTest {
         assertFalse(DoorSearchEligibility.insideGatedRoom(level, hero.pos));
         assertFalse(SearchControlContext.openRoomInterior(hero, level));
         select(Action.SEARCH);
-        assertTrue(level.searchedWalls.attempted(ordinaryWall));
+        assertFalse(level.searchedWalls.attempted(ordinaryWall));
     }
 
     @Test public void existingForesightFootprintIsPreservedWithoutRevealingUnknownWalls() {
