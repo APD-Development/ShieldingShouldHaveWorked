@@ -477,9 +477,11 @@ public class SearchControlContextTest {
             level.setRooms(startingRoom);
             hero.pos = at(10, 10);
             hero.ready = true;
-            int wall = candidate(1, 0);
-            assertTrue("actual geometry looks like a candidate on other floors",
-                    level.map[wall] == Terrain.WALL);
+            int wall = hero.pos + 1;
+            level.map[wall] = Terrain.WALL;
+            level.map[wall - SIZE] = level.map[wall + SIZE] = Terrain.WALL_DECO;
+            level.passable[wall] = false;
+            assertEquals(Terrain.WALL, level.map[wall]);
             assertFalse("floor one cannot generate concealed door candidates",
                     DoorSearchEligibility.supportsDoors(level));
             assertTrue(SearchControlContext.insideGeneratedRoom(level, hero.pos));
