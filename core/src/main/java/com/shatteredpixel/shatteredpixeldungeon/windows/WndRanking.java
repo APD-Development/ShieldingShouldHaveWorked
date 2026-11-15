@@ -61,6 +61,7 @@ import com.watabou.noosa.Group;
 import com.watabou.noosa.Image;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.ui.Component;
+import com.shatteredpixel.shatteredpixeldungeon.ui.ScrollPane;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.DeviceCompat;
 
@@ -470,6 +471,7 @@ public class WndRanking extends WndTabbed {
 
 			camera = WndRanking.this.camera;
 
+			Component content = new Component();
 			float pos = 0;
 
 			for (int i=0; i < Challenges.NAME_IDS.length; i++) {
@@ -485,7 +487,7 @@ public class WndRanking extends WndTabbed {
 				}
 				cb.setRect( 0, pos, WIDTH-16, 15 );
 
-				add( cb );
+				content.add( cb );
 
 				IconButton info = new IconButton(Icons.get(Icons.INFO)){
 					@Override
@@ -497,10 +499,14 @@ public class WndRanking extends WndTabbed {
 					}
 				};
 				info.setRect(cb.right(), pos, 16, 15);
-				add(info);
+				content.add(info);
 
 				pos = cb.bottom();
 			}
+			content.setSize(WIDTH, pos);
+			ScrollPane list = new ScrollPane(content);
+			add(list);
+			list.setRect(0, 0, WIDTH, HEIGHT);
 		}
 
 	}
@@ -639,3 +645,4 @@ public class WndRanking extends WndTabbed {
 		}
 	}
 }
+

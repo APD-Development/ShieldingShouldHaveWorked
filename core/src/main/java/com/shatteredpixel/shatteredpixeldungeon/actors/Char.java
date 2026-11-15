@@ -25,6 +25,7 @@ import com.shatteredpixel.shatteredpixeldungeon.apd.recorder.ApdPlay;
 import com.shatteredpixel.shatteredpixeldungeon.apd.recorder.ApdCombat;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
+import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Electricity;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.StormCloud;
@@ -357,8 +358,10 @@ public abstract class Char extends Actor {
 		
 		pos = bundle.getInt( POS );
 		previousPos = bundle.getInt( PREV_POS );
-		HP = bundle.getInt( TAG_HP );
-		HT = bundle.getInt( TAG_HT );
+		//Clamp before restored buffs can observe or modify the hero's health.
+		boolean fixedHealth = this instanceof Hero && Dungeon.isChallenged(Challenges.GET_FUCKED);
+		HP = fixedHealth ? Math.min(1, bundle.getInt(TAG_HP)) : bundle.getInt(TAG_HP);
+		HT = fixedHealth ? 1 : bundle.getInt(TAG_HT);
 		
 		//effects put back from a save did not just begin
 		ApdPlay.restoreBegin();
@@ -1493,3 +1496,4 @@ public abstract class Char extends Actor {
 		return (ch != null && ch.properties().contains(p));
 	}
 }
+

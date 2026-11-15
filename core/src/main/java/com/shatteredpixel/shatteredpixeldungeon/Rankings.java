@@ -361,12 +361,13 @@ public enum Rankings {
 
 		Badges.loadLocal(data.getBundle(BADGES));
 
+		//Hero restoration must use this record's rules, not the previously viewed run's.
+		Dungeon.challenges = data.getInt(CHALLENGES);
 		Dungeon.hero = (Hero)data.get(HERO);
 		Dungeon.hero.belongings.identify();
 
 		Statistics.restoreFromBundle(data.getBundle(STATS));
 		
-		Dungeon.challenges = data.getInt(CHALLENGES);
 
 		Dungeon.initialVersion = data.getInt(GAME_VERSION);
 
@@ -610,3 +611,4 @@ public enum Rankings {
 		}
 	};
 }
+

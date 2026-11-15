@@ -23,6 +23,7 @@ package com.shatteredpixel.shatteredpixeldungeon.plants;
 
 import com.shatteredpixel.shatteredpixeldungeon.apd.recorder.ApdCombat;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Healing;
@@ -100,7 +101,8 @@ public class Sungrass extends Plant {
 				if (target.HP < target.HT) {
 
 					int apdHpBefore = target.HP;
-					target.HP += healThisTurn;
+					target.HP += Dungeon.isChallenged(Challenges.GET_FUCKED) && target instanceof Hero
+							? Math.min(healThisTurn, target.HT - target.HP) : healThisTurn;
 					target.sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(healThisTurn), FloatingText.HEALING);
 
 					if (target.HP >= target.HT) {
@@ -172,3 +174,4 @@ public class Sungrass extends Plant {
 		}
 	}
 }
+

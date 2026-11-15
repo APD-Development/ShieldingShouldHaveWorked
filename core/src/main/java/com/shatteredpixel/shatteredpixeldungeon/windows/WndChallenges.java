@@ -30,7 +30,9 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.CheckBox;
 import com.shatteredpixel.shatteredpixeldungeon.ui.IconButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Icons;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
+import com.shatteredpixel.shatteredpixeldungeon.ui.ScrollPane;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
+import com.watabou.noosa.ui.Component;
 
 import java.util.ArrayList;
 
@@ -61,7 +63,8 @@ public class WndChallenges extends Window {
 
 		boxes = new ArrayList<>();
 
-		float pos = TTL_HEIGHT;
+		Component content = new Component();
+		float pos = 0;
 		for (int i=0; i < Challenges.NAME_IDS.length; i++) {
 
 			final String challenge = Challenges.NAME_IDS[i];
@@ -75,7 +78,7 @@ public class WndChallenges extends Window {
 			}
 			cb.setRect( 0, pos, WIDTH-16, BTN_HEIGHT );
 
-			add( cb );
+			content.add( cb );
 			boxes.add( cb );
 			
 			IconButton info = new IconButton(Icons.get(Icons.INFO)){
@@ -88,12 +91,16 @@ public class WndChallenges extends Window {
 				}
 			};
 			info.setRect(cb.right(), pos, 16, BTN_HEIGHT);
-			add(info);
+			content.add(info);
 			
 			pos = cb.bottom();
 		}
 
-		resize( WIDTH, (int)pos );
+		content.setSize(WIDTH, pos);
+		ScrollPane list = new ScrollPane(content);
+		add(list);
+		list.setRect(0, TTL_HEIGHT, WIDTH, Math.min(pos, PixelScene.uiCamera.height - TTL_HEIGHT - 20));
+		resize(WIDTH, (int)list.bottom());
 	}
 
 	@Override
