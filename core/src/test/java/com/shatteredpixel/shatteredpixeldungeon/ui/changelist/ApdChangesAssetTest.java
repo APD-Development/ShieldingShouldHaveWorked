@@ -14,8 +14,19 @@ import java.nio.file.Paths;
 public class ApdChangesAssetTest {
 
 	static String asset() throws Exception {
-		Path p = Paths.get("src/main/assets/apd/changes.tsv");
-		if (!Files.exists(p)) p = Paths.get("core/src/main/assets/apd/changes.tsv");
+		Path p = null;
+		for (Path dir = Paths.get("").toAbsolutePath(); dir != null && p == null; dir = dir.getParent()){
+			for (String rel : new String[]{"src/main/assets/apd/changes.tsv", "core/src/main/assets/apd/changes.tsv"}){
+				if (Files.exists(dir.resolve(rel))) { p = dir.resolve(rel); break; }
+			}
+		}
+		if (p == null){
+			java.io.InputStream in = ApdChangesAssetTest.class.getClassLoader().getResourceAsStream("apd/changes.tsv");
+			assertNotNull("apd/changes.tsv not found", in);
+			byte[] b = new byte[1 << 20]; int n = 0, r;
+			while ((r = in.read(b, n, b.length - n)) > 0) n += r;
+			return new String(b, 0, n, StandardCharsets.UTF_8);
+		}
 		return new String(Files.readAllBytes(p), StandardCharsets.UTF_8);
 	}
 
