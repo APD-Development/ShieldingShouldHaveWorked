@@ -345,18 +345,29 @@ public class APDSettingsPane extends Component {
 
         final RedButton diagnosticReport=new SettingButton("Create bug report") {
             @Override protected void onClick() {
-                final com.watabou.noosa.Game engine=Game.instance;
-                final com.watabou.noosa.Scene owner=Game.scene();
-                enable(false);
-                com.shatteredpixel.shatteredpixeldungeon.apd.diagnostics.DiagnosticReport.export(message->Game.runOnRenderThread(()->{
-                    if(Game.instance!=engine || Game.scene()!=owner || parent==null)return;
-                    enable(true);owner.addToFront(new WndMessage(message));
-                }));
+                ShatteredPixelDungeon.scene().addToFront(new WndOptions(
+                        "Bug report type",
+                        "Standard keeps the original report. Extended also includes the chronological "
+                        +"in-game action history since the last successfully saved extended report, "
+                        +"plus time APD spent in the background. Review the saved file before sharing.",
+                        "Standard", "Extended") {
+                    @Override protected void onSelect(int index) {
+                        if(index!=0 && index!=1)return;
+                        final com.watabou.noosa.Game engine=Game.instance;
+                        final com.watabou.noosa.Scene owner=Game.scene();
+                        diagnosticReport.enable(false);
+                        com.shatteredpixel.shatteredpixeldungeon.apd.diagnostics.DiagnosticReport.export(
+                                message->Game.runOnRenderThread(()->{
+                                    if(Game.instance!=engine || Game.scene()!=owner || diagnosticReport.parent==null)return;
+                                    diagnosticReport.enable(true);owner.addToFront(new WndMessage(message));
+                                }),index==1);
+                    }
+                });
             }
         };
         add(diagnosticReport);btnDiagnosticReport=diagnosticReport;
         row(ApdSettingsSection.ADVANCED,diagnosticReport,
-                "Save a support file with build/device details, recent input and screen timings, errors, and memory readings. Saved games and run histories are not included.");
+                "Choose Standard (existing support report) or Extended (adds APD action chronology, touches, and time away). Review before sharing; no automatic upload.");
 
 		btnImport = new SettingButton( "Import APD rankings" ) {
 			@Override
