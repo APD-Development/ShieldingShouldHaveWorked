@@ -31,15 +31,18 @@ public class ExtendedBugJournalTest {
         File root=Files.createTempDirectory("apd-extended-consent-").toFile();
         SupportActionJournal.configure(root);
         SupportActionJournal.setEnabled(true);
-        SupportActionJournal.record("touch.UP","x=20 y=21");
-        SupportActionJournal.paused("GameScene");
-        Thread.sleep(20);
-        SupportActionJournal.resumed("GameScene");
-        String report=history();
-        assertTrue(report.contains("touch.UP x=20 y=21"));
-        assertTrue(report.contains("activity.background scene=GameScene"));
-        assertTrue(report.contains("activity.foreground scene=GameScene away_ms="));
-        SupportActionJournal.setEnabled(false);
+        try {
+            SupportActionJournal.record("touch.UP","x=20 y=21");
+            SupportActionJournal.paused("GameScene");
+            Thread.sleep(20);
+            SupportActionJournal.resumed("GameScene");
+            String report=history();
+            assertTrue(report.contains("touch.UP x=20 y=21"));
+            assertTrue(report.contains("activity.background scene=GameScene"));
+            assertTrue(report.contains("activity.foreground scene=GameScene away_ms="));
+        } finally {
+            SupportActionJournal.setEnabled(false);
+        }
         assertFalse(SupportActionJournal.enabled());
         assertFalse(new File(root,"action-history.txt").exists());
         assertFalse(history().contains("touch.UP"));
