@@ -1,4 +1,5 @@
 name: APD C488/P488 maximum-compressed Extended reports
+# Exact source rerun with updated C488 success message regression.
 on:
   push:
     branches: [chatgpt/apd488-maximum-compressed-reports-20261116]
