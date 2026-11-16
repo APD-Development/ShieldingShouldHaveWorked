@@ -104,10 +104,14 @@ public final class SupportActionJournal {
         return value.length() > limit ? value.substring(0, limit) + " [truncated]" : value;
     }
 
+    //APD: one formatter, always used under LOCK, instead of a new one per journal line
+    private static final SimpleDateFormat STAMP = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.ROOT);
+    static { STAMP.setTimeZone(TimeZone.getTimeZone("UTC")); }
+
     private static String line(Entry e) {
-        SimpleDateFormat stamp = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.ROOT);
-        stamp.setTimeZone(TimeZone.getTimeZone("UTC"));
-        return stamp.format(new Date(e.time)) + " " + e.kind + " " + e.detail + "\n";
+        synchronized (LOCK) {
+            return STAMP.format(new Date(e.time)) + " " + e.kind + " " + e.detail + "\n";
+        }
     }
 
     private static void flushLocked() throws IOException {

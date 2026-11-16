@@ -35,6 +35,9 @@ public final class SupportDiagnostics {
     private static String environment="Not initialized",previous="No previous session trace available.";
     private static String writeFailure="";
     private static long revision;
+    //APD: the trace file is rewritten at most once a second; important events flush at once
+    private static final long WRITE_INTERVAL_MILLIS=1000;
+    private static boolean flushNow;
     private static int traceChars;
     private static final java.util.concurrent.atomic.AtomicLong inputIds=new java.util.concurrent.atomic.AtomicLong();
     public static volatile java.util.function.Supplier<String> platformSnapshot=()->"Platform details unavailable.";
@@ -98,6 +101,11 @@ public final class SupportDiagnostics {
             }
             while(trace.size()>EVENTS || traceChars>14000)traceChars-=trace.removeFirst().length()+1;
             revision++;
+            if (kind != null && (kind.equals("error") || kind.equals("game.pause") || kind.equals("activity.pause")
+                    || kind.equals("android.low_memory") || kind.equals("android.trim_memory")
+                    || kind.equals("report.requested") || kind.equals("process.start"))) {
+                flushNow=true;LOCK.notifyAll();
+            }
             if(directory!=null&&!scheduled){scheduled=true;writer.execute(SupportDiagnostics::drain);}
         }
         } catch(RuntimeException | OutOfMemoryError unavailable) { writeFailure="Diagnostic capture unavailable"; }
@@ -156,7 +164,17 @@ public final class SupportDiagnostics {
             synchronized(LOCK){target=directory;contents=snapshot();written=revision;}
             try{atomic(new File(target,"session.txt"),contents);}
             catch(IOException e){synchronized(LOCK){writeFailure=e.getClass().getSimpleName();}}
-            synchronized(LOCK){if(written==revision){scheduled=false;LOCK.notifyAll();return;}}
+            synchronized(LOCK){
+                if(written==revision){scheduled=false;flushNow=false;LOCK.notifyAll();return;}
+                //more events arrived: coalesce them for up to a second instead of rewriting at once
+                long until=System.currentTimeMillis()+WRITE_INTERVAL_MILLIS;
+                while(!flushNow){
+                    long left=until-System.currentTimeMillis();
+                    if(left<=0)break;
+                    try{LOCK.wait(left);}catch(InterruptedException interrupted){Thread.currentThread().interrupt();break;}
+                }
+                flushNow=false;
+            }
         }
         } catch(RuntimeException | OutOfMemoryError unavailable) { synchronized(LOCK){writeFailure="Diagnostic writer unavailable";scheduled=false;LOCK.notifyAll();} }
     }
@@ -206,6 +224,6 @@ public final class SupportDiagnostics {
     }
     public static boolean awaitWrites(long millis)throws InterruptedException {
         long deadline=System.currentTimeMillis()+millis;
-        synchronized(LOCK){while(scheduled){long left=deadline-System.currentTimeMillis();if(left<=0)return false;LOCK.wait(left);}return true;}
+        synchronized(LOCK){flushNow=true;LOCK.notifyAll();while(scheduled){long left=deadline-System.currentTimeMillis();if(left<=0)return false;LOCK.wait(left);}return true;}
     }
 }

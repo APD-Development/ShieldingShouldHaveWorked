@@ -154,7 +154,11 @@ public class PointerEvent {
 	}
 	
 	public static synchronized void addPointerEvent( PointerEvent event ){
-		if(event.type!=Type.HOVER)com.watabou.utils.SupportDiagnostics.input("queued","touch."+event.type,event.diagnosticId,event.queuedNanos,event.sourceEventNanos);
+		//APD: a moving finger queues a DOWN every frame; tracing each one rewrote the diagnostic
+		//file continuously while dragging. Trace only the first press, release and cancel.
+		boolean dragStep = event.type == Type.DOWN && activePointers.containsKey(event.id)
+				&& activePointers.get(event.id).type == Type.DOWN;
+		if(event.type!=Type.HOVER && !dragStep)com.watabou.utils.SupportDiagnostics.input("queued","touch."+event.type,event.diagnosticId,event.queuedNanos,event.sourceEventNanos);
 		pointerEvents.add( event );
 	}
 
@@ -185,11 +189,11 @@ public class PointerEvent {
 			if (p.type == Type.HOVER){
 				continue;
 			}
-			com.watabou.utils.SupportDiagnostics.input("dispatched","touch."+p.type,p.diagnosticId,p.queuedNanos,p.sourceEventNanos);
-            //APD: a finger held down sends a DOWN every frame while it moves; journal only
-            //the first press, the release and cancels, not every drag step.
+            //APD: a finger held down sends a DOWN every frame while it moves; trace and journal
+            //only the first press, the release and cancels, not every drag step.
             boolean dragStep = p.type == Type.DOWN && activePointers.containsKey(p.id)
                     && activePointers.get(p.id).type == Type.DOWN;
+            if (!dragStep) com.watabou.utils.SupportDiagnostics.input("dispatched","touch."+p.type,p.diagnosticId,p.queuedNanos,p.sourceEventNanos);
             if (!dragStep) com.watabou.utils.SupportActionJournal.record("touch."+p.type,
                     "id="+p.diagnosticId+" pointer="+p.id+" x="+(int)p.current.x+" y="+(int)p.current.y);
 			clearKeyboardThisPress = true;
