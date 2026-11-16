@@ -31,7 +31,7 @@ public final class DiagnosticReport {
     public static void export(Listener listener) { export(listener, false); }
 
     public static void export(Listener listener, boolean extended){
-        SupportDiagnostics.event("report.requested",extended?"extended":"standard");
+        SupportDiagnostics.event("report.requested",extended?"extended":"");
         SimpleDateFormat date=new SimpleDateFormat("yyyyMMdd-HHmmss",Locale.ROOT);date.setTimeZone(TimeZone.getTimeZone("UTC"));
         String name="APD-diagnostic-"+(extended?"extended-":"")+date.format(new Date())+"-UTC.txt";
         // Platform pickers may fail before calling any ExportTarget callback. Report
@@ -48,19 +48,20 @@ public final class DiagnosticReport {
                 launchExportWorker(stream, once, ()->{
                     String result="The diagnostic report could not be saved.";
                     SupportActionJournal.Checkpoint checkpoint=null;
-                    boolean written=false;
+                    boolean failed=false;
                     try(OutputStream out=stream){
                         if(extended) checkpoint=SupportActionJournal.checkpoint();
                         out.write(SupportDiagnostics.report().getBytes(StandardCharsets.UTF_8));
                         if(extended) SupportActionJournal.export(out,checkpoint);
                         out.flush();
-                        written=true;
                     }catch(IOException|RuntimeException error){
+                        failed=true;
                         result="The diagnostic report could not be saved: "+error.getClass().getSimpleName();
                     }catch(OutOfMemoryError exhausted){
+                        failed=true;
                         result="The diagnostic report could not be saved because memory was exhausted during export.";
                     }
-                    if(written){
+                    if(!failed){
                         result="Diagnostic report saved. You can attach this file to your bug report.\n\n"+displayName;
                         if(extended){
                             try { SupportActionJournal.acknowledge(checkpoint); }
