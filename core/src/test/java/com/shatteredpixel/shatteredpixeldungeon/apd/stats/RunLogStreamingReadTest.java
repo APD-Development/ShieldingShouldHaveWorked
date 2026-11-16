@@ -279,6 +279,71 @@ public class RunLogStreamingReadTest {
 		}
 	}
 
+
+	@Test
+	public void streamedHeaderExactLengthsMatchBufferedReaderUpToMaximum() throws Exception {
+		int[] buildLengths = {0, 1, 127, 128, 2048, 4089};
+		for (int buildLength : buildLengths){
+			StringBuilder build = new StringBuilder();
+			for (int i = 0; i < buildLength; i++) build.append('b');
+			byte[] header = LogHeader.encode(TelemetryVersion.CURRENT, 1, "x", build.toString());
+			if (buildLength == 4089){
+				assertEquals(LogFormat.MAX_HEADER_BODY + LogFormat.MAGIC.length + 7, header.length);
+			}
+			byte[] seal = LogFormat.sealFrame(0, 0);
+			File file = new File(tmp.getRoot(), "header-" + buildLength + ".apdlog");
+			FileOutputStream out = new FileOutputStream(file);
+			try {
+				out.write(header);
+				out.write(seal);
+			} finally {
+				out.close();
+			}
+			ReadResult buffered = RunLogReader.parse(LogTestSupport.bytes(file));
+			ReadResult streamed = RunLogReader.read(file);
+			assertEquals(ReadStatus.SEALED, streamed.status);
+			assertEquals(header.length, streamed.header.length);
+			assertEquals(build.toString(), streamed.header.writerBuild);
+			assertEquivalent(buffered, streamed);
+		}
+	}
+
+	@Test
+	public void streamedHeaderTruncationAndFutureFormatMatchBufferedReader() throws Exception {
+		StringBuilder build = new StringBuilder();
+		for (int i = 0; i < 2048; i++) build.append('h');
+		byte[] header = LogHeader.encode(TelemetryVersion.CURRENT, 1234, "header-trunc", build.toString());
+		int[] endOffsets = {0, 1, 4, 5, 6, 7, 8, 24, header.length - 5,
+				header.length - 4, header.length - 3, header.length - 1};
+		for (int i = 0; i < endOffsets.length; i++){
+			byte[] truncated = Arrays.copyOf(header, endOffsets[i]);
+			File file = new File(tmp.getRoot(), "header-cut-" + i + ".apdlog");
+			FileOutputStream out = new FileOutputStream(file);
+			try {
+				out.write(truncated);
+			} finally {
+				out.close();
+			}
+			ReadResult buffered = RunLogReader.parse(truncated);
+			ReadResult streamed = RunLogReader.read(file);
+			assertEquals(ReadStatus.BAD_HEADER, streamed.status);
+			assertEquivalent(buffered, streamed);
+		}
+
+		byte[] future = Arrays.copyOf(header, header.length);
+		future[LogFormat.MAGIC.length] = (byte) (LogFormat.CONTAINER_FORMAT + 1);
+		File file = new File(tmp.getRoot(), "future-header.apdlog");
+		FileOutputStream out = new FileOutputStream(file);
+		try {
+			out.write(future);
+		} finally {
+			out.close();
+		}
+		ReadResult streamed = RunLogReader.read(file);
+		assertEquals(ReadStatus.UNSUPPORTED_CONTAINER, streamed.status);
+		assertEquivalent(RunLogReader.parse(future), streamed);
+	}
+
 	private static void assertEquivalent( ReadResult expected, ReadResult actual ){
 		assertEquals(expected.status, actual.status);
 		assertEquals(expected.problem, actual.problem);
