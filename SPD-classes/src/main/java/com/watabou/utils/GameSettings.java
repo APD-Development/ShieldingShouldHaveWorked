@@ -121,21 +121,25 @@ public class GameSettings {
 	public static void put( String key, int value ) {
 		get().putInteger(key, value);
 		get().flush();
+		SupportActionJournal.record("setting.changed", "key="+key+" value="+value);
 	}
 
 	public static void put( String key, long value ) {
 		get().putLong(key, value);
 		get().flush();
+		SupportActionJournal.record("setting.changed", "key="+key+" value="+value);
 	}
 	
 	public static void put( String key, boolean value ) {
 		get().putBoolean(key, value);
 		get().flush();
+		SupportActionJournal.record("setting.changed", "key="+key+" value="+value);
 	}
 	
 	public static void put( String key, String value ) {
 		get().putString(key, value);
 		get().flush();
+		SupportActionJournal.record("setting.text", "key="+key+" value="+"[redacted]");
 	}
 	
 }
