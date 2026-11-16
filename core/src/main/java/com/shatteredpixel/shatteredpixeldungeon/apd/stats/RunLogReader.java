@@ -76,9 +76,11 @@ public final class RunLogReader {
 			// Import identity scans can reuse frame storage when lengths match.
 			// Default readers continue using independent frame buffers.
 			byte[] reusablePayload = null;
+			// One per-reader checksum accumulator for every frame, including identity-only imports.
+			CRC32 crc = new CRC32();
 
 			while (!ended){
-				FrameResult f = readFrame(in, pos, options.onlyRunStartEvents ? reusablePayload : null);
+				FrameResult f = readFrame(in, pos, options.onlyRunStartEvents ? reusablePayload : null, crc);
 				if (f == null) break;
 				if (f.ok){
 					try {
@@ -254,7 +256,7 @@ public final class RunLogReader {
 	}
 
 	//Streaming counterpart used by ordinary file reads. Returns null only for clean EOF between frames.
-	private static FrameResult readFrame( InputStream in, long pos, byte[] reusable ) throws IOException {
+	private static FrameResult readFrame( InputStream in, long pos, byte[] reusable, CRC32 crc ) throws IOException {
 		int marker = in.read();
 		if (marker < 0) return null;
 		if (marker != LogFormat.SYNC){
@@ -265,7 +267,7 @@ public final class RunLogReader {
 			return FrameResult.failure(ReadStatus.TRUNCATED, "file ends inside the frame header at " + pos);
 		}
 
-		CRC32 crc = new CRC32();
+		crc.reset();
 		crc.update(type);
 		// Decode the length as it arrives instead of allocating a temporary
 		// byte stream, copied byte array and ByteSource for every frame.
@@ -305,12 +307,15 @@ public final class RunLogReader {
 			return FrameResult.failure(ReadStatus.TRUNCATED, "file ends inside the frame at " + pos);
 		}
 		crc.update(payload, 0, payload.length);
-		byte[] checksum = new byte[4];
-		if (!readExact(in, checksum)){
-			return FrameResult.failure(ReadStatus.TRUNCATED, "file ends inside the frame at " + pos);
+		// Read the checksum directly: no four-byte array per frame.
+		long stored = 0;
+		for (int i = 0; i < 4; i++){
+			int next = in.read();
+			if (next < 0){
+				return FrameResult.failure(ReadStatus.TRUNCATED, "file ends inside the frame at " + pos);
+			}
+			stored = (stored << 8) | (next & 0xFFL);
 		}
-		long stored = ((checksum[0] & 0xFFL) << 24) | ((checksum[1] & 0xFFL) << 16)
-				| ((checksum[2] & 0xFFL) << 8) | (checksum[3] & 0xFFL);
 		if (crc.getValue() != stored){
 			return FrameResult.failure(ReadStatus.CORRUPT, "checksum mismatch in the frame at " + pos);
 		}
