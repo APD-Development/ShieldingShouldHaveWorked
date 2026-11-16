@@ -71,7 +71,7 @@ public class QuestBossClassificationTest {
         assertEquals("Classification changes must invalidate old derived rows",18,RowBuilders.BUILDER_VERSION);
         File root=tmp.newFolder();File file=log(root,"finished",true);byte[] original=Files.readAllBytes(file.toPath());
         DatasetStore store=new DatasetStore(root);assertBosses(store.load(),"finished",true);
-        File cache=new File(store.rowsDir(),"runs-finished.apdr");byte[] bytes=Files.readAllBytes(cache.toPath());
+        File cache=new File(store.rowsDir(),"runs-finished.apdr");byte[] bytes=com.shatteredpixel.shatteredpixeldungeon.apd.query.DatasetStore.plainCache(Files.readAllBytes(cache.toPath()));
         Map<String,DatasetDef> defs=new LinkedHashMap<>();for(Dataset dataset:store.load().datasets())defs.put(dataset.def.id,dataset.def);
         LogRows oldRows=RowCodec.decode(bytes,file.length(),defs);assertNotNull(oldRows);
         for(Row row:oldRows.rows.get(Datasets.ENEMIES))row.setNum(defs.get(Datasets.ENEMIES).indexOf("enemy.boss"),0,Fact.PROV_RECORDED);

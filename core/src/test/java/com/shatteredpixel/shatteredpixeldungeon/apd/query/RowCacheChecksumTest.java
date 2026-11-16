@@ -27,10 +27,10 @@ public class RowCacheChecksumTest {
   Catalog warm=store.load();assertEquals(0,warm.logsRebuilt);assertEquals(1,warm.logsCached);assertArrayEquals(raw,Files.readAllBytes(files[0].toPath()));
  }
  @Test public void damagedAsciiCacheRebuildsFromUnchangedGenuineHistory() throws Exception {
-  File[] f=createHistory();byte[] raw=Files.readAllBytes(f[0].toPath());Files.write(f[1].toPath(),flipText(Files.readAllBytes(f[1].toPath()),"real-source"));rebuiltWithoutChangingSource(f,raw);
+  File[] f=createHistory();byte[] raw=Files.readAllBytes(f[0].toPath());Files.write(f[1].toPath(),flipText(DatasetStore.plainCache(Files.readAllBytes(f[1].toPath())),"real-source"));rebuiltWithoutChangingSource(f,raw);
  }
  @Test public void olderUnchecksummedCachesRebuildAndRemainWarmOnTheNextLoad() throws Exception {
-  File[] f=createHistory();byte[] raw=Files.readAllBytes(f[0].toPath()),current=Files.readAllBytes(f[1].toPath());
+  File[] f=createHistory();byte[] raw=Files.readAllBytes(f[0].toPath()),current=DatasetStore.plainCache(Files.readAllBytes(f[1].toPath()));
   byte[] old=current[4]==2?Arrays.copyOf(current,current.length-4):current.clone();old[4]=1;Files.write(f[1].toPath(),old);rebuiltWithoutChangingSource(f,raw);
  }
 }

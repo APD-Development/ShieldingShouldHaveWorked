@@ -161,7 +161,7 @@ public final class DatasetStore {
 				if (lr != null){
 					cat.logsCached++;
 					//APD: older uncompressed caches are rewritten compressed the first time they are used
-					if (!compressed) writeCache(cache, stored);
+					if (!compressed) writeCache(cache, gzip(stored));
 					return lr;
 				}
 			} catch (IOException | RuntimeException ignored){
@@ -176,7 +176,7 @@ public final class DatasetStore {
 			try {
 				if (sourceFingerprint != null && length == log.length()
 						&& Arrays.equals(sourceFingerprint, fingerprint(log, fingerprintBuffer)))
-					writeCache(cache, RowCodec.encode(lr, length, defs, sourceFingerprint));
+					writeCache(cache, gzip(RowCodec.encode(lr, length, defs, sourceFingerprint)));
 			} catch (IOException ignored) { /* The cache is optional; retain the actual parsed rows. */ }
 			return lr;
 		} catch (IOException | RuntimeException t){
@@ -195,6 +195,27 @@ public final class DatasetStore {
 			}
 		}
 		return digest.digest();
+	}
+
+	//APD: row caches are rebuildable copies, stored gzip-compressed (plain caches still load)
+	static byte[] gzip( byte[] data ){
+		try {
+			java.io.ByteArrayOutputStream bytes = new java.io.ByteArrayOutputStream(Math.max(1024, data.length / 4));
+			java.util.zip.GZIPOutputStream zip = new java.util.zip.GZIPOutputStream(bytes, 64 * 1024){
+				{ def.setLevel(java.util.zip.Deflater.BEST_COMPRESSION); }
+			};
+			zip.write(data);
+			zip.finish();
+			zip.close();
+			return bytes.toByteArray();
+		} catch (IOException impossible){
+			return data;
+		}
+	}
+
+	/** The decoded cache bytes, whether stored compressed or plain. */
+	public static byte[] plainCache( byte[] stored ) throws IOException {
+		return isGzip(stored) ? gunzip(stored) : stored;
 	}
 
 	public static boolean isGzip( byte[] data ){
@@ -235,12 +256,7 @@ public final class DatasetStore {
 			tmp = File.createTempFile(cache.getName() + ".", ".tmp", dir);
 			FileOutputStream out = new FileOutputStream(tmp);
 			try {
-				//APD: row caches are rebuildable copies; store them gzip-compressed
-				java.util.zip.GZIPOutputStream zip = new java.util.zip.GZIPOutputStream(out, 64 * 1024){
-					{ def.setLevel(java.util.zip.Deflater.BEST_COMPRESSION); }
-				};
-				zip.write(data);
-				zip.finish();
+				out.write(data);
 			} finally {
 				out.close();
 			}

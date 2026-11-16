@@ -33,7 +33,7 @@ public class BossMinionClassificationTest {
         assertNotBoss(store.load());
         File[] caches = store.rowsDir().listFiles((dir,name) -> name.endsWith(".apdr"));
         assertNotNull(caches); assertEquals(1, caches.length);
-        byte[] old = Files.readAllBytes(caches[0].toPath());
+        byte[] old = com.shatteredpixel.shatteredpixeldungeon.apd.query.DatasetStore.plainCache(Files.readAllBytes(caches[0].toPath()));
         old[5] = 8; // Persisted TEST50 row-builder revision, before corrected classification.
         Files.write(caches[0].toPath(), old);
         Catalog rebuilt = store.load();

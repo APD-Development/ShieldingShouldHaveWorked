@@ -40,7 +40,7 @@ public class RowCacheTextValidationTest {
   log.start("run-source",0,"WARRIOR","r1-aaaaaaaaaaaa",0,30,false).end(LifecycleEvents.OUTCOME_DIED,"Rat",1,1,0).close(true);
   byte[] raw=Files.readAllBytes(log.file.toPath());DatasetStore store=new DatasetStore(history.getRoot());store.load();
   File[] caches=store.rowsDir().listFiles((dir,name)->name.endsWith(".apdr"));assertNotNull(caches);assertEquals(1,caches.length);
-  Files.write(caches[0].toPath(),damage(Files.readAllBytes(caches[0].toPath()),"real-source"));
+  Files.write(caches[0].toPath(),damage(com.shatteredpixel.shatteredpixeldungeon.apd.query.DatasetStore.plainCache(Files.readAllBytes(caches[0].toPath())),"real-source"));
   Catalog rebuilt=store.load();assertEquals(1,rebuilt.logsRebuilt);assertEquals(0,rebuilt.logsCached);
   assertEquals(1,rebuilt.dataset(Datasets.RUNS).rows.size());assertArrayEquals(raw,Files.readAllBytes(log.file.toPath()));
  }
