@@ -116,6 +116,20 @@ public final class SearchControlContext {
         return room instanceof SpecialRoom;
     }
 
+    /** Search also reveals hidden traps. A room the player can already see traps in is
+     * worth a full search anywhere inside it. Decided only from traps already visible,
+     * so the button never leaks whether anything is hidden. */
+    public static boolean visibleTrapRoom(Hero hero, Level level) {
+        if (hero == null || !(level instanceof RegularLevel) || !((RegularLevel) level).apdHasRooms()
+                || level.traps == null || hero.pos < 0 || hero.pos >= level.length()) return false;
+        Room room = ((RegularLevel) level).room(hero.pos);
+        if (room == null) return false;
+        for (com.shatteredpixel.shatteredpixeldungeon.levels.traps.Trap trap : level.traps.valueList()) {
+            if (trap != null && trap.visible && trap.active && room.inside(level.cellToPoint(trap.pos))) return true;
+        }
+        return false;
+    }
+
     public static boolean hasMeaningfulWall(Hero hero, Level level) {
         if (hero == null || !completeObservedMetadata(level)
                 || hero.pos < 0 || hero.pos >= level.length()

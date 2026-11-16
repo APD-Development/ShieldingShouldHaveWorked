@@ -1076,4 +1076,31 @@ public class SearchControlContextTest {
             level.setRooms();
         }
     }
+    @Test public void visibleTrapsMakeTheWholeRoomWorthAFullSearchEvenWithoutDoors() {
+        int priorDepth = Dungeon.depth;
+        try {
+            Dungeon.depth = 1; // no hidden doors here, so only traps can make Search worthwhile
+            EmptyRoom room = new EmptyRoom();
+            room.set(7, 7, 13, 13);
+            level.setRooms(room);
+            level.traps = new SparseArray<>();
+            hero.pos = at(10, 10);
+            assertFalse(SearchControlContext.hasMeaningfulWall(hero, level));
+            assertFalse(SearchControlContext.visibleTrapRoom(hero, level));
+            // A hidden trap must never flip the decision (that would leak it).
+            level.setTrap(new com.shatteredpixel.shatteredpixeldungeon.levels.traps.WornDartTrap().hide(), at(8, 8));
+            assertFalse(SearchControlContext.visibleTrapRoom(hero, level));
+            // A visible trap outside the room does not count.
+            level.setTrap(new com.shatteredpixel.shatteredpixeldungeon.levels.traps.WornDartTrap().reveal(), at(3, 3));
+            assertFalse(SearchControlContext.visibleTrapRoom(hero, level));
+            // A visible trap in the hero's room does, anywhere in the room.
+            level.setTrap(new com.shatteredpixel.shatteredpixeldungeon.levels.traps.WornDartTrap().reveal(), at(12, 12));
+            assertTrue(SearchControlContext.visibleTrapRoom(hero, level));
+        } finally {
+            Dungeon.depth = priorDepth;
+            level.traps = new SparseArray<>();
+            level.setRooms();
+            hero.pos = at(10, 10);
+        }
+    }
 }
