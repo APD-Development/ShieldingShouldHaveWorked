@@ -1,10 +1,10 @@
-name: APD C478 P478 original-signer identity-only event-tail candidate build
+name: APD C478 P478 original-signer equal-sized frame reuse candidate build
 on:
   push:
-    branches: [chatgpt/apd-identity-frame-reuse-c477p477-20261116]
-    paths: [.github/workflows/apd-identity-frame-reuse-c477p477-20261116.yml]
+    branches: [chatgpt/apd-identity-frame-reuse-c478p478-20261116]
+    paths: [.github/workflows/apd-identity-frame-reuse-c478p478-20261116.yml]
 permissions: {contents: read}
-concurrency: {group: apd-identity-frame-reuse-c477p477-20261116, cancel-in-progress: false}
+concurrency: {group: apd-identity-frame-reuse-c478p478-20261116, cancel-in-progress: false}
 jobs:
   build-candidates:
     runs-on: ubuntu-latest
@@ -19,7 +19,7 @@ jobs:
         run: |
           set -euo pipefail
           git merge-base --is-ancestor 7c74bd99ee5f6eb492108224be239e3cd39e7fe2 HEAD
-          test "$(git diff --name-only 7c74bd99ee5f6eb492108224be239e3cd39e7fe2 HEAD)" = ".github/workflows/apd-identity-frame-reuse-c477p477-20261116.yml"
+          test "$(git diff --name-only 7c74bd99ee5f6eb492108224be239e3cd39e7fe2 HEAD)" = ".github/workflows/apd-identity-frame-reuse-c478p478-20261116.yml"
           echo "Production files exactly match verified source merge 7c74bd99; build workflow is the only additional change"
       - name: Assemble original-signer Developer and Alpha candidates from same source
         run: |
@@ -70,7 +70,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: success()
         with:
-          name: apd-identity-frame-reuse-original-signed-c477-p477
+          name: apd-identity-frame-reuse-original-signed-c478-p478
           path: deliverable/
           retention-days: 30
           if-no-files-found: error
