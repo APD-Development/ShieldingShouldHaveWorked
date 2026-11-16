@@ -73,9 +73,12 @@ public final class RunLogReader {
 			r.validBytes = pos;
 			ReadStatus firstFailure = null;
 			boolean ended = false;
+			// Import identity scans can reuse frame storage when lengths match.
+			// Default readers continue using independent frame buffers.
+			byte[] reusablePayload = null;
 
 			while (!ended){
-				FrameResult f = readFrame(in, pos);
+				FrameResult f = readFrame(in, pos, options.onlyRunStartEvents ? reusablePayload : null);
 				if (f == null) break;
 				if (f.ok){
 					try {
@@ -86,6 +89,8 @@ public final class RunLogReader {
 					}
 				}
 				if (f.ok){
+					// RUN_START payloads are copied and strings decoded before reuse.
+					if (options.onlyRunStartEvents) reusablePayload = f.payload;
 					pos = f.streamEnd;
 					r.validBytes = pos;
 					if (f.type == LogFormat.FRAME_SEAL) ended = true;
@@ -249,7 +254,7 @@ public final class RunLogReader {
 	}
 
 	//Streaming counterpart used by ordinary file reads. Returns null only for clean EOF between frames.
-	private static FrameResult readFrame( InputStream in, long pos ) throws IOException {
+	private static FrameResult readFrame( InputStream in, long pos, byte[] reusable ) throws IOException {
 		int marker = in.read();
 		if (marker < 0) return null;
 		if (marker != LogFormat.SYNC){
@@ -291,7 +296,9 @@ public final class RunLogReader {
 			return FrameResult.failure(ReadStatus.CORRUPT, "frame at " + pos + " claims " + len + " bytes");
 		}
 
-		byte[] payload = new byte[(int) len];
+		// Exact-size matching prevents stale bytes reaching ByteSource.
+		byte[] payload = reusable != null && reusable.length == (int) len
+				? reusable : new byte[(int) len];
 		if (!readExact(in, payload)){
 			return FrameResult.failure(ReadStatus.TRUNCATED, "file ends inside the frame at " + pos);
 		}
