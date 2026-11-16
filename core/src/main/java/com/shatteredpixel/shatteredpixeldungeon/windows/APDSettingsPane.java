@@ -345,6 +345,7 @@ public class APDSettingsPane extends Component {
 
         final RedButton diagnosticReport=new SettingButton("Create bug report") {
             @Override protected void onClick() {
+                final RedButton source=this;
                 ShatteredPixelDungeon.scene().addToFront(new WndOptions(
                         "Bug report type",
                         "Standard keeps the original report. Extended also includes the chronological "
@@ -355,11 +356,11 @@ public class APDSettingsPane extends Component {
                         if(index!=0 && index!=1)return;
                         final com.watabou.noosa.Game engine=Game.instance;
                         final com.watabou.noosa.Scene owner=Game.scene();
-                        diagnosticReport.enable(false);
+                        source.enable(false);
                         com.shatteredpixel.shatteredpixeldungeon.apd.diagnostics.DiagnosticReport.export(
                                 message->Game.runOnRenderThread(()->{
-                                    if(Game.instance!=engine || Game.scene()!=owner || diagnosticReport.parent==null)return;
-                                    diagnosticReport.enable(true);owner.addToFront(new WndMessage(message));
+                                    if(Game.instance!=engine || Game.scene()!=owner || source.parent==null)return;
+                                    source.enable(true);owner.addToFront(new WndMessage(message));
                                 }),index==1);
                     }
                 });
