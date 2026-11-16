@@ -1,5 +1,5 @@
 name: APD C488T/P488T trap-room search
-# Trap-room search fix on top of C488.
+# Trap-room search fix on top of C488 (rerun after test fix).
 on:
   push:
     branches: [fix/apd-trap-room-search-20261116]
