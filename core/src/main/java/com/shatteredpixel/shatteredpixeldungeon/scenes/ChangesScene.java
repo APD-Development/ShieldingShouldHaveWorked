@@ -156,40 +156,11 @@ public class ChangesScene extends PixelScene {
 			changeInfos.add(langWarn);
 		}
 		
-		switch (changesSelected){
-			case 0: default:
-				v4_X_Changes.addAllChanges(changeInfos);
-				break;
-			case 1:
-				v3_X_Changes.addAllChanges(changeInfos);
-				break;
-			case 2:
-				v2_X_Changes.addAllChanges(changeInfos);
-				break;
-			case 3:
-				v1_X_Changes.addAllChanges(changeInfos);
-				break;
-			case 4:
-				v0_9_X_Changes.addAllChanges(changeInfos);
-				break;
-			case 5:
-				v0_8_X_Changes.addAllChanges(changeInfos);
-				break;
-			case 6:
-				v0_7_X_Changes.addAllChanges(changeInfos);
-				break;
-			case 7:
-				v0_6_X_Changes.addAllChanges(changeInfos);
-				break;
-			case 8:
-				v0_5_X_Changes.addAllChanges(changeInfos);
-				v0_4_X_Changes.addAllChanges(changeInfos);
-				v0_3_X_Changes.addAllChanges(changeInfos);
-				v0_2_X_Changes.addAllChanges(changeInfos);
-				v0_1_X_Changes.addAllChanges(changeInfos);
-				Pixel_Dungeon_Changes.addAllChanges(changeInfos);
-				break;
-		}
+		//APD: tester-build history replaces the inherited SPD lists
+		String apdText = com.shatteredpixel.shatteredpixeldungeon.ui.changelist.ApdChanges.read();
+		java.util.ArrayList<String> apdTabs = com.shatteredpixel.shatteredpixeldungeon.ui.changelist.ApdChanges.tabs(apdText);
+		if (changesSelected < 0 || changesSelected >= apdTabs.size()) changesSelected = 0;
+		com.shatteredpixel.shatteredpixeldungeon.ui.changelist.ApdChanges.addTab(changeInfos, apdText, changesSelected);
 
 		ScrollPane list = new ScrollPane( new Component() ){
 
@@ -245,23 +216,9 @@ public class ChangesScene extends PixelScene {
 
 		float left = list.left()-4f;
 
-		if (changesSelected <= 3){
-
-			left = setupChangesSelectionButton(0, "v4.X", left, list.bottom(), 24);
-			left = setupChangesSelectionButton(1, "v3.X", left, list.bottom(), 24);
-			left = setupChangesSelectionButton(2, "v2.X", left, list.bottom(), 24);
-			left = setupChangesSelectionButton(3, "v1.X", left, list.bottom(), 24);
-			left = setupChangesSelectionButton(4, "PreRelease->", left, list.bottom(), 53);
-
-		} else {
-
-			left = setupChangesSelectionButton(3, "<-Release", left, list.bottom(), 40);
-			left = setupChangesSelectionButton(4, "v0.9", left, list.bottom(), 22);
-			left = setupChangesSelectionButton(5, "v0.8", left, list.bottom(), 22);
-			left = setupChangesSelectionButton(6, "v0.7", left, list.bottom(), 22);
-			left = setupChangesSelectionButton(7, "v0.6", left, list.bottom(), 22);
-			left = setupChangesSelectionButton(8, "v0.5-", left, list.bottom(), 23);
-
+		float tabW = apdTabs.isEmpty() ? 0 : (list.width()+8f) / apdTabs.size() + 2f;
+		for (int i = 0; i < apdTabs.size(); i++){
+			left = setupChangesSelectionButton(i, apdTabs.get(i), left, list.bottom(), tabW);
 		}
 
 		addToBack( BG );

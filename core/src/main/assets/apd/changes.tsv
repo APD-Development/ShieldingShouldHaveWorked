@@ -1,0 +1,127 @@
+# APD Change History. Tester builds only. Gaps between published builds are rebuilt from commit history.
+# Lines: TAB<t>label | MAJOR<t>title | BUILD<t>title | BTN<t>icon<t>title<t>body
+# Icons: i:NAME = Icons, c:NAME = ChangeIcons, s:NAME = ItemSpriteSheet. Body: \n = new line, **x** = highlight.
+TAB	480+
+MAJOR	Coming Soon
+BTN	i:NEWS	What's next	I'm working on this change history first. After that, the **Cleric Grudge** design and the leftover **talent description** audit are next.\n\nAnything marked "Developer build" only exists in my own test build until I say it's ready for Alpha Testers.
+MAJOR	APD 489
+BUILD	C489F / P489F (Nov 16)
+BTN	i:CHANGES	Change History	This screen! The **Changes** button now opens an SPD-style history of every APD tester build, grouped into tabs by build number.
+BTN	i:MAGNIFY	Search	Tapping the **magnifying glass** now searches anywhere in a room that still has a wall that could hide a door. It used to switch to Inspect unless you were standing next to that wall.\n\nRooms whose walls can't hide anything still tap to **Inspect**, and holding the button still does the opposite.
+BUILD	C489D / P489D (Nov 16)
+BTN	i:DISPLAY	Refresh rate	**Developer build only:** the game asks the phone for its **highest refresh rate** (144 Hz on the RedMagic). Bug reports record the rate that was asked for.
+BUILD	C489C / P489C (Nov 16)
+BTN	c:V061_BUGFIX	Bug Fixes	**Crashes:**\n- Fixed an **out-of-memory crash** during play. The Cleric Grudge was building the whole statistics catalog in the background. It now counts from a small per-run summary.\n- Fixed a crash when picking up an item with a **full backpack** (the swap window was built on the wrong thread).
+BTN	i:STATS	Developer tools	**Developer build only:**\n- A real-world **clock** in the top-right corner.\n- **Frame time** under the clock, updated every frame.\n- A **stutter probe** that logs every frame slower than 100 ms, with memory in use.\n- A **memory spike watcher** that records every thread when the heap jumps.
+MAJOR	APD 488
+BUILD	C488U / P488U (Nov 16)
+BTN	i:MAGNIFY	Search	**One rule for every search control.** The toolbar button, the chooser and the resume window all decide the same way: a full search is worth its turns near a wall that could hide a door, or in a room with **visible traps**.\n\nIn a trap room, tap now always searches and reveals hidden traps instead of falling back to Inspect.
+BTN	i:DATA	Storage & reports	- Rebuildable statistics caches are now **gzip-compressed**, so they take much less space.\n- The diagnostic journal no longer records every drag step. It keeps the **newest 8 MiB** instead of filling to 64 MiB.\n- The trace file is no longer rewritten on every drag frame.
+BUILD	C488T / P488T (Nov 16)
+BTN	i:INFO	Extended bug reports	Bug reports can now be **Standard** or **Extended**:\n- Extended reports include an **action journal** between reports: moves, attacks, waits, setting changes, scenes, errors and memory milestones. Typed text is never recorded.\n- It is **Off by default**. Turning it on shows the full privacy notice first, and turning it off erases the journal.\n- Extended reports are saved as a **maximum-compression ZIP**. Standard reports are unchanged.
+MAJOR	APD 486-487
+BUILD	C487 / P487 (Nov 16)
+BTN	i:INFO	Extended report candidate	First build with the opt-in **Extended bug report** and its action journal.
+BUILD	C486 / P486 (Nov 16)
+BTN	i:CHANGES	Combined build	This build merges two lines of work into one game:\n- **R7:** new weapons and shields, full-pack swap, throw aiming, Greater Metamorphosis and the adaptive magnifier.\n- **C485:** history, diagnostics and performance work, plus the newer seed-reuse scoring.\n\nPassed **3,540 tests** with nothing failing.
+BTN	c:V061_BUGFIX	History speedups	Reading saved run history is faster and uses less memory. It reuses buffers, checksums and frame storage instead of allocating new ones for every entry, and stops holding old events when a log reopens.
+TAB	466-485
+MAJOR	APD 466-485
+BUILD	C467-C485 (Nov 13-15)
+BTN	i:RANKINGS	Seed-reuse scoring	Replaying a seed you've already played lowers that run's score. The formula went through several versions (cubic, depth-weighted, exponential per floor, then **exact 3/5 per reuse**).\n\nAll saved runs were **corrected retroactively** to the current version.
+BTN	i:DATA	History import safety	Many fixes to importing and exporting run history:\n- Damaged, aliased or oversized archives are refused **without touching your existing history**.\n- Error messages stay short instead of dumping whole files.\n- Imports reuse memory instead of reading everything twice.
+BTN	i:INFO	Reports	- Markdown reports keep literal brackets, backticks and asterisks.\n- ZIP exports report their real size.\n- Report saving no longer leaks a file or finishes twice when a worker fails.\n- Diagnostic files always stay inside their own folder.
+BTN	i:STATS	Memory diagnostics	Android **memory-pressure** warnings are kept in the bug report's heap history, including across background/resume.
+BUILD	C466R4-R7 (Nov 15)
+BTN	s:KATANA	New weapons	**Katana family:** Tanto, Wakizashi, Tachi and Nodachi.\n**Shields, tiers 1-5:** Buckler, Targe and Kite Shield.\n\nThey use their own sprites and share the normal weapon drop weight. The Katana's guard now scales with upgrades.
+BTN	s:SCROLL_METAMORPH	Metamorphosis	**Scroll of Metamorphosis** is back to the original version. **Greater Metamorphosis** is a new spell that lets you pick from any talent in the tier.
+BTN	i:BACKPACK_LRG	Full-pack swap	Picking up an item with a full backpack now offers to **swap** it with something you're carrying, instead of leaving it on the floor.
+BTN	i:TARGET	Throw aiming	Thrown weapons can be aimed at **any visible enemy**, not just the closest one.
+BTN	i:MAGNIFY	Adaptive search	The magnifying glass picks the right action for where you are:\n- **Tap:** full search near a wall that could hide a door, Inspect elsewhere.\n- **Hold:** the opposite.\n\nRooms that can't hide a door no longer offer Wall Search or get checkmarks. Wall Search won't start on floors without hidden doors.
+BTN	c:V061_BUGFIX	Bug Fixes	- The difficulty bar now fades out with the hero select screen.\n- Stale Wall Search sessions from another floor are no longer offered.
+TAB	446-464
+MAJOR	APD 460-464
+BUILD	APD 464 (Nov 13)
+BTN	i:CHANGES	Playback speed	**Developer preview.** The hero's idle, death and flying animations play at 1x. Pickups, health numbers, search, spells and other feedback each follow the right speed. Plants, wells, gas and enemy alerts stay at 1x.
+BUILD	APD 463 (Nov 12)
+BTN	i:CHANGES	Playback speed	Player and enemy **animations and walking** follow your selected playback speed (0.5x-1000x). Environment animations, wells, gas, alerts and the interface stay at 1x.
+BUILD	APD 462 (Nov 12)
+BTN	i:CHANGES	Playback speed	Only **walking** follows the selected playback speed. Everything else (attacks, particles, alerts, gas, wells) plays at normal speed.
+BTN	c:V061_BUGFIX	Bug Fixes	- The difficulty bar on character select now fades properly.\n- Enemy alerts, magical wells and toxic gas no longer play at extreme speed.\n- Using a Well of Health no longer plays its particles sped up.
+BUILD	APD 460 (Nov 12)
+BTN	i:MAGNIFY	Search	The contextual Search only checks the area your hero can actually search (class, talents, Foresight) instead of a maximum-size square.
+BTN	c:V061_BUGFIX	Bug Fixes	Lots of crash-proofing for damaged or incomplete saves: wall-search memory, trap warnings, stair routes, Rat King search payments and trap confirmations. They now fail safely instead of crashing.
+MAJOR	APD 453-459
+BUILD	APD 457-459 (Nov 12)
+BTN	i:MAGNIFY	Search speed	The Search chooser and room checks no longer allocate temporary memory each time they open. Same choices, same order.
+BUILD	APD 454-456 (Nov 12)
+BTN	i:RANKINGS	Seed-reuse scoring	Replaying a seed lowers your score based on **earlier local attempts** and the **deepest floor** you reached. Score Breakdown shows the actual penalty.\n- The current run never counts as its own earlier attempt.\n- Damaged saved scores are rejected instead of being recalculated.
+BUILD	APD 453 (Nov 11)
+BTN	i:MAGNIFY	Search	Fixed adaptive Search in the middle of rooms and checkmarks in locked rooms.
+BTN	i:COPY	Copy Seed	Copy Seed text now says **ADHD Pixel Dungeon**.
+MAJOR	APD 446
+BUILD	APD 446 (Nov 11)
+BTN	i:SEED	Seed history	Entering a seed tells you if **you've played it before**, how many attempts, and the deepest floor reached, all from your offline history. Unfinished runs count too.
+BTN	i:MAGNIFY	Contextual Search	Search and Wall Search are offered based on your **real search reach** (Rogue 2 tiles, others 1, +1 with Wide Search) and the room you're in.
+TAB	400-437
+MAJOR	APD 425-437
+BUILD	APD 437 (Nov 11)
+BTN	i:CHANGES	Playback for everyone	**Visual playback speed** (0.5x-1000x) is available to every player. Six renameable **Custom Dungeon Rules** preset slots, plus Easiest, Hardest, Default, All Max and All Min.
+BUILD	APD 435 (Nov 10)
+BTN	i:BACKPACK_LRG	Inventory sorting	Gear sorts by category, known upgrade and tier. An unknown curse no longer counts as an unknown upgrade. The Velvet Pouch keeps seeds and stones in separate groups.
+BUILD	APD 432-433 (Nov 10)
+BTN	i:TALENT	Talents	Clearer talent and meal descriptions. Fixed singular counts labelled as plural, and two Rogue talents that described their effects wrong.
+BUILD	APD 425-430 (Nov 9-10)
+BTN	i:TALENT	Descriptions	Clearer **armor abilities** (all 19 checked against the real code), statuses, Ratmogrify, Trinity, buffs and talents.\n**Shield of Light** shows its real 5-turn / 4-turn timers. **Arcana** shows readable percentages.
+MAJOR	APD 400-418
+BUILD	APD 411-418 (Nov 9)
+BTN	i:INFO	Descriptions	Shorter status windows (31 of them), staff, bow, plant and food text. Durations are always in turns.
+BTN	c:V061_BUGFIX	Bug Fixes	- **Cursed healing** no longer shows 10 HP when it actually healed 0.\n- **Hearty Meal's** healing number respects the Healing rule.
+BUILD	APD 407-410 (Nov 9)
+BTN	s:ARTIFACT_CLOAK	Artifacts	Clearer Cloak, Rose, Talisman, Armband, Toolkit, Hourglass and Spellbook. Dew and the Waterskin warn when your rules prevent healing.
+BTN	c:V061_BUGFIX	Bug Fixes	- Fixed a **Sandals crash**.\n- Fixed **Tenacity** wording for positive, negative and zero values.
+BUILD	APD 400-403 (Nov 9)
+BTN	i:INFO	Descriptions	Clearer Warding, Regrowth and trinket details. **Elemental Blast** shows the real radius and damage, and Monk text is clearer.
+TAB	330-399
+MAJOR	APD 376-399
+BUILD	APD 385-399 (Nov 9)
+BTN	i:INFO	Descriptions	Shorter, accurate descriptions for darts, Duelist abilities, exotic potions, wands, Lightning, Living Earth, Prismatic Light, rings, trinkets, elixirs, imbues and scrolls. Numbers stay live.
+BTN	i:WARNING	Hidden info stays hidden	Descriptions never reveal **unknown curses** or **unidentified upgrades**. The Psionic Blast preview doesn't count invisible creatures or mimics.
+BTN	c:V061_BUGFIX	Bug Fixes	Fixed the Chalice cap and Crystal warnings. Opening a wand no longer triggers gameplay cleanup.
+BUILD	APD 376-383 (Nov 8)
+BTN	i:BACKPACK_LRG	Auto inventory sorting	Inventory sorts itself automatically: lowest tier first, then lowest known upgrade.
+BTN	i:INFO	Descriptions	Shorter weapon tooltips. Clearer runestones, spells, keepsakes, journal pages, equipment and trinkets. Item text is no longer clipped on the last line.
+BTN	c:V061_BUGFIX	Bug Fixes	- Fixed a **turn-queue stall** when an attack animation was cancelled by death.\n- Guard pulls are safe and throws go straight to the target.
+MAJOR	APD 362-374
+BUILD	APD 369-374 (Nov 6-7)
+BTN	s:RING_SAPPHIRE	Arcana & items	Arcana shows its percentage, and enchantments show before/after values. Selective calculations, plus Cloak and Rose explanations.
+BTN	i:MAGNIFY	Wall search	Wall-search marks are only placed using **observed** walls, so unseen tiles no longer fake a doorway.
+BTN	c:V061_BUGFIX	Bug Fixes	Fixed statistics **memory** problems and item inspection bugs. Optional movement after discovering a trap.
+BUILD	APD 362-368 (Nov 5-6)
+BTN	i:CHANGES	Playback speeds	**Visual playback speeds** for Alpha Testers.
+BTN	i:MAGNIFY	Door checkmarks	Door-checkmark eligibility is complete. Rat King search, loot and **gear origins** were added.
+MAJOR	APD 341-358
+BUILD	APD 354-358 (Nov 3)
+BTN	s:POTION_CRIMSON	Healing confirmation	A real **On/Off** toggle. When it's off, a quickslot with one Healing stack drinks directly.
+BTN	i:MAGNIFY	Searched walls	Pick from **8 checkmark colors** under Visibility. Tiles that can't be doorways stay unmarked.
+BTN	i:TARGET	Throws	Thrown weapons reach any visible enemy with a clear straight line.
+BUILD	APD 341-350 (Oct 30-Nov 3)
+BTN	s:SEED_SUNGRASS	Dew & walls	- **Grass dew auto-pickup** (has its own setting and stops when enemies are visible).\n- **Saved manual-search wall markers**.\n- Ring contributions shown in item descriptions.
+BTN	i:STATS	Resource tracking	The **Gathering** icon. Upgrade Scrolls and Strength Potions show pickup counts per region.
+BTN	c:V061_BUGFIX	Bug Fixes	Short presses register reliably. Fixed memory leaks from unused statistics catalogs.
+BUILD	APD 330 (Oct 29)
+BTN	i:DISPLAY	Scaling	Interface scaling and input fixes across display sizes.
+TAB	224-329
+MAJOR	APD 263-329
+BUILD	Tests 263-329 (Oct 17-29)
+BTN	i:CATALOG	Statistics database (UIMSD)	A full offline **statistics database**: searchable tables, charts, death context, healing-after-damage windows, turn-by-turn run playback, experiments and CSV export. Multilingual search included.
+BTN	i:BACKPACK	Save slots	**20 save slots per class**, with a class-filtered chooser. Old saves stay put.
+BTN	s:WATERSKIN	Waterskin	Waterskin defaults to **quickslot 2**, and you can change the slot in settings.
+BTN	i:RANKINGS	Scoring	The score drops for runs that start with extra upgrade scrolls. Old scores are frozen as they were.
+BTN	i:INFO	Forecasts	Damage-over-time forecasts use the live buffs. Clearer Arcana and Runic previews.
+BTN	c:V061_BUGFIX	Bug Fixes	Fixed Healing Potion reset, monster idle flicker at 4x, Back button handling and CSV formula injection.
+MAJOR	APD 224-262
+BUILD	Alpha Previews 224-262 (Oct 15-16)
+BTN	i:CHECKED	Confirmations	Optional **Waterskin** and **known-trap** confirmations, on by default.
+BTN	i:INFO	Scoring	Scoring is explained in-game.
+BTN	c:V061_BUGFIX	Bug Fixes	- Removed inherited boss-key and victory **donation popups**. Credits and rewards are kept.\n- No more unlock notices for characters you can already play.\n- Reliable controls and a responsive menu footer.

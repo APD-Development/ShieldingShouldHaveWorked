@@ -277,9 +277,7 @@ public class TitleScene extends PixelScene {
 			@Override
 			protected void onClick() {
 				super.onClick();
-				APDTextScene.page = APDTextScene.Page.CHANGES;
-				APDTextScene.backTo = TitleScene.class;
-				ShatteredPixelDungeon.switchNoFade( APDTextScene.class );
+				ChangesScene.changesSelected = 0; ShatteredPixelDungeon.switchNoFade( ChangesScene.class );
 			}
 		};
 		add( btnChanges );

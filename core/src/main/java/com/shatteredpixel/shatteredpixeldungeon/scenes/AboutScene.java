@@ -357,9 +357,7 @@ public class AboutScene extends PixelScene {
 		RedButton btnApdChanges = new RedButton("APD Changes"){
 			@Override
 			protected void onClick() {
-				APDTextScene.page = APDTextScene.Page.CHANGES;
-				APDTextScene.backTo = AboutScene.class;
-				ShatteredPixelDungeon.switchScene(APDTextScene.class);
+				ChangesScene.changesSelected = 0; ShatteredPixelDungeon.switchScene( ChangesScene.class );
 			}
 		};
 		btnApdChanges.setRect(w/2f + 1, btnApdNews.top(), apdBtnWidth, 20);
