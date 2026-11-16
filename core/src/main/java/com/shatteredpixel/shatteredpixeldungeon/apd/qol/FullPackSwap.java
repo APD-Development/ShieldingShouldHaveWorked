@@ -51,6 +51,15 @@ public final class FullPackSwap {
 
     public static void offer(final Hero hero, final Heap heap, final Item item) {
         if (!applies(hero, heap, item)) return;
+        //pickup runs on the game's actor thread; windows must be built on the render thread
+        com.watabou.noosa.Game.runOnRenderThread(new com.watabou.utils.Callback() {
+            @Override public void call() {
+                if (applies(hero, heap, item)) show(hero, heap, item);
+            }
+        });
+    }
+
+    private static void show(final Hero hero, final Heap heap, final Item item) {
         final Bag pack = hero.belongings.backpack;
         GameScene.selectItem(new WndBag.ItemSelector() {
             @Override public String textPrompt() {
