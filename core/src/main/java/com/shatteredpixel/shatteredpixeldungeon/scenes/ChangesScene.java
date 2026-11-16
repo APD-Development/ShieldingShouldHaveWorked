@@ -216,10 +216,18 @@ public class ChangesScene extends PixelScene {
 
 		float left = list.left()-4f;
 
-		float tabW = apdTabs.isEmpty() ? 0 : (list.width()+8f) / apdTabs.size() + 2f;
-		for (int i = 0; i < apdTabs.size(); i++){
+		//APD: four tabs per page, arrows page through the rest (like SPD's Release/PreRelease split)
+		final int perPage = 4;
+		int page = changesSelected / perPage;
+		int first = page * perPage, last = Math.min(apdTabs.size(), first + perPage);
+		boolean prev = page > 0, next = last < apdTabs.size();
+		float arrowW = 16f;
+		float tabW = (list.width() + 8f - (prev ? arrowW - 2 : 0) - (next ? arrowW - 2 : 0)) / Math.max(1, last - first) + 2f;
+		if (prev) left = setupChangesSelectionButton(first - 1, "<", left, list.bottom(), arrowW);
+		for (int i = first; i < last; i++){
 			left = setupChangesSelectionButton(i, apdTabs.get(i), left, list.bottom(), tabW);
 		}
+		if (next) left = setupChangesSelectionButton(last, ">", left, list.bottom(), arrowW);
 
 		addToBack( BG );
 
