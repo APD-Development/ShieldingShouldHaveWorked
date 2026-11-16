@@ -344,6 +344,82 @@ public class RunLogStreamingReadTest {
 		assertEquivalent(RunLogReader.parse(future), streamed);
 	}
 
+
+	@Test
+	public void largeUnknownFramesPreserveKnownEventsAndStreamedOffsets() throws Exception {
+		File file = new File(tmp.getRoot(), "large-unknown-frames.apdlog");
+		byte[] ignored = new byte[4 * 1024 * 1024];
+		for (int i = 0; i < ignored.length; i++) ignored[i] = (byte) (i * 37);
+		FileOutputStream out = new FileOutputStream(file);
+		try {
+			out.write(LogHeader.encode(TelemetryVersion.CURRENT, 1234, "unknown-boundary", "test"));
+			out.write(LogFormat.frame(250, ignored));
+			out.write(LogFormat.stringFrame(0, "kept"));
+			out.write(LogFormat.eventFrame(LogTestSupport.T_PLAIN, 3, 5, new byte[]{4, 5, 6}));
+			// A second large unknown frame must reuse the same bounded scratch area.
+			out.write(LogFormat.frame(251, ignored));
+			out.write(LogFormat.sealFrame(1, 5));
+		} finally {
+			out.close();
+		}
+
+		byte[] bytes = LogTestSupport.bytes(file);
+		ReadResult buffered = RunLogReader.parse(bytes);
+		ReadResult streamed = RunLogReader.read(file);
+		ReadResult identity = RunLogReader.read(file, new ReadOptions().onlyRunStartEvents(true));
+		assertEquals(ReadStatus.SEALED, streamed.status);
+		assertEquals(2, streamed.skippedUnknownFrames);
+		assertEquals(1, streamed.eventCount);
+		assertEquals(1, streamed.events.size());
+		assertEquals(1, streamed.strings.size());
+		assertEquals("kept", streamed.strings.get(0));
+		assertEquals(bytes.length, streamed.validBytes);
+		assertEquivalent(buffered, streamed);
+		assertEquals(ReadStatus.SEALED, identity.status);
+		assertEquals(2, identity.skippedUnknownFrames);
+		assertEquals(1, identity.eventCount);
+		assertEquals(0, identity.events.size());
+		assertEquals(buffered.validBytes, identity.validBytes);
+	}
+
+	@Test
+	public void unknownFramesStillRejectCorruptCrcAndTruncatedPayloadOrChecksum() throws Exception {
+		byte[] header = LogHeader.encode(TelemetryVersion.CURRENT, 1234, "unknown-errors", "test");
+		byte[] unknown = LogFormat.frame(250, new byte[256 * 1024]);
+		byte[] damaged = Arrays.copyOf(unknown, unknown.length);
+		damaged[damaged.length - 1] ^= 0x40;
+		File file = new File(tmp.getRoot(), "unknown-bad-checksum.apdlog");
+		FileOutputStream out = new FileOutputStream(file);
+		try {
+			out.write(header);
+			out.write(damaged);
+			out.write(LogFormat.sealFrame(0, 0));
+		} finally {
+			out.close();
+		}
+		ReadResult checksumBad = RunLogReader.read(file);
+		assertEquals(ReadStatus.CORRUPT, checksumBad.status);
+		assertEquals(0, checksumBad.skippedUnknownFrames);
+		assertEquivalent(RunLogReader.parse(LogTestSupport.bytes(file)), checksumBad);
+
+		for (int removed = 1; removed <= 5; removed++){
+			File shortFile = new File(tmp.getRoot(), "unknown-truncated-" + removed + ".apdlog");
+			out = new FileOutputStream(shortFile);
+			try {
+				out.write(header);
+				out.write(unknown, 0, unknown.length - removed);
+			} finally {
+				out.close();
+			}
+			byte[] bytes = LogTestSupport.bytes(shortFile);
+			ReadResult buffered = RunLogReader.parse(bytes);
+			ReadResult streamed = RunLogReader.read(shortFile);
+			assertEquals(ReadStatus.TRUNCATED, streamed.status);
+			assertEquals(0, streamed.skippedUnknownFrames);
+			assertEquivalent(buffered, streamed);
+		}
+	}
+
 	private static void assertEquivalent( ReadResult expected, ReadResult actual ){
 		assertEquals(expected.status, actual.status);
 		assertEquals(expected.problem, actual.problem);

@@ -95,7 +95,7 @@ public final class RunLogReader {
 				}
 				if (f.ok){
 					// RUN_START payloads are copied and strings decoded before reuse.
-					if (options.onlyRunStartEvents) reusablePayload = f.payload;
+					if (options.onlyRunStartEvents && f.payload != null) reusablePayload = f.payload;
 					pos = f.streamEnd;
 					r.validBytes = pos;
 					if (f.type == LogFormat.FRAME_SEAL) ended = true;
@@ -262,6 +262,8 @@ public final class RunLogReader {
 		int type;
 		int end;
 		byte[] payload;
+		// Lazily allocated only when skipping an unknown frame, and reused per file.
+		byte[] skippedScratch;
 		long streamEnd;
 
 		static FrameResult failure( ReadStatus s, String message ){
@@ -318,13 +320,43 @@ public final class RunLogReader {
 			return FrameResult.failure(ReadStatus.CORRUPT, "frame at " + pos + " claims " + len + " bytes");
 		}
 
-		// Exact-size matching prevents stale bytes reaching ByteSource.
-		byte[] payload = reusable != null && reusable.length == (int) len
-				? reusable : new byte[(int) len];
-		if (!readExact(in, payload)){
-			return FrameResult.failure(ReadStatus.TRUNCATED, "file ends inside the frame at " + pos);
+		int payloadLength = (int) len;
+		boolean knownFrame = type == LogFormat.FRAME_STRING || type == LogFormat.FRAME_EVENT
+				|| type == LogFormat.FRAME_CLOCK || type == LogFormat.FRAME_SEAL;
+		byte[] payload = null;
+		if (knownFrame){
+			// Known frames require their payload for semantic validation. Identity scans
+			// may reuse equal-size storage; normal readers keep independent event bytes.
+			payload = reusable != null && reusable.length == payloadLength
+					? reusable : new byte[payloadLength];
+			if (!readExact(in, payload)){
+				return FrameResult.failure(ReadStatus.TRUNCATED, "file ends inside the frame at " + pos);
+			}
+			crc.update(payload, 0, payload.length);
+		} else {
+			// Unknown frames have no payload semantics, but their entire declared
+			// length and CRC must still be validated before counting/skipping them.
+			// Never allocate a possible 16 MiB payload merely to discard it.
+			if (result.skippedScratch == null) result.skippedScratch = new byte[8192];
+			int remaining = payloadLength;
+			while (remaining > 0){
+				int n = in.read(result.skippedScratch, 0, Math.min(remaining, result.skippedScratch.length));
+				if (n < 0){
+					return FrameResult.failure(ReadStatus.TRUNCATED, "file ends inside the frame at " + pos);
+				}
+				if (n == 0){
+					int b = in.read();
+					if (b < 0){
+						return FrameResult.failure(ReadStatus.TRUNCATED, "file ends inside the frame at " + pos);
+					}
+					crc.update(b);
+					remaining--;
+				} else {
+					crc.update(result.skippedScratch, 0, n);
+					remaining -= n;
+				}
+			}
 		}
-		crc.update(payload, 0, payload.length);
 		// Read the checksum directly: no four-byte array per frame.
 		long stored = 0;
 		for (int i = 0; i < 4; i++){
@@ -342,7 +374,7 @@ public final class RunLogReader {
 		f.ok = true;
 		f.type = type;
 		f.payload = payload;
-		f.streamEnd = pos + 1 + 1 + lengthBytes + payload.length + 4;
+		f.streamEnd = pos + 1 + 1 + lengthBytes + payloadLength + 4;
 		return f;
 	}
 
@@ -387,7 +419,11 @@ public final class RunLogReader {
 			f.ok = true;
 			f.type = type;
 			f.end = src.position();
-			f.payload = java.util.Arrays.copyOfRange(data, payloadStart, payloadStart + (int) len);
+			// Resynchronization still validates the full unknown frame, but nothing
+			// consumes its payload. Avoid copying up to MAX_FRAME_PAYLOAD bytes.
+			f.payload = (type == LogFormat.FRAME_STRING || type == LogFormat.FRAME_EVENT
+					|| type == LogFormat.FRAME_CLOCK || type == LogFormat.FRAME_SEAL)
+					? java.util.Arrays.copyOfRange(data, payloadStart, payloadStart + (int) len) : null;
 			return f;
 		} catch (FormatException e){
 			//the length field itself runs off the end of the file
