@@ -53,4 +53,18 @@ public final class ClericHistory {
 		}
 		return new ClericHistory( n, won, died );
 	}
+
+	/** Cheap version for the in-game grudge: counts Cleric runs in the local rankings instead of
+	 * building the whole UIMSD catalog. Building the catalog during play could use hundreds of MB
+	 * with a large history and crash the game out of memory. */
+	public static ClericHistory fromRankings( java.util.List<com.shatteredpixel.shatteredpixeldungeon.Rankings.Record> records ){
+		if (records == null) return new ClericHistory( 0, 0, 0 );
+		int n = 0, won = 0;
+		for (com.shatteredpixel.shatteredpixeldungeon.Rankings.Record r : records){
+			if (r == null || r.heroClass != com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass.CLERIC) continue;
+			n++;
+			if (r.win) won++;
+		}
+		return new ClericHistory( n, won, n - won );
+	}
 }

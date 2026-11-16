@@ -224,7 +224,14 @@ public final class GrudgeHooks {
 				Context c = Context.EMPTY;
 				try {
 					if (root != null){
-						ClericHistory h = ClericHistory.compute( new DatasetStore( root ).load().dataset( Datasets.RUNS ) );
+						//APD: never build the full UIMSD catalog here; during play it could exhaust memory
+						com.shatteredpixel.shatteredpixeldungeon.Rankings rankings = com.shatteredpixel.shatteredpixeldungeon.Rankings.INSTANCE;
+						java.util.List<com.shatteredpixel.shatteredpixeldungeon.Rankings.Record> records;
+						synchronized (rankings){
+							if (rankings.records == null) rankings.load();
+							records = rankings.records == null ? null : new java.util.ArrayList<>( rankings.records );
+						}
+						ClericHistory h = ClericHistory.fromRankings( records );
 						c = c.with( "clericRuns", h.runs ).with( "clericWins", h.wins ).with( "clericDeaths", h.deaths );
 					}
 				} catch (Throwable ignored){

@@ -80,4 +80,23 @@ public class ClericHistoryTest {
 		assertEquals( 0, h.deaths );
 		assertEquals( 0, ClericHistory.compute( new Dataset( def, new ArrayList<Row>(), new ArrayList<Dataset.RunInfo>() ) ).runs );
 	}
+
+	@Test public void rankingsCountOnlyClericRunsWithoutBuildingTheCatalog(){
+		java.util.List<com.shatteredpixel.shatteredpixeldungeon.Rankings.Record> records = new java.util.ArrayList<>();
+		for (Object[] spec : new Object[][]{{com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass.CLERIC, true},
+				{com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass.CLERIC, false},
+				{com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass.CLERIC, false},
+				{com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass.WARRIOR, true}}){
+			com.shatteredpixel.shatteredpixeldungeon.Rankings.Record r = new com.shatteredpixel.shatteredpixeldungeon.Rankings.Record();
+			r.heroClass = (com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass) spec[0];
+			r.win = (Boolean) spec[1];
+			records.add(r);
+		}
+		records.add(null);
+		ClericHistory h = ClericHistory.fromRankings( records );
+		assertEquals( 3, h.runs );
+		assertEquals( 1, h.wins );
+		assertEquals( 2, h.deaths );
+		assertEquals( 0, ClericHistory.fromRankings( null ).runs );
+	}
 }
