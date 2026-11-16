@@ -399,7 +399,10 @@ public final class RunLogReader {
 				if (type == EventTypes.GAP) r.gapEvents++;
 				if (options.knownTypesOnly && !EventTypes.isKnown(type)){
 					r.skippedUnknownEvents++;
-				} else {
+				} else if (!options.onlyRunStartEvents || type == EventTypes.RUN_START){
+					//Import checks typed RUN_START identity but needs no retained
+					//combat, item, or other gameplay events. Keep all counters,
+					//string definitions, checksums and seal validation unchanged.
 					r.events.add(new ApdEvent(index, type, flags, clock, payload));
 				}
 				break;

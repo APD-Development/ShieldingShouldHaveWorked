@@ -31,6 +31,11 @@ public final class ReadOptions {
 	//Leave events whose type this build does not know out of ReadResult.events (they are still counted).
 	public boolean knownTypesOnly = false;
 
+	//Used by history-import validation, which only needs the typed RUN_START
+	//identity. Every frame still receives normal validation and event counting.
+	//Other readers keep their complete event list unless they opt in.
+	public boolean onlyRunStartEvents = false;
+
 	public ReadOptions resync( boolean v ){
 		resync = v;
 		return this;
@@ -38,6 +43,11 @@ public final class ReadOptions {
 
 	public ReadOptions knownTypesOnly( boolean v ){
 		knownTypesOnly = v;
+		return this;
+	}
+
+	public ReadOptions onlyRunStartEvents( boolean v ){
+		onlyRunStartEvents = v;
 		return this;
 	}
 }
