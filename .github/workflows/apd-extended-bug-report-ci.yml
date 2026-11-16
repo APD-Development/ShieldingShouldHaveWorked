@@ -7,9 +7,15 @@ on:
       - .github/workflows/apd-extended-bug-report-ci.yml
       - SPD-classes/src/main/java/com/watabou/utils/SupportActionJournal.java
       - SPD-classes/src/main/java/com/watabou/utils/SupportDiagnostics.java
+      - SPD-classes/src/main/java/com/watabou/utils/GameSettings.java
       - SPD-classes/src/main/java/com/watabou/input/**
       - core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/diagnostics/**
       - core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/hero/Hero.java
+      - core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ShatteredPixelDungeon.java
+      - core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/SPDSettings.java
+      - core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/ui/Button.java
+      - android/src/main/java/com/shatteredpixel/shatteredpixeldungeon/android/AndroidLauncher.java
+      - android/src/main/java/com/shatteredpixel/shatteredpixeldungeon/android/AndroidSupportDiagnostics.java
       - core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/windows/APDSettingsPane.java
       - core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/diagnostics/**
   workflow_dispatch:
