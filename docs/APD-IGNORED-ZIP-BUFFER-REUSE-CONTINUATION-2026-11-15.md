@@ -1,0 +1,10 @@
+# APD ignored-ZIP scratch-buffer reuse, November 15, 2026
+
+## Scoped work claim, approximately 7 PM Eastern
+- Authoritative initial source head `f2d7ed6546a0e3ae76465276f2f8c943f310e14b` on `codex/apd-phone-fixes-2026-10-09`, not main. Isolated branch `chatgpt/apd-import-ignored-buffer-reuse-20261115-1900`.
+- Inspected AGENTS.md, WORK-COMPLETED-LEDGER, known-issues guide, APD handoff and current-state, merged PRs #173 and #191–192, current open PR claims, original C473/P473 receipts, and current owner-source ArchiveImporter plus real-ZIP tests. No open package owns this allocation-only fix.
+- Existing PR #173 already bounds diagnostic strings for ignored ZIP entries. Distinct remaining allocation issue: the ignored/repeated entry branch freshly allocated a 16 KiB scratch byte array for *each* entry while draining. With 50,000 ignored members, that causes about 781 MiB of cumulative allocation/GC churn, even though not all buffers coexist. This is a source-evidenced performance issue, not evidence for C467's OOME root cause.
+- Scoped production fix: lazily allocate a single 16 KiB scratch buffer for the first unlisted/repeated ZIP member and reuse it for subsequent ignored entries. Preserve exact size caps, drain/read behavior, manifest first-wins, diagnostic bound, real logs, saves, history, scoring, signing and edition IDs. No gameplay, native acceptance, build or publisher work is claimed.
+- New real-ZIP regression extends existing tests with five ignored 48,321-byte payloads followed by one genuine log. It checks exact imported bytes, result/counts, diagnostics and staging cleanup, while existing 250-entry and first-wins regressions remain.
+- This checkpoint records the intent only. Branch code and tests must pass exact-source complete core JUnit, required desktop/Android Java compile targets, and independent GitHub readback before any guarded integration. No new APK is qualified, and original C473/P473 candidates and previous releases remain preserved.
+- Final execution results, links, timestamps, CI, exact source, guarded integration and blockers must be appended only when independently verified.
