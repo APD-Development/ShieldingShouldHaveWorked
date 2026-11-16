@@ -54,7 +54,9 @@ public final class SupportActionJournal {
      */
     public static void setEnabled(boolean consented) {
         synchronized (LOCK) {
-            if (enabled == consented) return;
+            // A disabled preference must erase even if this is a fresh process.
+            // It may have crashed after saving opt-out but before deleting the file.
+            if (enabled == consented && consented) return;
             enabled = consented;
             if (!consented) {
                 pending.clear();
