@@ -189,6 +189,8 @@ public class AndroidLauncher extends AndroidApplication {
 	//APD: ask Android for the screen's highest refresh rate (e.g. 144 Hz) instead of the
 	//60 Hz many phones give apps by default. Android may still decide otherwise.
 	private void requestHighestRefreshRate(){
+		//Developer build only (owner's request); other builds keep Android's default rate
+		if (!com.shatteredpixel.shatteredpixeldungeon.apd.ApdFeatures.testBuild()) return;
 		try {
 			android.view.Display display = getWindowManager().getDefaultDisplay();
 			android.view.Display.Mode current = display.getMode(), best = current;
