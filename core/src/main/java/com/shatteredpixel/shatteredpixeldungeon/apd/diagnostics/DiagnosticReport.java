@@ -8,6 +8,9 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
+import java.util.zip.Deflater;
 
 public final class DiagnosticReport {
     private DiagnosticReport(){}
@@ -33,7 +36,7 @@ public final class DiagnosticReport {
     public static void export(Listener listener, boolean extended){
         SupportDiagnostics.event("report.requested",extended?"extended":"");
         SimpleDateFormat date=new SimpleDateFormat("yyyyMMdd-HHmmss",Locale.ROOT);date.setTimeZone(TimeZone.getTimeZone("UTC"));
-        String name="APD-diagnostic-"+(extended?"extended-":"")+date.format(new Date())+"-UTC.txt";
+        String name="APD-diagnostic-"+(extended?"extended-":"")+date.format(new Date())+"-UTC."+(extended?"zip":"txt");
         // Platform pickers may fail before calling any ExportTarget callback. Report
         // that failure once, without misreporting a stream already accepted by the picker.
         final java.util.concurrent.atomic.AtomicBoolean finished = new java.util.concurrent.atomic.AtomicBoolean();
@@ -42,7 +45,7 @@ public final class DiagnosticReport {
             if (finished.compareAndSet(false, true)) listener.finished(message);
         };
         try {
-        ApdFiles.provider(FileUtils.getFileHandle("apd-diagnostics").file()).chooseExport(name,"text/plain",new ApdFiles.ExportTarget(){
+        ApdFiles.provider(FileUtils.getFileHandle("apd-diagnostics").file()).chooseExport(name,extended?"application/zip":"text/plain",new ApdFiles.ExportTarget(){
             public void onStream(OutputStream stream,String displayName){
                 streamAccepted.set(true);
                 launchExportWorker(stream, once, ()->{
@@ -50,10 +53,26 @@ public final class DiagnosticReport {
                     SupportActionJournal.Checkpoint checkpoint=null;
                     boolean failed=false;
                     try(OutputStream out=stream){
-                        if(extended) checkpoint=SupportActionJournal.checkpoint();
-                        out.write(SupportDiagnostics.report().getBytes(StandardCharsets.UTF_8));
-                        if(extended) SupportActionJournal.export(out,checkpoint);
-                        out.flush();
+                        if(extended){
+                            checkpoint=SupportActionJournal.checkpoint();
+                            // Maximum standard Java/Android DEFLATE compression, streaming to
+                            // the export provider. Never accumulate the journal in memory.
+                            // Closing ZIP writes the central directory before acknowledging.
+                            try(ZipOutputStream zip=new ZipOutputStream(out, StandardCharsets.UTF_8)){
+                                zip.setLevel(Deflater.BEST_COMPRESSION);
+                                zip.putNextEntry(new ZipEntry("APD-diagnostic.txt"));
+                                zip.write(SupportDiagnostics.report().getBytes(StandardCharsets.UTF_8));
+                                zip.closeEntry();
+                                zip.putNextEntry(new ZipEntry("APD-action-history.txt"));
+                                SupportActionJournal.export(zip,checkpoint);
+                                zip.closeEntry();
+                                zip.finish();
+                            }
+                        } else {
+                            // Preserve the original Standard bug report bytes and MIME.
+                            out.write(SupportDiagnostics.report().getBytes(StandardCharsets.UTF_8));
+                            out.flush();
+                        }
                     }catch(IOException|RuntimeException error){
                         failed=true;
                         result="The diagnostic report could not be saved: "+error.getClass().getSimpleName();
@@ -62,7 +81,7 @@ public final class DiagnosticReport {
                         result="The diagnostic report could not be saved because memory was exhausted during export.";
                     }
                     if(!failed){
-                        result="Diagnostic report saved. You can attach this file to your bug report.\n\n"+displayName;
+                        result=(extended?"Compressed Extended bug report saved.":"Diagnostic report saved.")+" You can attach this file to your bug report.\n\n"+displayName;
                         if(extended){
                             try { SupportActionJournal.acknowledge(checkpoint); }
                             catch(IOException incomplete){
