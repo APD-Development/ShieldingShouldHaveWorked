@@ -1,0 +1,10 @@
+# APD import identity read: avoid copying discarded gameplay event tails
+
+## Isolated claim, Monday November 16, 2026, 12:00 AM EST
+
+- Verified primary head at start: `ebcc965c872136d1e4716f693b954de6f8ee078d` of `codex/apd-phone-fixes-2026-10-09`. Isolated branch: `chatgpt/apd-identity-tail-copy-20261116-0000`.
+- Before writing, reviewed `AGENTS.md`, completed-work ledger, known issues, previous run-start-only import and C476/P476 signed-candidate receipts, current open PR claims, source reader and importer, and the prior exact-source workflow. No source overlap with active unmerged owner claims was found for this completed reader work package.
+- Distinct remaining allocation: after the prior opt-in identity-only optimization, `RunLogReader.applyFrame` still called `ByteSource.readRemaining()` on **every** gameplay event, allocating and copying its whole payload tail before deciding not to retain it. Moving that copy into the existing event-retention branch preserves frame CRC, type/flag/delta checks, clocks, seal counts, string table, and default reader payloads without allocating a second byte array for each ignored gameplay tail. This is not a claim about C467 OOM root cause.
+- Add a regression with 32 real 32-KiB gameplay event payloads; compare full ordinary log read with identity-only streaming and buffered parsing for status, counters, clocks, strings, seal and valid byte length while ensuring no gameplay events are retained. Retain existing long-run import, no-RUN_START legacy, and old ZIP/history compatibility tests.
+- Verify on the exact feature commit via full 3,518-or-more core JUnit tests and required desktop/Android Java compile before any primary integration. No changes to gameplay, balance, RNG, scoring, source history, saved formats, signer, app ID, edition behavior, old builds, or releases.
+- At this initial write checkpoint CI, native acceptance, APK signing, and publication are **not yet verified**. Preserve the independently signed but still native-unaccepted C476/P476 pair, all older candidates and qualified releases. No owner automation schedules are modified.
