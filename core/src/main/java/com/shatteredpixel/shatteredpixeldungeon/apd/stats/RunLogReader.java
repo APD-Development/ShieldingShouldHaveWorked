@@ -78,9 +78,12 @@ public final class RunLogReader {
 			byte[] reusablePayload = null;
 			// One per-reader checksum accumulator for every frame, including identity-only imports.
 			CRC32 crc = new CRC32();
+			// A successful frame record is consumed before the next stream read;
+			// reuse it instead of allocating one for every event in large logs.
+			FrameResult reusableFrame = new FrameResult();
 
 			while (!ended){
-				FrameResult f = readFrame(in, pos, options.onlyRunStartEvents ? reusablePayload : null, crc);
+				FrameResult f = readFrame(in, pos, options.onlyRunStartEvents ? reusablePayload : null, crc, reusableFrame);
 				if (f == null) break;
 				if (f.ok){
 					try {
@@ -256,7 +259,8 @@ public final class RunLogReader {
 	}
 
 	//Streaming counterpart used by ordinary file reads. Returns null only for clean EOF between frames.
-	private static FrameResult readFrame( InputStream in, long pos, byte[] reusable, CRC32 crc ) throws IOException {
+	private static FrameResult readFrame( InputStream in, long pos, byte[] reusable, CRC32 crc,
+			FrameResult result ) throws IOException {
 		int marker = in.read();
 		if (marker < 0) return null;
 		if (marker != LogFormat.SYNC){
@@ -320,7 +324,7 @@ public final class RunLogReader {
 			return FrameResult.failure(ReadStatus.CORRUPT, "checksum mismatch in the frame at " + pos);
 		}
 
-		FrameResult f = new FrameResult();
+		FrameResult f = result;
 		f.ok = true;
 		f.type = type;
 		f.payload = payload;
