@@ -209,6 +209,9 @@ public final class ArchiveImporter {
 				int problems = 0;
 				int ignoredDetails = 0;
 				int invalidDetails = 0;
+				// Reuse scratch memory when draining unlisted/repeated ZIP members.
+				// Numerous extras should not allocate 16 KiB separately per entry.
+				byte[] ignoredBuffer = null;
 				while ((entry = zip.getNextEntry()) != null){
 					String name = entry.getName();
 					ArchiveManifest.Entry e = byPath.get(name);
@@ -224,7 +227,7 @@ public final class ArchiveImporter {
 							ignoredDetails++;
 						}
 						// getNextEntry otherwise drains this payload without our size limit.
-						byte[] ignoredBuffer = new byte[16 * 1024];
+						if (ignoredBuffer == null) ignoredBuffer = new byte[16 * 1024];
 						long ignoredSize = 0;
 						int ignoredRead;
 						while ((ignoredRead = readChunk(zip, ignoredBuffer)) > 0){
