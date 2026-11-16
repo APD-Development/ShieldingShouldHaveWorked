@@ -53,6 +53,43 @@ public class RunLogStreamingReadTest {
 		assertEquals(0, result.events.size());
 	}
 
+	@Test
+	public void identityOnlyReadValidatesLargeGameplayEventsWithoutCopyingTheirTails() throws Exception {
+		File file = new File(tmp.getRoot(), "large-event-tails.apdlog");
+		RunLogWriter writer = RunLogWriter.create(file, TelemetryVersion.CURRENT,
+				"large-event-tails", "test", 1234);
+		byte[] largePayload = new byte[32 * 1024];
+		for (int i = 0; i < largePayload.length; i++) largePayload[i] = (byte) (i * 31);
+		for (int i = 0; i < 32; i++){
+			writer.event(LogTestSupport.T_PLAIN).clock(i + 1).bytes(largePayload).emit();
+		}
+		writer.close();
+
+		ReadResult ordinary = RunLogReader.read(file);
+		ReadResult identityStream = RunLogReader.read(file, new ReadOptions().onlyRunStartEvents(true));
+		ReadResult identityBytes = RunLogReader.parse(LogTestSupport.bytes(file),
+				new ReadOptions().onlyRunStartEvents(true));
+		assertEquals(ReadStatus.SEALED, ordinary.status);
+		assertEquals(32, ordinary.events.size());
+		assertEquals(0, identityStream.events.size());
+		assertEquals(0, identityBytes.events.size());
+		assertEquals(32, identityStream.eventCount);
+		assertEquals(ordinary.status, identityStream.status);
+		assertEquals(ordinary.status, identityBytes.status);
+		assertEquals(ordinary.eventCount, identityStream.eventCount);
+		assertEquals(ordinary.eventCount, identityBytes.eventCount);
+		assertEquals(ordinary.sealEventCount, identityStream.sealEventCount);
+		assertEquals(ordinary.sealEventCount, identityBytes.sealEventCount);
+		assertEquals(ordinary.lastClock, identityStream.lastClock);
+		assertEquals(ordinary.lastClock, identityBytes.lastClock);
+		assertEquals(ordinary.validBytes, identityStream.validBytes);
+		assertEquals(ordinary.validBytes, identityBytes.validBytes);
+		assertEquals(ordinary.strings, identityStream.strings);
+		assertEquals(ordinary.strings, identityBytes.strings);
+		assertArrayEquals(ordinary.events.get(0).payload,
+				RunLogReader.parse(LogTestSupport.bytes(file)).events.get(0).payload);
+	}
+
 	private static void assertEquivalent( ReadResult expected, ReadResult actual ){
 		assertEquals(expected.status, actual.status);
 		assertEquals(expected.problem, actual.problem);

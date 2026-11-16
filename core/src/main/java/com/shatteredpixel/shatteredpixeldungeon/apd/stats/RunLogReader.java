@@ -391,7 +391,6 @@ public final class RunLogReader {
 				int flags = p.readUnsignedInt();
 				long delta = p.readSigned();
 				if (type == EventTypes.INVALID) throw new FormatException("event type 0");
-				byte[] payload = p.readRemaining();
 				long clock = r.lastClock + delta;
 				r.lastClock = clock;
 				if (r.clockUncertain) r.uncertainClockEvents++;
@@ -403,7 +402,9 @@ public final class RunLogReader {
 					//Import checks typed RUN_START identity but needs no retained
 					//combat, item, or other gameplay events. Keep all counters,
 					//string definitions, checksums and seal validation unchanged.
-					r.events.add(new ApdEvent(index, type, flags, clock, payload));
+					// Only retained events need a separately copied payload tail.
+					// The full frame has already passed checksum and header parsing.
+					r.events.add(new ApdEvent(index, type, flags, clock, p.readRemaining()));
 				}
 				break;
 			}
