@@ -68,6 +68,17 @@ public class ExtendedBugJournalTest {
         }
     }
 
+    @Test public void restartingWithConsentOffErasesInterruptedOldJournal() throws Exception {
+        SupportActionJournal.setEnabled(false);
+        File root=Files.createTempDirectory("apd-old-disabled-").toFile();
+        SupportActionJournal.configure(root);
+        File leftover=new File(root,"action-history.txt");
+        Files.write(leftover.toPath(),"old tracking must not survive opt out".getBytes(StandardCharsets.UTF_8));
+        SupportActionJournal.setEnabled(false);
+        assertFalse(leftover.exists());
+        assertFalse(SupportActionJournal.enabled());
+    }
+
     @Test public void standardReportDoesNotNeedEnabledJournal() throws Exception {
         SupportActionJournal.setEnabled(false);
         assertFalse(SupportActionJournal.enabled());
