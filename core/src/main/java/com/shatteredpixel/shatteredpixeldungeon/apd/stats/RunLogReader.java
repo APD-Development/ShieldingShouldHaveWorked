@@ -267,7 +267,11 @@ public final class RunLogReader {
 
 		CRC32 crc = new CRC32();
 		crc.update(type);
-		ByteArrayOutputStream encodedLength = new ByteArrayOutputStream(10);
+		// Decode the length as it arrives instead of allocating a temporary
+		// byte stream, copied byte array and ByteSource for every frame.
+		// Keep ByteSource.readUnsigned's 64-bit overflow and truncation rules.
+		long len = 0;
+		int lengthBytes = 0;
 		boolean completeLength = false;
 		for (int i = 0; i < 10; i++){
 			int b = in.read();
@@ -275,21 +279,19 @@ public final class RunLogReader {
 				return FrameResult.failure(ReadStatus.TRUNCATED,
 						"file ends inside the frame header at " + pos);
 			}
-			encodedLength.write(b);
 			crc.update(b);
+			lengthBytes++;
+			if (i == 9 && (b & 0x7E) != 0){
+				return FrameResult.failure(ReadStatus.TRUNCATED,
+						"file ends inside the frame header at " + pos);
+			}
+			len |= (long) (b & 0x7F) << (i * 7);
 			if ((b & 0x80) == 0){
 				completeLength = true;
 				break;
 			}
 		}
 		if (!completeLength){
-			return FrameResult.failure(ReadStatus.TRUNCATED, "file ends inside the frame header at " + pos);
-		}
-
-		long len;
-		try {
-			len = new ByteSource(encodedLength.toByteArray()).readUnsigned();
-		} catch (FormatException e){
 			return FrameResult.failure(ReadStatus.TRUNCATED, "file ends inside the frame header at " + pos);
 		}
 		if (len < 0 || len > LogFormat.MAX_FRAME_PAYLOAD){
@@ -317,7 +319,7 @@ public final class RunLogReader {
 		f.ok = true;
 		f.type = type;
 		f.payload = payload;
-		f.streamEnd = pos + 1 + 1 + encodedLength.size() + payload.length + 4;
+		f.streamEnd = pos + 1 + 1 + lengthBytes + payload.length + 4;
 		return f;
 	}
 
