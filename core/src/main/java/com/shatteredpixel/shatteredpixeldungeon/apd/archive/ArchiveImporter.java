@@ -209,9 +209,9 @@ public final class ArchiveImporter {
 				int problems = 0;
 				int ignoredDetails = 0;
 				int invalidDetails = 0;
-				// Reuse scratch memory when draining unlisted/repeated ZIP members.
-				// Numerous extras should not allocate 16 KiB separately per entry.
-				byte[] ignoredBuffer = null;
+				// Reuse the same ZIP scratch bytes for both validated logs and ignored
+				// entries. Even a large history archive needs only one read buffer.
+				byte[] entryBuffer = new byte[16 * 1024];
 				while ((entry = zip.getNextEntry()) != null){
 					String name = entry.getName();
 					ArchiveManifest.Entry e = byPath.get(name);
@@ -227,17 +227,17 @@ public final class ArchiveImporter {
 							ignoredDetails++;
 						}
 						// getNextEntry otherwise drains this payload without our size limit.
-						if (ignoredBuffer == null) ignoredBuffer = new byte[16 * 1024];
+						// The buffer is reused once this entry has finished draining.
 						long ignoredSize = 0;
 						int ignoredRead;
-						while ((ignoredRead = readChunk(zip, ignoredBuffer)) > 0){
+						while ((ignoredRead = readChunk(zip, entryBuffer)) > 0){
 							ignoredSize += ignoredRead;
 							if (ignoredSize > MAX_FILE_BYTES) throw new IOException("an ignored file in the archive is too large");
 						}
 						continue;
 					}
 					Staged st = stage(root, tmpDir, zip, e, staged.size(), report,
-							invalidDetails < MAX_INVALID_ENTRY_DETAILS);
+							invalidDetails < MAX_INVALID_ENTRY_DETAILS, entryBuffer);
 					if (st == null){
 						problems++;
 						if (invalidDetails++ == MAX_INVALID_ENTRY_DETAILS){
@@ -304,14 +304,13 @@ public final class ArchiveImporter {
 
 	//Streams one entry to a temporary file and verifies it. Returns null (and says why in the report) if it cannot be trusted.
 	private static Staged stage( File root, File tmpDir, ZipInputStream zip, ArchiveManifest.Entry e, int number,
-			Report report, boolean includeDetail ) throws IOException {
+			Report report, boolean includeDetail, byte[] buf ) throws IOException {
 		File tmp = new File(tmpDir, "entry-" + number + ".tmp");
 		MessageDigest digest = newDigest();
 		long size = 0;
 		boolean tooBig = false;
 		OutputStream out = new FileOutputStream(tmp);
 		try {
-			byte[] buf = new byte[16 * 1024];
 			int n;
 			while ((n = readChunk(zip, buf)) > 0){
 				size += n;
