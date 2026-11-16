@@ -5,6 +5,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.apd.HeadlessTestSupport;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.Bag;
+import com.shatteredpixel.shatteredpixeldungeon.items.bags.PotionBandolier;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Food;
 
 import org.junit.Before;
@@ -62,6 +63,9 @@ public class FullPackSwapSelectionTest {
     @Test public void backpackContainersAreNeverDropCandidates() {
         Hero hero = new Hero();
         Bag pack = hero.belongings.backpack;
-        assertFalse(FullPackSwap.canSwapOut(hero, pack, pack));
+        Bag storedBag = new PotionBandolier();
+        pack.items.add(storedBag);
+        assertFalse("Even a bag stored inside the backpack cannot be exchanged",
+                FullPackSwap.canSwapOut(hero, pack, storedBag));
     }
 }
