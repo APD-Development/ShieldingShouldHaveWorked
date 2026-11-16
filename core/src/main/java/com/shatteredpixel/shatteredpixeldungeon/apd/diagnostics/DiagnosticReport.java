@@ -33,7 +33,7 @@ public final class DiagnosticReport {
     public static void export(Listener listener, boolean extended){
         SupportDiagnostics.event("report.requested",extended?"extended":"standard");
         SimpleDateFormat date=new SimpleDateFormat("yyyyMMdd-HHmmss",Locale.ROOT);date.setTimeZone(TimeZone.getTimeZone("UTC"));
-        String name="APD-"+(extended?"extended-":"")+"diagnostic-"+date.format(new Date())+"-UTC.txt";
+        String name="APD-diagnostic-"+(extended?"extended-":"")+date.format(new Date())+"-UTC.txt";
         // Platform pickers may fail before calling any ExportTarget callback. Report
         // that failure once, without misreporting a stream already accepted by the picker.
         final java.util.concurrent.atomic.AtomicBoolean finished = new java.util.concurrent.atomic.AtomicBoolean();
@@ -46,7 +46,7 @@ public final class DiagnosticReport {
             public void onStream(OutputStream stream,String displayName){
                 streamAccepted.set(true);
                 launchExportWorker(stream, once, ()->{
-                    String result;
+                    String result="The diagnostic report could not be saved.";
                     SupportActionJournal.Checkpoint checkpoint=null;
                     boolean written=false;
                     try(OutputStream out=stream){
@@ -61,7 +61,7 @@ public final class DiagnosticReport {
                         result="The diagnostic report could not be saved because memory was exhausted during export.";
                     }
                     if(written){
-                        result="Diagnostic report saved. You can attach this file to your bug report.\\n\\n"+displayName;
+                        result="Diagnostic report saved. You can attach this file to your bug report.\n\n"+displayName;
                         if(extended){
                             try { SupportActionJournal.acknowledge(checkpoint); }
                             catch(IOException incomplete){
