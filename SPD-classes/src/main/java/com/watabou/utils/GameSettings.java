@@ -139,7 +139,7 @@ public class GameSettings {
 	public static void put( String key, String value ) {
 		get().putString(key, value);
 		get().flush();
-		SupportActionJournal.record("setting.text", "key="+key+" value="+"[redacted]");
+		SupportActionJournal.record("setting.text", "field_name=[redacted] value=[redacted]");
 	}
 	
 }
