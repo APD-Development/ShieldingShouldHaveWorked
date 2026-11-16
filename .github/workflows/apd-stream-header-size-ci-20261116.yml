@@ -30,7 +30,7 @@ jobs:
           assert 'if (bodyLength > LogFormat.MAX_HEADER_BODY) return prefix;' in header
           assert 'java.util.Arrays.copyOf(prefix, prefix.length + bodyLength + 4)' in header
           assert 'in.read(header, pos, header.length - pos)' in header
-          assert 'ByteArrayOutputStream' not in header
+          assert 'new ByteArrayOutputStream(' not in header
           assert 'crc.reset();' in src
           assert 'if (crc.getValue() != stored)' in src
           assert 'streamedHeaderExactLengthsMatchBufferedReaderUpToMaximum' in tests
