@@ -55,7 +55,6 @@ jobs:
           cp android/build/outputs/apk/debug/android-debug.apk output/APD-Developer-Trap-Room-Search-C488T.apk
           ./gradlew :android:assembleDebug -PapdBuild=P488T --no-daemon
           cp android/build/outputs/apk/debug/android-debug.apk output/APD-Alpha-Testers-Trap-Room-Search-P488T.apk
-          git archive --format=zip --output=output/APD-Trap-Room-Search-C488T-P488T-Source.zip HEAD
       - name: Verify original signature, package, version, flags and built feature classes
         run: |
           python3 - <<'PY'
@@ -85,12 +84,19 @@ jobs:
           pathlib.Path('output/build-receipt.json').write_text(json.dumps(receipt,indent=2)+'\n')
           print(json.dumps(receipt,indent=2))
           PY
-          sha256sum output/*.apk output/*.zip > output/sha256sums.txt
+          sha256sum output/*.apk > output/sha256sums.txt
       - uses: actions/upload-artifact@v4
         if: success()
         with:
-          name: APD-C488T-P488T-Trap-Room-Search-Signed-Candidates
-          path: output/
+          name: APD-Developer-C488T
+          path: output/APD-Developer-Trap-Room-Search-C488T.apk
+          retention-days: 30
+          if-no-files-found: error
+      - uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: APD-Alpha-Testers-P488T
+          path: output/APD-Alpha-Testers-Trap-Room-Search-P488T.apk
           retention-days: 30
           if-no-files-found: error
       - uses: actions/upload-artifact@v4
