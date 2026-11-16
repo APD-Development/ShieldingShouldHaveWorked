@@ -84,6 +84,8 @@ public class ShatteredPixelDungeon extends Game {
         // Android configured private storage before GDX preferences became available.
         // Journal collection starts only after an explicit, persisted player opt-in.
         com.watabou.utils.SupportActionJournal.setEnabled(SPDSettings.apdExtendedBugLogging());
+        // Developer build only: log frames slower than 100 ms (stutter probe).
+        com.watabou.utils.SupportDiagnostics.hitchProbe = com.shatteredpixel.shatteredpixeldungeon.apd.ApdFeatures.testBuild();
 		
 		Music.INSTANCE.enable( SPDSettings.music() );
 		Music.INSTANCE.volume( SPDSettings.musicVol()*SPDSettings.musicVol()/100f );

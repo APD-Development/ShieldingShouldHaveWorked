@@ -260,6 +260,7 @@ public class Game implements ApplicationListener {
 	
 	@Override
 	public void resume() {
+		com.watabou.utils.SupportDiagnostics.resetFrameClock();
 		com.watabou.utils.SupportDiagnostics.event("game.resume", "");
 		com.watabou.utils.SupportDiagnostics.memoryEvent("game.resume");
 		resumeStartedNanos=System.nanoTime();awaitingFirstDraw=true;
@@ -381,11 +382,13 @@ public class Game implements ApplicationListener {
 		Game.elapsed = 0f;
 		Game.timeScale = 1f;
 		Game.timeTotal = 0f;
+        com.watabou.utils.SupportDiagnostics.resetFrameClock();
         com.watabou.utils.SupportDiagnostics.event("scene.ready", scene.getClass().getSimpleName()+" load_ms="+((System.nanoTime()-sceneStart)/1000000L));
 	}
 
 	protected void update() {
 		com.watabou.utils.SupportDiagnostics.periodicMemoryEvent();
+		com.watabou.utils.SupportDiagnostics.frame(scene);
 		//game will not process more than 200ms of graphics time per frame
 		float frameDelta = Math.min(0.2f, Gdx.graphics.getDeltaTime());
 		Game.elapsed = Game.timeScale * frameDelta;

@@ -95,7 +95,7 @@ public final class SupportDiagnostics {
                 SupportActionJournal.record("error.class",type);
             }
             trace.addLast(line);traceChars+=line.length()+1;
-            if ("memory.sample".equals(kind)) {
+            if ("memory.sample".equals(kind) || "frame.hitch".equals(kind)) {
                 memoryTrace.addLast(line);
                 while (memoryTrace.size()>MEMORY_EVENTS) memoryTrace.removeFirst();
             }
@@ -130,6 +130,28 @@ public final class SupportDiagnostics {
     }
     /** On the render thread, sample at most once every 30 wall-clock seconds.
      * Avoids per-frame allocations, forced GC and any reads of player history. */
+    //APD: Developer-build stutter probe. Off everywhere else; costs one nanoTime per frame.
+    public static volatile boolean hitchProbe;
+    private static long lastFrameNanos, lastUsedBytes;
+    private static final long HITCH_NANOS=100_000_000L, IGNORE_NANOS=5_000_000_000L;
+    /** Called once per frame on the render thread. Logs frames slower than 100 ms with memory in use. */
+    public static void frame(Object scene){
+        if(!hitchProbe)return;
+        long now=System.nanoTime(),gap=now-lastFrameNanos;
+        lastFrameNanos=now;
+        if(gap<HITCH_NANOS||gap>IGNORE_NANOS)return; // a gap over 5 s is the app being paused, not a stutter
+        try{
+            Runtime runtime=Runtime.getRuntime();
+            long used=runtime.totalMemory()-runtime.freeMemory();
+            long delta=lastUsedBytes==0?0:used-lastUsedBytes;
+            lastUsedBytes=used;
+            event("frame.hitch","ms="+(gap/1000000L)+" scene="+(scene==null?"none":scene.getClass().getSimpleName())+" used_bytes="+used
+                    +" change_since_last_hitch="+delta+" limit_bytes="+runtime.maxMemory());
+        }catch(RuntimeException|OutOfMemoryError unavailable){writeFailure="Hitch capture unavailable";}
+    }
+    /** A scene change or resume legitimately takes long; do not count that frame. */
+    public static void resetFrameClock(){lastFrameNanos=System.nanoTime();}
+
     public static void periodicMemoryEvent(){
         long now=System.nanoTime();
         if (lastPeriodicMemoryNanos!=0 && now-lastPeriodicMemoryNanos>=0
