@@ -1,0 +1,70 @@
+name: Publish exact C488Y Developer and P488U Alpha independently
+on:
+  push:
+    branches: [chatgpt/publish-exact-488y-488u-20261116]
+    paths: [.github/workflows/apd-publish-488y-488u-exact.yml]
+permissions:
+  contents: write
+  actions: read
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      GH_TOKEN: ${{ github.token }}
+      REPO: APD-Development/ShieldingShouldHaveWorked
+    steps:
+      - name: Download verified original APKs from their separate producing runs
+        run: |
+          set -euo pipefail
+          mkdir -p developer alpha
+          gh run download 43966676300 --repo "$REPO" --name APD-Developer-C488Y --dir developer
+          gh run download 43962742377 --repo "$REPO" --name APD-Alpha-Testers-P488U --dir alpha
+          find developer alpha -type f -printf '%p %s bytes\n'
+          cp "$(find developer -name 'APD-Developer-Trap-Room-Search-C488Y.apk' -type f | head -1)" APD-Developer-Trap-Room-Search-C488Y.apk
+          cp "$(find alpha -name 'APD-Alpha-Testers-Trap-Room-Search-P488U.apk' -type f | head -1)" APD-Alpha-Testers-Trap-Room-Search-P488U.apk
+      - name: Match exact owner-supplied bytes before publishing
+        run: |
+          set -euo pipefail
+          test "$(sha256sum APD-Developer-Trap-Room-Search-C488Y.apk | cut -d' ' -f1)" = "ac17414c8675c0c18e23ee7434002857309dc19c90db0a9a48a245551f6aebd8"
+          test "$(sha256sum APD-Alpha-Testers-Trap-Room-Search-P488U.apk | cut -d' ' -f1)" = "30c6f5044016951719fdd306b0009859a40817beae8b80b63e210cdc9b88509d"
+          test "$(wc -c < APD-Developer-Trap-Room-Search-C488Y.apk)" -eq 39246948
+          test "$(wc -c < APD-Alpha-Testers-Trap-Room-Search-P488U.apk)" -eq 39246928
+          sha256sum APD-Developer-Trap-Room-Search-C488Y.apk > SHA256-C488Y.txt
+          sha256sum APD-Alpha-Testers-Trap-Room-Search-P488U.apk > SHA256-P488U.txt
+      - name: Publish Developer C488Y exact-source test prerelease
+        run: |
+          set -euo pipefail
+          cat > developer-notes.md <<'EOF'
+          ADHD Pixel Dungeon **Developer C488Y**, signed test candidate, byte-identical to the owner's supplied Drive APK.
+
+          **Source:** [`6473bcc4fcf542293b5bb3cf92c37618b70d46e0`](https://github.com/APD-Development/ShieldingShouldHaveWorked/commit/6473bcc4fcf542293b5bb3cf92c37618b70d46e0), build [43966676300](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/43966676300) (CI success).
+
+          This is **Developer C488Y**, not Alpha P488Y. A separately supplied Alpha P488U binary is from an older source revision and is published in a different release. Do not describe them as a matching version pair.
+
+          Existing original signing identity and package/version code verified by producing-run CI. Native Android installation over saves, full visual acceptance, and live gameplay stability for these exact bytes are **not verified**. This is a test prerelease, not a qualified production APK.
+          EOF
+          gh release create apd-c488y --repo "$REPO" --target 6473bcc4fcf542293b5bb3cf92c37618b70d46e0 --title "APD Developer C488Y (test candidate)" --notes-file developer-notes.md --prerelease APD-Developer-Trap-Room-Search-C488Y.apk SHA256-C488Y.txt
+      - name: Publish Alpha P488U exact-source test prerelease
+        run: |
+          set -euo pipefail
+          cat > alpha-notes.md <<'EOF'
+          ADHD Pixel Dungeon **Alpha Testers P488U**, signed test candidate, byte-identical to the owner's supplied Drive APK.
+
+          **Source:** [`ac7fabf3c75fdebeea11244d04d8393e5ac93488`](https://github.com/APD-Development/ShieldingShouldHaveWorked/commit/ac7fabf3c75fdebeea11244d04d8393e5ac93488), build [43962742377](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/43962742377) (CI success).
+
+          This is **Alpha P488U**, not P488Y. The separately supplied Developer C488Y binary comes from a newer source revision and is published in another release. Do not describe them as a matching version pair.
+
+          Existing original signing identity and package/version code verified by producing-run CI. Native Android installation over saves, full visual acceptance, and live gameplay stability for these exact bytes are **not verified**. This is a test prerelease, not a qualified production APK.
+          EOF
+          gh release create apd-p488u --repo "$REPO" --target ac7fabf3c75fdebeea11244d04d8393e5ac93488 --title "APD Alpha Testers P488U (test candidate)" --notes-file alpha-notes.md --prerelease APD-Alpha-Testers-Trap-Room-Search-P488U.apk SHA256-P488U.txt
+      - name: Verify exact GitHub Release downloads and both release statuses
+        run: |
+          set -euo pipefail
+          mkdir -p verified-dev verified-alpha
+          gh release download apd-c488y --repo "$REPO" --dir verified-dev --pattern 'APD-Developer-Trap-Room-Search-C488Y.apk'
+          gh release download apd-p488u --repo "$REPO" --dir verified-alpha --pattern 'APD-Alpha-Testers-Trap-Room-Search-P488U.apk'
+          test "$(sha256sum verified-dev/APD-Developer-Trap-Room-Search-C488Y.apk | cut -d' ' -f1)" = "ac17414c8675c0c18e23ee7434002857309dc19c90db0a9a48a245551f6aebd8"
+          test "$(sha256sum verified-alpha/APD-Alpha-Testers-Trap-Room-Search-P488U.apk | cut -d' ' -f1)" = "30c6f5044016951719fdd306b0009859a40817beae8b80b63e210cdc9b88509d"
+          gh release view apd-c488y --repo "$REPO" --json url,isPrerelease,tagName,assets
+          gh release view apd-p488u --repo "$REPO" --json url,isPrerelease,tagName,assets
