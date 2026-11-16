@@ -54,17 +54,21 @@ public final class ClericHistory {
 		return new ClericHistory( n, won, died );
 	}
 
-	/** Cheap version for the in-game grudge: counts Cleric runs in the local rankings instead of
-	 * building the whole UIMSD catalog. Building the catalog during play could use hundreds of MB
-	 * with a large history and crash the game out of memory. */
-	public static ClericHistory fromRankings( java.util.List<com.shatteredpixel.shatteredpixeldungeon.Rankings.Record> records ){
-		if (records == null) return new ClericHistory( 0, 0, 0 );
-		int n = 0, won = 0;
-		for (com.shatteredpixel.shatteredpixeldungeon.Rankings.Record r : records){
-			if (r == null || r.heroClass != com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass.CLERIC) continue;
+	/** Cheap version for the in-game grudge: one summary row per run (DerivedStore's run facts)
+	 * instead of the whole UIMSD catalog, which with a large history could use hundreds of MB
+	 * during play and crash the game out of memory. Same rules: finished runs with known class
+	 * and outcome, each run once. */
+	public static ClericHistory fromRunFacts( java.util.List<com.shatteredpixel.shatteredpixeldungeon.apd.stats.RunFacts> rows ){
+		if (rows == null) return new ClericHistory( 0, 0, 0 );
+		int n = 0, won = 0, died = 0;
+		for (com.shatteredpixel.shatteredpixeldungeon.apd.stats.RunFacts r : rows){
+			if (r == null || !r.isKnown( FactKeys.OUTCOME )
+					|| !"CLERIC".equalsIgnoreCase( r.textOr( FactKeys.HERO_CLASS, "" ) )) continue;
+			long outcome = r.numOr( FactKeys.OUTCOME, -1 );
 			n++;
-			if (r.win) won++;
+			if (outcome == LifecycleEvents.OUTCOME_WON) won++;
+			else if (outcome == LifecycleEvents.OUTCOME_DIED) died++;
 		}
-		return new ClericHistory( n, won, n - won );
+		return new ClericHistory( n, won, died );
 	}
 }

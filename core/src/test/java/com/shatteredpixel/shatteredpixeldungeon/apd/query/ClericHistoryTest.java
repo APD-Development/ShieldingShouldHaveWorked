@@ -81,22 +81,22 @@ public class ClericHistoryTest {
 		assertEquals( 0, ClericHistory.compute( new Dataset( def, new ArrayList<Row>(), new ArrayList<Dataset.RunInfo>() ) ).runs );
 	}
 
-	@Test public void rankingsCountOnlyClericRunsWithoutBuildingTheCatalog(){
-		java.util.List<com.shatteredpixel.shatteredpixeldungeon.Rankings.Record> records = new java.util.ArrayList<>();
-		for (Object[] spec : new Object[][]{{com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass.CLERIC, true},
-				{com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass.CLERIC, false},
-				{com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass.CLERIC, false},
-				{com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass.WARRIOR, true}}){
-			com.shatteredpixel.shatteredpixeldungeon.Rankings.Record r = new com.shatteredpixel.shatteredpixeldungeon.Rankings.Record();
-			r.heroClass = (com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass) spec[0];
-			r.win = (Boolean) spec[1];
-			records.add(r);
+	@Test public void runFactsCountOnlyFinishedClericRunsWithoutBuildingTheCatalog(){
+		java.util.List<com.shatteredpixel.shatteredpixeldungeon.apd.stats.RunFacts> rows = new java.util.ArrayList<>();
+		long[][] specs = {{1, LifecycleEvents.OUTCOME_WON},{1, LifecycleEvents.OUTCOME_DIED},{1, LifecycleEvents.OUTCOME_DIED},{0, LifecycleEvents.OUTCOME_WON},{1,-99}};
+		int i = 0;
+		for (long[] spec : specs){
+			com.shatteredpixel.shatteredpixeldungeon.apd.stats.RunFacts r = new com.shatteredpixel.shatteredpixeldungeon.apd.stats.RunFacts(
+					com.shatteredpixel.shatteredpixeldungeon.apd.stats.RunFacts.SOURCE_APD, "run" + (i++));
+			r.text( FactKeys.HERO_CLASS, spec[0] == 1 ? "CLERIC" : "WARRIOR", Fact.PROV_RECORDED );
+			if (spec[1] != -99) r.num( FactKeys.OUTCOME, spec[1], Fact.PROV_RECORDED );
+			rows.add( r );
 		}
-		records.add(null);
-		ClericHistory h = ClericHistory.fromRankings( records );
+		rows.add( null );
+		ClericHistory h = ClericHistory.fromRunFacts( rows );
 		assertEquals( 3, h.runs );
 		assertEquals( 1, h.wins );
 		assertEquals( 2, h.deaths );
-		assertEquals( 0, ClericHistory.fromRankings( null ).runs );
+		assertEquals( 0, ClericHistory.fromRunFacts( null ).runs );
 	}
 }
