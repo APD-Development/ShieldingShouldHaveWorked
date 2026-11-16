@@ -133,7 +133,7 @@ public class DiagnosticReportExtendedOptionTest {
                 @Override public void chooseExport(String n,String mime,ApdFiles.ExportTarget t){t.onStream(successful,n);}
             };
             DiagnosticReport.export(m->{
-                assertTrue(m.contains("Diagnostic report saved"));
+                assertTrue(m.contains("Compressed Extended bug report saved."));
                 successDone.countDown();
             },true);
             assertTrue(successDone.await(5,TimeUnit.SECONDS));
