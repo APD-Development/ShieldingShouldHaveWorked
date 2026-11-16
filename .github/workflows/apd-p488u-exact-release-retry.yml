@@ -1,0 +1,43 @@
+name: Retry publishing exact owner-supplied Alpha P488U
+on:
+  push:
+    branches: [chatgpt/publish-exact-p488u-retry-20261116]
+    paths: [.github/workflows/apd-p488u-exact-release-retry.yml]
+permissions:
+  contents: write
+  actions: read
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      GH_TOKEN: ${{ github.token }}
+      REPO: APD-Development/ShieldingShouldHaveWorked
+    steps:
+      - name: Fetch original P488U from its successful producing run
+        run: |
+          set -euo pipefail
+          mkdir -p source
+          gh run download 43962742377 --repo "$REPO" --name APD-Alpha-Testers-P488U --dir source
+          cp "$(find source -name 'APD-Alpha-Testers-Trap-Room-Search-P488U.apk' -type f | head -1)" APD-Alpha-Testers-Trap-Room-Search-P488U.apk
+          test "$(sha256sum APD-Alpha-Testers-Trap-Room-Search-P488U.apk | cut -d' ' -f1)" = "30c6f5044016951719fdd306b0009859a40817beae8b80b63e210cdc9b88509d"
+          test "$(wc -c < APD-Alpha-Testers-Trap-Room-Search-P488U.apk)" -eq 39246928
+          sha256sum APD-Alpha-Testers-Trap-Room-Search-P488U.apk > SHA256-P488U.txt
+      - name: Publish Alpha P488U prerelease only
+        run: |
+          set -euo pipefail
+          cat > notes.md <<'EOF'
+          APD Alpha Testers **P488U** test candidate. Byte-for-byte identical to the owner-supplied Google Drive APK.
+
+          Verified producing source: [`ac7fabf3c75fdebeea11244d04d8393e5ac93488`](https://github.com/APD-Development/ShieldingShouldHaveWorked/commit/ac7fabf3c75fdebeea11244d04d8393e5ac93488). Producing CI: [43962742377](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/43962742377) (successful). Original APD signing, package name and version code retained.
+
+          **Not a matched pair with Developer C488Y**, which came from a later source commit and is published separately. No native install-over-save or gameplay acceptance has been verified for this exact APK. Test prerelease only.
+          EOF
+          gh release create apd-p488u --repo "$REPO" --target ac7fabf3c75fdebeea11244d04d8393e5ac93488 --title "APD Alpha Testers P488U (test candidate)" --notes-file notes.md --prerelease APD-Alpha-Testers-Trap-Room-Search-P488U.apk SHA256-P488U.txt
+      - name: Verify exact published download
+        run: |
+          set -euo pipefail
+          mkdir verified
+          gh release download apd-p488u --repo "$REPO" --dir verified --pattern 'APD-Alpha-Testers-Trap-Room-Search-P488U.apk'
+          test "$(sha256sum verified/APD-Alpha-Testers-Trap-Room-Search-P488U.apk | cut -d' ' -f1)" = "30c6f5044016951719fdd306b0009859a40817beae8b80b63e210cdc9b88509d"
+          gh release view apd-p488u --repo "$REPO" --json url,isPrerelease,assets
