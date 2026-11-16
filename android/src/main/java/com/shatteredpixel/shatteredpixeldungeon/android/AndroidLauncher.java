@@ -183,7 +183,34 @@ public class AndroidLauncher extends AndroidApplication {
 		Button.longClick = ViewConfiguration.getLongPressTimeout()/1000f;
 		
 		initialize(new ShatteredPixelDungeon(support), config);
-		
+		requestHighestRefreshRate();
+	}
+
+	//APD: ask Android for the screen's highest refresh rate (e.g. 144 Hz) instead of the
+	//60 Hz many phones give apps by default. Android may still decide otherwise.
+	private void requestHighestRefreshRate(){
+		try {
+			android.view.Display display = getWindowManager().getDefaultDisplay();
+			android.view.Display.Mode current = display.getMode(), best = current;
+			for (android.view.Display.Mode mode : display.getSupportedModes()){
+				if (mode.getPhysicalWidth() == current.getPhysicalWidth()
+						&& mode.getPhysicalHeight() == current.getPhysicalHeight()
+						&& mode.getRefreshRate() > best.getRefreshRate()) best = mode;
+			}
+			android.view.WindowManager.LayoutParams params = getWindow().getAttributes();
+			if (params.preferredDisplayModeId != best.getModeId()){
+				params.preferredDisplayModeId = best.getModeId();
+				getWindow().setAttributes(params);
+			}
+			if (android.os.Build.VERSION.SDK_INT >= 30 && graphics != null && graphics.getView() instanceof android.view.SurfaceView){
+				android.view.Surface surface = ((android.view.SurfaceView) graphics.getView()).getHolder().getSurface();
+				if (surface != null && surface.isValid())
+					surface.setFrameRate(best.getRefreshRate(), android.view.Surface.FRAME_RATE_COMPATIBILITY_DEFAULT);
+			}
+			com.watabou.utils.SupportDiagnostics.event("display.refresh", "requested_hz=" + best.getRefreshRate());
+		} catch (RuntimeException unavailable){
+			com.watabou.utils.SupportDiagnostics.event("display.refresh", "request_failed=" + unavailable.getClass().getSimpleName());
+		}
 	}
 
 	@Override
@@ -201,6 +228,7 @@ public class AndroidLauncher extends AndroidApplication {
 			finishAndRemoveTask();
 		}
 		super.onResume();
+		requestHighestRefreshRate();
 	}
 
 	@Override protected void onDestroy() {
