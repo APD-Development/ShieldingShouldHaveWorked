@@ -25,3 +25,7 @@ Read AGENTS.md, repository handoffs/known-issues ledger, the frozen C485 continu
 
 ## Verification status
 Pending. Branch creation and claim are not source integration, successful tests, a new APK, native acceptance or publication. Record only outcomes actually observed below.
+
+## Completed verification superseding pending status
+
+Recorded 2026-11-16T11:28:02.066659-05:00. Exact combined source `c6fa033167789ef9f2fc6f31bcff39c824dfb4db` passed 3,540 core tests / 539 suites and all requested Java compilation. Original-signed C486/P486 APKs are retained in artifact 14244034917 and were independently checked after download. See `APD-486-R7-INTEGRATION-VERIFIED-2026-11-16.md` for full source, test, APK hash and limitation receipts. Native acceptance and publication remain unperformed. No recurring tasks changed.

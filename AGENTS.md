@@ -1,5 +1,14 @@
 # AGENTS.md: ADHD Pixel Dungeon (APD), start here
 
+## Current owner-authorized combined baseline: C466R7 + C485 -> C486/P486
+
+Read `docs/APD-486-R7-INTEGRATION-VERIFIED-2026-11-16.md` FIRST. The owner required the complete exact R7 source `34a1471ccd2f56ee21bb8c2579cb154ceb5e21c7`, including weapons/shields, original sprites, full-pack swap, throw aiming, Greater Metamorphosis, adaptive magnifier/wall rules and R7 playback, combined with all C485 history/diagnostic/performance and rational v6 scoring work. Tested two-parent integration `c6fa033167789ef9f2fc6f31bcff39c824dfb4db` is the minimum combined baseline. Do not restart from incomplete C485, default main, or a build-only branch.
+
+Exact run 43905816255 passed 3,540 tests / 539 suites with zero failures/errors/skips and desktop/Android Java compilation; original-signed C486/P486 artifact 14244034917 preserves the signer, application ID, versionCode 920 and edition flags. All 60 R7 changed paths were reconciled; 33 of 38 production files are byte-identical to R7, five retain reviewed C485 safety/performance compatibility, and all other C485 production files are unchanged. Downloaded APK class/asset/hash verification is recorded. Native execution, install-over/save verification, visual acceptance and qualified publication remain OUTSTANDING for these exact bytes. Preserve earlier candidates and independent C480 work.
+
+This was one explicitly authorized integration session. Recurring APD development remains STOPPED. Do not re-enable any tasks or alter other games. Future work must preserve both parents and read the verified continuation rather than repeating this merge or trusting a larger build number.
+
+
 ## Verified archive manifest boolean flag validation, November 12, 2026
 
 Read `docs/APD-ARCHIVE-FLAG-VALIDATION-CONTINUATION-2026-11-12.md` before touching `ArchiveManifest.parse` sealed/redacted metadata. The v1 writer emits only `0` or `1`, but the parser had been accepting every other checksummed value as `false`. Isolated [PR #57](https://github.com/APD-Development/ShieldingShouldHaveWorked/pull/57) now refuses malformed tokens. Exact source-only [Actions run 43343938960](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/43343938960) passed **3,334 core tests / 481 suites**, zero failures/errors/skips, including all four regressions, and desktop/Android debug/release/instrumentation Java compilation. This was **not** a signed APK or native Android/phone acceptance. Retain valid v1/first-wins archive semantics, old history, APD464 and independently active release/playback work. Do not duplicate this completed parser repair.
