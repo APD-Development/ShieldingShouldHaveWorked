@@ -26,8 +26,9 @@ public final class SupportActionJournal {
     });
     private static File root, logFile, pauseFile;
     private static boolean scheduled, full;
+    // Explicit opt-in. The default is OFF even when the diagnostics directory exists.
+    private static volatile boolean enabled;
     private static long lost;
-    private static final byte[] BUFFER = new byte[8192];
 
     private static final class Entry {
         final long time;
@@ -44,6 +45,28 @@ public final class SupportActionJournal {
     }
 
     private SupportActionJournal() {}
+
+    public static boolean enabled() { return enabled; }
+
+    /**
+     * The player must acknowledge the in-game disclosure before calling true.
+     * Turning logging off also erases the retained chronology and pause marker.
+     */
+    public static void setEnabled(boolean consented) {
+        synchronized (LOCK) {
+            if (enabled == consented) return;
+            enabled = consented;
+            if (!consented) {
+                pending.clear();
+                lost = 0;
+                full = false;
+                try { if (logFile != null) safe(logFile).delete(); } catch (IOException ignored) {}
+                try { if (pauseFile != null) safe(pauseFile).delete(); } catch (IOException ignored) {}
+            } else {
+                record("journal.enabled", "explicit_player_opt_in=true");
+            }
+        }
+    }
 
     private static File safe(File file) throws IOException {
         if (!file.getAbsoluteFile().equals(file.getCanonicalFile()))
@@ -82,7 +105,7 @@ public final class SupportActionJournal {
     }
 
     private static void flushLocked() throws IOException {
-        if (logFile == null || pending.isEmpty() && lost == 0) return;
+        if (!enabled || logFile == null || (pending.isEmpty() && lost == 0)) return;
         safe(logFile);
         try (FileOutputStream out = new FileOutputStream(logFile, true)) {
             if (lost > 0) {
@@ -121,7 +144,7 @@ public final class SupportActionJournal {
     /** Called only with sanitized APD event categories, never keyboard values. */
     public static void record(String kind, String detail) {
         synchronized (LOCK) {
-            if (logFile == null || full) return;
+            if (!enabled || logFile == null || full) return;
             if (pending.size() >= QUEUE_LIMIT) { lost++; return; }
             pending.addLast(new Entry(System.currentTimeMillis(), clean(kind, 80), clean(detail, 300)));
             if (!scheduled) {
@@ -135,7 +158,7 @@ public final class SupportActionJournal {
     /** Android lifecycle observation. A pause is not proof of a deliberate exit. */
     public static void paused(String scene) {
         synchronized (LOCK) {
-            if (pauseFile == null) return;
+            if (!enabled || pauseFile == null) return;
             try {
                 safe(pauseFile);
                 if (!pauseFile.isFile()) {
@@ -153,7 +176,7 @@ public final class SupportActionJournal {
     public static void resumed(String scene) {
         long now = System.currentTimeMillis(), earlier = -1;
         synchronized (LOCK) {
-            if (pauseFile != null) {
+            if (enabled && pauseFile != null) {
                 try {
                     safe(pauseFile);
                     if (pauseFile.isFile()) {
@@ -168,6 +191,7 @@ public final class SupportActionJournal {
                 }
             }
         }
+        if (!enabled) return;
         if (earlier > 0 && now >= earlier)
             record("activity.foreground", "scene=" + clean(scene, 80)
                     + " away_ms=" + (now - earlier) + " duration_is_wall_clock=true");
@@ -179,7 +203,7 @@ public final class SupportActionJournal {
     /** Flushes the pre-export stream, then identifies exactly which bytes belong to this report. */
     public static Checkpoint checkpoint() throws IOException {
         synchronized (LOCK) {
-            if (logFile == null) return new Checkpoint(null, 0);
+            if (!enabled || logFile == null) return new Checkpoint(null, 0);
             flushLocked();
             return new Checkpoint(logFile, logFile.length());
         }
@@ -211,7 +235,7 @@ public final class SupportActionJournal {
     /** Discard only the bytes included in a successfully written report. */
     public static void acknowledge(Checkpoint checkpoint) throws IOException {
         synchronized (LOCK) {
-            if (logFile == null || checkpoint.file == null || !checkpoint.file.equals(logFile)) return;
+            if (!enabled || logFile == null || checkpoint.file == null || !checkpoint.file.equals(logFile)) return;
             flushLocked();
             long size = logFile.length();
             if (size < checkpoint.length) throw new IOException("Action history changed before acknowledgement");
