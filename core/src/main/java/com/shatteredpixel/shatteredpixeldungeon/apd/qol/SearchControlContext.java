@@ -122,7 +122,28 @@ public final class SearchControlContext {
     /** The one rule every search control uses: a full search is worth its turns when a
      * door-capable wall is in reach, or the hero's room shows traps. */
     public static boolean fullSearchUseful(Hero hero, Level level) {
-        return hasMeaningfulWall(hero, level) || visibleTrapRoom(hero, level);
+        return hasMeaningfulWall(hero, level) || visibleTrapRoom(hero, level) || roomHasSearchableWall(hero, level);
+    }
+
+    /** The hero's room still has a door-capable wall nobody has searched, anywhere on its edge.
+     * Lets Search stay the tap action in the middle of a room, not only beside a wall. */
+    public static boolean roomHasSearchableWall(Hero hero, Level level) {
+        if (hero == null || !(level instanceof RegularLevel) || !((RegularLevel) level).apdHasRooms()
+                || !completeObservedMetadata(level) || hero.pos < 0 || hero.pos >= level.length()
+                || !DoorSearchEligibility.supportsDoors(level)) return false;
+        if (noHiddenDoorRoom(level, hero.pos)) return false;
+        Room room = ((RegularLevel) level).room(hero.pos);
+        if (room == null) return false;
+        int w = level.width();
+        for (int x = room.left; x <= room.right; x++) {
+            for (int y = room.top; y <= room.bottom; y++) {
+                if (x != room.left && x != room.right && y != room.top && y != room.bottom) continue;
+                if (x < 0 || y < 0 || x >= w || y >= level.height()) continue;
+                int cell = x + y * w;
+                if (DoorSearchEligibility.candidate(level, cell) && !level.searchedWalls.confirmed(level, cell)) return true;
+            }
+        }
+        return false;
     }
 
     public static boolean visibleTrapRoom(Hero hero, Level level) {
