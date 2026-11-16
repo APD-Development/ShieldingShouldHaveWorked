@@ -22,6 +22,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.apd.archive;
 
 import com.shatteredpixel.shatteredpixeldungeon.apd.query.DatasetStore;
+import com.shatteredpixel.shatteredpixeldungeon.apd.stats.ReadOptions;
 import com.shatteredpixel.shatteredpixeldungeon.apd.stats.ReadResult;
 import com.shatteredpixel.shatteredpixeldungeon.apd.stats.ReadStatus;
 import com.shatteredpixel.shatteredpixeldungeon.apd.stats.RunLogReader;
@@ -333,7 +334,10 @@ public final class ArchiveImporter {
 		//it must be a readable APD log, of the run the manifest says, and never demo data
 		ReadResult r;
 		try {
-			r = RunLogReader.read(tmp);
+			//Every frame and seal is still validated. Only RUN_START events
+			//must be retained to check the archived file's logical identity.
+			//An import of a long run must not keep its full gameplay event list.
+			r = RunLogReader.read(tmp, new ReadOptions().onlyRunStartEvents(true));
 		} catch (IOException unreadable){
 			r = null;
 		}
