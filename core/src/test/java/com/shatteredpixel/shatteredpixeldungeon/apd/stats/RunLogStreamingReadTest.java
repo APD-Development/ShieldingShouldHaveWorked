@@ -141,7 +141,6 @@ public class RunLogStreamingReadTest {
 			out.write(LogFormat.frame(250, payload));
 			if (i == 255) corruptChecksumByte = out.size() - 1;
 		}
-		int lastFrameEnd = out.size();
 		out.write(LogFormat.sealFrame(0, 0));
 		byte[] valid = out.toByteArray();
 
