@@ -1,0 +1,76 @@
+name: APD C474 P474 original-signer existing-hash-buffer source candidate build
+on:
+  push:
+    branches: [chatgpt/apd-existing-hash-buffer-c474p474-20261115]
+    paths: [.github/workflows/apd-existing-hash-buffer-c474p474-20261115.yml]
+permissions: {contents: read}
+concurrency: {group: apd-existing-hash-buffer-c474p474-20261115, cancel-in-progress: false}
+jobs:
+  build-candidates:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with: {fetch-depth: 0}
+      - uses: actions/setup-java@v4
+        with: {distribution: temurin, java-version: '21'}
+      - uses: gradle/actions/setup-gradle@v4
+      - name: Require exactly verified production tree plus this isolated build workflow
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor ee515038c31ea792d192d389cf95d4e7c1cd83ee HEAD
+          test "$(git diff --name-only ee515038c31ea792d192d389cf95d4e7c1cd83ee HEAD)" = ".github/workflows/apd-existing-hash-buffer-c474p474-20261115.yml"
+          echo "Production files exactly match verified source merge ee515038; build workflow is the only additional change"
+      - name: Assemble original-signer Developer and Alpha candidates from same source
+        run: |
+          set -euo pipefail
+          "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "platforms;android-36"
+          mkdir -p deliverable
+          ./gradlew :android:assembleDebug -PapdTestBuild -PapdBuild=C474 --no-daemon
+          cp android/build/outputs/apk/debug/android-debug.apk deliverable/APD-Developer-ExistingHash-C474.apk
+          ./gradlew :android:assembleDebug -PapdBuild=P474 --no-daemon
+          cp android/build/outputs/apk/debug/android-debug.apk deliverable/APD-Alpha-Testers-ExistingHash-P474.apk
+          git archive --format=zip --output=deliverable/APD-Source-ExistingHash-C474-P474.zip HEAD
+      - name: Verify retained original signer, package ID, code and edition flags
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import hashlib,json,os,pathlib,re,subprocess,zipfile
+          tools=sorted((pathlib.Path(os.environ['ANDROID_HOME'])/'build-tools').glob('*/apksigner'))[-1].parent
+          expected='067688b3ab6bd5820a67f4c1ba7d5859db578173771cf31d3252b3e4e012246e'
+          receipt={'source_sha':os.environ['GITHUB_SHA'],'production_source_parent':'ee515038c31ea792d192d389cf95d4e7c1cd83ee',
+                   'verified_source_ci_run':43790418728,'versionCode':920,'signer_sha256':expected,
+                   'native_android_accepted':False,'install_over_save_verified':False,'published':False,'variants':{}}
+          for variant,name,marker in (
+              ('Developer','APD-Developer-ExistingHash-C474.apk','-bC474-TEST'),
+              ('Alpha Testers','APD-Alpha-Testers-ExistingHash-P474.apk','-bP474')):
+              p=pathlib.Path('deliverable')/name
+              assert p.is_file() and p.stat().st_size>30000000
+              out=subprocess.check_output([str(tools/'apksigner'),'verify','--print-certs',str(p)],text=True)
+              match=re.search(r'SHA-256 digest:\s*([0-9a-fA-F:]+)',out)
+              assert match,out
+              assert match.group(1).replace(':','').lower()==expected
+              badge=subprocess.check_output([str(tools/'aapt'),'dump','badging',str(p)],text=True)
+              package=next(x for x in badge.splitlines() if x.startswith('package:'))
+              assert "name='com.charltonchris29.adhdpixeldungeon.indev'" in package,package
+              assert "versionCode='920'" in package,package
+              assert marker in package,package
+              with zipfile.ZipFile(p) as z:
+                  flags=z.read('assets/apd/features.txt').decode('utf-8').strip().splitlines()
+              assert flags==(['testBuild','grudge','demoUnlock','clericPlayable'] if variant=='Developer'
+                        else ['extendedPlayback','grudge']),flags
+              receipt['variants'][variant]={'name':name,'bytes':p.stat().st_size,
+                  'sha256':hashlib.sha256(p.read_bytes()).hexdigest(),'package':package,'flags':flags}
+          src=pathlib.Path('deliverable/APD-Source-ExistingHash-C474-P474.zip')
+          receipt['source_zip_sha256']=hashlib.sha256(src.read_bytes()).hexdigest()
+          pathlib.Path('deliverable/receipt.json').write_text(json.dumps(receipt,indent=2)+'\n')
+          print(json.dumps(receipt,indent=2))
+          PY
+          sha256sum deliverable/*.apk deliverable/*.zip > deliverable/sha256sums.txt
+      - uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: apd-existing-hash-original-signed-c474-p474
+          path: deliverable/
+          retention-days: 30
+          if-no-files-found: error
