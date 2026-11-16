@@ -8,6 +8,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.RandomAccessFile;
@@ -127,6 +128,72 @@ public class RunLogStreamingReadTest {
 		assertEquals(parsed.eventCount, imported.eventCount);
 		assertEquals(parsed.sealEventCount, imported.sealEventCount);
 		assertEquals(parsed.validBytes, imported.validBytes);
+	}
+
+	@Test
+	public void streamingChecksumReusePreservesManyValidFramesAndDetectsLaterCorruption() throws Exception {
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		out.write(LogHeader.encode(TelemetryVersion.CURRENT, 1234, "crc-frames", "test"));
+		int corruptChecksumByte = -1;
+		for (int i = 0; i < 512; i++){
+			byte[] payload = new byte[1 + (i % 37)];
+			Arrays.fill(payload, (byte) (i * 13));
+			out.write(LogFormat.frame(250, payload));
+			if (i == 255) corruptChecksumByte = out.size() - 1;
+		}
+		int lastFrameEnd = out.size();
+		out.write(LogFormat.sealFrame(0, 0));
+		byte[] valid = out.toByteArray();
+
+		File file = new File(tmp.getRoot(), "crc-valid.apdlog");
+		FileOutputStream stream = new FileOutputStream(file);
+		try {
+			stream.write(valid);
+		} finally {
+			stream.close();
+		}
+		ReadResult ordinary = RunLogReader.read(file);
+		assertEquals(ReadStatus.SEALED, ordinary.status);
+		assertEquals(512, ordinary.skippedUnknownFrames);
+		assertEquivalent(RunLogReader.parse(valid), ordinary);
+
+		byte[] damaged = Arrays.copyOf(valid, valid.length);
+		damaged[corruptChecksumByte] ^= 0x55;
+		file = new File(tmp.getRoot(), "crc-corrupt.apdlog");
+		stream = new FileOutputStream(file);
+		try {
+			stream.write(damaged);
+		} finally {
+			stream.close();
+		}
+		ReadResult corrupted = RunLogReader.read(file);
+		assertEquals(ReadStatus.CORRUPT, corrupted.status);
+		assertEquivalent(RunLogReader.parse(damaged), corrupted);
+	}
+
+	@Test
+	public void streamingChecksumReusePreservesTruncatedChecksumRefusal() throws Exception {
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		out.write(LogHeader.encode(TelemetryVersion.CURRENT, 1234, "crc-truncated", "test"));
+		for (int i = 0; i < 128; i++){
+			byte[] payload = new byte[2 + (i % 31)];
+			Arrays.fill(payload, (byte) (i * 17));
+			out.write(LogFormat.frame(250, payload));
+		}
+		byte[] complete = out.toByteArray();
+		for (int missingChecksumBytes = 1; missingChecksumBytes <= 4; missingChecksumBytes++){
+			byte[] truncated = Arrays.copyOf(complete, complete.length - missingChecksumBytes);
+			File file = new File(tmp.getRoot(), "crc-truncated-" + missingChecksumBytes + ".apdlog");
+			FileOutputStream stream = new FileOutputStream(file);
+			try {
+				stream.write(truncated);
+			} finally {
+				stream.close();
+			}
+			ReadResult streamed = RunLogReader.read(file);
+			assertEquals(ReadStatus.TRUNCATED, streamed.status);
+			assertEquivalent(RunLogReader.parse(truncated), streamed);
+		}
 	}
 
 	@Test
