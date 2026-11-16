@@ -68,6 +68,11 @@ public class MenuPane extends Component {
 	//APD Developer build: real-world clock under the version, left of the depth icon
 	private BitmapText clock;
 	private int clockMinute = -1;
+	//APD Developer build: frame time, "average/worst ms" over the last half second
+	private BitmapText frameTime;
+	private float frameSum, frameWorst, frameWindow;
+	private int frameCount;
+	private String frameShown = "";
 	private NinePatch versionOverflowBG;
 
 	private DangerIndicator danger;
@@ -92,6 +97,9 @@ public class MenuPane extends Component {
 			clock = new BitmapText( "", PixelScene.pixelFont );
 			clock.hardlight( 0xCACFC2 );
 			add(clock);
+			frameTime = new BitmapText( "", PixelScene.pixelFont );
+			frameTime.hardlight( 0xCACFC2 );
+			add(frameTime);
 			updateClock();
 		}
 
@@ -230,6 +238,13 @@ public class MenuPane extends Component {
 		clock.x = right - clock.width();
 		clock.y = depthIcon.y + 1;
 		PixelScene.align(clock);
+		if (frameTime != null){
+			frameTime.scale.set(PixelScene.align(0.67f));
+			frameTime.measure();
+			frameTime.x = right - frameTime.width();
+			frameTime.y = clock.y + clock.height() + 1;
+			PixelScene.align(frameTime);
+		}
 	}
 
 	//only rebuilds the text when the minute changes
@@ -248,6 +263,19 @@ public class MenuPane extends Component {
 	@Override
 	public void update() {
 		super.update();
+		if (frameTime != null) {
+			float ms = com.badlogic.gdx.Gdx.graphics.getDeltaTime() * 1000f;
+			frameSum += ms; frameCount++; frameWorst = Math.max(frameWorst, ms); frameWindow += ms;
+			if (frameWindow >= 500f) {
+				String text = Math.round(frameSum / frameCount) + "/" + Math.round(frameWorst) + "ms";
+				if (!text.equals(frameShown)) {
+					frameShown = text;
+					frameTime.text(text);
+					if (depthIcon != null) layoutClock();
+				}
+				frameSum = 0; frameCount = 0; frameWorst = 0; frameWindow = 0;
+			}
+		}
 		if (clock != null && Game.realTime / 1000 != lastClockCheck) {
 			lastClockCheck = Game.realTime / 1000;
 			updateClock();
