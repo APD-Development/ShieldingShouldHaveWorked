@@ -208,7 +208,10 @@ public final class RunLogWriter {
 			if (!file.isFile()){
 				return disabledWriter(file, "", version, options, OpenStatus.FAILED_MISSING, new IOException("no such log"));
 			}
-			ReadResult before = RunLogReader.read(file);
+			// Appending only needs the header, string table, clock, event count and seal.
+			// Validate every frame but do not retain the existing gameplay-event list.
+			ReadOptions reopenScan = new ReadOptions().onlyRunStartEvents(true);
+			ReadResult before = RunLogReader.read(file, reopenScan);
 			if (before.status == ReadStatus.UNSUPPORTED_CONTAINER){
 				return disabledWriter(file, "", version, options, OpenStatus.FAILED_UNSUPPORTED_CONTAINER,
 						new IOException(before.problem));
@@ -241,7 +244,7 @@ public final class RunLogWriter {
 				recovered = rep.truncated;
 			}
 			//re-read what is now in the file, this is the state we continue from
-			ReadResult now = RunLogReader.read(file);
+			ReadResult now = RunLogReader.read(file, reopenScan);
 			if (!now.status.isClean()){
 				return disabledWriter(file, runId, version, options, OpenStatus.FAILED_IO,
 						new IOException("log still damaged after repair: " + now.problem));
