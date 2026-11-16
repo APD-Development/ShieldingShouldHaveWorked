@@ -187,6 +187,7 @@ public abstract class Recipe {
 		new ElixirOfMight.Recipe(),
 		new ElixirOfFeatherFall.Recipe(),
 		new MagicalInfusion.Recipe(),
+		new com.shatteredpixel.shatteredpixeldungeon.items.spells.GreaterMetamorphosis.Recipe(),
 		new BeaconOfReturning.Recipe(),
 		new PhaseShift.Recipe(),
 		new Recycle.Recipe(),

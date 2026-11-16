@@ -23,8 +23,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.Room;
-import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.CrystalChoiceRoom;
-import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.CrystalVaultRoom;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.SpecialRoom;
 
 
 /** Chooser presentation only. Reading the context never starts or changes an action. */
@@ -60,11 +59,10 @@ public final class SearchControlContext {
     public static Action[] choices(Hero hero, Level level) {
         Action first = preferred(hero, level);
         boolean saved = hero != null && hero.wallSearch.exists();
-        boolean wallResume = saved && DoorSearchEligibility.supportsDoors(level);
+        boolean wallResume = saved && hero.wallSearch.matches(level) && hasMeaningfulWall(hero, level);
         boolean movement = hero != null && hero.lastAction != null;
-        // On floors where concealed doors cannot generate, ordinary Search and
-        // saved-position management remain available, but wall resume must not
-        // appear merely because a previous floor left a remembered session.
+        // R7 requires a current, meaningful wall context, not just saved memory.
+        // Keep C485's one-array allocation and saved-position controls.
         // Allocate only the caller-owned result, not a list and its backing array.
         Action[] options = new Action[2 + (saved ? 2 : 0) + (wallResume ? 1 : 0) + (movement ? 1 : 0)];
         int next = 0;
@@ -78,7 +76,7 @@ public final class SearchControlContext {
         return options;
     }
 
-    /** A known, open part of a generated room is not a wall-search position.
+    /** Legacy geometry query, no longer a wall-search eligibility gate.
      * Only observed cardinal walls can override the room-center rule; a distant
      * wall reached through Wide Search does not turn the whole room into wall mode.
      * This is read-only and never inspects hidden terrain behind a wall. */
@@ -105,17 +103,29 @@ public final class SearchControlContext {
         return true;
     }
 
+    /** Rooms whose walls can never hide a door from the inside.
+     * Hidden doors only replace REGULAR doors between connected rooms. Every
+     * special room (key/crystal vaults, wells, shops, altars, labs, gardens,
+     * secret rooms, ...) has exactly one entrance, and the hero is standing
+     * inside it, so that entrance is already known. Standard rooms and
+     * hallways can still hide doors and stay eligible. */
+    public static boolean noHiddenDoorRoom(Level level, int heroPos) {
+        if (!(level instanceof RegularLevel) || !((RegularLevel) level).apdHasRooms()
+                || heroPos < 0 || heroPos >= level.length()) return false;
+        Room room = ((RegularLevel) level).room(heroPos);
+        return room instanceof SpecialRoom;
+    }
+
     public static boolean hasMeaningfulWall(Hero hero, Level level) {
         if (hero == null || !completeObservedMetadata(level)
                 || hero.pos < 0 || hero.pos >= level.length()
                 || !DoorSearchEligibility.supportsDoors(level)) return false;
-
-        // Only the room the hero currently occupies affects this presentation decision.
-        if (level instanceof RegularLevel && ((RegularLevel) level).apdHasRooms()) {
-            Room room = ((RegularLevel) level).room(hero.pos);
-            if (room instanceof CrystalVaultRoom || room instanceof CrystalChoiceRoom) return false;
-            if (openRoomInterior(hero, level)) return false;
-        }
+        // A gated special room is never an adaptive wall-search context.
+        // Keep ordinary paid Search and discovered-door evidence unchanged.
+        if (noHiddenDoorRoom(level, hero.pos)) return false;
+        // Room middles are handled by reach: Wall Search is only meaningful when
+        // a door-capable wall lies inside the hero's real search footprint
+        // (1 tile, 2 for Rogue, +1 with Wide Search). Otherwise it is a normal Search.
 
         // Scan only the existing class/acquired-talent footprint rather than always
         // walking a Rogue rank-2 square. covers still enforces rounded corners,

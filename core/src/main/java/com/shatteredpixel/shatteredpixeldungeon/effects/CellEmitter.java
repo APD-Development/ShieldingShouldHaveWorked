@@ -56,6 +56,14 @@ public class CellEmitter {
 		return emitter;
 	}
 
+	/** Well-use animation only: never changes item-use turns or healing amount. */
+	public static Emitter well( int cell ) {
+		PointF p = DungeonTilemap.tileToWorld( cell );
+		Emitter emitter = GameScene.wellEmitter();
+		emitter.pos( p.x, p.y, DungeonTilemap.SIZE, DungeonTilemap.SIZE );
+		return emitter;
+	}
+
 	public static Emitter center( int cell ) {
 		
 		PointF p = DungeonTilemap.tileToWorld( cell );

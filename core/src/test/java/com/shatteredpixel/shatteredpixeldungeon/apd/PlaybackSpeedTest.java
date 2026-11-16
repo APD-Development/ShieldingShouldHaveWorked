@@ -107,6 +107,43 @@ public class PlaybackSpeedTest {
   }
  }
 
+ @Test public void originalDungeonVisualsRemainSpeededExceptOwnerFiveOriginalCategories() throws Exception {
+  Field status= com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene.class.getDeclaredField("statuses");
+  Field alerts= com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene.class.getDeclaredField("emoicons");
+  Field gas= com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene.class.getDeclaredField("gases");
+  status.setAccessible(true);alerts.setAccessible(true);gas.setAccessible(true);
+  float[] factors={.5f,1f,2f,4f,8f,16f,32f,64f,100f,1000f};
+  for(int i=0;i<factors.length;i++){
+   PlaybackGroup.speed(i);Game.elapsed=.016f;
+   Group normal=PlaybackGroup.normalSpeedGroup();
+   float[] once={0},speeded={0};
+   normal.add(observe(once));PlaybackGroup rest=new PlaybackGroup();rest.add(observe(speeded));
+   normal.update();rest.update();
+   assertEquals("Alerts/status/well/gas visual clock at "+i,.016f,once[0],0f);
+   assertEquals("Rest of build 458 retains selected game speed",.016f*factors[i],speeded[0],.0001f);
+   assertEquals(.016f,Game.elapsed,0f);
+  }
+  assertEquals(Group.class,PlaybackGroup.normalSpeedGroup().getClass());
+ }
+ @Test public void healthWellEmitterUsesUnscaledLayerAndDoesNotTouchGameplay() throws Exception{
+  Class<?> sceneClass=com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene.class;
+  Field sceneField=sceneClass.getDeclaredField("scene");
+  Field gasesField=sceneClass.getDeclaredField("gases");
+  sceneField.setAccessible(true);gasesField.setAccessible(true);
+  Object previous=sceneField.get(null);
+  com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene fixture=
+    new com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene();
+  Group well=PlaybackGroup.normalSpeedGroup();
+  gasesField.set(fixture,well);
+  try{
+   sceneField.set(null,fixture);PlaybackGroup.speed(9);
+   com.watabou.noosa.particles.Emitter emitter=
+      com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene.wellEmitter();
+   assertSame(well,emitter.parent);
+   float clock=Actor.now(),scale=Game.timeScale,total=Game.timeTotal;
+   assertEquals(clock,Actor.now(),0f);assertEquals(scale,Game.timeScale,0f);assertEquals(total,Game.timeTotal,0f);
+  } finally {sceneField.set(null,previous);}
+ }
  @Test public void extremeModesNeverChangeActorClockGlobalTimescaleOrHud(){
   ApdFeatures.parse("testBuild\n");
   float clock=Actor.now(),timeScale=Game.timeScale,timeTotal=Game.timeTotal;

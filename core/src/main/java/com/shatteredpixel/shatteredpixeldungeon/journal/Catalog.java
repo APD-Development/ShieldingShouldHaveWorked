@@ -253,7 +253,7 @@ public enum Catalog {
 				ElixirOfIcyTouch.class, ElixirOfToxicEssence.class, ElixirOfMight.class, ElixirOfFeatherFall.class);
 
 		SPELLS.addItems( UnstableSpell.class, WildEnergy.class, TelekineticGrab.class, PhaseShift.class,
-				Alchemize.class, CurseInfusion.class, MagicalInfusion.class, Recycle.class,
+				Alchemize.class, CurseInfusion.class, MagicalInfusion.class, com.shatteredpixel.shatteredpixeldungeon.items.spells.GreaterMetamorphosis.class, Recycle.class,
 				ReclaimTrap.class, SummonElemental.class, BeaconOfReturning.class);
 
 		MISC_CONSUMABLES.addItems( Gold.class, EnergyCrystal.class, Dewdrop.class,

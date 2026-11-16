@@ -52,6 +52,10 @@ public final class WeaponAbilityExplanation {
             case "Glaive":base=12;scale=2.5f;rounded=true;break;
             case "Rapier":base=5;scale=1.5f;rounded=true;break;
             case "Katana":base=8;scale=2;rounded=true;break;
+            case "Tanto":base=2;scale=0.5f;rounded=true;break;
+            case "Wakizashi":base=4;scale=1;rounded=true;break;
+            case "Tachi":base=6;scale=1.5f;rounded=true;break;
+            case "Nodachi":base=10;scale=2.5f;rounded=true;break;
             case "Gloves":base=3;scale=1;break;
             case "Sai":base=4;scale=1;break;
             case "Gauntlet":base=5;scale=1;break;
@@ -72,7 +76,7 @@ public final class WeaponAbilityExplanation {
                 effect="Heavy Blow adds its bonus only when the monster is surprised by the hero; against an unsurprised monster the added bonus is zero. A successful hit on a survivor offers Daze with its normal duration and resistance rules. The attack uses guaranteed-hit accuracy in the ordinary contest and normal attack time; it is not guaranteed final damage or a bonus on every ordinary attack.";break;
             case "Spear":case "Glaive":
                 effect="Spike requires a nonadjacent visible target in legal attack reach. It adds its bonus and uses guaranteed-hit accuracy in the ordinary contest. On a successful hit, an eligible surviving target that has not already moved can be pushed with force 1 along the existing projectile path. Collision and immovability can limit movement; normal attack time and defenses remain.";break;
-            case "Rapier":case "Katana":
+            case "Rapier":case "Katana":case "Tanto":case "Wakizashi":case "Tachi":case "Nodachi":
                 effect="Lunge requires an unrooted hero, a target at least two tiles away and a legal landing cell within the ability's reach conditions. It moves toward the target before its supported attack, adding its damage bonus with normal defenses and attack time. If movement completes without a valid attack, the existing branch still spends one charge and movement time of 1 divided by movement speed; it does not process a completed weapon ability or grant a free hit through an obstacle.";break;
             case "Gloves":case "Sai":case "Gauntlet":
                 effect="Combo Strike multiplies its added bonus by the recorded recent-hit count. Its normal attack damage factor remains 1; the added amount is not a multiplier of all final damage. The attempt consumes the recorded hit benefit and uses normal attack time. Guaranteed-hit accuracy in the ordinary contest does not bypass special dodges, immunity or shielding.";break;
@@ -86,8 +90,8 @@ public final class WeaponAbilityExplanation {
             case "Sickle":case "WarScythe":
                 float start=type.equals("Sickle")?15:30,increment=type.equals("Sickle")?2.5f:4.5f;
                 effect="Harvest replaces the attack's direct damage contribution with an offered bleeding input: damage augmentation applied to round("+n(start)+" + "+n(increment)+" × effective level). Bleeding is a damage-over-time strength, not guaranteed total HP loss; its later ticks, random reduction and defenses keep their normal rules. The attack uses normal attack time. "+(level==null?"Upgrade-dependent results remain hidden.":"Current offered input before subsequent defenses: "+weapon.augment.damageFactor(Math.round(start+increment*level))+" points.");break;
-            case "RoundShield":case "Greatshield":
-                int durationBase=type.equals("RoundShield")?5:3;
+            case "RoundShield":case "Greatshield":case "Buckler":case "Targe":case "KiteShield":
+                int durationBase=type.equals("Buckler")?7:type.equals("Targe")?6:type.equals("RoundShield")?5:type.equals("KiteShield")?4:3;
                 effect="Guard offers at least "+durationBase+" + effective level scheduled time units and spends one game-time unit to set up. It supplies guaranteed evasion in the ordinary attack contest while active, rather than a fixed shield-point reserve. After it has blocked, a supported invisibility-breaking action can end the Guard early; its normal expiry and direct-effect rules still apply. "+(level==null?"Its upgrade-dependent duration remains hidden.":"Current offered scheduled duration: "+(durationBase+level)+" game-time units.");break;
             case "Quarterstaff":case "Scimitar":
                 effect="The stance is readied without ordinary setup time, keeping at least 3 + effective weapon level scheduled units. "+(type.equals("Quarterstaff")?"Defensive Stance multiplies the applicable evasion contest score by 3; it is not a fixed dodge percentage.":"Sword Dance adds 0.6 to the attack-speed factor and multiplies the applicable accuracy score by 1.5. These are separate scores, not a guaranteed hit chance.")+(level==null?" Its upgrade-dependent duration remains hidden.":" Current offered scheduled duration: "+(3+level)+" game-time units.");break;

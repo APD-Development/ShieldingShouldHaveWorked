@@ -1102,7 +1102,7 @@ public class Hero extends Char {
         if(action instanceof com.shatteredpixel.shatteredpixeldungeon.apd.qol.WallSearchSession.Walk){
             com.shatteredpixel.shatteredpixeldungeon.apd.qol.WallSearchSession.Walk walk=(com.shatteredpixel.shatteredpixeldungeon.apd.qol.WallSearchSession.Walk)action;
             boolean unsafe=path!=null&&!path.isEmpty()&&!com.shatteredpixel.shatteredpixeldungeon.apd.navigation.StairNavigation.safeStep(Dungeon.level,this,path.getFirst());
-            if(walk.level!=Dungeon.level||!wallSearch.matches(Dungeon.level)||visibleEnemies()>0||rooted||paralysed>0||Dungeon.level.locked||unsafe){interrupt();lastAction=null;ready();return false;}
+            if(walk.level!=Dungeon.level||!wallSearch.matches(Dungeon.level)||com.shatteredpixel.shatteredpixeldungeon.apd.qol.SearchControlContext.noHiddenDoorRoom(Dungeon.level,action.dst)||visibleEnemies()>0||rooted||paralysed>0||Dungeon.level.locked||unsafe){interrupt();lastAction=null;ready();return false;}
             if(pos==action.dst){curAction=null;lastAction=null;search(true);return false;}
         }
 
@@ -1316,6 +1316,12 @@ public class Hero extends Char {
 					}
 
 					ready();
+					//APD: offer to swap an item out of a full backpack (same turns as doing it by hand)
+					if (Dungeon.level.getTransition(pos) == null
+							&& !(item instanceof Dewdrop || item instanceof TimekeepersHourglass.sandBag
+							|| item instanceof DriedRose.Petal || item instanceof Key)) {
+						com.shatteredpixel.shatteredpixeldungeon.apd.qol.FullPackSwap.offer(this, heap, item);
+					}
 				}
 			} else {
 				ready();
@@ -2706,9 +2712,7 @@ public class Hero extends Char {
         // An open room still receives the full ordinary Search; only checkmark
         // recording uses the adaptive, observed wall context.
         boolean recordWallChecks = intentional
-                && !com.shatteredpixel.shatteredpixeldungeon.apd.qol.DoorSearchEligibility.insideGatedRoom(Dungeon.level,pos)
-                && (!SPDSettings.adaptiveSearchChoice()
-                || !com.shatteredpixel.shatteredpixeldungeon.apd.qol.SearchControlContext.openRoomInterior(this,Dungeon.level));
+                && !com.shatteredpixel.shatteredpixeldungeon.apd.qol.SearchControlContext.noHiddenDoorRoom(Dungeon.level,pos);
 
 		boolean circular = pointsInTalent(Talent.WIDE_SEARCH) == 1;
 		int distance = heroClass == HeroClass.ROGUE ? 2 : 1;

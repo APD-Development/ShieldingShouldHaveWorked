@@ -148,4 +148,40 @@ public class AutomaticInventoryOrderTest {
         com.watabou.utils.Random.pushGenerator(834);try{expect(bag,known,hidden);assertEquals(expected,com.watabou.utils.Random.Long());}finally{com.watabou.utils.Random.popGenerator();}
         Bundle after=new Bundle();hidden.storeInBundle(after);assertEquals(before.toString(),after.toString());assertFalse(hidden.isIdentified());assertEquals(12,hidden.level());
     }
+    @Test public void everyPickupRoutesToItsBagAndRefreshesTheSortedViewImmediately(){
+        com.shatteredpixel.shatteredpixeldungeon.QuickSlot previous=Dungeon.quickslot;
+        try{
+            Dungeon.quickslot=new com.shatteredpixel.shatteredpixeldungeon.QuickSlot();
+            Bag pack=Dungeon.hero.belongings.backpack;pack.items.clear();
+            Bag pouch=new VelvetPouch(),scrolls=new ScrollHolder(),potions=new PotionBandolier(),holster=new MagicalHolster();
+            for(Bag b:new Bag[]{pouch,scrolls,potions,holster}){assertTrue(b.collect(pack));}
+            Object[][] cases={
+                {pack,new Item[]{known(new Sword(),0),known(new Shortsword(),2),known(new WornShortsword(),5)}},
+                {pack,new Item[]{known(new ScaleArmor(),0),known(new LeatherArmor(),3),known(new ClothArmor(),1)}},
+                {pack,new Item[]{known(new RingOfMight(),3),known(new RingOfForce(),0)}},
+                {holster,new Item[]{known(new WandOfMagicMissile(),3),known(new ThrowingKnife(),0),known(new WandOfFrost(),0)}},
+                {pouch,new Item[]{new com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfBlink(),new Sungrass.Seed()}},
+                {scrolls,new Item[]{new ScrollOfIdentify().identify().quantity(3),new ScrollOfUpgrade().identify()}},
+                {potions,new Item[]{new PotionOfHealing().identify().quantity(2),new PotionOfShielding().identify()}}};
+            for(Object[] c:cases){
+                Bag target=(Bag)c[0];
+                for(Item item:(Item[])c[1]){
+                    com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene.updateItemDisplays=false;
+                    assertTrue(item.getClass().getSimpleName(),item.collect(pack));
+                    assertTrue("display refresh requested after picking up "+item.getClass().getSimpleName(),
+                            com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene.updateItemDisplays);
+                    assertTrue(item.getClass().getSimpleName()+" in its bag",target.items.contains(item));
+                    List<Item> view=target.itemsForDisplay();
+                    List<Item> sorted=new ArrayList<>(view);
+                    sorted.sort((a,b)->com.shatteredpixel.shatteredpixeldungeon.apd.qol.InventoryOrder.compareInBag(target,a,b));
+                    assertEquals(sorted,view);
+                }
+            }
+            //spot-check the visible order the player gets without re-sorting
+            List<Item> holsterView=holster.itemsForDisplay();
+            assertTrue(holsterView.get(0) instanceof ThrowingKnife);
+            assertTrue(holsterView.get(1) instanceof WandOfFrost);
+            assertTrue(holsterView.get(2) instanceof WandOfMagicMissile);
+        }finally{Dungeon.quickslot=previous;}
+    }
 }

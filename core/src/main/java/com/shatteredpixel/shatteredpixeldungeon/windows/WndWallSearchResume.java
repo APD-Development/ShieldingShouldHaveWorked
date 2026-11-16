@@ -36,13 +36,14 @@ public final class WndWallSearchResume {
         Level level = Dungeon.level;
         if (hero == null || level == null || !hero.isAlive() || !hero.ready || !hero.wallSearch.exists()) return;
         WallSearchSession saved = hero.wallSearch;
+        Action[] actions = SearchControlContext.choices(hero, level);
+        boolean canResumeWall = false;
+        for (Action action : actions) if (action == Action.WALL_SEARCH) canResumeWall = true;
         String note = "Saved search on Floor " + saved.floor() + ". Manual searches completed here: " + saved.searches()
                 + ".\n\nSearch here performs one normal manual search at your current position. "
-                + (DoorSearchEligibility.supportsDoors(level)
-                ? "Resume wall search returns by a safe discovered route and searches once. "
-                : "Resume wall search is unavailable on this floor. ")
+                + (canResumeWall ? "Resume wall search returns by a safe discovered route and searches once. "
+                    : "No meaningful wall search is available from this position. You can still inspect or forget the saved position. ")
                 + "Movement and searching keep their normal costs. Visible enemies or danger stop the return; your saved position is kept.";
-        Action[] actions = SearchControlContext.choices(hero, level);
         String[] options = new String[actions.length];
         for (int i = 0; i < actions.length; i++) options[i] = label(actions[i]);
         String title = actions[0] == Action.SEARCH ? "Search"
@@ -52,6 +53,20 @@ public final class WndWallSearchResume {
                 if (index >= 0 && index < actions.length) choose(hero, level, actions[index]);
             }
         });
+    }
+
+    /** Hold on the adaptive search button: do the opposite of what a tap prefers. */
+    public static void holdOpposite() {
+        Hero hero = Dungeon.hero;
+        Level level = Dungeon.level;
+        if (hero == null || level == null || !hero.isAlive() || !hero.ready) return;
+        if (SearchControlContext.preferred(hero, level) == Action.WALL_SEARCH) {
+            choose(hero, level, Action.SEARCH);
+        } else if (hero.wallSearch.exists()) {
+            choose(hero, level, Action.WALL_SEARCH);
+        } else {
+            GLog.w("No saved wall search to return to. Search here first.");
+        }
     }
 
     private static String label(Action action) {

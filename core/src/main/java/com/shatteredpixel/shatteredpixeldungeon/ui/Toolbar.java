@@ -302,7 +302,16 @@ public class Toolbar extends Component {
 			@Override
 			protected void onClick() {
                 if (Dungeon.hero != null && Dungeon.hero.ready && Dungeon.hero.isAlive()) {
-                    if (SPDSettings.singleTapSearch()) {
+                    if (SPDSettings.adaptiveSearchChoice()) {
+                        //APD adaptive: full search only where a door-capable wall is in reach, otherwise inspect
+                        if (apdWallSearchUseful()) {
+                            GameScene.cancel();examining=false;Dungeon.hero.search(true);
+                        } else if (!examining && !GameScene.cancel()) {
+                            GameScene.selectCell(informer);examining=true;
+                        } else if (examining) {
+                            GameScene.cancel();examining=false;
+                        }
+                    } else if (SPDSettings.singleTapSearch()) {
                         // Cancel targeting/inspection without swallowing the requested search.
                         GameScene.cancel();examining=false;Dungeon.hero.search(true);
                     } else if (!examining && !GameScene.cancel()) {
@@ -320,6 +329,9 @@ public class Toolbar extends Component {
 
 			@Override
 			protected String hoverText() {
+				if (SPDSettings.adaptiveSearchChoice()) {
+					return apdWallSearchUseful() ? "Wall Search (hold: inspect)" : "Inspect (hold: Wall Search)";
+				}
 				return Messages.titleCase(SPDSettings.singleTapSearch()
                         ? Messages.get(com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero.class,"search")
                         : Messages.get(WndKeyBindings.class,"examine"));
@@ -328,7 +340,14 @@ public class Toolbar extends Component {
 			@Override
 			protected boolean onLongClick() {
                 if (Dungeon.hero != null && Dungeon.hero.ready && Dungeon.hero.isAlive()) {
-                    if (SPDSettings.singleTapSearch()) {
+                    if (SPDSettings.adaptiveSearchChoice()) {
+                        //hold does the opposite of the tap
+                        if (apdWallSearchUseful()) {
+                            GameScene.cancel();GameScene.selectCell(informer);examining=true;
+                        } else {
+                            GameScene.cancel();examining=false;Dungeon.hero.search(true);
+                        }
+                    } else if (SPDSettings.singleTapSearch()) {
                         GameScene.cancel();GameScene.selectCell(informer);examining=true;
                     } else {
                         Dungeon.hero.search(true);
@@ -1039,5 +1058,10 @@ public class Toolbar extends Component {
 			}
 		}
 	}
-}
 
+	//APD: a full (wall) search is only worth turns where a door-capable wall is in the hero's real reach
+	static boolean apdWallSearchUseful(){
+		return Dungeon.hero != null && Dungeon.level != null
+				&& com.shatteredpixel.shatteredpixeldungeon.apd.qol.SearchControlContext.hasMeaningfulWall(Dungeon.hero, Dungeon.level);
+	}
+}

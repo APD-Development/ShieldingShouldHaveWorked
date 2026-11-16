@@ -1321,16 +1321,19 @@ public class GameScene extends PixelScene {
 		}
 	}
 
-	// Well-use particles share the 1x gas/well visual layer, rather than
-	// the accelerated general-effects emitter layer.
+	/** Compatibility entry point retained for C485 diagnostics and tests. */
 	public static synchronized Emitter normalSpeedEmitter() {
-		if (scene != null) {
+		return wellEmitter();
+	}
+
+	/** Well of Health activation effects share the existing 1x well/gas layer. */
+	public static synchronized Emitter wellEmitter() {
+		if (scene != null && scene.gases != null) {
 			Emitter emitter = (Emitter)scene.gases.recycle( Emitter.class );
 			emitter.revive();
 			return emitter;
-		} else {
-			return null;
 		}
+		return null;
 	}
 
 	public static synchronized Emitter floorEmitter() {

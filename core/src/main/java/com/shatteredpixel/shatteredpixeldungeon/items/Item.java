@@ -796,7 +796,7 @@ public class Item implements Bundlable {
 		@Override
 		public void onSelect( Integer target ) {
 			if (target != null) {
-				curItem.cast( curUser, target );
+				curItem.cast( curUser, com.shatteredpixel.shatteredpixeldungeon.apd.qol.ThrowAim.aim( curUser, curItem, target ) );
 			}
 		}
 		@Override

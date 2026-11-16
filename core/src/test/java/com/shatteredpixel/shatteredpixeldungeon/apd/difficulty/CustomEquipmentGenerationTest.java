@@ -69,6 +69,11 @@ public class CustomEquipmentGenerationTest {
         org.junit.Assert.assertEquals(13,scrolls.classes.length);
         float first=scrolls.defaultProbs[12],second=scrolls.defaultProbs2[12],combined=scrolls.defaultProbsTotal[12];
         scrolls.defaultProbs[12]=0;scrolls.defaultProbs2[12]=0;scrolls.defaultProbsTotal[12]=0;
+        // Same isolation for the later owner-approved katana-family blades and shields.
+        Generator.Category[] weaponTiers={Generator.Category.WEP_T1,Generator.Category.WEP_T2,Generator.Category.WEP_T3,Generator.Category.WEP_T4,Generator.Category.WEP_T5};
+        float[][] weaponDefaults=new float[weaponTiers.length][];
+        for(int t=0;t<weaponTiers.length;t++)weaponDefaults[t]=weaponTiers[t].defaultProbs.clone();
+        com.shatteredpixel.shatteredpixeldungeon.apd.LegacyGeneration.withoutApdWeapons();
         try {
         java.util.List<String> expected=new ArrayList<>();
         try(java.io.BufferedReader reader=new java.io.BufferedReader(new java.io.InputStreamReader(
@@ -83,6 +88,7 @@ public class CustomEquipmentGenerationTest {
         assertEquals(24,expected.size());assertEquals(expected,actual);
         } finally {
             scrolls.defaultProbs[12]=first;scrolls.defaultProbs2[12]=second;scrolls.defaultProbsTotal[12]=combined;
+            for(int t=0;t<weaponTiers.length;t++)System.arraycopy(weaponDefaults[t],0,weaponTiers[t].defaultProbs,0,weaponDefaults[t].length);
             Generator.fullReset();
         }
     }

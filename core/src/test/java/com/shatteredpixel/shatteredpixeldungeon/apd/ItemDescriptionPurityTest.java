@@ -268,7 +268,7 @@ public class ItemDescriptionPurityTest {
             }
         }finally{Random.popGenerator();}
         System.out.println("CATALOG_SPIRIT_FORM_PURITY inspected="+inspected+" failures="+failures.size());
-        assertEquals(289,inspected);assertEquals(failures.toString(),Collections.emptyList(),failures);
+        assertEquals(297,inspected);assertEquals(failures.toString(),Collections.emptyList(),failures);
     }
     @Test @SuppressWarnings("unchecked") public void pureSpiritRingQueriesMatchLegacyGetterMathAcrossAllRingFamilies()throws Exception{
         com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.SpiritForm.SpiritFormBuff form=

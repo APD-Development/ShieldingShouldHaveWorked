@@ -46,12 +46,27 @@ public final class WeaponExplanation {
             ||weapon instanceof com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Quarterstaff
             ||weapon instanceof com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Katana
             ||weapon instanceof com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.RoundShield
-            ||weapon instanceof com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Greatshield;
+            ||weapon instanceof com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Greatshield
+            ||weapon instanceof com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Tanto
+            ||weapon instanceof com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Wakizashi
+            ||weapon instanceof com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Tachi
+            ||weapon instanceof com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Nodachi
+            ||weapon instanceof com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Buckler
+            ||weapon instanceof com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Targe
+            ||weapon instanceof com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.KiteShield;
     }
     public static String blockSummary(Weapon weapon,Hero hero){
         if(!passiveBlockWeapon(weapon))return "";
         String upgrades=weapon instanceof com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.RoundShield
-                ||weapon instanceof com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Greatshield?" Upgrades improve this protection.":"";
+                ||weapon instanceof com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Greatshield
+                ||weapon instanceof com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Katana
+                ||weapon instanceof com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Tanto
+                ||weapon instanceof com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Wakizashi
+                ||weapon instanceof com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Tachi
+                ||weapon instanceof com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Nodachi
+                ||weapon instanceof com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Buckler
+                ||weapon instanceof com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Targe
+                ||weapon instanceof com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.KiteShield?" Upgrades improve this protection.":"";
         if(!weapon.levelKnown)return "Can block incoming attack damage while wielded normally."+upgrades;
         Integer strength=ArmorExplanation.knownStrength(hero);
         if(strength==null)return "Can block incoming attack damage while wielded normally."+upgrades;
@@ -60,7 +75,7 @@ public final class WeaponExplanation {
     }
     public static String blockDetails(Weapon weapon,Hero hero){
         if(!passiveBlockWeapon(weapon))return "";
-        String text="_Passive weapon protection_\nFor a positive block maximum, the normal wielded-weapon defense path rolls from 0 to that maximum, favoring middle results, subtracts 2 for each missing strength point and keeps only a positive contribution. This is separate from worn armor's roll, active Guard or other ability protection. Unarmed fighting rules can disable the weapon's contribution even while it is equipped. Total-defense modifiers still apply afterward.\nRapier's maximum is 1, Quarterstaff's 2 and Katana's 3 damage points. Round Shield uses 4 + effective weapon level; Greatshield uses 6 + 2×effective weapon level. Their upgrades and temporary effective-level changes affect those shield maxima under the item rules; strength requirements use their own level rule.\n";
+        String text="_Passive weapon protection_\nFor a positive block maximum, the normal wielded-weapon defense path rolls from 0 to that maximum, favoring middle results, subtracts 2 for each missing strength point and keeps only a positive contribution. This is separate from worn armor's roll, active Guard or other ability protection. Unarmed fighting rules can disable the weapon's contribution even while it is equipped. Total-defense modifiers still apply afterward.\nRapier's maximum is 1 and Quarterstaff's 2 damage points; Katana's is 3 + half its effective weapon level, rounded down. Round Shield uses 4 + effective weapon level; Greatshield uses 6 + 2×effective weapon level. Their upgrades and temporary effective-level changes affect those shield maxima under the item rules; strength requirements use their own level rule.\n";
         if(!weapon.levelKnown)return text+"This item's upgrade-dependent values stay hidden until identified.";
         int maximum=weapon.defenseFactor(hero);text+="Current positive passive block maximum: "+Math.max(0,maximum)+" points before missing-strength penalties. A non-positive formula result gives no positive passive contribution. ";Integer strength=ArmorExplanation.knownStrength(hero);
         if(strength==null)return text+"Personal penalties are withheld while contributing strength bonuses are unknown or unavailable.";

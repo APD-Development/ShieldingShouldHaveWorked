@@ -77,6 +77,12 @@ public class ResumeIndicator extends Tag {
 	}
 
 	@Override
+	protected boolean onLongClick() {
+		WndWallSearchResume.holdOpposite();
+		return true;
+	}
+
+	@Override
 	protected String hoverText() {
 		if (Dungeon.hero != null && Dungeon.hero.wallSearch.exists()) {
 			SearchControlContext.Action action = SearchControlContext.preferred(Dungeon.hero, Dungeon.level);

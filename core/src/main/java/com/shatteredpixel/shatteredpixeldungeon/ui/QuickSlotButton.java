@@ -410,6 +410,9 @@ public class QuickSlotButton extends Button {
 					&& item.targetingPos(Dungeon.hero, i) == target.pos)
 				return i;
 		}
+		//APD: anything the hero can see should be hittable; widen the search before giving up.
+		int wide = com.shatteredpixel.shatteredpixeldungeon.apd.qol.ThrowAim.aim(Dungeon.hero, item, target.pos);
+		if (item.targetingPos(Dungeon.hero, wide) == target.pos) return wide;
 
 		//couldn't find a cell, give up.
 		return -1;

@@ -159,6 +159,13 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Greatshield;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Greatsword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.HandAxe;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Katana;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Nodachi;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.KiteShield;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Tachi;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Targe;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Wakizashi;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Buckler;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Tanto;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Longsword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Mace;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
@@ -417,6 +424,8 @@ public class Generator {
 			WEAPON.classes = new Class<?>[]{};
 			WEAPON.probs = new float[]{};
 			
+			//APD: owner-approved katana-family blades and shields share the normal weapon weight.
+			//Historical seed baselines isolate them with LegacyGeneration.withoutApdWeapons().
 			WEP_T1.classes = new Class<?>[]{
 					WornShortsword.class,
 					MagesStaff.class,
@@ -424,8 +433,10 @@ public class Generator {
 					Gloves.class,
 					Rapier.class,
 					Cudgel.class,
+					Tanto.class,
+					Buckler.class,
 			};
-			WEP_T1.defaultProbs = new float[]{ 2, 0, 2, 2, 2, 2 };
+			WEP_T1.defaultProbs = new float[]{ 2, 0, 2, 2, 2, 2, 2, 2 };
 			WEP_T1.probs = WEP_T1.defaultProbs.clone();
 			
 			WEP_T2.classes = new Class<?>[]{
@@ -435,9 +446,11 @@ public class Generator {
 					Quarterstaff.class,
 					Dirk.class,
 					Sickle.class,
-					Pickaxe.class
+					Pickaxe.class,
+					Wakizashi.class,
+					Targe.class
 			};
-			WEP_T2.defaultProbs = new float[]{ 2, 2, 2, 2, 2, 2, 0 };
+			WEP_T2.defaultProbs = new float[]{ 2, 2, 2, 2, 2, 2, 0, 2, 2 };
 			WEP_T2.probs = WEP_T2.defaultProbs.clone();
 			
 			WEP_T3.classes = new Class<?>[]{
@@ -446,9 +459,10 @@ public class Generator {
 					Scimitar.class,
 					RoundShield.class,
 					Sai.class,
-					Whip.class
+					Whip.class,
+					Tachi.class
 			};
-			WEP_T3.defaultProbs = new float[]{ 2, 2, 2, 2, 2, 2 };
+			WEP_T3.defaultProbs = new float[]{ 2, 2, 2, 2, 2, 2, 2 };
 			WEP_T3.probs = WEP_T3.defaultProbs.clone();
 			
 			WEP_T4.classes = new Class<?>[]{
@@ -458,9 +472,10 @@ public class Generator {
 					RunicBlade.class,
 					AssassinsBlade.class,
 					Crossbow.class,
-					Katana.class
+					Katana.class,
+					KiteShield.class
 			};
-			WEP_T4.defaultProbs = new float[]{ 2, 2, 2, 2, 2, 2, 2 };
+			WEP_T4.defaultProbs = new float[]{ 2, 2, 2, 2, 2, 2, 2, 2 };
 			WEP_T4.probs = WEP_T4.defaultProbs.clone();
 			
 			WEP_T5.classes = new Class<?>[]{
@@ -470,9 +485,10 @@ public class Generator {
 					Greataxe.class,
 					Greatshield.class,
 					Gauntlet.class,
-					WarScythe.class
+					WarScythe.class,
+					Nodachi.class
 			};
-			WEP_T5.defaultProbs = new float[]{ 2, 2, 2, 2, 2, 2, 2 };
+			WEP_T5.defaultProbs = new float[]{ 2, 2, 2, 2, 2, 2, 2, 2 };
 			WEP_T5.probs = WEP_T5.defaultProbs.clone();
 			
 			//see Generator.randomArmor

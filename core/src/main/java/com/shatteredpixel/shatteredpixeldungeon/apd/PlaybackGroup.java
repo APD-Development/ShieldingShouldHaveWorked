@@ -16,10 +16,7 @@ public final class PlaybackGroup extends Group {
     private static float speed = 1f;
     private static int updating;
 
-    /**
-     * Visual overlays that must remain legible at normal speed even when
-     * dungeon animation playback is accelerated.
-     */
+    /** Only five owner-exempt visual categories use the normal frame clock. */
     public static Group normalSpeedGroup() {
         return new Group();
     }

@@ -369,6 +369,26 @@ public class ItemSpriteSheet {
 			assignItemRect(i, 15, 15);
 	}
 	
+	//APD: katana-family blades and extra shields (owner-supplied art)
+	private static final int APD_WEAPONS    =                               xy(1, 13);  //16 slots
+	public static final int TANTO           = APD_WEAPONS+0;
+	public static final int WAKIZASHI       = APD_WEAPONS+1;
+	public static final int TACHI           = APD_WEAPONS+2;
+	public static final int NODACHI         = APD_WEAPONS+3;
+	public static final int BUCKLER         = APD_WEAPONS+4;
+	public static final int TARGE           = APD_WEAPONS+5;
+	public static final int KITE_SHIELD     = APD_WEAPONS+6;
+
+	static{
+		assignItemRect(TANTO,          16, 16);
+		assignItemRect(WAKIZASHI,      16, 16);
+		assignItemRect(TACHI,          16, 16);
+		assignItemRect(NODACHI,        16, 16);
+		assignItemRect(BUCKLER,        16, 16);
+		assignItemRect(TARGE,          16, 16);
+		assignItemRect(KITE_SHIELD,    16, 16);
+	}
+
 	private static final int ARMOR          =                               xy(1, 12);  //16 slots
 	public static final int ARMOR_CLOTH     = ARMOR+0;
 	public static final int ARMOR_LEATHER   = ARMOR+1;
