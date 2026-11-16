@@ -60,7 +60,8 @@ public final class FullPackSwap {
                 return pack.getClass();
             }
             @Override public boolean itemSelectable(Item i) {
-                return canSwapOut(hero, pack, i);
+                return pack.items.contains(i) && !(i instanceof Bag)
+                        && i.actions(hero).contains(Item.AC_DROP);
             }
             @Override public void onSelect(Item chosen) {
                 swap(hero, heap, item, chosen);
@@ -68,22 +69,11 @@ public final class FullPackSwap {
         });
     }
 
-    /**
-     * Revalidate the selection at commit time. While the bag picker is open,
-     * game state may change; an item that has lost its DROP action must not
-     * be detached merely because it was selectable when the picker opened.
-     */
-    static boolean canSwapOut(Hero hero, Bag pack, Item chosen) {
-        return hero != null && pack != null && chosen != null
-                && pack.items.contains(chosen) && !(chosen instanceof Bag)
-                && chosen.actions(hero).contains(Item.AC_DROP);
-    }
-
     static boolean swap(Hero hero, Heap heap, Item item, Item chosen) {
         if (chosen == null || hero != Dungeon.hero || !hero.isAlive() || !hero.ready) return false;
         Bag pack = hero.belongings.backpack;
         if (Dungeon.level.heaps.get(hero.pos) != heap || heap.peek() != item
-                || !canSwapOut(hero, pack, chosen)) return false;
+                || !pack.items.contains(chosen) || chosen instanceof Bag) return false;
 
         ApdItems.noteAction(chosen, ApdItems.ACTION_DROP);
         Item dropped = chosen.detachAll(pack);
