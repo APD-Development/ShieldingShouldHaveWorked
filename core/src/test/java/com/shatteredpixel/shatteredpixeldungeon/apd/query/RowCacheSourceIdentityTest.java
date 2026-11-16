@@ -50,5 +50,13 @@ public class RowCacheSourceIdentityTest {
   assertNull(RowCodec.decode(RowCodec.encode(rows,5,defs),5,defs,one));
   assertNull(RowCodec.decode(encoded,5,defs,new byte[31]));
  }
+ @Test public void rowCachesAreCompressedAndOlderPlainCachesAreUpgradedInPlace()throws Exception{
+  File root=tmp.newFolder("compressed");File log=history(root,31);DatasetStore store=new DatasetStore(root);store.load();
+  File[] caches=store.rowsDir().listFiles((d,n)->n.endsWith(".apdr"));assertNotNull(caches);assertEquals(1,caches.length);
+  byte[] stored=Files.readAllBytes(caches[0].toPath());assertTrue(DatasetStore.isGzip(stored));
+  byte[] plain=DatasetStore.gunzip(stored);assertTrue(stored.length<plain.length);
+  Files.write(caches[0].toPath(),plain);
+  Catalog warm=new DatasetStore(root).load();assertEquals(1,warm.logsCached);assertEquals(0,warm.logsRebuilt);assertEquals(31,score(warm));
+  assertTrue(DatasetStore.isGzip(Files.readAllBytes(caches[0].toPath())));
+ }
 }
-

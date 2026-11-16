@@ -1,5 +1,5 @@
 name: APD C488T/P488T trap-room search
-# Trap-room search + diagnostics size fix on top of C488.
+# Trap-room search + diagnostics + compressed row caches on top of C488.
 on:
   push:
     branches: [fix/apd-trap-room-search-20261116]

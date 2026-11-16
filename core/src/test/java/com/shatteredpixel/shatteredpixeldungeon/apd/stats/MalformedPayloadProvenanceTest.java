@@ -75,7 +75,10 @@ public class MalformedPayloadProvenanceTest {
         DatasetStore store = new DatasetStore(root);
         assertEquals(1, store.load().logsRebuilt);
         File cache = new File(store.rowsDir(), "runs-cache-history.apdr");
-        byte[] bytes = Files.readAllBytes(cache.toPath());
+        byte[] stored = Files.readAllBytes(cache.toPath());
+        // Row caches are stored compressed; an older plain cache is still accepted.
+        assertTrue(com.shatteredpixel.shatteredpixeldungeon.apd.query.DatasetStore.isGzip(stored));
+        byte[] bytes = com.shatteredpixel.shatteredpixeldungeon.apd.query.DatasetStore.gunzip(stored);
         assertEquals(18, bytes[5]); bytes[5] = 17;
         java.util.zip.CRC32 crc = new java.util.zip.CRC32(); crc.update(bytes, 0, bytes.length - 4);
         java.nio.ByteBuffer.wrap(bytes, bytes.length - 4, 4).order(java.nio.ByteOrder.LITTLE_ENDIAN).putInt((int) crc.getValue());

@@ -155,9 +155,13 @@ public final class DatasetStore {
 		File cache = new File(rowsDir(), (legacy ? "legacy-" : "runs-") + id + ".apdr");
 		if (sourceFingerprint != null && cache.isFile()){
 			try {
-				LogRows lr = RowCodec.decode(readAll(cache), length, defs, sourceFingerprint);
+				byte[] stored = readAll(cache);
+				boolean compressed = isGzip(stored);
+				LogRows lr = RowCodec.decode(compressed ? gunzip(stored) : stored, length, defs, sourceFingerprint);
 				if (lr != null){
 					cat.logsCached++;
+					//APD: older uncompressed caches are rewritten compressed the first time they are used
+					if (!compressed) writeCache(cache, stored);
 					return lr;
 				}
 			} catch (IOException | RuntimeException ignored){
@@ -193,6 +197,20 @@ public final class DatasetStore {
 		return digest.digest();
 	}
 
+	public static boolean isGzip( byte[] data ){
+		return data.length >= 2 && (data[0] & 0xff) == 0x1f && (data[1] & 0xff) == 0x8b;
+	}
+
+	public static byte[] gunzip( byte[] data ) throws IOException {
+		try (java.util.zip.GZIPInputStream in = new java.util.zip.GZIPInputStream(new java.io.ByteArrayInputStream(data), 64 * 1024)) {
+			java.io.ByteArrayOutputStream out = new java.io.ByteArrayOutputStream(Math.max(1024, data.length * 6));
+			byte[] buffer = new byte[64 * 1024];
+			int n;
+			while ((n = in.read(buffer)) != -1) out.write(buffer, 0, n);
+			return out.toByteArray();
+		}
+	}
+
 	private static byte[] readAll( File f ) throws IOException {
 		FileInputStream in = new FileInputStream(f);
 		try {
@@ -217,7 +235,12 @@ public final class DatasetStore {
 			tmp = File.createTempFile(cache.getName() + ".", ".tmp", dir);
 			FileOutputStream out = new FileOutputStream(tmp);
 			try {
-				out.write(data);
+				//APD: row caches are rebuildable copies; store them gzip-compressed
+				java.util.zip.GZIPOutputStream zip = new java.util.zip.GZIPOutputStream(out, 64 * 1024){
+					{ def.setLevel(java.util.zip.Deflater.BEST_COMPRESSION); }
+				};
+				zip.write(data);
+				zip.finish();
 			} finally {
 				out.close();
 			}
