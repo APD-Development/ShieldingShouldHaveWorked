@@ -81,6 +81,7 @@ public class Button extends Component {
 			@Override
 			protected void onClick( PointerEvent event ) {
 				if (clickReady) {
+                    com.watabou.utils.SupportActionJournal.record("ui.click", "control="+Button.this.getClass().getName());
 					killTooltip();
 					switch (event.button){
 						case PointerEvent.LEFT: default:
