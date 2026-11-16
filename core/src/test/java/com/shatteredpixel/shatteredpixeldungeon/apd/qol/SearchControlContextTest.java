@@ -1088,7 +1088,9 @@ public class SearchControlContextTest {
             assertFalse(SearchControlContext.hasMeaningfulWall(hero, level));
             assertFalse(SearchControlContext.visibleTrapRoom(hero, level));
             // A hidden trap must never flip the decision (that would leak it).
-            level.setTrap(new com.shatteredpixel.shatteredpixeldungeon.levels.traps.WornDartTrap().hide(), at(8, 8));
+            com.shatteredpixel.shatteredpixeldungeon.levels.traps.Trap hidden =
+                    level.setTrap(new com.shatteredpixel.shatteredpixeldungeon.levels.traps.WornDartTrap(), at(8, 8));
+            hidden.visible = false; // worn dart traps refuse hide(); force the hidden state directly
             assertFalse(SearchControlContext.visibleTrapRoom(hero, level));
             // A visible trap outside the room does not count.
             level.setTrap(new com.shatteredpixel.shatteredpixeldungeon.levels.traps.WornDartTrap().reveal(), at(3, 3));
