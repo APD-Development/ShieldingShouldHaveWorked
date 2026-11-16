@@ -234,6 +234,8 @@ public final class GrudgeHooks {
 			}
 		}, "apd-grudge-history" );
 		t.setDaemon( true );
+		//APD: stay out of the way of the title screen while it loads the history
+		t.setPriority(Thread.MIN_PRIORITY);
 		t.start();
 	}
 

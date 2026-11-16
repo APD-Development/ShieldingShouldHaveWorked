@@ -60,7 +60,8 @@ public final class WndWallSearchResume {
         Hero hero = Dungeon.hero;
         Level level = Dungeon.level;
         if (hero == null || level == null || !hero.isAlive() || !hero.ready) return;
-        if (SearchControlContext.preferred(hero, level) == Action.WALL_SEARCH) {
+        //same rule as the magnifying glass: search here when it is worth it, otherwise go back
+        if (SearchControlContext.fullSearchUseful(hero, level)) {
             choose(hero, level, Action.SEARCH);
         } else if (hero.wallSearch.exists()) {
             choose(hero, level, Action.WALL_SEARCH);

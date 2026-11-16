@@ -1062,7 +1062,6 @@ public class Toolbar extends Component {
 	//APD: a full search is worth turns where a door-capable wall is in reach, or in a room with visible traps
 	static boolean apdWallSearchUseful(){
 		return Dungeon.hero != null && Dungeon.level != null
-				&& (com.shatteredpixel.shatteredpixeldungeon.apd.qol.SearchControlContext.hasMeaningfulWall(Dungeon.hero, Dungeon.level)
-				|| com.shatteredpixel.shatteredpixeldungeon.apd.qol.SearchControlContext.visibleTrapRoom(Dungeon.hero, Dungeon.level));
+				&& com.shatteredpixel.shatteredpixeldungeon.apd.qol.SearchControlContext.fullSearchUseful(Dungeon.hero, Dungeon.level);
 	}
 }

@@ -119,6 +119,12 @@ public final class SearchControlContext {
     /** Search also reveals hidden traps. A room the player can already see traps in is
      * worth a full search anywhere inside it. Decided only from traps already visible,
      * so the button never leaks whether anything is hidden. */
+    /** The one rule every search control uses: a full search is worth its turns when a
+     * door-capable wall is in reach, or the hero's room shows traps. */
+    public static boolean fullSearchUseful(Hero hero, Level level) {
+        return hasMeaningfulWall(hero, level) || visibleTrapRoom(hero, level);
+    }
+
     public static boolean visibleTrapRoom(Hero hero, Level level) {
         if (hero == null || !(level instanceof RegularLevel) || !((RegularLevel) level).apdHasRooms()
                 || level.traps == null || hero.pos < 0 || hero.pos >= level.length()) return false;
