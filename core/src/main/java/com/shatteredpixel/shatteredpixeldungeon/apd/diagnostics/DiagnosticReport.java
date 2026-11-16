@@ -58,7 +58,8 @@ public final class DiagnosticReport {
                             // Maximum standard Java/Android DEFLATE compression, streaming to
                             // the export provider. Never accumulate the journal in memory.
                             // Closing ZIP writes the central directory before acknowledging.
-                            try(ZipOutputStream zip=new ZipOutputStream(out, StandardCharsets.UTF_8)){
+                            // The outer try owns the provider stream: do not close it twice.
+                            ZipOutputStream zip=new ZipOutputStream(out, StandardCharsets.UTF_8);
                                 zip.setLevel(Deflater.BEST_COMPRESSION);
                                 zip.putNextEntry(new ZipEntry("APD-diagnostic.txt"));
                                 zip.write(SupportDiagnostics.report().getBytes(StandardCharsets.UTF_8));
@@ -67,7 +68,7 @@ public final class DiagnosticReport {
                                 SupportActionJournal.export(zip,checkpoint);
                                 zip.closeEntry();
                                 zip.finish();
-                            }
+                                zip.flush();
                         } else {
                             // Preserve the original Standard bug report bytes and MIME.
                             out.write(SupportDiagnostics.report().getBytes(StandardCharsets.UTF_8));
