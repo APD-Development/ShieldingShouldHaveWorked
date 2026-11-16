@@ -17,7 +17,11 @@ import java.util.concurrent.*;
 public final class SupportActionJournal {
     private static final Object LOCK = new Object();
     private static final int QUEUE_LIMIT = 4096;
-    private static final long FILE_LIMIT = 64L * 1024 * 1024;
+    // APD: 8 MiB rolling window. When full, the oldest half is dropped so the newest
+    // events (the ones a bug report needs) are always kept and the file stays small.
+    static final long FILE_LIMIT = 8L * 1024 * 1024;
+    // While a report is being exported its byte range must not move; rotation waits.
+    private static long exportGuardUntil = 0;
     private static final ArrayDeque<Entry> pending = new ArrayDeque<>();
     private static final ExecutorService writer = Executors.newSingleThreadExecutor(job -> {
         Thread thread = new Thread(job, "apd-action-journal");
@@ -86,7 +90,7 @@ public final class SupportActionJournal {
                 root = canonical;
                 logFile = safe(new File(root, "action-history.txt"));
                 pauseFile = safe(new File(root, "activity-paused.txt"));
-                pending.clear(); lost = 0; full = logFile.length() >= FILE_LIMIT;
+                pending.clear(); lost = 0; full = false;
             } catch (IOException ignored) {
                 root = null; logFile = null; pauseFile = null;
                 pending.clear(); lost = 0;
@@ -120,9 +124,16 @@ public final class SupportActionJournal {
                 Entry e = pending.removeFirst();
                 byte[] bytes = line(e).getBytes(StandardCharsets.UTF_8);
                 if (full || logFile.length() + bytes.length > FILE_LIMIT) {
+                    if (System.currentTimeMillis() >= exportGuardUntil) {
+                        out.close();
+                        trimOldestLocked();
+                        pending.addFirst(e);
+                        flushLocked();
+                        return;
+                    }
                     if (!full) {
                         byte[] note = line(new Entry(System.currentTimeMillis(), "coverage.limit",
-                                "journal reached 64 MiB; subsequent events unavailable until a successful report"))
+                                "journal full while a report was exporting; events during the export are unavailable"))
                                 .getBytes(StandardCharsets.UTF_8);
                         if (logFile.length() + note.length <= FILE_LIMIT) out.write(note);
                     }
@@ -133,6 +144,25 @@ public final class SupportActionJournal {
                 out.write(bytes);
             }
         }
+    }
+
+    /** Keeps the newest half of the journal (from a line boundary) and notes the trim. */
+    private static void trimOldestLocked() throws IOException {
+        long size = logFile.length();
+        long keepFrom = Math.max(0, size - FILE_LIMIT / 2);
+        File temp = safe(new File(root, "action-history.txt.tmp"));
+        try (RandomAccessFile in = new RandomAccessFile(logFile, "r");
+             FileOutputStream out = new FileOutputStream(temp)) {
+            in.seek(keepFrom);
+            if (keepFrom > 0) { int c; while ((c = in.read()) >= 0 && c != '\n') { } }
+            out.write(line(new Entry(System.currentTimeMillis(), "coverage.trimmed",
+                    "older events dropped to keep the journal under 8 MiB")).getBytes(StandardCharsets.UTF_8));
+            byte[] buffer = new byte[8192]; int n;
+            while ((n = in.read(buffer)) > 0) out.write(buffer, 0, n);
+            out.getFD().sync();
+        }
+        if (!logFile.delete() || !temp.renameTo(logFile)) throw new IOException("Could not trim action journal");
+        full = false;
     }
 
     private static void drain() {
@@ -146,7 +176,7 @@ public final class SupportActionJournal {
     /** Called only with sanitized APD event categories, never keyboard values. */
     public static void record(String kind, String detail) {
         synchronized (LOCK) {
-            if (!enabled || logFile == null || full) return;
+            if (!enabled || logFile == null) return;
             if (pending.size() >= QUEUE_LIMIT) { lost++; return; }
             pending.addLast(new Entry(System.currentTimeMillis(), clean(kind, 80), clean(detail, 300)));
             if (!scheduled) {
@@ -207,6 +237,7 @@ public final class SupportActionJournal {
         synchronized (LOCK) {
             if (!enabled || logFile == null) return new Checkpoint(null, 0);
             flushLocked();
+            exportGuardUntil = System.currentTimeMillis() + 5 * 60 * 1000L;
             return new Checkpoint(logFile, logFile.length());
         }
     }
@@ -234,6 +265,11 @@ public final class SupportActionJournal {
         }
     }
 
+    /** A report export ended (saved or not); trimming may move bytes again. */
+    public static void exportFinished() {
+        synchronized (LOCK) { exportGuardUntil = 0; }
+    }
+
     /** Discard only the bytes included in a successfully written report. */
     public static void acknowledge(Checkpoint checkpoint) throws IOException {
         synchronized (LOCK) {
@@ -257,6 +293,7 @@ public final class SupportActionJournal {
             }
             if (!temp.renameTo(logFile)) throw new IOException("Could not acknowledge action journal");
             full = false;
+            exportGuardUntil = 0;
         }
     }
 }

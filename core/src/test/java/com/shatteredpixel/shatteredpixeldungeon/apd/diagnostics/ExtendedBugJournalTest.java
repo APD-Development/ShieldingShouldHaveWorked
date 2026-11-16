@@ -87,4 +87,32 @@ public class ExtendedBugJournalTest {
         assertFalse(SupportActionJournal.enabled());
         assertTrue(com.watabou.utils.SupportDiagnostics.report("").startsWith("APD SUPPORT REPORT v1"));
     }
+    @Test public void fullJournalDropsOldestHalfAndKeepsNewestEvents() throws Exception {
+        SupportActionJournal.setEnabled(false);
+        File root=Files.createTempDirectory("apd-extended-trim-").toFile();
+        SupportActionJournal.configure(root);
+        SupportActionJournal.setEnabled(true);
+        try {
+            SupportActionJournal.exportFinished();
+            File log=new File(root,"action-history.txt");
+            try(Writer w=new OutputStreamWriter(new FileOutputStream(log,true),StandardCharsets.UTF_8)){
+                w.write("2026-01-01T00:00:00.000Z ui.click control=OLDEST_MARKER\n");
+                StringBuilder filler=new StringBuilder();
+                for(int i=0;i<100;i++)filler.append('x');
+                long target=8L*1024*1024-200;
+                long written=0;
+                while(written<target){String l="2026-01-01T00:00:00.000Z ui.click control="+filler+"\n";w.write(l);written+=l.length();}
+            }
+            SupportActionJournal.record("ui.click","control=NEWEST_MARKER");
+            String report=history();
+            SupportActionJournal.exportFinished();
+            assertTrue(log.length()<=8L*1024*1024);
+            assertTrue(log.length()<=4L*1024*1024+4096);
+            assertTrue(report.contains("NEWEST_MARKER"));
+            assertTrue(report.contains("coverage.trimmed"));
+            assertFalse(report.contains("OLDEST_MARKER"));
+        } finally {
+            SupportActionJournal.setEnabled(false);
+        }
+    }
 }

@@ -186,7 +186,11 @@ public class PointerEvent {
 				continue;
 			}
 			com.watabou.utils.SupportDiagnostics.input("dispatched","touch."+p.type,p.diagnosticId,p.queuedNanos,p.sourceEventNanos);
-            com.watabou.utils.SupportActionJournal.record("touch."+p.type,
+            //APD: a finger held down sends a DOWN every frame while it moves; journal only
+            //the first press, the release and cancels, not every drag step.
+            boolean dragStep = p.type == Type.DOWN && activePointers.containsKey(p.id)
+                    && activePointers.get(p.id).type == Type.DOWN;
+            if (!dragStep) com.watabou.utils.SupportActionJournal.record("touch."+p.type,
                     "id="+p.diagnosticId+" pointer="+p.id+" x="+(int)p.current.x+" y="+(int)p.current.y);
 			clearKeyboardThisPress = true;
 			if (activePointers.containsKey(p.id)){

@@ -90,6 +90,7 @@ public final class DiagnosticReport {
                             }
                         }
                     }
+                    if(extended) SupportActionJournal.exportFinished();
                     once.finished(result);
                 }, job->{
                     Thread worker=new Thread(job,"apd-report-export");
