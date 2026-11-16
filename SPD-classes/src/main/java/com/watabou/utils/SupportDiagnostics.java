@@ -82,7 +82,7 @@ public final class SupportDiagnostics {
         try { synchronized(LOCK){
             // Keep CR and LF from turning one diagnostic record into multiple apparent events.
             String line=System.currentTimeMillis()+" "+shortText(kind,80).replace('\r',' ').replace('\n',' ')
-                    +" "+shortText(detail,700).replace('\r',' ').replace('\n',' ');
+                    +" "+shortText(detail,"memory.spike.thread".equals(kind)?2400:700).replace('\r',' ').replace('\n',' ');
             // Preserve selected safe scene and memory milestones in the extended,
             // opt-in report chronology. Never persist exception messages or typed values.
             if (kind != null && (kind.equals("scene.request") || kind.equals("scene.begin")
@@ -95,9 +95,10 @@ public final class SupportDiagnostics {
                 SupportActionJournal.record("error.class",type);
             }
             trace.addLast(line);traceChars+=line.length()+1;
-            if ("memory.sample".equals(kind) || "frame.hitch".equals(kind)) {
+            if ("memory.sample".equals(kind) || "frame.hitch".equals(kind)
+                    || kind.startsWith("memory.spike")) {
                 memoryTrace.addLast(line);
-                while (memoryTrace.size()>MEMORY_EVENTS) memoryTrace.removeFirst();
+                while (memoryTrace.size()>MEMORY_EVENTS+40) memoryTrace.removeFirst();
             }
             while(trace.size()>EVENTS || traceChars>14000)traceChars-=trace.removeFirst().length()+1;
             revision++;
@@ -149,6 +150,44 @@ public final class SupportDiagnostics {
                     +" change_since_last_hitch="+delta+" limit_bytes="+runtime.maxMemory());
         }catch(RuntimeException|OutOfMemoryError unavailable){writeFailure="Hitch capture unavailable";}
     }
+    //APD Developer build: memory spike watcher. Samples the heap 5x a second on its own
+    //thread; when the heap grows by 40 MB within a second (or passes 75% of the limit),
+    //it records what every thread is doing at that moment, at most once per 10 seconds.
+    private static Thread spikeWatcher;
+    public static synchronized void startSpikeWatcher(){
+        if(spikeWatcher!=null)return;
+        spikeWatcher=new Thread(()->{
+            Runtime runtime=Runtime.getRuntime();
+            long[] recent=new long[5];int index=0;long lastDump=0;
+            while(true){
+                try{Thread.sleep(200);}catch(InterruptedException stop){return;}
+                long used=runtime.totalMemory()-runtime.freeMemory(),limit=runtime.maxMemory();
+                long oldest=recent[index];recent[index]=used;index=(index+1)%recent.length;
+                long now=System.currentTimeMillis();
+                boolean growing=oldest>0&&used-oldest>40L*1024*1024;
+                boolean high=used>limit*3/4;
+                if((growing||high)&&now-lastDump>10_000){
+                    lastDump=now;
+                    try{
+                        event("memory.spike","used_bytes="+used+" grew_last_second="+(oldest>0?used-oldest:0)+" limit_bytes="+limit);
+                        for(Map.Entry<Thread,StackTraceElement[]> e:Thread.getAllStackTraces().entrySet()){
+                            Thread t=e.getKey();
+                            if(t==Thread.currentThread()||e.getValue().length==0)continue;
+                            StringBuilder b=new StringBuilder("thread=").append(t.getName()).append(" state=").append(t.getState());
+                            StackTraceElement[] frames=e.getValue();
+                            for(int i=0;i<Math.min(12,frames.length);i++)b.append(" | ").append(frames[i]);
+                            event("memory.spike.thread",b.toString());
+                        }
+                        synchronized(LOCK){flushNow=true;LOCK.notifyAll();}
+                    }catch(RuntimeException|OutOfMemoryError ignored){}
+                }
+            }
+        },"apd-memory-spike-watcher");
+        spikeWatcher.setDaemon(true);
+        spikeWatcher.setPriority(Thread.MIN_PRIORITY);
+        spikeWatcher.start();
+    }
+
     /** A scene change or resume legitimately takes long; do not count that frame. */
     public static void resetFrameClock(){lastFrameNanos=System.nanoTime();}
 

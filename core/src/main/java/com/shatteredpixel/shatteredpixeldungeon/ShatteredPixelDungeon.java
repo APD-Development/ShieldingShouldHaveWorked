@@ -86,6 +86,7 @@ public class ShatteredPixelDungeon extends Game {
         com.watabou.utils.SupportActionJournal.setEnabled(SPDSettings.apdExtendedBugLogging());
         // Developer build only: log frames slower than 100 ms (stutter probe).
         com.watabou.utils.SupportDiagnostics.hitchProbe = com.shatteredpixel.shatteredpixeldungeon.apd.ApdFeatures.testBuild();
+        if (com.watabou.utils.SupportDiagnostics.hitchProbe) com.watabou.utils.SupportDiagnostics.startSpikeWatcher();
 		
 		Music.INSTANCE.enable( SPDSettings.music() );
 		Music.INSTANCE.volume( SPDSettings.musicVol()*SPDSettings.musicVol()/100f );
