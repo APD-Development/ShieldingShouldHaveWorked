@@ -128,22 +128,36 @@ public final class RunLogReader {
 	}
 
 	private static byte[] readHeader( InputStream in ) throws IOException {
-		ByteArrayOutputStream out = new ByteArrayOutputStream(LogFormat.MAX_HEADER_BODY + 11);
-		for (int i = 0; i < LogFormat.MAGIC.length + 3; i++){
+		// Read only the fixed seven-byte prefix before knowing the actual header size.
+		// Most log headers are far smaller than MAX_HEADER_BODY: allocating the full
+		// maximum for each imported run creates avoidable temporary memory pressure.
+		byte[] prefix = new byte[LogFormat.MAGIC.length + 3];
+		int count = 0;
+		while (count < prefix.length){
 			int b = in.read();
-			if (b < 0) return out.toByteArray();
-			out.write(b);
+			if (b < 0) return java.util.Arrays.copyOf(prefix, count);
+			prefix[count++] = (byte) b;
 		}
-		byte[] prefix = out.toByteArray();
 		int bodyLength = ((prefix[LogFormat.MAGIC.length + 1] & 0xFF) << 8)
 				| (prefix[LogFormat.MAGIC.length + 2] & 0xFF);
 		if (bodyLength > LogFormat.MAX_HEADER_BODY) return prefix;
-		for (int i = 0; i < bodyLength + 4; i++){
-			int b = in.read();
-			if (b < 0) break;
-			out.write(b);
+
+		// No preallocated maximum or ByteArrayOutputStream doubling/copying.
+		// Read exactly the declared body and CRC; never consume a frame byte.
+		byte[] header = java.util.Arrays.copyOf(prefix, prefix.length + bodyLength + 4);
+		int pos = prefix.length;
+		while (pos < header.length){
+			int n = in.read(header, pos, header.length - pos);
+			if (n < 0) break;
+			if (n == 0){
+				int b = in.read();
+				if (b < 0) break;
+				header[pos++] = (byte) b;
+			} else {
+				pos += n;
+			}
 		}
-		return out.toByteArray();
+		return pos == header.length ? header : java.util.Arrays.copyOf(header, pos);
 	}
 
 	static byte[] readFully( File file ) throws IOException {
