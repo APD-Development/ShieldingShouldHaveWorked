@@ -102,6 +102,7 @@ public class APDSettingsPane extends Component {
     private RenderedTextBlock sectionInfo;
     private boolean diagnosticsLoaded;
     private RedButton btnDiagnosticReport;
+    private CheckBox chkExtendedBugLogging;
     public interface Navigation { void changed(ApdSettingsSection previous); }
     private Navigation navigation;
     public void navigation(Navigation value){navigation=value;}
@@ -343,17 +344,70 @@ public class APDSettingsPane extends Component {
 		};
 		add( btnTest );
 
+        chkExtendedBugLogging=new SettingCheckBox("Extended bug logging (OFF by default)") {
+            @Override protected void onClick() {
+                super.onClick();
+                if (!checked()) {
+                    SPDSettings.apdExtendedBugLogging(false);
+                    ShatteredPixelDungeon.scene().addToFront(new WndMessage(
+                            "Extended logging is off. The locally stored action journal has been cleared. "
+                            +"Standard bug reports still work."));
+                    return;
+                }
+                // The checkbox is NOT enabled merely because it was tapped.
+                checked(false);
+                ShatteredPixelDungeon.scene().addToFront(new WndOptions(
+                        "Enable extended bug logging?",
+                        "If enabled, APD records the following ON THIS DEVICE until you turn it off: "
+                        +"timestamps and order of touches, taps, swipes and screen positions; "
+                        +"non-text key presses and Back navigation; clicked in-game UI controls; "
+                        +"hero movement, attack and interaction commands; "
+                        +"settings names and non-text numeric/boolean values; "
+                        +"game screen changes; error types, memory samples and performance events; "
+                        +"when APD goes into the background, when it returns, and the time away. "
+                        +"The journal spans reports and may use up to 64 MiB of private storage. "
+                        +"If its limit is reached, later activity may be missing. "
+                        +"A successful EXTENDED report includes that journal and starts the next reporting period. "
+                        +"It does NOT record typed text, passwords, other apps, the contents of your saves, "
+                        +"or everything that happens outside APD. Standard reports remain unchanged. "
+                        +"Nothing is uploaded or sent automatically. Review the saved file before sharing. "
+                        +"Disabling this option stops recording and deletes the local journal.",
+                        "Enable logging", "Keep off") {
+                    @Override protected void onSelect(int choice) {
+                        if (choice == 0) {
+                            SPDSettings.apdExtendedBugLogging(true);
+                            chkExtendedBugLogging.checked(true);
+                        } else {
+                            chkExtendedBugLogging.checked(false);
+                        }
+                    }
+                });
+            }
+        };
+        chkExtendedBugLogging.checked(SPDSettings.apdExtendedBugLogging());
+        add(chkExtendedBugLogging);
+        row(ApdSettingsSection.ADVANCED,chkExtendedBugLogging,
+                "OFF by default. Explicit opt-in records APD actions locally between extended reports; turn off to erase the journal.");
+
         final RedButton diagnosticReport=new SettingButton("Create bug report") {
             @Override protected void onClick() {
                 final RedButton source=this;
                 ShatteredPixelDungeon.scene().addToFront(new WndOptions(
                         "Bug report type",
-                        "Standard keeps the original report. Extended also includes the chronological "
+                        "Standard keeps the original report. Extended requires logging to be turned ON "
+                        +"in Advanced Settings after reading the full disclosure, and adds the chronological "
                         +"in-game action history since the last successfully saved extended report, "
                         +"plus time APD spent in the background. Review the saved file before sharing.",
                         "Standard", "Extended") {
                     @Override protected void onSelect(int index) {
                         if(index!=0 && index!=1)return;
+                        if(index==1 && !SPDSettings.apdExtendedBugLogging()){
+                            ShatteredPixelDungeon.scene().addToFront(new WndMessage(
+                                    "Extended bug logging is OFF. Enable it explicitly in Advanced Settings "
+                                    +"and read the full warning before collecting an action history. "
+                                    +"You can still choose Standard now."));
+                            return;
+                        }
                         final com.watabou.noosa.Game engine=Game.instance;
                         final com.watabou.noosa.Scene owner=Game.scene();
                         source.enable(false);
