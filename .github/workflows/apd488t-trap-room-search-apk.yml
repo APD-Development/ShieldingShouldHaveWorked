@@ -1,5 +1,5 @@
 name: APD C488T/P488T trap-room search
-# Trap-room search + diagnostics + compressed caches + touch-trace stutter fix on top of C488.
+# Search-rule unification + main merge on top of C488T.
 on:
   push:
     branches: [fix/apd-trap-room-search-20261116]
