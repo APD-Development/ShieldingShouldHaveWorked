@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -34,12 +37,17 @@ import com.watabou.utils.Bundle;
 
 public class WellFed extends Buff {
 
+	public static final int HEAL_INTERVAL = 18;
+
 	{
 		type = buffType.POSITIVE;
 		announced = true;
 	}
 	
 	int left;
+
+	/** Scheduled updates remaining, before Salt Cube changes their spacing. */
+	public int remainingNutritionUpdates(){ return left; }
 	
 	@Override
 	public boolean act() {
@@ -50,13 +58,13 @@ public class WellFed extends Buff {
 				((Hero) target).resting = false;
 			}
 			return true;
-		} else if (left % 18 == 0 && target.HP < target.HT){
+		} else if (left % HEAL_INTERVAL == 0 && target.HP < target.HT){
 			int apdHpBefore = target.HP;
-			target.HP += 1;
+			target.HP += com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomHealingHooks.amount(target, 1);
 			ApdCombat.onHeal( target, apdHpBefore, ApdCombat.HEAL_FOOD_WELL_FED, 1 );
-			target.sprite.showStatusWithIcon(CharSprite.POSITIVE, "1", FloatingText.HEALING);
+			target.sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomHealingHooks.display(target, apdHpBefore, 1)), FloatingText.HEALING);
 
-			if (target.HP == target.HT && target instanceof Hero) {
+			if (target.HP == target.HT && target instanceof Hero && com.shatteredpixel.shatteredpixeldungeon.SPDSettings.waitStopFullHealth()) {
 				((Hero) target).resting = false;
 			}
 		}
@@ -116,3 +124,4 @@ public class WellFed extends Buff {
 		left = bundle.getInt(LEFT);
 	}
 }
+

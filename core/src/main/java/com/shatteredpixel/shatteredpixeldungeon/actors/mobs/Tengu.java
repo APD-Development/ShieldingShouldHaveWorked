@@ -26,6 +26,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
+import com.shatteredpixel.shatteredpixeldungeon.apd.recorder.ApdPlay;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
@@ -39,6 +40,10 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Dread;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Roots;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Terror;
+import com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CellDamageOrigins;
+import com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomOffensiveHooks;
+import com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin;
+import com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveEffectContext;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
 import com.shatteredpixel.shatteredpixeldungeon.effects.BlobEmitter;
@@ -182,6 +187,7 @@ public class Tengu extends Mob {
 			yell(Messages.get(this, "interesting"));
 			((PrisonBossLevel)Dungeon.level).progress();
 			BossHealthBar.bleed(true);
+			ApdPlay.onBossPhase(name(), 2, "arena");
 
 		//if tengu has lost a certain amount of hp, jump
 		} else if (newBracket != curbracket) {
@@ -633,7 +639,8 @@ public class Tengu extends Mob {
 						Char ch = Actor.findChar(cell);
 						if (ch != null && !(ch instanceof Tengu)) {
 							int dmg = Random.NormalIntRange(5 + Dungeon.scalingDepth(), 10 + Dungeon.scalingDepth() * 2);
-							dmg -= ch.drRoll();
+							dmg = Math.round(CustomOffensiveHooks.attackDamage(target, dmg));
+							dmg -= ch.apdDrRoll();
 
 							if (dmg > 0) {
 								ch.damage(dmg, Bomb.class);
@@ -795,10 +802,13 @@ public class Tengu extends Mob {
 			} else {
 				curCells = new int[toCells.size()];
 				int i = 0;
-				for (Integer c : toCells){
-					GameScene.add(Blob.seed(c, 2, FireBlob.class));
-					curCells[i] = c;
-					i++;
+				OffensiveDamageOrigin origin = OffensiveDamageOrigin.capture(target, null);
+				try (OffensiveEffectContext ignored = OffensiveEffectContext.enter(origin)) {
+					for (Integer c : toCells){
+						GameScene.add(Blob.seed(c, 2, FireBlob.class));
+						curCells[i] = c;
+						i++;
+					}
 				}
 			}
 			
@@ -844,6 +854,10 @@ public class Tengu extends Mob {
 		}
 		
 		public static class FireBlob extends Blob {
+
+			private CellDamageOrigins apdOrigins = new CellDamageOrigins();
+			private boolean apdLegacyUnknown;
+			private static final String APD_ORIGINS = "apd_tengu_fire_origins";
 			
 			{
 				actPriority = BUFF_PRIO - 1;
@@ -851,8 +865,33 @@ public class Tengu extends Mob {
 			}
 			
 			@Override
+			public void seed(Level level, int cell, int amount) {
+				OffensiveDamageOrigin origin = OffensiveEffectContext.current();
+				if (origin == OffensiveDamageOrigin.UNATTRIBUTED && !apdLegacyUnknown) {
+					origin = OffensiveDamageOrigin.BOSS;
+				}
+				apdOrigins.seed(cur, level.length(), cell, amount, origin);
+				super.seed(level, cell, amount);
+			}
+
+			@Override public void clear(int cell) { super.clear(cell); apdOrigins.clear(cell); }
+			@Override public void fullyClear() { super.fullyClear(); apdOrigins.clearAll(); }
+			@Override public void storeInBundle(Bundle bundle) {
+				super.storeInBundle(bundle);
+				if (volume > 0) apdOrigins.store(bundle, APD_ORIGINS, cur);
+				else CellDamageOrigins.clearMetadata(bundle, APD_ORIGINS);
+			}
+			@Override public void restoreFromBundle(Bundle bundle) {
+				boolean hasOrigins = bundle.contains(APD_ORIGINS + "_version");
+				super.restoreFromBundle(bundle);
+				apdOrigins = CellDamageOrigins.restore(bundle, APD_ORIGINS, cur);
+				apdLegacyUnknown = volume > 0 && !hasOrigins;
+			}
+
+			@Override
 			protected void evolve() {
-				
+
+				apdOrigins.synchronize(cur);
 				boolean observe = false;
 				boolean burned = false;
 				
@@ -871,7 +910,7 @@ public class Tengu extends Mob {
 							//similar to fire.burn(), but Tengu is immune, and hero loses score
 							Char ch = Actor.findChar( cell );
 							if (ch != null && !ch.isImmune(Fire.class) && !(ch instanceof Tengu)) {
-								Buff.affect( ch, Burning.class ).reignite( ch );
+								Burning.affectAttributed(ch, apdOrigins, cell);
 							}
 							if (ch == Dungeon.hero){
 								Statistics.qualifiedForBossChallengeBadge = false;
@@ -901,6 +940,9 @@ public class Tengu extends Mob {
 					}
 				}
 				
+				apdOrigins.synchronize(off);
+				apdOrigins.discardIfUnattributed();
+
 				if (observe) {
 					Dungeon.observe();
 				}
@@ -1013,10 +1055,13 @@ public class Tengu extends Mob {
 		}
 		
 		private void spreadblob(){
-			GameScene.add(Blob.seed(shockerPos, 1, ShockerBlob.class));
-			for (int i = shockingOrdinals ? 0 : 1; i < PathFinder.CIRCLE8.length; i += 2){
-				if (!Dungeon.level.solid[shockerPos+PathFinder.CIRCLE8[i]]) {
-					GameScene.add(Blob.seed(shockerPos + PathFinder.CIRCLE8[i], 2, ShockerBlob.class));
+			OffensiveDamageOrigin origin = OffensiveDamageOrigin.capture(target, null);
+			try (OffensiveEffectContext ignored = OffensiveEffectContext.enter(origin)) {
+				GameScene.add(Blob.seed(shockerPos, 1, ShockerBlob.class));
+				for (int i = shockingOrdinals ? 0 : 1; i < PathFinder.CIRCLE8.length; i += 2){
+					if (!Dungeon.level.solid[shockerPos+PathFinder.CIRCLE8[i]]) {
+						GameScene.add(Blob.seed(shockerPos + PathFinder.CIRCLE8[i], 2, ShockerBlob.class));
+					}
 				}
 			}
 		}
@@ -1039,6 +1084,10 @@ public class Tengu extends Mob {
 		}
 		
 		public static class ShockerBlob extends Blob {
+
+			private CellDamageOrigins apdOrigins = new CellDamageOrigins();
+			private boolean apdLegacyUnknown;
+			private static final String APD_ORIGINS = "apd_tengu_shocker_origins";
 			
 			{
 				actPriority = BUFF_PRIO - 1;
@@ -1046,8 +1095,33 @@ public class Tengu extends Mob {
 			}
 			
 			@Override
+			public void seed(Level level, int cell, int amount) {
+				OffensiveDamageOrigin origin = OffensiveEffectContext.current();
+				if (origin == OffensiveDamageOrigin.UNATTRIBUTED && !apdLegacyUnknown) {
+					origin = OffensiveDamageOrigin.BOSS;
+				}
+				apdOrigins.seed(cur, level.length(), cell, amount, origin);
+				super.seed(level, cell, amount);
+			}
+
+			@Override public void clear(int cell) { super.clear(cell); apdOrigins.clear(cell); }
+			@Override public void fullyClear() { super.fullyClear(); apdOrigins.clearAll(); }
+			@Override public void storeInBundle(Bundle bundle) {
+				super.storeInBundle(bundle);
+				if (volume > 0) apdOrigins.store(bundle, APD_ORIGINS, cur);
+				else CellDamageOrigins.clearMetadata(bundle, APD_ORIGINS);
+			}
+			@Override public void restoreFromBundle(Bundle bundle) {
+				boolean hasOrigins = bundle.contains(APD_ORIGINS + "_version");
+				super.restoreFromBundle(bundle);
+				apdOrigins = CellDamageOrigins.restore(bundle, APD_ORIGINS, cur);
+				apdLegacyUnknown = volume > 0 && !hasOrigins;
+			}
+
+			@Override
 			protected void evolve() {
 
+				apdOrigins.synchronize(cur);
 				boolean shocked = false;
 				
 				int cell;
@@ -1066,7 +1140,7 @@ public class Tengu extends Mob {
 							
 							Char ch = Actor.findChar(cell);
 							if (ch != null && !(ch instanceof Tengu)){
-								ch.damage(2 + Dungeon.scalingDepth(), new Electricity());
+								ch.damage(apdOrigins.scale(2 + Dungeon.scalingDepth(), cell), new Electricity());
 								
 								if (ch == Dungeon.hero){
 									Statistics.qualifiedForBossChallengeBadge = false;
@@ -1081,6 +1155,9 @@ public class Tengu extends Mob {
 						}
 					}
 				}
+
+				apdOrigins.synchronize(off);
+				apdOrigins.discardIfUnattributed();
 
 				if (shocked) Sample.INSTANCE.play( Assets.Sounds.LIGHTNING );
 				
@@ -1140,3 +1217,4 @@ public class Tengu extends Mob {
 		
 	}
 }
+

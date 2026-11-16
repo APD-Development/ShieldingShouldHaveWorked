@@ -16,6 +16,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.InputStream;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
@@ -56,6 +57,94 @@ public class ArchiveHostileTest {
 			assertEquals(0, r.imported);
 			assertNothingWritten();
 		}
+	}
+
+	@Test
+	public void aSymlinkedHistoryDirectoryCannotSendImportedLogsOutsideTheRoot() throws Exception {
+		byte[] log = good("a", "run-a");
+		File history = tmp.newFolder("symlink-history");
+		File external = tmp.newFolder("symlink-external");
+		File marker = new File(external, "existing.txt");
+		byte[] original = "keep untouched".getBytes("UTF-8");
+		Files.write(marker.toPath(), original);
+		Files.createSymbolicLink(new File(history, "runs").toPath(), external.toPath());
+
+		Map<String, byte[]> logs = new LinkedHashMap<>();
+		logs.put("runs/a.apdlog", log);
+		byte[] archive = archiveOf(logs, java.util.Collections.singletonMap("runs/a.apdlog", "run-a"));
+		ArchiveImporter.Report result = ArchiveImporter.importArchive(history, new ByteArrayInputStream(archive));
+		assertFalse(result.summary(), result.ok);
+		assertEquals(0, result.imported);
+		assertFalse("symlinked folder must not receive a log", new File(external, "a.apdlog").exists());
+		assertArrayEquals(original, Files.readAllBytes(marker.toPath()));
+		assertFalse(new File(history, "import-tmp").exists());
+	}
+
+	@Test
+	public void anExistingSymlinkedLogCannotBeReadAsAlreadyImported() throws Exception {
+		byte[] log = good("a", "run-a");
+		File history = tmp.newFolder("symlink-log-history");
+		File runs = new File(history, "runs");
+		assertTrue(runs.mkdir());
+		File external = tmp.newFolder("symlink-log-external");
+		File externalLog = new File(external, "outside.apdlog");
+		Files.write(externalLog.toPath(), log);
+		Files.createSymbolicLink(new File(runs, "a.apdlog").toPath(), externalLog.toPath());
+
+		Map<String, byte[]> logs = new LinkedHashMap<>();
+		logs.put("runs/a.apdlog", log);
+		byte[] archive = archiveOf(logs, java.util.Collections.singletonMap("runs/a.apdlog", "run-a"));
+		ArchiveImporter.Report result = ArchiveImporter.importArchive(history, new ByteArrayInputStream(archive));
+		assertFalse(result.summary(), result.ok);
+		assertEquals(0, result.imported);
+		assertEquals("a symlink is not an already-imported history log", 0, result.skippedAlreadyHere);
+		assertArrayEquals(log, Files.readAllBytes(externalLog.toPath()));
+		assertTrue("the original link remains untouched", Files.isSymbolicLink(new File(runs, "a.apdlog").toPath()));
+		assertFalse(new File(history, "import-tmp").exists());
+	}
+
+
+	@Test
+	public void importTempDirectorySymlinkDoesNotDeleteExternalFiles() throws Exception {
+		byte[] log = good("a", "run-a");
+		File history = tmp.newFolder("temp-link-history");
+		File external = tmp.newFolder("temp-link-external");
+		File marker = new File(external, "precious.txt");
+		byte[] original = "original external content".getBytes("UTF-8");
+		Files.write(marker.toPath(), original);
+		Files.createSymbolicLink(new File(history, "import-tmp").toPath(), external.toPath());
+		Map<String, byte[]> logs = new LinkedHashMap<>();
+		logs.put("runs/a.apdlog", log);
+		ArchiveImporter.Report result = ArchiveImporter.importArchive(history, new ByteArrayInputStream(
+				archiveOf(logs, java.util.Collections.singletonMap("runs/a.apdlog", "run-a"))));
+		assertTrue(result.summary(), result.ok);
+		assertEquals(1, result.imported);
+		assertArrayEquals(original, Files.readAllBytes(marker.toPath()));
+		assertTrue(new File(history, "runs/a.apdlog").isFile());
+		assertFalse(new File(history, "import-tmp").exists());
+	}
+
+	@Test
+	public void nestedStaleImportTempSymlinkDoesNotDeleteExternalFiles() throws Exception {
+		byte[] log = good("a", "run-a");
+		File history = tmp.newFolder("nested-temp-history");
+		File scratch = new File(history, "import-tmp");
+		assertTrue(scratch.mkdir());
+		Files.write(new File(scratch, "leftover.tmp").toPath(), "stale".getBytes("UTF-8"));
+		File external = tmp.newFolder("nested-temp-external");
+		File marker = new File(external, "keep.txt");
+		byte[] original = "must survive import cleanup".getBytes("UTF-8");
+		Files.write(marker.toPath(), original);
+		Files.createSymbolicLink(new File(scratch, "external").toPath(), external.toPath());
+		Map<String, byte[]> logs = new LinkedHashMap<>();
+		logs.put("runs/a.apdlog", log);
+		ArchiveImporter.Report result = ArchiveImporter.importArchive(history, new ByteArrayInputStream(
+				archiveOf(logs, java.util.Collections.singletonMap("runs/a.apdlog", "run-a"))));
+		assertTrue(result.summary(), result.ok);
+		assertEquals(1, result.imported);
+		assertArrayEquals(original, Files.readAllBytes(marker.toPath()));
+		assertTrue(new File(history, "runs/a.apdlog").isFile());
+		assertFalse(scratch.exists());
 	}
 
 	@Test
@@ -268,6 +357,26 @@ public class ArchiveHostileTest {
 	}
 
 	@Test
+	public void checksumValidManifestSizeOverflowCannotTouchHistory() throws Exception {
+		ArchiveManifest m = new ArchiveManifest();
+		ArchiveManifest.Entry first = new ArchiveManifest.Entry();
+		first.path = "runs/one.apdlog";
+		first.size = Long.MAX_VALUE;
+		m.files.add(first);
+		ArchiveManifest.Entry second = new ArchiveManifest.Entry();
+		second.path = "runs/two.apdlog";
+		second.size = 1;
+		m.files.add(second);
+		byte[] archive = zip(names(ArchiveManifest.ENTRY_NAME),
+				Arrays.asList(m.encode().getBytes(ArchiveManifest.utf8())));
+		ArchiveImporter.Report result = run(archive);
+		assertFalse(result.summary(), result.ok);
+		assertEquals(0, result.imported);
+		assertTrue(result.summary(), result.problem.contains("file sizes overflow"));
+		assertNothingWritten();
+	}
+
+	@Test
 	public void aListedFileThatNeverArrivedIsReportedAndNothingIsImported() throws Exception {
 		byte[] a = good("a", "run-a"), b = good("b", "run-b");
 		Map<String, byte[]> files = new LinkedHashMap<>();
@@ -458,5 +567,39 @@ public class ArchiveHostileTest {
 		}
 		//the importer is free for a good archive afterwards
 		assertTrue(ArchiveImporter.importArchive(tmp.newFolder("device-after-source-stall"), new ByteArrayInputStream(archive)).ok);
+	}
+
+
+	private byte[] archiveWithKind( String path, String kind, String manifestRunId, byte[] log ) throws Exception {
+		ArchiveManifest manifest = new ArchiveManifest();
+		ArchiveManifest.Entry entry = new ArchiveManifest.Entry();
+		entry.path = path;
+		entry.kind = kind;
+		entry.runId = manifestRunId;
+		entry.size = log.length;
+		entry.sha256 = ArchiveManifest.sha256Hex(log);
+		manifest.files.add(entry);
+		return zip(names(ArchiveManifest.ENTRY_NAME, path),
+				Arrays.asList(manifest.encode().getBytes(ArchiveManifest.utf8()), log));
+	}
+
+	@Test
+	public void aRunPathCannotMasqueradeAsLegacyToBypassRunIdentity() throws Exception {
+		byte[] log = good("a", "run-actually-a");
+		ArchiveImporter.Report report = run(archiveWithKind("runs/a.apdlog", ArchiveManifest.KIND_IMPORTED,
+				"run-says-something-else", log));
+		assertFalse(report.summary(), report.ok);
+		assertEquals(0, report.imported);
+		assertNothingWritten();
+	}
+
+	@Test
+	public void aLegacyPathCannotMasqueradeAsARun() throws Exception {
+		byte[] log = good("a", "run-a");
+		ArchiveImporter.Report report = run(archiveWithKind("legacy/a.apdlog", ArchiveManifest.KIND_RUN,
+				"run-a", log));
+		assertFalse(report.summary(), report.ok);
+		assertEquals(0, report.imported);
+		assertNothingWritten();
 	}
 }

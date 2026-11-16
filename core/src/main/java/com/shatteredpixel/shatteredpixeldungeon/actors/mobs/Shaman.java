@@ -124,7 +124,7 @@ public abstract class Shaman extends Mob {
 			
 			int dmg = Random.NormalIntRange( 6, 15 );
 			dmg = Math.round(dmg * AscensionChallenge.statModifier(this));
-			enemy.damage( dmg, new EarthenBolt() );
+			com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomOffensiveHooks.raw(enemy,dmg,new EarthenBolt(),this);
 			
 			if (!enemy.isAlive() && enemy == Dungeon.hero) {
 				Badges.validateDeathFromEnemyMagic();

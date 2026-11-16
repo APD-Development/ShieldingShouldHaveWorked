@@ -83,6 +83,11 @@ public final class BackendClient {
 			done.finished(status(sendingOn, address));
 			return;
 		}
+		String queueProblem = SubmissionQueue.readProblem(historyRoot);
+		if (queueProblem != null){
+			done.finished(queueProblem + " Nothing was sent.");
+			return;
+		}
 		Thread t = new Thread(new Runnable(){
 			@Override
 			public void run(){
@@ -90,7 +95,9 @@ public final class BackendClient {
 				try {
 					Outbox.FlushResult r = SubmissionQueue.flush(historyRoot, gateway, System.currentTimeMillis(), true);
 					msg = describe(r, SubmissionQueue.pending(historyRoot));
-					if (gateway instanceof Mailbox){
+					String problem = SubmissionQueue.readProblem(historyRoot);
+					if (problem != null) msg += " " + problem;
+					else if (gateway instanceof Mailbox){
 						int added = collectRequests(historyRoot, (Mailbox) gateway, System.currentTimeMillis());
 						if (added > 0) msg += " " + added + " new request" + (added == 1 ? "" : "s") + " for more information; see Evidence requests.";
 					}

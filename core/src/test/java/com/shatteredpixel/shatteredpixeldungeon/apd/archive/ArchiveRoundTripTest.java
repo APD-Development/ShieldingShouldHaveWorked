@@ -171,6 +171,28 @@ public class ArchiveRoundTripTest {
 	}
 
 	@Test
+	public void reimportIntoTheSourceKeepsOriginalUnfinishedSecretsAndExplainsDifferences() throws Exception {
+		File root = fresh("source");
+		history(root);
+		byte[] archive = export(root);
+		Map<String, byte[]> original = files(root);
+		for (int attempt = 0; attempt < 3; attempt++){
+			ArchiveImporter.Report report = importInto(root, archive);
+			assertTrue(report.summary(), report.ok);
+			assertEquals(0, report.imported);
+			assertEquals(5, report.skippedAlreadyHere);
+			assertEquals(1, report.keptDifferentExisting);
+			assertEquals(1, report.redactedDifferentExisting);
+			assertTrue(report.summary().contains("hidden information removed"));
+			Map<String, byte[]> after = files(root);
+			for (String path : original.keySet()){
+				if (path.startsWith("runs/") || path.startsWith("legacy/")) assertArrayEquals(path, original.get(path), after.get(path));
+			}
+			assertTrue(contains(after.get("runs/open.apdlog"), SECRET_SEED));
+		}
+	}
+
+	@Test
 	public void aDifferentLogAlreadyHereIsNeverReplaced() throws Exception {
 		File a = fresh("a");
 		history(a);
@@ -215,12 +237,14 @@ public class ArchiveRoundTripTest {
 		history(a);
 		//a live recording: a writer that keeps appending while the export reads
 		final TestLogs live = new TestLogs(a, "live", V, 9000).start("run-live", 0, "MAGE", RS, 0, 30, false).enter(1);
-		final boolean[] stop = new boolean[1];
+		//The writer is asynchronous: establish the two initial public events before testing concurrent appends.
+		assertTrue("initial live events reached disk", live.w.flush());
+		final java.util.concurrent.atomic.AtomicBoolean stop = new java.util.concurrent.atomic.AtomicBoolean();
 		Thread t = new Thread(new Runnable(){
 			@Override
 			public void run(){
 				int i = 0;
-				while (!stop[0] && i < 20000){
+				while (!stop.get() && i < 20000){
 					live.heroAttacks("rat", "actors.mobs.Rat", i % 2 == 0);
 					live.registered("x" + i, SECRET_CLASS, 1, false, 0);
 					i++;
@@ -232,7 +256,7 @@ public class ArchiveRoundTripTest {
 		try {
 			archive = export(a);
 		} finally {
-			stop[0] = true;
+			stop.set(true);
 			t.join();
 			live.close(false);
 		}
@@ -243,6 +267,29 @@ public class ArchiveRoundTripTest {
 		ReadResult red = RunLogReader.read(new File(b, "runs/live.apdlog"));
 		assertTrue(red.events.size() > 1);
 		assertFalse(contains(files(b).get("runs/live.apdlog"), SECRET_CLASS));
+	}
+
+	@Test
+	public void aChangedFinishedLogNeverReportsASuccessfulIncompleteArchive() throws Exception {
+		File root = fresh("changed-export");
+		history(root);
+		final File changed = new File(root, "runs/fin.apdlog");
+		final ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+		final boolean[] mutated = {false};
+		java.io.OutputStream out = new java.io.OutputStream(){
+			private void mutate() throws java.io.IOException {
+				if (mutated[0]) return;
+				mutated[0] = true;
+				//The first ZIP write follows manifest planning: simulate a file changing before its second read.
+				try (java.io.FileOutputStream append = new java.io.FileOutputStream(changed, true)) { append.write(0); }
+			}
+			@Override public void write(int value) throws java.io.IOException { mutate(); bytes.write(value); }
+			@Override public void write(byte[] data, int off, int len) throws java.io.IOException { mutate(); bytes.write(data, off, len); }
+		};
+		ArchiveExporter.Report report = ArchiveExporter.export(root, out, "test", 1);
+		assertTrue("controlled mutation ran after manifest planning", mutated[0]);
+		assertFalse("an archive missing a manifest-listed log must not be reported successful", report.ok);
+		assertTrue("failure explains retry", report.problem.contains("changed") && report.problem.contains("export again"));
 	}
 
 	@Test
@@ -331,4 +378,93 @@ public class ArchiveRoundTripTest {
 		assertEquals(5, r.runLogs);
 		assertEquals(1, r.importedFiles);
 	}
+
+
+	private File malformedThenReadableStart( File root, String logId, String runId ) throws Exception {
+		TestLogs log = new TestLogs(root, logId, V, 1000);
+		log.w.event(EventTypes.RUN_START).clock(log.clock++).emit();
+		log.start(runId, 0, "CLERIC", RS, 0, 0, false).enter(1);
+		log.end(LifecycleEvents.OUTCOME_DIED, "Rat", 1, 1, 1).close(true);
+		return log.file;
+	}
+
+	@Test
+	public void malformedFirstStartDoesNotHideReadableRunFromExportManifest() throws Exception {
+		File root = fresh("export-malformed-start");
+		File log = malformedThenReadableStart(root, "physical-log", "logical-run");
+		byte[] original = java.nio.file.Files.readAllBytes(log.toPath());
+		Map<String, byte[]> parts = entries(export(root));
+		ArchiveManifest manifest = ArchiveManifest.parse(parts.get(ArchiveManifest.ENTRY_NAME));
+		assertEquals("logical-run", manifest.find("runs/physical-log.apdlog").runId);
+		assertArrayEquals("a finished log still exports byte for byte", original, parts.get("runs/physical-log.apdlog"));
+	}
+
+	@Test
+	public void importUsesFirstReadableStartAfterMalformedStart() throws Exception {
+		File source = fresh("import-readable-source");
+		byte[] log = java.nio.file.Files.readAllBytes(
+				malformedThenReadableStart(source, "physical-log", "logical-run").toPath());
+		Map<String, byte[]> files = new java.util.LinkedHashMap<>();
+		files.put("runs/physical-log.apdlog", log);
+		ArchiveImporter.Report report = importInto(fresh("import-readable-target"),
+				archiveOf(files, java.util.Collections.singletonMap("runs/physical-log.apdlog", "logical-run")));
+		assertTrue(report.summary(), report.ok);
+		assertEquals(1, report.imported);
+	}
+
+	@Test
+	public void importRejectsManifestThatIgnoresLaterReadableStart() throws Exception {
+		File source = fresh("import-mismatch-source");
+		byte[] log = java.nio.file.Files.readAllBytes(
+				malformedThenReadableStart(source, "physical-log", "logical-run").toPath());
+		Map<String, byte[]> files = new java.util.LinkedHashMap<>();
+		files.put("runs/physical-log.apdlog", log);
+		File target = fresh("import-mismatch-target");
+		ArchiveImporter.Report report = importInto(target,
+				archiveOf(files, java.util.Collections.singletonMap("runs/physical-log.apdlog", "physical-log")));
+		assertFalse(report.summary(), report.ok);
+		assertEquals(1, report.rejected);
+		assertFalse(new File(target, "runs/physical-log.apdlog").exists());
+	}
+
+	private File emptyThenReadableStart( File root, String logId, String runId ) throws Exception {
+		TestLogs log = new TestLogs(root, logId, V, 1000);
+		log.start("", 0, "CLERIC", RS, 0, 0, false);
+		log.start(runId, 1, "CLERIC", RS, 0, 0, true).enter(1);
+		log.end(LifecycleEvents.OUTCOME_DIED, "Rat", 1, 1, 1).close(true);
+		return log.file;
+	}
+
+	@Test
+	public void emptyFirstStartDoesNotHideValidRunFromExportManifest() throws Exception {
+		File root = fresh("export-empty-start");
+		File log = emptyThenReadableStart(root, "physical-log", "logical-run");
+		byte[] original = java.nio.file.Files.readAllBytes(log.toPath());
+		Map<String, byte[]> parts = entries(export(root));
+		ArchiveManifest manifest = ArchiveManifest.parse(parts.get(ArchiveManifest.ENTRY_NAME));
+		assertEquals("logical-run", manifest.find("runs/physical-log.apdlog").runId);
+		assertArrayEquals("a finished log still exports byte for byte", original, parts.get("runs/physical-log.apdlog"));
+	}
+
+	@Test
+	public void importUsesFirstValidIdentityAfterEmptyStart() throws Exception {
+		File source = fresh("import-empty-source");
+		byte[] log = java.nio.file.Files.readAllBytes(
+				emptyThenReadableStart(source, "physical-log", "logical-run").toPath());
+		Map<String, byte[]> files = new java.util.LinkedHashMap<>();
+		files.put("runs/physical-log.apdlog", log);
+
+		ArchiveImporter.Report correct = importInto(fresh("import-empty-correct"),
+				archiveOf(files, java.util.Collections.singletonMap("runs/physical-log.apdlog", "logical-run")));
+		assertTrue(correct.summary(), correct.ok);
+		assertEquals(1, correct.imported);
+
+		File wrongTarget = fresh("import-empty-wrong");
+		ArchiveImporter.Report wrong = importInto(wrongTarget,
+				archiveOf(files, java.util.Collections.singletonMap("runs/physical-log.apdlog", "physical-log")));
+		assertFalse(wrong.summary(), wrong.ok);
+		assertEquals(1, wrong.rejected);
+		assertFalse(new File(wrongTarget, "runs/physical-log.apdlog").exists());
+	}
+
 }

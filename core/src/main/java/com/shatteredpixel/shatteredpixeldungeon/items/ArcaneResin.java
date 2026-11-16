@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -90,6 +93,18 @@ public class ArcaneResin extends Item {
 		return 30*quantity();
 	}
 
+    @Override public String desc(){
+        StringBuilder costs=new StringBuilder();
+        for(int level=0;level<applicationLevelLimit();level++){
+            if(level>0)costs.append(level==applicationLevelLimit()-1?" or ":", ");
+            costs.append(applicationCost(level));
+        }
+        return Messages.get(this,"desc",applicationLevelLimit(),costs.toString());
+    }
+
+    public static int applicationLevelLimit(){return 3;}
+    public static int applicationCost(int currentPermanentLevel){return currentPermanentLevel+1;}
+
 	private final WndBag.ItemSelector itemSelector = new WndBag.ItemSelector() {
 
 		@Override
@@ -112,12 +127,12 @@ public class ArcaneResin extends Item {
 			if (item != null && item instanceof Wand) {
 				Wand w = (Wand)item;
 
-				if (w.level() >= 3){
+				if (w.level() >= applicationLevelLimit()){
 					GLog.w(Messages.get(ArcaneResin.class, "level_too_high"));
 					return;
 				}
 
-				int resinToUse = w.level()+1;
+				int resinToUse = applicationCost(w.level());
 
 				if (quantity() < resinToUse){
 					GLog.w(Messages.get(ArcaneResin.class, "not_enough"));
@@ -149,6 +164,8 @@ public class ArcaneResin extends Item {
 
 	public static class Recipe extends com.shatteredpixel.shatteredpixeldungeon.items.Recipe {
 
+        public static int energyCost(){return 5;}
+
 		@Override
 		public boolean testIngredients(ArrayList<Item> ingredients) {
 			return ingredients.size() == 1
@@ -159,7 +176,7 @@ public class ArcaneResin extends Item {
 
 		@Override
 		public int cost(ArrayList<Item> ingredients) {
-			return 5;
+			return energyCost();
 		}
 
 		@Override
@@ -167,9 +184,8 @@ public class ArcaneResin extends Item {
 			Item result = sampleOutput(ingredients);
 			Wand w = (Wand)ingredients.get(0);
 
-			if (!w.levelKnown){
-				result.quantity(resinQuantity(w));
-			}
+            // Actual conversion retains normal level cleanup before consuming either known or unknown input.
+            result.quantity(resinQuantity(w,false));
 			w.quantity(0);
 
 			return result;
@@ -180,14 +196,14 @@ public class ArcaneResin extends Item {
 			Wand w = (Wand)ingredients.get(0);
 
 			if (w.levelKnown){
-				return new ArcaneResin().quantity(resinQuantity(w));
+				return new ArcaneResin().quantity(resinQuantity(w,true));
 			} else {
 				return new ArcaneResin();
 			}
 		}
 
-		private int resinQuantity(Wand w){
-			int level = w.level() - w.resinBonus;
+		private int resinQuantity(Wand w,boolean preview){
+			int level = (preview?w.previewBaseLevel():w.level()) - w.resinBonus;
 			int quantity = 2*(level+1);
 
 			if (Dungeon.hero.heroClass != HeroClass.MAGE && Dungeon.hero.hasTalent(Talent.WAND_PRESERVATION)){

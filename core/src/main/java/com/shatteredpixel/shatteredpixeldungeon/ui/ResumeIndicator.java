@@ -23,9 +23,11 @@ package com.shatteredpixel.shatteredpixeldungeon.ui;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.SPDAction;
+import com.shatteredpixel.shatteredpixeldungeon.apd.qol.SearchControlContext;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndKeyBindings;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndWallSearchResume;
 import com.watabou.input.GameAction;
 import com.watabou.noosa.Image;
 
@@ -68,22 +70,34 @@ public class ResumeIndicator extends Tag {
 	@Override
 	protected void onClick() {
 		super.onClick();
-		if (Dungeon.hero.ready) {
-			Dungeon.hero.resume();
+		if (Dungeon.hero != null && Dungeon.hero.isAlive() && Dungeon.hero.ready) {
+			if (Dungeon.hero.wallSearch.exists()) WndWallSearchResume.show();
+			else if (Dungeon.hero.lastAction != null) Dungeon.hero.resume();
 		}
 	}
 
 	@Override
+	protected boolean onLongClick() {
+		WndWallSearchResume.holdOpposite();
+		return true;
+	}
+
+	@Override
 	protected String hoverText() {
+		if (Dungeon.hero != null && Dungeon.hero.wallSearch.exists()) {
+			SearchControlContext.Action action = SearchControlContext.preferred(Dungeon.hero, Dungeon.level);
+			if (action == SearchControlContext.Action.SEARCH) return Messages.titleCase(Messages.get(Toolbar.class, "search"));
+			if (action == SearchControlContext.Action.WALL_SEARCH) return "Wall Search";
+		}
 		return Messages.titleCase(Messages.get(WndKeyBindings.class, "tag_resume"));
 	}
 
 	@Override
 	public void update() {
-		if (!Dungeon.hero.isAlive())
+		if (Dungeon.hero == null || !Dungeon.hero.isAlive())
 			visible = false;
-		else if (visible != (Dungeon.hero.lastAction != null)){
-			visible = Dungeon.hero.lastAction != null;
+		else if (visible != (Dungeon.hero.lastAction != null || Dungeon.hero.wallSearch.exists())){
+			visible = Dungeon.hero.lastAction != null || Dungeon.hero.wallSearch.exists();
 			if (visible)
 				flash();
 		}

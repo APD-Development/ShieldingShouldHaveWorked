@@ -43,6 +43,7 @@ import com.shatteredpixel.shatteredpixeldungeon.apd.query.Catalog;
 import com.shatteredpixel.shatteredpixeldungeon.apd.query.ColumnDef;
 import com.shatteredpixel.shatteredpixeldungeon.apd.query.GroupBy;
 import com.shatteredpixel.shatteredpixeldungeon.apd.query.Query;
+import com.shatteredpixel.shatteredpixeldungeon.apd.query.Question;
 import com.shatteredpixel.shatteredpixeldungeon.apd.query.QueryEngine;
 import com.shatteredpixel.shatteredpixeldungeon.apd.query.QueryResult;
 import com.shatteredpixel.shatteredpixeldungeon.apd.query.SavedViews;
@@ -80,11 +81,15 @@ public final class WndUimsdOptions {
 		entries.add(Entry.heading("Which runs count"));
 		String rules = s.rules == Scope.Rules.ALL ? "All rules (mixed)" : s.rules == Scope.Rules.SPECIFIC ? "One set of rules" : "Your current rules";
 		entries.add(Entry.item("Rules: " + rules,
-				"Rules = difficulty, challenges and exotic-item setting. Runs played under different rules are only counted together if you choose all rules." + left(r.stats.otherRulesets)));
+				"Rules = difficulty, challenges and exotic-item setting. This changes which rules count, not whether a run is finished. Use Include runs still going below for unfinished runs. Runs played under different rules are only counted together if you choose all rules." + left(r.stats.otherRulesets)));
 		actions.add(new Runnable(){ public void run(){ pickRuleset(m); } });
-		entries.add(Entry.item("Include runs still going", "Only what you could see during play is used for them; their hidden information never is." + left(r.stats.unfinished))
-				.checked(s.includeUnfinished));
-		actions.add(new Runnable(){ public void run(){ m.setScope(s.withUnfinished(!s.includeUnfinished)); show(m); } });
+		if (s.finishedOnly){
+			entries.add(Entry.note("This view includes finished runs only."));
+		} else {
+			entries.add(Entry.item("Include runs still going", "Only what you could see during play is used for them; their hidden information never is." + left(r.stats.unfinished))
+					.checked(s.includeUnfinished));
+			actions.add(new Runnable(){ public void run(){ m.setScope(s.withUnfinished(!s.includeUnfinished)); show(m); } });
+		}
 		entries.add(Entry.item("Include runs with unknown rules", "Older runs that never recorded their rules." + left(r.stats.unknownRuleset)).checked(s.includeUnknownRuleset));
 		actions.add(new Runnable(){ public void run(){ m.setScope(s.withUnknownRuleset(!s.includeUnknownRuleset)); show(m); } });
 		entries.add(Entry.item("Include runs whose rules changed", "Runs where a setting was changed while playing." + left(r.stats.mixedRuleset)).checked(s.includeMixedRuleset));
@@ -103,6 +108,10 @@ public final class WndUimsdOptions {
 		actions.add(new Runnable(){ public void run(){ pickMinSample(m); } });
 
 		entries.add(Entry.heading("Understanding this table"));
+        entries.add(Entry.item("Research lab", "Run DNA, luck laboratory, automatic discoveries and population comparisons, each with inspectable evidence."));
+        actions.add(() -> WndUimsdResearch.show(m));
+		entries.add(Entry.item("Charts", "Compare this table's groups as bars, with the same filters, values and uncertainty marks."));
+		actions.add(() -> WndUimsdChart.show(m));
 		entries.add(Entry.item("How much is known, per column", "How many values were recorded exactly, only partly, or not at all."));
 		actions.add(new Runnable(){ public void run(){ coverage(m); } });
 		entries.add(Entry.item("What the marks mean", "?  >=  ~  and hidden, and the colours."));
@@ -142,7 +151,7 @@ public final class WndUimsdOptions {
 			public void onPick( int i, boolean checked ){
 				actions.get(i).run();
 			}
-		}));
+		}).restoreWith(() -> show(m)));
 	}
 
 	//---- saved views ----
@@ -152,7 +161,7 @@ public final class WndUimsdOptions {
 	}
 
 	private static void say( String text ){
-		ShatteredPixelDungeon.scene().addToFront(new WndMessage(text));
+		ShatteredPixelDungeon.scene().addToFront(new WndUimsdText("UIMSD", text, false));
 	}
 
 	private static void saveView( final UimsdModel m ){
@@ -160,10 +169,8 @@ public final class WndUimsdOptions {
 			say("There is no history folder to keep views in yet.");
 			return;
 		}
-		ShatteredPixelDungeon.scene().addToFront(new WndTextInput("Save this view", "A name for this table (up to " + SavedViews.MAX_NAME + " characters). An existing view with the same name is replaced.",
-				"", SavedViews.MAX_NAME, false, "Save", "Cancel"){
-			@Override
-			public void onSelect( boolean positive, String text ){
+		ShatteredPixelDungeon.scene().addToFront(new WndUimsdTextInput("Save this view", "A name for this table (up to " + SavedViews.MAX_NAME + " characters). An existing view with the same name is replaced.",
+				"", SavedViews.MAX_NAME, false, "Save", "Cancel", (positive, text) -> {
 				if (!positive) return;
 				SavedViews v = views(m);
 				SavedViews.Result r = v.save(text, m.query(), System.currentTimeMillis());
@@ -175,29 +182,29 @@ public final class WndUimsdOptions {
 				}
 				say(r == SavedViews.Result.SAVED ? "Saved." : r == SavedViews.Result.REPLACED ? "Saved, replacing the view with that name."
 						: r == SavedViews.Result.TOO_MANY ? "You have " + SavedViews.MAX_VIEWS + " saved views. Delete one first." : "That is not a usable name.");
-			}
-		});
+			}));
 	}
 
 	private static void openViews( final UimsdModel m ){
 		final SavedViews v = views(m);
 		if (v == null || v.list().isEmpty()){
-			say("You have no saved views yet. Use \"Save this table as a view...\" to make one.");
+			say(v != null && v.skippedOnLoad > 0 ? SavedViews.LOAD_WARNING
+					: "You have no saved views yet. Use \"Save this table as a view...\" to make one.");
 			return;
 		}
 		final List<SavedViews.View> list = v.list();
 		final List<Entry> entries = new ArrayList<>();
 		for (SavedViews.View x : list) entries.add(Entry.item(x.name, x.query() == null ? "This build cannot read this view." : "Tap to open, then choose to open or delete it."));
-		ShatteredPixelDungeon.scene().addToFront(WndUimsdList.menu("Saved views", "", entries, new WndUimsdList.Picker(){
+		ShatteredPixelDungeon.scene().addToFront(WndUimsdList.menu("Saved views", v.skippedOnLoad > 0 ? SavedViews.LOAD_WARNING : "", entries, new WndUimsdList.Picker(){
 			@Override
 			public void onPick( int i, boolean checked ){
 				viewActions(m, list.get(i));
 			}
-		}));
+		}).restoreWith(() -> openViews(m)));
 	}
 
 	private static void deleteDemoData( final java.io.File realRoot ){
-		ShatteredPixelDungeon.scene().addToFront(new WndOptions("Delete all demo data?", "This removes the made-up demo runs. Your own history and your saves are not touched, and UIMSD stays unlocked.", "Delete the demo data", "Keep it"){
+		ShatteredPixelDungeon.scene().addToFront(new WndUimsdChoices("Delete all demo data?", "This removes the made-up demo runs. Your own history and your saves are not touched, and UIMSD stays unlocked.", "Delete the demo data", "Keep it"){
 			@Override
 			protected void onSelect( int index ){
 				if (index != 0) return;
@@ -206,7 +213,7 @@ public final class WndUimsdOptions {
 				if (gone) UimsdScene.reopen();
 				else say("The demo data could not be removed.");
 			}
-		});
+		}.restoreWith(() -> deleteDemoData(realRoot)));
 	}
 
 	private static void privacy( final UimsdModel m ){
@@ -270,11 +277,14 @@ public final class WndUimsdOptions {
 					});
 				}
 			}
-		}));
+		}).restoreWith(() -> privacy(m)));
 	}
 
 	private static void evidenceRequests( final UimsdModel m ){
-		final List<EvidenceInbox.Entry> list = EvidenceInbox.list(m.root());
+		evidenceRequests(m, new ArrayList<>(EvidenceInbox.list(m.root())));
+	}
+
+	private static void evidenceRequests( final UimsdModel m, final List<EvidenceInbox.Entry> list ){
 		if (list.isEmpty()){
 			say("Nothing is waiting for your answer.");
 			return;
@@ -286,11 +296,11 @@ public final class WndUimsdOptions {
 			public void onPick( int i, boolean checked ){
 				answerRequest(m, list.get(i));
 			}
-		}));
+		}).restoreWith(() -> evidenceRequests(m, list)));
 	}
 
 	private static void answerRequest( final UimsdModel m, final EvidenceInbox.Entry entry ){
-		ShatteredPixelDungeon.scene().addToFront(new WndOptions("Share this run's full log?",
+		ShatteredPixelDungeon.scene().addToFront(new WndUimsdChoices("Share this run's full log?",
 				"A server asked to check the run you submitted (" + entry.asked.runId + "). Agreeing queues its complete recorded log for sending the next time you press Send. Declining sends nothing.",
 				"Agree", "Decline", "Decide later"){
 			@Override
@@ -310,11 +320,15 @@ public final class WndUimsdOptions {
 				}
 				say(msg);
 			}
-		});
+		}.restoreWith(() -> answerRequest(m, entry)));
 	}
 
 	private static void communityVotes( final UimsdModel m ){
-		final List<com.shatteredpixel.shatteredpixeldungeon.apd.backend.VoteMessages.Offer> offers = VoteActions.offers(m.root());
+		communityVotes(m, new ArrayList<>(VoteActions.offers(m.root())));
+	}
+
+	private static void communityVotes( final UimsdModel m,
+			final List<com.shatteredpixel.shatteredpixeldungeon.apd.backend.VoteMessages.Offer> offers ){
 		if (offers.isEmpty()){
 			say("No vote is open. Votes the server opens appear here after you press Send.");
 			return;
@@ -328,14 +342,19 @@ public final class WndUimsdOptions {
 			public void onPick( int i, boolean checked ){
 				castVote(m, offers.get(i));
 			}
-		}));
+		}).restoreWith(() -> communityVotes(m, offers)));
 	}
 
 	private static void castVote( final UimsdModel m, final com.shatteredpixel.shatteredpixeldungeon.apd.backend.VoteMessages.Offer offer ){
+		castVote(m, offer, new java.util.TreeSet<>());
+	}
+
+	private static void castVote( final UimsdModel m,
+			final com.shatteredpixel.shatteredpixeldungeon.apd.backend.VoteMessages.Offer offer,
+			final java.util.Set<String> chosen ){
 		final List<String> options = new ArrayList<>(offer.round.options);
-		final java.util.Set<String> chosen = new java.util.TreeSet<>();
 		List<Entry> entries = new ArrayList<>();
-		for (String o : options) entries.add(Entry.item(o).checked(false));
+		for (String o : options) entries.add(Entry.item(o).checked(chosen.contains(o)));
 		ShatteredPixelDungeon.scene().addToFront(new WndUimsdList(offer.title.isEmpty() ? "Vote" : offer.title,
 				"Tick up to " + offer.round.maxChoices + ", then tap Done. Nothing is sent until you press Send. Back leaves without voting.", true, entries, new WndUimsdList.Picker(){
 			@Override
@@ -358,12 +377,12 @@ public final class WndUimsdOptions {
 				}
 				say(msg);
 			}
-		});
+		}.restoreWith(() -> castVote(m, offer, new java.util.TreeSet<>(chosen))));
 	}
 
 	private static void accountRequest( final UimsdModel m, final com.shatteredpixel.shatteredpixeldungeon.apd.backend.AccountRequests.Kind kind ){
 		final boolean delete = kind == com.shatteredpixel.shatteredpixeldungeon.apd.backend.AccountRequests.Kind.DELETE;
-		ShatteredPixelDungeon.scene().addToFront(new WndOptions(delete ? "Delete your account?" : "Ask for a copy of your account data?",
+		ShatteredPixelDungeon.scene().addToFront(new WndUimsdChoices(delete ? "Delete your account?" : "Ask for a copy of your account data?",
 				delete ? "This queues a request to delete your account and what the server holds about it. It is sent the next time you press Send. Your history and saves on this device stay as they are."
 						: "This queues a request for a copy of what the server holds about your account. It is sent the next time you press Send.",
 				delete ? "Queue the deletion" : "Queue the request", "Cancel"){
@@ -377,13 +396,11 @@ public final class WndUimsdOptions {
 					default: say("The request could not be queued.");
 				}
 			}
-		});
+		}.restoreWith(() -> accountRequest(m, kind)));
 	}
 
 	private static void serverAddress(){
-		ShatteredPixelDungeon.scene().addToFront(new WndTextInput("Server address", "An address starting with https://. Leave empty to clear it.", SPDSettings.apdServer(), 200, false, "Save", "Cancel"){
-			@Override
-			public void onSelect( boolean positive, String text ){
+		ShatteredPixelDungeon.scene().addToFront(new WndUimsdTextInput("Server address", "An address starting with https://. Leave empty to clear it.", SPDSettings.apdServer(), 200, false, "Save", "Cancel", (positive, text) -> {
 				if (!positive) return;
 				String t = text == null ? "" : text.trim();
 				if (!t.isEmpty() && Gateways.cleanBaseUrl(t) == null){
@@ -392,19 +409,20 @@ public final class WndUimsdOptions {
 				}
 				SPDSettings.apdServer(t);
 				say(t.isEmpty() ? "Address cleared." : "Saved.");
-			}
-		});
+			}));
 	}
 
 	private static void privacySummary( UimsdModel m ){
 		StringBuilder sb = new StringBuilder();
 		for (String line : PrivacySummary.of(m.root()).lines(SPDSettings.apdSending())) sb.append(line).append("\n\n");
-		ShatteredPixelDungeon.scene().addToFront(new WndMessage(sb.toString().trim()));
+		ShatteredPixelDungeon.scene().addToFront(new WndUimsdText("UIMSD", sb.toString().trim(), false));
 	}
 
 	private static void viewActions( final UimsdModel m, final SavedViews.View view ){
 		final List<Entry> entries = new ArrayList<>();
-		entries.add(Entry.item("Open", "Shows this view now."));
+		if (view.question() != null)
+			entries.add(Entry.item("Open question", "Restores the exact question-builder choices and asks it of your history now."));
+		entries.add(Entry.item(view.question() == null ? "Open" : "Open as table", "Shows this view now."));
 		entries.add(Entry.item("Delete", "Removes this saved view. Your history is not touched."));
 		showViewActions(view.name, entries, m, view);
 	}
@@ -413,24 +431,36 @@ public final class WndUimsdOptions {
 		ShatteredPixelDungeon.scene().addToFront(WndUimsdList.menu(title, "", entries, new WndUimsdList.Picker(){
 			@Override
 			public void onPick( int i, boolean checked ){
-				if (i == 0){
+				final Question question = view.question();
+				if (question != null && i == 0){
+					if (m.catalog() == null || m.catalog().dataset(question.dataset) == null){
+						say("This question cannot be opened: what it asks about is not available in this version.");
+						return;
+					}
+					WndUimsdAsk.builder(m.catalog(), m.currentRuleset(), new WndUimsdAsk.Host(){
+						@Override public void openAsTable( Query q, Runnable backToAnswer ){ m.showQuery(q); }
+						@Override public java.io.File root(){ return m.root(); }
+					}, question);
+					return;
+				}
+				if ((question == null && i == 0) || (question != null && i == 1)){
 					Query q = view.query();
 					if (q == null || m.catalog() == null || m.catalog().view(q.dataset) == null){
 						say("This view cannot be opened: the table it uses is not available in this version.");
 						return;
 					}
 					m.showQuery(q);
-				} else {
-					SavedViews v = views(m);
-					v.delete(view.name);
-					try {
-						v.store(SavedViews.fileIn(m.root()));
-					} catch (java.io.IOException e){
-						say("The view could not be deleted: " + e.getMessage());
-					}
+					return;
+				}
+				SavedViews v = views(m);
+				v.delete(view.name);
+				try {
+					v.store(SavedViews.fileIn(m.root()));
+				} catch (java.io.IOException e){
+					say("The view could not be deleted: " + e.getMessage());
 				}
 			}
-		}));
+		}).restoreWith(() -> viewActions(m, view)));
 	}
 
 	private static void pickRuleset( final UimsdModel m ){
@@ -462,7 +492,7 @@ public final class WndUimsdOptions {
 				else m.setScope(s.withRules(Scope.Rules.SPECIFIC, id));
 				show(m);
 			}
-		}));
+		}).restoreWith(() -> pickRuleset(m)));
 	}
 
 	private static void pickMinSample( final UimsdModel m ){
@@ -479,7 +509,7 @@ public final class WndUimsdOptions {
 				m.setMinSample(sizes[i]);
 				show(m);
 			}
-		}));
+		}).restoreWith(() -> pickMinSample(m)));
 	}
 
 	private static void pickGroup( final UimsdModel m ){
@@ -521,7 +551,7 @@ public final class WndUimsdOptions {
 						}
 						show(m);
 					}
-				}));
+				}).restoreWith(() -> pickGroup(m)));
 	}
 
 	private static void coverage( UimsdModel m ){
@@ -554,3 +584,4 @@ public final class WndUimsdOptions {
 						+ "They only use values that are known, and say how many that was. A total that includes an \"at least\" value is itself an \"at least\"."));
 	}
 }
+

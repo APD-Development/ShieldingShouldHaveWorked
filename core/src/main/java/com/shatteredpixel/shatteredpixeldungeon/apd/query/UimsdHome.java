@@ -112,11 +112,23 @@ public final class UimsdHome {
 		this.scopeNote = (allRules ? (mixedRulesets
 				? "MIXED RULES: all finished runs, played under " + rulesets + " different sets of rules (difficulty, challenges, exotic-item setting). The numbers below are not directly comparable: tap Rules to see only your own, or open the Difficulty table to compare like with like."
 				: "All finished runs, whatever rules they were played under.") : "Finished runs played under your current rules.")
-				+ (!allRules && runsElsewhere > 0 ? " " + runsElsewhere + (runsElsewhere == 1 ? " run was" : " runs were") + " played under other rules (another difficulty, challenges or exotic setting): tap Rules to include them." : "");
+				+ (!allRules && runsElsewhere > 0 ? " " + runsElsewhere + (runsElsewhere == 1 ? " run was" : " runs were") + " played under other rules (another difficulty, challenges or exotic setting): tap Rules to include them." : "")
+				+ " Runs still going, runs with unknown or changed rules, and repeated imported copies are left out; table Options can include them.";
 	}
 
 	public boolean isEmpty(){
 		return runs == 0;
+	}
+
+	//The empty Home must keep rule selection separate from run status: Rules never means "include unfinished".
+	public String emptyMessage(){
+		if (!isEmpty()) return "";
+		if (!allRules && runsElsewhere > 0){
+			return "No finished runs under your current rules. Tap Rules to include " + runsElsewhere
+					+ (runsElsewhere == 1 ? " finished run" : " finished runs")
+					+ " played under other rules. Runs still going are available in Tables > Options > Include runs still going.";
+		}
+		return "No finished runs yet. Runs still going are available in Tables > Options > Include runs still going. Home statistics appear when a recorded run ends.";
 	}
 
 	public Card card( String id ){
@@ -142,6 +154,10 @@ public final class UimsdHome {
 		if (h.runs == 0) return h;
 
 		h.cards.add(overview(runsDs, rq, runs));
+		Card navigation = new Card("navigate", "Explore statistics");
+		String[][] destinations = {{"runs", "Run history"}, {"characters", "Characters"}, {"items", "Equipment and items"}, {"enemies", "Enemies"}, {"bosses", "Bosses"}, {"challenges", "Challenges"}, {"difficulty", "Difficulty"}};
+		for (String[] destination : destinations) if (cat.view(destination[0]) != null) navigation.link(destination[1], destination[0]);
+		if (!navigation.links.isEmpty()) h.cards.add(navigation);
 		//the friendly front door to everything recorded
 		Card ask = new Card("ask", "Ask a question");
 		ask.heading("Count it, add it up, average it, compare it");
@@ -192,8 +208,7 @@ public final class UimsdHome {
 		c.line("Finished runs", String.valueOf(r.rows.size()), "", CellText.EXACT);
 		stat(c, "Won", def, q, Aggregate.count().where(FactKeys.OUTCOME, 1), r.rows);
 		stat(c, "Died", def, q, Aggregate.count().where(FactKeys.OUTCOME, 0), r.rows);
-		AggValue ab = QueryEngine.evaluate(def, q, Aggregate.count().where(FactKeys.OUTCOME, 2), r.rows);
-		if (ab != null && ab.known && ab.value > 0) stat(c, "Abandoned", def, q, Aggregate.count().where(FactKeys.OUTCOME, 2), r.rows);
+		stat(c, "Abandoned", def, q, Aggregate.count().where(FactKeys.OUTCOME, 2), r.rows);
 		stat(c, "Win rate", def, q, Aggregate.rate(FactKeys.OUTCOME, 1), r.rows);
 		stat(c, "Deepest floor", def, q, Aggregate.of(Aggregate.Fn.MAX, FactKeys.DEEPEST), r.rows);
 		stat(c, "Best score", def, q, Aggregate.of(Aggregate.Fn.MAX, FactKeys.SCORE), r.rows);
@@ -340,21 +355,22 @@ public final class UimsdHome {
 		//what ended runs: the enemies with the most hero deaths
 		final Aggregate kills = Aggregate.of(Aggregate.Fn.SUM, "enemy.heroDeaths");
 		List<GroupRow> deadly = new ArrayList<>();
+		final java.util.Map<GroupRow, AggValue> deathTotals = new java.util.IdentityHashMap<>();
 		for (GroupRow g : r.groups){
 			AggValue v = QueryEngine.evaluate(def, q, kills, g.rows);
-			if (v != null && v.known && v.value > 0) deadly.add(g);
+			if (v != null && v.known && v.value > 0) { deadly.add(g); deathTotals.put(g, v); }
 		}
 		Collections.sort(deadly, new Comparator<GroupRow>() {
 			@Override
 			public int compare( GroupRow a, GroupRow b ){
-				return Double.compare(QueryEngine.evaluate(def, q, kills, b.rows).value, QueryEngine.evaluate(def, q, kills, a.rows).value);
+				return Double.compare(deathTotals.get(b).value, deathTotals.get(a).value);
 			}
 		});
 		if (!deadly.isEmpty()){
 			c.heading("Ended your runs");
 			for (int i = 0; i < deadly.size() && i < 3; i++){
 				GroupRow g = deadly.get(i);
-				AggValue v = QueryEngine.evaluate(def, q, kills, g.rows);
+				AggValue v = deathTotals.get(g);
 				CellFormatter.AggText t = CellFormatter.aggregate(def, kills, v);
 				c.line(keyText(r, g), t.text + (v.value == 1 ? " death" : " deaths"), t.detail, t.state);
 			}

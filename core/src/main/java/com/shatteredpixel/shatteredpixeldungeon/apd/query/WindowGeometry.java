@@ -43,7 +43,9 @@ public final class WindowGeometry {
 	public static int width( boolean landscape, float screenWidth ){
 		float preferred = landscape ? LANDSCAPE_WIDTH : PORTRAIT_WIDTH;
 		float room = screenWidth - 2 * SIDE_MARGIN;
-		return (int) Math.max(MIN_WIDTH, Math.min(preferred, room));
+		//On a narrow viewport the available space wins over our preferred minimum.
+		//Wrapped labels keep their font size; forcing MIN_WIDTH here pushes the chrome off screen.
+		return (int) Math.max(1f, Math.min(preferred, room));
 	}
 
 	//how tall the scrolling part may be: most of the screen, less what sits above and below it
@@ -66,6 +68,11 @@ public final class WindowGeometry {
 
 	public static float rowHeight( float textHeight ){
 		return Math.max(MIN_ROW, textHeight + 2 * ROW_PAD);
+	}
+
+	//Action labels retain their font size; the touch target grows after wrapping.
+	public static float actionHeight(float textHeight){
+		return Math.max(22f, textHeight + 2 * ROW_PAD);
 	}
 
 	//the top of each row when the rows are stacked, and the total height at the end

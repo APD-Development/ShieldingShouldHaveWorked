@@ -60,7 +60,8 @@ public class RecorderLifecycleTest {
 		assertEquals(LifecycleEvents.SEED_RANDOM, rs.seedType);
 		assertEquals("WARRIOR", rs.heroClass);
 		assertEquals(0, rs.challenges);
-		assertTrue(rs.rulesetId.startsWith("r1-"));
+		assertTrue(rs.rulesetId.startsWith("r4-"));
+        assertTrue(rs.rulesetText.contains("exotic-scope=healing-absolute-v2"));
 		assertTrue(rs.rulesetText.contains("apd0001=on"));
 		assertTrue(rs.rulesetText.contains("cleric=blocked"));
 		assertFalse(rs.externalModsPresent);

@@ -37,7 +37,7 @@ package com.shatteredpixel.shatteredpixeldungeon.apd.stats;
 public final class TelemetryVersion implements Comparable<TelemetryVersion> {
 
 	//the version this build of APD records new runs with
-	public static final TelemetryVersion CURRENT = new TelemetryVersion(1, 10);
+	public static final TelemetryVersion CURRENT = new TelemetryVersion(1, 16);
 
 	public final int major;
 	public final int minor;
@@ -96,3 +96,4 @@ public final class TelemetryVersion implements Comparable<TelemetryVersion> {
 		return major + "." + minor;
 	}
 }
+

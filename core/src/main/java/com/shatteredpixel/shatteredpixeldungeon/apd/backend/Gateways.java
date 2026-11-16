@@ -21,6 +21,9 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.apd.backend;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+
 // Picks the Gateway the app uses. Sending is off unless the player has switched it on AND a secure server address is configured; otherwise
 // everything stays queued on the device (OfflineGateway).
 public final class Gateways {
@@ -33,9 +36,18 @@ public final class Gateways {
 		String u = url.trim();
 		while (u.endsWith("/")) u = u.substring(0, u.length() - 1);
 		if (u.isEmpty() || u.indexOf('?') >= 0 || u.indexOf('#') >= 0 || u.indexOf(' ') >= 0) return null;
-		boolean https = u.startsWith("https://") && u.length() > 8;
-		boolean localHttp = u.startsWith("http://localhost") || u.startsWith("http://127.0.0.1");
-		return https || localHttp ? u : null;
+		try {
+			URI address = new URI(u);
+			String host = address.getHost();
+			if (host == null || host.isEmpty() || address.getRawUserInfo() != null
+					|| address.getPort() > 65535) return null;
+			boolean https = "https".equals(address.getScheme());
+			boolean localHttp = "http".equals(address.getScheme())
+					&& ("localhost".equalsIgnoreCase(host) || "127.0.0.1".equals(host));
+			return https || localHttp ? u : null;
+		} catch (URISyntaxException invalid) {
+			return null;
+		}
 	}
 
 	public static Gateway choose( boolean sendingEnabled, String baseUrl, HttpGateway.TokenSource tokens ){

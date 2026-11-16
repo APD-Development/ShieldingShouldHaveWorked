@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -112,6 +115,13 @@ public class LiquidMetal extends Item {
 		return quantity;
 	}
 
+    /** Material scale for100 durability, before the existing whole-unit and stack branches. */
+    public static float repairMetalScale(MissileWeapon weapon){
+        float amount=5*(weapon.tier+1);
+        amount*=Math.pow(1.35f,weapon.level());
+        return amount;
+    }
+
 	private final WndBag.ItemSelector itemSelector = new WndBag.ItemSelector() {
 
 		@Override
@@ -134,8 +144,7 @@ public class LiquidMetal extends Item {
 			if (item != null && item instanceof MissileWeapon) {
 				MissileWeapon m = (MissileWeapon)item;
 
-				float maxToUse = 5*(m.tier+1);
-				maxToUse *= Math.pow(1.35f, m.level());
+				float maxToUse = repairMetalScale(m);
 
 				float durabilityPerMetal = 100 / maxToUse;
 
@@ -190,6 +199,8 @@ public class LiquidMetal extends Item {
 
 	public static class Recipe extends com.shatteredpixel.shatteredpixeldungeon.items.Recipe {
 
+        public static int energyCost(){return 3;}
+
 		@Override
 		public boolean testIngredients(ArrayList<Item> ingredients) {
 			return ingredients.size() == 1
@@ -200,7 +211,7 @@ public class LiquidMetal extends Item {
 
 		@Override
 		public int cost(ArrayList<Item> ingredients) {
-			return 3;
+			return energyCost();
 		}
 
 		@Override

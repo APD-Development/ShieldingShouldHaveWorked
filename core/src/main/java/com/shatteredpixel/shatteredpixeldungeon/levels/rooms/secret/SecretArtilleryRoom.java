@@ -46,7 +46,7 @@ public class SecretArtilleryRoom extends SecretRoom {
 			if( i == 0 ){
 				level.drop(new Bomb.DoubleBomb(), itemPos);
 			} else {
-				level.drop(Generator.randomMissile(true), itemPos);
+				com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomEquipmentHooks.dropGenerated(level, Generator.randomMissile(true), itemPos, null, false);
 			}
 		}
 		

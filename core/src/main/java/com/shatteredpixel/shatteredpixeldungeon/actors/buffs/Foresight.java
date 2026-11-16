@@ -24,6 +24,7 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.buffs;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
+import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 
 public class Foresight extends FlavourBuff {
 
@@ -39,6 +40,11 @@ public class Foresight extends FlavourBuff {
 	public int icon() {
 		return BuffIndicator.FORESIGHT;
 	}
+
+    @Override
+    public String desc() {
+        return Messages.get(this, "desc", dispTurns(), DISTANCE);
+    }
 
 	@Override
 	public boolean attachTo(Char target) {

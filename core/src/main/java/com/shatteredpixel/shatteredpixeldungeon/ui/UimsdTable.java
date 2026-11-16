@@ -25,11 +25,14 @@ package com.shatteredpixel.shatteredpixeldungeon.ui;
 import com.shatteredpixel.shatteredpixeldungeon.apd.query.CellText;
 import com.shatteredpixel.shatteredpixeldungeon.apd.query.ResultTable;
 import com.shatteredpixel.shatteredpixeldungeon.apd.query.TableGeometry;
+import com.shatteredpixel.shatteredpixeldungeon.apd.query.TableViewport;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.watabou.input.PointerEvent;
 import com.shatteredpixel.shatteredpixeldungeon.ui.UimsdStyle;
 import com.watabou.input.ScrollEvent;
 import com.watabou.noosa.ColorBlock;
+import com.watabou.noosa.NinePatch;
+import com.shatteredpixel.shatteredpixeldungeon.Chrome;
 import com.watabou.noosa.ui.Component;
 
 //APD: the table of a UIMSD screen. It draws whatever ResultTable it is given, for any dataset: it only knows headers, lines and
@@ -86,10 +89,25 @@ public class UimsdTable extends Component {
 	}
 
 	public void setTable( ResultTable t ){
+		TableViewport previous=captureViewport();
 		table = t;
 		geo = t == null ? null : TableGeometry.of(t);
 		dirty = true;
 		layout();
+		restoreViewport(previous);
+	}
+
+	public TableViewport captureViewport(){
+		return body==null || table==null ? null : TableViewport.capture(table,
+				body.content().camera.scroll.x, body.content().camera.scroll.y);
+	}
+
+	public void restoreViewport(TableViewport viewport){
+		if(viewport==null || table==null || body==null)return;
+		float[] at=viewport.position(table,body.width(),body.height());
+		body.scrollTo(at[0],at[1]);
+		header.scrollTo(at[0],0);
+		firstCol.scrollTo(0,at[1]);
 	}
 
 	@Override
@@ -167,7 +185,7 @@ public class UimsdTable extends Component {
 	private class BodyPane extends ScrollPane {
 
 		BodyPane(){
-			super(new Component());
+			super(new UimsdContent());
 		}
 
 		@Override
@@ -180,7 +198,7 @@ public class UimsdTable extends Component {
 	private static class ClickPane extends ScrollPane {
 
 		ClickPane(){
-			super(new Component());
+			super(new UimsdContent());
 		}
 
 		@Override
@@ -240,10 +258,11 @@ public class UimsdTable extends Component {
 		firstCol.setRect(x, y + headerH, first, Math.max(0, height - headerH));
 		body.setRect(x + first, y + headerH, Math.max(0, width - first), Math.max(0, height - headerH));
 		if (dirty || builtWidth != width){
+			TableViewport previous=captureViewport();
 			rebuild(first, scrolling);
 			dirty = false;
 			builtWidth = width;
-			body.scrollTo(0, 0);
+			restoreViewport(previous);
 		}
 	}
 
@@ -268,9 +287,10 @@ public class UimsdTable extends Component {
 			Component target = c == 0 ? corner.content() : header.content();
 			float left = c == 0 ? 0 : geo.lefts[c] - geo.firstWidth();
 			float w = c == 0 ? first : geo.widths[c];
+			NinePatch background = Chrome.get(Chrome.Type.GREY_BUTTON_TR);
+			background.size(w,headerH);background.x=left;target.add(background);
 			int chars = Math.max(3, (int) ((w - TableGeometry.PAD) / TableGeometry.CHAR_WIDTH));
-			String arrow = h.sortDirection == 0 ? "" : (h.sortDirection > 0 ? " ^" : " v") + (h.sortRank > 1 ? h.sortRank : "");
-			String[] lines = TableGeometry.twoLines(h.label + arrow, chars);
+			String[] lines = TableGeometry.twoLines(TableViewport.heading(h), chars);
 			int labelColor = h.sortDirection == 0 ? HEADER_COLOR : 0xFFFFFF;
 			RenderedTextBlock label = PixelScene.renderTextBlock(lines[0], 6);
 			label.hardlight(labelColor);
@@ -317,9 +337,10 @@ public class UimsdTable extends Component {
 				int chars = Math.max(3, (int) ((w - TableGeometry.PAD) / TableGeometry.CHAR_WIDTH));
 				RenderedTextBlock t = PixelScene.renderTextBlock(TableGeometry.fit(cell.text, chars), 6);
 				t.hardlight(cell.small ? dim(color(cell.state)) : color(cell.state));
-				t.setPos(left + 2, r * rowH + 2);
+				t.setPos(table.headers.get(c).numeric ? left + w - 2 - t.width() : left + 2, r * rowH + 2);
 				(c == 0 ? firstCol.content() : body.content()).add(t);
 			}
 		}
 	}
 }
+

@@ -48,17 +48,24 @@ import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
 
 import java.util.ArrayList;
+import com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin;
+import com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.TimedDamageOrigins;
 
 public class Burning extends Buff implements Hero.Doom, Buff.DOTbuff {
 	
 	private static final float DURATION = 8f;
 	
 	private float left;
+	private TimedDamageOrigins origins;
 	private boolean acted = false; //whether the debuff has done any damage at all yet
 	private int burnIncrement = 0; //for tracking burning of hero items
 	private int nextHit = 0; //we pre-caulcate the incoming hit for a bit more accuracy in totalIncomingDMG()
 	
-	private static final String LEFT	= "left";
+	/** Display-only view; never calls the RNG unlike legacy totalIncomingDMG(). */
+    public float apdRemaining(){return left;}
+    public int apdNextRaw(){return nextHit;}
+    public int apdRandomMaximum(){return 3+Dungeon.scalingDepth()/4;}
+    private static final String LEFT	= "left";
 	private static final String ACTED	= "acted";
 	private static final String BURN	= "burnIncrement";
 	private static final String NEXT_DMG= "next_dmg";
@@ -75,6 +82,7 @@ public class Burning extends Buff implements Hero.Doom, Buff.DOTbuff {
 		bundle.put( ACTED, acted );
 		bundle.put( BURN, burnIncrement );
 		bundle.put( NEXT_DMG, nextHit );
+		if(origins!=null && left>=0) origins.store(bundle,"apd_burn_origins"); else TimedDamageOrigins.clear(bundle,"apd_burn_origins");
 	}
 	
 	@Override
@@ -84,6 +92,7 @@ public class Burning extends Buff implements Hero.Doom, Buff.DOTbuff {
 		acted = bundle.getBoolean( ACTED );
 		burnIncrement = bundle.getInt( BURN );
 		nextHit = bundle.getInt( NEXT_DMG );
+		origins=TimedDamageOrigins.restore(bundle,"apd_burn_origins",left);
 	}
 
 	@Override
@@ -104,7 +113,7 @@ public class Burning extends Buff implements Hero.Doom, Buff.DOTbuff {
 			if (nextHit == 0){
 				nextHit = Random.NormalIntRange( 1, 3 + Dungeon.scalingDepth()/4 );
 			}
-			int damage = nextHit;
+			int damage = origins==null ? nextHit : origins.scale(nextHit);
 			nextHit = Random.NormalIntRange( 1, 3 + Dungeon.scalingDepth()/4 );
 			Buff.detach( target, Chill.class);
 
@@ -169,10 +178,12 @@ public class Burning extends Buff implements Hero.Doom, Buff.DOTbuff {
 		}
 		
 		if (Dungeon.level.flamable[target.pos] && Blob.volumeAt(target.pos, Fire.class) == 0) {
-			GameScene.add( Blob.seed( target.pos, 4, Fire.class ) );
+			if (origins == null) GameScene.add( Blob.seed( target.pos, 4, Fire.class ) );
+			else GameScene.add( Fire.seedAttributedMixture( target.pos, 4, origins.currentShares() ) );
 		}
 		
 		spend( TICK );
+		if(origins!=null) origins.consume(TICK);
 		left -= TICK;
 		
 		if (left <= 0 ||
@@ -191,11 +202,62 @@ public class Burning extends Buff implements Hero.Doom, Buff.DOTbuff {
 		super.detach();
 	}
 	
+	public static Burning affectAttributed(Char ch, Char attacker) {
+		return affectAttributed(ch, DURATION, attacker);
+	}
+
+	public static Burning affectAttributed(Char ch, float duration, Char attacker) {
+		return affectAttributedOrigin(ch, duration, OffensiveDamageOrigin.capture(attacker, null));
+	}
+
+	public static Burning affectAttributedOrigin(Char ch, OffensiveDamageOrigin origin) {
+		return affectAttributedOrigin(ch, DURATION, origin);
+	}
+
+	public static Burning affectAttributedOrigin(Char ch, float duration, OffensiveDamageOrigin origin) {
+		return affectPrepared(ch, duration, TimedDamageOrigins.single(duration,
+				origin == null ? OffensiveDamageOrigin.UNATTRIBUTED : origin));
+	}
+
+	public static Burning affectAttributed(Char ch,
+			com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CellDamageOrigins field, int cell) {
+		return affectPrepared(ch, DURATION, field.timedAt(cell, DURATION));
+	}
+
+	private static Burning affectPrepared(Char ch, float duration, TimedDamageOrigins cause) {
+		Burning burning = ch.buff(Burning.class);
+		if (burning == null) {
+			burning = new Burning();
+			burning.reigniteWithOrigins(ch, duration, cause);
+			burning.attachTo(ch);
+		} else {
+			burning.reigniteWithOrigins(ch, duration, cause);
+		}
+		return burning;
+	}
+
+	@Override
+	public int apdScaleAttachDamage(int amount) {
+		return origins == null ? super.apdScaleAttachDamage(amount) : origins.scale(amount);
+	}
+
 	public void reignite( Char ch ) {
 		reignite( ch, DURATION );
 	}
 	
 	public void reignite( Char ch, float duration ) {
+		reigniteWithOrigin(ch,duration,OffensiveDamageOrigin.UNATTRIBUTED);
+	}
+	public void reigniteAttributed(Char ch,Char attacker){reigniteAttributed(ch,DURATION,attacker);}
+	public void reigniteAttributedOrigin(Char ch,OffensiveDamageOrigin origin){reigniteWithOrigin(ch,DURATION,origin==null?OffensiveDamageOrigin.UNATTRIBUTED:origin);}
+	public void reigniteAttributed(Char ch,float duration,Char attacker){reigniteWithOrigin(ch,duration,OffensiveDamageOrigin.capture(attacker,null));}
+	public void reigniteAttributed(Char ch,com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CellDamageOrigins field,int cell){
+		reigniteWithOrigins(ch,DURATION,field.timedAt(cell,DURATION));
+	}
+	private void reigniteWithOrigin(Char ch,float duration,OffensiveDamageOrigin origin){
+		reigniteWithOrigins(ch,duration,TimedDamageOrigins.single(duration,origin));
+	}
+	private void reigniteWithOrigins(Char ch,float duration,TimedDamageOrigins cause){
 		if (ch.isImmune(Burning.class)){
 			if (ch.glyphLevel(Brimstone.class) >= 0){
 				//generate avg of 1 shield per turn per 50% boost, to a max of 4x boost
@@ -213,12 +275,18 @@ public class Burning extends Buff implements Hero.Doom, Buff.DOTbuff {
 		}
 		if (left < duration) {
 			left = duration;
+			origins=cause;
 			ch.needsIncomingDOTUpdate = true;
 		}
 		acted = false;
 	}
 
-	public void extend( float duration ) {
+	public void extend( float duration ) {extendWithOrigin(duration,OffensiveDamageOrigin.UNATTRIBUTED);}
+	public void extendAttributed(float duration,Char attacker){extendWithOrigin(duration,OffensiveDamageOrigin.capture(attacker,null));}
+	private void extendWithOrigin(float duration,OffensiveDamageOrigin origin){
+		if(origins==null) origins=TimedDamageOrigins.single(Math.max(0,left),OffensiveDamageOrigin.UNATTRIBUTED);
+		if(duration>0) origins.extend(duration,origin);
+		else if(duration<0) origins.shorten(-duration);
 		left += duration;
 		if (target != null) target.needsIncomingDOTUpdate = true;
 	}
@@ -264,6 +332,20 @@ public class Burning extends Buff implements Hero.Doom, Buff.DOTbuff {
 			nextHit = Random.NormalIntRange( 1, 3 + Dungeon.scalingDepth()/4 );
 		}
 		float avgDmg = 2 + Dungeon.scalingDepth()/8f;
-		return (int)Math.round(nextHit + Math.ceil(left-1)*avgDmg);
+		if(origins==null || !origins.modifiesDamage()) return (int)Math.round(nextHit + Math.ceil(left-1)*avgDmg);
+		TimedDamageOrigins forecast=origins.copy();
+		double expected=forecast.scale(nextHit);forecast.consume(TICK);
+		int max=3+Dungeon.scalingDepth()/4, outcomes=max;
+		for(int ticks=(int)Math.ceil(left-1);ticks>0;ticks--){
+			for(int raw=1;raw<=max;raw++){
+				double low=(raw-1)/(double)outcomes,high=raw/(double)outcomes;
+				expected+=(triangularCdf(high)-triangularCdf(low))*forecast.scale(raw);
+			}
+			forecast.consume(TICK);
+		}
+		return (int)Math.min(Integer.MAX_VALUE,Math.round(expected));
 	}
+
+	private static double triangularCdf(double x){return x<=0?0:x>=1?1:x<=.5?2*x*x:1-2*(1-x)*(1-x);}
 }
+

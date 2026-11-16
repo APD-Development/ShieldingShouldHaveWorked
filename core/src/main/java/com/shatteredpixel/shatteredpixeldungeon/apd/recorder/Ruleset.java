@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -57,12 +60,13 @@ public final class Ruleset {
 	public static Ruleset current(){
 		//a run that never recorded its exotic setting (saved by an older version) has no known ruleset: it is not given today's setting
 		if (!Dungeon.apdExoticKnown) return unknown();
-		return of(Dungeon.apdExotic, Dungeon.challenges, Dungeon.difficulty, Dungeon.difficultyBalance);
+		boolean clericRun = Dungeon.hero != null && Dungeon.hero.heroClass == com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass.CLERIC;
+		return withHealingOnlyConversion(withCustomRules(of(Dungeon.apdExotic, Dungeon.challenges, Dungeon.difficulty, Dungeon.difficultyBalance, clericRun), Dungeon.customRules()));
 	}
 
 	//the rules a NEW run would be played under, from the settings
 	public static Ruleset forNewRun(){
-		return of(SPDSettings.apdExoticSetting(), SPDSettings.challenges(), SPDSettings.apdDifficulty());
+		return withHealingOnlyConversion(withCustomRules(of(SPDSettings.apdExoticSetting(), SPDSettings.challenges(), SPDSettings.apdDifficulty()), SPDSettings.apdCustomRules()));
 	}
 
 	//stored in place of the exotic chance when it was not recorded (a real chance is 0-80)
@@ -92,11 +96,32 @@ public final class Ruleset {
 
 	//a run's own rules: its difficulty and the balance revision it was started with (which a later build's newer balance never changes)
 	public static Ruleset of( int exoticChance, int challenges, int difficulty, int balance ){
-		String text = "base=spd-4.0.0;apd0001=on;cleric=blocked;exotic=" + exoticChance + ";challenges=" + challenges;
+		return of(exoticChance, challenges, difficulty, balance, false);
+	}
+
+	//A run played as Cleric (possible only when the test switch un-bans Cleric) says "cleric=playable" instead of "cleric=blocked".
+	//Every other run keeps exactly the text, and so the id, it always had: nothing already recorded changes identity, and the Cleric
+	//runs, whose rules were never played before, can never be mixed into the history of the others.
+	public static Ruleset of( int exoticChance, int challenges, int difficulty, int balance, boolean clericRun ){
+		String text = "base=spd-4.0.0;apd0001=on;cleric=" + (clericRun ? "playable" : "blocked") + ";exotic=" + exoticChance + ";challenges=" + challenges;
 		int level = Difficulty.isValid(difficulty) ? difficulty : Difficulty.DEFAULT;
 		if (level != Difficulty.DEFAULT) text += ";difficulty=" + level + ";balance=" + Math.max(0, balance);
 		return new Ruleset(ID_VERSION + "-" + hash12(text), text, exoticChance);
 	}
+
+    /** Historical/neutral identities remain intact; custom configurations cannot silently share a scope. */
+    public static Ruleset withCustomRules(Ruleset base,com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomDungeonRules rules){
+        if(base.isUnknown() || rules==null || rules.isNeutral())return base;
+        String text=base.text+";"+rules.identityText();
+        return new Ruleset("r2-"+hash12(text),text,base.exoticChance);
+    }
+
+    /** Distinguish the corrected healing-only override without rewriting stored historical identities. */
+    public static Ruleset withHealingOnlyConversion(Ruleset base){
+        if(base.isUnknown())return base;
+        String text=base.text+";exotic-scope=healing-absolute-v2";
+        return new Ruleset("r4-"+hash12(text),text,base.exoticChance);
+    }
 
 	private static String hash12( String text ){
 		try {

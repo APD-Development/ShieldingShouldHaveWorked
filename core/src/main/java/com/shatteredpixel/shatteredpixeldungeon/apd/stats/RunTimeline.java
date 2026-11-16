@@ -52,7 +52,12 @@ public final class RunTimeline {
 	//'events' must contain every event of the log (do not use ReadOptions.knownTypesOnly)
 	public static RunTimeline of( List<ApdEvent> events ){
 		RunTimeline t = new RunTimeline(events);
+        List<long[]> ranges = new ArrayList<>();
+        boolean ordered = true;
+        long previous = Long.MIN_VALUE;
 		for (ApdEvent e : events){
+            if (e.index < previous) ordered = false;
+            previous = e.index;
 			if (e.type != EventTypes.ROLLBACK) continue;
 			t.rollbackEvents.add(e);
 			LifecycleEvents.Rollback r;
@@ -62,15 +67,36 @@ public final class RunTimeline {
 				continue; //a rollback we cannot read abandons nothing
 			}
 			if (r.kind == LifecycleEvents.ROLLBACK_MATCHED && r.matchedSaveIndex >= 0){
-				for (ApdEvent x : events){
-					if (x.index <= r.matchedSaveIndex) continue;
-					if (x.index >= e.index) break;
-					if (!LifecycleEvents.isRecordingMetaEvent(x.type)) t.abandonedIndexes.add(x.index);
-				}
+                if (r.matchedSaveIndex < e.index) ranges.add(new long[]{r.matchedSaveIndex,e.index});
 			} else if (r.kind == LifecycleEvents.ROLLBACK_UNMATCHED && t.uncertainFromIndex < 0){
 				t.uncertainFromIndex = e.index;
 			}
 		}
+        if (!ordered) {
+            // Preserve the original behavior for callers supplying an unordered list.
+            for (long[] range : ranges) for (ApdEvent event : events) {
+                if (event.index <= range[0]) continue;
+                if (event.index >= range[1]) break;
+                if (!LifecycleEvents.isRecordingMetaEvent(event.type)) t.abandonedIndexes.add(event.index);
+            }
+        } else if (!ranges.isEmpty()) {
+            java.util.Collections.sort(ranges, (a,b) -> Long.compare(a[0],b[0]));
+            List<long[]> merged = new ArrayList<>();
+            for (long[] range : ranges) {
+                if (merged.isEmpty() || range[0] >= merged.get(merged.size()-1)[1]) merged.add(range);
+                else {
+                    long[] last=merged.get(merged.size()-1);
+                    last[1]=Math.max(last[1],range[1]);
+                }
+            }
+            int at=0;
+            for (ApdEvent event : events) {
+                while (at < merged.size() && event.index >= merged.get(at)[1]) at++;
+                if (at == merged.size()) break;
+                if (event.index > merged.get(at)[0] && !LifecycleEvents.isRecordingMetaEvent(event.type))
+                    t.abandonedIndexes.add(event.index);
+            }
+        }
 		return t;
 	}
 

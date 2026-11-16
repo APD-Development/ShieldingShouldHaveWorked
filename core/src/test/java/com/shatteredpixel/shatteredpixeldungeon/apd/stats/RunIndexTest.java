@@ -11,8 +11,13 @@ import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class RunIndexTest {
 
@@ -162,6 +167,78 @@ public class RunIndexTest {
 	}
 
 	@Test
+	public void separateInstancesSerializeTheirAtomicSave() throws Exception {
+		File root = tmp.newFolder("concurrent-save");
+		File runs = new File(root, "runs");
+		assertTrue(runs.mkdirs());
+		File indexFile = new File(root, "index.apdi");
+		RunIndex first = new RunIndex(indexFile, runs);
+		RunIndex second = new RunIndex(indexFile, runs);
+		first.upsert(new RunIndexEntry("first", TelemetryVersion.CURRENT, false, "first.apdlog", 1,
+				RunIndexEntry.Status.OPEN, 0, 0, 0, 1));
+		second.upsert(new RunIndexEntry("second", TelemetryVersion.CURRENT, false, "second.apdlog", 2,
+				RunIndexEntry.Status.OPEN, 0, 0, 0, 2));
+
+		CountDownLatch firstOpened = new CountDownLatch(1);
+		CountDownLatch releaseFirst = new CountDownLatch(1);
+		CountDownLatch secondStarted = new CountDownLatch(1);
+		CountDownLatch secondOpened = new CountDownLatch(1);
+		AtomicReference<Throwable> failure = new AtomicReference<>();
+		Thread a = new Thread(new Runnable(){
+			@Override
+			public void run(){
+				try {
+					first.save(new RunIndex.SaveHook(){
+						@Override
+						public void afterTempOpened( File temp ) throws InterruptedException {
+							firstOpened.countDown();
+							releaseFirst.await();
+						}
+					});
+				} catch (Throwable t){
+					failure.compareAndSet(null, t);
+				}
+			}
+		}, "first-index-save");
+		Thread b = new Thread(new Runnable(){
+			@Override
+			public void run(){
+				secondStarted.countDown();
+				try {
+					second.save(new RunIndex.SaveHook(){
+						@Override
+						public void afterTempOpened( File temp ){
+							secondOpened.countDown();
+						}
+					});
+				} catch (Throwable t){
+					failure.compareAndSet(null, t);
+				}
+			}
+		}, "second-index-save");
+
+		a.start();
+		assertTrue(firstOpened.await(5, TimeUnit.SECONDS));
+		b.start();
+		assertTrue(secondStarted.await(5, TimeUnit.SECONDS));
+		try {
+			assertFalse("a second instance must not open the shared temp file", secondOpened.await(200, TimeUnit.MILLISECONDS));
+		} finally {
+			releaseFirst.countDown();
+		}
+		a.join(5000);
+		b.join(5000);
+		assertFalse(a.isAlive());
+		assertFalse(b.isAlive());
+		assertNull(failure.get());
+		assertTrue(secondOpened.await(1, TimeUnit.SECONDS));
+		RunIndex loaded = RunIndex.load(indexFile, runs);
+		assertFalse(loaded.wasRebuilt());
+		assertEquals(1, loaded.size());
+		assertNotNull(loaded.get("second"));
+	}
+
+	@Test
 	public void refreshTracksAChangingRun() throws Exception {
 		StatsStore store = new StatsStore(tmp.newFolder("s2"));
 		RunLogWriter w = store.startRun("live", "b", 1);
@@ -180,12 +257,82 @@ public class RunIndexTest {
 	}
 
 	@Test
+	public void refreshRejectsPathLikeRunIdsWithoutReadingOutsideHistory() throws Exception {
+		StatsStore store = new StatsStore(tmp.newFolder("index-refresh-boundary"));
+		RunLogWriter writer = store.startRun("legit", "test", 1);
+		writer.close();
+		RunIndex index = store.index();
+		assertNotNull(index.refresh("legit"));
+
+		// Reuse genuine log bytes outside runs/ so the unguarded refresh would accept this path.
+		File outside = new File(store.root(), "outside.apdlog");
+		LogTestSupport.write(outside, LogTestSupport.bytes(store.logFile("legit")));
+		byte[] original = LogTestSupport.bytes(outside);
+		String[] invalidIds = {"../outside", "bad/name", "", null};
+		for (String id : invalidIds){
+			boolean rejected = false;
+			try {
+				index.refresh(id);
+			} catch (IOException expected){
+				rejected = true;
+			}
+			assertTrue("invalid run ID must be rejected: " + id, rejected);
+			assertFalse("store must report an invalid refresh: " + id, store.refreshIndex(id));
+			assertEquals(1, index.size());
+			assertNull(index.get(id));
+		}
+		assertTrue(Arrays.equals(original, LogTestSupport.bytes(outside)));
+		assertEquals("legit", index.all().get(0).runId);
+	}
+
+	@Test
 	public void entryDecoderIgnoresFieldsAddedByLaterVersions() throws Exception {
 		RunIndexEntry e = new RunIndexEntry("x", new TelemetryVersion(1, 0), false, "x.apdlog", 5,
 				RunIndexEntry.Status.OPEN, 3, 4, 5, 6);
 		byte[] enc = e.encode();
 		byte[] withExtra = LogTestSupport.concat(enc, new byte[]{42, 43, 44});
 		assertEquals(e, RunIndexEntry.decode(withExtra));
+	}
+
+	@Test
+	public void recoveryNeverTruncatesSymlinkedRunLogs() throws Exception {
+		StatsStore store = new StatsStore(tmp.newFolder("recovery-link-boundary"));
+		RunLogWriter writer = store.startRun("source", "test", 1);
+		for (int i = 0; i < 9; i++) writer.event(LogTestSupport.T_PLAIN).clock(i).unsigned(i).emit();
+		writer.close(false);
+		byte[] original = LogTestSupport.bytes(store.logFile("source"));
+		assertTrue(original.length > 2);
+		// Close(false) leaves a healthy open log. Damage its tail explicitly, as in
+		// the established recoverAll damaged-log control, before testing recovery.
+		LogTestSupport.write(store.logFile("source"), Arrays.copyOf(original, original.length - 2));
+
+		// A valid, damaged run log outside runs/ must remain untouched even if linked
+		// into runs/ with a plausible name. The old isFile() check followed this link.
+		File external = new File(store.root(), "external.apdlog");
+		byte[] damagedExternal = Arrays.copyOf(original, original.length - 2);
+		LogTestSupport.write(external, damagedExternal);
+		File outsideAlias = new File(store.runsDir(), "outside-alias.apdlog");
+		Files.createSymbolicLink(outsideAlias.toPath(), external.toPath());
+
+		// An in-directory alias also must not cause the same log to be repaired twice
+		// or cause its damage backup to be written under an unrelated run's name.
+		File localAlias = new File(store.runsDir(), "local-alias.apdlog");
+		Files.createSymbolicLink(localAlias.toPath(), store.logFile("source").toPath());
+		List<LogRecovery.RepairReport> reports = store.recoverAll();
+		assertEquals(1, reports.size());
+		assertEquals(store.logFile("source"), reports.get(0).file);
+		assertTrue("real damaged log remains repairable", reports.get(0).truncated);
+		assertTrue("local repair retains damaged tail", reports.get(0).savedTail.isFile());
+		assertTrue(Arrays.equals(damagedExternal, LogTestSupport.bytes(external)));
+		assertTrue(Files.isSymbolicLink(outsideAlias.toPath()));
+		assertTrue(Files.isSymbolicLink(localAlias.toPath()));
+		assertFalse("external link may not produce damage sidecars",
+				new File(outsideAlias.getPath() + ".tail-" + (original.length - 4) + ".damaged").exists());
+		for (File child : store.runsDir().listFiles()){
+			assertFalse("external alias created a tail file", child.getName().startsWith("outside-alias.apdlog.tail-"));
+			assertFalse("local alias created a tail file", child.getName().startsWith("local-alias.apdlog.tail-"));
+		}
+		assertNotNull("legitimate source remains indexed", store.index().get("source"));
 	}
 
 	@Test

@@ -70,6 +70,54 @@ public class ItemLifecycleTest {
 		assertFalse(mine.state.name.toLowerCase().contains("wealth"));
 	}
 
+
+	@Test
+	public void visibleShopStockIsClassifiedWithoutLeakingHiddenTruth() throws Exception {
+		RecorderTestSupport.Session s = startRun(198L);
+		RecorderTestSupport.enterLevel(6);
+		RingOfWealth ring = new RingOfWealth();
+		ring.upgrade(4);
+		ring.cursed = true;
+		String shown = ring.name();
+		assertFalse("test precondition: shop ring must be unidentified", ring.isIdentified());
+		assertFalse("test precondition: shop ring curse must be unknown", ring.cursedKnown);
+		Heap shop = putInSight(ring);
+		shop.type = Heap.Type.FOR_SALE;
+		turn();
+
+		ReadResult r = finish(s);
+		ItemEvents.Seen mine = null;
+		int count = 0;
+		for (ItemEvents.Seen x : seen(r)){
+			if (x.uid.equals(ring.apdUid)){
+				mine = x;
+				count++;
+			}
+		}
+		assertNotNull("visible shop stock was not recorded as seen", mine);
+		assertEquals("shop stock must be recorded exactly once", 1, count);
+		assertEquals(ItemEvents.SEEN_SHOP, mine.seenWhere);
+		assertEquals(6, mine.where.depth);
+		assertEquals(shop.pos, mine.where.pos);
+		assertEquals(shown, mine.state.name);
+		assertEquals(ItemEvents.CAT_RING, mine.state.category);
+		assertFalse(mine.state.identified);
+		assertFalse(mine.state.levelKnown);
+		assertFalse(mine.state.cursedKnown);
+		assertEquals("unknown shop level must remain hidden", 0, mine.state.visibleLevel);
+		assertFalse("unknown shop curse must remain hidden", mine.state.visiblyCursed);
+		assertFalse("true shop item class leaked", mine.state.name.toLowerCase().contains("wealth"));
+
+		ItemEvents.Registered truth = null;
+		for (ItemEvents.Registered x : registered(r)) if (x.uid.equals(ring.apdUid)) truth = x;
+		assertNotNull("internal shop truth was not retained", truth);
+		assertTrue(truth.trueClass.endsWith("RingOfWealth"));
+		assertEquals(4, truth.trueLevel);
+		assertTrue(truth.cursed);
+		assertEquals(EventTypes.Visibility.PUBLIC, EventTypes.visibility(EventTypes.ITEM_SEEN));
+		assertEquals(EventTypes.Visibility.INTERNAL, EventTypes.visibility(EventTypes.ITEM_REGISTERED));
+	}
+
 	@Test
 	public void itemsThePlayerCannotSeeAreNotSeen() throws Exception {
 		RecorderTestSupport.Session s = startRun(22L);

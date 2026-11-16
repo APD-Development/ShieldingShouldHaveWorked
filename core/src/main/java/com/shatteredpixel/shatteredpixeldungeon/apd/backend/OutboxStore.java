@@ -55,6 +55,7 @@ public final class OutboxStore {
 	public static Loaded load( Outbox box, File file ) throws IOException {
 		Loaded r = new Loaded();
 		if (!file.exists()) return r;
+		java.util.Set<String> restoredIds = new java.util.HashSet<>();
 		try (BufferedReader in = Files.newBufferedReader(file.toPath(), StandardCharsets.UTF_8)){
 			String line;
 			while ((line = in.readLine()) != null){
@@ -62,8 +63,10 @@ public final class OutboxStore {
 				try {
 					String[] p = line.split("\t", -1);
 					if (p.length != 9) throw new IllegalArgumentException("fields");
+					if (restoredIds.contains(p[0])) throw new IllegalArgumentException("repeated queue id");
 					box.restore(Id.of(Id.Kind.OUTBOX, p[0]), new Envelope(p[4], Integer.parseInt(p[5]), Integer.parseInt(p[6]), unb64(p[7])), Long.parseLong(p[1]),
 							Integer.parseInt(p[2]), Long.parseLong(p[3]), unb64(p[8]));
+					restoredIds.add(p[0]);
 					r.items++;
 				} catch (RuntimeException e){
 					r.skipped++;
@@ -78,6 +81,11 @@ public final class OutboxStore {
 	}
 
 	private static String unb64( String s ){
-		return new String(Base64.getDecoder().decode(s), StandardCharsets.UTF_8);
+		try {
+			return StandardCharsets.UTF_8.newDecoder().decode(
+					java.nio.ByteBuffer.wrap(Base64.getDecoder().decode(s))).toString();
+		} catch (java.nio.charset.CharacterCodingException e) {
+			throw new IllegalArgumentException("invalid UTF-8 in queue field", e);
+		}
 	}
 }

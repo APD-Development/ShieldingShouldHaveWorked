@@ -70,7 +70,7 @@ public class ChaoticCenser extends Trinket {
 		if (isIdentified()){
 			return Messages.get(this, "stats_desc", averageTurnsUntilGas(buffedLvl()));
 		} else {
-			return Messages.get(this, "stats_desc", averageTurnsUntilGas(0));
+			return Messages.get(this, "typical_stats_desc", averageTurnsUntilGas(0));
 		}
 	}
 
@@ -240,6 +240,8 @@ public class ChaoticCenser extends Trinket {
 
 		private Class<?extends Blob> gasType;
 		private int gasQuantity;
+        private com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin apdGasOrigin=com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin.UNATTRIBUTED;
+        private static final String APD_GAS_ORIGIN="apd_censer_origin";
 
 		public void set( int targetCell, Class<?extends Blob> gasType, int gasQuantity){
 			this.targetCell = targetCell;
@@ -249,18 +251,21 @@ public class ChaoticCenser extends Trinket {
 
 			this.gasType = gasType;
 			this.gasQuantity = gasQuantity;
+            apdGasOrigin=com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin.capture(target,null);
 		}
 
 		@Override
 		public boolean act() {
 
 			if (depth == Dungeon.depth && branch == Dungeon.branch){
-				GameScene.add(Blob.seed(targetCell, gasQuantity, gasType));
+				try(com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveEffectContext context=com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveEffectContext.enter(apdGasOrigin)){
+                GameScene.add(Blob.seed(targetCell, gasQuantity, gasType));
 
 				//corrosion starts at the same level as potion of corrosive gas
 				if (gasType == CorrosiveGas.class){
 					((CorrosiveGas)Dungeon.level.blobs.get(CorrosiveGas.class)).setStrength( 2 + Dungeon.scalingDepth()/5, ChaoticCenser.class);
 				}
+                }
 
 				MagicMissile.boltFromChar(Dungeon.hero.sprite.parent, MISSILE_VFX.get(gasType), Dungeon.hero.sprite, targetCell, null);
 				Sample.INSTANCE.play(Assets.Sounds.GAS);
@@ -284,6 +289,7 @@ public class ChaoticCenser extends Trinket {
 			bundle.put(BRANCH, branch);
 			bundle.put(GAS_TYPE, gasType);
 			bundle.put(GAS_QUANTITY, gasQuantity);
+            if(apdGasOrigin!=com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin.UNATTRIBUTED)bundle.put(APD_GAS_ORIGIN,apdGasOrigin.name());else bundle.remove(APD_GAS_ORIGIN);
 		}
 
 		@Override
@@ -294,6 +300,7 @@ public class ChaoticCenser extends Trinket {
 			branch = bundle.getInt(BRANCH);
 			gasType = bundle.getClass(GAS_TYPE);
 			gasQuantity = bundle.getInt(GAS_QUANTITY);
+            apdGasOrigin=bundle.contains(APD_GAS_ORIGIN)?com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin.valueOf(bundle.getString(APD_GAS_ORIGIN)):com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin.UNATTRIBUTED;
 		}
 	}
 
@@ -341,3 +348,4 @@ public class ChaoticCenser extends Trinket {
 	}
 
 }
+

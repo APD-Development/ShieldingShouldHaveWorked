@@ -31,8 +31,10 @@ import com.shatteredpixel.shatteredpixeldungeon.apd.query.PerUnit;
 import com.shatteredpixel.shatteredpixeldungeon.apd.query.Question;
 import com.shatteredpixel.shatteredpixeldungeon.apd.query.Questions;
 import com.shatteredpixel.shatteredpixeldungeon.apd.query.Scope;
+import com.shatteredpixel.shatteredpixeldungeon.apd.query.SavedViews;
 import com.shatteredpixel.shatteredpixeldungeon.apd.query.StatusText;
 import com.shatteredpixel.shatteredpixeldungeon.apd.query.UimsdModel;
+import com.shatteredpixel.shatteredpixeldungeon.apd.query.UimsdTopicSearch;
 
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdList.Entry;
 
@@ -55,6 +57,8 @@ public final class WndUimsdAsk {
 		//open this question's query as a table with the full tools
 		//'backToAnswer' reopens the answer the table came from (what Back should do from that table); may be null
 		void openAsTable( com.shatteredpixel.shatteredpixeldungeon.apd.query.Query q, Runnable backToAnswer );
+		//Where named questions live. Tests and hosts without persistent history may leave this null.
+		default java.io.File root(){ return null; }
 	}
 
 	private static final int MAX_LINES = 40;
@@ -75,7 +79,7 @@ public final class WndUimsdAsk {
 		if (q == null || cat.dataset(q.dataset) == null){
 			List<Dataset> sets = Questions.askable(cat);
 			if (sets.isEmpty()){
-				ShatteredPixelDungeon.scene().addToFront(new WndMessage("There is nothing recorded to ask about yet. Play a run and ask again."));
+				ShatteredPixelDungeon.scene().addToFront(new WndUimsdText("UIMSD", "There is nothing recorded to ask about yet. Play a run and ask again.", false));
 				return;
 			}
 			q = Question.about(sets.get(0).def.id);
@@ -95,8 +99,12 @@ public final class WndUimsdAsk {
 		entries.add(Entry.heading("Your question"));
 		entries.add(Entry.note(Questions.describe(q, def) + "?"));
 		entries.add(Entry.heading("Change it"));
-		final int ABOUT = 0, MEASURE = 1, PER = 2, SPLIT = 3, WHERE = 4, RUNS = 5, HIDDEN = 6, ASK = 7;
+		final int ABOUT = 0, MEASURE = 1, PER = 2, SPLIT = 3, WHERE = 4, RUNS = 5, HIDDEN = 6, ASK = 7, SEARCH = 8, WINDOW = 9;
 		final List<Integer> ids = new ArrayList<>();
+		entries.add(Entry.item("Search UIMSD topics", "find recorded subjects and public fields by name, offline")); ids.add(SEARCH);
+        if(com.shatteredpixel.shatteredpixeldungeon.apd.query.EventDatasets.EQUIPMENT.equals(q.dataset)){
+            entries.add(Entry.item("Damage after equipping", "Choose a matching equipment occurrence and an explicit following-turn window."));ids.add(WINDOW);
+        }
 		entries.add(Entry.item("About: " + def.title, "what to look at")); ids.add(ABOUT);
 		entries.add(Entry.item("Measure: " + q.measure.phrase + (q.measure.needsColumn() && def.column(q.column) != null ? " " + def.column(q.column).label.toLowerCase() : ""),
 				"count them, or add up, average or find the highest of a number")); ids.add(MEASURE);
@@ -118,6 +126,11 @@ public final class WndUimsdAsk {
 			@Override
 			public void onPick( int i, boolean checked ){
 				switch (ids.get(i)){
+					case SEARCH: searchTopics(cat, ruleset, host, cur); break;
+                    case WINDOW:
+                        UimsdModel windowModel=new UimsdModel(ruleset, "");windowModel.setCatalog(cat);
+                        windowModel.showQuery(Questions.toQuery(cur,def).withGroup(null));
+                        WndUimsdResearch.equipmentWindows(windowModel);break;
 					case ABOUT: pickDataset(cat, ruleset, host, cur); break;
 					case MEASURE: pickMeasure(cat, ruleset, host, cur, def); break;
 					case PER: pickPer(cat, ruleset, host, cur); break;
@@ -125,12 +138,54 @@ public final class WndUimsdAsk {
 					case WHERE: editFilters(cat, ruleset, host, cur); break;
 					case RUNS: builder(cat, ruleset, host, cur.withScope(cur.scope.rules == Scope.Rules.ALL ? Scope.DEFAULT
 							: new Scope(Scope.Rules.ALL, "", true, true, true, true))); break;
-					case HIDDEN: builder(cat, ruleset, host, cur.withShowInternal(!cur.showInternal)); break;
+					case HIDDEN: builder(cat, ruleset, host, Questions.withInternalVisibility(cur, def, !cur.showInternal)); break;
 					default: answer(cat, ruleset, host, cur);
 				}
 			}
-		}));
+		}).restoreWith(() -> builder(cat, ruleset, host, q)));
 	}
+
+
+    // Narrow offline search of registered subjects and PUBLIC field names.
+    // Results go through the existing query builder; this is not an AI or raw-history search.
+    private static void searchTopics(final Catalog cat, final String ruleset, final Host host, final Question q) {
+        show(new WndUimsdTextInput("Search UIMSD", "Try 'how many runs by class' or search recorded topics. This never searches raw values.",
+                "", 100, false, "Search", "Cancel", (positive, words) -> {
+                    if (positive) topicResults(cat, ruleset, host, q, words);
+                }));
+    }
+
+    private static void topicResults(final Catalog cat, final String ruleset, final Host host,
+                                     final Question q, final String words) {
+        final List<UimsdTopicSearch.Hit> hits = UimsdTopicSearch.find(cat, words);
+        final Question interpreted = UimsdTopicSearch.interpret(cat, words, q);
+        List<Entry> entries = new ArrayList<>();
+        if (interpreted != null) {
+            Dataset matched = cat.dataset(interpreted.dataset);
+            entries.add(Entry.item("Open this question", Questions.describe(interpreted, matched.def)));
+        }
+        if (hits.isEmpty() && interpreted == null)
+            entries.add(Entry.note("No supported question or public topic matches. Try a name, or 'average score of runs by class'."));
+        for (UimsdTopicSearch.Hit hit : hits) entries.add(Entry.item(hit.label, hit.detail));
+        entries.add(Entry.item("Search again", "look for another topic"));
+        showKept(WndUimsdList.menu("Search UIMSD", "Search public topics or simple questions (how many, total, average, highest, lowest, median; optional 'by' a public field). Other phrases are not interpreted.",
+                entries, new WndUimsdList.Picker() {
+                    @Override public void onPick(int i, boolean checked) {
+                        if (interpreted != null && i == 0) {
+                            builder(cat, ruleset, host, interpreted);
+                            return;
+                        }
+                        int hitIndex = i - (interpreted == null ? 0 : 1);
+                        if (hitIndex == hits.size()) {
+                            searchTopics(cat, ruleset, host, q);
+                            return;
+                        }
+                        UimsdTopicSearch.Hit hit = hits.get(hitIndex);
+                        Dataset selected = cat.dataset(hit.datasetId);
+                        if (selected != null) builder(cat, ruleset, host, hit.question(q, selected.def));
+                    }
+                }).restoreWith(() -> topicResults(cat, ruleset, host, q, words)));
+    }
 
 	private static String joinLabels( DatasetDef def, List<String> ids ){
 		StringBuilder b = new StringBuilder();
@@ -153,7 +208,7 @@ public final class WndUimsdAsk {
 			public void onPick( int i, boolean checked ){
 				builder(cat, ruleset, host, q.withDataset(sets.get(i).def.id));
 			}
-		}));
+		}).restoreWith(() -> pickDataset(cat, ruleset, host, q)));
 	}
 
 	private static void pickMeasure( final Catalog cat, final String ruleset, final Host host, final Question q, final DatasetDef def ){
@@ -174,17 +229,22 @@ public final class WndUimsdAsk {
 					builder(cat, ruleset, host, q.withMeasure(m, ""));
 					return;
 				}
-				final List<ColumnDef> cols = Questions.measurable(def, q.showInternal);
-				List<Entry> es = new ArrayList<>();
-				for (ColumnDef c : cols) es.add(Entry.item(c.label, c.description).current(c.id.equals(q.column)));
-				show(WndUimsdList.menu("Which number?", "The number to " + (m == Question.Measure.TOTAL ? "add up" : "look at") + ".", es, new WndUimsdList.Picker(){
-					@Override
-					public void onPick( int j, boolean c ){
-						builder(cat, ruleset, host, q.withMeasure(m, cols.get(j).id));
-					}
-				}));
+				pickNumber(cat, ruleset, host, q, def, m);
 			}
-		}));
+		}).restoreWith(() -> pickMeasure(cat, ruleset, host, q, def)));
+	}
+
+	private static void pickNumber(final Catalog cat, final String ruleset, final Host host,
+	                               final Question q, final DatasetDef def, final Question.Measure m){
+		final List<ColumnDef> cols = Questions.measurable(def, q.showInternal);
+		List<Entry> es = new ArrayList<>();
+		for (ColumnDef c : cols) es.add(Entry.item(c.label, c.description).current(c.id.equals(q.column)));
+		show(WndUimsdList.menu("Which number?", "The number to " + (m == Question.Measure.TOTAL ? "add up" : "look at") + ".", es, new WndUimsdList.Picker(){
+			@Override
+			public void onPick( int j, boolean c ){
+				builder(cat, ruleset, host, q.withMeasure(m, cols.get(j).id));
+			}
+		}).restoreWith(() -> pickNumber(cat, ruleset, host, q, def, m)));
 	}
 
 	private static void pickPer( final Catalog cat, final String ruleset, final Host host, final Question q ){
@@ -200,12 +260,16 @@ public final class WndUimsdAsk {
 			public void onPick( int i, boolean checked ){
 				builder(cat, ruleset, host, q.withPer(i == 0 ? null : units.get(i - 1)));
 			}
-		}));
+		}).restoreWith(() -> pickPer(cat, ruleset, host, q)));
 	}
 
 	private static void pickSplit( final Catalog cat, final String ruleset, final Host host, final Question q, final DatasetDef def ){
+		pickSplitPending(cat, ruleset, host, q, def, new ArrayList<>(q.groupBy));
+	}
+
+	private static void pickSplitPending(final Catalog cat, final String ruleset, final Host host,
+										  final Question q, final DatasetDef def, final List<String> chosen){
 		final List<ColumnDef> cols = Questions.groupable(def, q.showInternal);
-		final List<String> chosen = new ArrayList<>(q.groupBy);
 		List<Entry> entries = new ArrayList<>();
 		String lastGroup = null;
 		for (ColumnDef c : cols){
@@ -226,6 +290,9 @@ public final class WndUimsdAsk {
 				} else {
 					chosen.remove(id);
 				}
+				//The oldest choice is replaced at the two-field limit; its check must disappear too.
+				int item = 0;
+				for (Entry entry : entries) if (entry.isItem()) entry.checked(chosen.contains(cols.get(item++).id));
 			}
 		}){
 			@Override
@@ -233,7 +300,7 @@ public final class WndUimsdAsk {
 				hide();
 				builder(cat, ruleset, host, q.withGroupBy(chosen));
 			}
-		});
+		}.restoreWith(() -> pickSplitPending(cat, ruleset, host, q, def, new ArrayList<>(chosen))));
 	}
 
 	private static void editFilters( final Catalog cat, final String ruleset, final Host host, final Question q ){
@@ -263,7 +330,7 @@ public final class WndUimsdAsk {
 				});
 				WndUimsdFilter.add(scratch);
 			}
-		}));
+		}).restoreWith(() -> editFilters(cat, ruleset, host, q)));
 	}
 
 	// ---- the answer ----
@@ -285,6 +352,8 @@ public final class WndUimsdAsk {
 		}
 		entries.add(Entry.heading("Next"));
 		entries.add(Entry.item("Open as a table", "the same question with every filter, sort and column tool"));
+		final boolean canSave = host != null && host.root() != null;
+		if (canSave) entries.add(Entry.item("Save this question...", "Keep the exact wording and choices under a name, then ask it again as history grows."));
 		entries.add(Entry.item("Change the question", ""));
 		final List<Entry> all = entries;
 		showKept(WndUimsdList.menu("Answer", a.question + "?", entries, new WndUimsdList.Picker(){
@@ -292,7 +361,8 @@ public final class WndUimsdAsk {
 			public void onPick( int i, boolean checked ){
 				int items = 0;
 				for (Entry e : all) if (e.isItem()) items++;
-				if (i == items - 2){
+				int open = items - (canSave ? 3 : 2);
+				if (i == open){
 					WndUimsdList.closeAll();
 					if (host != null) host.openAsTable(a.query, new Runnable(){
 						@Override
@@ -302,10 +372,35 @@ public final class WndUimsdAsk {
 							answer(cat, ruleset, host, q);
 						}
 					});
+				} else if (canSave && i == open + 1){
+					saveQuestion(cat, host, q);
 				} else if (i == items - 1){
 					builder(cat, ruleset, host, q);
 				}
 			}
+		}).restoreWith(() -> answer(cat, ruleset, host, q)));
+	}
+
+	private static void saveQuestion( final Catalog cat, final Host host, final Question q ){
+		final Dataset dataset = cat == null ? null : cat.dataset(q.dataset);
+		if (host == null || host.root() == null || dataset == null) return;
+		show(new WndUimsdTextInput("Save this question", "A name for this question (up to " + SavedViews.MAX_NAME + " characters). An existing saved view with the same name is replaced.",
+				"", SavedViews.MAX_NAME, false, "Save", "Cancel", (positive, text) -> {
+			if (!positive) return;
+			SavedViews views = SavedViews.load(SavedViews.fileIn(host.root()));
+			SavedViews.Result result = views.saveQuestion(text, q, dataset.def, System.currentTimeMillis());
+			try {
+				if (result == SavedViews.Result.SAVED || result == SavedViews.Result.REPLACED)
+					views.store(SavedViews.fileIn(host.root()));
+			} catch (java.io.IOException failure){
+				show(new WndUimsdText("UIMSD", "The question could not be saved: " + failure.getMessage(), false));
+				return;
+			}
+			String message = result == SavedViews.Result.SAVED ? "Question saved."
+					: result == SavedViews.Result.REPLACED ? "Question saved, replacing the view with that name."
+					: result == SavedViews.Result.TOO_MANY ? "You have " + SavedViews.MAX_VIEWS + " saved views. Delete one first."
+					: "That is not a usable name.";
+			show(new WndUimsdText("UIMSD", message, false));
 		}));
 	}
 }

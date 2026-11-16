@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -94,6 +97,14 @@ public class Earthroot extends Plant {
 			return (Dungeon.scalingDepth() + 5)/2;
 		}
 		
+        public int remainingReserve() { return level; }
+        public int perHitLimit() { return blocking(); }
+
+		/** Read-only result of absorb; does not spend armor or detach the buff. */
+		public int previewAbsorb(int damage) {
+			return pos == target.pos ? damage - Math.min(damage, blocking()) : damage;
+		}
+
 		public int absorb( int damage ) {
 			if (pos != target.pos){
 				detach();

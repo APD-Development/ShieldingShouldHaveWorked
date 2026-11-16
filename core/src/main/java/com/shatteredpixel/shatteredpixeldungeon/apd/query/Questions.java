@@ -76,7 +76,33 @@ public final class Questions {
 
 	//---- the query behind a question ----
 
+	//Turning hidden details off is a visibility boundary, not just a display preference. Any
+	//question parts which depend on internal columns must leave with it, or the sentence can
+	//promise a condition which QueryEngine correctly refuses to apply.
+	public static Question withInternalVisibility( Question q, DatasetDef def, boolean showInternal ){
+		if (showInternal) return q.withShowInternal(true);
+		Question.Measure measure = q.measure;
+		String column = q.column;
+		ColumnDef measured = def == null ? null : def.column(column);
+		if (measure.needsColumn() && measured != null && measured.isInternal()){
+			measure = Question.Measure.COUNT;
+			column = "";
+		}
+		List<String> groups = new ArrayList<>();
+		for (String id : q.groupBy){
+			ColumnDef c = def == null ? null : def.column(id);
+			if (c == null || !c.isInternal()) groups.add(id);
+		}
+		List<Filter> filters = new ArrayList<>();
+		for (Filter f : q.filters){
+			ColumnDef c = def == null ? null : def.column(f.column);
+			if (c == null || !c.isInternal()) filters.add(f);
+		}
+		return new Question(q.dataset, measure, column, q.per, groups, filters, q.scope, false);
+	}
+
 	public static Query toQuery( Question q, DatasetDef def ){
+		q = withInternalVisibility(q, def, q.showInternal);
 		List<Aggregate> aggs = new ArrayList<>();
 		if (q.measure == Question.Measure.COUNT || def.column(q.column) == null) aggs.add(Aggregate.count());
 		else aggs.add(Aggregate.of(q.measure.fn, q.column));
@@ -128,8 +154,9 @@ public final class Questions {
 		Dataset ds = cat == null ? null : cat.dataset(q.dataset);
 		if (ds == null) return new Answer("", new ArrayList<Line>(), "There is nothing recorded to ask about yet.", Query.of(q.dataset));
 		DatasetDef def = ds.def;
-		Query query = toQuery(q, def);
-		String sentence = describe(q, def);
+		Question effective = withInternalVisibility(q, def, q.showInternal);
+		Query query = toQuery(effective, def);
+		String sentence = describe(effective, def);
 		QueryResult res = QueryEngine.run(ds, query, currentRuleset);
 		List<Line> lines = new ArrayList<>();
 		if (res.groups == null || res.groups.isEmpty()){
@@ -140,7 +167,7 @@ public final class Questions {
 		}
 		Aggregate agg = res.aggregates.get(0);
 		PerUnit.Result per = null;
-		if (q.per != null && !unitsFor(q).isEmpty()) per = PerUnit.compute(cat, query, res, q.per, currentRuleset);
+		if (effective.per != null && !unitsFor(effective).isEmpty()) per = PerUnit.compute(cat, query, res, effective.per, currentRuleset);
 		for (int i = 0; i < res.groups.size(); i++){
 			GroupRow g = res.groups.get(i);
 			StringBuilder label = new StringBuilder();
@@ -153,18 +180,30 @@ public final class Questions {
 			AggValue v = g.aggregates.get(0);
 			CellFormatter.AggText at = CellFormatter.aggregate(def, agg, v);
 			if (per == null){
-				lines.add(new Line(label.toString(), at.text, at.detail, v.known ? v.value : Double.NaN, v.isLowerBound()));
+				lines.add(new Line(label.toString(), at.text, at.detail, v.known ? CellFormatter.displayNumber(def.column(agg.column), v.value) : Double.NaN, v.isLowerBound()));
 			} else {
-				double n = v.known ? v.value : Double.NaN;
+				double n = v.known ? CellFormatter.displayNumber(def.column(agg.column), v.value) : Double.NaN;
 				double r = per.per(n, i);
+				boolean numeratorLower = v.isLowerBound(), denominatorLower = per.lower[i];
+				boolean ambiguous = numeratorLower && denominatorLower && n > 0;
+				boolean lower = false;
 				String text;
-				boolean lower = v.isLowerBound() && false;
-				if (Double.isNaN(r)){
+				if (Double.isNaN(r) || ambiguous){
 					text = CellFormatter.UNKNOWN_TEXT;
+					r = Double.NaN;
+				} else if (denominatorLower){
+					lower = numeratorLower || n < 0;
+					if (numeratorLower) text = ">=" + boundDecimals(r, true);
+					else if (n < 0) text = boundDecimals(r, true) + " or more";
+					else if (n > 0) text = boundDecimals(r, false) + " or less";
+					else text = twoDecimals(r);
 				} else {
-					text = (v.isLowerBound() ? ">=" : "") + twoDecimals(r) + (per.lower[i] ? " or less" : "");
+					lower = numeratorLower;
+					text = lower ? ">=" + boundDecimals(r, true) : twoDecimals(r);
 				}
-				String detail = at.text + " in " + twoDecimals(per.denominators[i]).replaceAll("\\.00$", "") + " " + q.per.plural;
+				String detail = at.text + " in " + (denominatorLower ? "at least " : "")
+						+ twoDecimals(per.denominators[i]).replaceAll("\\.00$", "") + " " + effective.per.plural;
+				if (ambiguous) detail += ". Both totals are lower bounds; the rate is unknown.";
 				lines.add(new Line(label.toString(), text, Double.isNaN(per.denominators[i]) ? per.note : detail, r, lower));
 			}
 		}
@@ -182,8 +221,17 @@ public final class Questions {
 		return new Answer(sentence, lines, note, query);
 	}
 
+	// A displayed bound must remain conservative after rounding to two decimal places.
+	private static String boundDecimals(double value, boolean lower){
+		return java.math.BigDecimal.valueOf(value).setScale(2,
+				lower ? java.math.RoundingMode.FLOOR : java.math.RoundingMode.CEILING).toPlainString();
+	}
+
 	private static String twoDecimals( double v ){
-		if (Double.isNaN(v)) return "?";
+		if (!Double.isFinite(v)) return "?";
+		// Preserve ordinary rounding; avoid Math.round saturation for valid large ratios.
+		if (Math.abs(v) * 100 >= Long.MAX_VALUE)
+			return java.math.BigDecimal.valueOf(v).setScale(2, java.math.RoundingMode.HALF_UP).toPlainString();
 		long hundredths = Math.round(v * 100);
 		long whole = hundredths / 100, frac = Math.abs(hundredths % 100);
 		return (hundredths < 0 && whole == 0 ? "-" : "") + whole + "." + (frac < 10 ? "0" : "") + frac;

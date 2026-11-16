@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -225,10 +228,13 @@ public class Imp extends NPC {
 		
 		public static void reset() {
 			spawned = false;
+			oldQuest = false;
+			alternative = false;
 			given = false;
 			completed = false;
 
 			reward = null;
+			rewardOptions.clear();
 			hazardFreebies = 2;
 			mirrorUsed = false;
 			score = 0;
@@ -275,6 +281,8 @@ public class Imp extends NPC {
 		}
 		
 		public static void restoreFromBundle( Bundle bundle ) {
+			// Switching saves must not retain another run's quest or shop eligibility.
+			reset();
 
 			Bundle node = bundle.getBundle( NODE );
 			
@@ -352,6 +360,7 @@ public class Imp extends NPC {
 				rewardOptions.add(w);
 
 				for (Item i : rewardOptions){
+					com.shatteredpixel.shatteredpixeldungeon.apd.qol.GenerationUpgradeRanges.impReward(i);
 					i.cursed = false;
 				}
 			}
@@ -362,6 +371,9 @@ public class Imp extends NPC {
 		public static boolean given(){
 			return given;
 		}
+
+        /** Read-only amount requested by the legacy quest's existing interaction checks. */
+        public static int legacyTokenRequirement(){return alternative?5:4;}
 
 		public static boolean isOld(){
 			return oldQuest;

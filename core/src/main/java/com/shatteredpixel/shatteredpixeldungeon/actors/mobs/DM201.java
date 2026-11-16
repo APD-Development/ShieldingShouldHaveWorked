@@ -71,10 +71,10 @@ public class DM201 extends DM200 {
 		threatened = false;
 		spend(TICK);
 
-		GameScene.add(Blob.seed(enemy.pos, 15, CorrosiveGas.class).setStrength(8));
+		GameScene.add(Blob.seed(enemy.pos, 15, CorrosiveGas.class).setStrengthAttributed(8,null,this));
 		for (int i : PathFinder.NEIGHBOURS8){
 			if (!Dungeon.level.solid[enemy.pos+i]) {
-				GameScene.add(Blob.seed(enemy.pos + i, 5, CorrosiveGas.class).setStrength(8));
+				GameScene.add(Blob.seed(enemy.pos + i, 5, CorrosiveGas.class).setStrengthAttributed(8,null,this));
 			}
 		}
 

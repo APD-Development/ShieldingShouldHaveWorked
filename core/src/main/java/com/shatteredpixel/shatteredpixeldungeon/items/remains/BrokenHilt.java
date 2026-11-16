@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -28,11 +31,16 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.watabou.noosa.audio.Sample;
 
+import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+
 public class BrokenHilt extends RemainsItem {
 
 	{
 		image = ItemSpriteSheet.BROKEN_HILT;
 	}
+
+    @Override public String desc(){return Messages.get(this,"desc",Dungeon.hero==null?"at least 2":Integer.toString(Math.max(2,Dungeon.hero.lvl/3)));}
 
 	@Override
 	protected void doEffect(Hero hero) {

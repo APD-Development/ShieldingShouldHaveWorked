@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -44,6 +47,12 @@ public class Sungrass extends Plant {
 		seedClass = Seed.class;
 	}
 	
+    @Override
+    public String desc(){
+        return Dungeon.hero!=null&&com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomHealingHooks.disabled()
+                ?Messages.get(Sungrass.class,"desc_disabled_healing"):super.desc();
+    }
+
 	@Override
 	public void activate( Char ch ) {
 		
@@ -61,6 +70,10 @@ public class Sungrass extends Plant {
 	}
 	
 	public static class Seed extends Plant.Seed {
+        @Override public String desc(){
+            return Dungeon.hero!=null&&com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomHealingHooks.disabled()
+                    ?Messages.get(Sungrass.class,"desc_disabled_healing"):super.desc();
+        }
 		{
 			image = ItemSpriteSheet.SEED_SUNGRASS;
 
@@ -100,12 +113,12 @@ public class Sungrass extends Plant {
 				if (target.HP < target.HT) {
 
 					int apdHpBefore = target.HP;
-					target.HP += healThisTurn;
-					target.sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(healThisTurn), FloatingText.HEALING);
+					target.HP += com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomHealingHooks.amount(target, healThisTurn);
+					target.sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomHealingHooks.display(target, apdHpBefore, healThisTurn)), FloatingText.HEALING);
 
 					if (target.HP >= target.HT) {
 						target.HP = target.HT;
-						if (target instanceof Hero) {
+						if (target instanceof Hero && com.shatteredpixel.shatteredpixeldungeon.SPDSettings.waitStopFullHealth()) {
 							((Hero) target).resting = false;
 						}
 					}
@@ -115,13 +128,21 @@ public class Sungrass extends Plant {
 			
 			if (level <= 0) {
 				detach();
-				if (target instanceof Hero){
+				if (target instanceof Hero && (target.HP < target.HT || com.shatteredpixel.shatteredpixeldungeon.SPDSettings.waitStopFullHealth())){
 					((Hero)target).resting = false;
 				}
 			}
 			spend( STEP );
 			return true;
 		}
+
+        public int remainingPool() { return level; }
+        public float healingProgress() { return partialHeal; }
+        public int nextUnmodifiedRequest() {
+            if (target == null) return 0;
+            float next = partialHeal + (40 + target.HT)/150f;
+            return next > 1 ? (int)next : 0;
+        }
 
 		public void boost( int amount ){
 			if (target != null) {
@@ -147,7 +168,8 @@ public class Sungrass extends Plant {
 
 		@Override
 		public String desc() {
-			return Messages.get(this, "desc", level);
+			return target!=null&&target==Dungeon.hero&&com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomHealingHooks.disabled()
+                    ?Messages.get(Sungrass.class,"desc_disabled_healing"):Messages.get(this, "desc", level);
 		}
 
 		private static final String POS	= "pos";
@@ -172,3 +194,4 @@ public class Sungrass extends Plant {
 		}
 	}
 }
+

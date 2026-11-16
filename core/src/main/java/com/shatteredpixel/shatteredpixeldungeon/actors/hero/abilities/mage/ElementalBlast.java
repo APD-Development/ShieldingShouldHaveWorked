@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -123,6 +126,12 @@ public class ElementalBlast extends ArmorAbility {
 		damageFactors.put(WandOfRegrowth.class,         0f);
 	}
 
+    /** Read-only view of the same direct-damage factors used by activation. */
+    public static float blastDamageFactor(Class<? extends Wand> type){
+        Float factor=damageFactors.get(type);
+        return factor==null?Float.NaN:factor;
+    }
+
 	{
 		baseChargeUse = 35f;
 	}
@@ -210,7 +219,7 @@ public class ElementalBlast extends ArmorAbility {
 							//*** Wand of Lightning ***
 							if (finalWandCls == WandOfLightning.class){
 								if (Dungeon.level.water[cell]){
-									GameScene.add( Blob.seed( cell, 4, Electricity.class ) );
+									GameScene.add(Electricity.seedAttributed(cell, 4, com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin.PLAYER));
 								}
 
 							//*** Wand of Fireblast ***
@@ -223,7 +232,7 @@ public class ElementalBlast extends ArmorAbility {
 									freeze.clear(cell);
 								}
 								if (Dungeon.level.flamable[cell]){
-									GameScene.add( Blob.seed( cell, 4, Fire.class ) );
+									GameScene.add( Fire.seedAttributed( cell, 4, com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin.capture(hero,null) ) );
 								}
 
 							//*** Wand of Frost ***
@@ -273,7 +282,7 @@ public class ElementalBlast extends ArmorAbility {
 									* damageFactors.get(finalWandCls));
 
 							if (mob != null && damage > 0 && mob.alignment != Char.Alignment.ALLY){
-								mob.damage(damage, Reflection.newInstance(finalWandCls));
+								com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomOffensiveHooks.raw(mob, damage, Reflection.newInstance(finalWandCls), hero);
 								charsHit++;
 							}
 
@@ -288,13 +297,13 @@ public class ElementalBlast extends ArmorAbility {
 								//*** Wand of Fireblast ***
 								} else if (finalWandCls == WandOfFireblast.class){
 									if (mob.isAlive() && mob.alignment != Char.Alignment.ALLY) {
-										Buff.affect( mob, Burning.class ).reignite( mob );
+										Burning.affectAttributed(mob, hero);
 									}
 
 								//*** Wand of Corrosion ***
 								} else if (finalWandCls == WandOfCorrosion.class){
 									if (mob.isAlive() && mob.alignment != Char.Alignment.ALLY) {
-										Buff.affect( mob, Corrosion.class ).set(4, Math.round(6*effectMulti));
+										Buff.affect( mob, Corrosion.class ).setAttributed(4, Math.round(6*effectMulti), null, hero);
 										charsHit++;
 									}
 
@@ -304,18 +313,20 @@ public class ElementalBlast extends ArmorAbility {
 										Ballistica aim = new Ballistica(hero.pos, mob.pos, Ballistica.WONT_STOP);
 										int knockback = aoeSize + 1 - (int)Dungeon.level.trueDistance(hero.pos, mob.pos);
 										knockback *= effectMulti;
-										WandOfBlastWave.throwChar(mob,
+										WandOfBlastWave.throwCharAttributed(mob,
 												new Ballistica(mob.pos, aim.collisionPos, Ballistica.MAGIC_BOLT),
 												knockback,
 												true,
 												true,
-												ElementalBlast.this);
+												ElementalBlast.this,
+												com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin.capture(hero, null));
 									}
 
 								//*** Wand of Frost ***
 								} else if (finalWandCls == WandOfFrost.class){
 									if (mob.isAlive() && mob.alignment != Char.Alignment.ALLY) {
-										Buff.affect( mob, Frost.class, effectMulti*Frost.DURATION );
+										Buff.affectAttributed(mob, Frost.class, effectMulti*Frost.DURATION,
+												com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin.capture(hero, null));
 									}
 
 								//*** Wand of Prismatic Light ***
@@ -361,7 +372,7 @@ public class ElementalBlast extends ArmorAbility {
 											mob.sprite.centerEmitter().start(Speck.factory(Speck.HEART), 0.2f, 3);
 										} else {
 											damage = Math.round(Hero.heroDamageIntRange(15, 25) * effectMulti);
-											mob.damage(damage, Reflection.newInstance(finalWandCls));
+											com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomOffensiveHooks.raw(mob, damage, Reflection.newInstance(finalWandCls), hero);
 											mob.sprite.emitter().start(ShadowParticle.UP, 0.05f, 10);
 										}
 									}
@@ -443,17 +454,23 @@ public class ElementalBlast extends ArmorAbility {
 	@Override
 	public String desc() {
 		String desc = Messages.get(this, "desc");
+        boolean liveDescription=false;
 		if (Game.scene() instanceof GameScene){
 			MagesStaff staff = Dungeon.hero.belongings.getItem(MagesStaff.class);
 			if (staff != null && staff.wandClass() != null){
-				desc += "\n\n" + Messages.get(staff.wandClass(), "eleblast_desc");
+                if(Messages.lang()==com.shatteredpixel.shatteredpixeldungeon.messages.Languages.ENGLISH){
+                    liveDescription=true;
+                    desc=Messages.get(this,"apd_current_desc",4+Dungeon.hero.pointsInTalent(Talent.BLAST_RADIUS));
+                    desc+="\n\n"+com.shatteredpixel.shatteredpixeldungeon.apd.mechanics.BlastExplanation.summary(Dungeon.hero);
+                }else desc += "\n\n" + Messages.get(staff.wandClass(), "eleblast_desc");
 			} else {
 				desc += "\n\n" + Messages.get(this, "generic_desc");
 			}
 		} else {
 			desc += "\n\n" + Messages.get(this, "generic_desc");
 		}
-		desc += "\n\n" + Messages.get(this, "cost", (int)baseChargeUse);
+        // The existing ability window already appends its current, talent-adjusted cost.
+        if(!liveDescription)desc += "\n\n" + Messages.get(this, "cost", (int)baseChargeUse);
 		return desc;
 	}
 
@@ -467,3 +484,4 @@ public class ElementalBlast extends ArmorAbility {
 		return new Talent[]{Talent.BLAST_RADIUS, Talent.ELEMENTAL_POWER, Talent.REACTIVE_BARRIER, Talent.HEROIC_ENERGY};
 	}
 }
+

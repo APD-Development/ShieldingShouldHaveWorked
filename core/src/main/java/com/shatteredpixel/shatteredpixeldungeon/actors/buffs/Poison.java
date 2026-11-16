@@ -36,8 +36,12 @@ import com.watabou.utils.Bundle;
 public class Poison extends Buff implements Hero.Doom, Buff.DOTbuff {
 	
 	protected float left;
+    private com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.DurationDamageProvenance damageProvenance;
+    private static final String APD_PROVENANCE="apd_poison_origin";
 	
-	private static final String LEFT	= "left";
+	public float apdRemaining(){return left;}
+    public int apdNextInput(){return damageTick();}
+    private static final String LEFT	= "left";
 
 	{
 		type = buffType.NEGATIVE;
@@ -48,6 +52,8 @@ public class Poison extends Buff implements Hero.Doom, Buff.DOTbuff {
 	public void storeInBundle( Bundle bundle ) {
 		super.storeInBundle( bundle );
 		bundle.put( LEFT, left );
+        if(damageProvenance!=null && left>=0)damageProvenance.store(bundle,APD_PROVENANCE);
+        else com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.DurationDamageProvenance.clearStored(bundle,APD_PROVENANCE);
 		
 	}
 	
@@ -55,17 +61,53 @@ public class Poison extends Buff implements Hero.Doom, Buff.DOTbuff {
 	public void restoreFromBundle( Bundle bundle ) {
 		super.restoreFromBundle( bundle );
 		left = bundle.getFloat( LEFT );
+        damageProvenance=com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.DurationDamageProvenance.restore(bundle,APD_PROVENANCE,left);
 	}
 	
 	public void set( float duration ) {
-		this.left = Math.max(duration, left);
+		setWithOrigin(duration,com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin.UNATTRIBUTED);
 		if (target != null) target.needsIncomingDOTUpdate = true;
 	}
 
-	public void extend( float duration ) {
-		this.left += duration;
-		if (target != null) target.needsIncomingDOTUpdate = true;
-	}
+    public void setAttributed(float duration,Char creator){
+        setWithOrigin(duration,com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin.capture(creator,null));
+        if(target!=null)target.needsIncomingDOTUpdate=true;
+    }
+    public void setAttributedOrigin(float duration,com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin origin){
+        if(origin==null)throw new IllegalArgumentException("Missing poison origin");
+        setWithOrigin(duration,origin);
+        if(target!=null)target.needsIncomingDOTUpdate=true;
+    }
+    private void setWithOrigin(float duration,com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin origin){
+        float prior=left;left=Math.max(duration,left);
+        if(duration>prior || damageProvenance==null && prior<=0){
+            damageProvenance=new com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.DurationDamageProvenance();damageProvenance.reset(Math.max(0,left),origin);
+        }
+    }
+    public void extend(float duration){extendWithOrigin(duration,com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin.UNATTRIBUTED);}
+    public void extendAttributed(float duration,Char creator){extendWithOrigin(duration,com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin.capture(creator,null));}
+    private void extendWithOrigin(float duration,com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin origin){
+        if(duration<0){left+=duration;if(damageProvenance!=null)damageProvenance.shorten(-duration);}
+        else {
+            if(damageProvenance==null){
+                damageProvenance=new com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.DurationDamageProvenance();
+                if(left<=0)damageProvenance.reset(duration,origin);
+                else {damageProvenance.reset(left,com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin.UNATTRIBUTED);damageProvenance.extend(duration,origin);}
+            }else damageProvenance.extend(duration,origin);
+            left+=duration;
+        }
+        if(target!=null)target.needsIncomingDOTUpdate=true;
+    }
+    public void copyAttributed(Poison original,float duration){
+        float before=left;left=Math.max(left,duration);
+        if(duration>before || damageProvenance==null){
+            com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.DurationDamageProvenance source=original.damageProvenance;
+            if(source==null){source=new com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.DurationDamageProvenance();source.reset(Math.max(0,original.left),com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin.UNATTRIBUTED);}
+            damageProvenance=source.copyFor(original.left,Math.max(0,left));
+        }
+        if(target!=null)target.needsIncomingDOTUpdate=true;
+    }
+    private int damageTick(){return damageProvenance==null?(int)(left/3)+1:damageProvenance.scaled(left);}
 
 	public void delay( float turns ){
 		spend(turns);
@@ -109,10 +151,11 @@ public class Poison extends Buff implements Hero.Doom, Buff.DOTbuff {
 	public boolean act() {
 		if (target.isAlive()) {
 			
-			target.damage( (int)(left / 3) + 1, this );
+			target.damage(damageTick(),this);
 			spend( TICK );
 			
-			if ((left -= TICK) <= 0) {
+			if(damageProvenance!=null)damageProvenance.consume(TICK);
+            if ((left -= TICK) <= 0) {
 				detach();
 			}
 			target.needsIncomingDOTUpdate = true;
@@ -128,7 +171,8 @@ public class Poison extends Buff implements Hero.Doom, Buff.DOTbuff {
 
 	@Override
 	public int totalIncomingDMG() {
-		int total = 0;
+        if(damageProvenance!=null && damageProvenance.modifiesDamage())return damageProvenance.incoming(left);
+        int total = 0;
 		for (int i = (int)Math.ceil(left); i > 0; i--){
 			total += i/3 + 1;
 		}

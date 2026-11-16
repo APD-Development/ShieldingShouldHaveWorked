@@ -37,8 +37,8 @@ public final class WndUimsdColumns {
 	public static void show( final UimsdModel m ){
 		if (m.dataset() == null) return;
 		if (m.result() != null && m.result().isGrouped()){
-			ShatteredPixelDungeon.scene().addToFront(new WndMessage("A grouped table shows its group columns and its totals. "
-					+ "Use Options, Group by, to change them, or open another view."));
+			ShatteredPixelDungeon.scene().addToFront(new WndUimsdText("UIMSD", "A grouped table shows its group columns and its totals. "
+					+ "Use Options, Group by, to change them, or open another view.", false));
 			return;
 		}
 		final List<ColumnDef> cols = m.offeredColumns();
@@ -55,20 +55,30 @@ public final class WndUimsdColumns {
 			entries.add(WndUimsdList.Entry.item(c.label, d.length() > 90 ? d.substring(0, 88) + ".." : d).checked(shown.contains(c.id)));
 		}
 		ShatteredPixelDungeon.scene().addToFront(WndUimsdList.switches("Columns",
-				"Tick the columns you want in the table, then tap Done. The first column stays in place while the rest scroll sideways.", entries,
+				"Tick the columns you want in the table, then tap Done. At least one column stays selected. The first column stays in place while the rest scroll sideways.", entries,
 				new WndUimsdList.Picker(){
 					@Override
 					public void onPick( int i, boolean checked ){
-						m.toggleColumn(cols.get(i).id);
+						toggleSelection(m, cols, entries, i);
 					}
-				}));
+				}).restoreWith(() -> show(m)));
+	}
+
+	//The model can refuse removal of the last visible column. Keep the picker consistent with its decision.
+	static void toggleSelection(UimsdModel m, List<ColumnDef> cols, List<WndUimsdList.Entry> entries, int index){
+		m.toggleColumn(cols.get(index).id);
+		List<String> shown = m.query().columns;
+		int item = 0;
+		for (WndUimsdList.Entry entry : entries){
+			if (entry.isItem()) entry.checked(shown.contains(cols.get(item++).id));
+		}
 	}
 
 	//the shown columns in their order; tapping one offers to move it
 	public static void arrange( final UimsdModel m ){
 		if (m.dataset() == null) return;
 		if (m.result() != null && m.result().isGrouped()){
-			ShatteredPixelDungeon.scene().addToFront(new WndMessage("A grouped table has a fixed layout. Open another view to arrange its columns."));
+			ShatteredPixelDungeon.scene().addToFront(new WndUimsdText("UIMSD", "A grouped table has a fixed layout. Open another view to arrange its columns.", false));
 			return;
 		}
 		final List<String> shown = new ArrayList<>(m.query().columns.isEmpty() ? m.dataset().def.defaultColumnIds() : m.query().columns);
@@ -83,7 +93,7 @@ public final class WndUimsdColumns {
 			public void onPick( int i, boolean checked ){
 				moveOne(m, shown.get(i));
 			}
-		}));
+		}).restoreWith(() -> arrange(m)));
 	}
 
 	private static void moveOne( final UimsdModel m, final String id ){
@@ -97,6 +107,7 @@ public final class WndUimsdColumns {
 				m.moveColumn(id, i == 0 ? -1 : i == 1 ? 1 : -1000);
 				arrange(m);
 			}
-		}));
+		}).restoreWith(() -> moveOne(m, id)));
 	}
 }
+

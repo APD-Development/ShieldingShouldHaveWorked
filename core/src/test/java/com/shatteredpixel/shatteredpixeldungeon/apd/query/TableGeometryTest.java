@@ -99,4 +99,20 @@ public class TableGeometryTest {
 			assertTrue(label, l[0].length() <= 14 && l[1].length() <= 14);
 		}
 	}
+
+	@Test
+	public void touchBoundariesUseHalfOpenCells(){
+		TableGeometry g = TableGeometry.of(table(3));
+		assertEquals(-1, g.columnAt(-0.001f));
+		for (int i = 0; i < g.widths.length; i++){
+			assertEquals(i, g.columnAt(g.lefts[i]));
+			assertEquals(i, g.columnAt(g.lefts[i] + g.widths[i] - 0.001f));
+		}
+		assertEquals(-1, g.columnAt(g.totalWidth));
+		assertEquals(0, g.rowAt(0));
+		assertEquals(1, g.rowAt(TableGeometry.ROW_HEIGHT));
+		assertEquals(2, g.rowAt(2 * TableGeometry.ROW_HEIGHT));
+		assertEquals(-1, g.rowAt(3 * TableGeometry.ROW_HEIGHT));
+	}
+
 }

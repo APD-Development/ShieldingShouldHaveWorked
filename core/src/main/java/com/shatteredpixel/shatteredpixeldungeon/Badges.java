@@ -1177,6 +1177,13 @@ public class Badges {
 			return;
 		}
 		
+		HeroClass unlockedClass = classForUnlockBadge(badge);
+		if (unlockedClass != null && unlockedClass.isUnlocked()) {
+			// Keep normal progression, but do not announce a class already available.
+			unlock(badge);
+			return;
+		}
+
 		if (isUnlocked( badge )) {
 			
 			if (badge.type == BadgeType.LOCAL) {
@@ -1194,6 +1201,17 @@ public class Badges {
 		}
 	}
 	
+	static HeroClass classForUnlockBadge(Badge badge) {
+		switch (badge) {
+			case UNLOCK_MAGE: return HeroClass.MAGE;
+			case UNLOCK_ROGUE: return HeroClass.ROGUE;
+			case UNLOCK_HUNTRESS: return HeroClass.HUNTRESS;
+			case UNLOCK_DUELIST: return HeroClass.DUELIST;
+			case UNLOCK_CLERIC: return HeroClass.CLERIC;
+			default: return null; // Warrior is always available and has no unlock badge.
+		}
+	}
+
 	public static boolean isUnlocked( Badge badge ) {
 		return global.contains( badge );
 	}

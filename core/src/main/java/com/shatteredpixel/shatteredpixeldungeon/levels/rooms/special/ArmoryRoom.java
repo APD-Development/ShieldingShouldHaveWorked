@@ -62,7 +62,7 @@ public class ArmoryRoom extends SpecialRoom {
 			do {
 				pos = level.pointToCell(random());
 			} while (level.map[pos] != Terrain.EMPTY || level.heaps.get( pos ) != null);
-			level.drop( prize( level ), pos );
+			com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomEquipmentHooks.dropGenerated(level, prize(level), pos, null, false);
 		}
 
 		Item cata = level.findPrizeItem(TrinketCatalyst.class);

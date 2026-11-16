@@ -21,9 +21,8 @@
 
 package com.watabou.input;
 
-//Android can deliver one press of Back by two routes at once (the game's own key handling and the system back-gesture callback, depending
-//on the Android version and how the app was opened). Both routes go through this gate, so one press is ONE Back, never two: a second
-//Back arriving within a very short moment of the first is the same press.
+// Android may deliver one Back through system and backend routes. Preserve
+// complete fallback presses; reject old backend copies using their provenance.
 public final class BackGate {
 
 	private BackGate(){}
@@ -33,6 +32,65 @@ public final class BackGate {
 
 	private static long last;
 	private static boolean any;
+	private static Object systemBackOwner;
+	private static long deliveredSystemNanos;
+	private static long completedLegacyNanos;
+	private static long acceptedLegacyNanos;
+
+	public static synchronized void setSystemBackOwner(Object owner){
+		if (systemBackOwner != owner) clearProvenance();
+		systemBackOwner = owner;
+	}
+
+	public static synchronized void clearSystemBackOwner(Object owner){
+		if (systemBackOwner == owner) {
+			systemBackOwner = null;
+			clearProvenance();
+		}
+	}
+
+	public static synchronized boolean systemBackOwned(){
+		return systemBackOwner != null;
+	}
+
+	public static synchronized boolean acceptLegacy(){
+		return acceptLegacy(System.nanoTime());
+	}
+
+	public static synchronized boolean acceptLegacy(long nowNanos){
+		return acceptLegacy(nowNanos, 0);
+	}
+
+	public static synchronized boolean acceptLegacy(long nowNanos, long sourceEventNanos){
+		// Only a backend timestamp can identify an old copy. A future genuine
+		// fallback must never pay for a duplicate that failed to arrive.
+		if (systemBackOwner != null && sourceEventNanos > 0
+				&& sourceEventNanos <= Math.max(deliveredSystemNanos, Math.max(completedLegacyNanos, acceptedLegacyNanos))) return false;
+		if (!accept(nowNanos)) return false;
+		if (systemBackOwner != null && sourceEventNanos > 0) acceptedLegacyNanos = sourceEventNanos;
+		return true;
+	}
+
+	public static synchronized void recordLegacyRelease(long sourceEventNanos){
+		if (systemBackOwner != null && sourceEventNanos > 0)
+			completedLegacyNanos = Math.max(completedLegacyNanos, sourceEventNanos);
+	}
+
+	private static void clearProvenance(){
+		deliveredSystemNanos = 0;
+		completedLegacyNanos = 0;
+		acceptedLegacyNanos = 0;
+	}
+
+	public static synchronized boolean acceptSystem(){
+		return acceptSystem(System.nanoTime());
+	}
+
+	public static synchronized boolean acceptSystem(long nowNanos){
+		if (!accept(nowNanos)) return false;
+		if (systemBackOwner != null) deliveredSystemNanos = nowNanos;
+		return true;
+	}
 
 	//true if this Back should be acted on
 	public static synchronized boolean accept(){
@@ -49,5 +107,6 @@ public final class BackGate {
 	public static synchronized void reset(){
 		any = false;
 		last = 0;
+		clearProvenance();
 	}
 }

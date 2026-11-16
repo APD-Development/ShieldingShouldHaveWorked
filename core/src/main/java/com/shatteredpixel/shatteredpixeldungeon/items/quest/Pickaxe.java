@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -106,16 +109,7 @@ public class Pickaxe extends MeleeWeapon {
 		hero.sprite.attack(enemy.pos, new Callback() {
 			@Override
 			public void call() {
-				int damageBoost = 0;
-				if (Char.hasProp(enemy, Char.Property.INORGANIC)
-						|| enemy instanceof Swarm
-						|| enemy instanceof Bee
-						|| enemy instanceof Crab
-						|| enemy instanceof Spinner
-						|| enemy instanceof Scorpio) {
-					//+(8+2*lvl) damage, equivalent to +100% damage
-					damageBoost = augment.damageFactor(8 + 2*buffedLvl());
-				}
+				int damageBoost = pierceDamageBoost(enemy);
 				beforeAbilityUsed(hero, enemy);
 				AttackIndicator.target(enemy);
 				if (hero.attack(enemy, 1, damageBoost, Char.INFINITE_ACCURACY)) {
@@ -133,15 +127,30 @@ public class Pickaxe extends MeleeWeapon {
 		});
 	}
 
+    /** Same target eligibility and added input used by the actual deferred Pierce attack. */
+    public int pierceDamageBoost(Char enemy){
+        if(enemy!=null && (Char.hasProp(enemy,Char.Property.INORGANIC)
+                || enemy instanceof Swarm || enemy instanceof Bee || enemy instanceof Crab
+                || enemy instanceof Spinner || enemy instanceof Scorpio)){
+            return augment.damageFactor(8+2*buffedLvl());
+        }
+        return 0;
+    }
+
 	@Override
 	public String abilityInfo() {
-		int dmgBoost = 8 + 2*buffedLvl();
-		return Messages.get(this, "ability_desc", augment.damageFactor(min()+dmgBoost), augment.damageFactor(max()+dmgBoost));
+        int knownLevel = levelKnown ? buffedLvl() : 0;
+        int dmgBoost = 8 + 2*knownLevel;
+        int minimum = levelKnown ? min() : min(0);
+        int maximum = levelKnown ? max() : max(0);
+        return Messages.get(this, levelKnown ? "ability_desc" : "typical_ability_desc",
+                augment.damageFactor(minimum)+augment.damageFactor(dmgBoost),
+                augment.damageFactor(maximum)+augment.damageFactor(dmgBoost));
 	}
 
 	public String upgradeAbilityStat(int level){
 		int dmgBoost = 8 + 2*level;
-		return augment.damageFactor(min(level)+dmgBoost) + "-" + augment.damageFactor(max(level)+dmgBoost);
+		return (augment.damageFactor(min(level))+augment.damageFactor(dmgBoost)) + "-" + (augment.damageFactor(max(level))+augment.damageFactor(dmgBoost));
 	}
 
 }

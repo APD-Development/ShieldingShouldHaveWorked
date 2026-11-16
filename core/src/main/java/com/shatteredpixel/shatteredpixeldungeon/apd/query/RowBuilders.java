@@ -55,7 +55,7 @@ public final class RowBuilders {
 
 	private RowBuilders(){}
 
-	public static final int BUILDER_VERSION = 8;
+	public static final int BUILDER_VERSION = 18;
 
 	private static final DatasetDef RUNS = Datasets.runs();
 	private static final DatasetDef ITEMS = Datasets.items();
@@ -110,14 +110,28 @@ public final class RowBuilders {
 			//the moment a run "was last seen" comes only from events the player could see: a hidden event must not move a public number
 			if (EventTypes.visibility(e.type) == EventTypes.Visibility.PUBLIC) lastClock = Math.max(lastClock, e.clock);
 			if (e.type == EventTypes.RUN_END){
-				meta.hasRunEnd = true;
-				endClock = e.clock;
+				try {
+					LifecycleEvents.decodeRunEnd(e, r);
+					meta.hasRunEnd = true;
+					endClock = e.clock;
+				} catch (RuntimeException ignored){
+					//A frame can be checksum-valid while its typed payload is damaged.
+					//Do not expose hidden run details or label the run finished without a readable end.
+				}
 			} else if (e.type == EventTypes.RULESET_CHANGE){
 				rulesetChanges++;
 			}
 		}
 		meta.ruleset = rulesetChanges > 0 ? Row.RULESET_MIXED : startRuleset;
-		boolean gaps = r.gapEvents > 0 || facts.isKnown(FactKeys.PARTIAL);
+		boolean gaps = r.gapEvents > 0 || facts.isKnown(FactKeys.PARTIAL) || !r.status.isClean();
+		// Valid framing does not guarantee readable typed payloads. RunFactsBuilder
+		// already marks surviving counts incomplete when decoding loses an event.
+		for (Fact fact : facts.all().values()){
+			if (fact.prov == Fact.PROV_INCOMPLETE){
+				gaps = true;
+				break;
+			}
+		}
 		int countProv = gaps ? Fact.PROV_INCOMPLETE : Fact.PROV_RECORDED;
 
 		out.of(Datasets.RUNS).add(runRow(facts, meta, v));
@@ -480,6 +494,9 @@ public final class RowBuilders {
 	private static ApdEvent detailAfter( List<ApdEvent> events, int i, int type ){
 		for (int k = i + 1; k < events.size() && k <= i + 3; k++){
 			if (events.get(k).type == type) return events.get(k);
+			int next = events.get(k).type;
+			if (next == EventTypes.GAP || next == EventTypes.ATTACK || next == EventTypes.DAMAGE
+					|| next == EventTypes.KILL || next == EventTypes.HEAL) break;
 		}
 		return null;
 	}
@@ -495,7 +512,12 @@ public final class RowBuilders {
 					case EventTypes.ATTACK: {
 						CombatEvents.Attack a = CombatEvents.decodeAttack(e, r);
 						ApdEvent de = detailAfter(events, i, EventTypes.ATTACK_DETAIL);
-						CombatEvents.AttackDetail d = de == null ? null : CombatEvents.decodeAttackDetail(de, r);
+						CombatEvents.AttackDetail d = null;
+						try {
+							if (de != null) d = CombatEvents.decodeAttackDetail(de, r);
+						} catch (RuntimeException badDetail){
+							//The public attack is still readable; only its hidden identity detail was lost.
+						}
 						if (a.attacker.kind == CombatEvents.KIND_HERO && a.defender.kind == CombatEvents.KIND_ENEMY){
 							EnemyAcc x = enemy(enemies, a.defender.name, d == null ? "" : d.defenderClass, e.index);
 							x.attacksByHero++;
@@ -512,7 +534,12 @@ public final class RowBuilders {
 					case EventTypes.DAMAGE: {
 						CombatEvents.Damage dm = CombatEvents.decodeDamage(e, r);
 						ApdEvent de = detailAfter(events, i, EventTypes.DAMAGE_DETAIL);
-						CombatEvents.DamageDetail d = de == null ? null : CombatEvents.decodeDamageDetail(de, r);
+						CombatEvents.DamageDetail d = null;
+						try {
+							if (de != null) d = CombatEvents.decodeDamageDetail(de, r);
+						} catch (RuntimeException badDetail){
+							//Keep the readable public damage even when its hidden detail is malformed.
+						}
 						if (dm.target.kind == CombatEvents.KIND_HERO && dm.source.kind == CombatEvents.SRC_CHAR
 								&& dm.source.fighterKind == CombatEvents.KIND_ENEMY){
 							enemy(enemies, dm.source.label, d == null ? "" : d.srcClass, e.index).damageToHero += dm.shown;
@@ -525,7 +552,12 @@ public final class RowBuilders {
 					case EventTypes.KILL: {
 						CombatEvents.Kill k = CombatEvents.decodeKill(e, r);
 						ApdEvent de = detailAfter(events, i, EventTypes.KILL_DETAIL);
-						CombatEvents.KillDetail d = de == null ? null : CombatEvents.decodeKillDetail(de, r);
+						CombatEvents.KillDetail d = null;
+						try {
+							if (de != null) d = CombatEvents.decodeKillDetail(de, r);
+						} catch (RuntimeException badDetail){
+							//Keep the readable public kill even when its hidden detail is malformed.
+						}
 						if (k.victim.kind == CombatEvents.KIND_ENEMY){
 							EnemyAcc x = enemy(enemies, k.victim.name, d == null ? "" : d.victimClass, e.index);
 							x.deaths++;
@@ -748,7 +780,7 @@ public final class RowBuilders {
 					}
 					int i = RUNS.indexOf(key);
 					if (i < 0) continue;
-					if (val.kind == LegacyEvents.KIND_NUM) row.setNum(i, val.num, Fact.PROV_LEGACY);
+					if (val.kind == LegacyEvents.KIND_NUM){row.setNum(i,val.num,Fact.PROV_LEGACY);if(FactKeys.SCORE.equals(key))put(row,com.shatteredpixel.shatteredpixeldungeon.apd.stats.CustomRuleFacts.ORIGINAL_SCORE,val.num,Fact.PROV_LEGACY);}
 					else row.setText(i, val.text, Fact.PROV_LEGACY);
 				}
 				rows.add(row);
@@ -765,6 +797,14 @@ public final class RowBuilders {
 			if (s == null || s.length() != 10 || s.charAt(4) != '-' || s.charAt(7) != '-') return Long.MIN_VALUE;
 			long y = Long.parseLong(s.substring(0, 4)), m = Long.parseLong(s.substring(5, 7)), d = Long.parseLong(s.substring(8, 10));
 			if (m < 1 || m > 12 || d < 1 || d > 31) return Long.MIN_VALUE;
+			boolean leap = y % 4 == 0 && (y % 100 != 0 || y % 400 == 0);
+			int maxDay;
+			switch ((int) m){
+				case 2: maxDay = leap ? 29 : 28; break;
+				case 4: case 6: case 9: case 11: maxDay = 30; break;
+				default: maxDay = 31;
+			}
+			if (d > maxDay) return Long.MIN_VALUE;
 			y -= m <= 2 ? 1 : 0;
 			long era = (y >= 0 ? y : y - 399) / 400;
 			long yoe = y - era * 400;
@@ -777,3 +817,5 @@ public final class RowBuilders {
 		}
 	}
 }
+
+

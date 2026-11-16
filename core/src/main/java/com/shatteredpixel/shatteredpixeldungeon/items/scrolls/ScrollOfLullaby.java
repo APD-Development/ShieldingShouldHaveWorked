@@ -60,6 +60,15 @@ public class ScrollOfLullaby extends Scroll {
 		readAnimation();
 	}
 	
+    @Override
+    public String desc() {
+        if (isKnown() && Dungeon.hero != null
+                && com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomHealingHooks.disabled()) {
+            return Messages.get(this, "desc_no_healing");
+        }
+        return super.desc();
+    }
+
 	@Override
 	public int value() {
 		return isKnown() ? 40 * quantity : super.value();

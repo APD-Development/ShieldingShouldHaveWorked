@@ -32,10 +32,20 @@ import com.watabou.noosa.ui.Component;
 //APD: a title and a scrolling block of text, for the UIMSD explanations (coverage, what the markers mean).
 public class WndUimsdText extends Window {
 
+	private final String savedTitle, savedText;
+	private final boolean structured;
+	private final ScrollPane pane;
 	private static final int MARGIN = 2;
 
 	public WndUimsdText( String title, String text ){
+		this(title, text, true);
+	}
+
+	//Raw status/queue payloads must not interpret underscores or headings as markup.
+	public WndUimsdText( String title, String text, boolean structured ){
 		super();
+		this.structured = structured;
+		savedTitle = title; savedText = text;
 		int width = WndUimsdList.windowWidth();
 		RenderedTextBlock tt = PixelScene.renderTextBlock(title, 9);
 		tt.hardlight(com.shatteredpixel.shatteredpixeldungeon.ui.UimsdStyle.TITLE);
@@ -45,12 +55,26 @@ public class WndUimsdText extends Window {
 		float pos = tt.bottom() + 2 * MARGIN;
 
 		Component content = new Component();
-		content.setSize(width, UimsdText.layout(content, width, text));
-		ScrollPane pane = new ScrollPane(content);
+		content.setSize(width, UimsdText.layout(content, width, text, structured));
+		pane = new ScrollPane(content);
 		float h = WindowGeometry.paneHeight(content.height(), WindowGeometry.maxPane(PixelScene.uiCamera.height, pos, 0));
 		//size the window first: it moves the window's camera, and the pane works out its screen position when it is placed
 		resize(width, (int) (pos + h));
 		add(pane);
 		pane.setRect(0, pos, width, h);
 	}
+	@Override
+	public Runnable restoreOnSceneReset(){
+		final String title = savedTitle, text = savedText;
+		final boolean styled = structured;
+		final float scrollX = pane.content().camera.scroll.x, scrollY = pane.content().camera.scroll.y;
+		return () -> {
+			WndUimsdText restored = new WndUimsdText(title, text, styled);
+			//The new viewport may have changed size; ScrollPane clamps the saved position.
+			restored.pane.scrollTo(scrollX, scrollY);
+			com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon.scene().addToFront(restored);
+		};
+	}
+
 }
+

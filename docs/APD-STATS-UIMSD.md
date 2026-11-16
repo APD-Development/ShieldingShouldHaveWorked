@@ -78,7 +78,7 @@ device self-test, and performance (printed as APD-PERF lines).
 ## Limitations
 - The screen cannot be exercised headless: its layout is covered by geometry tests, the drawing by the phone.
 - Table cells are cut to the column width; the detail window shows everything. Column widths are estimated from text length.
-- Paged at 50 lines; no charts, no saved-query UI, no custom expression language. (History export is Phase 8; shareable reports are APD-REPORTS.md.)
+- Paged at 50 lines. Named saved-query UI exists. A provenance-safe grouped chart-data model exists, but no native chart is rendered yet. There is no custom expression language. (History export is Phase 8; shareable reports are APD-REPORTS.md.)
 - Group-by in the UI picks one column with generic aggregates; richer grouping is a `GroupBy` away but has no screen yet.
 - Enemy rows pair each public combat event with the detail event written right after it; if telemetry ever interleaves more events there,
   the hidden class column of an enemy row may be missing (the public numbers do not depend on it).

@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -22,6 +25,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.items;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
@@ -79,8 +83,32 @@ public class Waterskin extends Item {
 		return actions;
 	}
 
-	@Override
-	public void execute( final Hero hero, String action ) {
+    private transient com.shatteredpixel.shatteredpixeldungeon.windows.WndActionConfirmation drinkPrompt;
+
+    @Override
+    public void execute(final Hero hero,String action){
+        if(AC_DRINK.equals(action) && volume>0 && com.shatteredpixel.shatteredpixeldungeon.SPDSettings.confirmWaterskin()){
+            if(drinkPrompt!=null && drinkPrompt.parent!=null)return;
+            final com.shatteredpixel.shatteredpixeldungeon.levels.Level level=com.shatteredpixel.shatteredpixeldungeon.Dungeon.level;
+            final int position=hero.pos;
+            com.shatteredpixel.shatteredpixeldungeon.apd.qol.ConfirmationDecision decision=new com.shatteredpixel.shatteredpixeldungeon.apd.qol.ConfirmationDecision(()->{
+                drinkPrompt=null;
+                if(com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero==hero && com.shatteredpixel.shatteredpixeldungeon.Dungeon.level==level
+                        && hero.pos==position && hero.isAlive() && hero.ready && hero.belongings.backpack.contains(this))executeConfirmed(hero,action);
+            },()->drinkPrompt=null);
+            requestDrinkConfirmation(decision);
+            return;
+        }
+        executeConfirmed(hero,action);
+    }
+    protected void requestDrinkConfirmation(com.shatteredpixel.shatteredpixeldungeon.apd.qol.ConfirmationDecision decision){
+        drinkPrompt=new com.shatteredpixel.shatteredpixeldungeon.windows.WndActionConfirmation("Use Waterskin?",
+                (com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomHealingHooks.disabled()
+                        ? "Drink stored dew? Your current rules prevent healing. Dew used here cannot be saved for blessing an Ankh."
+                        : "Drink stored dew from your Waterskin to heal? Dew used here cannot be saved for blessing an Ankh."),decision);
+        com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene.show(drinkPrompt);
+    }
+    protected void executeConfirmed(final Hero hero,String action){
 
 		super.execute( hero, action );
 
@@ -101,7 +129,7 @@ public class Waterskin extends Item {
 				//add extra drops if we can gain shielding
 				int curShield = 0;
 				if (hero.buff(Barrier.class) != null) curShield = hero.buff(Barrier.class).shielding();
-				int maxShield = Math.round(hero.HT *0.2f*hero.pointsInTalent(Talent.SHIELDING_DEW));
+				int maxShield = Dewdrop.shieldingDewCap(hero);
 				if (hero.hasTalent(Talent.SHIELDING_DEW)){
 					float missingShieldPercent = 1f - (curShield / (float)maxShield);
 					missingShieldPercent *= 0.2f*hero.pointsInTalent(Talent.SHIELDING_DEW);
@@ -135,6 +163,8 @@ public class Waterskin extends Item {
 		}
 	}
 
+    @Override public String desc(){return Messages.get(this,"desc",MAX_VOLUME);}
+
 	@Override
 	public String info() {
 		String info = super.info();
@@ -142,7 +172,7 @@ public class Waterskin extends Item {
 		if (volume == 0){
 			info += "\n\n" + Messages.get(this, "desc_water");
 		} else {
-			info += "\n\n" + Messages.get(this, "desc_heal");
+			info += "\n\n" + Messages.get(this, Dungeon.hero != null && com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomHealingHooks.disabled() ? "desc_no_healing" : "desc_heal",volume,MAX_VOLUME,com.shatteredpixel.shatteredpixeldungeon.apd.mechanics.ObfuscationExplanation.number(TIME_TO_DRINK),TIME_TO_DRINK==1?"turn":"turns");
 		}
 
 		if (isFull()){
@@ -166,6 +196,10 @@ public class Waterskin extends Item {
 	public boolean isIdentified() {
 		return true;
 	}
+
+    public int storedDrops() { return volume; }
+    public static int capacity() { return MAX_VOLUME; }
+    public static float drinkingTime() { return TIME_TO_DRINK; }
 
 	public boolean isFull() {
 		return volume >= MAX_VOLUME;

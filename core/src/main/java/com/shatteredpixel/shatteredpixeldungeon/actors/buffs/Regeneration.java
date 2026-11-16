@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -87,11 +90,11 @@ public class Regeneration extends Buff {
 
 				if (partialRegen >= 1) {
 					int apdHpBefore = target.HP;
-					target.HP += (int)partialRegen;
+					target.HP += com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomHealingHooks.amount(target, (int)partialRegen);
 					partialRegen -= (int)partialRegen;
 					if (target.HP >= regencap()) {
 						target.HP = regencap();
-						((Hero) target).resting = false;
+						if (com.shatteredpixel.shatteredpixeldungeon.SPDSettings.waitStopFullHealth()) ((Hero) target).resting = false;
 					}
 					ApdCombat.onHeal( target, apdHpBefore, ApdCombat.HEAL_REGEN, -1 );
 				}
@@ -135,3 +138,4 @@ public class Regeneration extends Buff {
 		partialRegen = bundle.getFloat(PARTIAL_REGEN);
 	}
 }
+

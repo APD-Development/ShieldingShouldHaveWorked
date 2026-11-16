@@ -122,7 +122,7 @@ public class Skeleton extends Mob {
 				}
 
 				//apply DR twice (with 2 rolls for more consistency)
-				damage = Math.max( 0,  damage - (ch.drRoll() + ch.drRoll()) );
+				damage = Math.max( 0,  damage - (ch.apdDrRoll() + ch.apdDrRoll()) );
 				ch.damage( damage, this );
 				if (ch == Dungeon.hero && !ch.isAlive()) {
 					heroKilled = true;
@@ -164,3 +164,4 @@ public class Skeleton extends Mob {
 	}
 
 }
+

@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -31,6 +34,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.GuidingLight;
+import com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomOffensiveHooks;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.KindofMisc;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -150,7 +154,7 @@ public class Artifact extends KindofMisc {
 	public static void artifactProc(Char target, int artifLevel, int chargesUsed){
 		if (Dungeon.hero.subClass == HeroSubClass.PRIEST && target.buff(GuidingLight.Illuminated.class) != null) {
 			target.buff(GuidingLight.Illuminated.class).detach();
-			target.damage(5+Dungeon.hero.lvl, GuidingLight.INSTANCE);
+			CustomOffensiveHooks.raw(target, 5+Dungeon.hero.lvl, GuidingLight.INSTANCE, Dungeon.hero);
 		}
 
 		if (target.alignment != Char.Alignment.ALLY
@@ -171,16 +175,22 @@ public class Artifact extends KindofMisc {
 		}
 	}
 
+    /** Read-only values for identified-item explanations; UI must retain identification gates. */
+    public int currentCharges(){return charge;}
+    public int maximumUpgradeSteps(){return levelCap;}
+    public int maximumCharges(){return chargeCap;}
+    public int effectCountdown(){return cooldown;}
+
 	@Override
 	public String info() {
 		if (cursed && cursedKnown && !isEquipped( Dungeon.hero )) {
-			return super.info() + "\n\n" + Messages.get(Artifact.class, "curse_known");
+			return super.info() + "\n\n" + Messages.get(Artifact.class, "curse_known") + com.shatteredpixel.shatteredpixeldungeon.apd.mechanics.ArtifactExplanation.summary(this);
 			
 		} else if (!isIdentified() && cursedKnown && !isEquipped( Dungeon.hero)) {
-			return super.info() + "\n\n" + Messages.get(Artifact.class, "not_cursed");
+			return super.info() + "\n\n" + Messages.get(Artifact.class, "not_cursed") + com.shatteredpixel.shatteredpixeldungeon.apd.mechanics.ArtifactExplanation.summary(this);
 			
 		} else {
-			return super.info();
+			return super.info() + com.shatteredpixel.shatteredpixeldungeon.apd.mechanics.ArtifactExplanation.summary(this);
 			
 		}
 	}
@@ -216,6 +226,7 @@ public class Artifact extends KindofMisc {
 
 	@Override
 	public Item random() {
+		com.shatteredpixel.shatteredpixeldungeon.apd.qol.GenerationUpgradeRanges.baseline(this);
 		//always +0
 		
 		//30% chance to be cursed

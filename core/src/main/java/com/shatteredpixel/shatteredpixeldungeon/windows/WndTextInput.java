@@ -49,12 +49,7 @@ public class WndTextInput extends Window {
 	                           final boolean multiLine, final String posTxt, final String negTxt) {
 		super();
 
-		final int width;
-		if (PixelScene.landscape() && (multiLine || body != null)) {
-			width = W_LAND_EXTRA; //more space for landscape users
-		} else {
-			width = WIDTH;
-		}
+		final int width = inputWidth(multiLine, body != null);
 
 		float pos = 2;
 
@@ -191,7 +186,7 @@ public class WndTextInput extends Window {
 			negativeBtn = null;
 		}
 
-		float btnWidth = multiLine ? width-2*MARGIN : textBoxWidth;
+		float btnWidth = (multiLine || buttonsUseFullWidth()) ? width-2*MARGIN : textBoxWidth;
 		if (negTxt != null) {
 			positiveBtn.setRect(MARGIN, pos, (btnWidth - MARGIN) / 2, BUTTON_HEIGHT);
 			add(positiveBtn);
@@ -218,6 +213,12 @@ public class WndTextInput extends Window {
 		PointerEvent.clearKeyboardThisPress = false;
 
 	}
+
+	protected int inputWidth(boolean multiLine, boolean hasBody){
+		return PixelScene.landscape() && (multiLine || hasBody) ? W_LAND_EXTRA : WIDTH;
+	}
+
+	protected boolean buttonsUseFullWidth(){ return false; }
 
 	@Override
 	public void offset(int xOffset, int yOffset) {

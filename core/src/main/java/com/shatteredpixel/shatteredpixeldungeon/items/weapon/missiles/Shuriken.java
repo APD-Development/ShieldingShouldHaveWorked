@@ -45,6 +45,8 @@ public class Shuriken extends MissileWeapon {
 				(tier == 1 ? 2*lvl : tier*lvl); //scaling unchanged
 	}
 
+    @Override public String statsInfo(){return com.shatteredpixel.shatteredpixeldungeon.messages.Messages.get(this,"stats_desc",ShurikenInstantTracker.DURATION);}
+
 	@Override
 	protected void onThrow(int cell) {
 		super.onThrow(cell);

@@ -22,10 +22,11 @@ public class WindowGeometryTest {
 		for (boolean landscape : new boolean[]{false, true}){
 			for (float screen : landscape ? LANDSCAPE_SCREENS : PORTRAIT_SCREENS){
 				int w = WindowGeometry.width(landscape, screen);
-				assertTrue("screen " + screen + " landscape " + landscape, w >= WindowGeometry.MIN_WIDTH);
+				assertTrue("screen " + screen + " landscape " + landscape, w > 0);
 				assertTrue(w <= (landscape ? WindowGeometry.LANDSCAPE_WIDTH : WindowGeometry.PORTRAIT_WIDTH));
+				assertTrue("window " + w + " must leave a margin on a screen " + screen, w + 2 * WindowGeometry.SIDE_MARGIN <= screen);
 				if (screen >= WindowGeometry.MIN_WIDTH + 2 * WindowGeometry.SIDE_MARGIN){
-					assertTrue("window " + w + " must leave a margin on a screen " + screen, w + 2 * WindowGeometry.SIDE_MARGIN <= screen);
+					assertTrue(w >= WindowGeometry.MIN_WIDTH);
 				}
 			}
 		}
@@ -115,6 +116,25 @@ public class WindowGeometryTest {
 		return new String(Files.readAllBytes(new File(System.getProperty("apd.game.src"), relative).toPath()), "UTF-8");
 	}
 
+	@Test
+	public void wrappedActionsKeepPaddingAndUsableTouchTargets(){
+		for (float textHeight : new float[]{0, 9, 18, 27, 100}){
+			float height = WindowGeometry.actionHeight(textHeight);
+			assertTrue(height >= 22);
+			assertTrue(height >= textHeight + 2 * WindowGeometry.ROW_PAD);
+		}
+	}
+
+	@Test
+	public void runActionsWrapBeforeMeasuringAndScrollWithTheDetails() throws Exception {
+		String text = src("windows/WndUimsdRow.java");
+		assertTrue(text.indexOf("label.maxWidth(") < text.indexOf("WindowGeometry.actionHeight(label.height())"));
+		assertTrue(text.contains("content.add(label)"));
+		assertTrue(text.contains("actionSpans.add("));
+		assertFalse(text.contains("actions.size() * 18"));
+		assertFalse(text.contains("b.setRect(0, pos, width, 16)"));
+	}
+
 	//The bug itself: a window with a scroll pane must be resized BEFORE the pane is given its rectangle.
 	@Test
 	public void everyUimsdWindowWithAScrollPaneIsResizedBeforeThePaneIsPlaced() throws Exception {
@@ -140,4 +160,18 @@ public class WindowGeometryTest {
 		}
 		assertTrue(src("windows/WndUimsdList.java").contains("WindowGeometry.width("));
 	}
+
+	@Test
+	public void emptyAndExactRowBoundariesDoNotInventTouches(){
+		float[] empty = WindowGeometry.stack(new float[0]);
+		assertEquals(1, empty.length);
+		assertEquals(0f, empty[0], 0f);
+		assertEquals(-1, WindowGeometry.rowAt(empty, 0));
+
+		float[] tops = WindowGeometry.stack(new float[]{15, 31});
+		assertEquals(0, WindowGeometry.rowAt(tops, 0));
+		assertEquals(1, WindowGeometry.rowAt(tops, 15));
+		assertEquals(-1, WindowGeometry.rowAt(tops, 46));
+	}
+
 }

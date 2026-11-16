@@ -124,10 +124,8 @@ public class CrystalChoiceRoom extends SpecialRoom {
 				Generator.Category.RING,
 				Generator.Category.ARTIFACT
 		));
-		Heap chest = level.drop(hidden, level.pointToCell(room2.center()));
-		chest.type = Heap.Type.CHEST;
-		//opening the chest is optional, so it doesn't count for exploration bonus
-		chest.autoExplored = true;
+		// Opening this chest is optional; preserve exploration behavior for every retained/generated item.
+        for(Heap chest : com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomEquipmentHooks.dropGenerated(level, hidden, level.pointToCell(room2.center()), Heap.Type.CHEST, false))chest.autoExplored=true;
 
 		level.addItemToSpawn( new CrystalKey( Dungeon.depth ) );
 

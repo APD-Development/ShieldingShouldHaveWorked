@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -41,6 +44,9 @@ import java.util.ArrayList;
 public class Stylus extends Item {
 	
 	private static final float TIME_TO_INSCRIBE = 2;
+
+    /** Description-only access to the same action cost used by inscription. */
+    public static float inscriptionTime(){ return TIME_TO_INSCRIBE; }
 	
 	private static final String AC_INSCRIBE = "INSCRIBE";
 	

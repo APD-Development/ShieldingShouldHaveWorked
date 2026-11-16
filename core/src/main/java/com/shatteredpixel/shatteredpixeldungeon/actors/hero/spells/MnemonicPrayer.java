@@ -99,14 +99,14 @@ public class MnemonicPrayer extends TargetedClericSpell {
 		QuickSlotButton.target(ch);
 
 		float extension = 2 + hero.pointsInTalent(Talent.MNEMONIC_PRAYER);
-		affectChar(ch, extension);
+		affectChar(ch, extension,hero);
 
 		Char ally = PowerOfMany.getPoweredAlly();
 		if (ally != null && ally.buff(LifeLinkSpell.LifeLinkSpellBuff.class) != null){
 			if (ch == hero){
-				affectChar(ally, extension); //if cast on hero, duplicate to ally
+				affectChar(ally, extension,hero); //if cast on hero, duplicate to ally
 			} else if (ch == ally){
-				affectChar(hero, extension); //if cast on ally, duplicate to hero
+				affectChar(hero, extension,hero); //if cast on ally, duplicate to hero
 			}
 		}
 
@@ -122,7 +122,7 @@ public class MnemonicPrayer extends TargetedClericSpell {
 
 	}
 
-	private void affectChar( Char ch, float extension ){
+	private void affectChar( Char ch, float extension, Hero caster ){
 		if (ch.alignment == Char.Alignment.ALLY){
 
 			Sample.INSTANCE.play(Assets.Sounds.CHARGEUP);
@@ -175,12 +175,12 @@ public class MnemonicPrayer extends TargetedClericSpell {
 
 				//this might need a nerf of aggression vs bosses. (perhaps nerf the extension?)
 				if (b instanceof FlavourBuff)       Buff.affect(ch, (Class<?extends FlavourBuff>)b.getClass(), extension);
-				else if (b instanceof Bleeding)     ((Bleeding) b).extend( extension );
-				else if (b instanceof Burning)      ((Burning) b).extend( extension );
+				else if (b instanceof Bleeding)     ((Bleeding) b).extendAttributed( extension,caster );
+				else if (b instanceof Burning)      ((Burning) b).extendAttributed( extension,caster );
 				else if (b instanceof Corrosion)    ((Corrosion) b).extend( extension );
 				else if (b instanceof Dread)        ((Dread) b).extend( extension );
 				else if (b instanceof Ooze)         ((Ooze) b).extend( extension );
-				else if (b instanceof Poison)       ((Poison) b).extend( extension );
+				else if (b instanceof Poison)       ((Poison) b).extendAttributed( extension,caster );
 				else if (b instanceof Viscosity.DeferedDamage)  ((Viscosity.DeferedDamage) b).extend( extension );
 
 				b.mnemonicExtended = true;

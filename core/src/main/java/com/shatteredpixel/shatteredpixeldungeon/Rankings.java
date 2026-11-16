@@ -79,6 +79,28 @@ public enum Rankings {
 	public Record latestDaily;
 	public Record latestDailyReplay = null; //not stored, only meant to be temp
 	public LinkedHashMap<Long, Integer> dailyScoreHistory = new LinkedHashMap<>();
+    // Keep original integer history readable by older versions; earned scores use optional long metadata.
+    private final LinkedHashMap<Long, Long> dailyEarnedScoreHistory = new LinkedHashMap<>();
+
+    private static long dailyDate(long seed) {
+        return seed > DungeonSeed.TOTAL_SEEDS ? seed - DungeonSeed.TOTAL_SEEDS : seed;
+    }
+
+    private void recordDailyScore(long seed, Record record) {
+        long date = dailyDate(seed);
+        dailyScoreHistory.put(date, record.score);
+        dailyEarnedScoreHistory.put(date, record.earnedScore());
+    }
+
+    public long dailyEarnedScore(long date) {
+        // The latest frozen record can recover a score written by TEST249/250 without repricing history.
+        if (latestDaily != null && latestDaily.gameData != null && latestDaily.gameData.contains(SEED)
+                && dailyDate(latestDaily.gameData.getLong(SEED)) == date) return latestDaily.earnedScore();
+        Long earned = dailyEarnedScoreHistory.get(date);
+        if (earned != null) return earned;
+        Integer original = dailyScoreHistory.get(date);
+        return original == null ? 0 : original.longValue();
+    }
 
 	public void submit( boolean win, Object cause ) {
 
@@ -126,6 +148,25 @@ public enum Rankings {
 		Badges.validateHighScore( rec.score );
 		
 		INSTANCE.saveGameData(rec);
+        // Freeze the real seed-reuse deduction with this record. It is based on
+        // earlier local attempts, not future attempts or today's preferences.
+        if (rec.gameData != null && !rec.daily) {
+            String seedText=rec.customSeed;
+            if (seedText!=null && !seedText.isEmpty()) {
+                com.shatteredpixel.shatteredpixeldungeon.apd.recorder.SeedHistory.Summary history =
+                    com.shatteredpixel.shatteredpixeldungeon.apd.recorder.SeedHistory.lookup(
+                        com.shatteredpixel.shatteredpixeldungeon.apd.recorder.ApdRecorder.historyRoot(),
+                        seedText,
+                        com.shatteredpixel.shatteredpixeldungeon.apd.recorder.LegacyImporter.extractRankingsFile(System.currentTimeMillis()),
+                        com.shatteredpixel.shatteredpixeldungeon.apd.recorder.ApdRecorder.currentRunId());
+                long before=com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomScorePresentation.earnedScore(rec.gameData,rec.score);
+                com.shatteredpixel.shatteredpixeldungeon.apd.recorder.SeedReuseScore.calculate(
+                    before, history.attempts, history.deepestFloor, Statistics.deepestFloor,
+                    history.kind==com.shatteredpixel.shatteredpixeldungeon.apd.recorder.SeedHistory.Kind.MATCHING_LOCAL_HISTORY,
+                    history.priorDepths)
+                    .store(rec.gameData);
+            }
+        }
 
 		rec.gameID = UUID.randomUUID().toString();
 
@@ -136,11 +177,7 @@ public enum Rankings {
 			}
 
 			latestDaily = rec;
-			if (Dungeon.seed <= DungeonSeed.TOTAL_SEEDS) {
-				dailyScoreHistory.put(Dungeon.seed, rec.score);
-			} else {
-				dailyScoreHistory.put(Dungeon.seed - DungeonSeed.TOTAL_SEEDS, rec.score);
-			}
+			recordDailyScore(Dungeon.seed, rec);
 			save();
 			return;
 		}
@@ -274,6 +311,11 @@ public enum Rankings {
 		}
 
 		rec.gameData = new Bundle();
+		Dungeon.apdStoreCustomRules(rec.gameData);
+        if(Dungeon.customScoring()!=null){
+            Long earned=Dungeon.customScoring().adjustedIdentityScore(rec.score);
+            if(earned!=null){rec.gameData.put("apd_custom_original_score",(long)rec.score);rec.gameData.put("apd_custom_adjusted_score",earned.longValue());}
+        }
 
 		Belongings belongings = Dungeon.hero.belongings;
 
@@ -373,7 +415,7 @@ public enum Rankings {
 		if (Dungeon.initialVersion <= ShatteredPixelDungeon.v1_2_3){
 			Statistics.gameWon = rec.win;
 		}
-		rec.score = calculateScore();
+		calculateScore(); // Refresh component display without overwriting the historical earned record.
 
 		if (rec.gameData.contains(SEED)){
 			Dungeon.seed = rec.gameData.getLong(SEED);
@@ -395,6 +437,8 @@ public enum Rankings {
 	public static final String LATEST_DAILY	        = "latest_daily";
 	public static final String DAILY_HISTORY_DATES  = "daily_history_dates";
 	public static final String DAILY_HISTORY_SCORES = "daily_history_scores";
+    private static final String DAILY_EARNED_DATES = "apd_daily_earned_dates_v1";
+    private static final String DAILY_EARNED_SCORES = "apd_daily_earned_scores_v1";
 
 	public void save() {
 		Bundle bundle = new Bundle();
@@ -415,6 +459,15 @@ public enum Rankings {
 		}
 		bundle.put(DAILY_HISTORY_DATES, dates);
 		bundle.put(DAILY_HISTORY_SCORES, scores);
+        ArrayList<Long> earnedKeys = new ArrayList<>();
+        for (Long date : dailyScoreHistory.keySet()) if (dailyEarnedScoreHistory.containsKey(date)) earnedKeys.add(date);
+        long[] earnedDates = new long[earnedKeys.size()], earnedScores = new long[earnedKeys.size()];
+        for (int n = 0; n < earnedKeys.size(); n++) {
+            earnedDates[n] = earnedKeys.get(n);
+            earnedScores[n] = dailyEarnedScoreHistory.get(earnedKeys.get(n));
+        }
+        bundle.put(DAILY_EARNED_DATES, earnedDates);
+        bundle.put(DAILY_EARNED_SCORES, earnedScores);
 
 		try {
 			FileUtils.bundleToFile( RANKINGS_FILE, bundle);
@@ -431,6 +484,7 @@ public enum Rankings {
 		}
 		
 		records = new ArrayList<>();
+        dailyEarnedScoreHistory.clear();
 		
 		try {
 			Bundle bundle = FileUtils.bundleFromFile( RANKINGS_FILE );
@@ -438,7 +492,19 @@ public enum Rankings {
 			for (Bundlable record : bundle.getCollection( RECORDS )) {
 				records.add( (Record)record );
 			}
-			lastRecord = bundle.getInt( LATEST );
+            // Preserve latest-run identity while legacy v1 seed receipts are upgraded
+            // and the actual earned-score ranking order is rebuilt.
+            int oldLast=bundle.getInt( LATEST );
+            Record latest=oldLast>=0 && oldLast<records.size() ? records.get(oldLast) : null;
+            boolean migrated=false;
+            for (Record record : records) {
+                if (record.gameData != null &&
+                        com.shatteredpixel.shatteredpixeldungeon.apd.recorder.SeedReuseScore.migrate(record.gameData)) {
+                    migrated=true;
+                }
+            }
+            if (migrated) Collections.sort(records, scoreComparator);
+            lastRecord=latest==null ? oldLast : records.indexOf(latest);
 			
 			totalNumber = bundle.getInt( TOTAL );
 			if (totalNumber == 0) {
@@ -454,6 +520,11 @@ public enum Rankings {
 				}
 			}
 
+            if (migrated) {
+                // Persist the one-time upgrade only after loading completes below.
+                migratedSeedScores=true;
+            }
+
 			if (bundle.contains(LATEST_DAILY)){
 				latestDaily = (Record) bundle.get(LATEST_DAILY);
 
@@ -466,15 +537,34 @@ public enum Rankings {
 					if (date > latestDate) latestDate = date;
 					i++;
 				}
+                long[] earnedDates = bundle.contains(DAILY_EARNED_DATES) ? bundle.getLongArray(DAILY_EARNED_DATES) : new long[0];
+                long[] earnedScores = bundle.contains(DAILY_EARNED_SCORES) ? bundle.getLongArray(DAILY_EARNED_SCORES) : new long[0];
+                if (earnedDates != null && earnedScores != null && earnedDates.length == earnedScores.length) for (int n = 0; n < earnedDates.length; n++) {
+                    if (dailyScoreHistory.containsKey(earnedDates[n]) && earnedScores[n] >= 0)
+                        dailyEarnedScoreHistory.put(earnedDates[n], earnedScores[n]);
+                }
+                if (latestDaily != null && latestDaily.gameData != null && latestDaily.gameData.contains(SEED)) {
+                    long date = dailyDate(latestDaily.gameData.getLong(SEED));
+                    if (dailyScoreHistory.containsKey(date)) dailyEarnedScoreHistory.putIfAbsent(date, latestDaily.earnedScore());
+                }
 				if (latestDate > SPDSettings.lastDaily()){
 					SPDSettings.lastDaily(latestDate);
 				}
 			}
 
-		} catch (IOException e) {
-		}
-	}
-	
+            if (latestDaily != null && latestDaily.gameData != null) {
+                migratedSeedScores |= com.shatteredpixel.shatteredpixeldungeon.apd.recorder.SeedReuseScore.migrate(latestDaily.gameData);
+            }
+            if (migratedSeedScores) {
+                migratedSeedScores=false;
+                save();
+            }
+        } catch (IOException e) {
+        }
+    }
+
+    private boolean migratedSeedScores;
+
 	public static class Record implements Bundlable {
 
 		private static final String CAUSE   = "cause";
@@ -513,6 +603,11 @@ public enum Rankings {
 
 		public String date;
 		public String version;
+
+		public long earnedScore(){
+            long adjusted=com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomScorePresentation.earnedScore(gameData,score);
+            return com.shatteredpixel.shatteredpixeldungeon.apd.recorder.SeedReuseScore.earnedScore(gameData,adjusted);
+        }
 
 		public String desc(){
 			if (win){
@@ -601,7 +696,7 @@ public enum Rankings {
 				return -1;
 			}
 
-			int result = (int)Math.signum( rhs.score - lhs.score );
+			int result = Long.compare(rhs.earnedScore(),lhs.earnedScore());
 			if (result == 0) {
 				return (int)Math.signum( rhs.gameID.hashCode() - lhs.gameID.hashCode());
 			} else {

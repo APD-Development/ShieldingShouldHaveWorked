@@ -2,6 +2,7 @@ package com.shatteredpixel.shatteredpixeldungeon.apd.recorder;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import com.shatteredpixel.shatteredpixeldungeon.apd.stats.ApdEvent;
 import com.shatteredpixel.shatteredpixeldungeon.apd.stats.FactEvents;
@@ -16,10 +17,13 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.File;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 
-//Landmarks the journal notes and keys picked up or used are recorded when they happen; repeating one that is already there is not a change.
+//Landmarks the journal notes (including every shown level feeling) and keys picked up or used are recorded when they happen;
+//repeating one that is already there is not a change.
 public class JournalRecordingTest {
 
 	@Before
@@ -56,6 +60,61 @@ public class JournalRecordingTest {
 		assertArrayEquals(new long[]{ 7, 1 }, got.get(2).values);
 		assertArrayEquals(new String[]{ "added" }, got.get(2).tags);
 		assertArrayEquals(new String[]{ "used" }, got.get(3).tags);
+	}
+
+	@Test
+	public void everyShownLevelFeelingIsRecordedOnceAtItsFloor() throws Exception {
+		RecorderTestSupport.Session s = ItemTestSupport.startRun(46L);
+		String id = ApdRecorder.currentRunId();
+		Notes.Landmark[] feelings = new Notes.Landmark[]{
+				Notes.Landmark.CHASM_FLOOR, Notes.Landmark.WATER_FLOOR, Notes.Landmark.GRASS_FLOOR,
+				Notes.Landmark.DARK_FLOOR, Notes.Landmark.LARGE_FLOOR, Notes.Landmark.TRAPS_FLOOR,
+				Notes.Landmark.SECRETS_FLOOR
+		};
+		for (Notes.Landmark feeling : feelings){
+			Notes.add(feeling, 8);
+			Notes.add(feeling, 8);                     //already noted: not another shown feeling
+		}
+		ApdRecorder.flushForReading();
+		ReadResult r = s.read(id);
+		List<FactEvents.Observation> got = new ArrayList<>();
+		for (ApdEvent e : r.events){
+			if (!FactEvents.isFactEvent(e.type)) continue;
+			for (FactEvents.Observation o : FactEvents.decode(e, r)){
+				if (o.key.equals("journal.landmark") && o.subject.endsWith("_FLOOR")) got.add(o);
+			}
+		}
+		assertEquals(feelings.length, got.size());
+		for (int i = 0; i < feelings.length; i++){
+			assertEquals(feelings[i].name(), got.get(i).subject);
+			assertArrayEquals(new long[]{ 8 }, got.get(i).values);
+			assertArrayEquals(new String[]{ "added" }, got.get(i).tags);
+		}
+	}
+
+	@Test
+	public void gameSceneShowsAndNotesEveryNonNeutralLevelFeeling() throws Exception {
+		File root = new File(System.getProperty("apd.game.src"));
+		String source = new String(Files.readAllBytes(new File(root, "scenes/GameScene.java").toPath()), "UTF-8");
+		int start = source.indexOf("switch (Dungeon.level.feeling)");
+		int end = source.indexOf("for (Mob mob : Dungeon.level.mobs)", start);
+		assertTrue("level-feeling display switch must remain in GameScene", start >= 0 && end > start);
+		String shown = source.substring(start, end);
+		assertEquals("all seven non-neutral feelings must be shown", 7, count(shown, "GLog.w(Dungeon.level.feeling.desc());"));
+		String[][] mappings = new String[][]{{"CHASM", "CHASM_FLOOR"}, {"WATER", "WATER_FLOOR"},
+				{"GRASS", "GRASS_FLOOR"}, {"DARK", "DARK_FLOOR"}, {"LARGE", "LARGE_FLOOR"},
+				{"TRAPS", "TRAPS_FLOOR"}, {"SECRETS", "SECRETS_FLOOR"}};
+		for (String[] mapping : mappings){
+			assertTrue(mapping[0] + " display branch is missing", shown.contains("case " + mapping[0] + ":"));
+			assertEquals(mapping[0] + " must add its matching journal landmark exactly once", 1,
+					count(shown, "Notes.add(Notes.Landmark." + mapping[1] + ");"));
+		}
+	}
+
+	private static int count( String text, String needle ){
+		int count = 0, at = 0;
+		while ((at = text.indexOf(needle, at)) >= 0){ count++; at += needle.length(); }
+		return count;
 	}
 
 	@Test

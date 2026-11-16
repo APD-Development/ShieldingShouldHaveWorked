@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -72,13 +75,17 @@ public class WandOfRegrowth extends Wand {
 
 	ConeAOE cone;
 	int target;
+	private com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin apdPlantOrigin =
+			com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin.UNATTRIBUTED;
 
 	@Override
 	public boolean tryToZap(Hero owner, int target) {
 		if (super.tryToZap(owner, target)){
 			this.target = target;
+			apdPlantOrigin = com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin.capture(owner, null);
 			return true;
 		} else {
+			apdPlantOrigin = com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin.UNATTRIBUTED;
 			return false;
 		}
 	}
@@ -86,6 +93,8 @@ public class WandOfRegrowth extends Wand {
 	@Override
 	public void onZap(Ballistica bolt) {
 
+		com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin plantOrigin = apdPlantOrigin;
+		apdPlantOrigin = com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin.UNATTRIBUTED;
 		ArrayList<Integer> cells = new ArrayList<>(cone.cells);
 
 		float furrowedChance = 0;
@@ -164,13 +173,15 @@ public class WandOfRegrowth extends Wand {
 		if (!cells.isEmpty() && Random.Float() > furrowedChance &&
 				(Random.Int(6) < chrgUsed)){ // 16%/33%/50% chance to spawn a seed pod or dewcatcher
 			int cell = cells.remove(0);
-			Dungeon.level.plant( Random.Int(2) == 0 ? new Seedpod.Seed() : new Dewcatcher.Seed(), cell);
+			Dungeon.level.plantAttributed(
+					Random.Int(2) == 0 ? new Seedpod.Seed() : new Dewcatcher.Seed(), cell, plantOrigin);
 		}
 
 		if (!cells.isEmpty() && Random.Float() > furrowedChance &&
 				(Random.Int(3) < chrgUsed)){ // 33%/66%/100% chance to spawn a plant
 			int cell = cells.remove(0);
-			Dungeon.level.plant((Plant.Seed) Generator.randomUsingDefaults(Generator.Category.SEED), cell);
+			Dungeon.level.plantAttributed(
+					(Plant.Seed) Generator.randomUsingDefaults(Generator.Category.SEED), cell, plantOrigin);
 		}
 
 		for (int cell : cells){
@@ -199,6 +210,12 @@ public class WandOfRegrowth extends Wand {
 		}
 
 	}
+
+    public int previewChargeLimit(int heroLevel) { return chargeLimit(heroLevel, previewBaseLevel()); }
+    public int usedGrowthCharges() { return totChrgUsed; }
+    public float previewFurrowedChance(int heroLevel) {
+        return totChrgUsed >= previewChargeLimit(heroLevel) ? Math.min(1, (chargesOverLimit+1)/5f) : 0;
+    }
 
 	private int chargeLimit( int heroLvl ){
 		return chargeLimit(  heroLvl, level() );
@@ -286,9 +303,10 @@ public class WandOfRegrowth extends Wand {
 
 	@Override
 	public String statsDesc() {
+		if (!curChargeKnown) return Messages.get(Wand.class, "unknown_charge_preview");
 		String desc = Messages.get(this, "stats_desc", chargesPerCast());
-		if (isIdentified()){
-			int chargeLeft = chargeLimit(Dungeon.hero.lvl) - totChrgUsed;
+		if (isIdentified() && Dungeon.hero != null){
+			int chargeLeft = previewChargeLimit(Dungeon.hero.lvl) - totChrgUsed;
 			if (chargeLeft < 10000) desc += " " + Messages.get(this, "degradation", Math.max(chargeLeft, 0));
 		}
 		return desc;

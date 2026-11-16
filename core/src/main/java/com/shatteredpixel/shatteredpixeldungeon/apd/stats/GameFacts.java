@@ -41,8 +41,16 @@ public final class GameFacts {
 			.description("Every step the hero took.")
 			.value("cell", "Cell", "The cell the hero stepped onto (row times floor width plus column).", FactKind.PLAIN)
 			.value("width", "Floor width", "How many cells wide the floor is, to turn a cell into a row and column.", FactKind.PLAIN)
-			.value("travelling", "Travelling", "1 when walking by travel or auto-explore, 0 for a single step.", FactKind.PLAIN)
+			.value("travelling", "Walking", "1 for ordinary physical walking, 0 for an instantaneous relocation that also changed the hero's cell.", FactKind.PLAIN)
 			.series().build());
+
+	//one observation per deliberate movement command; separate from the per-cell move.step series
+	public static final FactKind MOVE_COMMAND = FactKinds.register(FactKind.builder("move.command", "Movement command").area("Movement")
+			.description("Every manual step, point-to-point travel or stair navigation command the hero began.")
+			.value("destination", "Destination", "The command's destination cell (row times floor width plus column).", FactKind.PLAIN)
+			.value("width", "Floor width", "How many cells wide the floor is, to turn the destination into a row and column.", FactKind.PLAIN)
+			.tag("mode", "Mode", "step, travel or stairs")
+			.since(1, 15).build());
 
 	//the hero's condition at the start of each turn the hero takes (hunger is the game's hunger counter, higher is hungrier)
 	public static final FactKind HERO_STATE = FactKinds.register(FactKind.builder("hero.state", "Hero state").plural("Hero states").area("Character")
@@ -96,6 +104,24 @@ public final class GameFacts {
 			.value("depth", "Floor", "The floor the landmark is on.", FactKind.PLAIN)
 			.tag("action", "Change", "added or removed").since(1, 9).build());
 
+	//the hero successfully invoked an interaction with an NPC; only its player-visible name and current floor are recorded
+	public static final FactKind NPC_INTERACT = FactKinds.register(FactKind.builder("npc.interact", "NPC interaction").plural("NPC interactions").area("Exploration")
+			.description("Every time the hero interacted with a visible non-player character.").subject("Character")
+			.value("depth", "Floor", "The floor the interaction happened on.", FactKind.PLAIN).since(1, 12).build());
+
+	//a player-owned allied creature was created by a character the player could see; names are only what the player saw
+	public static final FactKind ALLY_SUMMON = FactKinds.register(FactKind.builder("ally.summon", "Ally summoned").plural("Allies summoned").area("Abilities")
+			.description("Every player-owned allied creature created by the hero or another visible ally.").subject("Ally").actor()
+			.value("depth", "Floor", "The floor the ally appeared on.", FactKind.PLAIN).since(1, 13).build());
+
+	//a visible boss crossed one of its explicit combat phases; phase numbering is local to that boss
+	public static final FactKind BOSS_PHASE = FactKinds.register(FactKind.builder("boss.phase", "Boss phase").plural("Boss phases").area("Enemies")
+			.description("Every visible boss phase transition after combat began.").subject("Boss")
+			.value("phase", "Phase", "The boss-specific phase number after the transition.", FactKind.PLAIN)
+			.value("depth", "Floor", "The floor where the transition happened.", FactKind.PLAIN)
+			.tag("state", "State", "The visible kind of phase, such as enraged, arena, supercharged, shielded, fist or final.")
+			.since(1, 16).build());
+
 	//an NPC quest moved on a step: given, ready (what was asked for was found or beaten) or done (the reward stage was reached)
 	public static final FactKind QUEST = FactKinds.register(FactKind.builder("npc.quest", "Quest step").plural("Quest steps").area("Exploration")
 			.description("Each step of the Sad ghost, Wandmaker, Blacksmith and Imp quests as it happened.").subject("Quest giver")
@@ -116,6 +142,17 @@ public final class GameFacts {
 			.description("Every action chosen for an item: drink, read, zap, eat, throw, equip and the rest.").subject("Item")
 			.value("quantity", "How many in the stack", "", FactKind.PLAIN)
 			.tag("action", "Action").build());
+
+	//a completed alchemy recipe using only the names visible to the player at the time
+	public static final FactKind ALCHEMY_CRAFT = FactKinds.register(FactKind.builder("alchemy.craft", "Alchemy craft").plural("Alchemy crafts").area("Items")
+			.description("Every successful alchemy recipe, with the ingredients and result as the player saw them.").subject("Result")
+			.value("depth", "Floor", "The floor where the recipe was completed.", FactKind.PLAIN)
+			.value("quantity", "Result quantity", "How many items the recipe produced.", FactKind.PLAIN)
+			.value("energy", "Energy used", "Total energy spent on the recipe.", FactKind.PLAIN)
+			.value("carriedEnergy", "Carried energy used", "Energy spent from the run's main energy pool.", FactKind.PLAIN)
+			.value("toolkitEnergy", "Toolkit energy used", "Energy supplied by the Alchemist's Toolkit.", FactKind.PLAIN)
+			.tag("ingredients", "Ingredients", "Displayed ingredient names and quantities.")
+			.since(1, 14).build());
 
 	//the same action with the hidden truth: the true class, and the numbers the player may not know yet
 	public static final FactKind ITEM_USE_TRUTH = FactKinds.register(FactKind.builder("item.useTruth", "Item action (true item)").plural("Item actions (true item)")

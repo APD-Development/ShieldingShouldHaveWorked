@@ -54,7 +54,7 @@ public class Firebloom extends Plant {
 			Buff.prolong(ch, Trap.HazardAssistTracker.class, Trap.HazardAssistTracker.DURATION);
 		}
 		
-		GameScene.add( Blob.seed( pos, 2, Fire.class ) );
+		GameScene.add( Fire.seedAttributed( pos, 2, apdOrigin() ) );
 		
 		if (Dungeon.level.heroFOV[pos]) {
 			CellEmitter.get( pos ).burst( FlameParticle.FACTORY, 5 );

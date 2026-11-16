@@ -27,6 +27,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
+import com.shatteredpixel.shatteredpixeldungeon.apd.recorder.ApdPlay;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier;
@@ -36,6 +37,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Doom;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LifeLink;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.ClericSpell;
+import com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomOffensiveHooks;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Sheep;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Beam;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
@@ -107,6 +109,7 @@ public class DwarfKing extends Mob {
 
 	private int phase = 1;
 	private int summonsMade = 0;
+	private int apdShieldObjectivesResolved = 0;
 
 	private float summonCooldown = 0;
 	private float abilityCooldown = 0;
@@ -130,6 +133,7 @@ public class DwarfKing extends Mob {
 		super.storeInBundle(bundle);
 		bundle.put( PHASE, phase );
 		bundle.put( SUMMONS_MADE, summonsMade );
+		if (apdShieldObjectivesResolved > 0) bundle.put("apd_shield_objectives_resolved", apdShieldObjectivesResolved);
 		bundle.put( SUMMON_CD, summonCooldown );
 		bundle.put( ABILITY_CD, abilityCooldown );
 		bundle.put( LAST_ABILITY, lastAbility );
@@ -140,6 +144,9 @@ public class DwarfKing extends Mob {
 		super.restoreFromBundle(bundle);
 		phase = bundle.getInt( PHASE );
 		summonsMade = bundle.getInt( SUMMONS_MADE );
+		apdShieldObjectivesResolved = bundle.contains("apd_shield_objectives_resolved") ? bundle.getInt("apd_shield_objectives_resolved") : 0;
+		if (apdShieldObjectivesResolved < 0 || apdShieldObjectivesResolved > 18)
+			throw new IllegalArgumentException("Invalid custom boss objective count; preserve the save for recovery");
 		summonCooldown = bundle.getFloat( SUMMON_CD );
 		abilityCooldown = bundle.getFloat( ABILITY_CD );
 		lastAbility = bundle.getInt( LAST_ABILITY );
@@ -213,7 +220,7 @@ public class DwarfKing extends Mob {
 					spend(3 * TICK);
 					summonsMade += 2;
 					return true;
-				} else if (shielding() <= 300 && summonsMade < 12){
+				} else if (shielding() <= com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomBossHealthHooks.threshold(300) && summonsMade < 12){
 					if (summonsMade == 6) {
 						sprite.centerEmitter().start(Speck.factory(Speck.SCREAM), 0.4f, 2);
 						Sample.INSTANCE.play(Assets.Sounds.CHALLENGE);
@@ -229,7 +236,7 @@ public class DwarfKing extends Mob {
 					summonsMade += 3;
 					spend(3*TICK);
 					return true;
-				} else if (shielding() <= 150 && summonsMade < 18) {
+				} else if (shielding() <= com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomBossHealthHooks.threshold(150) && summonsMade < 18) {
 					if (summonsMade == 12) {
 						sprite.centerEmitter().start(Speck.factory(Speck.SCREAM), 0.4f, 2);
 						Sample.INSTANCE.play(Assets.Sounds.CHALLENGE);
@@ -263,7 +270,7 @@ public class DwarfKing extends Mob {
 					spend(3 * TICK);
 					summonsMade++;
 					return true;
-				} else if (shielding() <= 200 && summonsMade < 8) {
+				} else if (shielding() <= com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomBossHealthHooks.threshold(200) && summonsMade < 8) {
 					if (summonsMade == 4) {
 						sprite.centerEmitter().start(Speck.factory(Speck.SCREAM), 0.4f, 2);
 						Sample.INSTANCE.play(Assets.Sounds.CHALLENGE);
@@ -277,7 +284,7 @@ public class DwarfKing extends Mob {
 					summonsMade++;
 					spend(TICK);
 					return true;
-				} else if (shielding() <= 100 && summonsMade < 12) {
+				} else if (shielding() <= com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomBossHealthHooks.threshold(100) && summonsMade < 12) {
 					sprite.centerEmitter().start(Speck.factory(Speck.SCREAM), 0.4f, 2);
 					Sample.INSTANCE.play(Assets.Sounds.CHALLENGE);
 					yell(Messages.get(this, "wave_3"));
@@ -479,6 +486,18 @@ public class DwarfKing extends Mob {
 			}
 			return;
 		}
+		// Allocate the exact scaled shield across the original mandatory objectives.
+		// Truncating HT/12 or HT/18 can leave an unbreakable remainder at custom health values.
+		if (phase == 2 && dmg >= 0 && src instanceof KingDamager &&
+				com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomCombatHooks.percentage(
+						com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomDungeonRules.Slider.BOSS_HP) != 100) {
+			int objectives = Dungeon.isChallenged(Challenges.STRONGER_BOSSES) ? 18 : 12;
+			int completed = Math.min(objectives, apdShieldObjectivesResolved);
+			if (completed < objectives) {
+				dmg = (int)((long)HT*(completed+1)/objectives - (long)HT*completed/objectives);
+				apdShieldObjectivesResolved = completed+1;
+			} else dmg = 0;
+		}
 		int preHP = HP;
 		super.damage(dmg, src);
 
@@ -492,13 +511,15 @@ public class DwarfKing extends Mob {
 			int dmgTaken = preHP - HP;
 			abilityCooldown -= dmgTaken/8f;
 			summonCooldown -= dmgTaken/8f;
-			if (HP <= (Dungeon.isChallenged(Challenges.STRONGER_BOSSES) ? 100 : 50)) {
-				HP = (Dungeon.isChallenged(Challenges.STRONGER_BOSSES) ? 100 : 50);
+			if (HP <= com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomBossHealthHooks.threshold(Dungeon.isChallenged(Challenges.STRONGER_BOSSES) ? 100 : 50)) {
+				HP = com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomBossHealthHooks.threshold(Dungeon.isChallenged(Challenges.STRONGER_BOSSES) ? 100 : 50);
 				sprite.showStatus(CharSprite.POSITIVE, Messages.get(this, "invulnerable"));
 				ScrollOfTeleportation.appear(this, CityBossLevel.throne);
 				properties.add(Property.IMMOVABLE);
 				phase = 2;
+				ApdPlay.onBossPhase(name(), phase, "shielded");
 				summonsMade = 0;
+				apdShieldObjectivesResolved = 0;
 				sprite.idle();
 				Buff.affect(this, DKBarrior.class).setShield(HT);
 				for (Summoning s : buffs(Summoning.class)) {
@@ -518,6 +539,7 @@ public class DwarfKing extends Mob {
 		} else if (phase == 2 && shielding() == 0) {
 			properties.remove(Property.IMMOVABLE);
 			phase = 3;
+			ApdPlay.onBossPhase(name(), phase, "final");
 			summonsMade = 1; //monk/warlock on 3rd summon
 			sprite.centerEmitter().start( Speck.factory( Speck.SCREAM ), 0.4f, 2 );
 			Sample.INSTANCE.play( Assets.Sounds.CHALLENGE );
@@ -534,7 +556,7 @@ public class DwarfKing extends Mob {
 					});
 				}
 			});
-		} else if (phase == 3 && preHP > 20 && HP < 20 && isAlive()){
+		} else if (phase == 3 && preHP > com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomBossHealthHooks.threshold(20) && HP < com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomBossHealthHooks.threshold(20) && isAlive()){
 			yell( Messages.get(this, "losing") );
 		}
 	}
@@ -695,6 +717,7 @@ public class DwarfKing extends Mob {
 
 				if (Actor.findChar(pos) == null) {
 					Mob m = Reflection.newInstance(summon);
+                    m.apdInheritOffensiveOrigin(target);
 					m.pos = pos;
 					m.maxLvl = -2;
 					GameScene.add(m);
@@ -705,7 +728,7 @@ public class DwarfKing extends Mob {
 					}
 				} else {
 					Char ch = Actor.findChar(pos);
-					ch.damage(Random.NormalIntRange(20, 40), this);
+					CustomOffensiveHooks.raw(ch, Random.NormalIntRange(20, 40), this, target);
 					if (((DwarfKing)target).phase == 2){
 						if (Dungeon.isChallenged(Challenges.STRONGER_BOSSES)){
 							target.damage(target.HT/18, new KingDamager());

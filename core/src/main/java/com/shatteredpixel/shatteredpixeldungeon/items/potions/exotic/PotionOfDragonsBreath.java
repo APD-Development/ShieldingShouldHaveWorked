@@ -33,6 +33,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Cripple;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
+import com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin;
 import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Catalog;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
@@ -124,6 +125,7 @@ public class PotionOfDragonsBreath extends ExoticPotion {
 				}
 				potionAlreadyUsed = true;
 				identifiedByUse = false;
+				final OffensiveDamageOrigin apdOrigin = OffensiveDamageOrigin.capture(curUser, null);
 				curUser.busy();
 				Sample.INSTANCE.play( Assets.Sounds.DRINK );
 				curUser.sprite.operate(curUser.pos, new Callback() {
@@ -175,13 +177,13 @@ public class PotionOfDragonsBreath extends ExoticPotion {
 											if (Dungeon.level.adjacent(bolt.sourcePos, cell) && !Dungeon.level.flamable[cell]){
 												adjacentCells.add(cell);
 											} else {
-												GameScene.add( Blob.seed( cell, 5, Fire.class ) );
+												GameScene.add( Fire.seedAttributed( cell, 5, apdOrigin ) );
 											}
 											
 											Char ch = Actor.findChar( cell );
 											if (ch != null) {
 												
-												Buff.affect( ch, Burning.class ).reignite( ch );
+												Burning.affectAttributedOrigin(ch, apdOrigin);
 												Buff.prolong(ch, Cripple.class, 5f);
 											}
 										}
@@ -193,7 +195,7 @@ public class PotionOfDragonsBreath extends ExoticPotion {
 												if (Dungeon.level.trueDistance(cell+i, bolt.sourcePos) > Dungeon.level.trueDistance(cell, bolt.sourcePos)
 														&& Dungeon.level.flamable[cell+i]
 														&& Fire.volumeAt(cell+i, Fire.class) == 0){
-													GameScene.add( Blob.seed( cell+i, 5, Fire.class ) );
+													GameScene.add( Fire.seedAttributed( cell+i, 5, apdOrigin ) );
 												}
 											}
 										}

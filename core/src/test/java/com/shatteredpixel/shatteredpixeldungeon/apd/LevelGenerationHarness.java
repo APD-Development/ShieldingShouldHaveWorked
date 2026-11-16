@@ -1,3 +1,21 @@
+/*
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>
+ */
+
 package com.shatteredpixel.shatteredpixeldungeon.apd;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
@@ -32,6 +50,9 @@ public final class LevelGenerationHarness {
 
 	private LevelGenerationHarness(){}
 
+	//Only GoldenChildMain uses the pre-fix snapshot format; actual maps still require visible exits.
+	static boolean historicalTutorialFingerprint;
+
 	//Level generation is NOT a pure function of the seed: it also reads persistent journal state.
 	// - Document (guidebook/alchemy/lore page) found states decide which pages get placed on levels
 	// - SPDSettings.intro() changes the tutorial elements of the first floors
@@ -42,7 +63,9 @@ public final class LevelGenerationHarness {
 		//a veteran player: intro off, all adventurer's guide and alchemy guide pages found
 		VETERAN,
 		//what a floor replay uses (ReplayContext): guide pages found, NO lore page found, intro off
-		REFERENCE
+		REFERENCE,
+		//an install that has been used (tutorial over) but whose guidebook pages were never found: what a returning player who skipped them has
+		RETURNING
 	}
 
 	private static java.util.Map<Document, java.util.Map<String, Integer>> initialPageStates;
@@ -73,12 +96,16 @@ public final class LevelGenerationHarness {
 				}
 			}
 			SPDSettings.intro(false);
+		} else if (context == Context.RETURNING){
+			SPDSettings.intro(false);
 		} else if (context == Context.VETERAN){
 			for (Document doc : new Document[]{Document.ADVENTURERS_GUIDE, Document.ALCHEMY_GUIDE}){
 				for (String page : doc.pageNames()) doc.findPage(page);
 			}
 			SPDSettings.intro(false);
 		} else {
+			//Debug/headless defaults mark guide pages READ; a fresh intro fixture must explicitly be unread.
+			Document.ADVENTURERS_GUIDE.deletePage(Document.GUIDE_INTRO);
 			SPDSettings.intro(true);
 		}
 	}
@@ -203,6 +230,23 @@ public final class LevelGenerationHarness {
 		Object json = new org.json.JSONTokener(new String(bytes.toByteArray(), StandardCharsets.UTF_8)).nextValue();
 
 		normalizePaintingVariance(((JSONObject) json).getJSONObject("level"));
+		//Keep the old golden baseline meaningful after the explicitly authorized entrance-door fix.
+		//Normalize ONLY those boundary door bytes in the serialized test snapshot, never the real level.
+		//Every other tile/item/mob/state remains compared against the unchanged historical hashes.
+		if (historicalTutorialFingerprint && Dungeon.depth == 1 && SPDSettings.intro()
+				&& level instanceof com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel){
+			JSONArray map = ((JSONObject) json).getJSONObject("level").getJSONArray("map");
+			for (com.shatteredpixel.shatteredpixeldungeon.levels.rooms.Room room :
+					((com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel) level).rooms()){
+				if (!room.isEntrance()) continue;
+				for (int y = room.top; y <= room.bottom; y++) for (int x = room.left; x <= room.right; x++){
+					if (x != room.left && x != room.right && y != room.top && y != room.bottom) continue;
+					int cell = x + y * level.width();
+					if (map.getInt(cell) == Terrain.DOOR) map.put(cell, Terrain.SECRET_DOOR);
+				}
+			}
+		}
+
 
 		StringBuilder canonical = new StringBuilder();
 		canonicalize(json, canonical);
@@ -242,7 +286,7 @@ public final class LevelGenerationHarness {
 		return hex.toString();
 	}
 
-	private static void canonicalize( Object value, StringBuilder out ){
+	static void canonicalize( Object value, StringBuilder out ){
 		if (value instanceof JSONObject){
 			JSONObject obj = (JSONObject) value;
 			TreeMap<String, Object> sorted = new TreeMap<>();
@@ -256,6 +300,12 @@ public final class LevelGenerationHarness {
 				//apd_uid is the statistics recorder's item id (a random UUID, assigned to generated items since Phase 5). It is
 				//not part of the dungeon, so it must not be part of the fingerprint.
 				if (key.equals("apd_uid")) continue;
+				// Original golden snapshots predate collection bookkeeping. Only that legacy
+				// comparison omits this one key; live fingerprints and saved items retain it.
+				if (historicalTutorialFingerprint && key.equals("apd_progression_origins_v1")) continue;
+				// The archived pre-feature snapshot cannot contain optional item-origin metadata.
+				if (historicalTutorialFingerprint && key.equals("apd_item_origin_v1")) continue;
+				if (historicalTutorialFingerprint && key.equals("apd_item_upgrade_range_v1")) continue;
 				Object val = obj.opt(key);
 				//ShopRoom.ChooseBag picks the bag for sale from a HashMap keyed by Bag objects, and ties between bags
 				//are broken by that map's iteration order, which depends on object identity hashes. Which bag a shop
@@ -299,6 +349,17 @@ public final class LevelGenerationHarness {
 				}
 			}
 			out.append(']');
+		} else if (value instanceof java.math.BigDecimal){
+            // Modern public-domain JSON-java parses decimals without immediately rounding to Double.
+            // The unchanged historical goldens used Double.toString. Match only its spelling,
+            // and reject any decimal whose numeric value would change. Never narrow integers.
+            java.math.BigDecimal decimal = (java.math.BigDecimal)value;
+            double legacy = decimal.doubleValue();
+            if (!Double.isFinite(legacy)
+                    || new java.math.BigDecimal(Double.toString(legacy)).compareTo(decimal) != 0) {
+                throw new AssertionError("Fingerprint decimal cannot use legacy spelling without losing precision: " + decimal);
+            }
+            out.append(Double.toString(legacy));
 		} else if (value instanceof String){
 			out.append('"').append(value).append('"');
 		} else {

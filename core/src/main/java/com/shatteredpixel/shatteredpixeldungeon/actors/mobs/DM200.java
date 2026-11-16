@@ -115,15 +115,16 @@ public class DM200 extends Mob {
 	}
 
 	private void zap( ){
+        final com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin apdGasOrigin=com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin.capture(this,null);
 		spend( TICK );
 		ventCooldown = 30;
 
 		Ballistica trajectory = new Ballistica(pos, enemy.pos, Ballistica.STOP_TARGET);
 
 		for (int i : trajectory.subPath(0, trajectory.dist)){
-			GameScene.add(Blob.seed(i, 20, ToxicGas.class));
+			GameScene.add(ToxicGas.seedAttributed(i,20,apdGasOrigin));
 		}
-		GameScene.add(Blob.seed(trajectory.collisionPos, 100, ToxicGas.class));
+		GameScene.add(ToxicGas.seedAttributed(trajectory.collisionPos,100,apdGasOrigin));
 
 	}
 
@@ -186,3 +187,4 @@ public class DM200 extends Mob {
 	}
 
 }
+

@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -71,24 +74,15 @@ public abstract class ArmorAbility implements Bundlable {
 		return new Ballistica( user.pos, dst, Ballistica.PROJECTILE ).collisionPos;
 	}
 
+    /** Unmodified charge points, for read-only ability explanations. */
+    public float baseChargePoints() { return baseChargeUse; }
+
+    public static float heroicEnergyFactor(int rank){return rank==2?.77f:rank==3?.68f:rank==4?.6f:.88f;}
+
 	public float chargeUse( Hero hero ){
 		float chargeUse = baseChargeUse;
 		if (hero.hasTalent(Talent.HEROIC_ENERGY)){
-			//reduced charge use by 12%/23%/32%/40%
-			switch (hero.pointsInTalent(Talent.HEROIC_ENERGY)){
-				case 1: default:
-					chargeUse *= 0.88f;
-					break;
-				case 2:
-					chargeUse *= 0.77f;
-					break;
-				case 3:
-					chargeUse *= 0.68f;
-					break;
-				case 4:
-					chargeUse *= 0.6f;
-					break;
-			}
+            chargeUse *= heroicEnergyFactor(hero.pointsInTalent(Talent.HEROIC_ENERGY));
 		}
 		return chargeUse;
 	}

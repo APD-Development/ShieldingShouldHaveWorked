@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -76,20 +79,17 @@ public class Tomahawk extends MissileWeapon {
 		//currently 2-5.3, plus 0.33-1 per level
 		//increasing to 40% results in: 2.4-6.4, plus 0.4-1.2 per level
 		//maybe standardize that to 3-6 plus 0.5-1 per level
-		Buff.affect( defender, Bleeding.class ).set( augment.damageFactor(Random.NormalFloat(minBleed(), maxBleed())) );
+		Buff.affect( defender, Bleeding.class ).setAttributed( augment.damageFactor(Random.NormalFloat(minBleed(), maxBleed())), attacker );
 		return super.proc( attacker, defender, damage );
 	}
 
-	public String statsInfo(){
-		if (isIdentified()){
-			return Messages.get(this, "stats_desc",
-					Math.round(augment.damageFactor(minBleed())),
-					Math.round(augment.damageFactor(maxBleed())));
-		} else {
-			return Messages.get(this, "typical_stats_desc",
-					Math.round(augment.damageFactor(minBleed(0))),
-					Math.round(augment.damageFactor(maxBleed(0))));
-		}
-	}
+    public String statsInfo(){
+        if(!isIdentified())return Messages.get(this,"typical_stats_desc",
+                Math.round(augment.damageFactor(minBleed(0))),Math.round(augment.damageFactor(maxBleed(0))));
+        Integer ringBonus=com.shatteredpixel.shatteredpixeldungeon.apd.qol.RingItemEffects.knownBonus(Dungeon.hero,RingOfSharpshooting.class,true);
+        int level=buffedLvl()+(ringBonus==null?0:ringBonus);
+        return Messages.get(this,ringBonus==null?"weapon_only_stats_desc":"stats_desc",
+                Math.round(augment.damageFactor(minBleed(level))),Math.round(augment.damageFactor(maxBleed(level))));
+    }
 
 }

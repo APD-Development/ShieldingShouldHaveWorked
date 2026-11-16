@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -206,6 +209,11 @@ public abstract class Wand extends Item {
 		wandProc(target, buffedLvl(), chargesUsed);
 	}
 
+    /** Same Warlock probability threshold used by actual wand procs; no random draw. */
+    public static double soulMarkThreshold(int wandLevel,int chargesUsed){
+        return Math.pow(0.92f,(wandLevel*chargesUsed)+1)-0.07f;
+    }
+
 	//TODO Consider externalizing char awareness buff
 	protected static void wandProc(Char target, int wandLevel, int chargesUsed){
 		if (Dungeon.hero.hasTalent(Talent.ARCANE_VISION)) {
@@ -216,13 +224,13 @@ public abstract class Wand extends Item {
 		if (target != Dungeon.hero &&
 				Dungeon.hero.subClass == HeroSubClass.WARLOCK &&
 				//standard 1 - 0.92^x chance, plus 7%. Starts at 15%
-				Random.Float() > (Math.pow(0.92f, (wandLevel*chargesUsed)+1) - 0.07f)){
+				Random.Float() > soulMarkThreshold(wandLevel,chargesUsed)){
 			SoulMark.prolong(target, SoulMark.class, SoulMark.DURATION + wandLevel);
 		}
 
 		if (Dungeon.hero.subClass == HeroSubClass.PRIEST && target.buff(GuidingLight.Illuminated.class) != null) {
 			target.buff(GuidingLight.Illuminated.class).detach();
-			target.damage(Dungeon.hero.lvl+5, GuidingLight.INSTANCE);
+			com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomOffensiveHooks.raw(target,Dungeon.hero.lvl+5,GuidingLight.INSTANCE,Dungeon.hero);
 		}
 
 		if (target.alignment != Char.Alignment.ALLY
@@ -292,7 +300,12 @@ public abstract class Wand extends Item {
 	public String info() {
 		String desc = super.info();
 
-		desc += "\n\n" + statsDesc();
+        // Label numeric +0 examples, not the charge-only or non-numeric descriptions.
+        boolean unupgradedExample = !levelKnown && ((this instanceof DamageWand
+                && !(this instanceof WandOfFireblast && !curChargeKnown)
+                && !(this instanceof WandOfTransfusion && Dungeon.hero == null))
+                || this instanceof WandOfCorrosion || this instanceof WandOfWarding);
+        desc += "\n\n" + (unupgradedExample ? Messages.get(Wand.class,"unupgraded_example") + " " : "") + statsDesc();
 
 		if (resinBonus == 1){
 			desc += "\n\n" + Messages.get(Wand.class, "resin_one");
@@ -425,6 +438,57 @@ public abstract class Wand extends Item {
 		return lvl;
 	}
 
+    /** Ordinary known level, without the curse-cleanup side effects of level(). */
+    public int previewBaseLevel() {
+        if (!levelKnown) return 0;
+        int value = super.level();
+        if (cursed && curseInfusionBonus) value += 1 + value / 6;
+        return value + resinBonus;
+    }
+
+    public int previewChargeCost() { return curChargeKnown ? chargesPerCast() : 0; }
+
+    /** Inclusive effective-level bounds for descriptions, without choosing a Wild Magic roll.
+     * Unknown upgrade levels must never enter a numerical preview. */
+    public int[] previewEffectiveLevels() {
+        if (!levelKnown) return new int[]{0, 0};
+        int base = previewBaseLevel();
+        if (Dungeon.hero != null && Dungeon.hero.buff(Degrade.class) != null
+                && (isEquipped(Dungeon.hero) || Dungeon.hero.belongings.contains(this)))
+            base = Degrade.reduceLevel(base);
+        int low = base, high = base;
+        if (charger != null && charger.target != null) {
+            if (charger.target == Dungeon.hero && !Dungeon.hero.belongings.contains(this)
+                    && Dungeon.hero.buff(Degrade.class) != null)
+                low = high = Degrade.reduceLevel(base);
+            if (charger.target.buff(ScrollEmpower.class) != null) { low += 2; high += 2; }
+            if (charger.target instanceof Hero
+                    && ((Hero)charger.target).hasTalent(Talent.DESPERATE_POWER)) {
+                int extra = ((Hero)charger.target).pointsInTalent(Talent.DESPERATE_POWER);
+                if (!curChargeKnown) {
+                    // Include both legitimate charge conditions, without consulting the hidden count.
+                    high += extra;
+                } else if (curCharges == 1) {
+                    low += extra; high += extra;
+                }
+            }
+            if (charger.target.buff(WildMagic.WildMagicTracker.class) != null) {
+                int rank = ((Hero)charger.target).pointsInTalent(Talent.WILD_POWER);
+                int ceiling = 3 + rank;
+                if (low < ceiling) low = Math.min(low + (4 + rank) / 2, ceiling);
+                if (high < ceiling) high = Math.min(high + (5 + rank) / 2, ceiling);
+            }
+            WandOfMagicMissile.MagicCharge charge = charger.target.buff(WandOfMagicMissile.MagicCharge.class);
+            if (charge != null) { low = Math.max(low, charge.level()); high = Math.max(high, charge.level()); }
+        }
+        return new int[]{low, high};
+    }
+
+    public String previewUncertaintyNote() {
+        int[] levels = previewEffectiveLevels();
+        return levels[0] == levels[1] ? "" : "\n\n" + Messages.get(Wand.class, "wild_magic_preview", levels[0], levels[1]);
+    }
+
 	public void updateLevel() {
 		maxCharges = Math.min( initialCharges() + level(), 10 );
 		curCharges = Math.min( curCharges, maxCharges );
@@ -556,6 +620,7 @@ public abstract class Wand extends Item {
 			}
 		}
 		level(n);
+		com.shatteredpixel.shatteredpixeldungeon.apd.qol.GenerationUpgradeRanges.baseline(this);
 		curCharges += n;
 		
 		//30% chance to be cursed
@@ -573,25 +638,38 @@ public abstract class Wand extends Item {
 		return new ItemSprite.Glowing(0xFFFFFF, 1f/(float)resinBonus);
 	}
 
-	@Override
-	public int value() {
-		int price = 75;
-		if (cursed && cursedKnown) {
-			price /= 2;
-		}
-		if (levelKnown) {
-			if (level() > 0) {
-				price *= (level() + 1);
-			} else if (level() < 0) {
-				price /= (1 - level());
-			}
-		}
-		if (price < 1) {
-			price = 1;
-		}
-		return price;
-	}
-	
+    @Override public int visiblyUpgraded() { return previewBaseLevel(); }
+
+    @Override public int buffedVisiblyUpgraded() {
+        int[] bounds = previewEffectiveLevels();
+        return bounds[0] == bounds[1] ? bounds[0] : previewBaseLevel();
+    }
+
+    /** A cast-dependent level cannot be represented by a single rolled UI number. */
+    public String previewUpgradeRange() {
+        int[] bounds = previewEffectiveLevels();
+        if (!levelKnown || bounds[0] == bounds[1]) return null;
+        return (bounds[0] >= 0 ? "+" : "") + bounds[0] + ".."
+                + (bounds[1] >= 0 ? "+" : "") + bounds[1];
+    }
+
+    @Override public int previewValue() { return priceAtLevel(previewBaseLevel()); }
+
+    @Override public int value() {
+        // Real transactions retain the existing inactive-infusion cleanup.
+        return priceAtLevel(levelKnown ? level() : 0);
+    }
+
+    private int priceAtLevel(int knownLevel) {
+        int price = 75;
+        if (cursed && cursedKnown) price /= 2;
+        if (levelKnown) {
+            if (knownLevel > 0) price *= knownLevel + 1;
+            else if (knownLevel < 0) price /= 1 - knownLevel;
+        }
+        return Math.max(1, price);
+    }
+
 	private static final String USES_LEFT_TO_ID     = "uses_left_to_id";
 	private static final String AVAILABLE_USES      = "available_uses";
 	private static final String CUR_CHARGES         = "curCharges";
@@ -798,6 +876,16 @@ public abstract class Wand extends Item {
 		}
 	};
 	
+    /** Baseline scheduled-charge interval; does not charge, identify or clean up the wand. */
+    public static float baselineRechargeTurns(int missingCharges,float scale){
+        return (float)(Charger.BASE_CHARGE_DELAY
+                + Charger.SCALING_CHARGE_ADDITION*Math.pow(scale,Math.max(0,missingCharges)));
+    }
+    public static float rechargingBonusPerTurn(){return Charger.CHARGE_BUFF_BONUS;}
+    public static float normalRechargeScaleFactor(){return Charger.NORMAL_SCALE_FACTOR;}
+    public static float baseRechargeDelay(){return Charger.BASE_CHARGE_DELAY;}
+    public static float scalingRechargeDelay(){return Charger.SCALING_CHARGE_ADDITION;}
+
 	public class Charger extends Buff {
 		
 		private static final float BASE_CHARGE_DELAY = 10f;
@@ -844,8 +932,7 @@ public abstract class Wand extends Item {
 			int missingCharges = maxCharges - curCharges;
 			missingCharges = Math.max(0, missingCharges);
 
-			float turnsToCharge = (float) (BASE_CHARGE_DELAY
-					+ (SCALING_CHARGE_ADDITION * Math.pow(scalingFactor, missingCharges)));
+			float turnsToCharge = baselineRechargeTurns(missingCharges,scalingFactor);
 
 			if (Regeneration.regenOn())
 				partialCharge += (1f/turnsToCharge) * RingOfEnergy.wandChargeMultiplier(target);

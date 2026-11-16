@@ -42,7 +42,7 @@ public class HermitCrab extends Crab {
 		super.rollToDropLoot();
 
 		if (Dungeon.hero.lvl <= maxLvl + 2){
-			Dungeon.level.drop(Generator.randomArmor(), pos).sprite.drop();
+			for (com.shatteredpixel.shatteredpixeldungeon.items.Heap heap : com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomEquipmentHooks.dropGenerated(Dungeon.level, Generator.randomArmor(), pos, null, false))heap.sprite.drop();
 		}
 	}
 

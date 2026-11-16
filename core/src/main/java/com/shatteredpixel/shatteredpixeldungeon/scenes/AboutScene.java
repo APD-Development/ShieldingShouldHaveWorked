@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -69,36 +72,82 @@ public class AboutScene extends PixelScene {
 
 		final int APD_COLOR = 0x44DD88; //differs from the stock SHPX, Pixel Dungeon and libGDX colors
 		CreditsBlock apd = new CreditsBlock(true, APD_COLOR,
-				"ADHD Pixel Dungeon",
-				null,
-				"APD created by Chris (charltonchris29)\n" +
-				"A private fork of Shattered Pixel Dungeon\n" +
-				"Version 4.0.8-apd INDEV\n" +
-				"Founded on the principle that shielding should have fucking worked.",
-				null,
-				null);
+				"ADHD Pixel Dungeon", null,
+				"Modified by Chris Charlton (2026)\n" +
+				"Version " + com.watabou.noosa.Game.version + " (build " + com.watabou.noosa.Game.versionCode + ")\n" +
+				"An unofficial modified version of Shattered Pixel Dungeon by Evan Debenham, based on Pixel Dungeon by Oleg Dolya (Watabou). APD is not affiliated with or endorsed by Evan Debenham or Shattered Pixel.\n" +
+				(com.shatteredpixel.shatteredpixeldungeon.SPDSettings.apdAdultHumor()
+                    ? "Founded on the principle that shielding should have fucking worked."
+                    : "Founded on the principle that shielding should have worked."), null, null);
 		apd.setRect((w - colWidth)/2f, insets.top + 6, colWidth, 0);
 		content.add(apd);
-
-		CreditsBlock apdLicense = new CreditsBlock(true, -1,
-				null,
-				null,
-				"Based on Shattered Pixel Dungeon by Evan Debenham, licensed GPLv3.",
-				null,
-				null);
-		apdLicense.setRect((w - colWidth)/2f, apd.bottom() + 4, colWidth, 0);
-		content.add(apdLicense);
-
-		addLine(apdLicense.bottom() + 4, content);
-
-		//the stock credits start below the APD section
-		final float creditsTop = apdLicense.bottom() + 12;
+		float infoTop = apd.bottom() + 4;
+		final float infoWidth = Math.min(w - 12, 220);
+		RedButton info0 = new RedButton("Why APD Exists", 6){
+			@Override protected void onClick(){
+				AboutScene.this.addToFront(new com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdText("Why APD Exists", (com.shatteredpixel.shatteredpixeldungeon.SPDSettings.apdAdultHumor()
+                        ? "APD began with the shielding mechanic: shielding should have fucking worked."
+                        : "APD began with the shielding mechanic: shielding should have worked.") + "\n\nAfter years playing Shattered Pixel Dungeon, I wanted to expand the experience. APD builds on SPD's accomplishments, rather than diminishing them."));
+			}
+		};
+		info0.multiline = true;
+		info0.setRect((w - infoWidth)/2f + 0 * (infoWidth + 2)/2f, infoTop + 0 * 22, (infoWidth - 2)/2f, 20);
+		content.add(info0);
+		RedButton info1 = new RedButton("Features & Vision", 6){
+			@Override protected void onClick(){
+				AboutScene.this.addToFront(new com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdText("Features & Vision", "Available: UIMSD statistics, filtering and comparisons, plus gameplay information and player settings.\n\nPlanned: additional characters, items, mechanics and challenges; deeper statistics and meaningful replayability.\n\nAPD will have strictly no pay-to-win mechanics."));
+			}
+		};
+		info1.multiline = true;
+		info1.setRect((w - infoWidth)/2f + 1 * (infoWidth + 2)/2f, infoTop + 0 * 22, (infoWidth - 2)/2f, 20);
+		content.add(info1);
+		RedButton info2 = new RedButton("Community & Voting", 6){
+			@Override protected void onClick(){
+				AboutScene.this.addToFront(new com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdText("Community & Voting", "Available now: an offline Community preview.\n\nPlanned: player-created submissions and threaded discussions in Month 1; qualification voting selecting the top 16 in Month 2; weekly elimination rounds in Month 3. Comments are not votes.\n\nFuture ambitions include run reviews and peer feedback, community mods and content, and testing winning ideas during development. Some content remains exclusively creator-controlled. Online interaction is not available yet."));
+			}
+		};
+		info2.multiline = true;
+		info2.setRect((w - infoWidth)/2f + 0 * (infoWidth + 2)/2f, infoTop + 1 * 22, (infoWidth - 2)/2f, 20);
+		content.add(info2);
+		RedButton info3 = new RedButton("Developer's Note", 6){
+			@Override protected void onClick(){
+				AboutScene.this.addToFront(new com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdText("Developer's Note", "I've spent years playing Shattered Pixel Dungeon, and APD is my attempt to build the experience I've always wanted.\n\nI'm one person developing a game for people who love Pixel Dungeon as much as I do.\n\nMy goal is for players to never run out of content they actually WANT to play.\n\nAnd if the community says an idea is terrible, I might implement two."));
+			}
+		};
+		info3.multiline = true;
+		info3.setRect((w - infoWidth)/2f + 1 * (infoWidth + 2)/2f, infoTop + 1 * 22, (infoWidth - 2)/2f, 20);
+		content.add(info3);
+		RedButton info4 = new RedButton("Development Roadmap", 6){
+			@Override protected void onClick(){
+				AboutScene.this.addToFront(new com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdText("Development Roadmap", "Priorities: bug fixes, reliability and save protection; statistics and UIMSD improvements; additional gameplay content; Community features; future modding support.\n\nThese are development goals, not promises of availability or release dates."));
+			}
+		};
+		info4.multiline = true;
+		info4.setRect((w - infoWidth)/2f + 0 * (infoWidth + 2)/2f, infoTop + 2 * 22, (infoWidth - 2)/2f, 20);
+		content.add(info4);
+		RedButton info5 = new RedButton("Source & Licenses", 6){
+			@Override protected void onClick(){
+                AboutScene.this.addToFront(new com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions(
+                        "Source & Licenses", com.shatteredpixel.shatteredpixeldungeon.apd.GplLicense.NOTICE,
+                        "GPLv3 (offline)", "APD source") {
+                    @Override protected void onSelect(int index) {
+                        if (index == 0) com.shatteredpixel.shatteredpixeldungeon.windows.WndGplLicense.show();
+                        else ShatteredPixelDungeon.platform.openURI(com.shatteredpixel.shatteredpixeldungeon.apd.GplLicense.SOURCE_URL);
+                    }
+                });
+			}
+		};
+		info5.multiline = true;
+		info5.setRect((w - infoWidth)/2f + 1 * (infoWidth + 2)/2f, infoTop + 2 * 22, (infoWidth - 2)/2f, 20);
+		content.add(info5);
+		addLine(infoTop + 70, content);
+		final float creditsTop = infoTop + 78;
 
 		//*** Shattered Pixel Dungeon Credits ***
 
 		CreditsBlock shpx = new CreditsBlock(true, Window.SHPX_COLOR,
 				"Shattered Pixel Dungeon",
-				Icons.SHPX.get(),
+				null,
 				"Developed by: _Evan Debenham_\nBased on Pixel Dungeon's open source",
 				"ShatteredPixel.com",
 				"https://ShatteredPixel.com");
@@ -200,7 +249,7 @@ public class AboutScene extends PixelScene {
 				GDX_COLOR,
 				"libGDX",
 				Icons.LIBGDX.get(),
-				"ShatteredPD is powered by _libGDX_!",
+				"APD is powered by _libGDX_!",
 				"libgdx.com",
 				"https://libgdx.com/");
 		if (landscape()){
@@ -241,9 +290,9 @@ public class AboutScene extends PixelScene {
 				Window.TITLE_COLOR,
 				null,
 				null,
-				"ShatteredPD is community-translated via _Transifex_! Thank you so much to all of Shattered's volunteer translators!",
-				"transifex.com/shattered-pixel/...",
-				"https://explore.transifex.com/shattered-pixel/shattered-pixel-dungeon/");
+				"Inherited Shattered Pixel Dungeon translations were contributed by volunteers through Transifex. Thank you to the original translators! APD-specific text may remain in English.",
+				null,
+				null);
 		transifex.setRect((Camera.main.width - colWidth)/2f, purigro.bottom() + 12, colWidth, 0);
 		content.add(transifex);
 
@@ -257,7 +306,7 @@ public class AboutScene extends PixelScene {
 				Window.TITLE_COLOR,
 				null,
 				null,
-				"Shattered Pixel Dungeon uses the following sound samples from _freesound.org_:\n\n" +
+				"APD inherits the following sound samples from Shattered Pixel Dungeon from _freesound.org_:\n\n" +
 
 				"Creative Commons Attribution License:\n" +
 				"_SFX ATTACK SWORD 001.wav_ by _JoelAudio_\n" +
@@ -317,6 +366,7 @@ public class AboutScene extends PixelScene {
 		add(btnApdChanges);
 
 		list.setRect( 0, 0, w, h - apdBarHeight );
+		list.allowDragFromButtons();
 		list.scrollTo(0, 0);
 
 		ExitButton btnExit = new ExitButton();
@@ -329,7 +379,10 @@ public class AboutScene extends PixelScene {
 	
 	@Override
 	protected void onBackPressed() {
-		ShatteredPixelDungeon.switchScene(TitleScene.class);
+		// A Back return must not hide an otherwise ready title behind the
+		// standard one-second scene-entry fade. A genuine scene switch is still
+		// required, but the title can be visible on its first rendered frame.
+		ShatteredPixelDungeon.switchNoFade(TitleScene.class);
 	}
 
 	private void addLine( float y, Group content ){

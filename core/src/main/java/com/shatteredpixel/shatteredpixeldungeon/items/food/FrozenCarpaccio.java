@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -69,9 +72,9 @@ public class FrozenCarpaccio extends Food {
 			case 3:
 				GLog.i( Messages.get(FrozenCarpaccio.class, "better") );
 				int apdHpBefore = hero.HP;
-				hero.HP = Math.min( hero.HP + hero.HT / 4, hero.HT );
+				hero.HP = Math.min( hero.HP + com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomHealingHooks.amount(hero, hero.HT / 4), hero.HT );
 				ApdCombat.onHeal( hero, apdHpBefore, ApdCombat.HEAL_FOOD_FROZEN_CARPACCIO, hero.HT / 4 );
-				hero.sprite.showStatusWithIcon( CharSprite.POSITIVE, Integer.toString(hero.HT / 4), FloatingText.HEALING );
+				hero.sprite.showStatusWithIcon( CharSprite.POSITIVE, Integer.toString(com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomHealingHooks.display(hero, apdHpBefore, hero.HT / 4)), FloatingText.HEALING );
 				break;
 		}
 	}
@@ -82,3 +85,4 @@ public class FrozenCarpaccio extends Food {
 		return result;
 	}
 }
+

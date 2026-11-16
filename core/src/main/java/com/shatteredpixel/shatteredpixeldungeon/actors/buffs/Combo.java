@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -87,6 +90,8 @@ public class Combo extends Buff implements ActionIndicator.Action {
 		return Integer.toString((int)comboTime);
 	}
 	
+    public static float killComboTime(int talentRank){return 15f + 15f*talentRank;}
+
 	public void hit( Char enemy ) {
 
 		count++;
@@ -96,7 +101,7 @@ public class Combo extends Buff implements ActionIndicator.Action {
 		}
 
 		if (!enemy.isAlive() || (enemy.buff(Corruption.class) != null && enemy.HP == enemy.HT)){
-			comboTime = 15f + 15f*((Hero)target).pointsInTalent(Talent.CLEAVE);
+			comboTime = killComboTime(((Hero)target).pointsInTalent(Talent.CLEAVE));
 			initialComboTime = comboTime;
 		}
 
@@ -276,6 +281,8 @@ public class Combo extends Buff implements ActionIndicator.Action {
 		return best;
 	}
 
+    public float remainingComboTime(){return comboTime;}
+
 	public int getComboCount(){
 		return count;
 	}
@@ -400,7 +407,7 @@ public class Combo extends Buff implements ActionIndicator.Action {
 					for (Char ch : Actor.chars()) {
 						if (ch != enemy && ch.alignment == Char.Alignment.ENEMY
 								&& PathFinder.distance[ch.pos] < Integer.MAX_VALUE) {
-							int aoeHit = Math.round(target.damageRoll() * 0.25f * count);
+							int aoeHit = apdCrushSplashRoll(target, target.damageRoll(), count);
 							aoeHit /= 2;
 							aoeHit -= ch.drRoll();
 							if (ch.buff(Vulnerable.class) != null) aoeHit *= 1.33f;
@@ -543,4 +550,9 @@ public class Combo extends Buff implements ActionIndicator.Action {
 			return Messages.get(Combo.class, "prompt");
 		}
 	};
+	private static int apdCrushSplashRoll(Char attacker, int damageRoll, int comboCount) {
+		return Math.round(com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomOffensiveHooks.attackDamage(
+				attacker, damageRoll * 0.25f * comboCount));
+	}
+
 }

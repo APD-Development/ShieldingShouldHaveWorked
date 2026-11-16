@@ -162,7 +162,7 @@ public class CityLevel extends RegularLevel {
 
 								Dungeon.hero.live(); //clears all non-persist buffs, resets hunger/regen
 								int apdHpBefore = hero.HP;
-								hero.HP = hero.HT; //full heal
+								hero.HP = Math.min(hero.HT, com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomHealingHooks.fullHealth(hero)); //full heal
 								ApdCombat.onHeal( hero, apdHpBefore, ApdCombat.HEAL_OTHER_FULL_HEAL, -1 );
 
 								EscapeCrystal crystal = hero.belongings.getItem(EscapeCrystal.class);

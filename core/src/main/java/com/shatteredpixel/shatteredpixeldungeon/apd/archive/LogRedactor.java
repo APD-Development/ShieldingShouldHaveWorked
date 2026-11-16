@@ -194,6 +194,14 @@ public final class LogRedactor {
 			}
 		}
 
+		//A clean encoding of a damaged prefix must not turn incomplete counts into exact facts.
+		//Do not expose discarded byte sizes, hidden-event counts or hidden-only clocks.
+		if (!r.status.isClean() || out.eventsUnreadable > 0){
+			long clock = kept.isEmpty() ? 0 : kept.get(kept.size() - 1).clock;
+			byte[] gap = new ByteSink().writeUnsigned(EventTypes.GAP_REDACTED_INCOMPLETE).writeUnsigned(0).toByteArray();
+			kept.add(new ApdEvent(r.eventCount, EventTypes.GAP, 0, clock, gap));
+		}
+
 		ByteArrayOutputStream bytes = new ByteArrayOutputStream(Math.max(1024, log.length / 4));
 		try {
 			bytes.write(LogHeader.encode(r.header.telemetryVersion, r.header.createdAtMillis, r.header.runId, REDACTED_MARK + r.header.writerBuild));
@@ -284,6 +292,10 @@ public final class LogRedactor {
 			o.writeUnsigned(p.unsigned());         //difficulty
 			if (p.hasRemaining()) o.writeUnsigned(p.unsigned());   //difficultyBalance
 		}
+		// Telemetry1.11: user-selected rules are public; retain their string reference.
+		if (p.hasRemaining()) o.writeUnsigned(id(p.string()));
+        if(p.hasRemaining())o.writeUnsigned(p.unsigned());
+        for(int i=0;i<3&&p.hasRemaining();i++)o.writeUnsigned(id(p.string()));
 		if (p.hasRemaining()) throw new IllegalStateException("run start has fields this redactor does not know");
 		return o.toByteArray();
 	}

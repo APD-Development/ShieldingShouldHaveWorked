@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -199,21 +202,10 @@ public class WndSettings extends WndTabbed {
 
 	}
 
-	@Override
-	public void hide() {
-		super.hide();
-		//resets generators because there's no need to retain chars for languages not selected
-		ShatteredPixelDungeon.seamlessResetScene(new Game.SceneChangeCallback() {
-			@Override
-			public void beforeCreate() {
-				Game.platform.resetGenerators();
-			}
-			@Override
-			public void afterCreate() {
-				//do nothing
-			}
-		});
-	}
+	// Ordinary Back closing this window must not reconstruct the entire
+	// dungeon/title scene or recreate font textures. Language selections and
+	// system-font changes already request their own seamless scene reset at
+	// the exact option that changes those generators. Inherit Window.hide().
 
 	private static class DisplayTab extends Component {
 
@@ -276,7 +268,7 @@ public class WndSettings extends WndTabbed {
 					Messages.get(this, "dark"), Messages.get(this, "bright"), -1, 1) {
 				@Override
 				protected void onChange() {
-					SPDSettings.brightness(getSelectedValue());
+					if(getSelectedValue()!=SPDSettings.brightness()) SPDSettings.brightness(getSelectedValue());
 				}
 			};
 			optBrightness.setSelectedValue(SPDSettings.brightness());
@@ -286,7 +278,7 @@ public class WndSettings extends WndTabbed {
 					Messages.get(this, "off"), Messages.get(this, "high"), -1, 2) {
 				@Override
 				protected void onChange() {
-					SPDSettings.visualGrid(getSelectedValue());
+					if(getSelectedValue()!=SPDSettings.visualGrid()) SPDSettings.visualGrid(getSelectedValue());
 				}
 			};
 			optVisGrid.setSelectedValue(SPDSettings.visualGrid());
@@ -368,6 +360,8 @@ public class WndSettings extends WndTabbed {
 		ColorBlock sep2;
 		CheckBox chkFont;
 		CheckBox chkVibrate;
+        CheckBox chkConfirmWaterskin,chkConfirmTraps;
+        RedButton btnGrassDew;
 
 		@Override
 		protected void createChildren() {
@@ -391,8 +385,10 @@ public class WndSettings extends WndTabbed {
 				) {
 					@Override
 					protected void onChange() {
-						SPDSettings.interfaceSize(getSelectedValue());
-						ShatteredPixelDungeon.seamlessResetScene();
+						if(getSelectedValue()!=SPDSettings.interfaceSize()){
+							SPDSettings.interfaceSize(getSelectedValue());
+							ShatteredPixelDungeon.seamlessResetScene();
+						}
 					}
 				};
 				optUIMode.setSelectedValue(SPDSettings.interfaceSize());
@@ -408,6 +404,7 @@ public class WndSettings extends WndTabbed {
 					@Override
 					protected void onChange() {
 						if (getSelectedValue() != SPDSettings.scale()) {
+                            com.watabou.utils.SupportDiagnostics.event("ui.scale", "from="+PixelScene.defaultZoom+" to="+getSelectedValue());
 							SPDSettings.scale(getSelectedValue());
 							ShatteredPixelDungeon.seamlessResetScene();
 						}
@@ -601,6 +598,21 @@ public class WndSettings extends WndTabbed {
 				chkVibrate.checked(SPDSettings.vibration());
 			}
 			add(chkVibrate);
+            chkConfirmWaterskin=new CheckBox("Confirm Waterskin"){
+                @Override protected void onClick(){super.onClick();SPDSettings.confirmWaterskin(checked());}
+            };
+            chkConfirmWaterskin.checked(SPDSettings.confirmWaterskin());add(chkConfirmWaterskin);
+            chkConfirmTraps=new CheckBox("Warn about traps"){
+                @Override protected void onClick(){super.onClick();SPDSettings.confirmKnownTraps(checked());}
+            };
+            chkConfirmTraps.checked(SPDSettings.confirmKnownTraps());add(chkConfirmTraps);
+            btnGrassDew = new RedButton(Messages.get(this, "dew_pickup")) {
+                @Override protected void onClick() {
+                    super.onClick();
+                    ShatteredPixelDungeon.scene().addToFront(new WndGrassDewSettings());
+                }
+            };
+            add(btnGrassDew);
 		}
 
 		@Override
@@ -648,6 +660,10 @@ public class WndSettings extends WndTabbed {
 				chkVibrate.setRect(0, chkFont.bottom() + GAP, width, BTN_HEIGHT);
 				height = chkVibrate.bottom();
 			}
+            chkConfirmWaterskin.setRect(0,height+GAP,width,BTN_HEIGHT);
+            chkConfirmTraps.setRect(0,chkConfirmWaterskin.bottom()+GAP,width,BTN_HEIGHT);
+            btnGrassDew.setRect(0,chkConfirmTraps.bottom()+GAP,width,BTN_HEIGHT);
+            height=btnGrassDew.bottom();
 		}
 
 	}

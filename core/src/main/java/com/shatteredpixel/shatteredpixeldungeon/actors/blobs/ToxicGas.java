@@ -32,10 +32,27 @@ import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 
 public class ToxicGas extends Blob implements Hero.Doom {
+ private com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CellDamageOrigins apdOrigins=new com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CellDamageOrigins();
+ private static final String APD_ORIGINS="apd_toxic_origins";
+ public static ToxicGas seedAttributed(int cell,int amount,com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin origin){
+  try(com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveEffectContext context=com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveEffectContext.enter(origin)){return Blob.seed(cell,amount,ToxicGas.class);}
+ }
+
+ @Override public void seed(com.shatteredpixel.shatteredpixeldungeon.levels.Level level,int cell,int amount){
+  apdOrigins.seed(cur,level.length(),cell,amount,com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveEffectContext.current());
+  super.seed(level,cell,amount);
+ }
+ @Override public void clear(int cell){super.clear(cell);apdOrigins.clear(cell);}
+ @Override public void fullyClear(){super.fullyClear();apdOrigins.clearAll();}
+ @Override public void storeInBundle(com.watabou.utils.Bundle b){super.storeInBundle(b);if(volume>0)apdOrigins.store(b,APD_ORIGINS,cur);else com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CellDamageOrigins.clearMetadata(b,APD_ORIGINS);}
+ @Override public void restoreFromBundle(com.watabou.utils.Bundle b){super.restoreFromBundle(b);apdOrigins=com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CellDamageOrigins.restore(b,APD_ORIGINS,cur);}
+
 
 	@Override
 	protected void evolve() {
+        apdOrigins.synchronize(cur);
 		super.evolve();
+        apdOrigins.prepareDiffusion(cur,off,Dungeon.level.solid,Dungeon.level.width());
 
 		int damage = 1 + Dungeon.scalingDepth()/5;
 
@@ -48,11 +65,12 @@ public class ToxicGas extends Blob implements Hero.Doom {
 				if (cur[cell] > 0 && (ch = Actor.findChar( cell )) != null) {
 					if (!ch.isImmune(this.getClass())) {
 
-						ch.damage(damage, this);
+						ch.damage(apdOrigins.scale(damage,cell), this);
 					}
 				}
 			}
 		}
+        apdOrigins.finishDiffusion();
 	}
 	
 	@Override
@@ -76,3 +94,4 @@ public class ToxicGas extends Blob implements Hero.Doom {
 		GLog.n( Messages.get(this, "ondeath") );
 	}
 }
+

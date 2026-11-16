@@ -91,6 +91,37 @@ public class PixelScene extends Scene {
 	protected boolean inGameScene = false;
 
 	private Signal.Listener<KeyEvent> fullscreenListener;
+	private Camera retainedUiCamera;
+
+	public boolean canRetainMenu(){
+		for (com.watabou.noosa.Gizmo child : members){
+			if (child instanceof com.shatteredpixel.shatteredpixeldungeon.ui.Window) return false;
+		}
+		return true;
+	}
+
+	@Override
+	public void onRetain(){
+		super.onRetain();
+		com.shatteredpixel.shatteredpixeldungeon.ui.Button.cancelPressedButton();
+		retainedUiCamera = uiCamera;
+		// An early menu tap must not pause a title fade and replay it on Back.
+		for (com.watabou.noosa.Gizmo child : new ArrayList<>(members)){
+			if (child instanceof Fader){
+				remove(child);
+				child.destroy();
+			}
+		}
+	}
+
+	@Override
+	public void onRestore(){
+		uiCamera = retainedUiCamera;
+		retainedUiCamera = null;
+		noFade = false;
+		Tooltip.resetLastUsedTime();
+		if (this instanceof TitleScene) UimsdScene.prewarmTitle();
+	}
 
 	@Override
 	public void create() {
@@ -281,8 +312,17 @@ public class PixelScene extends Scene {
 		}
 	}
 
-	//this system only preserves windows with a public zero-arg constructor
-	private static ArrayList<Class<?extends Window>> savedWindows = new ArrayList<>();
+	//APD: whether any window is open on the given scene (the Cleric grudge waits for none)
+	public static boolean hasWindow( com.watabou.noosa.Scene scene ){
+		if (!(scene instanceof PixelScene)) return false;
+		for (com.watabou.noosa.Gizmo g : ((PixelScene)scene).members){
+			if (g instanceof Window) return true;
+		}
+		return false;
+	}
+
+	//Windows can provide a restorer; other windows retain the public zero-arg fallback.
+	private static ArrayList<Runnable> savedWindows = new ArrayList<>();
 	private static Class<?extends PixelScene> savedClass = null;
 	
 	public synchronized void saveWindows(){
@@ -292,16 +332,29 @@ public class PixelScene extends Scene {
 		savedClass = getClass();
 		for (Gizmo g : members.toArray(new Gizmo[0])){
 			if (g instanceof Window){
-				savedWindows.add((Class<? extends Window>) g.getClass());
+				Window window = (Window) g;
+				Runnable restore = window.restoreOnSceneReset();
+				if (restore != null){
+					savedWindows.add(restore);
+				} else {
+					final Class<? extends Window> type = window.getClass();
+					savedWindows.add(() -> {
+						try {
+							Game.scene().add(Reflection.newInstanceUnhandled(type));
+						} catch (Exception ignored){
+							//Some older windows have no public zero-arg constructor.
+						}
+					});
+				}
 			}
 		}
 	}
 	
 	public synchronized void restoreWindows(){
 		if (getClass().equals(savedClass)){
-			for (Class<?extends Window> w : savedWindows){
+			for (Runnable restore : savedWindows){
 				try{
-					add(Reflection.newInstanceUnhandled(w));
+					restore.run();
 				} catch (Exception e){
 					//just eat the exception
 				}
@@ -500,3 +553,4 @@ public class PixelScene extends Scene {
 		}
 	}
 }
+

@@ -44,7 +44,12 @@ final class UimsdText {
 	private static final int MARGIN = 2;
 
 	//adds the text to 'into' and returns its height
-	static float layout( Component into, int width, String text ){
+		static float layout( Component into, int width, String text ){
+		return layout(into, width, text, true);
+	}
+
+	static float layout( Component into, int width, String text, boolean structured ){
+		if (text == null) text = "";
 		float y = MARGIN;
 		int w = width - 2 * MARGIN - 2;
 		boolean first = true;
@@ -58,18 +63,18 @@ final class UimsdText {
 			int size = UimsdStyle.SIZE_HELP;
 			float indent = 0;
 			boolean heading = false;
-			if (line.startsWith("# ")){
+			if (structured && line.startsWith("# ")){
 				heading = true;
 				line = line.substring(2).toUpperCase();
 				color = UimsdStyle.HEADING;
-			} else if (line.startsWith("! ")){
+			} else if (structured && line.startsWith("! ")){
 				line = line.substring(2);
 				color = UimsdStyle.WARN;
-			} else if (line.startsWith("- ")){
+			} else if (structured && line.startsWith("- ")){
 				line = "- " + line.substring(2);
 				indent = 3;
 			} else {
-				int close = line.startsWith("[") ? line.indexOf(']') : -1;
+				int close = structured && line.startsWith("[") ? line.indexOf(']') : -1;
 				if (close > 0){
 					int state = stateOf(line.substring(1, close));
 					if (state >= 0){
@@ -81,7 +86,17 @@ final class UimsdText {
 			if (heading){
 				y += first ? 0 : 4;
 			}
-			RenderedTextBlock t = PixelScene.renderTextBlock(line, size);
+			RenderedTextBlock t = PixelScene.renderTextBlock(size);
+			t.setHightlighting(structured);
+			if (!structured){
+				final RenderedTextBlock probe = PixelScene.renderTextBlock(size);
+				probe.setHightlighting(false);
+				try {
+					line = com.shatteredpixel.shatteredpixeldungeon.apd.query.LongWordWrap.wrap(line, Math.max(1, (int) (w - indent)),
+							part -> { probe.text(part); return probe.width(); });
+				} finally { probe.destroy(); }
+			}
+			t.text(line);
 			t.hardlight(color);
 			t.maxWidth((int) (w - indent));
 			t.setPos(MARGIN + indent, y);

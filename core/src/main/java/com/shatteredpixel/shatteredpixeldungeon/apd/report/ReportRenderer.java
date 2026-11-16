@@ -3,6 +3,7 @@ package com.shatteredpixel.shatteredpixeldungeon.apd.report;
 import com.shatteredpixel.shatteredpixeldungeon.apd.query.CellText;
 
 import java.util.List;
+import java.util.Locale;
 
 //Turns a Report into text: Markdown, plain text, a self-contained web page, or CSV. Pure and deterministic (the same Report gives the same
 //bytes). The marks stay in the values themselves (?, >=, ~, hidden); each renderer adds the legend for the marks that appear, and a
@@ -69,17 +70,42 @@ public final class ReportRenderer {
 				+ ". Figures are what this device recorded; they are not verified and not a ranking.";
 	}
 
+	// A row may also omit trailing positions. The export still needs a field for each named column.
+	// A sparse report table may contain a null cell; render it as blank without inventing an unknown statistic.
+	private static String displayText( Report.Cell c ){
+		return c == null ? "" : c.text;
+	}
+
 	//---- Markdown ----
 
 	private static String md( String s ){
-		return s.replace("|", "\\|").replace("\n", " ");
+		// Encode paired emphasis markers from data, but keep ordinary uncertainty
+		// marks (~6), single asterisks and underscores intact for older reports.
+		String escaped = s.replace("\\", "\\\\").replace("|", "\\|").replace("<", "&lt;")
+				.replace("`", "&#96;").replace("[", "&#91;").replace("]", "&#93;");
+		if (pairedMarker(s, '*')) escaped = escaped.replace("*", "&#42;");
+		if (pairedMarker(s, '_')) escaped = escaped.replace("_", "&#95;");
+		if (s.contains("~~")) escaped = escaped.replace("~", "&#126;");
+		return escaped.replace("\r\n", " ").replace("\r", " ").replace("\n", " ");
 	}
 
-	public static String markdown( Report r ){
+	private static boolean pairedMarker( String s, char mark ){
+		int first = s.indexOf(mark);
+		return first >= 0 && s.indexOf(mark, first + 1) >= 0;
+	}
+
+	// Notes intentionally retain existing inline Markdown emphasis (see prior tests).
+	// They remain one blockquote; literal HTML, links and code ticks stay inert.
+	private static String quotedNoteLines( String s ){
+		return String.valueOf(s).replace("<", "&lt;").replace("`", "&#96;").replace("[", "&#91;").replace("]", "&#93;")
+				.replace("\r\n", "\n").replace("\r", "\n").replace("\n", "\n> ");
+	}
+
+		public static String markdown( Report r ){
 		StringBuilder sb = new StringBuilder();
-		sb.append("# ").append(r.title).append("\n\n");
+		sb.append("# ").append(md(r.title)).append("\n\n");
 		if (r.synthetic) sb.append("> **").append(SYNTHETIC_NOTICE).append("**\n\n");
-		for (String a : r.about) sb.append(a).append("  \n");
+		for (String a : r.about) sb.append(md(a)).append("  \n");
 		if (!r.about.isEmpty()) sb.append("\n");
 		if (r.hasCanonical()) sb.append("> **").append(CANONICAL_NOTICE).append("**\n\n");
 		for (Report.Block b : r.blocks){
@@ -87,26 +113,26 @@ public final class ReportRenderer {
 				Report.Heading h = (Report.Heading) b;
 				sb.append("\n");
 				for (int i = 0; i < h.level + 1; i++) sb.append('#');
-				sb.append(' ').append(h.text).append("\n\n");
+				sb.append(' ').append(md(h.text)).append("\n\n");
 			} else if (b instanceof Report.Note){
 				Report.Note n = (Report.Note) b;
-				sb.append("> ").append(n.kind == Report.NoteKind.WARN ? "**Warning:** " : n.kind == Report.NoteKind.NOTE ? "Note: " : "").append(n.text).append("\n\n");
+				sb.append("> ").append(n.kind == Report.NoteKind.WARN ? "**Warning:** " : n.kind == Report.NoteKind.NOTE ? "Note: " : "").append(quotedNoteLines(n.text)).append("\n\n");
 			} else if (b instanceof Report.Facts){
 				Report.Facts f = (Report.Facts) b;
 				if (f.provenance != Report.Provenance.RECORDED) sb.append("_").append(provLabel(f.provenance)).append("_\n\n");
 				for (Report.Fact x : f.facts){
 					if (x.value == null){
-						sb.append("\n**").append(x.label).append("**\n\n");
+						sb.append("\n**").append(md(x.label)).append("**\n\n");
 						continue;
 					}
-					sb.append("- ").append(x.label).append(": ").append(x.value.text);
-					if (!x.detail.isEmpty()) sb.append(" (").append(x.detail).append(")");
+					sb.append("- ").append(md(x.label)).append(": ").append(md(x.value.text));
+					if (!x.detail.isEmpty()) sb.append(" (").append(md(x.detail)).append(")");
 					sb.append("\n");
 				}
 				sb.append("\n");
 			} else if (b instanceof Report.Table){
 				Report.Table t = (Report.Table) b;
-				if (!t.title.isEmpty()) sb.append("**").append(t.title).append("**  \n");
+				if (!t.title.isEmpty()) sb.append("**").append(md(t.title)).append("**  \n");
 				sb.append("_").append(provLabel(t.provenance)).append("_\n\n");
 				sb.append("|");
 				for (String h : t.headers) sb.append(' ').append(md(h)).append(" |");
@@ -115,20 +141,24 @@ public final class ReportRenderer {
 				sb.append("\n");
 				for (Report.Cell[] row : t.rows){
 					sb.append("|");
-					for (Report.Cell c : row) sb.append(' ').append(md(c.text)).append(c.small ? " (small sample)" : "").append(" |");
+					for (int i = 0; i < Math.max(row.length, t.headers.size()); i++){
+						Report.Cell c = i < row.length ? row[i] : null;
+						sb.append(' ').append(md(displayText(c))).append(c != null && c.small ? " (small sample)" : "").append(" |");
+					}
 					sb.append("\n");
 				}
 				if (t.omitted > 0) sb.append("\n_").append(t.omitted).append(" more entries are not listed._\n");
 				StringBuilder cov = new StringBuilder();
-				for (int i = 0; i < t.coverage.size(); i++){
-					if (!t.coverage.get(i).isEmpty()) cov.append(cov.length() > 0 ? "; " : "").append(t.headers.get(i)).append(" ").append(t.coverage.get(i));
+				// Orphan coverage values have no column label; avoid failing the whole export.
+				for (int i = 0; i < t.coverage.size() && i < t.headers.size(); i++){
+					if (!t.coverage.get(i).isEmpty()) cov.append(cov.length() > 0 ? "; " : "").append(md(t.headers.get(i))).append(" ").append(md(t.coverage.get(i)));
 				}
 				if (cov.length() > 0) sb.append("\n_Known out of listed (per column): ").append(cov).append("._\n");
 				sb.append("\n");
 			}
 		}
 		appendLegend(sb, r, "\n---\n\n**Marks:**\n\n", "- ", ": ", "\n");
-		sb.append("\n---\n").append(footer(r)).append("\n");
+		sb.append("\n---\n").append(md(footer(r))).append("\n");
 		return sb.toString();
 	}
 
@@ -141,10 +171,15 @@ public final class ReportRenderer {
 
 	//---- plain text ----
 
+	// Version metadata belongs to the footer, never to an extra report line.
+	private static String textFooter( Report r ){
+		return footer(r).replace("\r\n", " ").replace('\r', ' ').replace('\n', ' ');
+	}
+
 	public static String text( Report r ){
 		StringBuilder sb = new StringBuilder();
 		if (r.synthetic) sb.append(SYNTHETIC_NOTICE).append("\n\n");
-		sb.append(r.title.toUpperCase()).append("\n");
+		sb.append(r.title.toUpperCase(Locale.ROOT)).append("\n");
 		for (int i = 0; i < r.title.length(); i++) sb.append('=');
 		sb.append("\n");
 		for (String a : r.about) sb.append(a).append("\n");
@@ -153,7 +188,7 @@ public final class ReportRenderer {
 		for (Report.Block b : r.blocks){
 			if (b instanceof Report.Heading){
 				Report.Heading h = (Report.Heading) b;
-				sb.append("\n").append(h.level == 1 ? h.text.toUpperCase() : h.text).append("\n");
+				sb.append("\n").append(h.level == 1 ? h.text.toUpperCase(Locale.ROOT) : h.text).append("\n");
 			} else if (b instanceof Report.Note){
 				Report.Note n = (Report.Note) b;
 				sb.append(n.kind == Report.NoteKind.WARN ? "WARNING: " : n.kind == Report.NoteKind.NOTE ? "Note: " : "").append(n.text).append("\n");
@@ -169,10 +204,10 @@ public final class ReportRenderer {
 				sb.append("\n").append(t.title.isEmpty() ? "Table" : t.title).append("  [").append(provLabel(t.provenance)).append("]\n");
 				for (Report.Cell[] row : t.rows){
 					sb.append("  ");
-					for (int i = 0; i < row.length; i++){
+					for (int i = 0; i < Math.max(row.length, t.headers.size()); i++){
 						if (i > 0) sb.append(" | ");
-						if (i < t.headers.size() && row.length > 1 && i > 0) sb.append(t.headers.get(i)).append(' ');
-						sb.append(row[i].text);
+						if (i < t.headers.size() && !t.headers.get(i).isEmpty()) sb.append(t.headers.get(i)).append(' ');
+						sb.append(displayText(i < row.length ? row[i] : null));
 					}
 					sb.append("\n");
 				}
@@ -180,7 +215,7 @@ public final class ReportRenderer {
 			}
 		}
 		appendLegend(sb, r, "\nMARKS\n", "  ", " = ", "\n");
-		sb.append("\n").append(footer(r)).append("\n");
+		sb.append("\n").append(textFooter(r)).append("\n");
 		return sb.toString();
 	}
 
@@ -202,6 +237,7 @@ public final class ReportRenderer {
 	}
 
 	private static String cls( Report.Cell c ){
+		if (c == null) return "exact";
 		String k;
 		switch (c.state){
 			case CellText.LOWER: k = "lower"; break;
@@ -260,7 +296,10 @@ public final class ReportRenderer {
 				sb.append("</tr>\n");
 				for (Report.Cell[] row : t.rows){
 					sb.append("<tr>");
-					for (Report.Cell c : row) sb.append("<td class=\"").append(cls(c)).append("\">").append(esc(c.text)).append("</td>");
+					for (int i = 0; i < Math.max(row.length, t.headers.size()); i++){
+						Report.Cell c = i < row.length ? row[i] : null;
+						sb.append("<td class=\"").append(cls(c)).append("\">").append(esc(displayText(c))).append("</td>");
+					}
 					sb.append("</tr>\n");
 				}
 				sb.append("</table>\n");
@@ -281,12 +320,17 @@ public final class ReportRenderer {
 
 	static String csv( String s ){
 		boolean quote = s.indexOf(',') >= 0 || s.indexOf('"') >= 0 || s.indexOf('\n') >= 0 || s.indexOf('\r') >= 0;
-		//a cell must never be read by a spreadsheet as a formula
-		if (!s.isEmpty() && "=+-@".indexOf(s.charAt(0)) >= 0 && !looksNumeric(s)){
+		//a cell must never be read by a spreadsheet as a formula, including when a spreadsheet trims leading whitespace
+		if (startsFormula(s)){
 			s = "'" + s;
-			quote = s.indexOf(',') >= 0 || s.indexOf('"') >= 0 || s.indexOf('\n') >= 0;
 		}
 		return quote ? "\"" + s.replace("\"", "\"\"") + "\"" : s;
+	}
+
+	private static boolean startsFormula( String s ){
+		int first = 0;
+		while (first < s.length() && Character.isWhitespace(s.charAt(first))) first++;
+		return first < s.length() && "=+-@".indexOf(s.charAt(first)) >= 0 && !looksNumeric(s.trim());
 	}
 
 	private static boolean looksNumeric( String s ){
@@ -300,25 +344,47 @@ public final class ReportRenderer {
 
 	//Every table in turn: a "# title [provenance]" line, the header row, the rows. Marks stay in the cell text, and a column after each value
 	//column would double the file, so the state words are in the legend of the other formats and the marks are in the data.
+	//CSV comments are not quoted fields. Keep metadata on one physical line even when a
+	//saved report title or version contains line breaks; ordinary data cells stay untouched.
+	private static String csvComment( String value ){
+		return value.replace('\r', ' ').replace('\n', ' ');
+	}
+
 	public static String csv( Report r ){
 		StringBuilder sb = new StringBuilder();
 		boolean any = false;
 		if (r.synthetic) sb.append("# ").append(SYNTHETIC_NOTICE).append("\r\n");
+		if (r.hasCanonical()) sb.append("# ").append(csvComment(CANONICAL_NOTICE)).append("\r\n");
 		for (Report.Block b : r.blocks){
+			if (b instanceof Report.Facts){
+				Report.Facts facts = (Report.Facts) b;
+				if (any) sb.append("\r\n");
+				any = true;
+				sb.append("# ").append(csvComment(r.title)).append(" facts [").append(provLabel(facts.provenance)).append("]\r\n");
+				sb.append("Section,Field,Value,Detail\r\n");
+				String section = "";
+				for (Report.Fact fact : facts.facts){
+					if (fact.value == null){ section = fact.label; continue; }
+					sb.append(csv(section)).append(',').append(csv(fact.label)).append(',')
+							.append(csv(fact.value.text)).append(',').append(csv(fact.detail)).append("\r\n");
+				}
+				continue;
+			}
 			if (!(b instanceof Report.Table)) continue;
 			Report.Table t = (Report.Table) b;
 			if (any) sb.append("\r\n");
 			any = true;
-			sb.append("# ").append(t.title.isEmpty() ? r.title : t.title).append(" [").append(provLabel(t.provenance)).append("]\r\n");
+			sb.append("# ").append(csvComment(t.title.isEmpty() ? r.title : t.title)).append(" [").append(provLabel(t.provenance)).append("]\r\n");
 			for (int i = 0; i < t.headers.size(); i++) sb.append(i > 0 ? "," : "").append(csv(t.headers.get(i)));
 			sb.append("\r\n");
 			for (Report.Cell[] row : t.rows){
-				for (int i = 0; i < row.length; i++) sb.append(i > 0 ? "," : "").append(csv(row[i].text));
+				for (int i = 0; i < Math.max(row.length, t.headers.size()); i++) sb.append(i > 0 ? "," : "").append(csv(displayText(i < row.length ? row[i] : null)));
 				sb.append("\r\n");
 			}
+			if (t.omitted > 0) sb.append("# ").append(t.omitted).append(" more entries are not listed.\r\n");
 		}
-		if (!any) sb.append("# ").append(r.title).append(" has no table\r\n");
-		sb.append("# marks: ? unknown, >=N at least N, ~N inferred or canonical, hidden = hidden information. ").append(footer(r)).append("\r\n");
+		if (!any) sb.append("# ").append(csvComment(r.title)).append(" has no table\r\n");
+		sb.append("# marks: ? unknown, >=N at least N, ~N inferred or canonical, hidden = hidden information. ").append(csvComment(footer(r))).append("\r\n");
 		return sb.toString();
 	}
 }

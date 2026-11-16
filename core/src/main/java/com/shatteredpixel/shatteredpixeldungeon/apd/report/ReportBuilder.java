@@ -22,6 +22,7 @@ import com.shatteredpixel.shatteredpixeldungeon.apd.query.StatusText;
 import com.shatteredpixel.shatteredpixeldungeon.apd.query.UimsdHome;
 import com.shatteredpixel.shatteredpixeldungeon.apd.query.ViewDef;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -169,12 +170,15 @@ public final class ReportBuilder {
 		t.headers.add("A: " + groupName(q, a));
 		t.headers.add("B: " + groupName(q, b));
 		for (int i = 0; i < 3; i++) t.coverage.add("");
-		//the two sheets are computed under the same query, so their lines match one for one; match by label to be safe
-		java.util.Map<String, GroupDetail.Line> other = new java.util.HashMap<>();
-		for (GroupDetail.Line l : db.lines) if (!l.section) other.put(l.label, l);
+		//Both sheets come from the same dataset definition and query, so their non-section lines have the same order.
+		//Labels are display text and may legitimately repeat in different sections; using them as map keys would make an
+		//earlier row borrow the value of the last row with that label.
+		java.util.List<GroupDetail.Line> other = new java.util.ArrayList<>();
+		for (GroupDetail.Line l : db.lines) if (!l.section) other.add(l);
+		int otherIndex = 0;
 		for (GroupDetail.Line l : da.lines){
 			if (l.section) continue;
-			GroupDetail.Line o = other.get(l.label);
+			GroupDetail.Line o = otherIndex < other.size() ? other.get(otherIndex++) : null;
 			Report.Cell cb = o == null ? new Report.Cell("?", CellText.UNKNOWN) : new Report.Cell(o.value, o.state, o.small);
 			t.rows.add(new Report.Cell[]{ new Report.Cell(l.label, CellText.EXACT), new Report.Cell(l.value, l.state, l.small), cb });
 		}
@@ -203,7 +207,8 @@ public final class ReportBuilder {
 	private static Query forRun( Catalog cat, String datasetId, String runColumn, String runId, boolean hidden ){
 		Dataset ds = cat.dataset(datasetId);
 		return Query.of(datasetId).withScope(EVERY_RUN).withShowInternal(hidden).withColumns(ds.def.defaultColumnIds())
-				.addFilter(Filter.text(runColumn, Op.EQ, runId));
+				// Identifiers are case-sensitive, unlike player-entered text searches.
+				.addFilter(Filter.text(runColumn, Op.GROUP_TEXT, runId));
 	}
 
 	public static Report run( Catalog cat, Row run, boolean includeHidden, String currentRuleset, long now, String version ){
@@ -261,8 +266,8 @@ public final class ReportBuilder {
 			String diff = "";
 			if (c.type == ColumnDef.Type.NUM && ca.state == CellText.EXACT && cb.state == CellText.EXACT && a.isKnown(c.index()) && b.isKnown(c.index())
 					&& c.format == ColumnDef.Format.PLAIN){
-				long d = b.num(c.index()) - a.num(c.index());
-				diff = (d > 0 ? "+" : "") + d;
+				BigInteger d = BigInteger.valueOf(b.num(c.index())).subtract(BigInteger.valueOf(a.num(c.index())));
+				diff = (d.signum() > 0 ? "+" : "") + d;
 			}
 			t.rows.add(new Report.Cell[]{ new Report.Cell(c.label, CellText.EXACT), cell(ca), cell(cb), new Report.Cell(diff, CellText.EXACT) });
 		}

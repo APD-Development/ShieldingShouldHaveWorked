@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -373,6 +376,14 @@ public abstract class Actor implements Bundlable {
 		if (actor != null) {
 			all.remove( actor );
 			chars.remove( actor );
+			// Death or ghoul downing can replace an in-flight attack animation.
+			// Its completion callback will then never call next(). A removed actor
+			// must not keep the scheduler waiting for that cancelled callback.
+			// Leave other actors' pending animations and turn costs alone.
+            // Pushing deliberately leaves the queue before its visual finishes.
+            // Its landing callback must still release the wait, otherwise mobs
+            // can act and enter the destination before the pulled character lands.
+            if (current == actor && !(actor instanceof com.shatteredpixel.shatteredpixeldungeon.effects.Pushing)) current = null;
 			actor.onRemove();
 
 			if (actor.id > 0) {
@@ -395,8 +406,38 @@ public abstract class Actor implements Bundlable {
 			if (ch.pos == pos)
 				return ch;
 		}
-		return null;
+        // A level can retain a Wraith in its authoritative mob collection
+        // after its Actor registration is lost. Its sprite is still drawn and
+        // Dread can still target it through level.mobs, but melee targeting,
+        // thrown weapons, bombs, burning, and Examine all consult findChar.
+        // Rejoin the exact live Wraith, rather than adding a fake character,
+        // changing its evasion/HP, or respawning it with new RNG.
+        // Only heal this mismatch while actually playing the current floor.
+        return repairMissingWraithAt(pos,
+                Game.instance != null
+                && Game.scene() instanceof com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene);
 	}
+
+    /** Idempotent repair of one orphaned *live* Wraith's actor registration.
+     * This never creates a mob, touches its HP/loot, or changes its position.
+     * The explicit scene flag lets headless regressions exercise the repair
+     * without constructing a graphical Android GameScene.
+     */
+    public static synchronized Char repairMissingWraithAt(int pos, boolean activeGame) {
+        if (!activeGame || Dungeon.level == null || Dungeon.level.mobs == null
+                || pos < 0 || pos >= Dungeon.level.length()) return null;
+        // Do not displace another live actor or hide an overlapping placement.
+        for (Char ch : chars) if (ch.pos == pos) return ch;
+        for (Mob mob : Dungeon.level.mobs) {
+            if (mob instanceof com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Wraith
+                    && mob.pos == pos && mob.isAlive() && !chars.contains(mob)) {
+                addDelayed(mob, 0f);
+                mob.spendToWhole();
+                return mob;
+            }
+        }
+        return null;
+    }
 
 	public static synchronized Actor findById( int id ) {
 		return ids.get( id );

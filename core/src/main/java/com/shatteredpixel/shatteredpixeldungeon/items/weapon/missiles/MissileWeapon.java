@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -207,7 +210,20 @@ abstract public class MissileWeapon extends Weapon {
 				&& Dungeon.level.distance(user.pos, dst) <= Math.round(projecting * Enchantment.genericProcChanceMultiplier(user))){
 			return dst;
 		} else {
-			return super.throwPos(user, dst);
+            int collision = super.throwPos(user, dst);
+            // Preserve the existing reverse-rounding fix, then look for an aim
+            // beyond the visible enemy that already hits under normal Ballistica
+            // rules. Direct targeting must not require manually finding that aim.
+            Char target = Actor.findChar(dst);
+            if (collision != dst && !(this instanceof SpiritBow.SpiritArrow)
+                    && user == Dungeon.hero && target != null && target.alignment == Char.Alignment.ENEMY
+                    && user.fieldOfView != null && dst >= 0 && dst < user.fieldOfView.length && user.fieldOfView[dst]
+                    && (new com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica(
+                            dst, user.pos, com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica.PROJECTILE).collisionPos == user.pos
+                        || com.shatteredpixel.shatteredpixeldungeon.apd.qol.ThrowableTargeting.hasExistingTrajectory(user.pos, dst))) {
+                return dst;
+            }
+            return collision;
 		}
 	}
 
@@ -277,6 +293,7 @@ abstract public class MissileWeapon extends Weapon {
 				if (Actor.findChar(cell) == null) {
 					RevealedArea a = Buff.affect(curUser, RevealedArea.class, 5 * curUser.pointsInTalent(Talent.SEER_SHOT));
 					a.depth = Dungeon.depth;
+					a.branch = Dungeon.branch;
 					a.pos = cell;
 					Buff.affect(curUser, Talent.SeerShotCooldown.class, 20f);
 				}
@@ -374,6 +391,7 @@ abstract public class MissileWeapon extends Weapon {
 			}
 		}
 		level(n);
+		com.shatteredpixel.shatteredpixeldungeon.apd.qol.GenerationUpgradeRanges.baseline(this);
 
 		//we use a separate RNG here so that variance due to things like parchment scrap
 		//does not affect levelgen
@@ -443,6 +461,13 @@ abstract public class MissileWeapon extends Weapon {
 		durability -= amount;
 		durability = Math.max(durability, 1); //cannot break from doing this
 	}
+
+    /** UI preview must not consume subclass pending-impact state. */
+    public final float previewDurabilityPerUse(){return previewDurabilityPerUse(level());}
+    public float previewDurabilityPerUse(int level){return durabilityPerUse(level);}
+
+    /** Base use input only; no durability simulation or subclass effect updates. */
+    public final float baseDurabilityUses(){return baseUses;}
 
 	public final float durabilityPerUse(){
 		return durabilityPerUse(level());
@@ -654,21 +679,25 @@ abstract public class MissileWeapon extends Weapon {
 	
 	@Override
 	public String info() {
+        Integer knownStrength=com.shatteredpixel.shatteredpixeldungeon.apd.mechanics.ArmorExplanation.knownStrength(Dungeon.hero);
 
-		String info = super.info();
+		String accuracy=accuracyDescription();
+		String info = super.info() + accuracy;
 
+        Integer knownAim=com.shatteredpixel.shatteredpixeldungeon.apd.qol.RingItemEffects.knownBonus(Dungeon.hero,RingOfSharpshooting.class,true);
+        int displayedLevel=levelKnown?buffedLvl()+(knownAim==null?0:knownAim):0;
 		if (levelKnown) {
-			info += "\n\n" + Messages.get(MissileWeapon.class, "stats_known", tier, augment.damageFactor(min()), augment.damageFactor(max()), STRReq());
-			if (Dungeon.hero != null) {
-				if (STRReq() > Dungeon.hero.STR()) {
+			info += "\n\n" + (Dungeon.hero!=null && knownAim==null?Messages.get(MissileWeapon.class,"weapon_only")+" ":"")+Messages.get(MissileWeapon.class, "stats_known", tier, augment.damageFactor(Math.max(0,min(displayedLevel))), augment.damageFactor(Math.max(0,max(displayedLevel))), STRReq());
+			if (knownStrength != null) {
+				if (STRReq() > knownStrength) {
 					info += " " + Messages.get(Weapon.class, "too_heavy");
-				} else if (Dungeon.hero.STR() > STRReq()) {
-					info += " " + Messages.get(Weapon.class, "excess_str", Dungeon.hero.STR() - STRReq());
+				} else if (knownStrength > STRReq()) {
+					info += " " + Messages.get(Weapon.class, "excess_str", knownStrength - STRReq());
 				}
 			}
 		} else {
-			info += "\n\n" + Messages.get(MissileWeapon.class, "stats_unknown", tier, min(0), max(0), STRReq(0));
-			if (Dungeon.hero != null && STRReq(0) > Dungeon.hero.STR()) {
+			info += "\n\n" + Messages.get(MissileWeapon.class, "stats_unknown", tier, augment.damageFactor(min(0)), augment.damageFactor(max(0)), STRReq(0));
+			if (knownStrength != null && STRReq(0) > knownStrength) {
 				info += " " + Messages.get(MissileWeapon.class, "probably_too_heavy");
 			}
 		}
@@ -676,7 +705,7 @@ abstract public class MissileWeapon extends Weapon {
 		if (enchantment != null && (cursedKnown || !enchantment.curse())){
 			info += "\n\n" + Messages.capitalize(Messages.get(Weapon.class, "enchanted", enchantment.name()));
 			if (enchantHardened) info += " " + Messages.get(Weapon.class, "enchant_hardened");
-			info += " " + enchantment.desc();
+			info += " " + com.shatteredpixel.shatteredpixeldungeon.apd.mechanics.EnchantmentExplanation.playerDescription(this,Dungeon.hero);
 		} else if (enchantHardened){
 			info += "\n\n" + Messages.get(Weapon.class, "hardened_no_enchant");
 		}
@@ -687,32 +716,28 @@ abstract public class MissileWeapon extends Weapon {
 			info += "\n\n" + Messages.get(Weapon.class, "not_cursed");
 		}
 
-		info += "\n\n";
-		String statsInfo = statsInfo();
-		if (!statsInfo.equals("")) info += statsInfo + " ";
-		info += Messages.get(MissileWeapon.class, "distance");
+		String extra=statsInfo();
+        if(accuracy.isEmpty())extra+=(extra.isEmpty()?"":" ")+Messages.get(MissileWeapon.class,"distance");
+        switch(augment){
+            case SPEED:extra+=(extra.isEmpty()?"":" ")+Messages.get(Weapon.class,"faster");break;
+            case DAMAGE:extra+=(extra.isEmpty()?"":" ")+Messages.get(Weapon.class,"stronger");break;
+            case NONE:break;
+        }
+        if(!extra.isEmpty())info+="\n\n"+extra;
 
-		switch (augment) {
-			case SPEED:
-				info += " " + Messages.get(Weapon.class, "faster");
-				break;
-			case DAMAGE:
-				info += " " + Messages.get(Weapon.class, "stronger");
-				break;
-			case NONE:
-		}
-
-		if (levelKnown) {
-			if (durabilityPerUse() > 0) {
+        if(Dungeon.hero!=null && knownAim==null){
+            info+="\n\n"+Messages.get(MissileWeapon.class,"durability_unknown");
+        }else if (levelKnown) {
+			if (previewDurabilityPerUse() > 0) {
 				info += "\n\n" + Messages.get(this, "uses_left",
-						(int) Math.ceil(durability / durabilityPerUse()),
-						(int) Math.ceil(MAX_DURABILITY / durabilityPerUse()));
+						(int) Math.ceil(durability / previewDurabilityPerUse()),
+						(int) Math.ceil(MAX_DURABILITY / previewDurabilityPerUse()));
 			} else {
 				info += "\n\n" + Messages.get(this, "unlimited_uses");
 			}
 		}  else {
-			if (durabilityPerUse(0) > 0) {
-				info += "\n\n" + Messages.get(this, "unknown_uses", (int) Math.ceil(MAX_DURABILITY / durabilityPerUse(0)));
+			if (previewDurabilityPerUse(0) > 0) {
+				info += "\n\n" + Messages.get(this, "unknown_uses", (int) Math.ceil(MAX_DURABILITY / previewDurabilityPerUse(0)));
 			} else {
 				info += "\n\n" + Messages.get(this, "unlimited_uses");
 			}

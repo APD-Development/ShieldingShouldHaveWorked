@@ -105,6 +105,7 @@ public class SpiritHawk extends ArmorAbility {
 				armor.updateQuickslot();
 
 				ally = new HawkAlly();
+                ally.apdInheritOffensiveOrigin(hero);
 				ally.pos = Random.element(spawnPoints);
 				GameScene.add(ally);
 

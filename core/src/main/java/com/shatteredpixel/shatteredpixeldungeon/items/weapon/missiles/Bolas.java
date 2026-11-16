@@ -50,6 +50,8 @@ public class Bolas extends MissileWeapon {
 				(tier-1)*lvl;                   //2 scaling, down from 3
 	}
 	
+    @Override public String statsInfo(){return com.shatteredpixel.shatteredpixeldungeon.messages.Messages.get(this,"stats_desc",com.shatteredpixel.shatteredpixeldungeon.apd.mechanics.ObfuscationExplanation.number(Cripple.DURATION/2));}
+
 	@Override
 	public int proc( Char attacker, Char defender, int damage ) {
 		Buff.prolong( defender, Cripple.class, Cripple.DURATION/2 );

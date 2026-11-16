@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -303,7 +306,7 @@ public class InventoryPane extends Component {
 		equipped.get(3).item(stuff.misc == null ? new WndBag.Placeholder( ItemSpriteSheet.SOMETHING ) : stuff.misc);
 		equipped.get(4).item(stuff.ring == null ? new WndBag.Placeholder( ItemSpriteSheet.RING_HOLDER ) : stuff.ring);
 
-		ArrayList<Item> items = (ArrayList<Item>) lastBag.items.clone();
+		ArrayList<Item> items = lastBag.itemsForDisplay();
 
 		if (lastBag == stuff.backpack && stuff.secondWep != null){
 			items.add(0, stuff.secondWep);

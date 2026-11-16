@@ -27,6 +27,10 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Chill;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Frost;
+import com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CellDamageOrigins;
+import com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin;
+import com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveEffectContext;
+import com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.TimedDamageOrigins;
 import com.shatteredpixel.shatteredpixeldungeon.effects.BlobEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.SnowParticle;
@@ -35,10 +39,38 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.MagicalFire
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 
 public class Freezing extends Blob {
+
+	private CellDamageOrigins apdOrigins = new CellDamageOrigins();
+	private static final String APD_ORIGINS = "apd_freezing_origins";
+
+	public static Freezing seedAttributed(int cell, int amount, OffensiveDamageOrigin origin) {
+		try (OffensiveEffectContext ignored = OffensiveEffectContext.enter(origin)) {
+			return Blob.seed(cell, amount, Freezing.class);
+		}
+	}
+
+	@Override
+	public void seed(com.shatteredpixel.shatteredpixeldungeon.levels.Level level, int cell, int amount) {
+		apdOrigins.seed(cur, level.length(), cell, amount, OffensiveEffectContext.current());
+		super.seed(level, cell, amount);
+	}
+
+	@Override public void clear(int cell) { super.clear(cell); apdOrigins.clear(cell); }
+	@Override public void fullyClear() { super.fullyClear(); apdOrigins.clearAll(); }
+	@Override public void storeInBundle(com.watabou.utils.Bundle bundle) {
+		super.storeInBundle(bundle);
+		if (volume > 0) apdOrigins.store(bundle, APD_ORIGINS, cur);
+		else CellDamageOrigins.clearMetadata(bundle, APD_ORIGINS);
+	}
+	@Override public void restoreFromBundle(com.watabou.utils.Bundle bundle) {
+		super.restoreFromBundle(bundle);
+		apdOrigins = CellDamageOrigins.restore(bundle, APD_ORIGINS, cur);
+	}
 	
 	@Override
 	protected void evolve() {
-		
+
+		apdOrigins.synchronize(cur);
 		int cell;
 		
 		Fire fire = (Fire)Dungeon.level.blobs.get( Fire.class );
@@ -51,10 +83,11 @@ public class Freezing extends Blob {
 					if (fire != null && fire.volume > 0 && fire.cur[cell] > 0){
 						fire.clear(cell);
 						off[cell] = cur[cell] = 0;
+						apdOrigins.clear(cell);
 						continue;
 					}
 					
-					Freezing.freeze(cell);
+					Freezing.freezeAttributed(cell, apdOrigins, cell);
 					
 					off[cell] = cur[cell] - 1;
 					volume += off[cell];
@@ -63,13 +96,26 @@ public class Freezing extends Blob {
 				}
 			}
 		}
+		apdOrigins.synchronize(off);
+		apdOrigins.discardIfUnattributed();
 	}
-	
-	public static void freeze( int cell ){
+
+	public static void freeze( int cell ) {
+		freezeWithOrigins(cell, null, -1);
+	}
+
+	public static void freezeAttributed(int cell, CellDamageOrigins origins, int originCell) {
+		if (origins == null) throw new IllegalArgumentException("Missing freezing origin");
+		freezeWithOrigins(cell, origins, originCell);
+	}
+
+	private static void freezeWithOrigins(int cell, CellDamageOrigins origins, int originCell) {
 		Char ch = Actor.findChar( cell );
 		if (ch != null && !ch.isImmune(Freezing.class)) {
+			TimedDamageOrigins attach = origins == null ? null : origins.timedAt(originCell, 1f);
 			if (ch.buff(Frost.class) != null){
-				Buff.affect(ch, Frost.class, 2f);
+				if (attach == null) Buff.affect(ch, Frost.class, 2f);
+				else Buff.affectAttributed(ch, Frost.class, 2f, attach);
 			} else {
 				Chill chill = ch.buff(Chill.class);
 				float turnsToAdd = Dungeon.level.water[cell] ? 5f : 3f;
@@ -79,12 +125,14 @@ public class Freezing extends Blob {
 					turnsToAdd = Math.min(turnsToAdd, chillToCap);
 				}
 				if (turnsToAdd > 0f) {
-					Buff.affect(ch, Chill.class, turnsToAdd);
+					if (attach == null) Buff.affect(ch, Chill.class, turnsToAdd);
+					else Buff.affectAttributed(ch, Chill.class, turnsToAdd, attach);
 				}
 				if (chill != null
 						&& chill.cooldown() >= Chill.DURATION &&
 						!ch.isImmune(Frost.class)){
-					Buff.affect(ch, Frost.class, Frost.DURATION);
+					if (attach == null) Buff.affect(ch, Frost.class, Frost.DURATION);
+					else Buff.affectAttributed(ch, Frost.class, Frost.DURATION, attach);
 				}
 			}
 		}

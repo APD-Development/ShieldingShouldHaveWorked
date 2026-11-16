@@ -25,6 +25,7 @@ import com.shatteredpixel.shatteredpixeldungeon.apd.query.DatasetStore;
 import com.shatteredpixel.shatteredpixeldungeon.apd.stats.ApdEvent;
 import com.shatteredpixel.shatteredpixeldungeon.apd.stats.EventTypes;
 import com.shatteredpixel.shatteredpixeldungeon.apd.stats.LifecycleEvents;
+import com.shatteredpixel.shatteredpixeldungeon.apd.stats.LegacyEvents;
 import com.shatteredpixel.shatteredpixeldungeon.apd.stats.LogFormat;
 import com.shatteredpixel.shatteredpixeldungeon.apd.stats.ReadResult;
 import com.shatteredpixel.shatteredpixeldungeon.apd.stats.RunIndex;
@@ -34,6 +35,7 @@ import com.shatteredpixel.shatteredpixeldungeon.apd.stats.TelemetryVersion;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FilterOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -104,6 +106,7 @@ public final class ArchiveExporter {
 		boolean imported;
 		String runId = "";
 		long created;
+		int segment;
 		boolean ended;
 		boolean sealed;
 		long events;
@@ -133,7 +136,14 @@ public final class ArchiveExporter {
 			for (LogInfo l : logs){
 				if (l.imported || !l.readable) continue;
 				LogInfo n = newest.get(l.runId);
-				if (n == null || l.created > n.created) newest.put(l.runId, l);
+				// Match DatasetStore: the run-start segment breaks same-millisecond ties.
+				// Two distinct logs may still claim the same timestamp and segment.
+				// If their completion states disagree, treat that ambiguity as unfinished
+				// instead of releasing hidden facts based on filename ordering.
+				if (n == null || l.created > n.created || (l.created == n.created
+						&& (l.segment > n.segment || (l.segment == n.segment && !l.ended && n.ended)))){
+					newest.put(l.runId, l);
+				}
 			}
 			List<Plan> plans = new ArrayList<>();
 			for (LogInfo l : logs){
@@ -192,28 +202,61 @@ public final class ArchiveExporter {
 			if (report.skippedDamagedTails > 0) manifest.notes.add(report.skippedDamagedTails + " saved damaged tails were not exported.");
 
 			//second pass: write
-			ZipOutputStream zip = new ZipOutputStream(out);
-			byte[] text = manifest.encode().getBytes(ArchiveManifest.utf8());
-			put(zip, ArchiveManifest.ENTRY_NAME, text);
-			for (Plan p : included){
-				byte[] bytes = content(p);
-				if (bytes == null || bytes.length != p.entry.size || !ArchiveManifest.sha256Hex(bytes).equals(p.entry.sha256)){
-					report.notes.add(p.entry.path + " changed while it was being exported and was left out (it is not in the archive; export again).");
-					continue;
+			CountingOutputStream counted = new CountingOutputStream(new NonClosingOutputStream(out));
+			ZipOutputStream zip = new ZipOutputStream(counted);
+			try {
+				byte[] text = manifest.encode().getBytes(ArchiveManifest.utf8());
+				put(zip, ArchiveManifest.ENTRY_NAME, text);
+				for (Plan p : included){
+					byte[] bytes = content(p);
+					if (bytes == null || bytes.length != p.entry.size || !ArchiveManifest.sha256Hex(bytes).equals(p.entry.sha256)){
+						//The manifest already lists this file. Skipping it creates an archive import must reject.
+						throw new IOException(p.entry.path + " changed while exporting. The archive is incomplete; export again.");
+					}
+					put(zip, p.entry.path, bytes);
+					// Report the number of ZIP bytes actually written, not this entry's uncompressed size.
+					if (p.entry.kind.equals(ArchiveManifest.KIND_IMPORTED)) report.importedFiles++;
+					else report.runLogs++;
 				}
-				put(zip, p.entry.path, bytes);
-				report.bytes += bytes.length;
-				if (p.entry.kind.equals(ArchiveManifest.KIND_IMPORTED)) report.importedFiles++;
-				else report.runLogs++;
+				zip.finish();
+				zip.flush();
+				report.bytes = counted.bytesWritten;
+				report.ok = true;
+				return report;
+			} finally {
+				//Release the ZIP compressor promptly, but the caller still owns the destination stream.
+				try { zip.close(); } catch (IOException ignored){}
 			}
-			zip.finish();
-			zip.flush();
-			report.ok = true;
-			return report;
 		} catch (Throwable t){
 			report.ok = false;
 			report.problem = String.valueOf(t);
 			return report;
+		}
+	}
+
+	// Counts the actual compressed ZIP bytes, including the manifest, entry headers,
+	// central directory and ZIP footer. The caller still owns its output stream.
+	private static final class CountingOutputStream extends FilterOutputStream {
+		long bytesWritten;
+		CountingOutputStream( OutputStream out ){ super(out); }
+		@Override public void write( int value ) throws IOException {
+			out.write(value);
+			bytesWritten++;
+		}
+		@Override public void write( byte[] bytes, int off, int length ) throws IOException {
+			out.write(bytes, off, length);
+			bytesWritten += length;
+		}
+	}
+
+	private static final class NonClosingOutputStream extends FilterOutputStream {
+		NonClosingOutputStream( OutputStream out ){
+			super(out);
+		}
+
+		@Override
+		public void close() throws IOException {
+			flush();
 		}
 	}
 
@@ -228,6 +271,9 @@ public final class ArchiveExporter {
 	//the bytes an entry holds: the file itself, or its redacted copy
 	private static byte[] content( Plan p ){
 		try {
+			// A log may be replaced between manifest planning and ZIP writing.
+			// Never follow a new filesystem alias even if its bytes happen to match.
+			if (!isDirectHistoryFile(p.file)) return null;
 			if (p.snapshot != null) return p.snapshot;
 			byte[] raw = readAll(p.file);
 			if (!p.redact) return raw;
@@ -239,7 +285,24 @@ public final class ArchiveExporter {
 		}
 	}
 
-	private static void collect( File dir, boolean imported, List<LogInfo> out, Report report ){
+	// The caller may supply a history root through a symlink, but its runs/
+	// and legacy/ children and log entries must be direct children of that root.
+	// File.isFile() follows symlinks, so check canonical destinations first.
+	private static boolean isDirectHistoryFolder( File dir ) throws IOException {
+		File parent = dir.getParentFile();
+		return parent != null && dir.getCanonicalFile().equals(new File(parent.getCanonicalFile(), dir.getName()));
+	}
+
+	private static boolean isDirectHistoryFile( File f ) throws IOException {
+		File folder = f.getParentFile();
+		return folder != null && isDirectHistoryFolder(folder)
+				&& f.getCanonicalFile().equals(new File(folder.getCanonicalFile(), f.getName()));
+	}
+
+	private static void collect( File dir, boolean imported, List<LogInfo> out, Report report ) throws IOException {
+		if (!isDirectHistoryFolder(dir)){
+			throw new IOException("history folder resolves outside its designated path: " + dir.getName());
+		}
 		File[] files = dir.listFiles();
 		if (files == null) return;
 		Arrays.sort(files);
@@ -248,6 +311,9 @@ public final class ArchiveExporter {
 			if (!f.isFile() || !n.endsWith(RunIndex.LOG_SUFFIX)) continue;
 			String id = n.substring(0, n.length() - RunIndex.LOG_SUFFIX.length());
 			if (!StatsStore.isValidRunId(id)) continue;
+			if (!isDirectHistoryFile(f)){
+				throw new IOException("history log resolves outside its designated path: " + n);
+			}
 			if (id.startsWith(DatasetStore.DEMO_LOG_PREFIX)){
 				report.skippedDemo++;
 				continue;
@@ -259,7 +325,20 @@ public final class ArchiveExporter {
 			try {
 				byte[] bytes = readAll(f);
 				ReadResult r = RunLogReader.parse(bytes);
-				if (r.header != null){
+				// A copied log renamed under another runs/<id>.apdlog name must not
+				// enter an archive the importer will reject. The header's ID is
+				// per-file; RUN_START may name a different shared logical run.
+				// Imported legacy files retain their existing compatibility rules.
+				if (r.header != null && StatsStore.isValidRunId(r.header.runId)
+						&& (imported || id.equals(r.header.runId))){
+					// Both header ID and typed RUN_START identity matter. For legacy logs
+					// the typed ID may differ, but it cannot erase demo header provenance.
+					// Match the importer's independent header-ID and writer checks.
+					if (r.header.runId.startsWith(DatasetStore.DEMO_LOG_PREFIX)
+							|| r.header.writerBuild.contains("SYNTHETIC-DEMO")){
+						report.skippedDemo++;
+						continue;
+					}
 					l.readable = true;
 					l.runId = r.header.runId;
 					l.created = r.header.createdAtMillis;
@@ -271,14 +350,62 @@ public final class ArchiveExporter {
 					boolean started = false;
 					for (ApdEvent e : r.events){
 						if (e.type == EventTypes.RUN_START && !started){
-							started = true;
 							try {
-								String started0 = LifecycleEvents.decodeRunStart(e, r).runId;
-								if (started0 != null && started0.length() > 0) l.runId = started0;
+								LifecycleEvents.RunStart runStart = LifecycleEvents.decodeRunStart(e, r);
+								String started0 = runStart.runId;
+								if (StatsStore.isValidRunId(started0)){
+									started = true;
+									l.segment = runStart.segment;
+									l.runId = started0;
+								}
 							} catch (RuntimeException ignored){
+								//Keep looking: an unreadable typed start must not hide the first readable one.
 							}
 						}
-						if (e.type == EventTypes.RUN_END) l.ended = true;
+						}
+					// The typed RUN_START carries the logical ID for all segments.
+					// A copied demo log must never escape simply by using a plain filename.
+					if (l.runId.startsWith(DatasetStore.DEMO_LOG_PREFIX)){
+						report.skippedDemo++;
+						continue;
+					}
+					//The normal recorder may write one RANKING_LINK after RUN_END,
+					//before sealing. That verified trailer is not gameplay progress.
+					//An unsealed, damaged, or otherwise extended log is ambiguous:
+					//never export its hidden history in raw form.
+					// A seal does not prove a complete physical log if bytes follow it.
+					// The reader stops at SEAL; recovery treats those bytes as a damaged tail.
+					// Never export hidden history raw until the actual file ends at that seal.
+					// A terminal end alone does not prove a genuine finished run when
+					// no valid typed RUN_START ever established its logical identity.
+					if (started && r.sealed && r.status.isClean() && r.damagedBytes() == 0 && !r.events.isEmpty()){
+						int end = r.events.size() - 1;
+						ApdEvent last = r.events.get(end);
+						if (last.type == EventTypes.RANKING_LINK){
+							try {
+								LegacyEvents.decodeRankingLink(last, r);
+								end--;
+							} catch (RuntimeException ignored){
+								end = -1; //A malformed trailer cannot prove completion.
+							}
+						}
+						if (end >= 0){
+							ApdEvent possibleEnd = r.events.get(end);
+							if (possibleEnd.type == EventTypes.RUN_END){
+								try {
+									// Decoding alone does not validate the outcome enum. Only a
+									// recognized terminal result proves hidden history is safe to export.
+									LifecycleEvents.RunEnd runEnd = LifecycleEvents.decodeRunEnd(possibleEnd, r);
+									if (runEnd.outcome == LifecycleEvents.OUTCOME_DIED
+											|| runEnd.outcome == LifecycleEvents.OUTCOME_WON
+											|| runEnd.outcome == LifecycleEvents.OUTCOME_ABANDONED){
+										l.ended = true;
+									}
+								} catch (RuntimeException ignored){
+									//Malformed run end cannot prove completion.
+								}
+							}
+						}
 					}
 				}
 			} catch (Throwable t){

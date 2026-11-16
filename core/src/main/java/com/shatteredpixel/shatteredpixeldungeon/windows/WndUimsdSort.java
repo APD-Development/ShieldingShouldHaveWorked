@@ -60,7 +60,6 @@ public final class WndUimsdSort {
 		if (table == null) return;
 		final List<Sort> sorts = new ArrayList<>(m.query().sorts);
 		List<WndUimsdList.Entry> entries = new ArrayList<>();
-		final int[] keyAt = new int[8];
 		int n = 0;
 		if (sorts.isEmpty()){
 			entries.add(WndUimsdList.Entry.note("The table is not sorted: rows come in their natural order."));
@@ -69,7 +68,7 @@ public final class WndUimsdSort {
 			for (int i = 0; i < sorts.size(); i++){
 				entries.add(WndUimsdList.Entry.item((i + 1) + ". " + labelOf(table, sorts.get(i).column) + ", " + way(sorts.get(i).descending),
 						i == 0 ? "tap to reverse or remove it" : "used when the keys above are equal; tap to reverse or remove it"));
-				keyAt[n++] = i;
+				n++;
 			}
 		}
 		entries.add(WndUimsdList.Entry.heading("Change"));
@@ -91,7 +90,7 @@ public final class WndUimsdSort {
 					editKey(m, sorts, i);
 				}
 			}
-		}));
+		}).restoreWith(() -> show(m)));
 	}
 
 	private static void editKey( final UimsdModel m, final List<Sort> sorts, final int index ){
@@ -106,7 +105,7 @@ public final class WndUimsdSort {
 				else next.remove(index);
 				apply(m, next);
 			}
-		}));
+		}).restoreWith(() -> editKey(m, sorts, index)));
 	}
 
 	private static void pickColumn( final UimsdModel m, final ResultTable table, final List<Sort> sorts ){
@@ -123,19 +122,22 @@ public final class WndUimsdSort {
 		keep(WndUimsdList.menu("Sort by", "Only columns shown in the table can be sorted.", entries, new WndUimsdList.Picker(){
 			@Override
 			public void onPick( int i, boolean checked ){
-				final String id = options.get(i).id;
-				List<WndUimsdList.Entry> ways = new ArrayList<>();
-				ways.add(WndUimsdList.Entry.item("Lowest first", "smallest numbers, earliest dates, A to Z"));
-				ways.add(WndUimsdList.Entry.item("Highest first", "biggest numbers, latest dates, Z to A"));
-				keep(WndUimsdList.menu("Sort " + options.get(i).label, "", ways, new WndUimsdList.Picker(){
-					@Override
-					public void onPick( int w, boolean c ){
-						List<Sort> next = new ArrayList<>(sorts);
-						next.add(new Sort(id, w == 1));
-						apply(m, next);
-					}
-				}));
+				pickDirection(m, sorts, options.get(i).id, options.get(i).label);
 			}
-		}));
+		}).restoreWith(() -> pickColumn(m, table, sorts)));
 	}
+	private static void pickDirection(final UimsdModel m, final List<Sort> sorts, final String id, String label){
+		List<WndUimsdList.Entry> ways = new ArrayList<>();
+		ways.add(WndUimsdList.Entry.item("Lowest first", "smallest numbers, earliest dates, A to Z"));
+		ways.add(WndUimsdList.Entry.item("Highest first", "biggest numbers, latest dates, Z to A"));
+		keep(WndUimsdList.menu("Sort " + label, "", ways, new WndUimsdList.Picker(){
+			@Override
+			public void onPick( int w, boolean c ){
+				List<Sort> next = new ArrayList<>(sorts);
+				next.add(new Sort(id, w == 1));
+				apply(m, next);
+			}
+		}).restoreWith(() -> pickDirection(m, sorts, id, label)));
+	}
+
 }

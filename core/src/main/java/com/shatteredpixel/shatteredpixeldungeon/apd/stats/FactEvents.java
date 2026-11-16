@@ -200,14 +200,14 @@ public final class FactEvents {
 			i += (int) run;
 			if (i < n) s[i++] = in.readSigned();
 		}
-		long[] v = new long[n];
+		// Reconstruct in the existing buffer; each later encoded step is still untouched.
 		long prev = 0, step = 0;
 		for (int k = 0; k < n; k++){
 			step = mode == 1 ? step + s[k] : s[k];
 			prev += step;
-			v[k] = prev;
+			s[k] = prev;
 		}
-		return v;
+		return s;
 	}
 
 	//a damaged payload must not make the reader allocate without limit

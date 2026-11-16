@@ -23,10 +23,20 @@ public final class GoldenChildMain {
 			new Object().hashCode();
 		}
 		String mode = args.length > 1 ? args[1] : "";
-		boolean record = mode.equals("rec") || mode.equals("flowrec");
+		boolean record = mode.equals("rec") || mode.equals("flowrec") || mode.equals("legacy-scrolls-rec");
 		boolean flow = mode.equals("flow") || mode.equals("flowrec");
 
 		HeadlessTestSupport.start();
+		if (mode.startsWith("legacy-scrolls")){
+			// Keep the historical pre-recorder baseline on its original twelve-item pool.
+			com.shatteredpixel.shatteredpixeldungeon.items.Generator.Category scrolls = com.shatteredpixel.shatteredpixeldungeon.items.Generator.Category.SCROLL;
+			for (int i=0;i<scrolls.classes.length;i++) if (scrolls.classes[i] == com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfGathering.class){
+				scrolls.defaultProbs[i]=0;scrolls.defaultProbs2[i]=0;scrolls.defaultProbsTotal[i]=0;
+			}
+		}
+
+		LegacyGeneration.withoutApdWeapons();
+		LevelGenerationHarness.historicalTutorialFingerprint = true;
 		if (record){
 			com.shatteredpixel.shatteredpixeldungeon.apd.recorder.ApdRecorder.configure(
 					new java.io.File(HeadlessTestSupport.tempDir(), "history"), true);
@@ -46,3 +56,4 @@ public final class GoldenChildMain {
 		System.exit(0);
 	}
 }
+

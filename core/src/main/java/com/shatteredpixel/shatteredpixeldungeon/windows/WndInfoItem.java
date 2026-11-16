@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -37,6 +40,7 @@ public class WndInfoItem extends Window {
 
 	//only one WndInfoItem can appear at a time
 	private static WndInfoItem INSTANCE;
+    private Item displayedItem;
 
 	public WndInfoItem( Heap heap ) {
 
@@ -86,18 +90,23 @@ public class WndInfoItem extends Window {
 	}
 	
 	private void fillFields( Item item ) {
+        displayedItem=item;
 		
 		int color = TITLE_COLOR;
-		if (item.levelKnown && item.level() > 0) {
+        // Use the same public, read-only value as the item title and inventory slot.
+        // Wand.level() performs gameplay curse-infusion cleanup and must not run just to color text.
+        int visibleLevel = item.visiblyUpgraded();
+		if (item.levelKnown && visibleLevel > 0) {
 			color = ItemSlot.UPGRADED;
-		} else if (item.levelKnown && item.level() < 0) {
+		} else if (item.levelKnown && visibleLevel < 0) {
 			color = ItemSlot.DEGRADED;
 		}
 
 		IconTitle titlebar = new IconTitle( item );
 		titlebar.color( color );
 		
-		RenderedTextBlock txtInfo = PixelScene.renderTextBlock( item.info(), 6 );
+        String visibleInfo=item.info();
+		RenderedTextBlock txtInfo = PixelScene.renderTextBlock( visibleInfo, 6 );
 		
 		layoutFields(titlebar, txtInfo);
 	}
@@ -123,9 +132,7 @@ public class WndInfoItem extends Window {
 		}
 		add( title );
 
-		info.setPos(title.left(), title.bottom() + GAP);
-		add( info );
-
-		resize( width, (int)(info.bottom() + 2) );
+        float bottom=com.shatteredpixel.shatteredpixeldungeon.ui.MechanicsInfoPanel.add(this,info,title.left(),title.bottom()+GAP,width,this instanceof WndUseItem?72:0,()->com.shatteredpixel.shatteredpixeldungeon.apd.mechanics.MechanicsDetails.itemCalculations(displayedItem));
+        resize(width,(int)(bottom+2));
 	}
 }

@@ -38,6 +38,10 @@ public class Statistics {
 	public static int piranhasKilled;
 	public static int hazardAssistedKills;
 	public static int ankhsUsed;
+	// Picked-up healing potions attributable to enemy loot, by original dungeon region. No total.
+	public static int[] enemyHealingPotionsByRegion = new int[5];
+	// False for older saves: counts from before this feature must never be invented.
+	public static boolean enemyHealingPotionsRecorded;
 	//tracks every item type 'seen' this run (i.e. would be added to catalogs)
 	public static HashSet<Class> itemTypesDiscovered = new HashSet<>();
 
@@ -77,6 +81,22 @@ public class Statistics {
 	public static boolean gameWon = false;
 	public static boolean ascended = false;
 	
+
+	/** Main dungeon depth 1-25; side branches use the region of their entrance depth. */
+	public static int enemyHealingRegionForDepth(int depth) {
+		return depth >= 1 && depth <= 25 ? (depth - 1) / 5 : -1;
+	}
+
+	/** Called after a successful pickup only. An older save keeps its incomplete-history flag. */
+	public static void recordEnemyHealingPickup(int[] regionCounts) {
+		if (regionCounts == null || regionCounts.length != 5) return;
+		for (int i = 0; i < 5; i++) {
+			int n = regionCounts[i];
+			if (n > 0) enemyHealingPotionsByRegion[i] =
+				(int)Math.min(Integer.MAX_VALUE, (long)enemyHealingPotionsByRegion[i] + n);
+		}
+	}
+
 	public static void reset() {
 		
 		goldCollected	= 0;
@@ -88,6 +108,9 @@ public class Statistics {
 		piranhasKilled	= 0;
 		hazardAssistedKills = 0;
 		ankhsUsed		= 0;
+		enemyHealingPotionsByRegion = new int[5];
+		enemyHealingPotionsRecorded = true;
+		com.shatteredpixel.shatteredpixeldungeon.apd.ProgressionPickups.reset(true);
 		itemTypesDiscovered.clear();
 
 		progressScore   = 0;
@@ -133,6 +156,8 @@ public class Statistics {
 	private static final String PIRANHAS	= "priranhas";
 	private static final String HAZARD_ASSISTS	= "hazard_assists";
 	private static final String ANKHS		= "ankhsUsed";
+	private static final String ENEMY_HEAL_REGIONS = "apd_enemy_healing_pickups_regions_v1";
+	private static final String ENEMY_HEAL_COMPLETE = "apd_enemy_healing_pickups_complete_v1";
 
 	private static final String PROG_SCORE	    = "prog_score";
 	private static final String ITEM_VAL	    = "item_val";
@@ -167,6 +192,7 @@ public class Statistics {
 	private static final String ASCENDED		= "ascended";
 	
 	public static void storeInBundle( Bundle bundle ) {
+		com.shatteredpixel.shatteredpixeldungeon.apd.ProgressionPickups.store(bundle);
 		bundle.put( GOLD,		goldCollected );
 		bundle.put( DEEPEST,	deepestFloor );
 		bundle.put( HIGHEST,	highestAscent );
@@ -176,6 +202,9 @@ public class Statistics {
 		bundle.put( PIRANHAS,	piranhasKilled );
 		bundle.put(HAZARD_ASSISTS, hazardAssistedKills);
 		bundle.put( ANKHS,		ankhsUsed );
+		// Preserve partial pickups in upgraded legacy saves without inventing earlier history.
+		bundle.put(ENEMY_HEAL_REGIONS, enemyHealingPotionsByRegion);
+		bundle.put(ENEMY_HEAL_COMPLETE, enemyHealingPotionsRecorded);
 		bundle.put( ITEM_TYPES_DISCOVERED, itemTypesDiscovered.toArray(new Class<?>[0]) );
 
 		bundle.put( PROG_SCORE,  progressScore );
@@ -214,6 +243,7 @@ public class Statistics {
 	}
 	
 	public static void restoreFromBundle( Bundle bundle ) {
+		com.shatteredpixel.shatteredpixeldungeon.apd.ProgressionPickups.restore(bundle);
 		goldCollected	= bundle.getInt( GOLD );
 		deepestFloor	= bundle.getInt( DEEPEST );
 		highestAscent   = bundle.getInt( HIGHEST );
@@ -223,6 +253,20 @@ public class Statistics {
 		piranhasKilled	= bundle.getInt( PIRANHAS );
 		hazardAssistedKills = bundle.getInt( HAZARD_ASSISTS );
 		ankhsUsed		= bundle.getInt( ANKHS );
+		enemyHealingPotionsByRegion = new int[5];
+		enemyHealingPotionsRecorded = false;
+		if (bundle.contains(ENEMY_HEAL_REGIONS)) {
+			int[] restored = bundle.getIntArray(ENEMY_HEAL_REGIONS);
+			if (restored != null && restored.length == 5) {
+				boolean valid = true;
+				for (int n : restored) if (n < 0) valid = false;
+				if (valid) {
+					enemyHealingPotionsByRegion = restored.clone();
+					enemyHealingPotionsRecorded = !bundle.contains(ENEMY_HEAL_COMPLETE)
+								|| bundle.getBoolean(ENEMY_HEAL_COMPLETE);
+				}
+			}
+		}
 
 		if (bundle.contains( ITEM_TYPES_DISCOVERED )) {
 			itemTypesDiscovered = new HashSet<>(Arrays.asList(bundle.getClassArray(ITEM_TYPES_DISCOVERED)));

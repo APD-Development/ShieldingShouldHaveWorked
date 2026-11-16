@@ -66,12 +66,13 @@ public final class QueryCodec {
 		Scope s = q.scope;
 		b.append("scope\t").append(s.rules.name()).append('\t').append(esc(s.ruleset)).append('\t')
 				.append((s.includeUnknownRuleset ? 1 : 0) | (s.includeMixedRuleset ? 2 : 0) | (s.includeUnfinished ? 4 : 0)
-						| (s.includeDuplicates ? 8 : 0)).append('\n');
+						| (s.includeDuplicates ? 8 : 0) | (s.finishedOnly ? 16 : 0)).append('\n');
 		for (Filter f : q.filters){
 			b.append("filter\t").append(esc(f.column)).append('\t').append(f.op.name()).append('\t');
 			for (int i = 0; i < f.nums.length; i++) b.append(i > 0 ? "," : "").append(f.nums[i]);
 			b.append('\t');
 			for (int i = 0; i < f.texts.length; i++) b.append(i > 0 ? "|" : "").append(esc(f.texts[i]));
+			if (f.texts.length == 1 && f.texts[0].isEmpty()) b.append('\t').append(1);
 			b.append('\n');
 		}
 		for (Sort so : q.sorts) b.append("sort\t").append(esc(so.column)).append('\t').append(so.descending ? 1 : 0).append('\n');
@@ -111,7 +112,7 @@ public final class QueryCodec {
 					case "dataset": dataset = unesc(p[1]); break;
 					case "scope": {
 						int bits = Integer.parseInt(p[3]);
-						scope = new Scope(Scope.Rules.valueOf(p[1]), unesc(p[2]), (bits & 1) != 0, (bits & 2) != 0, (bits & 4) != 0, (bits & 8) != 0);
+						scope = new Scope(Scope.Rules.valueOf(p[1]), unesc(p[2]), (bits & 1) != 0, (bits & 2) != 0, (bits & 4) != 0, (bits & 8) != 0, (bits & 16) != 0);
 						break;
 					}
 					case "filter": {
@@ -126,6 +127,12 @@ public final class QueryCodec {
 							String[] t = p[4].split("\\|", -1);
 							texts = new String[t.length];
 							for (int i = 0; i < t.length; i++) texts[i] = unesc(t[i]);
+						}
+						// Older records omit the count. New records distinguish no texts from one empty text.
+						if (p.length >= 6) {
+							int count = Integer.parseInt(p[5]);
+							if (count == 1 && p[4].isEmpty()) texts = new String[]{""};
+							if (count != texts.length) throw new IllegalArgumentException("text count");
 						}
 						filters.add(new Filter(unesc(p[1]), Op.valueOf(p[2]), nums, texts));
 						break;
@@ -148,6 +155,25 @@ public final class QueryCodec {
 				throw new IllegalArgumentException("bad query line: " + line);
 			}
 		}
+		//Older Turkish/Azeri builds wrote locale-specific aggregate sort IDs. Resolve
+		//only aliases of this query's actual aggregates; never rewrite saved bytes or keys.
+		if (keys != null) for (int i = 0; i < sorts.size(); i++){
+			Sort sort = sorts.get(i);
+			if (keys.contains(sort.column)) continue;
+			for (Aggregate aggregate : aggs){
+				if (aggregate.fn != Aggregate.Fn.MIN && aggregate.fn != Aggregate.Fn.MEDIAN
+						&& aggregate.fn != Aggregate.Fn.COUNT_DISTINCT) continue;
+				String id = aggregate.id();
+				int separator = id.indexOf(':');
+				String legacy = id.substring(0, separator).replace('i', '\u0131') + id.substring(separator);
+				if (sort.column.equals(legacy)){
+					sorts.set(i, new Sort(id, sort.descending));
+					break;
+				}
+			}
+		}
 		return new Query(dataset, scope, filters, sorts, columns, keys == null ? null : new GroupBy(keys, aggs), show, min);
 	}
 }
+
+

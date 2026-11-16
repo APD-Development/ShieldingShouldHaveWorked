@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -267,6 +270,17 @@ public class MeleeWeapon extends Weapon {
 	}
 
 	private static boolean evaluatingTwinUpgrades = false;
+    /** Public equipment/tier knowledge only; never checks the other weapon's hidden level. */
+    public boolean hasUnknownTwinUpgradeSource(){
+        Hero owner=Dungeon.hero;if(owner==null||!isEquipped(owner)||!owner.hasTalent(Talent.TWIN_UPGRADES))return false;
+        KindOfWeapon other=null;
+        if(owner.belongings.weapon()!=this)other=owner.belongings.weapon();
+        if(owner.belongings.secondWep()!=this)other=owner.belongings.secondWep();
+        return other instanceof MeleeWeapon&&!other.levelKnown
+                &&tier+(3-owner.pointsInTalent(Talent.TWIN_UPGRADES))<=((MeleeWeapon)other).tier;
+    }
+    public static String unknownTwinUpgradeNote(){return "Any Twin Upgrades bonus from your unidentified weapon is not shown.";}
+
 	@Override
 	public int buffedLvl() {
 		if (!evaluatingTwinUpgrades && Dungeon.hero != null && isEquipped(Dungeon.hero) && Dungeon.hero.hasTalent(Talent.TWIN_UPGRADES)){
@@ -274,7 +288,7 @@ public class MeleeWeapon extends Weapon {
 			if (Dungeon.hero.belongings.weapon() != this) other = Dungeon.hero.belongings.weapon();
 			if (Dungeon.hero.belongings.secondWep() != this) other = Dungeon.hero.belongings.secondWep();
 
-			if (other instanceof MeleeWeapon) {
+			if (other instanceof MeleeWeapon && (!com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.Dart.inspectionActive() || other.levelKnown)) {
 				evaluatingTwinUpgrades = true;
 				int otherLevel = other.buffedLvl();
 				evaluatingTwinUpgrades = false;
@@ -305,26 +319,33 @@ public class MeleeWeapon extends Weapon {
 	
 	@Override
 	public String info() {
+        return com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.Dart.inspect(this::inspectionInfo);
+    }
+    private String inspectionInfo() {
+        Integer knownStrength=com.shatteredpixel.shatteredpixeldungeon.apd.mechanics.ArmorExplanation.knownStrength(Dungeon.hero);
 
-		String info = super.info();
+		String info = super.info() + accuracyDescription();
 
 		if (levelKnown) {
 			info += "\n\n" + Messages.get(MeleeWeapon.class, "stats_known", tier, augment.damageFactor(min()), augment.damageFactor(max()), STRReq());
-			if (Dungeon.hero != null) {
-				if (STRReq() > Dungeon.hero.STR()) {
+            if(hasUnknownTwinUpgradeSource())info+=" "+unknownTwinUpgradeNote();
+			if (knownStrength != null) {
+				if (STRReq() > knownStrength) {
 					info += " " + Messages.get(Weapon.class, "too_heavy");
-				} else if (Dungeon.hero.STR() > STRReq()) {
-					info += " " + Messages.get(Weapon.class, "excess_str", Dungeon.hero.STR() - STRReq());
+				} else if (knownStrength > STRReq()) {
+					info += " " + Messages.get(Weapon.class, "excess_str", knownStrength - STRReq());
 				}
 			}
 		} else {
-			info += "\n\n" + Messages.get(MeleeWeapon.class, "stats_unknown", tier, min(0), max(0), STRReq(0));
-			if (Dungeon.hero != null && STRReq(0) > Dungeon.hero.STR()) {
+			info += "\n\n" + Messages.get(MeleeWeapon.class, "stats_unknown", tier, augment.damageFactor(min(0)), augment.damageFactor(max(0)), STRReq(0));
+			if (knownStrength != null && STRReq(0) > knownStrength) {
 				info += " " + Messages.get(MeleeWeapon.class, "probably_too_heavy");
 			}
 		}
 
-		String statsInfo = statsInfo();
+		// These five weapons already have a strength-adjusted passive-block summary.
+        // Keep one accurate statement instead of appending the old unadjusted range again.
+        String statsInfo = com.shatteredpixel.shatteredpixeldungeon.apd.mechanics.WeaponExplanation.passiveBlockWeapon(this)?"":statsInfo();
 		if (!statsInfo.equals("")) info += "\n\n" + statsInfo;
 
 		switch (augment) {
@@ -344,7 +365,7 @@ public class MeleeWeapon extends Weapon {
 		} else if (enchantment != null && (cursedKnown || !enchantment.curse())){
 			info += "\n\n" + Messages.capitalize(Messages.get(Weapon.class, "enchanted", enchantment.name()));
 			if (enchantHardened) info += " " + Messages.get(Weapon.class, "enchant_hardened");
-			info += " " + enchantment.desc();
+			info += " " + com.shatteredpixel.shatteredpixeldungeon.apd.mechanics.EnchantmentExplanation.playerDescription(this,Dungeon.hero);
 		} else if (enchantHardened){
 			info += "\n\n" + Messages.get(Weapon.class, "hardened_no_enchant");
 		}

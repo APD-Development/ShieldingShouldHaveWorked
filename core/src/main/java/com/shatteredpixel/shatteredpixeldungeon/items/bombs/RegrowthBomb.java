@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -92,7 +95,8 @@ public class RegrowthBomb extends Bomb {
 		for (int i = 0; i < plants; i++) {
 			Integer plantPos = Random.element(plantCandidates);
 			if (plantPos != null) {
-				Dungeon.level.plant((Plant.Seed) Generator.randomUsingDefaults(Generator.Category.SEED), plantPos);
+				Dungeon.level.plantAttributed((Plant.Seed) Generator.randomUsingDefaults(Generator.Category.SEED),
+						plantPos, apdExplosionOrigin());
 				plantCandidates.remove(plantPos);
 			}
 		}
@@ -111,10 +115,21 @@ public class RegrowthBomb extends Bomb {
 					plant = new Starflower.Seed();
 					break;
 			}
-			Dungeon.level.plant( plant, plantPos);
+			Dungeon.level.plantAttributed(plant, plantPos, apdExplosionOrigin());
 		}
 	}
 	
+    @Override
+    public String desc() {
+        String text = super.desc();
+        if (Dungeon.hero != null && Dungeon.isChallenged(com.shatteredpixel.shatteredpixeldungeon.Challenges.NO_HEALING)) {
+            text += "\n\n" + com.shatteredpixel.shatteredpixeldungeon.messages.Messages.get(PotionOfHealing.class, "desc_pharmacophobia");
+        } else if (Dungeon.hero != null && com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomHealingHooks.disabled()) {
+            text += "\n\n" + com.shatteredpixel.shatteredpixeldungeon.messages.Messages.get(PotionOfHealing.class, "desc_disabled_healing");
+        }
+        return text;
+    }
+
 	@Override
 	public int value() {
 		//prices of ingredients

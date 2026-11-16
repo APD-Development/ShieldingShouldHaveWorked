@@ -374,7 +374,7 @@ public final class EventDatasets {
 		for (int k = i + 1; k < events.size() && k <= i + 4; k++){
 			if (events.get(k).type == type) return events.get(k);
 			int t = events.get(k).type;
-			if (t == EventTypes.ATTACK || t == EventTypes.DAMAGE || t == EventTypes.KILL || t == EventTypes.HEAL) break;
+			if (t == EventTypes.GAP || t == EventTypes.ATTACK || t == EventTypes.DAMAGE || t == EventTypes.KILL || t == EventTypes.HEAL) break;
 		}
 		return null;
 	}
@@ -441,13 +441,18 @@ public final class EventDatasets {
 						num(row, at, "attack.thrown", a.thrown ? 1 : 0, Fact.PROV_RECORDED);
 						if (byHero) text(row, at, "attack.weapon", a.weaponName, Fact.PROV_RECORDED);
 						ApdEvent de = detailAfter(events, i, EventTypes.ATTACK_DETAIL);
-						if (de != null){
-							CombatEvents.AttackDetail d = CombatEvents.decodeAttackDetail(de, r);
-							num(row, at, "attack.rolled", d.rolled, Fact.PROV_RECORDED);
-							num(row, at, "attack.armor", d.armorReduction, Fact.PROV_RECORDED);
-							num(row, at, "attack.effective", d.effective, Fact.PROV_RECORDED);
-							text(row, at, "attack.attackerClass", d.attackerClass, Fact.PROV_RECORDED);
-							text(row, at, "attack.defenderClass", d.defenderClass, Fact.PROV_RECORDED);
+						CombatEvents.AttackDetail detail = null;
+						try {
+							if (de != null) detail = CombatEvents.decodeAttackDetail(de, r);
+						} catch (RuntimeException badDetail){
+							//The public attack remains usable; only optional hidden detail is unknown.
+						}
+						if (detail != null){
+							num(row, at, "attack.rolled", detail.rolled, Fact.PROV_RECORDED);
+							num(row, at, "attack.armor", detail.armorReduction, Fact.PROV_RECORDED);
+							num(row, at, "attack.effective", detail.effective, Fact.PROV_RECORDED);
+							text(row, at, "attack.attackerClass", detail.attackerClass, Fact.PROV_RECORDED);
+							text(row, at, "attack.defenderClass", detail.defenderClass, Fact.PROV_RECORDED);
 						}
 						atRows.add(row);
 						break;
@@ -485,7 +490,11 @@ public final class EventDatasets {
 						num(row, he, "heal.hpMax", h.hpMax, Fact.PROV_RECORDED);
 						num(row, he, "heal.inferred", (e.flags & CombatEvents.FLAG_INFERRED) != 0 ? 1 : 0, Fact.PROV_RECORDED);
 						ApdEvent de = detailAfter(events, i, EventTypes.HEAL_DETAIL);
-						if (de != null) text(row, he, "heal.source", CombatEvents.decodeHealDetail(de, r).source, Fact.PROV_RECORDED);
+						try {
+							if (de != null) text(row, he, "heal.source", CombatEvents.decodeHealDetail(de, r).source, Fact.PROV_RECORDED);
+						} catch (RuntimeException badDetail){
+							//Keep the readable public heal; its exact source remains unknown.
+						}
 						heRows.add(row);
 						break;
 					}
@@ -530,10 +539,15 @@ public final class EventDatasets {
 						text(row, ki, "kill.killer", k.killer.label, Fact.PROV_RECORDED);
 						num(row, ki, "kill.killerKind", k.killer.kind, Fact.PROV_RECORDED);
 						ApdEvent de = detailAfter(events, i, EventTypes.KILL_DETAIL);
-						if (de != null){
-							CombatEvents.KillDetail d = CombatEvents.decodeKillDetail(de, r);
-							text(row, ki, "kill.victimClass", d.victimClass, Fact.PROV_RECORDED);
-							num(row, ki, "kill.expValue", d.expValue, Fact.PROV_RECORDED);
+						CombatEvents.KillDetail detail = null;
+						try {
+							if (de != null) detail = CombatEvents.decodeKillDetail(de, r);
+						} catch (RuntimeException badDetail){
+							//The public kill remains usable; only optional hidden detail is unknown.
+						}
+						if (detail != null){
+							text(row, ki, "kill.victimClass", detail.victimClass, Fact.PROV_RECORDED);
+							num(row, ki, "kill.expValue", detail.expValue, Fact.PROV_RECORDED);
 						}
 						kiRows.add(row);
 						break;

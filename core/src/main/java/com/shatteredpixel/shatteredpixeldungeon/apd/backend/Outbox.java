@@ -108,6 +108,9 @@ public final class Outbox {
 			} catch (RuntimeException ex){
 				resp = new Gateway.Response(Gateway.Status.RETRY_LATER, "gateway failed");
 			}
+			if (resp == null || resp.status == null){
+				resp = new Gateway.Response(Gateway.Status.RETRY_LATER, "invalid gateway response");
+			}
 			it.attempts++;
 			it.lastDetail = resp.detail;
 			switch (resp.status){

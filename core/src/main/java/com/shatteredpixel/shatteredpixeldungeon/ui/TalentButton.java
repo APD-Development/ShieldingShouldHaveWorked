@@ -153,63 +153,32 @@ public class TalentButton extends Button {
 			});
 		} else if (mode == Mode.METAMORPH_REPLACE && Dungeon.hero != null && Dungeon.hero.isAlive()) {
 			toAdd = new WndInfoTalent(talent, pointsInTalent, new WndInfoTalent.TalentButtonCallback() {
-
-				@Override
-				public String prompt() {
-					return Messages.titleCase(Messages.get(ScrollOfMetamorphosis.class, "metamorphose_talent"));
-				}
-
-				@Override
-				public boolean metamorphDesc() {
-					return true;
-				}
-
-				@Override
-				public void call() {
-					Talent replacing = ScrollOfMetamorphosis.WndMetamorphReplace.INSTANCE.replacing;
-
-					for (LinkedHashMap<Talent, Integer> tier : Dungeon.hero.talents){
-						if (tier.containsKey(replacing)){
-							LinkedHashMap<Talent, Integer> newTier = new LinkedHashMap<>();
-							for (Talent t : tier.keySet()){
-								if (t == replacing){
-									newTier.put(talent, tier.get(replacing));
-
-									if (!Dungeon.hero.metamorphedTalents.containsValue(replacing)){
-										Dungeon.hero.metamorphedTalents.put(replacing, talent);
-
-									//if what we're replacing is already a value, we need to simplify the data structure
-									} else {
-										//a->b->a, we can just remove the entry entirely
-										if (Dungeon.hero.metamorphedTalents.get(talent) == replacing){
-											Dungeon.hero.metamorphedTalents.remove(talent);
-
-										//a->b->c, we need to simplify to a->c
-										} else {
-											for (Talent t2 : Dungeon.hero.metamorphedTalents.keySet()){
-												if (Dungeon.hero.metamorphedTalents.get(t2) == replacing){
-													Dungeon.hero.metamorphedTalents.put(t2, talent);
-												}
-											}
-										}
-									}
-
-								} else {
-									newTier.put(t, tier.get(t));
-								}
-							}
-							Dungeon.hero.talents.set(ScrollOfMetamorphosis.WndMetamorphReplace.INSTANCE.tier-1, newTier);
-							break;
-						}
-					}
-
-					ScrollOfMetamorphosis.onMetamorph(replacing, talent);
-
-					if (ScrollOfMetamorphosis.WndMetamorphReplace.INSTANCE != null){
-						ScrollOfMetamorphosis.WndMetamorphReplace.INSTANCE.hide();
-					}
-
-				}
+                @Override public String prompt() {
+                    return enabled() ? Messages.titleCase(Messages.get(ScrollOfMetamorphosis.class, "metamorphose_talent"))
+                            : Messages.get(com.shatteredpixel.shatteredpixeldungeon.apd.talents.MetamorphosisChoices.class, "already_owned");
+                }
+                @Override public boolean enabled() {
+                    ScrollOfMetamorphosis.WndMetamorphReplace window = ScrollOfMetamorphosis.WndMetamorphReplace.INSTANCE;
+                    return window != null && window.canReplace(talent);
+                }
+                @Override public String extraInfo() {
+                    ScrollOfMetamorphosis.WndMetamorphReplace window = ScrollOfMetamorphosis.WndMetamorphReplace.INSTANCE;
+                    if (window == null || window.choiceClass(talent) == null) return "";
+                    String source = Messages.get(com.shatteredpixel.shatteredpixeldungeon.apd.talents.MetamorphosisChoices.class, "choice_source",
+                            Messages.titleCase(window.choiceClass(talent).title()));
+                    return enabled() ? source : source + "\n" + Messages.get(com.shatteredpixel.shatteredpixeldungeon.apd.talents.MetamorphosisChoices.class, "choice_duplicate");
+                }
+                @Override public boolean metamorphDesc() { return true; }
+                @Override public void call() {
+                    ScrollOfMetamorphosis.WndMetamorphReplace window = ScrollOfMetamorphosis.WndMetamorphReplace.INSTANCE;
+                    if (window == null || !window.canReplace(talent)) return;
+                    Talent replacing = window.replacing;
+                    if (!com.shatteredpixel.shatteredpixeldungeon.apd.talents.MetamorphosisChoices.applyFrom(
+                            Dungeon.hero, window.tier, replacing, talent, window.offeredTalents())) return;
+                    ScrollOfMetamorphosis.onMetamorph(replacing, talent);
+                    if (ScrollOfMetamorphosis.WndMetamorphReplace.INSTANCE != null)
+                        ScrollOfMetamorphosis.WndMetamorphReplace.INSTANCE.hide();
+                }
 			});
 		} else {
 			toAdd = new WndInfoTalent(talent, pointsInTalent, null);
@@ -260,3 +229,4 @@ public class TalentButton extends Button {
 		}
 	}
 }
+

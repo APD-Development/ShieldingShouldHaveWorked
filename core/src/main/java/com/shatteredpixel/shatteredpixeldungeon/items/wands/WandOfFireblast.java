@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -108,7 +111,7 @@ public class WandOfFireblast extends DamageWand {
 					Dungeon.level.heaps.get(cell).burn();
 				}
 			} else {
-				GameScene.add( Blob.seed( cell, 1+chargesPerCast(), Fire.class ) );
+				GameScene.add( Fire.seedAttributed( cell, 1+chargesPerCast(), com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin.capture(curUser, null) ) );
 			}
 
 			Char ch = Actor.findChar( cell );
@@ -129,16 +132,16 @@ public class WandOfFireblast extends DamageWand {
 				if (Dungeon.level.trueDistance(cell+i, bolt.collisionPos) < Dungeon.level.trueDistance(cell, bolt.collisionPos)
 						&& Dungeon.level.flamable[cell+i]
 						&& Fire.volumeAt(cell+i, Fire.class) == 0){
-					GameScene.add( Blob.seed( cell+i, 1+chargesPerCast(), Fire.class ) );
+					GameScene.add( Fire.seedAttributed( cell+i, 1+chargesPerCast(), com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin.capture(curUser, null) ) );
 				}
 			}
 		}
 
 		for ( Char ch : affectedChars ){
 			wandProc(ch, chargesPerCast());
-			ch.damage(damageRoll(), this);
+			com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomOffensiveHooks.raw(ch,damageRoll(),this,curUser);
 			if (ch.isActive()) {
-				Buff.affect(ch, Burning.class).reignite(ch);
+				Burning.affectAttributed(ch, curUser);
 				switch (chargesPerCast()) {
 					case 1:
 						break; //no effects
@@ -200,7 +203,8 @@ public class WandOfFireblast extends DamageWand {
 						}
 						if (ch.alignment == Char.Alignment.ENEMY) {
 							//damage of a 2-charge zap
-							ch.damage(Math.round(powerMulti*Hero.heroDamageIntRange(2 + 2*buffedLvl(), 8 + 4*buffedLvl())), this);
+							apdApplyStaffExplosion(ch, attacker,
+									Math.round(powerMulti*Hero.heroDamageIntRange(2 + 2*buffedLvl(), 8 + 4*buffedLvl())), this);
 						}
 					}
 				}
@@ -210,6 +214,13 @@ public class WandOfFireblast extends DamageWand {
 
 		}
 	}
+
+
+	private static void apdApplyStaffExplosion(Char target, Char attacker, int rawDamage, Object source) {
+		com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomOffensiveHooks.raw(
+				target, rawDamage, source, attacker);
+	}
+
 
 	@Override
 	public void fx(Ballistica bolt, Callback callback) {
@@ -259,8 +270,9 @@ public class WandOfFireblast extends DamageWand {
 
 	@Override
 	public String statsDesc() {
+		if (!curChargeKnown) return Messages.get(Wand.class, "unknown_charge_preview");
 		if (levelKnown)
-			return Messages.get(this, "stats_desc", chargesPerCast(), min(), max());
+			return Messages.get(this, "stats_desc", chargesPerCast(), min(previewEffectiveLevels()[0]), max(previewEffectiveLevels()[1]));
 		else
 			return Messages.get(this, "stats_desc", chargesPerCast(), min(0), max(0));
 	}

@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -123,6 +126,12 @@ public class WandOfCorruption extends Wand {
 		MAJOR_DEBUFFS.put(Doom.class,           0f);
 	}
 	
+    public static java.util.Map<Class<? extends Buff>, Float> explanationEffectPool(boolean major) {
+        return java.util.Collections.unmodifiableMap(major ? MAJOR_DEBUFFS : MINOR_DEBUFFS);
+    }
+
+    public static float corruptionPower(int effectiveLevel) { return 3 + effectiveLevel/3f; }
+
 	@Override
 	public void onZap(Ballistica bolt) {
 		Char ch = Actor.findChar(bolt.collisionPos);
@@ -139,7 +148,7 @@ public class WandOfCorruption extends Wand {
 				Statistics.qualifiedForBossChallengeBadge = false;
 			}
 
-			float corruptingPower = 3 + buffedLvl()/3f;
+			float corruptingPower = corruptionPower(buffedLvl());
 			
 			//base enemy resistance is usually based on their exp, but in special cases it is based on other criteria
 			float enemyResist;

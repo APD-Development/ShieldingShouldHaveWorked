@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -68,10 +71,12 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.Wound;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShadowParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.MasterThievesArmband;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TalismanOfForesight;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.ExoticPotion;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.Ring;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfWealth;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ExoticScroll;
@@ -141,8 +146,10 @@ public abstract class Mob extends Char {
 
 	protected static final float TIME_TO_WAKE_UP = 1f;
 
+	public boolean apdCustomHealthApplied;
 	protected boolean firstAdded = true;
 	protected void onAdd(){
+		com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomMobHooks.applyHealth(this);
 		if (firstAdded) {
 			//modify health for ascension challenge if applicable, only on first add
 			float percent = HP / (float) HT;
@@ -188,6 +195,7 @@ public abstract class Mob extends Char {
 		bundle.put( SEEN, enemySeen );
 		bundle.put( TARGET, target );
 		bundle.put( MAX_LVL, maxLvl );
+		if (apdCustomHealthApplied) bundle.put("apd_custom_hp_applied", true);
 
 		if (enemy != null) {
 			bundle.put(ENEMY_ID, enemy.id() );
@@ -240,6 +248,7 @@ public abstract class Mob extends Char {
 		target = bundle.getInt( TARGET );
 
 		maxLvl = bundle.getInt(MAX_LVL);
+		apdCustomHealthApplied = bundle.getBoolean("apd_custom_hp_applied");
 
 		if (bundle.contains(ENEMY_ID)) {
 			enemyID = bundle.getInt(ENEMY_ID);
@@ -855,9 +864,9 @@ public abstract class Mob extends Char {
 				if (Dungeon.hero.HP < Dungeon.hero.HT) {
 					int heal = (int)Math.ceil(restoration * 0.4f);
 					int apdHpBefore = Dungeon.hero.HP;
-					Dungeon.hero.HP = Math.min(Dungeon.hero.HT, Dungeon.hero.HP + heal);
+					Dungeon.hero.HP = Math.min(Dungeon.hero.HT, Dungeon.hero.HP + com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomHealingHooks.amount(Dungeon.hero, heal));
 					ApdCombat.onHeal( Dungeon.hero, apdHpBefore, ApdCombat.HEAL_SKILL_SOUL_SIPHON, heal );
-					Dungeon.hero.sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(heal), FloatingText.HEALING);
+					Dungeon.hero.sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomHealingHooks.display(Dungeon.hero, apdHpBefore, heal)), FloatingText.HEALING);
 				}
 			}
 		}
@@ -1068,8 +1077,17 @@ public abstract class Mob extends Char {
 			if (Random.Float() < lootChance()) {
 				Item loot = createLoot();
 				if (loot != null) {
-					ApdGen.onLootCreated( this, loot );
-					Dungeon.level.drop(loot, pos).sprite.drop();
+                    final Item original=loot;
+                    java.util.List<Item> ordinary = this.loot instanceof Item ? java.util.Collections.singletonList(original)
+                        : com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomEquipmentHooks.adjust(original,
+                            () -> com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomEquipmentHooks.extraLike(original));
+                    for (Item generated : ordinary) {
+                        loot = generated;
+                        if (loot instanceof PotionOfHealing) ((PotionOfHealing)loot).apdMarkEnemyDrop(Dungeon.depth);
+                        com.shatteredpixel.shatteredpixeldungeon.apd.GuaranteedLootIdentification.identifyNormalDrop(this, loot);
+                        ApdGen.onLootCreated( this, loot );
+                        Dungeon.level.drop(loot, pos).sprite.drop();
+                    }
 				}
 			}
 		}
@@ -1081,14 +1099,21 @@ public abstract class Mob extends Char {
 			else if (properties.contains(Property.MINIBOSS)) rolls = 5;
 			ArrayList<Item> bonus = RingOfWealth.tryForBonusDrop(Dungeon.hero, rolls);
 			if (bonus != null && !bonus.isEmpty()) {
-				for (Item b : bonus) Dungeon.level.drop(b, pos).sprite.drop();
+				for (Item b : bonus) {
+					com.shatteredpixel.shatteredpixeldungeon.apd.qol.ItemOrigins.recordSource(b, Dungeon.level, pos, com.shatteredpixel.shatteredpixeldungeon.apd.stats.GenerationEvents.C_MOB_LOOT);
+					if (b instanceof PotionOfHealing) ((PotionOfHealing)b).apdMarkEnemyDrop(Dungeon.depth);
+					for (Heap heap : com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomEquipmentHooks.dropEnemyGenerated(Dungeon.level, b, pos, com.shatteredpixel.shatteredpixeldungeon.apd.stats.GenerationEvents.C_MOB_LOOT)) heap.sprite.drop();
+				}
 				RingOfWealth.showFlareForBonusDrop(sprite);
 			}
 		}
 		
 		//lucky enchant logic
 		if (buff(Lucky.LuckProc.class) != null){
-			Dungeon.level.drop(buff(Lucky.LuckProc.class).genLoot(), pos).sprite.drop();
+			Item luckyLoot = buff(Lucky.LuckProc.class).genLoot();
+			com.shatteredpixel.shatteredpixeldungeon.apd.qol.ItemOrigins.recordSource(luckyLoot, Dungeon.level, pos, com.shatteredpixel.shatteredpixeldungeon.apd.stats.GenerationEvents.C_MOB_LOOT);
+			if (luckyLoot instanceof PotionOfHealing) ((PotionOfHealing)luckyLoot).apdMarkEnemyDrop(Dungeon.depth);
+			for (Heap heap : com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomEquipmentHooks.dropEnemyGenerated(Dungeon.level, luckyLoot, pos, com.shatteredpixel.shatteredpixeldungeon.apd.stats.GenerationEvents.C_MOB_LOOT))heap.sprite.drop();
 			Lucky.showFlare(sprite);
 		}
 
@@ -1113,11 +1138,11 @@ public abstract class Mob extends Char {
 		} else if (loot instanceof Class<?>) {
 
 			if (ExoticPotion.regToExo.containsKey(loot)){
-				if (Random.Float() < ExoticCrystals.consumableExoticChance()){
+				if (Random.Float() < ExoticCrystals.consumableExoticChance((Class<?>)loot)){
 					return Generator.random(ExoticPotion.regToExo.get(loot));
 				}
 			} else if (ExoticScroll.regToExo.containsKey(loot)){
-				if (Random.Float() < ExoticCrystals.consumableExoticChance()){
+				if (Random.Float() < ExoticCrystals.consumableExoticChance((Class<?>)loot)){
 					return Generator.random(ExoticScroll.regToExo.get(loot));
 				}
 			}
@@ -1781,4 +1806,3 @@ public abstract class Mob extends Char {
 		heldAllies.clear();
 	}
 }
-

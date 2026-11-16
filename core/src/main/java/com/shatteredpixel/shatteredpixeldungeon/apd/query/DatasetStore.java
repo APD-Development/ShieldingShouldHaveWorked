@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -46,7 +49,7 @@ import java.util.Set;
 //Builds the Catalog from the raw logs: runs/*.apdlog (recorded runs) and legacy/*.apdlog (imported ranking records).
 //
 //The raw logs are the only source of truth. Each log's rows are cached under derived/rows/<log>.apdr, valid only while that log has
-//exactly the size it had (logs are append-only) and the builder is the same version, so a new run or a run that went on costs
+//the same byte length and SHA-256 content it had and the builder is the same version, so a new run or a run that went on costs
 //one log to read, not the whole history. A missing, stale, damaged or older cache is rebuilt silently from the log, and deleting
 //the whole folder loses nothing. Rows are assembled and merged here every time (cheap), never cached merged.
 public final class DatasetStore {
@@ -92,29 +95,39 @@ public final class DatasetStore {
 
 	public void deleteCache(){
 		File[] files = rowsDir().listFiles();
-		if (files != null) for (File f : files) f.delete();
+		// Invalidation must not remove staging files owned by an in-flight writer.
+        // Otherwise that writer can delete a newer committed cache and fail its own rename.
+        if (files != null) for (File f : files) if (f.getName().endsWith(".apdr")) f.delete();
 	}
 
 	//Never throws.
-	public Catalog load(){
+    public interface Cancellation {boolean cancelled();}
+    public Catalog load(){return load(() -> false);}
+    public Catalog load(Cancellation cancelled){
+        checkCancelled(cancelled);
 		long t0 = System.nanoTime();
 		Catalog cat = new Catalog();
 		Map<String, DatasetDef> defs = defs();
+		byte[] fingerprintBuffer = new byte[32 * 1024];
 		List<LogRows> recorded = new ArrayList<>();
 		List<LogRows> imported = new ArrayList<>();
 		boolean demoFolder = new File(root, DEMO_MARKER_FILE).isFile();
 		cat.synthetic = demoFolder;
 		for (File f : logs(new File(root, "runs"))){
+            checkCancelled(cancelled);
 			if (idOf(f).startsWith(DEMO_LOG_PREFIX) != demoFolder) continue;
-			LogRows lr = rowsFor(f, false, defs, cat);
+			LogRows lr = rowsFor(f, false, defs, cat, fingerprintBuffer);
 			if (lr != null) recorded.add(lr);
 		}
 		for (File f : logs(new File(root, "legacy"))){
+            checkCancelled(cancelled);
 			if (idOf(f).startsWith(DEMO_LOG_PREFIX) != demoFolder) continue;
-			LogRows lr = rowsFor(f, true, defs, cat);
+			LogRows lr = rowsFor(f, true, defs, cat, fingerprintBuffer);
 			if (lr != null) imported.add(lr);
 		}
+        checkCancelled(cancelled);
 		assemble(cat, defs, recorded, imported);
+        checkCancelled(cancelled);
 		for (ViewDef v : Datasets.allViews()) cat.add(v);
 		//every generated dataset that has rows gets a table, under the topic it belongs to
 		for (Dataset ds : cat.datasets()){
@@ -129,18 +142,29 @@ public final class DatasetStore {
 		return cat;
 	}
 
-	private LogRows rowsFor( File log, boolean legacy, Map<String, DatasetDef> defs, Catalog cat ){
+    private static void checkCancelled(Cancellation cancelled){
+        if(cancelled.cancelled())throw new java.util.concurrent.CancellationException("Catalog load retired for gameplay");
+    }
+
+	private LogRows rowsFor( File log, boolean legacy, Map<String, DatasetDef> defs, Catalog cat, byte[] fingerprintBuffer ){
 		String id = idOf(log);
 		long length = log.length();
-		File cache = new File(rowsDir(), id + ".apdr");
-		if (cache.isFile()){
+		byte[] sourceFingerprint = null;
+		try { sourceFingerprint = fingerprint(log, fingerprintBuffer); } catch (IOException ignored) { }
+		// Recorded and ranking-import logs may legitimately share a filename.
+		File cache = new File(rowsDir(), (legacy ? "legacy-" : "runs-") + id + ".apdr");
+		if (sourceFingerprint != null && cache.isFile()){
 			try {
-				LogRows lr = RowCodec.decode(readAll(cache), length, defs);
+				byte[] stored = readAll(cache);
+				boolean compressed = isGzip(stored);
+				LogRows lr = RowCodec.decode(compressed ? gunzip(stored) : stored, length, defs, sourceFingerprint);
 				if (lr != null){
 					cat.logsCached++;
+					//APD: older uncompressed caches are rewritten compressed the first time they are used
+					if (!compressed) writeCache(cache, gzip(stored));
 					return lr;
 				}
-			} catch (Throwable ignored){
+			} catch (IOException | RuntimeException ignored){
 				//rebuilt below
 			}
 		}
@@ -148,10 +172,63 @@ public final class DatasetStore {
 			ReadResult r = RunLogReader.read(log);
 			LogRows lr = legacy ? RowBuilders.fromLegacyLog(r, id) : RowBuilders.fromLog(r, id);
 			cat.logsRebuilt++;
-			writeCache(cache, RowCodec.encode(lr, length, defs));
+			// Do not bind rows to a different snapshot if the raw log changed while being read.
+			try {
+				if (sourceFingerprint != null && length == log.length()
+						&& Arrays.equals(sourceFingerprint, fingerprint(log, fingerprintBuffer)))
+					writeCache(cache, gzip(RowCodec.encode(lr, length, defs, sourceFingerprint)));
+			} catch (IOException ignored) { /* The cache is optional; retain the actual parsed rows. */ }
 			return lr;
-		} catch (Throwable t){
+		} catch (IOException | RuntimeException t){
 			return null;
+		}
+	}
+
+	private static byte[] fingerprint(File file, byte[] buffer) throws IOException {
+		java.security.MessageDigest digest;
+		try { digest = java.security.MessageDigest.getInstance("SHA-256"); }
+		catch (java.security.NoSuchAlgorithmException unavailable) { throw new IOException(unavailable); }
+		try (FileInputStream in = new FileInputStream(file)) {
+			int count;
+			while ((count = in.read(buffer)) != -1) {
+				if (count != 0) digest.update(buffer, 0, count);
+			}
+		}
+		return digest.digest();
+	}
+
+	//APD: row caches are rebuildable copies, stored gzip-compressed (plain caches still load)
+	static byte[] gzip( byte[] data ){
+		try {
+			java.io.ByteArrayOutputStream bytes = new java.io.ByteArrayOutputStream(Math.max(1024, data.length / 4));
+			java.util.zip.GZIPOutputStream zip = new java.util.zip.GZIPOutputStream(bytes, 64 * 1024){
+				{ def.setLevel(java.util.zip.Deflater.BEST_COMPRESSION); }
+			};
+			zip.write(data);
+			zip.finish();
+			zip.close();
+			return bytes.toByteArray();
+		} catch (IOException impossible){
+			return data;
+		}
+	}
+
+	/** The decoded cache bytes, whether stored compressed or plain. */
+	public static byte[] plainCache( byte[] stored ) throws IOException {
+		return isGzip(stored) ? gunzip(stored) : stored;
+	}
+
+	public static boolean isGzip( byte[] data ){
+		return data.length >= 2 && (data[0] & 0xff) == 0x1f && (data[1] & 0xff) == 0x8b;
+	}
+
+	public static byte[] gunzip( byte[] data ) throws IOException {
+		try (java.util.zip.GZIPInputStream in = new java.util.zip.GZIPInputStream(new java.io.ByteArrayInputStream(data), 64 * 1024)) {
+			java.io.ByteArrayOutputStream out = new java.io.ByteArrayOutputStream(Math.max(1024, data.length * 6));
+			byte[] buffer = new byte[64 * 1024];
+			int n;
+			while ((n = in.read(buffer)) != -1) out.write(buffer, 0, n);
+			return out.toByteArray();
 		}
 	}
 
@@ -172,10 +249,11 @@ public final class DatasetStore {
 	}
 
 	private void writeCache( File cache, byte[] data ){
-		File tmp = new File(cache.getPath() + ".tmp");
+		File tmp = null;
 		try {
 			File dir = cache.getParentFile();
-			if (!dir.isDirectory() && !dir.mkdirs()) return;
+			if (!dir.isDirectory() && !dir.mkdirs() && !dir.isDirectory()) return;
+			tmp = File.createTempFile(cache.getName() + ".", ".tmp", dir);
 			FileOutputStream out = new FileOutputStream(tmp);
 			try {
 				out.write(data);
@@ -184,8 +262,10 @@ public final class DatasetStore {
 			}
 			if (cache.exists() && !cache.delete()) return;
 			tmp.renameTo(cache);
-		} catch (Throwable ignored){
-			tmp.delete();   //the cache is optional
+		} catch (IOException | RuntimeException ignored){
+			// The cache is optional; no writer may remove another writer's temporary file.
+		} finally {
+			if (tmp != null) try { tmp.delete(); } catch (SecurityException ignored) { }
 		}
 	}
 
@@ -196,7 +276,6 @@ public final class DatasetStore {
 		final List<LogRows> logs = new ArrayList<>();
 		boolean finished;
 		String ruleset;
-		boolean mixed;
 
 		RunGroup( String runId ){
 			this.runId = runId;
@@ -367,8 +446,6 @@ public final class DatasetStore {
 	//An imported record is the same run as a recorded one when SPD's record id was noted by the run (exact), or, for older runs,
 	//when exactly one finished run has the same class, outcome, deepest floor, level and score (probable). Ambiguous ones are not linked.
 	private static void markDuplicates( DatasetDef def, List<Row> runRows, List<Row> legacy, Map<String, RunGroup> groups ){
-		Set<String> rankingIds = new HashSet<>();
-		for (RunGroup g : groups.values()) for (LogRows lr : g.logs) if (!lr.meta.rankingId.isEmpty()) rankingIds.add(lr.meta.rankingId);
 		Set<String> linkedRuns = new HashSet<>();
 		int cls = def.indexOf(FactKeys.HERO_CLASS), out = def.indexOf(FactKeys.OUTCOME), deep = def.indexOf(FactKeys.DEEPEST),
 				lvl = def.indexOf(FactKeys.HERO_LEVEL), sc = def.indexOf(FactKeys.SCORE);
@@ -412,3 +489,4 @@ public final class DatasetStore {
 		return text ? a.text(col).equals(b.text(col)) : a.num(col) == b.num(col);
 	}
 }
+

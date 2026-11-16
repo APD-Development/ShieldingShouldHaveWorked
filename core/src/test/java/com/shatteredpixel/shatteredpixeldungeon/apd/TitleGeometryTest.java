@@ -50,6 +50,10 @@ public class TitleGeometryTest {
 
 	private static void checkAnnotation( Layout l, boolean portrait, float w, float h, String where ){
 		Rect[] buttons = buttons( l );
+        if(l.annotationBesideGrid || l.annotationCompact){
+            assertTrue("Guidance fits above footer",l.annotationBesideGrid ? l.annotationTop+TEXT_H<=l.fadeY-TitleGeometry.FOOTER_GAP : l.gridTop-l.annotationH>=l.versionY+VERSION_H);
+            return;
+        }
 		Rect arrow = arrowExtent( l, true );
 		Rect arrowRest = arrowExtent( l, false );
 		for (int i = 0; i < buttons.length; i++){
@@ -132,4 +136,91 @@ public class TitleGeometryTest {
 		assertEquals(1, TitleGeometry.HEAD_W - 2*(TitleGeometry.HEAD_ROWS - 1));
 		assertTrue(TitleGeometry.BOB >= 2);
 	}
+
+	@Test
+	public void retiredOrUnavailablePromptsReserveNoArrowSpace(){
+		assertEquals(0, TitleGeometry.annotationHeight(-1), 0);
+		assertEquals(0, TitleGeometry.portrait(0, 0, 180, 320, VERSION_H, -1).annotationH, 0);
+		assertEquals(0, TitleGeometry.landscape(0, 0, 400, 240, VERSION_H, -1).annotationH, 0);
+	}
+	@Test public void lockedInstructionWrapsWithinEverySupportedTitleWidth(){
+		String message = "THIS BUTTON IS EFFECTIVELY USELESS TILL 10 RUNS HAVE BEEN COMPLETED.";
+		for (int width : new int[]{72, 89, 120, 150}){
+			String[] lines = TitleGeometry.annotationLines(message, width, text -> text.length() * 4f);
+			assertEquals(message, String.join(" ", lines));
+			for (String line : lines) assertTrue("overflow at width " + width + ": " + line, line.length() * 4 <= width);
+			assertTrue("do not strand THIS on its own", !lines[0].equals("THIS"));
+		}
+	}
+
+	@Test public void tenthRunPromptsWrapByMeasuredWordsInsteadOfHere(){
+		for (String message : new String[]{"HEY, GO HERE FOR DRUGS.", "HEY, GO HERE FOR UNLIMITED DOPAMINE."}){
+			for (int width : new int[]{72, 89, 120, 150}){
+				String[] lines = TitleGeometry.annotationLines(message, width, text -> text.length() * 4f);
+				assertEquals(message, String.join(" ", lines));
+				for (String line : lines) assertTrue(line.length() * 4 <= width);
+			}
+		}
+	}
+
+	@Test public void shortAndEmptyAnnotationsKeepTheirText(){
+		assertEquals("", TitleGeometry.annotationLines("", 72, text -> text.length() * 4f)[0]);
+		assertEquals("SHORT", TitleGeometry.annotationLines("SHORT", 72, text -> text.length() * 4f)[0]);
+	}
+
+	@Test public void overlongTokensCannotOverflowOrCrashWithoutHere(){
+		String message = "ABCDEFGHIJKLMNOPQRST";
+		String[] lines = TitleGeometry.annotationLines(message, 20, text -> text.length() * 4f);
+		assertEquals(message, String.join("", lines));
+		for (String line : lines) assertTrue(line.length() * 4 <= 20);
+	}
+
+    @Test public void everyMenuButtonReservesTheHideUiFooterAtMinimumAndVirtualSizes(){
+        for(boolean landscape:new boolean[]{false,true})
+        for(int w:new int[]{135,160,180,240,300,360,540,720})
+        for(int h:new int[]{160,225,240,260,300,360,480,800})
+        for(int text:new int[]{-1,8,16,32,48}){
+            if(landscape ? w<240 : h<225)continue;
+            Layout l=landscape ? TitleGeometry.landscape(3,7,w,h,VERSION_H,text)
+                    : TitleGeometry.portrait(3,7,w,h,VERSION_H,text);
+            Rect fade=new Rect(l.fadeX,l.fadeY,16,16);
+            Rect[] all=buttons(l);
+            for(int i=0;i<all.length;i++){
+                Rect b=all[i];String context=w+"x"+h+" landscape="+landscape+" text="+text+" control="+i;
+                assertTrue("Footer overlap "+context,!b.hits(fade));
+                assertTrue("Footer clearance "+context,b.b<=l.fadeY-TitleGeometry.FOOTER_GAP+0.001);
+                assertTrue("Offscreen "+context,b.l>=3 && b.r<=3+w && b.t>=7 && b.b<=7+h);
+                for(int j=i+1;j<all.length;j++)assertTrue("Menu controls overlap "+context,!b.hits(all[j]));
+            }
+            assertTrue(l.logoScale>=0 && l.logoScale<=1);
+            assertTrue(l.logoY>=7);
+            assertTrue(l.versionY+VERSION_H<=l.fadeY-TitleGeometry.FOOTER_GAP);
+        }
+    }
+    @Test public void hideUiTouchTargetUsesOnlyReservedFooterSpace(){
+        for(boolean landscape : new boolean[]{false,true})
+        for(int w : new int[]{180,240,320,400,720})
+        for(int h : new int[]{240,320,480,640,800}){
+            if(landscape && w<240)continue;
+            Layout layout=landscape ? TitleGeometry.landscape(0,0,w,h,VERSION_H,TEXT_H)
+                    : TitleGeometry.portrait(0,0,w,h,VERSION_H,TEXT_H);
+            Rect target=new Rect(layout.fadeX-TitleGeometry.FADE_TOUCH_SIDE_PADDING,
+                    layout.fadeY-TitleGeometry.FADE_TOUCH_TOP_PADDING,
+                    TitleGeometry.FADE_SIZE+2*TitleGeometry.FADE_TOUCH_SIDE_PADDING,
+                    TitleGeometry.FADE_SIZE+TitleGeometry.FADE_TOUCH_TOP_PADDING);
+            assertEquals("tap width",32,target.r-target.l,0.001);
+            assertEquals("tap height",20,target.b-target.t,0.001);
+            assertTrue("tap stays on display",target.l>=0 && target.t>=0 && target.r<=w && target.b<=h);
+            for(Rect button:buttons(layout))
+                assertTrue("footer tap does not overlap menu buttons",!target.hits(button));
+        }
+    }
+    @Test public void reportedShortPortraitUsedToPlaceChangesUnderTheFooter(){
+        Layout l=TitleGeometry.portrait(0,0,180,280,VERSION_H,16);
+        Rect changes=buttons(l)[8];
+        assertTrue(changes.b<=l.fadeY-TitleGeometry.FOOTER_GAP);
+        assertTrue(l.mainH>=24);
+        assertTrue(l.logoScale<1);
+    }
+
 }

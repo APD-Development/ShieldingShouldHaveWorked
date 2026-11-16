@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -279,7 +282,15 @@ public class ItemSlot extends Button {
 		int trueLvl = item.visiblyUpgraded();
 		int buffedLvl = item.buffedVisiblyUpgraded();
 
-		if (trueLvl != 0 || buffedLvl != 0) {
+		String upgradeRange = item instanceof Wand ? ((Wand)item).previewUpgradeRange() : null;
+		if (upgradeRange != null) {
+			level.text(upgradeRange);
+			level.measure();
+			int[] bounds = ((Wand)item).previewEffectiveLevels();
+			if (bounds[0] > trueLvl) level.hardlight(ENHANCED);
+			else if (bounds[1] < trueLvl) level.hardlight(WARNING);
+			else level.resetColor();
+		} else if (trueLvl != 0 || buffedLvl != 0) {
 			level.text( Messages.format( TXT_LEVEL, buffedLvl ) );
 			level.measure();
 			if (trueLvl == buffedLvl || buffedLvl <= 0) {
@@ -304,6 +315,18 @@ public class ItemSlot extends Button {
 		layout();
 	}
 	
+    /** Explicit reward level, including +0, using the normal slot font and colors. */
+    public void showTrueUpgradeLevel() {
+        if (item == null || !item.levelKnown) return;
+        int actual = item.visiblyUpgraded();
+        level.text(Messages.format(TXT_LEVEL, actual));
+        level.measure();
+        if (actual > 0) level.hardlight(UPGRADED);
+        else if (actual < 0) level.hardlight(DEGRADED);
+        else level.resetColor();
+        layout();
+    }
+
 	public void enable( boolean value ) {
 		
 		active = value;

@@ -21,6 +21,9 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.apd.archive;
 
+import java.nio.ByteBuffer;
+import java.nio.charset.CharacterCodingException;
+import java.nio.charset.CodingErrorAction;
 import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.List;
@@ -44,6 +47,9 @@ public final class ArchiveManifest {
 	public static final int FORMAT = 1;
 	public static final int MAX_BYTES = 16 * 1024 * 1024;
 	public static final int MAX_FILES = 500_000;
+	// A malformed signed manifest can contain a multi-megabyte line. Keep the
+	// refusal readable without retaining the entire attacker-controlled line.
+	private static final int MAX_DAMAGED_LINE_DETAIL_CHARS = 160;
 	public static final String KIND_RUN = "run";
 	public static final String KIND_IMPORTED = "legacy";
 
@@ -126,14 +132,31 @@ public final class ArchiveManifest {
 
 	//Parses a manifest. Throws IllegalArgumentException with a reason when it is damaged, from a newer format, or fails its checksum.
 	public static ArchiveManifest parse( byte[] data ){
-		String text = new String(data, utf8());
+		// Invalid byte sequences must not turn into replacement characters before
+		// checksum validation: the archive manifest is a byte-level integrity record.
+		String text;
+		try {
+			text = utf8().newDecoder()
+					.onMalformedInput(CodingErrorAction.REPORT)
+					.onUnmappableCharacter(CodingErrorAction.REPORT)
+					.decode(ByteBuffer.wrap(data)).toString();
+		} catch (CharacterCodingException damaged){
+			throw new IllegalArgumentException("the manifest has invalid UTF-8", damaged);
+		}
 		int checkAt = text.lastIndexOf("check\t");
 		if (checkAt < 0 || (checkAt > 0 && text.charAt(checkAt - 1) != '\n')) throw new IllegalArgumentException("the manifest has no checksum");
 		String body = text.substring(0, checkAt);
-		String claimed = text.substring(checkAt + "check\t".length()).trim();
+		// The terminal checksum authenticates only the body before this line.
+		// Do not silently trim extra unchecksummed lines or whitespace after it.
+		// Keep the writer's single LF, plus previously accepted missing-newline/CRLF endings.
+		String claimed = text.substring(checkAt + "check\t".length());
+		if (claimed.endsWith("\r\n")) claimed = claimed.substring(0, claimed.length() - 2);
+		else if (claimed.endsWith("\n")) claimed = claimed.substring(0, claimed.length() - 1);
+		if (!claimed.matches("[0-9a-fA-F]{64}")) throw new IllegalArgumentException("the manifest has a damaged checksum footer");
 		if (!sha256Hex(body.getBytes(utf8())).equalsIgnoreCase(claimed)) throw new IllegalArgumentException("the manifest does not match its checksum");
 		ArchiveManifest m = new ArchiveManifest();
-		boolean header = false, counted = false;
+		boolean header = false, counted = false, containerSeen = false;
+		boolean createdSeen = false, appSeen = false, telemetrySeen = false;
 		long countFiles = -1, countBytes = -1;
 		for (String line : body.split("\n")){
 			if (line.isEmpty()) continue;
@@ -141,14 +164,37 @@ public final class ArchiveManifest {
 			try {
 				switch (p[0]){
 					case "APD-ARCHIVE":
+						// Format 1 has one authoritative header; later headers must not replace it.
+						if (header) throw new IllegalArgumentException("the manifest has repeated headers");
 						m.format = Integer.parseInt(p[1]);
+						if (m.format < 1) throw new IllegalArgumentException("the archive has an invalid format version (" + m.format + ")");
 						if (m.format > FORMAT) throw new IllegalArgumentException("this archive is from a newer version of APD (format " + m.format + ")");
 						header = true;
 						break;
-					case "created": m.createdMillis = Long.parseLong(p[1]); break;
-					case "app": m.app = p[1]; break;
-					case "telemetry": m.telemetry = p[1]; break;
-					case "container": m.container = Integer.parseInt(p[1]); break;
+					case "created":
+						if (createdSeen) throw new IllegalArgumentException("the manifest has repeated created metadata");
+						m.createdMillis = Long.parseLong(p[1]);
+						createdSeen = true;
+						break;
+					case "app":
+						if (appSeen) throw new IllegalArgumentException("the manifest has repeated app metadata");
+						m.app = p[1];
+						appSeen = true;
+						break;
+					case "telemetry":
+						if (telemetrySeen) throw new IllegalArgumentException("the manifest has repeated telemetry metadata");
+						m.telemetry = p[1];
+						telemetrySeen = true;
+						break;
+					case "container":
+						// One authoritative log-container version per format-1 archive.
+						if (containerSeen) throw new IllegalArgumentException("the manifest has repeated container metadata");
+						m.container = Integer.parseInt(p[1]);
+						// A log-container version is an unsigned on-disk value. Preserve
+						// legacy checksummed zero, but a negative one cannot exist.
+						if (m.container < 0) throw new IllegalArgumentException("the manifest has an invalid container version (" + m.container + ")");
+						containerSeen = true;
+						break;
 					case "file": {
 						Entry e = new Entry();
 						e.path = p[1];
@@ -157,26 +203,52 @@ public final class ArchiveManifest {
 						e.kind = p[4];
 						e.runId = p[5];
 						e.telemetry = p[6];
+						// Format 1 defines these metadata flags as exactly 0 or 1.
+						// Never silently change damaged/foreign values to false.
+						if (!p[7].equals("0") && !p[7].equals("1")) throw new IllegalArgumentException("a file has an invalid sealed flag");
+						if (!p[8].equals("0") && !p[8].equals("1")) throw new IllegalArgumentException("a file has an invalid redacted flag");
 						e.sealed = p[7].equals("1");
 						e.redacted = p[8].equals("1");
 						e.events = Long.parseLong(p[9]);
+						// Event counts represent observed records and can never be negative.
+						if (e.events < 0) throw new IllegalArgumentException("a file has a negative event count");
 						e.status = p.length > 10 ? p[10] : "";
 						if (e.size < 0) throw new IllegalArgumentException("a file has a negative size");
 						m.files.add(e);
 						if (m.files.size() > MAX_FILES) throw new IllegalArgumentException("the manifest lists too many files");
 						break;
 					}
+					case "check":
+						// The sole checksum belongs after the body, never inside it.
+						// A second valid final checksum must not disguise an earlier check record.
+						throw new IllegalArgumentException("the manifest has repeated checksums");
 					case "note": m.notes.add(p.length > 1 ? p[1] : ""); break;
-					case "count": countFiles = Long.parseLong(p[1]); countBytes = Long.parseLong(p[2]); counted = true; break;
+					case "count":
+						// The format-1 writer emits exactly one totals record. A second
+						// record cannot silently override contradictory archive totals.
+						if (counted) throw new IllegalArgumentException("the manifest has repeated totals");
+						countFiles = Long.parseLong(p[1]);
+						countBytes = Long.parseLong(p[2]);
+						counted = true;
+						break;
 					default: //a line from a newer writer
 				}
 			} catch (IndexOutOfBoundsException | NumberFormatException bad){
-				throw new IllegalArgumentException("the manifest has a damaged line: " + line);
+				String excerpt = line.length() <= MAX_DAMAGED_LINE_DETAIL_CHARS ? line
+						: line.substring(0, MAX_DAMAGED_LINE_DETAIL_CHARS) + "... (truncated)";
+				throw new IllegalArgumentException("the manifest has a damaged line: " + excerpt);
 			}
 		}
 		if (!header) throw new IllegalArgumentException("this is not an APD history archive");
+		// The format-1 container version is essential to identifying the raw log format.
+		// Unlike optional source descriptors, the writer always supplies this record.
+		if (!containerSeen) throw new IllegalArgumentException("the manifest has no container metadata");
 		long total = 0;
-		for (Entry e : m.files) total += e.size;
+		for (Entry e : m.files){
+			//A valid checksum must not let an impossible file-size sum wrap into a plausible total.
+			if (e.size > Long.MAX_VALUE - total) throw new IllegalArgumentException("the manifest's file sizes overflow");
+			total += e.size;
+		}
 		if (!counted || countFiles != m.files.size() || countBytes != total) throw new IllegalArgumentException("the manifest's totals do not match its file list");
 		return m;
 	}

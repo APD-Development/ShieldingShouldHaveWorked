@@ -26,7 +26,8 @@ package com.shatteredpixel.shatteredpixeldungeon.apd.query;
 public final class BossClasses {
 
 	private static final String[] SIMPLE_NAMES = { "Goo", "Tengu", "DM300", "DwarfKing", "YogDzewa", "YogFist",
-			"BurningFist", "SoiledFist", "RottingFist", "RustedFist", "BrightFist", "DarkFist" };
+			"BurningFist", "SoiledFist", "RottingFist", "RustedFist", "BrightFist", "DarkFist",
+			"CrystalSpire", "GnollGeomancer", "FungalCore", "VaultBossElemental" };
 
 	private BossClasses(){}
 
@@ -35,8 +36,8 @@ public final class BossClasses {
 		if (className == null) return false;
 		int dot = className.lastIndexOf('.');
 		String simple = dot >= 0 ? className.substring(dot + 1) : className;
-		int dollar = simple.indexOf('$');
-		if (dollar > 0) simple = simple.substring(0, dollar);
+		int dollar = simple.lastIndexOf('$');
+		if (dollar >= 0) simple = simple.substring(dollar + 1);
 		for (String n : SIMPLE_NAMES) if (n.equals(simple)) return true;
 		return false;
 	}

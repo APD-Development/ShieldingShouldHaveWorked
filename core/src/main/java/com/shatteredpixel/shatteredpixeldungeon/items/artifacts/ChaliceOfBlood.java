@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -77,30 +80,13 @@ public class ChaliceOfBlood extends Artifact {
 
 		if (action.equals(AC_PRICK)){
 
-			int minDmg = minPrickDmg();
-			int maxDmg = maxPrickDmg();
-
-			int totalHeroHP = hero.HP + hero.shielding();
-
-			float deathChance = 0;
-
-			if (totalHeroHP < maxDmg) {
-				deathChance = (maxDmg - totalHeroHP) / (float) (maxDmg - minDmg);
-				if (deathChance < 0.5f) {
-					deathChance = (float) Math.pow(2 * deathChance, 2) / 2f;
-				} else if (deathChance < 1f) {
-					deathChance = 1f - deathChance;
-					deathChance = (float) Math.pow(2 * deathChance, 2) / 2f;
-					deathChance = 1f - deathChance;
-				} else {
-					deathChance = 1;
-				}
-			}
+            com.shatteredpixel.shatteredpixeldungeon.apd.ChaliceDamagePreview preview =
+                    com.shatteredpixel.shatteredpixeldungeon.apd.ChaliceDamagePreview.calculate(hero, level());
 
 			GameScene.show(
 				new WndOptions(new ItemSprite(this),
 						Messages.titleCase(name()),
-						Messages.get(this, "prick_warn", minDmg, maxDmg, Messages.decimalFormat("#.##", 100*deathChance)),
+						preview.description() + "\n\nPrick yourself to upgrade the Chalice?",
 						Messages.get(this, "yes"),
 						Messages.get(this, "no")) {
 					@Override
@@ -116,11 +102,11 @@ public class ChaliceOfBlood extends Artifact {
 	}
 
 	private int minPrickDmg(){
-		return (int)Math.ceil(3 + 2.5f*(level()*level()));
+		return com.shatteredpixel.shatteredpixeldungeon.apd.ChaliceDamagePreview.baseMin(level());
 	}
 
 	private int maxPrickDmg(){
-		return (int)Math.floor(7 + 3.5f*(level()*level()));
+		return com.shatteredpixel.shatteredpixeldungeon.apd.ChaliceDamagePreview.baseMax(level());
 	}
 
 	private void prick(Hero hero){
@@ -141,7 +127,7 @@ public class ChaliceOfBlood extends Artifact {
 			damage = rockArmor.absorb(damage);
 		}
 
-		damage -= hero.drRoll();
+		damage -= hero.apdDrRoll();
 
 		hero.sprite.operate( hero.pos );
 		hero.busy();
@@ -203,10 +189,10 @@ public class ChaliceOfBlood extends Artifact {
 		}
 		if (heal >= 1f && target.HP < target.HT) {
 			int apdHpBefore = target.HP;
-			target.HP = Math.min(target.HT, target.HP + (int)heal);
-			target.sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString((int)heal), FloatingText.HEALING);
+			target.HP = Math.min(target.HT, target.HP + com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomHealingHooks.amount(target, (int)heal));
+			target.sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomHealingHooks.display(target, apdHpBefore, (int)heal)), FloatingText.HEALING);
 
-			if (target.HP == target.HT && target instanceof Hero) {
+			if (target.HP == target.HT && target instanceof Hero && com.shatteredpixel.shatteredpixeldungeon.SPDSettings.waitStopFullHealth()) {
 				((Hero) target).resting = false;
 			}
 			ApdCombat.onHeal( target, apdHpBefore, ApdCombat.HEAL_GEAR_CHALICE, (int)heal );
@@ -229,6 +215,11 @@ public class ChaliceOfBlood extends Artifact {
 				desc += Messages.get(this, "desc_3");
 		}
 
+        if (Dungeon.hero != null && level() < levelCap && !cursed) {
+            desc += "\n\n" + (isEquipped(Dungeon.hero)
+                    ? com.shatteredpixel.shatteredpixeldungeon.apd.ChaliceDamagePreview.calculate(Dungeon.hero, level()).description()
+                    : "Equip the Chalice to preview the next prick with your current defenses.");
+        }
 		return desc;
 	}
 
@@ -237,3 +228,5 @@ public class ChaliceOfBlood extends Artifact {
 	}
 
 }
+
+

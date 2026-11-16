@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -27,6 +30,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Weakness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
+import com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomOffensiveHooks;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
@@ -41,6 +45,10 @@ public class ScrollOfRetribution extends Scroll {
 		icon = ItemSpriteSheet.Icons.SCROLL_RETRIB;
 	}
 	
+    /** Pure description preview matching the unchanged execution arithmetic below. */
+    public static float powerForHealth(int hp,int maximumHp){return Math.min(4f,4.45f*((maximumHp-hp)/(float)maximumHp));}
+    public static int baseDamageForHealth(int hp,int maximumHp,float power){return Math.round(maximumHp/10f+(hp*power*.225f));}
+
 	@Override
 	public void doRead() {
 
@@ -65,7 +73,7 @@ public class ScrollOfRetribution extends Scroll {
 
 		for (Mob mob : targets){
 			//deals 10%HT, plus 0-90%HP based on scaling
-			mob.damage(Math.round(mob.HT/10f + (mob.HP * power * 0.225f)), this);
+			CustomOffensiveHooks.raw(mob, Math.round(mob.HT/10f + (mob.HP * power * 0.225f)), this, curUser);
 			if (mob.isAlive()) {
 				Buff.prolong(mob, Blindness.class, Blindness.DURATION);
 			}

@@ -193,7 +193,7 @@ public class Eye extends Mob {
 				int dmg = Random.NormalIntRange( 30, 50 );
 				dmg = Math.round(dmg * AscensionChallenge.statModifier(this));
 
-				ch.damage( dmg, new DeathGaze() );
+				com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomOffensiveHooks.raw(ch,dmg,new DeathGaze(),this);
 
 				if (Dungeon.level.heroFOV[pos]) {
 					ch.sprite.flash();

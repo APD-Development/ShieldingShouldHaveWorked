@@ -28,6 +28,23 @@ public class ReportTableTest {
 	}
 
 	@Test
+	public void aHugeGroupedTableIsCutByGroupsAndSaysHowMuchIsMissing() {
+		DatasetDef d = QuerySupport.def();
+		List<Row> rows = new ArrayList<>();
+		for (int i = 0; i < 1500; i++) rows.add(QuerySupport.row(d, "r" + i, "name-" + i, (long) i, 0L, 1L, true, "r"));
+		Query grouped = QuerySupport.allScopes(Query.of("things")).withGroup(new GroupBy(
+				java.util.Collections.singletonList("name"),
+				java.util.Collections.singletonList(Aggregate.count())));
+		QueryResult q = QueryEngine.run(QuerySupport.dataset(d, rows), grouped, "r");
+		assertEquals(1500, q.groups.size());
+
+		Report r = ReportBuilder.view(q, "Grouped things", "", 0L, "t");
+		assertEquals(ReportBuilder.MAX_ROWS, r.firstTable().rows.size());
+		assertEquals(500, r.firstTable().omitted);
+		assertTrue(ReportRenderer.markdown(r).contains("500 more entries are not listed"));
+	}
+
+	@Test
 	public void unfinishedRunsKeepTheirSecretsOutOfAReportEvenWhenAskedFor() {
 		DatasetDef d = QuerySupport.def();
 		List<Row> rows = new ArrayList<>();

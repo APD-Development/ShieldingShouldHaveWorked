@@ -100,6 +100,6 @@ public class Corruption extends AllyBuff implements Buff.DOTbuff {
 	@Override
 	public void restoreFromBundle(Bundle bundle) {
 		super.restoreFromBundle(bundle);
-		partialDamage = bundle.getInt(PARTIAL_DAMAGE);
+		partialDamage = bundle.getFloat(PARTIAL_DAMAGE);
 	}
 }

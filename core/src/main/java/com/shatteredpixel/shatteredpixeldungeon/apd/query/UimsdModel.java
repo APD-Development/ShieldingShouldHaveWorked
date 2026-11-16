@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -32,6 +35,11 @@ import java.util.List;
 //one thread (the screen's), except load(), which builds the catalog on its own thread and hands it over through the listener.
 public final class UimsdModel {
 
+    // Cancellation retires publication immediately, but a decoder may still own its
+    // current batch. Serialize background catalog work so a replacement cannot
+    // allocate a second working history until that batch has unwound.
+    private static final Object CATALOG_LOAD_MEMORY = new Object();
+
 	public interface Listener {
 		//the state changed (called on the loading thread for the result of load(): a screen must hand over to its own thread)
 		void changed();
@@ -45,11 +53,17 @@ public final class UimsdModel {
 		final String viewId;
 		final Query query;
 		final int page;
+		final long id;
+		TableViewport viewport;
+		QueryResult result;
+		Dataset dataset;
 
-		Place( String viewId, Query query, int page ){
+		Place( String viewId, Query query, int page, long id, TableViewport viewport ){
 			this.viewId = viewId;
 			this.query = query;
 			this.page = page;
+			this.id = id;
+			this.viewport = viewport;
 		}
 	}
 
@@ -63,8 +77,47 @@ public final class UimsdModel {
 	private final String currentRuleset;
 	private final String currentRulesetLabel;
 	private final List<Place> back = new ArrayList<>();
+	private long nextPlaceId, placeId;
+	private TableViewport viewport;
+
+	// A scene can checkpoint the outgoing table after navigation has already
+	// happened (including a worker's seed-replay completion). The unique place
+	// token routes that checkpoint to its own Back entry, never the new table.
+	public synchronized long placeId(){ return placeId; }
+	public synchronized TableViewport viewport(){ return viewport; }
+	public synchronized void rememberViewport(long id, TableViewport position){
+		if (position == null) return;
+		if (id == placeId){ viewport = position; return; }
+		for (Place p : back) if (p.id == id){ p.viewport = position; return; }
+	}
+
+	private void newPlace(){ placeId = ++nextPlaceId; viewport = null; }
+	private void pushPlace(){
+		Place saved = new Place(viewId, query, page, placeId, viewport);
+		saved.result = result;
+		saved.dataset = dataset();
+		back.add(saved);
+		// Keep query results for only the four nearest Back destinations.
+		// Older navigation entries remain usable through normal recomputation.
+		if (back.size() > 4){
+			Place older = back.get(back.size() - 5);
+			older.result = null;
+			older.dataset = null;
+		}
+		newPlace();
+	}
+	//Column choices are preferences for a view, separate from named saved queries.
+	public static final String COLUMN_LAYOUTS_FILE = "column_layouts.txt";
+	private SavedViews columnLayouts = new SavedViews();
+	// Prepared alongside the history catalog off the render thread, so opening
+	// Home doesn't run all its statistical queries in a blocking UI frame.
+	private UimsdHome preparedHome;
+	private Catalog preparedHomeCatalog;
+	private boolean preparedHomeAllRules;
 	private Listener listener;
 	private volatile Thread loader;
+	//Each new load (or an explicitly installed catalogue) retires older background completions.
+	private long loadGeneration;
 
 	private volatile File root;
 
@@ -85,29 +138,144 @@ public final class UimsdModel {
 	//---- loading ----
 
 	//Builds the catalog from the raw logs on a background thread. Never throws.
-	public void load( final File root ){
+	public synchronized void load( final File root ){
+		load(root, false);
+	}
+
+	// The viewer supplies its current Home scope; the common API retains the
+	// default current-rules-only behavior for existing integrations and tests.
+	public synchronized void load( final File root, final boolean homeAllRules ){
+		load(root, homeAllRules, null, false);
+	}
+
+    private static String loadFailureMessage(Throwable error){
+        return error instanceof OutOfMemoryError
+                ? "Not enough memory to open statistics. Your saved games and recorded history have not been deleted. Close statistics and try again."
+                : String.valueOf(error);
+    }
+
+	public interface OpenClaimListener {
+		void claimed(UimsdModel model);
+	}
+
+	// Claiming the title preload is deliberately separate from instance loading:
+	// acceptance requires the viewer to own the exact validated mutable model,
+	// not a second model that merely shares its catalog.
+	public static Thread claimForOpen(final File root, final String ruleset, final String label,
+			final boolean homeAllRules, final Runnable beforeRead, final OpenClaimListener listener){
+		Thread claim = new Thread(new Runnable(){
+			@Override
+			public void run(){
+				UimsdModel opened;
+				try {
+					if (beforeRead != null) beforeRead.run();
+					opened = UimsdWarmCache.takeForOpen(root, ruleset, label, homeAllRules);
+					if (opened == null){
+						Thread.currentThread().setPriority(Thread.NORM_PRIORITY);
+						opened = new UimsdModel(ruleset, label);
+						opened.load(root, homeAllRules);
+					}
+				} catch (Throwable error){
+					opened = new UimsdModel(ruleset, label);
+					synchronized (opened){
+						opened.root = root;
+						opened.failure = loadFailureMessage(error);
+						opened.state = State.FAILED;
+					}
+				}
+				listener.claimed(opened);
+			}
+		}, "uimsd-open-claim");
+		claim.setDaemon(true);
+		claim.setPriority(Math.min(Thread.MAX_PRIORITY, Thread.NORM_PRIORITY + 2));
+		claim.start();
+		return claim;
+	}
+
+	// Retained for non-scene integrations; the title path uses claimForOpen so
+	// it can preserve the prepared model's identity as well as its catalog.
+	public synchronized void loadForOpen(File root, boolean homeAllRules, Runnable beforeRead){
+		load(root, homeAllRules, beforeRead, true);
+	}
+
+	private synchronized void load(final File root, final boolean homeAllRules,
+	                              final Runnable beforeRead, final boolean useWarm){
+		retireSeedFloorsLocked();
+        // Replacement loads must not retain the previous complete history beside the new one.
+        catalog=null;result=null;
+        for(Place place:back){place.result=null;place.dataset=null;}
+		preparedHome = null;
+		preparedHomeCatalog = null;
 		this.root = root;
+		// Do not read or decode saved column layouts on the render thread.
+		// This method is called directly before the UIMSD scene transition.
+		// The worker publishes its complete layout + catalog as one generation.
+		columnLayouts = new SavedViews();
 		state = State.LOADING;
 		failure = "";
+		final long generation = ++loadGeneration;
 		Thread t = new Thread(new Runnable(){
 			@Override
 			public void run(){
 				try {
-					Catalog c = new DatasetStore(root).load();
+					if (beforeRead != null) beforeRead.run();
 					synchronized (UimsdModel.this){
+						if (generation != loadGeneration) return;
+					}
+					UimsdModel warm = useWarm ? UimsdWarmCache.takeForOpen(
+							root, currentRuleset, currentRulesetLabel, homeAllRules) : null;
+					// A cold rebuild can be substantial; only the short, interactive
+					// flush/freshness/cache-claim phase receives elevated priority.
+					if (useWarm && warm == null)
+						Thread.currentThread().setPriority(Thread.NORM_PRIORITY);
+					SavedViews loadedColumnLayouts = warm == null
+							? SavedViews.load(root == null ? null : new File(root, COLUMN_LAYOUTS_FILE)) : warm.columnLayouts;
+                    synchronized(CATALOG_LOAD_MEMORY){
+                    if(loadRetired(generation))return;
+					Catalog c = warm == null ? new DatasetStore(root).load(() -> loadRetired(generation)) : warm.catalog;
+					// These are read-only queries. Computing the initial Home here
+					// keeps them off the frame that displays the finished catalog.
+					UimsdHome initialHome = warm == null ? UimsdHome.build(c, currentRuleset, homeAllRules)
+							: warm.preparedHome(c, homeAllRules);
+					synchronized (UimsdModel.this){
+						if (generation != loadGeneration) return;
+						retireSeedFloorsLocked();
+						columnLayouts = loadedColumnLayouts;
+						preparedHome = initialHome;
+						preparedHomeCatalog = c;
+						preparedHomeAllRules = homeAllRules;
 						setCatalogLocked(c);
 					}
+                    }
 				} catch (Throwable e){
-					failure = String.valueOf(e);
-					state = State.FAILED;
+					synchronized (UimsdModel.this){
+						if (generation != loadGeneration) return;
+						failure = loadFailureMessage(e);
+						state = State.FAILED;
+					}
 				}
 				fire();
 			}
 		}, "uimsd-load");
 		t.setDaemon(true);
+		if (useWarm) t.setPriority(Math.min(Thread.MAX_PRIORITY, Thread.NORM_PRIORITY + 2));
 		loader = t;
 		t.start();
 	}
+
+    /** Drop derived tables while gameplay needs the heap; keep query/navigation preferences. */
+    public synchronized void releaseForGameplay(){
+        ++loadGeneration;
+        retireSeedFloorsLocked();
+        Thread old=loader;
+        loader=null;
+        if(old!=null)old.interrupt();
+        if(seedFloorsLoader!=null)seedFloorsLoader.interrupt();
+        catalog=null;result=null;preparedHome=null;preparedHomeCatalog=null;listener=null;
+        for(Place place:back){place.result=null;place.dataset=null;}
+        state=State.EMPTY;
+    }
+    private synchronized boolean loadRetired(long generation){return generation!=loadGeneration;}
 
 	public void awaitLoad( long millis ){
 		Thread t = loader;
@@ -118,6 +286,10 @@ public final class UimsdModel {
 	}
 
 	public synchronized void setCatalog( Catalog c ){
+		retireSeedFloorsLocked();
+		preparedHome = null;
+		preparedHomeCatalog = null;
+		++loadGeneration;
 		setCatalogLocked(c);
 		fire();
 	}
@@ -131,11 +303,20 @@ public final class UimsdModel {
 			return;
 		}
 		viewId = first.id;
-		query = first.initialQuery();
+		query = initialQuery(first, false);
 		page = 0;
 		back.clear();
+		newPlace();
 		recompute();
 		state = State.READY;
+	}
+
+	// Only a matching, fully loaded catalog and Home scope may reuse the
+	// worker's summary; a replaced catalog or toggled scope must recompute.
+	public synchronized UimsdHome preparedHome(Catalog expected, boolean allRules){
+		return expected != null && expected == catalog
+				&& expected == preparedHomeCatalog && allRules == preparedHomeAllRules
+				? preparedHome : null;
 	}
 
 	//the folder of the history this model shows (where the player's saved views are kept too); null before load
@@ -194,6 +375,15 @@ public final class UimsdModel {
 		return result == null ? null : ResultTable.build(result, page, PAGE_SIZE);
 	}
 
+	//Measures and chart data for the current grouped result. Drawing stays in the phone UI.
+	public synchronized List<UimsdChart.Measure> chartMeasures(){
+		return result == null ? new ArrayList<UimsdChart.Measure>() : UimsdChart.measures(result);
+	}
+
+	public synchronized UimsdChart.Series chart( String measureId, int maxPoints ){
+		return result == null ? null : UimsdChart.build(result, measureId, maxPoints);
+	}
+
 	public synchronized List<StatusText.Line> status(){
 		ViewDef v = view();
 		return result == null ? new ArrayList<StatusText.Line>() : StatusText.lines(result, v == null ? "" : v.title, currentRulesetLabel);
@@ -242,11 +432,10 @@ public final class UimsdModel {
 			boolean legit = r.publicRow || (query.showInternal && r.finished);
 			if (!legit || !QueryEngine.open(query, r, c) || !r.isKnown(c.index())) continue;
 			String raw = r.text(c.index());
-			if (raw.isEmpty()) continue;
 			int[] n = counts.get(raw);
 			if (n == null){
 				counts.put(raw, n = new int[1]);
-				labels.put(raw, CellFormatter.cell(query, r, c).text);
+				labels.put(raw, raw.isEmpty() ? "(empty)" : CellFormatter.cell(query, r, c).text);
 			}
 			n[0]++;
 		}
@@ -266,6 +455,10 @@ public final class UimsdModel {
 	private void recompute(){
 		Dataset ds = catalog == null ? null : catalog.dataset(query.dataset);
 		result = ds == null ? null : QueryEngine.run(ds, query, currentRuleset);
+		clampPage();
+	}
+
+	private void clampPage(){
 		int total = result == null ? 0 : result.isGrouped() ? result.groups.size() : result.rows.size();
 		int maxPage = Math.max(0, (total + PAGE_SIZE - 1) / PAGE_SIZE - 1);
 		if (page > maxPage) page = maxPage;
@@ -308,10 +501,27 @@ public final class UimsdModel {
 	}
 
 	private SeedFloors.Provider seedFloors;
+	private long seedFloorsGeneration;
+	private volatile Thread seedFloorsLoader;
+
+	private void retireSeedFloorsLocked(){
+		++seedFloorsGeneration;
+		if (notice.startsWith("Replaying the seed")) notice = "";
+	}
 
 	//the game-aware layer that can replay a run's seed (null: the feature is off, as in plain library tests)
 	public synchronized void setSeedFloorsProvider( SeedFloors.Provider p ){
+		retireSeedFloorsLocked();
 		seedFloors = p;
+	}
+
+	//Used by retained tests and orderly callers that must wait for an in-flight replay handoff.
+	void awaitSeedFloors( long millis ){
+		Thread t = seedFloorsLoader;
+		try {
+			if (t != null) t.join(millis);
+		} catch (InterruptedException ignored){
+		}
 	}
 
 	//true for a row that seed floors can be asked for (a finished run)
@@ -325,12 +535,14 @@ public final class UimsdModel {
 	public void startSeedFloors( final Row run ){
 		final Catalog cat;
 		final SeedFloors.Provider provider;
+		final long generation;
 		synchronized (this){
 			if (!canSeedFloors(run)) return;
 			//the seed views are replaced by each run's: places that point at an earlier run's would show this run's data
 			for (int i = back.size() - 1; i >= 0; i--) if (SeedFloors.isSeedView(back.get(i).viewId)) back.remove(i);
 			cat = catalog;
 			provider = seedFloors;
+			generation = ++seedFloorsGeneration;
 			notice = "Replaying the seed (this takes a few seconds)...";
 		}
 		fire();
@@ -341,9 +553,12 @@ public final class UimsdModel {
 				try {
 					SeedFloors.Built b = provider.build(cat, run);
 					synchronized (UimsdModel.this){
+						if (generation != seedFloorsGeneration) return;
 						SeedFloors.install(cat, b);
 						if (!SeedFloors.isSeedView(viewId)) hiddenBeforeSeed = query.showInternal;
-						back.add(new Place(viewId, query, page));
+						pushPlace();
+						// Publish the completed state together; observers must not see the new view with the old busy notice.
+						notice = "";
 						viewId = SeedFloors.ITEMS;
 						apply(cat.view(SeedFloors.ITEMS).initialQuery().withShowInternal(true));
 					}
@@ -353,28 +568,31 @@ public final class UimsdModel {
 					result = "Seed floors failed: " + e;
 				}
 				synchronized (UimsdModel.this){
+					if (generation != seedFloorsGeneration) return;
 					notice = result;
 				}
 				fire();
 			}
 		}, "uimsd-seed-floors");
 		t.setDaemon(true);
+		seedFloorsLoader = t;
 		t.start();
 	}
 
 	public synchronized void selectView( String id ){
 		if (catalog == null || catalog.view(id) == null) return;
-		back.add(new Place(viewId, query, page));
+		pushPlace();
 		viewId = id;
-		apply(catalog.view(id).initialQuery().withShowInternal(query.showInternal));
+		apply(initialQuery(catalog.view(id), query.showInternal));
 	}
 
 	//open a view as a new starting point, with nothing to go Back to (used from Home, so Back from there leads to Home)
 	public synchronized void showRoot( String id ){
 		if (catalog == null || catalog.view(id) == null) return;
 		back.clear();
+		newPlace();
 		viewId = id;
-		apply(catalog.view(id).initialQuery().withShowInternal(query.showInternal));
+		apply(initialQuery(catalog.view(id), query.showInternal));
 	}
 
 	//Opens a question's query as an ordinary table, with the full query tools. The table is the one for the question's dataset; the question's
@@ -382,14 +600,53 @@ public final class UimsdModel {
 	public synchronized void showQuery( Query q ){
 		if (catalog == null || catalog.view(q.dataset) == null) return;
 		back.clear();
+		newPlace();
 		viewId = q.dataset;
 		apply(q);
 	}
 
+    //Research evidence follows an explicit query and retains Back to the inspected table.
+    public synchronized boolean openResearchQuery(Query q){
+        if(catalog==null || q==null || catalog.view(q.dataset)==null || catalog.dataset(q.dataset)==null)return false;
+        QueryResult check=QueryEngine.run(catalog.dataset(q.dataset),q,currentRuleset);
+        if(!check.problems.isEmpty()){notice="This evidence query no longer matches the available schema.";fire();return false;}
+        pushPlace();viewId=q.dataset;query=q;page=0;result=check;fire();restoreHiddenAfterSeed();return true;
+    }
+
 	//back to how the open view started
 	public synchronized void resetView(){
 		ViewDef v = view();
-		if (v != null) apply(v.initialQuery().withShowInternal(query.showInternal));
+		if (v != null){
+			apply(v.initialQuery().withShowInternal(query.showInternal));
+			rememberColumns(query.columns);
+		}
+	}
+
+	private Query initialQuery(ViewDef v, boolean showInternal){
+		Query initial = v.initialQuery().withShowInternal(showInternal);
+		SavedViews.View saved = columnLayouts.get(v.id);
+		Query layout = saved == null ? null : saved.query();
+		Dataset ds = catalog == null ? null : catalog.dataset(initial.dataset);
+		if (layout == null || ds == null) return initial;
+		List<String> usable = new ArrayList<>();
+		for (String id : layout.columns){
+			ColumnDef c = ds.def.column(id);
+			if (c != null && (!c.isInternal() || showInternal) && !usable.contains(id)) usable.add(id);
+		}
+		//A layout can outlive columns removed by a newer build, or contain only hidden columns from a session
+		//where hidden information was enabled. Never let that turn an otherwise healthy view into a blank table.
+		return usable.isEmpty() ? initial : initial.withColumns(usable);
+	}
+
+	private void rememberColumns(List<String> columns){
+		columnLayouts.save(viewId, Query.of(query.dataset).withColumns(columns), System.currentTimeMillis());
+		if (root == null) return;
+		try {
+			columnLayouts.store(new File(root, COLUMN_LAYOUTS_FILE));
+		} catch (java.io.IOException failure){
+			notice = "Column layout changed for this session, but could not be saved.";
+			fire();
+		}
 	}
 
 	public synchronized void addFilter( Filter f ){
@@ -418,6 +675,7 @@ public final class UimsdModel {
 
 	public synchronized void setColumns( List<String> columns ){
 		apply(query.withColumns(columns));
+		rememberColumns(columns);
 	}
 
 	public synchronized void toggleColumn( String id ){
@@ -429,7 +687,7 @@ public final class UimsdModel {
 		} else {
 			cols.add(id);
 		}
-		apply(query.withColumns(cols));
+		setColumns(cols);
 	}
 
 	//moves a shown column left or right; the first column is the one that stays fixed on screen
@@ -438,10 +696,11 @@ public final class UimsdModel {
 		if (ds == null) return;
 		List<String> cols = new ArrayList<>(query.columns.isEmpty() ? ds.def.defaultColumnIds() : query.columns);
 		List<String> moved = ColumnOrder.move(cols, id, delta);
-		if (!moved.equals(cols)) apply(query.withColumns(moved));
+		if (!moved.equals(cols)) setColumns(moved);
 	}
 
 	public synchronized void setScope( Scope s ){
+		if (query.scope.finishedOnly) s = s.withFinishedOnly(true);
 		apply(query.withScope(s));
 	}
 
@@ -484,8 +743,14 @@ public final class UimsdModel {
 					}
 					List<Aggregate> aggs = new ArrayList<>();
 					for (Aggregate a : g.aggregates){
-						ColumnDef c = a.column.isEmpty() ? null : ds.def.column(a.column);
-						if (c == null || !c.isInternal()) aggs.add(a);
+						ColumnDef value = a.column.isEmpty() ? null : ds.def.column(a.column);
+						ColumnDef over = a.over.isEmpty() ? null : ds.def.column(a.over);
+						ColumnDef where = a.whereColumn.isEmpty() ? null : ds.def.column(a.whereColumn);
+						ColumnDef distinct = a.distinctBy.isEmpty() ? null : ds.def.column(a.distinctBy);
+						if ((value == null || !value.isInternal()) && (over == null || !over.isInternal())
+								&& (where == null || !where.isInternal()) && (distinct == null || !distinct.isInternal())){
+							aggs.add(a);
+						}
 					}
 					g = keys.isEmpty() && aggs.isEmpty() ? null : new GroupBy(keys, aggs);
 				}
@@ -497,7 +762,8 @@ public final class UimsdModel {
 
 	public synchronized void setPage( int p ){
 		page = Math.max(0, p);
-		recompute();
+		// Pagination changes only the viewport over the existing exact result.
+		clampPage();
 		fire();
 	}
 
@@ -537,10 +803,12 @@ public final class UimsdModel {
 				return;
 			}
 			if (!g.sample.isKnown(c.index)) q = q.addFilter(Filter.unknown(c.id));
-			else if (c.type == ColumnDef.Type.TEXT) q = q.addFilter(Filter.text(c.id, Op.EQ, g.sample.text(c.index)));
-			else q = q.addFilter(Filter.num(c.id, Op.EQ, g.sample.num(c.index)));
+			else if (c.type == ColumnDef.Type.TEXT) q = q.addFilter(Filter.text(c.id, Op.GROUP_TEXT, g.sample.text(c.index)));
+			else q = q.addFilter(Filter.num(c.id,
+                    g.sample.prov(c.index) == com.shatteredpixel.shatteredpixeldungeon.apd.stats.Fact.PROV_INCOMPLETE
+                            ? Op.GROUP_BOUND : Op.GROUP_VALUE, g.sample.num(c.index)));
 		}
-		back.add(new Place(viewId, query, page));
+		pushPlace();
 		apply(q);
 	}
 
@@ -580,10 +848,10 @@ public final class UimsdModel {
 			if (ids.add(r.text(col))) s = widen(s, r);
 		}
 		if (ids.isEmpty()) return 0;
-		back.add(new Place(viewId, query, page));
+		pushPlace();
 		viewId = target.id;
 		apply(target.initialQuery().withScope(s).withShowInternal(query.showInternal)
-				.addFilter(Filter.text(link.targetColumn, Op.IN, ids.toArray(new String[0]))));
+				.addFilter(Filter.text(link.targetColumn, Op.IDENTIFIER_IN, ids.toArray(new String[0]))));
 		return ids.size();
 	}
 
@@ -598,8 +866,8 @@ public final class UimsdModel {
 		ColumnDef tc = to.def.column(link.targetColumn);
 		if (tc == null) return;
 		Scope s = widen(query.scope, row);
-		Filter f = tc.type == ColumnDef.Type.TEXT ? Filter.text(tc.id, Op.EQ, row.text(col)) : Filter.num(tc.id, Op.EQ, row.num(col));
-		back.add(new Place(viewId, query, page));
+		Filter f = tc.type == ColumnDef.Type.TEXT ? Filter.text(tc.id, Op.GROUP_TEXT, row.text(col)) : Filter.num(tc.id, Op.EQ, row.num(col));
+		pushPlace();
 		viewId = target.id;
 		apply(target.initialQuery().withScope(s).withShowInternal(query.showInternal).addFilter(f));
 	}
@@ -610,7 +878,14 @@ public final class UimsdModel {
 		viewId = p.viewId;
 		query = p.query;
 		page = p.page;
-		recompute();
+		placeId = p.id;
+		viewport = p.viewport;
+		if (p.result != null && p.result.query == query && p.dataset == dataset()){
+			result = p.result;
+			clampPage();
+		} else {
+			recompute();
+		}
 		fire();
 		restoreHiddenAfterSeed();
 		return true;
@@ -631,3 +906,5 @@ public final class UimsdModel {
 		}
 	}
 }
+
+

@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -36,11 +39,16 @@ import com.watabou.utils.Random;
 
 import java.util.ArrayList;
 
+import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+
 public class BowFragment extends RemainsItem {
+    public static final int HIGH_GRASS_TILES=5;
 
 	{
 		image = ItemSpriteSheet.BOW_FRAGMENT;
 	}
+
+    @Override public String desc(){return Messages.get(this,"desc",HIGH_GRASS_TILES);}
 
 	@Override
 	protected void doEffect(Hero hero) {
@@ -59,7 +67,7 @@ public class BowFragment extends RemainsItem {
 			CellEmitter.get(grassCell).burst(LeafParticle.LEVEL_SPECIFIC, 4);
 		}
 		// 5 cells total
-		int totalGrassCells = 5;
+		int totalGrassCells = HIGH_GRASS_TILES;
 		while (grassCells.size() > totalGrassCells){
 			grassCells.remove(0);
 		}

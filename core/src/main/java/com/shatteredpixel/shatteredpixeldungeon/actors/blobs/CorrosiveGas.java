@@ -24,6 +24,7 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.blobs;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Corrosion;
 import com.shatteredpixel.shatteredpixeldungeon.effects.BlobEmitter;
@@ -35,6 +36,9 @@ public class CorrosiveGas extends Blob {
 
 	//FIXME should have strength per-cell
 	private int strength = 0;
+	// Follows SPD's existing strongest-cloud strength/source policy.
+	private OffensiveDamageOrigin origin=OffensiveDamageOrigin.UNATTRIBUTED;
+	private static final String APD_ORIGIN="apd_corrosive_gas_origin";
 
 	//used in specific cases where the source of the corrosion is important for death logic
 	private Class source;
@@ -46,6 +50,7 @@ public class CorrosiveGas extends Blob {
 		if (volume == 0){
 			strength = 0;
 			source = null;
+			origin=OffensiveDamageOrigin.UNATTRIBUTED;
 		} else {
 			Char ch;
 			int cell;
@@ -55,7 +60,7 @@ public class CorrosiveGas extends Blob {
 					cell = i + j*Dungeon.level.width();
 					if (cur[cell] > 0 && (ch = Actor.findChar( cell )) != null) {
 						if (!ch.isImmune(this.getClass()))
-							Buff.affect(ch, Corrosion.class).set(2f, strength, source);
+							Buff.affect(ch, Corrosion.class).setWithOrigin(2f, strength, source, origin);
 					}
 				}
 			}
@@ -67,9 +72,18 @@ public class CorrosiveGas extends Blob {
 	}
 
 	public CorrosiveGas setStrength(int str, Class source){
+		return setStrengthWithOrigin(str,source,com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveEffectContext.current());
+	}
+
+	public CorrosiveGas setStrengthAttributed(int str,Class source,Char attacker){
+		return setStrengthWithOrigin(str,source,OffensiveDamageOrigin.capture(attacker,null));
+	}
+
+	private CorrosiveGas setStrengthWithOrigin(int str,Class source,OffensiveDamageOrigin role){
 		if (str > strength) {
 			strength = str;
 			this.source = source;
+			this.origin=role;
 		}
 		return this;
 	}
@@ -82,6 +96,7 @@ public class CorrosiveGas extends Blob {
 		super.restoreFromBundle(bundle);
 		strength = bundle.getInt( STRENGTH );
 		source = bundle.getClass( SOURCE );
+		origin=OffensiveDamageOrigin.restore(bundle,APD_ORIGIN);
 	}
 
 	@Override
@@ -89,6 +104,7 @@ public class CorrosiveGas extends Blob {
 		super.storeInBundle(bundle);
 		bundle.put( STRENGTH, strength );
 		bundle.put( SOURCE, source );
+		origin.store(bundle,APD_ORIGIN);
 	}
 
 	@Override

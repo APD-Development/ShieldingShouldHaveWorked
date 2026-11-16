@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -273,6 +276,7 @@ public class Mimic extends Mob {
 		
 		if (items != null) {
 			for (Item item : items) {
+				com.shatteredpixel.shatteredpixeldungeon.apd.qol.ItemOrigins.recordSource(item, Dungeon.level, pos, com.shatteredpixel.shatteredpixeldungeon.apd.stats.GenerationEvents.C_MIMIC);
 				Dungeon.level.drop( item, pos ).sprite.drop();
 			}
 			items = null;
@@ -350,11 +354,15 @@ public class Mimic extends Mob {
 					break;
 			}
 		} while (reward == null || Challenges.isItemBlocked(reward));
-		items.add(reward);
+		final Item generated=reward;
+        items.addAll(com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomEquipmentHooks.adjust(generated,
+            () -> com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomEquipmentHooks.extraLike(generated)));
 
 		if (MimicTooth.stealthyMimics()){
 			//add an extra random item if player has a mimic tooth
-			items.add(Generator.randomUsingDefaults());
+			final Item extra=Generator.randomUsingDefaults();
+            items.addAll(com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomEquipmentHooks.adjust(extra,
+                () -> com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomEquipmentHooks.extraLike(extra)));
 		}
 	}
 

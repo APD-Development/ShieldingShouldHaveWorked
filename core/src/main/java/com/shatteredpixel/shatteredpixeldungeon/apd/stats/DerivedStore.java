@@ -37,13 +37,15 @@ import java.util.List;
 //The derived fact table and its cache file (derived/runfacts.apdd).
 //
 //The raw logs (runs/ and legacy/) are the only source of truth. The cache is a convenience: it is only trusted while the
-//size of every source file is exactly what it was when the cache was written. A missing, stale, damaged or older-version
-//cache is silently rebuilt from the raw files, and a rebuilt table is identical to a cached one. The cache can be deleted
-//at any time.
+//name, byte length and SHA-256 content digest of every source file match what was recorded when the cache was written.
+//A missing, stale, damaged or older-version cache is silently rebuilt from the raw files, and a rebuilt table is identical
+//to a cached one. The cache can be deleted at any time.
 public final class DerivedStore {
 
 	//bump when facts are derived differently, so every old cache is rebuilt
-	public static final int DERIVATION_VERSION = 4;
+	public static final int DERIVATION_VERSION = 11;
+	private static final int CACHE_FORMAT = 2;
+	private static final int CHECKSUM_FOOTER_BYTES = 15;
 
 	public static final String CACHE_DIR = "derived";
 	public static final String CACHE_FILE = "runfacts.apdd";
@@ -79,13 +81,28 @@ public final class DerivedStore {
 		cacheFile().delete();
 	}
 
+	//Only canonical direct children are source records. Per-file symlinks can otherwise
+	//inject an outside log or count a local alias twice; a linked storage root is allowed.
 	private List<File> logs( File dir ){
 		List<File> out = new ArrayList<>();
+		File canonicalDir;
+		try {
+			canonicalDir = dir.getCanonicalFile();
+		} catch (IOException | SecurityException ignored){
+			return out;
+		}
 		File[] files = dir.listFiles();
 		if (files != null){
 			Arrays.sort(files);
 			for (File f : files){
-				if (f.isFile() && f.getName().endsWith(RunIndex.LOG_SUFFIX)) out.add(f);
+				if (!f.getName().endsWith(RunIndex.LOG_SUFFIX)) continue;
+				try {
+					File canonical = f.getCanonicalFile();
+					if (f.isFile() && canonicalDir.equals(canonical.getParentFile())
+							&& f.getName().equals(canonical.getName())) out.add(f);
+				} catch (IOException | SecurityException ignored){
+					//Never derive facts from an unresolvable source path.
+				}
 			}
 		}
 		return out;
@@ -93,9 +110,40 @@ public final class DerivedStore {
 
 	private List<String> fingerprints(){
 		List<String> out = new ArrayList<>();
-		for (File f : logs(new File(root, "runs"))) out.add("run\t" + f.getName() + "\t" + f.length());
-		for (File f : logs(legacyDir())) out.add("legacy\t" + f.getName() + "\t" + f.length());
+		for (File f : logs(new File(root, "runs"))) out.add(fingerprint("run", f));
+		for (File f : logs(legacyDir())) out.add(fingerprint("legacy", f));
 		return out;
+	}
+
+	private String fingerprint( String source, File file ){
+		long length = 0;
+		try {
+			java.security.MessageDigest digest = java.security.MessageDigest.getInstance("SHA-256");
+			FileInputStream in = new FileInputStream(file);
+			try {
+				byte[] buffer = new byte[32 * 1024];
+				int count;
+				while ((count = in.read(buffer)) != -1){
+					if (count == 0) continue;
+					digest.update(buffer, 0, count);
+					length += count;
+				}
+			} finally {
+				in.close();
+			}
+			StringBuilder hash = new StringBuilder(64);
+			for (byte b : digest.digest()){
+				int value = b & 0xFF;
+				hash.append(Character.forDigit(value >>> 4, 16));
+				hash.append(Character.forDigit(value & 0x0F, 16));
+			}
+			return source + "\t" + file.getName() + "\t" + length + "\t" + hash;
+		} catch (Throwable ignored){
+			//Never trust or reuse a cache while a source cannot be fingerprinted. The changing suffix
+			//also prevents repeated read failures from making an unreadable-source cache look current.
+			return source + "\t" + file.getName() + "\tunreadable\t" + file.length() + "\t"
+					+ file.lastModified() + "\t" + Long.toHexString(System.nanoTime());
+		}
 	}
 
 	//The table, from the cache when it is current, otherwise rebuilt (and the cache rewritten). Never throws.
@@ -172,6 +220,8 @@ public final class DerivedStore {
 			} catch (Throwable t){
 				continue;
 			}
+			// Frames remain preserved, but unsupported telemetry must not become current facts.
+			if (r.header == null || r.newerThanReader()) continue;
 			for (ApdEvent e : r.events){
 				try {
 					if (e.type == EventTypes.LEGACY_RECORD){
@@ -235,13 +285,15 @@ public final class DerivedStore {
 
 	private void writeCache( FactTable t, List<String> prints ){
 		File cache = cacheFile();
-		File tmp = new File(cache.getPath() + ".tmp");
+		File tmp = null;
 		try {
 			File dir = cache.getParentFile();
-			if (!dir.isDirectory() && !dir.mkdirs()) return;
-			Writer w = new OutputStreamWriter(new FileOutputStream(tmp), "UTF-8");
+			if (!dir.isDirectory() && !dir.mkdirs() && !dir.isDirectory()) return;
+			tmp = File.createTempFile(cache.getName() + ".", ".tmp", dir);
+			java.util.zip.CheckedOutputStream checked = new java.util.zip.CheckedOutputStream(new FileOutputStream(tmp), new java.util.zip.CRC32());
+			Writer w = new OutputStreamWriter(checked, "UTF-8");
 			try {
-				w.write("APDD\t1\t" + DERIVATION_VERSION + "\n");
+				w.write("APDD\t" + CACHE_FORMAT + "\t" + DERIVATION_VERSION + "\n");
 				for (String p : prints) w.write("S\t" + p + "\n");
 				if (t.legacyTotals != null){
 					for (java.util.Map.Entry<String, Fact> e : t.legacyTotals.all().entrySet()) writeFact(w, "T", e.getKey(), e.getValue());
@@ -250,13 +302,17 @@ public final class DerivedStore {
 				for (RunFacts r : t.apdRows) writeRow(w, r);
 				for (RunFacts r : t.legacyRows) writeRow(w, r);
 				w.write("END\n");
+				w.flush();
+				w.write(String.format(java.util.Locale.ROOT, "CRC32\t%08x\n", checked.getChecksum().getValue()));
 			} finally {
 				w.close();
 			}
 			if (cache.exists() && !cache.delete()) return;
 			tmp.renameTo(cache);
 		} catch (Throwable ignored){
-			tmp.delete();  //the cache is optional
+			// The cache is optional; no writer may remove another writer's temporary file.
+		} finally {
+			if (tmp != null) try { tmp.delete(); } catch (SecurityException ignored) { }
 		}
 	}
 
@@ -267,13 +323,17 @@ public final class DerivedStore {
 
 	//null when the cache does not describe the current files, an exception when it is damaged
 	private FactTable readCache( File cache, List<String> prints ) throws IOException {
-		BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(cache), "UTF-8"));
+		FileInputStream file = new FileInputStream(cache);
+		BufferedReader in = new BufferedReader(new InputStreamReader(file, java.nio.charset.StandardCharsets.UTF_8.newDecoder()
+				.onMalformedInput(java.nio.charset.CodingErrorAction.REPORT)
+				.onUnmappableCharacter(java.nio.charset.CodingErrorAction.REPORT)));
 		try {
 			String header = in.readLine();
-			if (header == null || !header.equals("APDD\t1\t" + DERIVATION_VERSION)){
-				if (header != null && header.startsWith("APDD\t1\t")) return null;  //an older derivation: rebuild
+			if (header == null || !header.equals("APDD\t" + CACHE_FORMAT + "\t" + DERIVATION_VERSION)){
+				if (header != null && (header.startsWith("APDD\t1\t") || header.startsWith("APDD\t" + CACHE_FORMAT + "\t"))) return null;  //an older derivation: rebuild
 				throw new IOException("not a fact cache");
 			}
+			verifyChecksum(file);
 			List<String> cached = new ArrayList<>();
 			FactTable t = new FactTable();
 			RunFacts current = null;
@@ -311,6 +371,9 @@ public final class DerivedStore {
 				}
 			}
 			if (!ended) throw new IOException("truncated cache");
+            String footer = in.readLine();
+            if (footer == null || !footer.matches("CRC32\\t[0-9a-f]{8}") || in.readLine() != null)
+                throw new IOException("trailing or missing cache checksum");
 			if (!cached.equals(prints)) return null;
 			t.legacyTotals = totals;
 			return t;
@@ -318,6 +381,35 @@ public final class DerivedStore {
 			in.close();
 		}
 	}
+
+
+    // Validate the same open file that the reader parses. Preserve its underlying position,
+    // including bytes already buffered by the UTF-8 decoder; never reopen a possibly replaced path.
+    private static void verifyChecksum(FileInputStream file) throws IOException {
+        java.nio.channels.FileChannel channel = file.getChannel();
+        long position = channel.position();
+        try {
+            long size = channel.size();
+            if (size < CHECKSUM_FOOTER_BYTES) throw new IOException("short cache checksum");
+            java.nio.ByteBuffer footer = java.nio.ByteBuffer.allocate(CHECKSUM_FOOTER_BYTES);
+            channel.position(size - CHECKSUM_FOOTER_BYTES);
+            while (footer.hasRemaining()) if (channel.read(footer) <= 0) throw new IOException("short cache checksum");
+            String expected = new String(footer.array(), java.nio.charset.StandardCharsets.US_ASCII);
+            if (!expected.matches("CRC32\\t[0-9a-f]{8}\\n")) throw new IOException("invalid cache checksum");
+            java.util.zip.CRC32 checksum = new java.util.zip.CRC32();
+            java.nio.ByteBuffer buffer = java.nio.ByteBuffer.allocate(8192);
+            channel.position(0);
+            long remaining = size - CHECKSUM_FOOTER_BYTES;
+            while (remaining > 0) {
+                buffer.clear();buffer.limit((int)Math.min(buffer.capacity(), remaining));
+                int count = channel.read(buffer);
+                if (count <= 0) throw new IOException("truncated cache checksum");
+                checksum.update(buffer.array(), 0, count);remaining -= count;
+            }
+            if (checksum.getValue() != Long.parseLong(expected.substring(6, 14), 16))
+                throw new IOException("damaged fact cache");
+        } finally { channel.position(position); }
+    }
 
 	private static Fact readFact( String[] p ){
 		int kind = Integer.parseInt(p[2]);
@@ -327,3 +419,7 @@ public final class DerivedStore {
 		throw new IllegalArgumentException("bad fact kind");
 	}
 }
+
+
+
+

@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -164,7 +167,7 @@ public class Alchemize extends Spell {
 						pos = warn.bottom();
 					}
 
-					RedButton btnSell = new RedButton(Messages.get(this, "sell", item.value())) {
+					RedButton btnSell = new RedButton(Messages.get(this, "sell", item.previewValue())) {
 						@Override
 						protected void onClick() {
 							WndTradeItem.sell(item);
@@ -180,7 +183,7 @@ public class Alchemize extends Spell {
 
 				} else {
 
-					int priceAll = item.value();
+					int priceAll = item.previewValue();
 					RedButton btnSell1 = new RedButton(Messages.get(this, "sell_1", priceAll / item.quantity())) {
 						@Override
 						protected void onClick() {

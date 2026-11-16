@@ -149,6 +149,26 @@ public class UimsdHomeTourTest {
 	}
 
 	@Test
+	public void emptyHomeSeparatesRulesFromRunStatus() throws Exception {
+		Catalog empty = new DatasetStore(new File(tmp.getRoot(), "nothing-else")).load();
+		UimsdHome none = UimsdHome.build(empty, RULES.id, false);
+		assertTrue(none.emptyMessage().contains("No finished runs yet"));
+		assertTrue(none.emptyMessage().contains("Tables > Options > Include runs still going"));
+
+		File root = tmp.newFolder("other-rules");
+		Ruleset other = Ruleset.of(40, 0);
+		new SyntheticLog(root, "other", com.shatteredpixel.shatteredpixeldungeon.apd.stats.TelemetryVersion.CURRENT, 100L)
+				.start("run-other", 0, "WARRIOR", other.id, 0, 30, false).enter(1)
+				.end(com.shatteredpixel.shatteredpixeldungeon.apd.stats.LifecycleEvents.OUTCOME_ABANDONED, "", 1, 1, 1).close(true);
+		UimsdHome current = UimsdHome.build(new DatasetStore(root).load(), RULES.id, false);
+		assertTrue(current.isEmpty());
+		assertEquals(1, current.runsElsewhere);
+		assertTrue(current.emptyMessage(), current.emptyMessage().contains("1 finished run played under other rules"));
+		assertTrue(current.emptyMessage(), current.emptyMessage().contains("Runs still going are available"));
+		assertFalse("all-rules Home contains the finished run", UimsdHome.build(new DatasetStore(root).load(), RULES.id, true).isEmpty());
+	}
+
+	@Test
 	public void guideTopicsPointAtRealTourSteps() {
 		assertTrue(UimsdGuide.topics().size() >= 10);
 		Set<String> ids = new HashSet<>();
@@ -175,6 +195,14 @@ public class UimsdHomeTourTest {
 		assertTrue(UimsdGuide.topic("reports").text.contains("hidden information"));
 		assertTrue(UimsdTutorial.indexOf("reports") > UimsdTutorial.indexOf("coverage"));
 		assertTrue(UimsdTutorial.indexOf("reports") < UimsdTutorial.indexOf("home"));
+	}
+
+
+	@Test
+	public void guideNamesEverySupportedQuestionMeasure() {
+		String ask = UimsdGuide.topic("ask").text.toLowerCase(java.util.Locale.ROOT);
+		for (String measure : new String[]{ "how many", "total", "average", "highest", "lowest", "median" })
+			assertTrue(measure, ask.contains(measure));
 	}
 
 	@Test
@@ -228,6 +256,44 @@ public class UimsdHomeTourTest {
 		UimsdTutorial.prepare(m2, UimsdTutorial.indexOf("filter"));
 		assertEquals("weapons", m2.viewId());
 		assertEquals(0, m2.depth());
+	}
+
+	@Test
+	public void columnsLessonUngroupsTheTourInsteadOfOpeningTheGroupedTableTooltip() {
+		UimsdModel player = model();
+		player.showRoot("weapons");
+		Query playerQuery = player.query();
+		assertTrue("Weapons starts as a grouped summary", player.result().isGrouped());
+
+		UimsdModel tourModel = model();
+		tourModel.showRoot("weapons");
+		UimsdTutorial tour = new UimsdTutorial(tourModel, UimsdTutorial.indexOf("sort"));
+		assertTrue(tourModel.result().isGrouped());
+		tour.next(); // The sort lesson advances into Columns, as in the player report.
+		assertEquals("columns", tour.step().id);
+		assertEquals("weapons", tourModel.viewId());
+		assertFalse("Columns must be an editable ungrouped table", tourModel.result().isGrouped());
+		assertFalse("Ungrouping must not accidentally finish the lesson", tour.check());
+
+		String extra = null;
+		for (ColumnDef c : tourModel.offeredColumns()) {
+			if (!tourModel.query().columns.contains(c.id)) { extra = c.id; break; }
+		}
+		assertNotNull("A column can be enabled from this lesson", extra);
+		tourModel.toggleColumn(extra);
+		assertTrue("A real column selection completes step 10", tour.check());
+		assertEquals("marks", tour.step().id);
+
+		// The Guide can also jump directly into the Columns lesson.
+		UimsdModel fromGuide = model();
+		UimsdTutorial.prepare(fromGuide, UimsdTutorial.indexOf("columns"));
+		assertEquals("weapons", fromGuide.viewId());
+		assertFalse("Guide jumps must not hit the grouped-only explanation", fromGuide.result().isGrouped());
+
+		// Neither tour route changes the separate player's view or underlying history.
+		assertEquals(playerQuery, player.query());
+		assertTrue(player.result().isGrouped());
+		assertFalse(new File(realRoot, "x").exists());
 	}
 
 	@Test

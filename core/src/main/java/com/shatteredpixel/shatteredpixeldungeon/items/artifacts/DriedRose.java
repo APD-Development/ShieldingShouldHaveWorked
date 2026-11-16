@@ -169,6 +169,7 @@ public class DriedRose extends Artifact {
 
 				if (spawnPoints.size() > 0) {
 					ghost = new GhostHero( this );
+                ghost.apdInheritOffensiveOrigin(hero);
 					ghostID = ghost.id();
 					ghost.pos = Random.element(spawnPoints);
 
@@ -240,7 +241,9 @@ public class DriedRose extends Artifact {
 	public String desc() {
 		if (!Ghost.Quest.completed()
 				&& (ShatteredPixelDungeon.scene() instanceof GameScene || ShatteredPixelDungeon.scene() instanceof AlchemyScene)){
-			return Messages.get(this, "desc_no_quest");
+			String description = Messages.get(this, "desc_no_quest");
+            if (isEquipped(Dungeon.hero) && cursed) description += "\n\n" + Messages.get(this, "desc_cursed");
+            return description;
 		}
 		
 		String desc = super.desc();

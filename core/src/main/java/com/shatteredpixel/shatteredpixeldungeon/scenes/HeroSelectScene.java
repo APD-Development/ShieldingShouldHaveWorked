@@ -40,12 +40,12 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.Icons;
 import com.shatteredpixel.shatteredpixeldungeon.ui.OptionSlider;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RedButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
+import com.shatteredpixel.shatteredpixeldungeon.ui.SeedHistoryNotice;
 import com.shatteredpixel.shatteredpixeldungeon.ui.DifficultyBar;
 import com.shatteredpixel.shatteredpixeldungeon.ui.StyledButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.shatteredpixel.shatteredpixeldungeon.utils.DungeonSeed;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndChallenges;
-import com.shatteredpixel.shatteredpixeldungeon.windows.WndClericRemoved;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndHeroInfo;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndKeyBindings;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndMessage;
@@ -89,6 +89,30 @@ public class HeroSelectScene extends PixelScene {
 	private RenderedTextBlock heroName; //only on landscape
 	private RenderedTextBlock heroDesc; //only on landscape
 	private StyledButton startBtn;
+
+	//start a normal (non-daily) run with the selected class
+	private void startRun(){
+        // Hero selection can change class after an empty slot was chosen, or
+        // be launched from the title/restart shortcut. Bind to the SELECTED
+        // class only and never overwrite a legacy or occupied save folder.
+        if (GamesInProgress.selectedClass == null) return;
+        if (!GamesInProgress.isAvailableNewSlot(GamesInProgress.selectedClass, GamesInProgress.curSlot)) {
+            int free = GamesInProgress.firstEmpty(GamesInProgress.selectedClass);
+            if (free < 0) {
+                ShatteredPixelDungeon.scene().addToFront(new WndMessage(
+                        "All 20 " + GamesInProgress.selectedClass.title() + " runs are occupied. Finish or remove one before starting another."));
+                return;
+            }
+            GamesInProgress.curSlot = free;
+        }
+		Dungeon.hero = null;
+		Dungeon.daily = Dungeon.dailyReplay = false;
+		Dungeon.initSeed();
+		ActionIndicator.clearAction();
+		InterlevelScene.mode = InterlevelScene.Mode.DESCEND;
+
+		Game.switchScene( InterlevelScene.class );
+	}
 	//APD: the difficulty of the run being set up, right above Start
 	private DifficultyBar difficultyBar;
 	private IconButton infoButton;
@@ -158,19 +182,20 @@ public class HeroSelectScene extends PixelScene {
 
 				if (GamesInProgress.selectedClass == null) return;
 
-				//APD: Cleric is deliberately blocked, see WndClericRemoved
-				if (GamesInProgress.selectedClass == HeroClass.CLERIC){
-					WndClericRemoved.trigger();
-					return;
-				}
+				// Cleric is owner-approved for all alpha player APKs. The normal
+				// player variant intentionally lacks the developer-only feature asset.
+				// Lore remains separately gated by GrudgeHooks.
 
-				Dungeon.hero = null;
-				Dungeon.daily = Dungeon.dailyReplay = false;
-				Dungeon.initSeed();
-				ActionIndicator.clearAction();
-				InterlevelScene.mode = InterlevelScene.Mode.DESCEND;
+				//APD: the one-time Cleric grudge warning (reachable only once Cleric is un-banned, and inert while the grudge is switched off).
+				//The run starts when the player dismisses it, so it can never stop anyone from playing Cleric.
+				if (GamesInProgress.selectedClass == HeroClass.CLERIC && com.shatteredpixel.shatteredpixeldungeon.windows.GrudgeHooks.firstClericRun( new Runnable(){
+					@Override
+					public void run(){
+						startRun();
+					}
+				} )) return;
 
-				Game.switchScene( InterlevelScene.class );
+				startRun();
 			}
 		};
 		startBtn.icon(Icons.get(Icons.ENTER));
@@ -243,9 +268,7 @@ public class HeroSelectScene extends PixelScene {
 		updateOptionsColor();
 		btnOptions.visible = false;
 
-		if(!SPDSettings.intro()){
-			add(btnOptions);
-		}
+		add(btnOptions);
 
 		if (!Badges.isUnlocked(Badges.Badge.VICTORY) && !DeviceCompat.isDebug()){
 			Dungeon.challenges = 0;
@@ -347,10 +370,10 @@ public class HeroSelectScene extends PixelScene {
 				btnWidth += Math.min(curX / (heroBtns.size() / 2f), 15);
 				curX = insets.left + (w - btnWidth * heroBtns.size()) / 2f;
 			}
-			float curY = insets.top + h - HeroBtn.HEIGHT + 3;
+			float curY = insets.top + h - HeroBtn.HEIGHT;
 
 			for (StyledButton button : heroBtns) {
-				button.setRect(curX, curY, btnWidth, HeroBtn.HEIGHT + insets.bottom);
+				button.setRect(curX, curY, btnWidth, HeroBtn.HEIGHT);
 				curX += btnWidth;
 			}
 
@@ -360,13 +383,13 @@ public class HeroSelectScene extends PixelScene {
 				bar.y = h + insets.top;
 				add(bar);
 
-				PointerArea blocker = new PointerArea(0, Camera.main.width - insets.bottom, Camera.main.width, insets.bottom);
+				PointerArea blocker = new PointerArea(0, h + insets.top, Camera.main.width, insets.bottom);
 				add(blocker);
 			}
 
 			title.setPos(insets.left + (w - title.width()) / 2f, insets.top + (h - HeroBtn.HEIGHT - title.height() - 4));
 
-			btnOptions.setRect(heroBtns.get(0).left() + 16, Camera.main.height-HeroBtn.HEIGHT-16, 20, 21);
+			btnOptions.setRect(heroBtns.get(0).left() + 16, insets.top+h-HeroBtn.HEIGHT-16, 20, 21);
 			optionsPane.setPos(heroBtns.get(0).left(), 0);
 		}
 
@@ -433,7 +456,7 @@ public class HeroSelectScene extends PixelScene {
 		} else if (SPDSettings.challenges() != 0){
 			btnOptions.icon().hardlight(2f, 1.33f, 0.5f);
 		} else {
-			btnOptions.icon().resetColor();
+			btnOptions.icon().hardlight(0xFF2EC8); // APD title-arrow pink
 		}
 	}
 
@@ -467,7 +490,7 @@ public class HeroSelectScene extends PixelScene {
 			align(heroDesc);
 
 			difficultyBar.refresh();
-			difficultyBar.visible = difficultyBar.active = !SPDSettings.intro();
+			difficultyBar.visible = difficultyBar.active = true;
 			while(difficultyTop() < heroDesc.bottom()){
 				heroDesc.maxWidth(heroDesc.maxWidth()+10);
 				heroDesc.setPos(Math.max(insets.left, (leftPortion - heroDesc.width())/2f), heroName.bottom() + 5);
@@ -482,7 +505,7 @@ public class HeroSelectScene extends PixelScene {
 			infoButton.setPos(heroName.right(), heroName.top() + (heroName.height() - infoButton.height())/2f);
 			align(infoButton);
 
-			btnOptions.visible = btnOptions.active = !SPDSettings.intro();
+			btnOptions.visible = btnOptions.active = true;
 
 		} else {
 			title.visible = false;
@@ -491,16 +514,16 @@ public class HeroSelectScene extends PixelScene {
 			startBtn.text(Messages.titleCase(cl.title()));
 			startBtn.setSize(startBtn.reqWidth() + 8, 21);
 
-			startBtn.setPos((Camera.main.width - startBtn.width())/2f, (Camera.main.height - insets.bottom - HeroBtn.HEIGHT + 2 - startBtn.height()));
+			startBtn.setPos((Camera.main.width - startBtn.width())/2f, (heroBtns.get(0).top() - startBtn.height() - 2));
 			PixelScene.align(startBtn);
 			placeDifficultyBar(Camera.main.width/2f, Math.min(130, Camera.main.width - 12));
 			difficultyBar.refresh();
-			difficultyBar.visible = difficultyBar.active = !SPDSettings.intro();
+			difficultyBar.visible = difficultyBar.active = true;
 
 			infoButton.visible = infoButton.active = true;
 			infoButton.setPos(startBtn.right(), startBtn.top());
 
-			btnOptions.visible = btnOptions.active = !SPDSettings.intro();
+			btnOptions.visible = btnOptions.active = true;
 			btnOptions.setPos(startBtn.left()-btnOptions.width(), startBtn.top());
 
 			optionsPane.setPos(heroBtns.get(0).left(), difficultyTop() - optionsPane.height() - 2);
@@ -511,12 +534,18 @@ public class HeroSelectScene extends PixelScene {
 	}
 
 	private float uiAlpha;
+	private boolean introChecked;
 
 	@Override
 	public void update() {
 		super.update();
 		if (SPDSettings.intro() && Rankings.INSTANCE.totalNumber > 0){
 			SPDSettings.intro(false);
+		}
+		//APD: also for an install that has been used before (see ApdIntro), re-checked each time hero select opens
+		if (!introChecked){
+			introChecked = true;
+			com.shatteredpixel.shatteredpixeldungeon.apd.ApdIntro.endIfNotNew();
 		}
 		btnExit.visible = btnExit.active = true; //APD: always allow going back to the title menu
 		//do not fade when a window is open
@@ -546,6 +575,8 @@ public class HeroSelectScene extends PixelScene {
 		}
 		startBtn.enable(alpha != 0);
 		startBtn.alpha(alpha);
+		difficultyBar.active = difficultyBar.visible && alpha != 0;
+		difficultyBar.fade(alpha);
 		btnExit.enable(btnExit.visible && alpha != 0);
 		btnExit.icon().alpha(alpha);
 		optionsPane.active = optionsPane.visible && alpha != 0;
@@ -587,7 +618,8 @@ public class HeroSelectScene extends PixelScene {
 	@Override
 	protected void onBackPressed() {
 		if (btnExit.active){
-			ShatteredPixelDungeon.switchScene(TitleScene.class);
+			// Returning to the title is navigation, not a new-game entrance fade.
+			ShatteredPixelDungeon.switchNoFade(TitleScene.class);
 		} else {
 			super.onBackPressed();
 		}
@@ -679,6 +711,7 @@ public class HeroSelectScene extends PixelScene {
 						return;
 					}
 
+					SeedHistoryNotice.cancel();
 					String existingSeedtext = SPDSettings.customSeed();
 					ShatteredPixelDungeon.scene().addToFront( new WndTextInput(Messages.get(HeroSelectScene.class, "custom_seed_title"),
 							Messages.get(HeroSelectScene.class, "custom_seed_desc"),
@@ -697,6 +730,7 @@ public class HeroSelectScene extends PixelScene {
 								for (GamesInProgress.Info info : GamesInProgress.checkAll()){
 									if (info.customSeed.isEmpty() && info.seed == seed){
 										SPDSettings.customSeed("");
+										SeedHistoryNotice.selected("");
 										icon.resetColor();
 										ShatteredPixelDungeon.scene().addToFront(new WndMessage(Messages.get(HeroSelectScene.class, "custom_seed_duplicate")));
 										return;
@@ -704,9 +738,11 @@ public class HeroSelectScene extends PixelScene {
 								}
 
 								SPDSettings.customSeed(text);
+								SeedHistoryNotice.selected(text);
 								icon.hardlight(1f, 1.5f, 0.67f);
 							} else {
 								SPDSettings.customSeed("");
+								SeedHistoryNotice.selected("");
 								icon.resetColor();
 							}
 							updateOptionsColor();

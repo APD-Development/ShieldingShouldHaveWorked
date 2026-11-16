@@ -28,6 +28,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NPC;
 import com.shatteredpixel.shatteredpixeldungeon.apd.stats.GameFacts;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
@@ -35,6 +36,7 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.traps.Trap;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 
 import java.util.LinkedHashMap;
+import java.util.List;
 
 //Turns what the hero does and what happens around them into generic fact observations (see FactKinds, GameFacts): steps, rests,
 //searches, item actions, status effects, talents, spells, abilities, gold, trades, traps, and the time actually spent playing.
@@ -73,7 +75,7 @@ final class PlayTracker {
 		long now = System.nanoTime();
 		long gap = now - lastNano;
 		lastNano = now;
-		if (gap > 0) activeNanos += Math.min(gap, MAX_GAP_NANOS);
+		if (gap > 0 && gap <= MAX_GAP_NANOS) activeNanos += gap;
 		pollGold("other");
 		Hero h = Dungeon.hero;
 		if (h != null){
@@ -90,6 +92,17 @@ final class PlayTracker {
 
 	void onHeroMoved( Hero hero, int to, boolean travelling ){
 		facts.record(GameFacts.MOVE_STEP, GameSnapshot.turn(), "", "", new long[]{ to, Dungeon.level.width(), travelling ? 1 : 0 }, null);
+	}
+
+	void onMoveCommand( int destination, String mode ){
+		facts.record(GameFacts.MOVE_COMMAND, GameSnapshot.turn(), "", "",
+				new long[]{ destination, Dungeon.level.width() }, new String[]{ mode == null ? "" : mode });
+	}
+
+	void onBossPhase( String boss, int phase, String state ){
+		if (boss == null || boss.isEmpty() || phase < 2) return;
+		facts.record(GameFacts.BOSS_PHASE, GameSnapshot.turn(), boss, "",
+				new long[]{ phase, Dungeon.depth }, new String[]{ state == null ? "" : state });
 	}
 
 	void onHeroRested( boolean full ){
@@ -136,6 +149,25 @@ final class PlayTracker {
 		facts.record(GameFacts.LANDMARK, GameSnapshot.turn(), landmark, "", new long[]{ depth }, new String[]{ added ? "added" : "removed" });
 	}
 
+	void onNpcInteraction( NPC npc ){
+		if (npc == null) return;
+		String shown;
+		try {
+			shown = npc.name();
+		} catch (Throwable t){
+			shown = "";
+		}
+		facts.record(GameFacts.NPC_INTERACT, GameSnapshot.turn(), shown, "", new long[]{ Dungeon.depth }, null);
+	}
+
+	void onAllySummoned( Char summoned, Char creator ){
+		if (summoned == null || creator == null
+				|| summoned.apdCreatorOffensiveOrigin() != com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin.PLAYER
+				|| !CombatTracker.visible(creator)) return;
+		facts.record(GameFacts.ALLY_SUMMON, GameSnapshot.turn(), CombatTracker.nameOf(summoned),
+				CombatTracker.nameOf(creator), new long[]{ Dungeon.depth }, null);
+	}
+
 	void onQuest( String npc, String step ){
 		facts.record(GameFacts.QUEST, GameSnapshot.turn(), npc, "", new long[]{ Dungeon.depth }, new String[]{ step });
 	}
@@ -160,6 +192,29 @@ final class PlayTracker {
 		long charges = -1;
 		if (item instanceof Wand) charges = ((Wand) item).curCharges;
 		facts.record(GameFacts.ITEM_USE_TRUTH, clock, name(item.getClass()), "", new long[]{ item.level(), charges }, new String[]{ action == null ? "" : action });
+	}
+
+	void onAlchemyCrafted( List<Item> ingredients, Item result, int totalEnergy, int carriedEnergy, int toolkitEnergy ){
+		if (result == null) return;
+		StringBuilder shownIngredients = new StringBuilder();
+		if (ingredients != null){
+			for (Item ingredient : ingredients){
+				if (ingredient == null) continue;
+				if (shownIngredients.length() > 0) shownIngredients.append(" + ");
+				shownIngredients.append(ingredient.quantity()).append("x ").append(shownName(ingredient));
+			}
+		}
+		facts.record(GameFacts.ALCHEMY_CRAFT, GameSnapshot.turn(), shownName(result), "",
+				new long[]{ Dungeon.depth, result.quantity(), totalEnergy, carriedEnergy, toolkitEnergy },
+				new String[]{ shownIngredients.toString() });
+	}
+
+	private static String shownName( Item item ){
+		try {
+			return item == null ? "" : item.name();
+		} catch (Throwable t){
+			return "";
+		}
 	}
 
 	// ---- status effects ----

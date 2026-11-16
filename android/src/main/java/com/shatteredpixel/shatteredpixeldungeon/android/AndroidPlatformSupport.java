@@ -100,16 +100,27 @@ public class AndroidPlatformSupport extends PlatformSupport {
 		RectF insets = new RectF();
 
 		//getting insets technically works down to 6.0 Marshmallow, but we let the device handle all of that prior to 9.0 Pie
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P && !AndroidLauncher.instance.isInMultiWindowMode()) {
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
 			WindowInsets rootInsets = AndroidLauncher.instance.getApplicationWindow().getDecorView().getRootWindowInsets();
 			if (rootInsets != null) {
 
-				//Navigation bar (never on the top)
-				if (supportsFullScreen() && !SPDSettings.fullscreen()) {
-					insets.left = Math.max(insets.left, rootInsets.getStableInsetLeft());
-					insets.right = Math.max(insets.right, rootInsets.getStableInsetRight());
-					insets.bottom = Math.max(insets.bottom, rootInsets.getStableInsetBottom());
+				//A fullscreen preference is a request, not proof that the OS hid its navigation bar.
+				//Reserve only the visible bar overlapping the game surface, avoiding double padding
+				//on older Android versions whose window already excludes the navigation area.
+				RectF navigation = visibleNavigationInsets(rootInsets);
+				View decor = AndroidLauncher.instance.getApplicationWindow().getDecorView();
+				View surface = ((com.badlogic.gdx.backends.android.AndroidGraphics) AndroidLauncher.instance.getGraphics()).getView();
+				if (decor.getWidth() > 0 && surface.getWidth() > 0) {
+					int[] windowPosition = new int[2], surfacePosition = new int[2];
+					decor.getLocationOnScreen(windowPosition);
+					surface.getLocationOnScreen(surfacePosition);
+					navigation = navigationOverlap(navigation,
+							new RectF(windowPosition[0], windowPosition[1], windowPosition[0]+decor.getWidth(), windowPosition[1]+decor.getHeight()),
+							new RectF(surfacePosition[0], surfacePosition[1], surfacePosition[0]+surface.getWidth(), surfacePosition[1]+surface.getHeight()));
 				}
+				insets.left = navigation.left;
+				insets.right = navigation.right;
+				insets.bottom = navigation.bottom;
 
 				//display cutout
 				if (level > INSET_BLK) {
@@ -151,6 +162,22 @@ public class AndroidPlatformSupport extends PlatformSupport {
 			}
 		}
 		return insets;
+	}
+
+	static RectF visibleNavigationInsets(WindowInsets rootInsets) {
+		if (rootInsets == null) return new RectF();
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+			android.graphics.Insets bars = rootInsets.getInsets(WindowInsets.Type.navigationBars());
+			return new RectF(bars.left, 0, bars.right, bars.bottom);
+		}
+		return new RectF(rootInsets.getSystemWindowInsetLeft(), 0,
+				rootInsets.getSystemWindowInsetRight(), rootInsets.getSystemWindowInsetBottom());
+	}
+
+	static RectF navigationOverlap(RectF bars, RectF window, RectF surface) {
+		return new RectF(Math.max(0, bars.left - Math.max(0, surface.left-window.left)), 0,
+				Math.max(0, bars.right - Math.max(0, window.right-surface.right)),
+				Math.max(0, bars.bottom - Math.max(0, window.bottom-surface.bottom)));
 	}
 
 	public void updateSystemUI() {

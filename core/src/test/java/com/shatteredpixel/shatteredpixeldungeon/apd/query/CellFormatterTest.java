@@ -2,6 +2,7 @@ package com.shatteredpixel.shatteredpixeldungeon.apd.query;
 
 import static com.shatteredpixel.shatteredpixeldungeon.apd.query.QuerySupport.*;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 import com.shatteredpixel.shatteredpixeldungeon.apd.stats.Fact;
 
@@ -55,5 +56,33 @@ public class CellFormatterTest {
 		AggValue v = new AggValue(true, 5.0 / 12, 5, 12, 14, 0);
 		assertEquals("42% (5/12)", CellFormatter.aggregate(def, Aggregate.rate("kind", 0), v).text);
 		assertEquals("12 of 14 known", CellFormatter.aggregate(def, Aggregate.rate("kind", 0), v).detail);
+	}
+
+	@Test public void invalidCalendarDatesAreRefusedInsteadOfChangingTheFilterDate(){
+		ColumnDef date = ColumnDef.num("date", "Date").format(ColumnDef.Format.DATE_MILLIS);
+		assertEquals(Long.valueOf(951782400000L), CellFormatter.parse(date, "2000-02-29"));
+		for (String invalid : new String[]{"2026-02-29", "2026-02-31", "2026-04-31", "1900-02-29", "2026-13-01"})
+			assertNull(invalid, CellFormatter.parse(date, invalid));
+	}
+
+	@Test public void nonFiniteAndOverflowingDecimalFiltersAreRefused(){
+		for (ColumnDef.Format format : new ColumnDef.Format[]{ColumnDef.Format.HUNDREDTHS, ColumnDef.Format.THOUSANDTHS}){
+			ColumnDef decimal = ColumnDef.num("decimal", "Decimal").format(format);
+			for (String invalid : new String[]{"NaN", "Infinity", "-Infinity", "1e300", "-1e300"})
+				assertNull(invalid, CellFormatter.parse(decimal, invalid));
+			assertEquals(Long.valueOf(format == ColumnDef.Format.HUNDREDTHS ? 125 : 1250), CellFormatter.parse(decimal, "1.25"));
+		}
+	}
+
+	@Test public void decimalFiltersUseTheTypedValueInsteadOfBinaryApproximation(){
+		ColumnDef hundredths = ColumnDef.num("hundredths", "Hundredths").format(ColumnDef.Format.HUNDREDTHS);
+		ColumnDef thousandths = ColumnDef.num("thousandths", "Thousandths").format(ColumnDef.Format.THOUSANDTHS);
+		assertEquals(Long.valueOf(101), CellFormatter.parse(hundredths, "1.005"));
+		assertEquals("preserve Math.round's negative half-step direction", Long.valueOf(-100), CellFormatter.parse(hundredths, "-1.005"));
+		assertEquals(Long.valueOf(1235), CellFormatter.parse(thousandths, "1.2345"));
+		assertEquals("values above double's exact-integer range keep every typed digit",
+				Long.valueOf(9007199254740991L), CellFormatter.parse(hundredths, "90071992547409.91"));
+		assertEquals(Long.valueOf(Long.MAX_VALUE), CellFormatter.parse(hundredths, "92233720368547758.07"));
+		assertNull(CellFormatter.parse(hundredths, "92233720368547758.075"));
 	}
 }

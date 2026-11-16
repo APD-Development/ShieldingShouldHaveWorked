@@ -35,37 +35,48 @@ public final class Scope {
 	public final boolean includeMixedRuleset;
 	public final boolean includeUnfinished;
 	public final boolean includeDuplicates;
+	public final boolean finishedOnly;
 
 	public Scope( Rules rules, String ruleset, boolean includeUnknownRuleset, boolean includeMixedRuleset,
 	              boolean includeUnfinished, boolean includeDuplicates ){
+		this(rules, ruleset, includeUnknownRuleset, includeMixedRuleset, includeUnfinished, includeDuplicates, false);
+	}
+
+	public Scope( Rules rules, String ruleset, boolean includeUnknownRuleset, boolean includeMixedRuleset,
+	              boolean includeUnfinished, boolean includeDuplicates, boolean finishedOnly ){
 		this.rules = rules;
 		this.ruleset = ruleset == null ? "" : ruleset;
 		this.includeUnknownRuleset = includeUnknownRuleset;
 		this.includeMixedRuleset = includeMixedRuleset;
-		this.includeUnfinished = includeUnfinished;
+		this.includeUnfinished = includeUnfinished && !finishedOnly;
 		this.includeDuplicates = includeDuplicates;
+		this.finishedOnly = finishedOnly;
 	}
 
 	public static final Scope DEFAULT = new Scope(Rules.CURRENT, "", false, false, false, false);
 
 	public Scope withRules( Rules r, String ruleset ){
-		return new Scope(r, ruleset, includeUnknownRuleset, includeMixedRuleset, includeUnfinished, includeDuplicates);
+		return new Scope(r, ruleset, includeUnknownRuleset, includeMixedRuleset, includeUnfinished, includeDuplicates, finishedOnly);
 	}
 
 	public Scope withUnknownRuleset( boolean v ){
-		return new Scope(rules, ruleset, v, includeMixedRuleset, includeUnfinished, includeDuplicates);
+		return new Scope(rules, ruleset, v, includeMixedRuleset, includeUnfinished, includeDuplicates, finishedOnly);
 	}
 
 	public Scope withMixedRuleset( boolean v ){
-		return new Scope(rules, ruleset, includeUnknownRuleset, v, includeUnfinished, includeDuplicates);
+		return new Scope(rules, ruleset, includeUnknownRuleset, v, includeUnfinished, includeDuplicates, finishedOnly);
 	}
 
 	public Scope withUnfinished( boolean v ){
-		return new Scope(rules, ruleset, includeUnknownRuleset, includeMixedRuleset, v, includeDuplicates);
+		return new Scope(rules, ruleset, includeUnknownRuleset, includeMixedRuleset, v, includeDuplicates, finishedOnly);
 	}
 
 	public Scope withDuplicates( boolean v ){
-		return new Scope(rules, ruleset, includeUnknownRuleset, includeMixedRuleset, includeUnfinished, v);
+		return new Scope(rules, ruleset, includeUnknownRuleset, includeMixedRuleset, includeUnfinished, v, finishedOnly);
+	}
+
+	public Scope withFinishedOnly(boolean value){
+		return new Scope(rules, ruleset, includeUnknownRuleset, includeMixedRuleset, includeUnfinished, includeDuplicates, value);
 	}
 
 	@Override
@@ -74,12 +85,12 @@ public final class Scope {
 		Scope s = (Scope) o;
 		return rules == s.rules && ruleset.equals(s.ruleset) && includeUnknownRuleset == s.includeUnknownRuleset
 				&& includeMixedRuleset == s.includeMixedRuleset && includeUnfinished == s.includeUnfinished
-				&& includeDuplicates == s.includeDuplicates;
+				&& includeDuplicates == s.includeDuplicates && finishedOnly == s.finishedOnly;
 	}
 
 	@Override
 	public int hashCode(){
 		return rules.hashCode() * 31 + ruleset.hashCode() + (includeUnknownRuleset ? 1 : 0) + (includeUnfinished ? 2 : 0)
-				+ (includeMixedRuleset ? 4 : 0) + (includeDuplicates ? 8 : 0);
+				+ (includeMixedRuleset ? 4 : 0) + (includeDuplicates ? 8 : 0) + (finishedOnly ? 16 : 0);
 	}
 }

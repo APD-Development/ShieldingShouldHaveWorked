@@ -25,10 +25,14 @@ package com.shatteredpixel.shatteredpixeldungeon.windows;
 import com.shatteredpixel.shatteredpixeldungeon.apd.query.WindowGeometry;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
+import com.shatteredpixel.shatteredpixeldungeon.ui.StyledButton;
+import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.ui.ScrollPane;
 import com.shatteredpixel.shatteredpixeldungeon.ui.UimsdStyle;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.watabou.noosa.ColorBlock;
+import com.watabou.noosa.NinePatch;
+import com.shatteredpixel.shatteredpixeldungeon.Chrome;
 import com.watabou.noosa.ui.Component;
 
 import java.util.ArrayList;
@@ -57,6 +61,8 @@ public class WndUimsdList extends Window {
 		public boolean warn;
 		//switches: null for an entry that is not a switch
 		public Boolean checked;
+		private boolean action;
+		private int noteSize;
 
 		private Entry( int kind, String label, String detail ){
 			this.kind = kind;
@@ -72,6 +78,12 @@ public class WndUimsdList extends Window {
 			return new Entry(NOTE, text, "");
 		}
 
+		public static Entry note(String text, int size){
+			Entry entry = note(text);
+			entry.noteSize = size;
+			return entry;
+		}
+
 		public static Entry warning( String text ){
 			Entry e = new Entry(NOTE, text, "");
 			e.warn = true;
@@ -80,6 +92,12 @@ public class WndUimsdList extends Window {
 
 		public static Entry item( String label ){
 			return new Entry(ITEM, label, "");
+		}
+
+		public static Entry action(String label){
+			Entry entry = item(label);
+			entry.action = true;
+			return entry;
 		}
 
 		public static Entry item( String label, String detail ){
@@ -116,7 +134,7 @@ public class WndUimsdList extends Window {
 	private final List<Entry> entries;
 	//per entry: the label text and background (items only), and the span of the row inside the list (items and Done only, else null)
 	private final List<RenderedTextBlock> labelTexts = new ArrayList<>();
-	private final List<ColorBlock> backs = new ArrayList<>();
+	private final List<NinePatch> backs = new ArrayList<>();
 	private final List<float[]> spans = new ArrayList<>();
 	private final List<Integer> itemIndexOfEntry = new ArrayList<>();
 	private ListPane pane;
@@ -158,12 +176,19 @@ public class WndUimsdList extends Window {
 			pos = t.bottom() + MARGIN;
 		}
 		if (message != null && !message.isEmpty()){
-			RenderedTextBlock m = PixelScene.renderTextBlock(message, UimsdStyle.SIZE_HELP);
-			m.hardlight(UimsdStyle.MUTED);
-			m.maxWidth(width - 2 * MARGIN);
-			m.setPos(MARGIN, pos);
-			add(m);
-			pos = m.bottom() + 2 * MARGIN;
+			if (message.length() > 100){
+				final String explanation = message;
+				StyledButton help = new StyledButton(Chrome.Type.GREY_BUTTON_TR, "About this menu", 6){
+					@Override protected void onClick(){
+						ShatteredPixelDungeon.scene().addToFront(new WndUimsdText(title == null ? "UIMSD" : title, explanation, false));
+					}
+				};
+				help.setRect(MARGIN,pos,width-2*MARGIN,16);add(help);pos += 18;
+			} else {
+				RenderedTextBlock m = PixelScene.renderTextBlock(message, UimsdStyle.SIZE_HELP);
+				m.hardlight(UimsdStyle.MUTED);m.maxWidth(width-2*MARGIN);m.setPos(MARGIN,pos);add(m);
+				pos=m.bottom()+2*MARGIN;
+			}
 		} else {
 			pos += MARGIN;
 		}
@@ -187,7 +212,7 @@ public class WndUimsdList extends Window {
 				label = PixelScene.renderTextBlock(e.label.toUpperCase(), UimsdStyle.SIZE_HELP);
 				heights[i] = label.height() + 6;
 			} else if (e.kind == Entry.NOTE){
-				label = PixelScene.renderTextBlock(e.label, UimsdStyle.SIZE_META);
+				label = PixelScene.renderTextBlock(e.label, e.noteSize > 0 ? e.noteSize : UimsdStyle.SIZE_META);
 				heights[i] = label.height() + 4;
 			} else {
 				label = PixelScene.renderTextBlock(itemText(e), UimsdStyle.SIZE_TEXT);
@@ -203,7 +228,7 @@ public class WndUimsdList extends Window {
 			//a text block lays itself out when its width is set, so the heights are taken again after it
 			if (e != null && e.kind == Entry.ITEM){
 				float h = label.height() + (detail == null ? 0 : 1 + detail.height());
-				heights[i] = WindowGeometry.rowHeight(h);
+				heights[i] = e.action ? WindowGeometry.actionHeight(h) : WindowGeometry.rowHeight(h);
 			} else if (e == null){
 				heights[i] = WindowGeometry.rowHeight(label.height());
 			} else if (e.kind == Entry.HEADING){
@@ -244,8 +269,10 @@ public class WndUimsdList extends Window {
 				itemIndexOfEntry.add(-1);
 				continue;
 			}
-			ColorBlock bg = new ColorBlock(width, heights[i] - 1, e == null ? UimsdStyle.ROW_ACTION : backFor(e));
+			NinePatch bg = Chrome.get(Chrome.Type.GREY_BUTTON_TR);
+			bg.size(width, heights[i] - 1);
 			bg.y = tops[i];
+			if (e != null && (e.current || Boolean.TRUE.equals(e.checked))) bg.hardlight(0xAADD99);
 			content.add(bg);
 			float textH = label.height() + (detail == null ? 0 : 1 + detail.height());
 			float ty = tops[i] + (heights[i] - 1 - textH) / 2f;
@@ -281,10 +308,6 @@ public class WndUimsdList extends Window {
 		return t;
 	}
 
-	private int backFor( Entry e ){
-		return e.current || Boolean.TRUE.equals(e.checked) ? UimsdStyle.ROW_ON : UimsdStyle.ROW;
-	}
-
 	private int colorFor( Entry e ){
 		return e.current || Boolean.TRUE.equals(e.checked) ? UimsdStyle.CURRENT : UimsdStyle.TEXT;
 	}
@@ -313,6 +336,18 @@ public class WndUimsdList extends Window {
 	//one returns to the first exactly as it was. When the chain ends in a choice, closeAll() closes every menu of it at once.
 	private static final List<WndUimsdList> CHAIN = new ArrayList<>();
 	private boolean keepOpen;
+	private Runnable restorer;
+
+	public WndUimsdList restoreWith(Runnable restorer){
+		this.restorer = restorer;
+		return this;
+	}
+
+	@Override
+	public Runnable restoreOnSceneReset(){
+		return restorer;
+	}
+
 
 	public WndUimsdList keepOpen(){
 		keepOpen = true;
@@ -367,10 +402,16 @@ public class WndUimsdList extends Window {
 		int item = itemIndexOfEntry.get(entry);
 		if (switches && e.checked != null){
 			e.checked = !e.checked;
-			labelTexts.get(entry).text(itemText(e));
-			labelTexts.get(entry).hardlight(colorFor(e));
-			backs.get(entry).color(backFor(e));
 			if (picker != null) picker.onPick(item, e.checked);
+			//A constrained picker can change other entries (for example, replacing the oldest split field).
+			//Render the final selection, rather than only the row that was tapped.
+			for (int i = 0; i < entries.size(); i++){
+				Entry choice = entries.get(i);
+				if (!choice.isItem() || choice.checked == null) continue;
+				labelTexts.get(i).text(itemText(choice));
+				labelTexts.get(i).hardlight(colorFor(choice));
+				backs.get(i).hardlight(choice.current || Boolean.TRUE.equals(choice.checked) ? 0xAADD99 : 0xFFFFFF);
+			}
 		} else {
 			if (!keepOpen) hide();
 			if (picker != null) picker.onPick(item, false);

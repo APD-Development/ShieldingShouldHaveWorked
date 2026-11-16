@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -28,6 +31,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Weakness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
+import com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomOffensiveHooks;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRetribution;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -43,6 +47,9 @@ public class ScrollOfPsionicBlast extends ExoticScroll {
 		icon = ItemSpriteSheet.Icons.SCROLL_PSIBLAST;
 	}
 	
+    /** Description preview of the unchanged self-damage arithmetic below. */
+    public static int baseSelfDamage(int maximumHp,int targets){return Math.max(0,Math.round(maximumHp*(.5f*(float)Math.pow(.9,targets))));}
+
 	@Override
 	public void doRead() {
 
@@ -64,7 +71,7 @@ public class ScrollOfPsionicBlast extends ExoticScroll {
 		for (Mob mob : targets){
 			//always kills non-resistant enemies
 			//resistant enemies take 50% current HP at full health, scaling to 75% at 1/2 HP, and 100% at 1/3 hp
-			mob.damage(Math.round(mob.HT/2f + mob.HP/2f), this);
+			CustomOffensiveHooks.raw(mob, Math.round(mob.HT/2f + mob.HP/2f), this, curUser);
 			if (mob.isAlive()) {
 				Buff.prolong(mob, Blindness.class, Blindness.DURATION);
 			}

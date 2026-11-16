@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -156,7 +159,7 @@ public class SentryRoom extends SpecialRoom {
 		level.mobs.add( sentry );
 
 		Painter.set(level, treasurePos, Terrain.PEDESTAL);
-		level.drop( prize( level ), level.pointToCell(treasurePos) ).type = Heap.Type.CHEST;
+		com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomEquipmentHooks.dropGenerated(level, prize(level), level.pointToCell(treasurePos), Heap.Type.CHEST, false);
 
 		level.addItemToSpawn(new PotionOfHaste());
 
@@ -170,8 +173,10 @@ public class SentryRoom extends SpecialRoom {
 		//50% chance for prize item
 		if (Random.Int(2) == 0){
 			prize = level.findPrizeItem();
-			if (prize != null)
+			if (prize != null) {
+				com.shatteredpixel.shatteredpixeldungeon.apd.qol.GenerationUpgradeRanges.optionalBonus(prize);
 				return prize;
+			}
 		}
 
 		//1 floor set higher in probability, never cursed
@@ -203,6 +208,7 @@ public class SentryRoom extends SpecialRoom {
 			prize.upgrade();
 		}
 
+		com.shatteredpixel.shatteredpixeldungeon.apd.qol.GenerationUpgradeRanges.optionalBonus(prize);
 		return prize;
 	}
 

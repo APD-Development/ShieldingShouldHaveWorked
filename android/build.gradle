@@ -5,7 +5,31 @@ android {
     compileSdk appAndroidCompileSDK
     compileOptions.sourceCompatibility = compileOptions.targetCompatibility = appJavaCompatibility
 
+    // Share only the isolated simulation test helpers; none enter the playable APK.
+    sourceSets.androidTest.java.srcDir(new File(project(':core').projectDir,
+            'src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/simulation'))
+    // That additional source root contains desktop JUnit fixtures alongside the shared helpers.
+    // Exclude its root-level *Test.java files; packaged Android device tests remain included.
+    sourceSets.androidTest.java.exclude('*Test.java')
+
     sourceSets.main.assets.srcDirs = [new File(project(':core').projectDir, "/src/main/assets")]
+
+    //APD: a PRIVATE TEST BUILD (-PapdTestBuild) adds one generated asset, apd/features.txt, that turns the owner-approved test features on
+    //(see core/.../apd/ApdFeatures.java). The normal build has no such file, so every one of them stays off.
+    if (project.hasProperty('apdTestBuild')) {
+        def apdFeaturesDir = project.layout.buildDirectory.dir('apdTestAssets').get().asFile
+        def apdFeaturesFile = new File(apdFeaturesDir, 'apd/features.txt')
+        apdFeaturesFile.parentFile.mkdirs()
+        apdFeaturesFile.text = "testBuild\ngrudge\ndemoUnlock\nclericPlayable\n"
+        sourceSets.main.assets.srcDir(apdFeaturesDir)
+    } else if ((project.findProperty('apdBuild') ?: '').toString().startsWith('P')) {
+        // Owner-approved Alpha Testers playback and hidden Grudge, without Developer switches.
+        def apdPlaybackDir = project.layout.buildDirectory.dir('apdAlphaPlaybackAssets').get().asFile
+        def apdPlaybackFile = new File(apdPlaybackDir, 'apd/features.txt')
+        apdPlaybackFile.parentFile.mkdirs()
+        apdPlaybackFile.text = "extendedPlayback\ngrudge\n"
+        sourceSets.main.assets.srcDir(apdPlaybackDir)
+    }
 
     androidResources {
         localeFilters += ['en', 'zh-rCN', 'ko', 'ru', 'es', 'pt', 'fr', 'de', 'zh-rTW', 'ja', 'pl',
@@ -41,7 +65,7 @@ android {
             signingConfig signingConfigs.apdDebug
             applicationIdSuffix ".indev"
             //APD: CI passes -PapdBuild=<run number> so the installed app says which build it is (shown in UIMSD and in Android's app info)
-            versionNameSuffix '-INDEV' + (project.hasProperty('apdBuild') ? '-b' + project.property('apdBuild') : '')
+            versionNameSuffix '-INDEV' + (project.hasProperty('apdBuild') ? '-b' + project.property('apdBuild') : '') + (project.hasProperty('apdTestBuild') ? '-TEST' : '')
             dependencies {
                 debugImplementation project(':services:updates:debugUpdates')
                 debugImplementation project(':services:news:debugNews')

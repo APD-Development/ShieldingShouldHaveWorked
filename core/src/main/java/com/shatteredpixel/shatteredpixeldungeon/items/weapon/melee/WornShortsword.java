@@ -64,15 +64,15 @@ public class WornShortsword extends MeleeWeapon {
 	public String abilityInfo() {
 		int dmgBoost = levelKnown ? 3 + buffedLvl() : 3;
 		if (levelKnown){
-			return Messages.get(this, "ability_desc", augment.damageFactor(min()+dmgBoost), augment.damageFactor(max()+dmgBoost));
+			return Messages.get(this, "ability_desc", (augment.damageFactor(min()) + augment.damageFactor(dmgBoost)), (augment.damageFactor(max()) + augment.damageFactor(dmgBoost)));
 		} else {
-			return Messages.get(this, "typical_ability_desc", min(0)+dmgBoost, max(0)+dmgBoost);
+			return Messages.get(this, "typical_ability_desc", augment.damageFactor(min(0)) + augment.damageFactor(dmgBoost), augment.damageFactor(max(0)) + augment.damageFactor(dmgBoost));
 		}
 	}
 
 	public String upgradeAbilityStat(int level){
 		int dmgBoost = 3 + level;
-		return augment.damageFactor(min(level)+dmgBoost) + "-" + augment.damageFactor(max(level)+dmgBoost);
+		return (augment.damageFactor(min(level)) + augment.damageFactor(dmgBoost)) + "-" + (augment.damageFactor(max(level)) + augment.damageFactor(dmgBoost));
 	}
 
 }

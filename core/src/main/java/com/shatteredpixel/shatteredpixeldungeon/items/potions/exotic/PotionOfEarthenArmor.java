@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -25,6 +28,9 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barkskin;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+
 public class PotionOfEarthenArmor extends ExoticPotion {
 	
 	{
@@ -38,4 +44,10 @@ public class PotionOfEarthenArmor extends ExoticPotion {
 		Barkskin.conditionallyAppend( hero, 2 + hero.lvl/3, 50 );
 	}
 	
+    @Override
+    public String desc() {
+        if (!isKnown() || Dungeon.hero == null) return super.desc();
+        return Messages.get(this, "desc_amount", 2 + Dungeon.hero.lvl/3);
+    }
+
 }

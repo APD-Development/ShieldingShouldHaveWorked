@@ -90,9 +90,25 @@ public final class ApdFiles {
 					return;
 				}
 				File f = new File(dir, suggestedName);
+				if (!isDirectExportFile(dir, f)){
+					target.onFailed("unsafe export destination: " + f);
+					return;
+				}
 				target.onStream(new FileOutputStream(f), f.getPath());
 			} catch (Exception e){
 				target.onFailed(String.valueOf(e));
+			}
+		}
+
+		// Reject aliases beneath exports/ so a fallback write cannot truncate a
+		// different file. A symlinked base storage root itself remains valid.
+		private boolean isDirectExportFile( File dir, File file ){
+			try {
+				File expectedDir = new File(base.getCanonicalFile(), "exports");
+				return dir.getCanonicalFile().equals(expectedDir)
+						&& file.getCanonicalFile().equals(new File(expectedDir, file.getName()));
+			} catch (java.io.IOException unreadable){
+				return false;
 			}
 		}
 
@@ -100,11 +116,19 @@ public final class ApdFiles {
 		public void chooseImport( ImportSource source ){
 			try {
 				File dir = new File(base, "imports");
+				if (!isDirectImportDirectory(dir)){
+					source.onFailed("unsafe import directory: " + dir);
+					return;
+				}
 				File[] zips = dir.listFiles();
 				File newest = null;
 				if (zips != null){
 					Arrays.sort(zips);
-					for (File z : zips) if (z.isFile() && z.getName().endsWith(".zip")) newest = z;
+					// Prefer the newest file by modification time. Keep the previous name order for ties.
+					for (File z : zips){
+						if (z.isFile() && z.getName().endsWith(".zip") && isDirectImportFile(dir, z)
+								&& (newest == null || z.lastModified() >= newest.lastModified())) newest = z;
+					}
 				}
 				if (newest == null){
 					source.onFailed("put an archive (a .zip) in " + dir + " first");
@@ -113,6 +137,28 @@ public final class ApdFiles {
 				source.onStream(new FileInputStream(newest), newest.getPath());
 			} catch (Exception e){
 				source.onFailed(String.valueOf(e));
+			}
+		}
+
+		// The imports/ directory itself must belong directly to the configured
+		// storage root. Otherwise file-level checks would trust an external alias.
+		// A deliberately symlinked base storage root is still supported.
+		private boolean isDirectImportDirectory( File dir ){
+			try {
+				return dir.getCanonicalFile().equals(new File(base.getCanonicalFile(), "imports"));
+			} catch (java.io.IOException unreadable){
+				return false;
+			}
+		}
+
+		// A .zip alias can point outside imports/ even though isFile() says true.
+		// Allow a symlinked base storage root, but only select direct files inside
+		// its canonical imports/ directory, matching APD's history ownership rule.
+		private static boolean isDirectImportFile( File dir, File file ){
+			try {
+				return file.getCanonicalFile().equals(new File(dir.getCanonicalFile(), file.getName()));
+			} catch (java.io.IOException unreadable){
+				return false;
 			}
 		}
 

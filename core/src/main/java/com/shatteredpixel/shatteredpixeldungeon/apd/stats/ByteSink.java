@@ -122,6 +122,11 @@ public final class ByteSink {
 		return size;
 	}
 
+	//Checksum the written bytes without allocating a second copy.
+	public int crc32(){
+		return (int)LogFormat.crc(buf,0,size());
+	}
+
 	public byte[] toByteArray(){
 		return Arrays.copyOf(buf, size);
 	}

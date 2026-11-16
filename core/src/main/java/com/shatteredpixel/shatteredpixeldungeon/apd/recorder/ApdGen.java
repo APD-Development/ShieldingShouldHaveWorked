@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -68,16 +71,20 @@ public final class ApdGen {
 
 	//Dungeon.newLevel: a fresh level is fully built (never called for a level loaded from a save)
 	public static void onLevelGenerated( Level level ){
+		com.shatteredpixel.shatteredpixeldungeon.apd.qol.ItemOrigins.captureLevel(level);
 		if (active) ApdRecorder.genLevelGenerated(level);
 	}
 
 	//Mob.rollToDropLoot: a creature's death produced this item
 	public static void onLootCreated( Mob mob, Item item ){
+		com.shatteredpixel.shatteredpixeldungeon.apd.qol.GenerationUpgradeRanges.finalMobSupport(item, mob);
+		if (mob != null) com.shatteredpixel.shatteredpixeldungeon.apd.qol.ItemOrigins.recordSource(item, com.shatteredpixel.shatteredpixeldungeon.Dungeon.level, mob.pos, com.shatteredpixel.shatteredpixeldungeon.apd.stats.GenerationEvents.C_MOB_LOOT);
 		if (active) ApdRecorder.genLoot(mob, item);
 	}
 
 	//Heap.open: bonus items (Ring of Wealth) were added to an opened heap
 	public static void onBonusDrop( Item item, int pos ){
+		com.shatteredpixel.shatteredpixeldungeon.apd.qol.ItemOrigins.recordSource(item, com.shatteredpixel.shatteredpixeldungeon.Dungeon.level, pos, com.shatteredpixel.shatteredpixeldungeon.apd.stats.GenerationEvents.C_BONUS_DROP);
 		if (active) ApdRecorder.genBonus(item, pos);
 	}
 }

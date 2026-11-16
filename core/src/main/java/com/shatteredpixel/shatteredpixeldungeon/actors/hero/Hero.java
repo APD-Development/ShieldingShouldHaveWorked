@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -83,6 +86,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Monk;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Snake;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Imp;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NPC;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
@@ -232,10 +236,16 @@ public class Hero extends Char {
 	private Char attackTarget;
 	
 	public boolean resting = false;
+    /** Transient cancellation token; never saved as an active waiting command. */
+    public long apdWaitCancellationEpoch;
+    public com.shatteredpixel.shatteredpixeldungeon.apd.qol.RatKingQuickSearch.Payment ratSearch;
+    public float apdBaseWalkingSpeed(){return baseSpeed;}
+    public final com.shatteredpixel.shatteredpixeldungeon.apd.qol.WallSearchSession wallSearch = new com.shatteredpixel.shatteredpixeldungeon.apd.qol.WallSearchSession();
 	
 	public Belongings belongings;
 	
 	public int STR;
+    public float apdCustomHealingFraction;
 	
 	public float awareness;
 	
@@ -245,6 +255,22 @@ public class Hero extends Char {
 	public int HTBoost = 0;
 	
 	private ArrayList<Mob> visibleEnemies;
+
+    // Queued small-loot pickups are transient and keep normal individual turn costs.
+    private final transient com.shatteredpixel.shatteredpixeldungeon.apd.qol.GrassDewPickup grassDewPickup =
+            new com.shatteredpixel.shatteredpixeldungeon.apd.qol.GrassDewPickup();
+
+    private transient boolean apdAutomaticLootStep;
+    public void queueGrassDew(Level level, int cell, Heap heap) {
+        if(apdAutomaticLootStep)grassDewPickup.offer(this, level, cell, heap);
+    }
+    private void apdBeginLootStep(){grassDewPickup.clear();apdAutomaticLootStep=true;}
+    private void apdFinishLootStep(Level steppedLevel,int requestedCell,boolean eligible){
+        if(eligible && Dungeon.level==steppedLevel && steppedLevel.heaps!=null && pos==requestedCell)
+            grassDewPickup.offerDewOnStep(this,steppedLevel,pos,steppedLevel.heaps.get(pos));
+        else grassDewPickup.clear();
+    }
+
 
 	//This list is maintained so that some logic checks can be skipped
 	// for enemies we know we aren't seeing normally, resulting in better performance
@@ -261,6 +287,15 @@ public class Hero extends Char {
 		visibleEnemies = new ArrayList<>();
 	}
 	
+    // New-run setup only: this is not recovery, level-up healing, or Ankh revival.
+    public void apdInitializeCustomMaximumHp() {
+        if (com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomCombatHooks.percentage(
+                com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomDungeonRules.Slider.PLAYER_HP) != 100) {
+            updateHT(false);
+            HP = HT;
+        }
+    }
+
 	public void updateHT( boolean boostHP ){
 		int curHT = HT;
 		
@@ -272,16 +307,22 @@ public class Hero extends Char {
 			HT += buff(ElixirOfMight.HTBoost.class).boost();
 		}
 		
+		HT = com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomCombatHooks.playerMaximumHp(HT);
+
 		if (boostHP){
 			HP += Math.max(HT - curHT, 0);
 		}
 		HP = Math.min(HP, HT);
+        if (HP == HT) apdCustomHealingFraction = 0;
 	}
 
 	public int STR() {
-		int strBonus = 0;
+        return previewStrength(RingOfMight.strengthBonus(this));
+    }
 
-		strBonus += RingOfMight.strengthBonus( this );
+    /** Same strength calculation with a known ring contribution, without querying mutable spell items. */
+    public int previewStrength(int ringBonus) {
+        int strBonus = ringBonus;
 		
 		AdrenalineSurge buff = buff(AdrenalineSurge.class);
 		if (buff != null){
@@ -310,6 +351,8 @@ public class Hero extends Char {
 	public void storeInBundle( Bundle bundle ) {
 
 		super.storeInBundle( bundle );
+        if (apdCustomHealingFraction > 0) bundle.put("apd_custom_healing_fraction", apdCustomHealingFraction);
+        else bundle.remove("apd_custom_healing_fraction");
 
 		bundle.put( CLASS, heroClass );
 		bundle.put( SUBCLASS, subClass );
@@ -327,6 +370,8 @@ public class Hero extends Char {
 		bundle.put( HTBOOST, HTBoost );
 
 		belongings.storeInBundle( bundle );
+        wallSearch.store(bundle);
+        com.shatteredpixel.shatteredpixeldungeon.apd.qol.RatKingQuickSearch.store(this,bundle);
 	}
 	
 	@Override
@@ -338,6 +383,11 @@ public class Hero extends Char {
 		HTBoost = bundle.getInt(HTBOOST);
 
 		super.restoreFromBundle( bundle );
+        wallSearch.restore(bundle);
+        com.shatteredpixel.shatteredpixeldungeon.apd.qol.RatKingQuickSearch.restore(this,bundle);
+        apdCustomHealingFraction = bundle.contains("apd_custom_healing_fraction") ? bundle.getFloat("apd_custom_healing_fraction") : 0;
+        if (Float.isNaN(apdCustomHealingFraction) || apdCustomHealingFraction < 0 || apdCustomHealingFraction >= 1)
+            throw new IllegalArgumentException("Invalid custom healing fraction; preserve the save for recovery");
 
 		heroClass = bundle.getEnum( CLASS, HeroClass.class );
 		subClass = bundle.getEnum( SUBCLASS, HeroSubClass.class );
@@ -862,24 +912,49 @@ public class Hero extends Char {
 			}
 		}
 		
-		checkVisibleMobs();
-		BuffIndicator.refreshHero();
+        checkVisibleMobs();
+        // Extended bug reports record APD gameplay intents, not item names,
+        // inventory contents, or another application's input.
+        if (curAction != null) {
+            int destination = curAction.dst;
+            if (curAction instanceof HeroAction.Attack
+                    && ((HeroAction.Attack)curAction).target != null)
+                destination = ((HeroAction.Attack)curAction).target.pos;
+            else if (curAction instanceof HeroAction.Interact
+                    && ((HeroAction.Interact)curAction).ch != null)
+                destination = ((HeroAction.Interact)curAction).ch.pos;
+            com.watabou.utils.SupportActionJournal.record("hero.action",
+                    "type="+curAction.getClass().getSimpleName()
+                    +" floor="+Dungeon.depth+" from="+pos+" target="+destination);
+        } else if (resting) {
+            com.watabou.utils.SupportActionJournal.record("hero.wait",
+                    "floor="+Dungeon.depth+" position="+pos);
+        }
+        BuffIndicator.refreshHero();
 		BuffIndicator.refreshBoss();
 		
 		if (paralysed > 0) {
-			
+            grassDewPickup.clear();
 			curAction = null;
 			
 			spendAndNext( TICK );
 			return false;
 		}
 		
-		boolean actResult;
+        // Movement and its enemy turns have already completed. FOV is now refreshed.
+        // The normal Dewdrop pickup below spends its own turn, never the movement turn.
+        if (grassDewPickup.collectIfSafe(this)) return false;
+
+        if(curAction instanceof com.shatteredpixel.shatteredpixeldungeon.apd.qol.RatKingQuickSearch.Action)
+            return com.shatteredpixel.shatteredpixeldungeon.apd.qol.RatKingQuickSearch.advance(this,(com.shatteredpixel.shatteredpixeldungeon.apd.qol.RatKingQuickSearch.Action)curAction);
+        boolean actResult;
 		if (curAction == null) {
 			
 			if (resting) {
-				spendConstant( TIME_TO_REST );
-				next();
+                com.shatteredpixel.shatteredpixeldungeon.apd.qol.WaitingPolicy.Turn waiting=com.shatteredpixel.shatteredpixeldungeon.apd.qol.WaitingPolicy.beforeWaitTurn(this);
+                if(waiting==com.shatteredpixel.shatteredpixeldungeon.apd.qol.WaitingPolicy.Turn.ATE)return false;
+                if(waiting==com.shatteredpixel.shatteredpixeldungeon.apd.qol.WaitingPolicy.Turn.STOP){resting=false;ready();}
+                else {spendConstant(TIME_TO_REST);next();}
 			} else {
 				ready();
 			}
@@ -992,6 +1067,14 @@ public class Hero extends Char {
 	}
 	
 	public void interrupt() {
+        apdWaitCancellationEpoch++;
+        if(curAction instanceof com.shatteredpixel.shatteredpixeldungeon.apd.qol.RatKingQuickSearch.Action){ratSearch=null;curAction=null;lastAction=null;}
+        if(curAction instanceof com.shatteredpixel.shatteredpixeldungeon.apd.qol.WallSearchSession.Walk){curAction=null;lastAction=null;}
+        apdTrapGeneration++;
+        if(apdTrapPermit!=null)apdTrapPermit.clear();
+        if (curAction instanceof com.shatteredpixel.shatteredpixeldungeon.apd.navigation.StairNavigation.Walk) {
+            lastAction=null; curAction=null;
+        }
 		if (isAlive() && curAction != null &&
 			((curAction instanceof HeroAction.Move && curAction.dst != pos) ||
 			(curAction instanceof HeroAction.LvlTransition))) {
@@ -1020,16 +1103,66 @@ public class Hero extends Char {
 				Dungeon.level.plants.get(pos) != null);
 	}
 	
+    public void beginStairWalk(com.shatteredpixel.shatteredpixeldungeon.apd.navigation.StairNavigation.Walk walk, com.watabou.utils.PathFinder.Path route) {
+        interrupt(); lastAction=null; path=route; curAction=walk; damageInterrupt=true;
+    }
+
+    public void finishRatQuickSearch(){ready();}
+    public void beginRatQuickSearch(com.shatteredpixel.shatteredpixeldungeon.apd.qol.RatKingQuickSearch.Payment payment){
+        interrupt();lastAction=null;curAction=new com.shatteredpixel.shatteredpixeldungeon.apd.qol.RatKingQuickSearch.Action(Dungeon.level,payment);damageInterrupt=true;busy();next();
+    }
+    public void beginWallSearchWalk(com.shatteredpixel.shatteredpixeldungeon.apd.qol.WallSearchSession.Walk walk,com.watabou.utils.PathFinder.Path route){
+        interrupt();lastAction=null;path=route;curAction=walk;damageInterrupt=true;
+    }
+
 	private boolean actMove( HeroAction.Move action ) {
+        if(action instanceof com.shatteredpixel.shatteredpixeldungeon.apd.qol.WallSearchSession.Walk){
+            com.shatteredpixel.shatteredpixeldungeon.apd.qol.WallSearchSession.Walk walk=(com.shatteredpixel.shatteredpixeldungeon.apd.qol.WallSearchSession.Walk)action;
+            boolean unsafe=path!=null&&!path.isEmpty()&&!com.shatteredpixel.shatteredpixeldungeon.apd.navigation.StairNavigation.safeStep(Dungeon.level,this,path.getFirst());
+            if(walk.level!=Dungeon.level||!wallSearch.matches(Dungeon.level)||com.shatteredpixel.shatteredpixeldungeon.apd.qol.SearchControlContext.noHiddenDoorRoom(Dungeon.level,action.dst)||visibleEnemies()>0||rooted||paralysed>0||Dungeon.level.locked||unsafe){interrupt();lastAction=null;ready();return false;}
+            if(pos==action.dst){curAction=null;lastAction=null;search(true);return false;}
+        }
+
+
+        if (action instanceof com.shatteredpixel.shatteredpixeldungeon.apd.navigation.StairNavigation.Walk) {
+            com.shatteredpixel.shatteredpixeldungeon.apd.navigation.StairNavigation.Walk walk =
+                    (com.shatteredpixel.shatteredpixeldungeon.apd.navigation.StairNavigation.Walk) action;
+            boolean blocked = path != null && !path.isEmpty()
+                    && !com.shatteredpixel.shatteredpixeldungeon.apd.navigation.StairNavigation.safeStep(Dungeon.level,this,path.getFirst());
+            if (walk.level != Dungeon.level || visibleEnemies() > 0 || rooted || Dungeon.level.locked || blocked) {
+                if (blocked) com.shatteredpixel.shatteredpixeldungeon.utils.GLog.w("Stair navigation stopped: the route is blocked or unsafe.");
+                interrupt(); lastAction=null; ready(); return false;
+            }
+            if (pos == action.dst) {
+                if (com.shatteredpixel.shatteredpixeldungeon.apd.navigation.StairNavigation.canEnterOnArrival(this,walk)) {
+                    // Use the game's normal transition code, but only for the explicit stair shortcut.
+                    // Its movement has already cost ordinary turns; changing floors costs no extra turn.
+                    curAction = new HeroAction.LvlTransition(action.dst);
+                    lastAction = null;
+                    return actTransition((HeroAction.LvlTransition)curAction);
+                }
+                if (walk.enterOnArrival) {
+                    com.shatteredpixel.shatteredpixeldungeon.utils.GLog.w("Stair navigation stopped: the stairs are no longer safe.");
+                }
+                interrupt(); lastAction=null; ready(); return false;
+            }
+        }
 
 		if (getCloser( action.dst )) {
+			if (action.apdStartRecording()) {
+				ApdPlay.onMoveCommand(action.dst, action.apdModeTag());
+			}
 			canSelfTrample = false;
 			return true;
 
 		//Hero moves in place if there is grass to trample
 		} else if (pos == action.dst && canSelfTrample()){
 			canSelfTrample = false;
-			Dungeon.level.pressCell(pos);
+            Level apdStepLevel=Dungeon.level;int apdStepCell=pos;
+            apdBeginLootStep();boolean apdEligible=false;
+            try{Dungeon.level.pressCell(pos);apdEligible=apdAutomaticLootStep;}
+            finally{apdAutomaticLootStep=false;}
+            apdFinishLootStep(apdStepLevel,apdStepCell,apdEligible);
 			spendAndNext( 1 / speed() );
 			return false;
 		} else {
@@ -1038,6 +1171,14 @@ public class Hero extends Char {
 		}
 	}
 	
+	private boolean interactAndRecord( Char ch ){
+		boolean interacted = ch.interact(this);
+		if (interacted && ch instanceof NPC){
+			ApdPlay.onNpcInteraction((NPC) ch);
+		}
+		return interacted;
+	}
+
 	private boolean actInteract( HeroAction.Interact action ) {
 		
 		Char ch = action.ch;
@@ -1046,7 +1187,7 @@ public class Hero extends Char {
 			
 			ready();
 			sprite.turnTo( pos, ch.pos );
-			return ch.interact(this);
+			return interactAndRecord(ch);
 			
 		} else {
 			
@@ -1120,6 +1261,13 @@ public class Hero extends Char {
 	// so that the hero spends a turn even if the fail to pick up an item
 	public boolean waitOrPickup = false;
 
+	// Explain the active inventory restriction without changing collection or turn rules.
+	String pickupFailureMessage(Item item) {
+		String reason = belongings.lostInventory() && !item.keptThroughLostInventory()
+				? "lost_inventory_pickup" : "you_cant_have";
+		return Messages.capitalize(Messages.get(this, reason, item.name()));
+	}
+
 	private boolean actPickUp( HeroAction.PickUp action ) {
 		int dst = action.dst;
 		if (pos == dst) {
@@ -1181,10 +1329,16 @@ public class Hero extends Char {
 						//Do Nothing
 					} else {
 						GLog.newLine();
-						GLog.n(Messages.capitalize(Messages.get(this, "you_cant_have", item.name())));
+						GLog.n(pickupFailureMessage(item));
 					}
 
 					ready();
+					//APD: offer to swap an item out of a full backpack (same turns as doing it by hand)
+					if (Dungeon.level.getTransition(pos) == null
+							&& !(item instanceof Dewdrop || item instanceof TimekeepersHourglass.sandBag
+							|| item instanceof DriedRose.Petal || item instanceof Key)) {
+						com.shatteredpixel.shatteredpixeldungeon.apd.qol.FullPackSwap.offer(this, heap, item);
+					}
 				}
 			} else {
 				ready();
@@ -1576,9 +1730,9 @@ public class Hero extends Char {
 								int levelBonus = Math.min( 2*pointsInTalent(Talent.SHARED_UPGRADES), wep.buffedLvl() );
 								// bonus dmg is 16.67% x weapon level, max of 2/4/6
 								float bonusDmg = levelBonus/6f;
-								Buff.prolong(Hero.this, SnipersMark.class, SnipersMark.DURATION + levelBonus).set(enemy.id(), bonusDmg);
+								Buff.prolong(Hero.this, SnipersMark.class, SnipersMark.DURATION + levelBonus).set(enemy.id(), bonusDmg, wep.isIdentified() && com.shatteredpixel.shatteredpixeldungeon.apd.qol.RingItemEffects.knownBonus(Hero.this, com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfSharpshooting.class, true) != null);
 							} else {
-								Buff.prolong(Hero.this, SnipersMark.class, SnipersMark.DURATION).set(enemy.id(), 0);
+								Buff.prolong(Hero.this, SnipersMark.class, SnipersMark.DURATION).set(enemy.id(), 0, true);
 							}
 						}
 						Actor.remove(this);
@@ -1642,12 +1796,8 @@ public class Hero extends Char {
 			return;
 		}
 
-		//regular damage interrupt, triggers on any damage except specific mild DOT effects
-		// unless the player recently hit 'continue moving', in which case this is ignored
-		if (!(src instanceof Hunger || src instanceof Viscosity.DeferedDamage) && damageInterrupt) {
-			interrupt();
-		}
-
+		// Movement interruption is decided after real HP/shielding loss is known.
+		// Raw damage can be fully negated by immunity, defense or shielding effects.
 		if (this.buff(Drowsy.class) != null){
 			Buff.detach(this, Drowsy.class);
 			GLog.w( Messages.get(this, "pain_resist") );
@@ -1696,6 +1846,16 @@ public class Hero extends Char {
 		int effectiveDamage = preHP - postHP;
 
 		if (effectiveDamage <= 0) return;
+        if(resting&&com.shatteredpixel.shatteredpixeldungeon.apd.qol.WaitingPolicy.critical(this))interrupt();
+
+        // A real hit still stops stair autopilot. Ordinary travel retains the game's
+        // original mild-DOT and explicit "continue moving" behavior.
+        if (curAction instanceof com.shatteredpixel.shatteredpixeldungeon.apd.navigation.StairNavigation.Walk) {
+            interrupt();
+            lastAction = null;
+        } else if (!(src instanceof Hunger || src instanceof Viscosity.DeferedDamage) && damageInterrupt) {
+            interrupt();
+        }
 
 		if (buff(Challenge.DuelParticipant.class) != null){
 			buff(Challenge.DuelParticipant.class).addDamage(effectiveDamage);
@@ -1716,8 +1876,8 @@ public class Hero extends Char {
 				} else {
 					Sample.INSTANCE.play(Assets.Sounds.HEALTH_WARN, 1/3f + flashIntensity * 4f);
 				}
-				//hero gets interrupted on taking serious damage, regardless of any other factor
-				interrupt();
+                // Keep ordinary danger interruptions. Only configured starvation waiting may continue.
+                if(!(src instanceof Hunger)||com.shatteredpixel.shatteredpixeldungeon.apd.qol.WaitingPolicy.interruptOnStarvationDamage(this))interrupt();
 				damageInterrupt = true;
 			}
 		}
@@ -1743,9 +1903,10 @@ public class Hero extends Char {
 				//only do a simple check for mind visioned enemies, better performance
 				if ((!mindVisionEnemies.contains(m) && QuickSlotButton.autoAim(m) != -1)
 						|| (mindVisionEnemies.contains(m) && new Ballistica( pos, m.pos, Ballistica.PROJECTILE ).collisionPos == m.pos)) {
-					if (target == null) {
-						target = m;
-					} else if (distance(target) > distance(m)) {
+					if (target == null
+							|| com.shatteredpixel.shatteredpixeldungeon.apd.qol.BossPylonTargeting.prefer(m, target)
+							|| (!com.shatteredpixel.shatteredpixeldungeon.apd.qol.BossPylonTargeting.prefer(target, m)
+								&& distance(target) > distance(m))) {
 						target = m;
 					}
 					if (m instanceof Snake && Dungeon.level.distance(m.pos, pos) <= 4
@@ -1762,7 +1923,8 @@ public class Hero extends Char {
 		if (target != null && (lastTarget == null ||
 							!lastTarget.isAlive() || !lastTarget.isActive() ||
 							lastTarget.alignment == Alignment.ALLY ||
-							!fieldOfView[lastTarget.pos])){
+							!fieldOfView[lastTarget.pos] ||
+							com.shatteredpixel.shatteredpixeldungeon.apd.qol.BossPylonTargeting.replaceInvulnerableBoss(lastTarget, target))){
 			QuickSlotButton.target(target);
 		}
 		
@@ -1815,6 +1977,33 @@ public class Hero extends Char {
 	}
 	
 	private boolean walkingToVisibleTrapInFog = false;
+    private transient boolean apdSearchingAfterMovement;
+    private transient com.shatteredpixel.shatteredpixeldungeon.apd.qol.TrapStepPermit apdTrapPermit=new com.shatteredpixel.shatteredpixeldungeon.apd.qol.TrapStepPermit();
+    private transient long apdTrapGeneration;
+    protected void requestKnownTrapConfirmation(com.shatteredpixel.shatteredpixeldungeon.levels.traps.Trap trap,
+            com.shatteredpixel.shatteredpixeldungeon.apd.qol.ConfirmationDecision decision){
+        Game.runOnRenderThread(()->{
+            if(Dungeon.hero==this && Game.scene() instanceof GameScene && !decision.decided())
+                GameScene.show(new com.shatteredpixel.shatteredpixeldungeon.windows.WndActionConfirmation("Step onto a known trap?",
+                        "You are about to step onto an armed "+trap.name()+". Proceed?",decision));
+        });
+    }
+    private boolean confirmTrapStep(final int step){
+        final com.shatteredpixel.shatteredpixeldungeon.levels.Level level=Dungeon.level;
+        final com.shatteredpixel.shatteredpixeldungeon.levels.traps.Trap trap=level.traps.get(step);
+        if(apdTrapPermit.consume(level,trap,curAction,pos,step))return true;
+        if(curAction==null || !com.shatteredpixel.shatteredpixeldungeon.apd.qol.TrapStepPermit.needsWarning(SPDSettings.confirmKnownTraps(),level,this,step))return true;
+        final HeroAction action=curAction;final int from=pos;
+        interrupt();lastAction=null;path=null;
+        final long generation=apdTrapGeneration;
+        requestKnownTrapConfirmation(trap,new com.shatteredpixel.shatteredpixeldungeon.apd.qol.ConfirmationDecision(()->{
+            if(Dungeon.hero!=this || Dungeon.level!=level || pos!=from || !isAlive() || !ready || curAction!=null || apdTrapGeneration!=generation)return;
+            if(level.traps.get(step)!=trap)return;
+            apdTrapPermit.allow(level,trap,action,from,step);
+            curAction=action;ready=false;next();
+        },null));
+        return false;
+    }
 	
 	private boolean getCloser( final int target ) {
 
@@ -1881,7 +2070,18 @@ public class Hero extends Char {
 
 		}
 
+        if(curAction instanceof com.shatteredpixel.shatteredpixeldungeon.apd.qol.WallSearchSession.Walk && step!=-1
+                && !com.shatteredpixel.shatteredpixeldungeon.apd.navigation.StairNavigation.safeStep(Dungeon.level,this,step)){path=null;return false;}
+
+        if (curAction instanceof com.shatteredpixel.shatteredpixeldungeon.apd.navigation.StairNavigation.Walk
+                && step != -1 && !com.shatteredpixel.shatteredpixeldungeon.apd.navigation.StairNavigation.safeStep(Dungeon.level,this,step)) {
+            path=null;
+            com.shatteredpixel.shatteredpixeldungeon.utils.GLog.w("Stair navigation stopped: the route is blocked or unsafe.");
+            return false;
+        }
+
 		if (step != -1) {
+            if(!confirmTrapStep(step))return false;
 
 			float delay = 1;
 
@@ -1912,11 +2112,18 @@ public class Hero extends Char {
 			}
 			
 			sprite.move(pos, step);
-			move(step);
+            Level apdStepLevel=Dungeon.level;
+            apdBeginLootStep();boolean apdEligible=false;
+            try{move(step);apdEligible=apdAutomaticLootStep;}
+            finally{apdAutomaticLootStep=false;}
+            apdFinishLootStep(apdStepLevel,step,apdEligible);
 
 			spend( delay / speed() );
 			
-			search(false);
+			boolean previousSearchContext = apdSearchingAfterMovement;
+            apdSearchingAfterMovement = true;
+            try { search(false); }
+            finally { apdSearchingAfterMovement = previousSearchContext; }
 
 			return true;
 
@@ -2010,7 +2217,8 @@ public class Hero extends Char {
 			
 		}  else {
 			
-			curAction = new HeroAction.Move( cell );
+			curAction = new HeroAction.Move(cell, Dungeon.level.adjacent(pos, cell)
+					? HeroAction.Move.Mode.STEP : HeroAction.Move.Mode.TRAVEL);
 			lastAction = null;
 			
 		}
@@ -2200,7 +2408,7 @@ public class Hero extends Char {
 			interrupt();
 
 			if (ankh.isBlessed()) {
-				this.HP = HT / 4;
+				this.HP = Ankh.blessedReviveHP(HT);
 				ApdCombat.onHeroRevived( ApdCombat.REVIVE_BLESSED_ANKH );
 
 				PotionOfHealing.cure(this);
@@ -2321,7 +2529,7 @@ public class Hero extends Char {
 			((Hero.Doom)cause).onDeath();
 		}
 
-		Dungeon.deleteGame( GamesInProgress.curSlot, true );
+		Dungeon.deleteGameAfterDeath( GamesInProgress.curSlot, true );
 	}
 
 	//effectively cache this buff to prevent having to call buff(...) a bunch.
@@ -2343,6 +2551,7 @@ public class Hero extends Char {
 
 	@Override
 	public void move(int step, boolean travelling) {
+        if(!travelling){apdAutomaticLootStep=false;grassDewPickup.clear();}
 		boolean wasHighGrass = Dungeon.level.map[step] == Terrain.HIGH_GRASS;
 
 		super.move( step, travelling);
@@ -2504,11 +2713,23 @@ public class Hero extends Char {
 		}
 	}
 
+    /** Visual phases remain on either side of the real map discovery. */
+    protected void showSearchDiscoveryTile(int cell,int oldValue){GameScene.discoverTile(cell,oldValue);}
+    protected void showSearchDiscoveryParticles(int cell){ScrollOfMagicMapping.discover(cell);}
+
 	public boolean search( boolean intentional ) {
+        if(intentional && com.shatteredpixel.shatteredpixeldungeon.apd.qol.RatKingQuickSearch.start(this))return false;
 		
 		if (!isAlive()) return false;
 		
 		boolean smthFound = false;
+        boolean nonTrapFound = false;
+
+        // Decide once, before the normal search updates discoveries or wall memory.
+        // An open room still receives the full ordinary Search; only checkmark
+        // recording uses the adaptive, observed wall context.
+        boolean recordWallChecks = intentional
+                && !com.shatteredpixel.shatteredpixeldungeon.apd.qol.SearchControlContext.noHiddenDoorRoom(Dungeon.level,pos);
 
 		boolean circular = pointsInTalent(Talent.WIDE_SEARCH) == 1;
 		int distance = heroClass == HeroClass.ROGUE ? 2 : 1;
@@ -2593,22 +2814,22 @@ public class Hero extends Char {
 							chance = 0.2f - (Dungeon.depth / 100f);
 						}
 
-						//don't want to let the player search though hidden doors in tutorial
-						if (SPDSettings.intro()){
-							chance = 0;
-						}
+						//APD: searching remains functional before the introduction is acknowledged.
 						
 						if (Random.Float() < chance) {
 						
 							int oldValue = Dungeon.level.map[curr];
 							
-							GameScene.discoverTile( curr, oldValue );
+							showSearchDiscoveryTile(curr, oldValue);
 							
 							Dungeon.level.discover( curr );
 							
-							ScrollOfMagicMapping.discover( curr );
+							showSearchDiscoveryParticles(curr);
 							
-							if (fieldOfView[curr]) smthFound = true;
+							if (fieldOfView[curr]) {
+                                smthFound = true;
+                                if (oldValue != Terrain.SECRET_TRAP) nonTrapFound = true;
+                            }
 	
 							if (talisman != null){
 								if (oldValue == Terrain.SECRET_TRAP){
@@ -2619,11 +2840,22 @@ public class Hero extends Char {
 							}
 						}
 					}
+                    if (intentional) {
+                        com.shatteredpixel.shatteredpixeldungeon.levels.traps.Trap searchedTrap = Dungeon.level.traps == null ? null : Dungeon.level.traps.get(curr);
+                        boolean guaranteed = foresight || searchedTrap == null || searchedTrap.canBeSearched;
+                        // Searching inside a keyed/barricaded special room never adds wall checkmarks.
+                        // Discovery, search costs and completed-door-check evidence remain unchanged.
+                        if (recordWallChecks && Dungeon.level.searchedWalls.mark(Dungeon.level,curr))
+                            GameScene.updateSearchedWall(curr);
+                        Dungeon.level.searchedWalls.recordCompletedDoorCheck(Dungeon.level,curr,guaranteed);
+                    }
+
 				}
 			}
 		}
 		
 		if (intentional) {
+            wallSearch.searched(this);
 			sprite.showStatus( CharSprite.DEFAULT, Messages.get(this, "search") );
 			sprite.operate( pos );
 			if (!Dungeon.level.locked) {
@@ -2641,7 +2873,11 @@ public class Hero extends Char {
 		if (smthFound) {
 			GLog.w( Messages.get(this, "noticed_smth") );
 			Sample.INSTANCE.play( Assets.Sounds.SECRET );
-			interrupt();
+            // Only suppress discovery-only cancellation of movement. Never resume a command
+            // already cancelled by damage, enemies, a triggered trap or the player.
+            boolean moving = curAction != null && (apdSearchingAfterMovement
+                    || curAction instanceof HeroAction.Move || curAction instanceof HeroAction.LvlTransition);
+            if (intentional || nonTrapFound || !moving || !SPDSettings.continueOnTrapDiscovery()) interrupt();
 		}
 
 		if (foresight){
@@ -2658,6 +2894,7 @@ public class Hero extends Char {
 	
 	public void resurrect() {
 		HP = HT;
+        apdCustomHealingFraction = 0;
 		ApdCombat.onHeroRevived( ApdCombat.REVIVE_RESURRECT );
 		live();
 
@@ -2701,3 +2938,4 @@ public class Hero extends Char {
 		public void onDeath();
 	}
 }
+

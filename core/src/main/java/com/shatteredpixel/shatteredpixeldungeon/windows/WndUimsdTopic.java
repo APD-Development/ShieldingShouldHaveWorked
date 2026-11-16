@@ -33,11 +33,16 @@ import com.watabou.noosa.ui.Component;
 //APD: one topic of the UIMSD Guide: a title, a scrolling explanation, and buttons to be shown it on the real screen or to close.
 public class WndUimsdTopic extends Window {
 
+	private final UimsdGuide.Topic savedTopic;
+	private final boolean savedCanShow;
+	private final Runnable savedShow;
+	private final ScrollPane pane;
 	private static final int MARGIN = 2;
 	private static final int BUTTON_H = 16;
 
 	public WndUimsdTopic( final UimsdGuide.Topic topic, boolean canShow, final Runnable show ){
 		super();
+		savedTopic = topic; savedCanShow = canShow; savedShow = show;
 		int width = WndUimsdList.windowWidth();
 		RenderedTextBlock tt = PixelScene.renderTextBlock(topic.title, 9);
 		tt.hardlight(TITLE_COLOR);
@@ -48,7 +53,7 @@ public class WndUimsdTopic extends Window {
 
 		Component content = new Component();
 		content.setSize(width, UimsdText.layout(content, width, topic.text));
-		ScrollPane pane = new ScrollPane(content);
+		pane = new ScrollPane(content);
 		float h = WindowGeometry.paneHeight(content.height(), WindowGeometry.maxPane(PixelScene.uiCamera.height, pos, BUTTON_H + 2 * MARGIN));
 		//size the window first: it moves the window's camera, and the pane works out its screen position when it is placed
 		resize(width, (int) (pos + h + BUTTON_H + 2 * MARGIN));
@@ -86,4 +91,18 @@ public class WndUimsdTopic extends Window {
 			add(close);
 		}
 	}
+	@Override
+	public Runnable restoreOnSceneReset(){
+		final UimsdGuide.Topic topic = savedTopic;
+		final boolean canShow = savedCanShow;
+		final Runnable show = savedShow;
+		final float scrollX = pane.content().camera.scroll.x, scrollY = pane.content().camera.scroll.y;
+		return () -> {
+			WndUimsdTopic restored = new WndUimsdTopic(topic, canShow, show);
+			restored.pane.scrollTo(scrollX, scrollY);
+			com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon.scene().addToFront(restored);
+		};
+	}
+
 }
+

@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -27,6 +30,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.effects.SpellSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 
+import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+
 public class PotionOfStamina extends ExoticPotion {
 	
 	{
@@ -41,4 +46,9 @@ public class PotionOfStamina extends ExoticPotion {
 		SpellSprite.show(hero, SpellSprite.HASTE, 0.5f, 1, 0.5f);
 	}
 	
+    @Override
+    public String desc() {
+        return isKnown() ? Messages.get(this, "desc", Messages.decimalFormat("0.##", Stamina.DURATION)) : super.desc();
+    }
+
 }

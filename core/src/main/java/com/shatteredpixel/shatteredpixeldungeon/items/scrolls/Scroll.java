@@ -102,9 +102,19 @@ public abstract class Scroll extends Item {
 		defaultAction = AC_READ;
 	}
 	
+    @SuppressWarnings("unchecked")
+    private static Class<? extends Scroll>[] identityClasses() {
+        // Gathering is already identified and uses its own fixed existing sprite.
+        // Keep all twelve existing rune assignments and their RNG sequence unchanged.
+        java.util.List<Class<? extends Scroll>> classes = new java.util.ArrayList<>();
+        for (Class<?> type : Generator.Category.SCROLL.classes)
+            if (type != ScrollOfGathering.class) classes.add((Class<? extends Scroll>)type);
+        return classes.toArray(new Class[0]);
+    }
+
 	@SuppressWarnings("unchecked")
 	public static void initLabels() {
-		handler = new ItemStatusHandler<>( (Class<? extends Scroll>[])Generator.Category.SCROLL.classes, runes );
+		handler = new ItemStatusHandler<>( identityClasses(), runes );
 	}
 
 	public static void clearLabels(){
@@ -143,7 +153,7 @@ public abstract class Scroll extends Item {
 
 	@SuppressWarnings("unchecked")
 	public static void restore( Bundle bundle ) {
-		handler = new ItemStatusHandler<>( (Class<? extends Scroll>[])Generator.Category.SCROLL.classes, runes, bundle );
+		handler = new ItemStatusHandler<>( identityClasses(), runes, bundle );
 	}
 	
 	public Scroll() {
@@ -283,7 +293,7 @@ public abstract class Scroll extends Item {
 	}
 	
 	public static boolean allKnown() {
-		return handler != null && handler.known().size() == Generator.Category.SCROLL.classes.length;
+		return handler != null && handler.known().size() == identityClasses().length;
 	}
 	
 	@Override
@@ -383,3 +393,4 @@ public abstract class Scroll extends Item {
 		}
 	}
 }
+

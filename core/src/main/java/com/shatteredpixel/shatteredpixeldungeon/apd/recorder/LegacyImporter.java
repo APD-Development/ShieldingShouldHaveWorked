@@ -332,6 +332,7 @@ public final class LegacyImporter {
 		bool(rec, "legacy.amuletObtained", st, "amuletObtained");
 		bool(rec, "legacy.gameWon", st, "won");
 		bool(rec, "legacy.ascended", st, "ascended");
+		bool(rec, "run.ascended", st, "ascended");
 		if (st != null && st.contains("item_types_discovered")){
 			String[] names = st.getStringArray("item_types_discovered");
 			if (names != null) rec.putNum("legacy.itemTypesDiscovered", names.length);
@@ -437,3 +438,4 @@ public final class LegacyImporter {
 		return "content-" + Long.toHexString(crc.getValue());
 	}
 }
+

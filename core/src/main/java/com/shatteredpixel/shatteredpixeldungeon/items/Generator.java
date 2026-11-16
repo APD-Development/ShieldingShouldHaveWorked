@@ -159,6 +159,13 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Greatshield;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Greatsword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.HandAxe;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Katana;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Nodachi;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.KiteShield;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Tachi;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Targe;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Wakizashi;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Buckler;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Tanto;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Longsword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Mace;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
@@ -372,10 +379,11 @@ public class Generator {
 					ScrollOfRage.class,
 					ScrollOfRetribution.class,
 					ScrollOfTerror.class,
-					ScrollOfTransmutation.class
+					ScrollOfTransmutation.class,
+                    com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfGathering.class
 			};
-			SCROLL.defaultProbs  = new float[]{ 0, 3, 2, 1, 2, 1, 1, 1, 1, 1, 1, 1 };
-			SCROLL.defaultProbs2 = new float[]{ 0, 3, 2, 2, 1, 2, 1, 1, 1, 1, 1, 0 };
+			SCROLL.defaultProbs  = new float[]{ 0, 3, 2, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1 };
+			SCROLL.defaultProbs2 = new float[]{ 0, 3, 2, 2, 1, 2, 1, 1, 1, 1, 1, 0, 2 };
 			SCROLL.probs = SCROLL.defaultProbs.clone();
 			
 			STONE.classes = new Class<?>[]{
@@ -416,6 +424,8 @@ public class Generator {
 			WEAPON.classes = new Class<?>[]{};
 			WEAPON.probs = new float[]{};
 			
+			//APD: owner-approved katana-family blades and shields share the normal weapon weight.
+			//Historical seed baselines isolate them with LegacyGeneration.withoutApdWeapons().
 			WEP_T1.classes = new Class<?>[]{
 					WornShortsword.class,
 					MagesStaff.class,
@@ -423,8 +433,10 @@ public class Generator {
 					Gloves.class,
 					Rapier.class,
 					Cudgel.class,
+					Tanto.class,
+					Buckler.class,
 			};
-			WEP_T1.defaultProbs = new float[]{ 2, 0, 2, 2, 2, 2 };
+			WEP_T1.defaultProbs = new float[]{ 2, 0, 2, 2, 2, 2, 2, 2 };
 			WEP_T1.probs = WEP_T1.defaultProbs.clone();
 			
 			WEP_T2.classes = new Class<?>[]{
@@ -434,9 +446,11 @@ public class Generator {
 					Quarterstaff.class,
 					Dirk.class,
 					Sickle.class,
-					Pickaxe.class
+					Pickaxe.class,
+					Wakizashi.class,
+					Targe.class
 			};
-			WEP_T2.defaultProbs = new float[]{ 2, 2, 2, 2, 2, 2, 0 };
+			WEP_T2.defaultProbs = new float[]{ 2, 2, 2, 2, 2, 2, 0, 2, 2 };
 			WEP_T2.probs = WEP_T2.defaultProbs.clone();
 			
 			WEP_T3.classes = new Class<?>[]{
@@ -445,9 +459,10 @@ public class Generator {
 					Scimitar.class,
 					RoundShield.class,
 					Sai.class,
-					Whip.class
+					Whip.class,
+					Tachi.class
 			};
-			WEP_T3.defaultProbs = new float[]{ 2, 2, 2, 2, 2, 2 };
+			WEP_T3.defaultProbs = new float[]{ 2, 2, 2, 2, 2, 2, 2 };
 			WEP_T3.probs = WEP_T3.defaultProbs.clone();
 			
 			WEP_T4.classes = new Class<?>[]{
@@ -457,9 +472,10 @@ public class Generator {
 					RunicBlade.class,
 					AssassinsBlade.class,
 					Crossbow.class,
-					Katana.class
+					Katana.class,
+					KiteShield.class
 			};
-			WEP_T4.defaultProbs = new float[]{ 2, 2, 2, 2, 2, 2, 2 };
+			WEP_T4.defaultProbs = new float[]{ 2, 2, 2, 2, 2, 2, 2, 2 };
 			WEP_T4.probs = WEP_T4.defaultProbs.clone();
 			
 			WEP_T5.classes = new Class<?>[]{
@@ -469,9 +485,10 @@ public class Generator {
 					Greataxe.class,
 					Greatshield.class,
 					Gauntlet.class,
-					WarScythe.class
+					WarScythe.class,
+					Nodachi.class
 			};
-			WEP_T5.defaultProbs = new float[]{ 2, 2, 2, 2, 2, 2, 2 };
+			WEP_T5.defaultProbs = new float[]{ 2, 2, 2, 2, 2, 2, 2, 2 };
 			WEP_T5.probs = WEP_T5.defaultProbs.clone();
 			
 			//see Generator.randomArmor
@@ -749,10 +766,10 @@ public class Generator {
 					for (int i = 0; i < cat.dropped; i++) Random.Long();
 				}
 
-				int i = Random.chances(cat.probs);
+				int i = Random.chances(apdAllowedProbs(cat, cat.probs));
 				if (i == -1) {
 					reset(cat);
-					i = Random.chances(cat.probs);
+					i = Random.chances(apdAllowedProbs(cat, cat.probs));
 				}
 				if (cat.defaultProbs != null) cat.probs[i]--;
 				Class<?> itemCls = cat.classes[i];
@@ -763,11 +780,11 @@ public class Generator {
 				}
 
 				if (ExoticPotion.regToExo.containsKey(itemCls)){
-					if (Random.Float() < ExoticCrystals.consumableExoticChance()){
+					if (Random.Float() < ExoticCrystals.consumableExoticChance(itemCls)){
 						itemCls = ExoticPotion.regToExo.get(itemCls);
 					}
 				} else if (ExoticScroll.regToExo.containsKey(itemCls)){
-					if (Random.Float() < ExoticCrystals.consumableExoticChance()){
+					if (Random.Float() < ExoticCrystals.consumableExoticChance(itemCls)){
 						itemCls = ExoticScroll.regToExo.get(itemCls);
 					}
 				}
@@ -797,16 +814,16 @@ public class Generator {
 		} else if (cat.defaultProbs == null || cat == Category.ARTIFACT) {
 			return random(cat);
 		} else if (cat.defaultProbsTotal != null){
-			return ((Item) Reflection.newInstance(cat.classes[Random.chances(cat.defaultProbsTotal)])).random();
+			return ((Item) Reflection.newInstance(cat.classes[Random.chances(apdAllowedProbs(cat, cat.defaultProbsTotal))])).random();
 		} else {
-			Class<?> itemCls = cat.classes[Random.chances(cat.defaultProbs)];
+			Class<?> itemCls = cat.classes[Random.chances(apdAllowedProbs(cat, cat.defaultProbs))];
 
 			if (ExoticPotion.regToExo.containsKey(itemCls)){
-				if (Random.Float() < ExoticCrystals.consumableExoticChance()){
+				if (Random.Float() < ExoticCrystals.consumableExoticChance(itemCls)){
 					itemCls = ExoticPotion.regToExo.get(itemCls);
 				}
 			} else if (ExoticScroll.regToExo.containsKey(itemCls)){
-				if (Random.Float() < ExoticCrystals.consumableExoticChance()){
+				if (Random.Float() < ExoticCrystals.consumableExoticChance(itemCls)){
 					itemCls = ExoticScroll.regToExo.get(itemCls);
 				}
 			}
@@ -827,6 +844,7 @@ public class Generator {
 	}
 
 	private static Item randomImpl( Class<? extends Item> cl ) {
+        if (apdGatheringClass(cl) && !com.shatteredpixel.shatteredpixeldungeon.apd.loot.LootScrollRules.canGenerate(Dungeon.depth)) return null;
 		return Reflection.newInstance(cl).random();
 	}
 
@@ -958,6 +976,17 @@ public class Generator {
 		return false;
 	}
 
+    private static boolean apdGatheringClass(Class<?> type) {
+        return type == com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfGathering.class
+                || type == com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfForwarding.class;
+    }
+    private static float[] apdAllowedProbs(Category cat, float[] weights) {
+        if (cat != Category.SCROLL || com.shatteredpixel.shatteredpixeldungeon.apd.loot.LootScrollRules.canGenerate(Dungeon.depth)) return weights;
+        float[] allowed = weights.clone();
+        for (int i=0;i<cat.classes.length;i++) if (apdGatheringClass(cat.classes[i])) allowed[i]=0;
+        return allowed;
+    }
+
 	private static final String FIRST_DECK = "first_deck";
 	private static final String GENERAL_PROBS = "general_probs";
 	private static final String CATEGORY_PROBS = "_probs";
@@ -1008,6 +1037,12 @@ public class Generator {
 		for (Category cat : Category.values()){
 			if (bundle.contains(cat.name().toLowerCase() + CATEGORY_PROBS)){
 				float[] probs = bundle.getFloatArray(cat.name().toLowerCase() + CATEGORY_PROBS);
+                if (cat == Category.SCROLL && probs.length == cat.classes.length-1) {
+                    // Add one new deck entry without resetting any of the twelve saved counts.
+                    float[] extended = java.util.Arrays.copyOf(probs, cat.classes.length);
+                    extended[extended.length-1] = bundle.getBoolean("scroll_using_probs2") ? 2 : 1;
+                    probs = extended;
+                }
 				if (cat.defaultProbs != null && probs.length == cat.defaultProbs.length){
 					cat.probs = probs;
 				}
@@ -1040,3 +1075,4 @@ public class Generator {
 		
 	}
 }
+

@@ -52,6 +52,8 @@ import com.watabou.utils.Random;
 import java.util.ArrayList;
 
 public class SewerBossLevel extends SewerLevel {
+    public boolean apdGooDefeated;
+    @Override public void storeInBundle(Bundle bundle){super.storeInBundle(bundle);if(apdGooDefeated)bundle.put("apd_goo_defeated_v1",true);}
 
 	{
 		color1 = 0x48763c;
@@ -227,6 +229,10 @@ public class SewerBossLevel extends SewerLevel {
 	@Override
 	public void restoreFromBundle( Bundle bundle ) {
 		super.restoreFromBundle( bundle );
+        if(bundle.contains("apd_goo_defeated_v1"))apdGooDefeated=bundle.getBoolean("apd_goo_defeated_v1");
+        else if(com.shatteredpixel.shatteredpixeldungeon.Dungeon.depth==5&&com.shatteredpixel.shatteredpixeldungeon.Dungeon.branch==0&&mobs!=null&&apdHasRooms()&&room(RatKingRoom.class)!=null){
+            apdGooDefeated=true;for(Mob mob:mobs)if(mob instanceof Goo){apdGooDefeated=false;break;}
+        }
 		roomExit = roomEntrance;
 	}
 }

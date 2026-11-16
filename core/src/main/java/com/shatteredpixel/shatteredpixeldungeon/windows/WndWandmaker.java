@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -74,6 +77,8 @@ public class WndWandmaker extends Window {
 		message.setPos(0, titlebar.bottom() + GAP);
 		add( message );
 
+		// Show ONLY the real upgrade level, not wand identity, curse or properties.
+        Wandmaker.Quest.revealOfferedLevels();
 		ItemButton btnWand1 = new ItemButton(){
 			@Override
 			protected void onClick() {
@@ -85,6 +90,7 @@ public class WndWandmaker extends Window {
 			}
 		};
 		btnWand1.item(Wandmaker.Quest.wand1);
+        btnWand1.slot().showTrueUpgradeLevel();
 		btnWand1.setRect( (WIDTH - BTN_GAP) / 2 - BTN_SIZE, message.top() + message.height() + BTN_GAP, BTN_SIZE, BTN_SIZE );
 		add( btnWand1 );
 		
@@ -99,6 +105,7 @@ public class WndWandmaker extends Window {
 			}
 		};
 		btnWand2.item(Wandmaker.Quest.wand2);
+        btnWand2.slot().showTrueUpgradeLevel();
 		btnWand2.setRect( btnWand1.right() + BTN_GAP, btnWand1.top(), BTN_SIZE, BTN_SIZE );
 		add(btnWand2);
 		
@@ -115,6 +122,7 @@ public class WndWandmaker extends Window {
 
 		questItem.detach( Dungeon.hero.belongings.backpack );
 
+		com.shatteredpixel.shatteredpixeldungeon.apd.qol.ItemOrigins.recordSource(reward, Dungeon.level, wandmaker.pos, com.shatteredpixel.shatteredpixeldungeon.apd.stats.GenerationEvents.C_QUEST_REWARD);
 		reward.identify(false);
 		if (reward.doPickUp( Dungeon.hero )) {
 			GLog.i( Messages.capitalize(Messages.get(Dungeon.hero, "you_now_have", reward.name())) );

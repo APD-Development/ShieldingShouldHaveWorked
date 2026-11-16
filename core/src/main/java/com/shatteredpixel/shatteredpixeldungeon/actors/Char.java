@@ -189,6 +189,20 @@ public abstract class Char extends Actor {
 		ALLY
 	}
 	public Alignment alignment;
+    private com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin apdCreatorOffensiveOrigin =
+            com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin.UNATTRIBUTED;
+    public com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin apdCreatorOffensiveOrigin() {
+        return apdCreatorOffensiveOrigin;
+    }
+    /** Called at summon creation, never inferred merely from allied alignment. */
+    public void apdInheritOffensiveOrigin(Char creator) {
+        com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin previous = apdCreatorOffensiveOrigin;
+        apdCreatorOffensiveOrigin=com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin.capture(creator,null);
+        if (previous != com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin.PLAYER
+                && apdCreatorOffensiveOrigin == com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin.PLAYER) {
+            com.shatteredpixel.shatteredpixeldungeon.apd.recorder.ApdPlay.onAllySummoned(this, creator);
+        }
+    }
 	
 	public int viewDistance	= 8;
 	
@@ -348,6 +362,7 @@ public abstract class Char extends Actor {
 		bundle.put( TAG_HP, HP );
 		bundle.put( TAG_HT, HT );
 		bundle.put( BUFFS, buffs );
+        apdCreatorOffensiveOrigin.store(bundle,"apd_damage_creator_origin");
 	}
 	
 	@Override
@@ -355,7 +370,8 @@ public abstract class Char extends Actor {
 		
 		super.restoreFromBundle( bundle );
 		
-		pos = bundle.getInt( POS );
+		apdCreatorOffensiveOrigin=com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin.restore(bundle,"apd_damage_creator_origin");
+        pos = bundle.getInt( POS );
 		previousPos = bundle.getInt( PREV_POS );
 		HP = bundle.getInt( TAG_HP );
 		HT = bundle.getInt( TAG_HT );
@@ -398,7 +414,7 @@ public abstract class Char extends Actor {
 			//APD: the player sees the strike land before anything it sets off (a mimic revealing itself)
 			ApdCombat.onAttackRolled( this, enemy, true );
 
-			int dr = Math.round(enemy.drRoll() * AscensionChallenge.statModifier(enemy));
+			int dr = Math.round(enemy.apdDrRoll() * AscensionChallenge.statModifier(enemy));
 			
 			if (this instanceof Hero){
 				Hero h = (Hero)this;
@@ -439,7 +455,7 @@ public abstract class Char extends Actor {
 					dmg += 1 + 2*Dungeon.hero.pointsInTalent(Talent.SEARING_LIGHT);
 				}
 				if (this != Dungeon.hero && Dungeon.hero.subClass == HeroSubClass.PRIEST){
-					enemy.damage(5+Dungeon.hero.lvl, GuidingLight.INSTANCE);
+					com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomOffensiveHooks.raw(enemy,5+Dungeon.hero.lvl,GuidingLight.INSTANCE,Dungeon.hero);
 				}
 			}
 
@@ -493,7 +509,9 @@ public abstract class Char extends Actor {
 				dmg *= 0.67f;
 			}
 
-			int effectiveDamage = enemy.defenseProc( this, Math.round(dmg) );
+			// Explicit offense boundary, before target armor and mitigation; neutral is identity.
+            dmg = com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomOffensiveHooks.attackDamage(this, dmg);
+            int effectiveDamage = enemy.defenseProc( this, Math.round(dmg) );
 			//do not trigger on-hit logic if defenseProc returned a negative value
 			if (effectiveDamage >= 0) {
 				effectiveDamage = Math.max(effectiveDamage - dr, 0);
@@ -662,10 +680,13 @@ public abstract class Char extends Actor {
 			return true;
 		}
 
+		acuStat = com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomCombatHooks.accuracy(attacker, acuStat);
+		defStat = com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomCombatHooks.evasion(defender, defStat);
+
 		float acuRoll = Random.Float( acuStat );
-		if (attacker.buff(Bless.class) != null) acuRoll *= 1.25f;
-		if (attacker.buff(  Hex.class) != null) acuRoll *= 0.8f;
-		if (attacker.buff( Daze.class) != null) acuRoll *= 0.5f;
+		if (attacker.buff(Bless.class) != null) acuRoll *= Bless.ROLL_FACTOR;
+		if (attacker.buff(  Hex.class) != null) acuRoll *= Hex.ROLL_FACTOR;
+		if (attacker.buff( Daze.class) != null) acuRoll *= Daze.ROLL_FACTOR;
 		for (ChampionEnemy buff : attacker.buffs(ChampionEnemy.class)){
 			acuRoll *= buff.evasionAndAccuracyFactor();
 		}
@@ -679,9 +700,9 @@ public abstract class Char extends Actor {
 		acuRoll *= accMulti;
 
 		float defRoll = Random.Float( defStat );
-		if (defender.buff(Bless.class) != null) defRoll *= 1.25f;
-		if (defender.buff(  Hex.class) != null) defRoll *= 0.8f;
-		if (defender.buff( Daze.class) != null) defRoll *= 0.5f;
+		if (defender.buff(Bless.class) != null) defRoll *= Bless.ROLL_FACTOR;
+		if (defender.buff(  Hex.class) != null) defRoll *= Hex.ROLL_FACTOR;
+		if (defender.buff( Daze.class) != null) defRoll *= Daze.ROLL_FACTOR;
 		for (ChampionEnemy buff : defender.buffs(ChampionEnemy.class)){
 			defRoll *= buff.evasionAndAccuracyFactor();
 		}
@@ -717,6 +738,10 @@ public abstract class Char extends Actor {
 		return Messages.get(this, "def_verb");
 	}
 	
+	public int apdDrRoll() {
+		return com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomDefenseHooks.scale(this, drRoll());
+	}
+
 	public int drRoll() {
 		int dr = 0;
 
@@ -843,6 +868,7 @@ public abstract class Char extends Actor {
 	}
 	
 	public void damage( int dmg, Object src ) {
+        final int apdDotInput = dmg;
 		
 		if (!isAlive() || dmg < 0) {
 			return;
@@ -1089,6 +1115,9 @@ public abstract class Char extends Actor {
 		if (HP < 0) HP = 0;
 
 		ApdCombat.onDamage( this, src, apdRequested, apdHpBefore, apdShieldBefore, shielded, dmg );
+        if (src instanceof Buff.DOTbuff && src instanceof Buff) {
+            ((Buff)src).apdRecordDot(apdDotInput,shielded,Math.max(0,apdHpBefore-HP));
+        }
 
 		if (!isAlive()) {
 			die( src );
@@ -1493,3 +1522,4 @@ public abstract class Char extends Actor {
 		return (ch != null && ch.properties().contains(p));
 	}
 }
+

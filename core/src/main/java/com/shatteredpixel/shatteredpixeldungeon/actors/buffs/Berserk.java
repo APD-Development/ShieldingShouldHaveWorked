@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -185,6 +188,11 @@ public class Berserk extends ShieldBuff implements ActionIndicator.Action {
 		return state == State.BERSERK && target.shielding() > 0;
 	}
 
+    /** Description-only status query; never starts emergency berserk. */
+    public boolean activeForInspection(){
+        return state == State.BERSERK && target != null && target.shielding() > 0;
+    }
+
 	private void startBerserking(){
 		state = State.BERSERK;
 		SpellSprite.show(target, SpellSprite.BERSERK);
@@ -195,7 +203,7 @@ public class Berserk extends ShieldBuff implements ActionIndicator.Action {
 			turnRecovery = TURN_RECOVERY_START;
 			levelRecovery = 0;
 		} else {
-			levelRecovery = LEVEL_RECOVER_START - ((Hero)target).pointsInTalent(Talent.DEATHLESS_FURY);
+			levelRecovery = baseLevelRecovery(((Hero)target).pointsInTalent(Talent.DEATHLESS_FURY));
 			turnRecovery = 0;
 		}
 
@@ -206,15 +214,23 @@ public class Berserk extends ShieldBuff implements ActionIndicator.Action {
 		BuffIndicator.refreshHero();
 	}
 
-	public int currentShieldBoost(){
+	public int currentShieldBoost(){return calculateShieldBoost(true);}
+
+    /** Same shield math, without changing recovery counters while rendering a description. */
+    public int previewShieldBoost(){return calculateShieldBoost(false);}
+    public float rageFraction(){return power;}
+
+    private int calculateShieldBoost(boolean adjustRecovery){
 		//base multiplier scales at 1/1.5/2/2.5/3x at 100/37/20/9/0% HP
 		float shieldMultiplier = 1f + 2*(float)Math.pow((1f-(target.HP/(float)target.HT)), 3);
 
 		//Endless rage effect on shield and cooldown
 		if (power > 1f){
 			shieldMultiplier *= power;
-			levelRecovery *= 2f - power;
-			turnRecovery *= 2f - power;
+			if(adjustRecovery){
+                levelRecovery *= 2f - power;
+                turnRecovery *= 2f - power;
+            }
 		}
 
 		int baseShield = 8;
@@ -233,9 +249,13 @@ public class Berserk extends ShieldBuff implements ActionIndicator.Action {
 		return baseShield*3;
 	}
 	
+    public static float baseLevelRecovery(int talentRank){return LEVEL_RECOVER_START-talentRank;}
+
+    public static float maximumRage(int talentRank){return 1f + 0.1667f*talentRank;}
+
 	public void damage(int damage){
 		if (state != State.NORMAL) return;
-		float maxPower = 1f + 0.1667f*((Hero)target).pointsInTalent(Talent.ENDLESS_RAGE);
+		float maxPower = maximumRage(((Hero)target).pointsInTalent(Talent.ENDLESS_RAGE));
 		power = Math.min(maxPower, power + (damage/(float)target.HT)/4f );
 		BuffIndicator.refreshHero(); //show new power immediately
 		powerLossBuffer = 3; //2 turns until rage starts dropping
@@ -316,13 +336,13 @@ public class Berserk extends ShieldBuff implements ActionIndicator.Action {
 	public float iconFadePercent() {
 		switch (state){
 			case NORMAL: default:
-				float maxPower = 1f + 0.1667f*((Hero)target).pointsInTalent(Talent.ENDLESS_RAGE);
+				float maxPower = maximumRage(((Hero)target).pointsInTalent(Talent.ENDLESS_RAGE));
 				return (maxPower - power)/maxPower;
 			case BERSERK:
 				return 1f - shielding() / (float)maxShieldBoost();
 			case RECOVERING:
 				if (levelRecovery > 0) {
-					return levelRecovery/(LEVEL_RECOVER_START-Dungeon.hero.pointsInTalent(Talent.DEATHLESS_FURY));
+					return levelRecovery/baseLevelRecovery(Dungeon.hero.pointsInTalent(Talent.DEATHLESS_FURY));
 				} else {
 					return turnRecovery/(float)TURN_RECOVERY_START;
 				}
@@ -361,7 +381,11 @@ public class Berserk extends ShieldBuff implements ActionIndicator.Action {
 		float dispDamage = ((int)damageFactor(10000) / 100f) - 100f;
 		switch (state){
 			case NORMAL: default:
-				return Messages.get(this, "angered_desc", Math.floor(power * 100f), dispDamage, currentShieldBoost());
+                if(target instanceof Hero && ((Hero)target).belongings.armor()!=null
+                        && !((Hero)target).belongings.armor().levelKnown){
+                    return Messages.get(this,"angered_desc_unknown_armor",Math.floor(power*100f),dispDamage);
+                }
+				return Messages.get(this, "angered_desc", Math.floor(power * 100f), dispDamage, previewShieldBoost());
 			case BERSERK:
 				return Messages.get(this, "berserk_desc", shielding());
 			case RECOVERING:

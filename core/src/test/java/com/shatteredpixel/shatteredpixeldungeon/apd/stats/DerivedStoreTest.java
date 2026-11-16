@@ -143,6 +143,26 @@ public class DerivedStoreTest {
 		assertEquals(DerivedStore.Source.CACHE, reload(store));
 	}
 
+	@Test
+	public void aSameLengthRawReplacementInvalidatesTheCache() throws Exception {
+		apdRun("r1", "WARRIOR", LifecycleEvents.OUTCOME_DIED, 5, 8, 2000, null);
+		DerivedStore store = new DerivedStore(root());
+		assertEquals(2000, store.load().apdRows.get(0).numOr(FactKeys.SCORE, -1));
+		assertEquals(DerivedStore.Source.CACHE, reload(store));
+
+		File run = new File(new File(root(), "runs"), "r1.apdlog");
+		long originalLength = run.length();
+		assertTrue(run.delete());
+		apdRun("r1", "WARRIOR", LifecycleEvents.OUTCOME_DIED, 5, 8, 2001, null);
+		assertEquals("the replacement exercises the old filename-and-length blind spot",
+				originalLength, run.length());
+
+		FactTable replaced = store.load();
+		assertEquals(DerivedStore.Source.REBUILT_STALE, store.lastSource());
+		assertEquals(2001, replaced.apdRows.get(0).numOr(FactKeys.SCORE, -1));
+		assertEquals(DerivedStore.Source.CACHE, reload(store));
+	}
+
 	private DerivedStore.Source reload( DerivedStore s ){
 		s.load();
 		return s.lastSource();
@@ -162,7 +182,7 @@ public class DerivedStoreTest {
 
 		//a cache cut short
 		FileOutputStream out = new FileOutputStream(store.cacheFile());
-		out.write(("APDD\t1\t" + DerivedStore.DERIVATION_VERSION + "\nR\t1\tx\nF\trun.id\t2\t1\tx").getBytes("UTF-8"));
+		out.write(("APDD\t2\t" + DerivedStore.DERIVATION_VERSION + "\nR\t1\tx\nF\trun.id\t2\t1\tx").getBytes("UTF-8"));
 		out.close();
 		FactTable repaired = store.load();
 		assertEquals(DerivedStore.Source.REBUILT_BAD_CACHE, store.lastSource());

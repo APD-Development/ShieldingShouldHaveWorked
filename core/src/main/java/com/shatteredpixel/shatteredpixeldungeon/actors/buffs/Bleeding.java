@@ -22,6 +22,9 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.buffs;
 
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin;
+import com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.AmplitudeDamageOrigins;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Splash;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.curses.Sacrificial;
@@ -43,6 +46,7 @@ public class Bleeding extends Buff implements Buff.DOTbuff {
 	}
 	
 	protected float level;
+	private AmplitudeDamageOrigins origins;
 
 	//used in specific cases where the source of the bleed is important for death logic
 	private Class source;
@@ -50,6 +54,7 @@ public class Bleeding extends Buff implements Buff.DOTbuff {
 	public float level(){
 		return level;
 	}
+    public int apdNextRaw(){return Math.round(level);}
 	
 	private static final String LEVEL	= "level";
 	private static final String SOURCE	= "source";
@@ -59,6 +64,7 @@ public class Bleeding extends Buff implements Buff.DOTbuff {
 		super.storeInBundle( bundle );
 		bundle.put( LEVEL, level );
 		bundle.put( SOURCE, source );
+		if(origins!=null) origins.store(bundle,"apd_bleed_origins"); else AmplitudeDamageOrigins.clear(bundle,"apd_bleed_origins");
 	}
 	
 	@Override
@@ -66,6 +72,7 @@ public class Bleeding extends Buff implements Buff.DOTbuff {
 		super.restoreFromBundle( bundle );
 		level = bundle.getFloat( LEVEL );
 		source = bundle.getClass( SOURCE );
+		origins = AmplitudeDamageOrigins.restore(bundle,"apd_bleed_origins");
 	}
 	
 	public void set( float level ) {
@@ -73,6 +80,14 @@ public class Bleeding extends Buff implements Buff.DOTbuff {
 	}
 
 	public void set( float level, Class source ){
+		setWithOrigin(level,source,OffensiveDamageOrigin.UNATTRIBUTED);
+	}
+
+	public void setAttributed(float level, Char attacker){
+		setWithOrigin(level,null,OffensiveDamageOrigin.capture(attacker,null));
+	}
+
+	private void setWithOrigin(float level, Class source, OffensiveDamageOrigin origin){
 		//previously bleed would reduce them dmg, now it dmgs then reduces.
 		//this is essentially pre-calculating the first loss of bleed dmg.
 		//this helps the total incoming DOT calculation be more consistent
@@ -81,11 +96,22 @@ public class Bleeding extends Buff implements Buff.DOTbuff {
 		if (this.level < level) {
 			this.level = Math.max(this.level, level);
 			this.source = source;
+			origins = AmplitudeDamageOrigins.single(origin);
 		}
 		if (target != null) target.needsIncomingDOTUpdate = true;
 	}
 
 	public void extend( float amount ) {
+		extendWithOrigin(amount,OffensiveDamageOrigin.UNATTRIBUTED);
+	}
+
+	public void extendAttributed(float amount, Char attacker){
+		extendWithOrigin(amount,OffensiveDamageOrigin.capture(attacker,null));
+	}
+
+	private void extendWithOrigin(float amount,OffensiveDamageOrigin origin){
+		if(origins==null) origins=AmplitudeDamageOrigins.single(OffensiveDamageOrigin.UNATTRIBUTED);
+		if(amount>0) origins.add(level,amount,origin);
 		level += amount;
 	}
 	
@@ -106,7 +132,7 @@ public class Bleeding extends Buff implements Buff.DOTbuff {
 			int dmg = Math.round(level);
 			if (dmg > 0) {
 				
-				target.damage( dmg, this );
+				target.damage( origins==null ? dmg : origins.scale(dmg), this );
 				if (target.sprite.visible) {
 					Splash.at( target.sprite.center(), -PointF.PI / 2, PointF.PI / 6,
 							target.sprite.blood(), Math.min( 10 * dmg / target.HT, 10 ) );
@@ -159,6 +185,7 @@ public class Bleeding extends Buff implements Buff.DOTbuff {
 	public int totalIncomingDMG() {
 		//we reduce level after applying damage, otherwise this would be level*3
 		//note that we also reduce level when applying bleed initially, to simulate old behaviour
-		return Math.round(level*4f); //average damage
+		int raw=Math.round(level*4f);
+		return origins==null ? raw : origins.scale(raw); //average, not a guaranteed outcome
 	}
 }

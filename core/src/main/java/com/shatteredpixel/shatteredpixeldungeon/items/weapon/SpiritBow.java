@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -136,19 +139,26 @@ public class SpiritBow extends Weapon {
 
 	@Override
 	public String info() {
-		String info = super.info();
+        Integer knownStrength=com.shatteredpixel.shatteredpixeldungeon.apd.mechanics.ArmorExplanation.knownStrength(Dungeon.hero);
+		String accuracy = accuracyDescription();
+		String info = super.info() + accuracy;
 		
-		info += "\n\n" + Messages.get( SpiritBow.class, "stats",
-				Math.round(augment.damageFactor(min())),
-				Math.round(augment.damageFactor(max())),
+        if(Dungeon.hero==null){
+            info+="\n\nDamage grows with your level and Ring of Sharpshooting.";
+        }else{
+        Integer knownAim=com.shatteredpixel.shatteredpixeldungeon.apd.qol.RingItemEffects.knownBonus(Dungeon.hero,RingOfSharpshooting.class,true);
+		info += "\n\n" + (knownAim==null?Messages.get(MissileWeapon.class,"weapon_only")+" ":"") + Messages.get( SpiritBow.class, "stats",
+				Math.round(augment.damageFactor(previewMin(knownAim==null?0:knownAim))),
+				Math.round(augment.damageFactor(previewMax(knownAim==null?0:knownAim))),
 				STRReq());
 		
-		if (STRReq() > Dungeon.hero.STR()) {
+		if (knownStrength!=null && STRReq() > knownStrength) {
 			info += " " + Messages.get(Weapon.class, "too_heavy");
-		} else if (Dungeon.hero.STR() > STRReq()){
-			info += " " + Messages.get(Weapon.class, "excess_str", Dungeon.hero.STR() - STRReq());
+		} else if (knownStrength!=null && knownStrength > STRReq()){
+			info += " " + Messages.get(Weapon.class, "excess_str", knownStrength - STRReq());
 		}
-		
+		        }
+
 		switch (augment) {
 			case SPEED:
 				info += "\n\n" + Messages.get(Weapon.class, "faster");
@@ -162,7 +172,7 @@ public class SpiritBow extends Weapon {
 		if (enchantment != null && (cursedKnown || !enchantment.curse())){
 			info += "\n\n" + Messages.capitalize(Messages.get(Weapon.class, "enchanted", enchantment.name()));
 			if (enchantHardened) info += " " + Messages.get(Weapon.class, "enchant_hardened");
-			info += " " + enchantment.desc();
+			info += " " + com.shatteredpixel.shatteredpixeldungeon.apd.mechanics.EnchantmentExplanation.playerDescription(this,Dungeon.hero);
 		} else if (enchantHardened){
 			info += "\n\n" + Messages.get(Weapon.class, "hardened_no_enchant");
 		}
@@ -175,7 +185,7 @@ public class SpiritBow extends Weapon {
 			info += "\n\n" + Messages.get(Weapon.class, "not_cursed");
 		}
 		
-		info += "\n\n" + Messages.get(MissileWeapon.class, "distance");
+		if (accuracy.isEmpty()) info += "\n\n" + Messages.get(MissileWeapon.class, "distance");
 		
 		return info;
 	}
@@ -187,16 +197,24 @@ public class SpiritBow extends Weapon {
 	
 	@Override
 	public int min(int lvl) {
+        return previewMin(RingOfSharpshooting.levelDamageBonus(Dungeon.hero));
+    }
+
+    public int previewMin(int sharpshooting) {
 		int dmg = 1 + Dungeon.hero.lvl/5
-				+ RingOfSharpshooting.levelDamageBonus(Dungeon.hero)
+				+ sharpshooting
 				+ (curseInfusionBonus ? 1 + Dungeon.hero.lvl/30 : 0);
 		return Math.max(0, dmg);
 	}
 	
 	@Override
 	public int max(int lvl) {
+        return previewMax(RingOfSharpshooting.levelDamageBonus(Dungeon.hero));
+    }
+
+    public int previewMax(int sharpshooting) {
 		int dmg = 6 + (int)(Dungeon.hero.lvl/2.5f)
-				+ 2*RingOfSharpshooting.levelDamageBonus(Dungeon.hero)
+				+ 2*sharpshooting
 				+ (curseInfusionBonus ? 2 + Dungeon.hero.lvl/15 : 0);
 		return Math.max(0, dmg);
 	}

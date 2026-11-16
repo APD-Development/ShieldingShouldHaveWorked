@@ -42,8 +42,9 @@ import com.watabou.utils.BArray;
 import com.watabou.utils.PathFinder;
 
 public class QuickSlotButton extends Button {
+    private com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock categoryLabel;
 	
-	private static QuickSlotButton[] instance = new QuickSlotButton[QuickSlot.SIZE];
+	private static QuickSlotButton[] instance = new QuickSlotButton[QuickSlot.MOBILE_VISIBLE_SLOTS];
 	private int slotNum;
 
 	private ItemSlot slot;
@@ -70,7 +71,7 @@ public class QuickSlotButton extends Button {
 	}
 
 	public static void reset() {
-		instance = new QuickSlotButton[QuickSlot.SIZE];
+		instance = new QuickSlotButton[QuickSlot.MOBILE_VISIBLE_SLOTS];
 
 		lastTarget = null;
 		targetingSlot = -1;
@@ -86,6 +87,10 @@ public class QuickSlotButton extends Button {
 				if (!Dungeon.hero.isAlive() || !Dungeon.hero.ready){
 					return;
 				}
+				if (com.shatteredpixel.shatteredpixeldungeon.apd.hotbar.CategoryHotbar.enabled()) {
+                    if (!GameScene.cancel()) com.shatteredpixel.shatteredpixeldungeon.windows.WndCategoryHotbar.open(slotNum);
+                    return;
+                }
 				if (targetingSlot == slotNum && lastTarget != null) {
 					int cell = autoAim(lastTarget, select(slotNum));
 
@@ -140,6 +145,9 @@ public class QuickSlotButton extends Button {
 
 			@Override
 			protected String hoverText() {
+				if (com.shatteredpixel.shatteredpixeldungeon.apd.hotbar.CategoryHotbar.enabled()) {
+                    return com.shatteredpixel.shatteredpixeldungeon.apd.hotbar.CategoryHotbar.label(slotNum);
+                }
 				if (item == null){
 					return Messages.titleCase(Messages.get(WndKeyBindings.class, "quickslot_" + (slotNum+1)));
 				} else {
@@ -149,6 +157,8 @@ public class QuickSlotButton extends Button {
 		};
 		slot.showExtraInfo( false );
 		add( slot );
+        categoryLabel = com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene.renderTextBlock(5);
+        add(categoryLabel);
 		
 		crossB = Icons.TARGET.get();
 		crossB.visible = false;
@@ -163,6 +173,10 @@ public class QuickSlotButton extends Button {
 		super.layout();
 		
 		slot.fill( this );
+        if (categoryLabel != null) {
+            categoryLabel.maxWidth((int)width);
+            categoryLabel.setPos(x+(width-categoryLabel.width())/2f, y+(height-categoryLabel.height())/2f);
+        }
 		
 		crossB.x = x + (width - crossB.width) / 2;
 		crossB.y = y + (height - crossB.height) / 2;
@@ -208,6 +222,9 @@ public class QuickSlotButton extends Button {
 
 	@Override
 	protected String hoverText() {
+		if (com.shatteredpixel.shatteredpixeldungeon.apd.hotbar.CategoryHotbar.enabled()) {
+            return com.shatteredpixel.shatteredpixeldungeon.apd.hotbar.CategoryHotbar.label(slotNum);
+        }
 		if (slot.item == null){
 			return Messages.titleCase(Messages.get(WndKeyBindings.class, "quickslot_" + (slotNum+1)));
 		} else {
@@ -217,6 +234,11 @@ public class QuickSlotButton extends Button {
 	
 	@Override
 	protected void onClick() {
+        if (com.shatteredpixel.shatteredpixeldungeon.apd.hotbar.CategoryHotbar.enabled()) {
+            if (Dungeon.hero != null && Dungeon.hero.ready && !GameScene.cancel())
+                com.shatteredpixel.shatteredpixeldungeon.windows.WndCategoryHotbar.open(slotNum);
+            return;
+        }
 		if (Dungeon.hero.ready && !GameScene.cancel()) {
 			GameScene.selectItem(itemSelector);
 		}
@@ -234,6 +256,10 @@ public class QuickSlotButton extends Button {
 
 	@Override
 	protected boolean onLongClick() {
+        if (com.shatteredpixel.shatteredpixeldungeon.apd.hotbar.CategoryHotbar.enabled()) {
+            com.shatteredpixel.shatteredpixeldungeon.windows.WndCategoryHotbar.configure(slotNum);
+            return true;
+        }
 		onClick();
 		return true;
 	}
@@ -261,6 +287,9 @@ public class QuickSlotButton extends Button {
 	public static int lastVisible = instance.length;
 
 	public static void set(Item item){
+        if (com.shatteredpixel.shatteredpixeldungeon.apd.hotbar.CategoryHotbar.enabled()) {
+            com.shatteredpixel.shatteredpixeldungeon.windows.WndCategoryHotbar.assign(item); return;
+        }
 		for (int i = 0; i < lastVisible; i++) {
 			if (select(i) == null || select(i) == item) {
 				set(i, item);
@@ -271,6 +300,10 @@ public class QuickSlotButton extends Button {
 	}
 
 	public static void set(int slotNum, Item item){
+        if (com.shatteredpixel.shatteredpixeldungeon.apd.hotbar.CategoryHotbar.enabled()) {
+            if (com.shatteredpixel.shatteredpixeldungeon.apd.hotbar.CategoryHotbar.chooseItem(slotNum,item)) { Toolbar.updateLayout(); refresh(); }
+            return;
+        }
 		Dungeon.quickslot.setSlot( slotNum , item );
 		refresh();
 
@@ -282,6 +315,8 @@ public class QuickSlotButton extends Button {
 			}
 			if (containsWaterskin) SPDSettings.quickslotWaterskin(true);
 		}
+		// A manual shortcut edit must survive a process kill without waiting for a later pause or turn.
+		com.shatteredpixel.shatteredpixeldungeon.apd.hotbar.HotbarPersistence.saveManualAssignment();
 	}
 
 	private static Item select(int slotNum){
@@ -289,7 +324,13 @@ public class QuickSlotButton extends Button {
 	}
 	
 	public void item( Item item ) {
-		slot.item( item );
+		boolean categories = com.shatteredpixel.shatteredpixeldungeon.apd.hotbar.CategoryHotbar.enabled();
+        Item representative = categories
+                ? com.shatteredpixel.shatteredpixeldungeon.apd.hotbar.CategoryHotbar.representative(Dungeon.hero, slotNum) : item;
+        slot.item(representative);
+        categoryLabel.visible = categories && representative == null;
+        categoryLabel.text(categories ? com.shatteredpixel.shatteredpixeldungeon.apd.hotbar.CategoryHotbar.shortLabel(slotNum) : "");
+        layout();
 		enableSlot();
 	}
 
@@ -303,6 +344,9 @@ public class QuickSlotButton extends Button {
 	}
 	
 	private void enableSlot() {
+        if (com.shatteredpixel.shatteredpixeldungeon.apd.hotbar.CategoryHotbar.enabled()) {
+            slot.enable(active && Dungeon.hero != null && Dungeon.hero.isAlive() && Dungeon.hero.ready); return;
+        }
 		slot.enable(Dungeon.quickslot.isNonePlaceholder( slotNum )
 				&& (!Dungeon.hero.belongings.lostInventory() || Dungeon.quickslot.getItem(slotNum).keptThroughLostInventory()));
 	}
@@ -366,6 +410,9 @@ public class QuickSlotButton extends Button {
 					&& item.targetingPos(Dungeon.hero, i) == target.pos)
 				return i;
 		}
+		//APD: anything the hero can see should be hittable; widen the search before giving up.
+		int wide = com.shatteredpixel.shatteredpixeldungeon.apd.qol.ThrowAim.aim(Dungeon.hero, item, target.pos);
+		if (item.targetingPos(Dungeon.hero, wide) == target.pos) return wide;
 
 		//couldn't find a cell, give up.
 		return -1;

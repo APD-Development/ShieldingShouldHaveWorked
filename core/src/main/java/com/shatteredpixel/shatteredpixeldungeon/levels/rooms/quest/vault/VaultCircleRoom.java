@@ -21,6 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.levels.rooms.quest.vault;
 
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.VaultSentry;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
@@ -42,6 +43,7 @@ public class VaultCircleRoom extends VaultRoom {
 
 		VaultSentry sentry = new VaultSentry();
 		sentry.pos = level.pointToCell(center());
+		sentry.afterScanCooldown = 2;
 
 		sentry.scanLength = 4.49f;
 
@@ -94,6 +96,22 @@ public class VaultCircleRoom extends VaultRoom {
 		for (Door door : connected.values()) {
 			door.set( Door.Type.REGULAR );
 			Painter.drawInside(level, this, door, 4, Terrain.EMPTY);
+		}
+	}
+
+	@Override
+	public void onLevelLoad(Level level) {
+		super.onLevelLoad(level);
+		// Older APD saves kept the pre-v4.0.1 one-turn circle scan.
+		// Restore only that room's central sentry; retain its next scan and direction.
+		int centerCell = (left + right) / 2 + ((top + bottom) / 2) * level.width();
+		for (Mob mob : level.mobs) {
+			if (mob.getClass() == VaultSentry.class && mob.pos == centerCell) {
+				VaultSentry sentry = (VaultSentry) mob;
+				if (sentry.afterScanCooldown == 1 && sentry.scansAfterCooldown == 1) {
+					sentry.afterScanCooldown = 2;
+				}
+			}
 		}
 	}
 

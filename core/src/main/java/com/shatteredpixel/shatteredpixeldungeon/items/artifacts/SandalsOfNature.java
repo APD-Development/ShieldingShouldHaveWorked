@@ -129,7 +129,7 @@ public class SandalsOfNature extends Artifact {
 		}
 		if (isEquipped( hero )
 				&& !cursed
-				&& curSeedEffect != null
+				&& seedChargeReqs.containsKey(curSeedEffect)
 				&& charge >= seedChargeReqs.get(curSeedEffect)) {
 			actions.add(AC_ROOT);
 		}
@@ -149,7 +149,7 @@ public class SandalsOfNature extends Artifact {
 		} else if (action.equals(AC_ROOT) && !cursed){
 
 			if (!isEquipped( hero ))                                GLog.i( Messages.get(Artifact.class, "need_to_equip") );
-			else if (curSeedEffect == null)                         GLog.i( Messages.get(this, "no_effect") );
+			else if (!seedChargeReqs.containsKey(curSeedEffect))                         GLog.i( Messages.get(this, "no_effect") );
 			else if (charge < seedChargeReqs.get(curSeedEffect))    GLog.i( Messages.get(this, "low_charge") );
 			else {
 				GameScene.selectCell(cellSelector);
@@ -181,7 +181,7 @@ public class SandalsOfNature extends Artifact {
 
 	@Override
 	public ItemSprite.Glowing glowing() {
-		if (curSeedEffect != null){
+		if (seedColors.containsKey(curSeedEffect)){
 			return new ItemSprite.Glowing(seedColors.get(curSeedEffect));
 		}
 		return null;
@@ -208,14 +208,14 @@ public class SandalsOfNature extends Artifact {
 
 		}
 
-		if (curSeedEffect != null){
+		if (seedChargeReqs.containsKey(curSeedEffect)){
 				desc += "\n\n" + Messages.get(this, "desc_ability",
 					Messages.titleCase(Messages.get(curSeedEffect, "name")),
 					seedChargeReqs.get(curSeedEffect));
 		}
 
-		if (!seeds.isEmpty()){
-			desc += "\n\n" + Messages.get(this, "desc_seeds", seeds.size());
+		if (!seeds.isEmpty() && level() < levelCap){
+			desc += "\n\n" + Messages.get(this, "desc_seeds", seeds.size(), 3 + level()*3);
 		}
 
 		return desc;
@@ -232,6 +232,7 @@ public class SandalsOfNature extends Artifact {
 
 	public boolean canUseSeed(Item item){
 		return item instanceof Plant.Seed
+				&& seedChargeReqs.containsKey(item.getClass())
 				&& !seeds.contains(item.getClass())
 				&& (level() < 3 || curSeedEffect != item.getClass());
 	}
@@ -305,7 +306,7 @@ public class SandalsOfNature extends Artifact {
 
 		@Override
 		public void onSelect( Item item ) {
-			if (item != null && item instanceof Plant.Seed) {
+			if (item != null && canUseSeed(item)) {
 				if (level() < 3) seeds.add(0, item.getClass());
 				curSeedEffect = item.getClass();
 
@@ -334,7 +335,7 @@ public class SandalsOfNature extends Artifact {
 
 		@Override
 		public void onSelect(Integer cell) {
-			if (cell != null){
+			if (cell != null && seedChargeReqs.containsKey(curSeedEffect)){
 
 				if (!Dungeon.level.heroFOV[cell] || Dungeon.level.distance(curUser.pos, cell) > 3){
 					GLog.w(Messages.get(SandalsOfNature.class, "out_of_range"));
@@ -348,7 +349,9 @@ public class SandalsOfNature extends Artifact {
 					Splash.at(DungeonTilemap.tileCenterToWorld( cell ), -PointF.PI/2, PointF.PI/2, seedColors.get(curSeedEffect), 6);
 					Invisibility.dispel(curUser);
 
-					Plant plant = ((Plant.Seed) Reflection.newInstance(curSeedEffect)).couch(cell, null);
+					Plant plant = ((Plant.Seed) Reflection.newInstance(curSeedEffect)).couchAttributed(
+							cell, null,
+							com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin.capture(curUser, null));
 					plant.activate(Actor.findChar(cell));
 					Sample.INSTANCE.play(Assets.Sounds.PLANT);
 					Sample.INSTANCE.playDelayed(Assets.Sounds.TRAMPLE, 0.25f, 1, Random.Float( 0.96f, 1.05f ) );

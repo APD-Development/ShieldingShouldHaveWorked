@@ -67,12 +67,17 @@ public class ScrollOfChallenge extends ExoticScroll {
 	}
 
 
+    @Override
+    public String desc() {
+        return isKnown() ? Messages.get(this, "desc", Messages.decimalFormat("0.##", ChallengeArena.DURATION)) : super.desc();
+    }
+
 	public static class ChallengeArena extends Buff {
 
 		private ArrayList<Integer> arenaPositions = new ArrayList<>();
 		private ArrayList<Emitter> arenaEmitters = new ArrayList<>();
 
-		private static final float DURATION = 100;
+		public static final float DURATION = 100;
 		int left = 0;
 
 		{

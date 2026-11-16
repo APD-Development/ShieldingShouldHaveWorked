@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -116,7 +119,7 @@ public class ArmoredStatue extends Statue {
 		//silently duplicated in this case, so don't drop original armor
 		if (buff(Corrupting.CorruptingTracker.class) == null) {
 			armor.identify(false);
-			Dungeon.level.drop(armor, pos).sprite.drop();
+			for (com.shatteredpixel.shatteredpixeldungeon.items.Heap heap : com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomEquipmentHooks.dropEnemyGenerated(Dungeon.level, armor, pos, com.shatteredpixel.shatteredpixeldungeon.apd.stats.GenerationEvents.C_STATUE))heap.sprite.drop();
 		}
 		super.die( cause );
 	}

@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -58,6 +61,9 @@ import com.watabou.utils.Random;
 import java.util.ArrayList;
 
 public class HallowedGround extends TargetedClericSpell {
+	public static final int INITIAL_POWER = 15;
+	public static final int INITIAL_SHIELD_LIMIT = 30;
+	public static int grassGrowthDenominator(Hero hero){ return 10 + 10*hero.pointsInTalent(Talent.HALLOWED_GROUND); }
 
 	public static final HallowedGround INSTANCE = new HallowedGround();
 
@@ -139,14 +145,14 @@ public class HallowedGround extends TargetedClericSpell {
 		if (ch.alignment == Char.Alignment.ALLY){
 
 			if (ch == Dungeon.hero || ch.HP == ch.HT){
-				int barrierToGive = Math.min(15, 30 - ch.shielding());
+				int barrierToGive = Math.min(INITIAL_POWER, INITIAL_SHIELD_LIMIT - ch.shielding());
 				Buff.affect(ch, Barrier.class).incShield(barrierToGive);
 				ch.sprite.showStatusWithIcon( CharSprite.POSITIVE, Integer.toString(barrierToGive), FloatingText.SHIELDING );
 			} else {
-				int barrier = 15 - (ch.HT - ch.HP);
+				int barrier = INITIAL_POWER - (ch.HT - ch.HP);
 				barrier = Math.max(barrier, 0);
-				ch.HP += 15 - barrier;
-				ch.sprite.showStatusWithIcon( CharSprite.POSITIVE, Integer.toString(15-barrier), FloatingText.HEALING );
+				ch.HP += INITIAL_POWER - barrier;
+				ch.sprite.showStatusWithIcon( CharSprite.POSITIVE, Integer.toString(INITIAL_POWER-barrier), FloatingText.HEALING );
 				if (barrier > 0){
 					Buff.affect(ch, Barrier.class).incShield(barrier);
 					ch.sprite.showStatusWithIcon( CharSprite.POSITIVE, Integer.toString(barrier), FloatingText.SHIELDING );
@@ -175,7 +181,7 @@ public class HallowedGround extends TargetedClericSpell {
 			ArrayList<Char> affected = new ArrayList<>();
 
 			// on avg, hallowed ground produces 9/17/25 tiles of grass, 100/67/50% of total tiles
-			int chance = 10 + 10*Dungeon.hero.pointsInTalent(Talent.HALLOWED_GROUND);
+			int chance = grassGrowthDenominator(Dungeon.hero);
 
 			for (int i = area.left-1; i <= area.right; i++) {
 				for (int j = area.top-1; j <= area.bottom; j++) {

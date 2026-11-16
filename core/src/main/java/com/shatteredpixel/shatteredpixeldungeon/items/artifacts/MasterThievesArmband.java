@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -324,8 +327,16 @@ public class MasterThievesArmband extends Artifact {
 			return Math.min(1f, val/item.value());
 		}
 
-		public int chargesToUse(Item item){
-			int value = item.value();
+        public float previewStealChance(Item item) {
+            int price = item.previewValue();
+            return Math.min(1f, chargesForValue(price) * (10 + level()/2f) / price);
+        }
+
+        public int previewChargesToUse(Item item) { return chargesForValue(item.previewValue()); }
+
+        public int chargesToUse(Item item) { return chargesForValue(item.value()); }
+
+        private int chargesForValue(int value) {
 			float valUsing = 0;
 			int chargesUsed = 0;
 			while (valUsing < value && chargesUsed < charge){

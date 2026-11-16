@@ -99,6 +99,10 @@ public final class LifecycleEvents {
 		//telemetry 1.7: the run's difficulty 1-5 (0 = not recorded: a run from before difficulty existed) and the balance revision it was played with
 		public int difficulty;
 		public int difficultyBalance;
+		// Additive custom-rules snapshot. Empty means not recorded, never implicit defaults.
+		public String customRules = "";
+        public int customScoreVersion;
+        public String customScoreStatus="",customScoreCalculation="",customScoreMultiplier="";
 	}
 
 	public static boolean emitRunStart( RunLogWriter w, long clock, boolean partial, RunStart s ){
@@ -108,7 +112,7 @@ public final class LifecycleEvents {
 				.signed(s.seed).unsigned(s.seedType).string(s.customSeedText).unsigned(Math.max(0, s.challenges))
 				.string(s.heroClass).string(s.rulesetId).string(s.rulesetText).unsigned(Math.max(0, s.exoticChance))
 				.bool(s.introActive).bool(s.externalModsPresent).string(s.platform).unsigned(Math.max(0, s.realTimeMillis))
-				.unsigned(Math.max(0, s.difficulty)).unsigned(Math.max(0, s.difficultyBalance))
+				.unsigned(Math.max(0, s.difficulty)).unsigned(Math.max(0, s.difficultyBalance)).string(s.customRules).unsigned(s.customScoreVersion).string(s.customScoreStatus).string(s.customScoreCalculation).string(s.customScoreMultiplier)
 				.emit();
 	}
 
@@ -139,6 +143,11 @@ public final class LifecycleEvents {
 			s.difficulty = p.unsignedInt();
 			s.difficultyBalance = p.hasRemaining() ? p.unsignedInt() : 0;
 		}
+		if (p.hasRemaining()) s.customRules = str(p.string());
+        if(p.hasRemaining())s.customScoreVersion=p.unsignedInt();
+        if(p.hasRemaining())s.customScoreStatus=str(p.string());
+        if(p.hasRemaining())s.customScoreCalculation=str(p.string());
+        if(p.hasRemaining())s.customScoreMultiplier=str(p.string());
 		return s;
 	}
 
@@ -157,6 +166,11 @@ public final class LifecycleEvents {
 		public long score;
 		public long turns;
 		public int rulesetChanges;
+        public boolean customAdjustedKnown;
+        public long customAdjustedScore;
+		// Optional tail: older logs leave ascension unknown, never false by default.
+		public boolean ascendedKnown;
+		public boolean ascended;
 	}
 
 	public static boolean emitRunEnd( RunLogWriter w, long clock, RunEnd r ){
@@ -164,9 +178,13 @@ public final class LifecycleEvents {
 	}
 
 	public static boolean emitRunEnd( RunLogWriter w, long clock, RunEnd r, int flags ){
-		return w.event(EventTypes.RUN_END).clock(clock).flags(flags).unsigned(r.outcome).string(r.cause).unsigned(Math.max(0, r.depth))
-				.unsigned(Math.max(0, r.deepest)).unsigned(Math.max(0, r.heroLevel)).signed(r.score).unsigned(Math.max(0, r.turns))
-				.unsigned(r.rulesetChanges).emit();
+		EventBuilder b=w.event(EventTypes.RUN_END).clock(clock).flags(flags).unsigned(r.outcome).string(r.cause).unsigned(Math.max(0, r.depth))
+                .unsigned(Math.max(0, r.deepest)).unsigned(Math.max(0, r.heroLevel)).signed(r.score).unsigned(Math.max(0, r.turns))
+                .unsigned(r.rulesetChanges).bool(r.customAdjustedKnown);
+        if(r.customAdjustedKnown)b.signed(r.customAdjustedScore);
+		b.bool(r.ascendedKnown);
+		if (r.ascendedKnown) b.bool(r.ascended);
+        return b.emit();
 	}
 
 	public static RunEnd decodeRunEnd( ApdEvent e, StringLookup strings ){
@@ -180,6 +198,10 @@ public final class LifecycleEvents {
 		r.score = p.signed();
 		r.turns = p.unsigned();
 		r.rulesetChanges = p.unsignedInt();
+        if(p.hasRemaining())r.customAdjustedKnown=p.bool();
+        if(r.customAdjustedKnown)r.customAdjustedScore=p.signed();
+		if (p.hasRemaining()) r.ascendedKnown=p.bool();
+		if (r.ascendedKnown) r.ascended=p.bool();
 		return r;
 	}
 
@@ -423,3 +445,5 @@ public final class LifecycleEvents {
 		return s == null ? "" : s;
 	}
 }
+
+

@@ -22,12 +22,25 @@
 package com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments;
 
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 
 public class Projecting extends Weapon.Enchantment {
 
 	private static ItemSprite.Glowing PURPLE = new ItemSprite.Glowing( 0x8844CC );
+
+    /**
+     * Projecting uses rounded enchantment power. Clamp only beyond the longest
+     * possible shortest route in the finite level (at most length-1 steps).
+     * This prevents integer overflow without reducing any reachable target.
+     */
+    public static int additionalReach(float power, int baseReach) {
+        int cap = Dungeon.level == null ? Integer.MAX_VALUE - Math.max(0, baseReach)
+                : Math.max(0, Dungeon.level.length()-1-Math.max(0,baseReach));
+        if (Float.isNaN(power) || power <= 0f) return 0;
+        return Math.min(cap, Math.max(0, Math.round(power)));
+    }
 
 	@Override
 	public int proc(Weapon weapon, Char attacker, Char defender, int damage) {

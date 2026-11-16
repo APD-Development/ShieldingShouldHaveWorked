@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -29,6 +32,8 @@ import com.shatteredpixel.shatteredpixeldungeon.journal.Catalog;
 
 import java.util.ArrayList;
 
+import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+
 public abstract class RemainsItem extends Item {
 
 	{
@@ -38,6 +43,10 @@ public abstract class RemainsItem extends Item {
 	}
 
 	public static final String AC_USE =  "USE";
+
+    @Override public String info(){
+        return super.info()+" "+Messages.get(RemainsItem.class,"use_cost",com.shatteredpixel.shatteredpixeldungeon.apd.mechanics.ObfuscationExplanation.number(Actor.TICK),Actor.TICK==1?"turn":"turns");
+    }
 
 	@Override
 	public ArrayList<String> actions(Hero hero) {

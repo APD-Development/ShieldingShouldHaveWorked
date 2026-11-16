@@ -40,6 +40,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.PinCushion;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.ClericSpell;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
+import com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomOffensiveHooks;
+import com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Lightning;
 import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
@@ -313,7 +315,7 @@ public class VaultBossElemental extends Mob {
 	public int defenseProc(Char enemy, int damage) {
 		if (form == ElementalForm.SHOCK && enemy == Dungeon.hero && !(Dungeon.hero.belongings.attackingWeapon() instanceof MissileWeapon)){
 			enemy.sprite.parent.addToFront( new Lightning( sprite.center(), enemy.sprite.center(), null ) );
-			enemy.damage( Random.IntRange(5, 10), new Shocking() );
+			CustomOffensiveHooks.raw(enemy, Random.IntRange(5, 10), new Shocking(), this);
 			Sample.INSTANCE.play(Assets.Sounds.LIGHTNING);
 			PixelScene.shake( 2, 0.3f );
 			enemy.sprite.centerEmitter().burst(SparkParticle.FACTORY, 3);
@@ -446,7 +448,7 @@ public class VaultBossElemental extends Mob {
 
 		//damaged by these, but much less so than regular elementals
 		if (harmful){
-			damage( Random.NormalIntRange( 5, 10 ), buff );
+			damage( buff.apdScaleAttachDamage(Random.NormalIntRange( 5, 10 )), buff );
 			return false;
 		}
 
@@ -648,12 +650,12 @@ public class VaultBossElemental extends Mob {
 			}
 
 			CellEmitter.get(cell+i).burst(FlameParticle.FACTORY, 10);
-			GameScene.add(Blob.seed(cell+i, 2, Fire.class));
+			GameScene.add(Fire.seedAttributed(cell+i, 2, OffensiveDamageOrigin.capture(this, null)));
 
 			Char ch = Actor.findChar(cell+i);
 			if (ch != null && !(ch instanceof VaultBossElemental)){
 				//at this depth fire deals ~32 damage, already loads
-				Buff.affect(ch, Burning.class).reignite(ch);
+				Burning.affectAttributed(ch, this);
 				if (ch == Dungeon.hero){
 					Statistics.questScores[3] -= 100;
 				}
@@ -766,7 +768,7 @@ public class VaultBossElemental extends Mob {
 						CellEmitter.get(cells[i]+j*direction).burst(FlameParticle.FACTORY, 10);
 						Char ch = Actor.findChar(cells[i]+j*direction);
 						if (ch != null && !(ch instanceof VaultBossElemental)){
-							Buff.affect(ch, Burning.class).reignite(ch, 5); //~20 effective damage
+							Burning.affectAttributed(ch, 5, target); //~20 effective damage
 							if (ch == Dungeon.hero){
 								Sample.INSTANCE.play(Assets.Sounds.BURNING);
 								Statistics.questScores[3] -= 100;
@@ -919,7 +921,7 @@ public class VaultBossElemental extends Mob {
 					CellEmitter.get(cell).burst(MagicMissile.WhiteParticle.FACTORY, 10);
 					Char ch = Actor.findChar(cell);
 					if (ch != null && !(ch instanceof VaultBossElemental) && ch.buff(FrostResist.class) == null){
-						ch.damage(Random.NormalIntRange(10, 15), new Frost());
+						CustomOffensiveHooks.raw(ch, Random.NormalIntRange(10, 15), new Frost(), target);
 						Buff.affect(ch, Frost.class, 5f);
 						Buff.affect(ch, FrostResist.class);
 						if (ch == Dungeon.hero){
@@ -1235,7 +1237,7 @@ public class VaultBossElemental extends Mob {
 		for (int c : affectedCells){
 			Char ch = Actor.findChar(c);
 			if (ch != null && !(ch instanceof VaultBossElemental) && ch.buff(ShockResist.class) == null){
-				ch.damage(Random.NormalIntRange(20, 30), new Electricity());
+				CustomOffensiveHooks.raw(ch, Random.NormalIntRange(20, 30), new Electricity(), this);
 				Buff.prolong(ch, Paralysis.class, 1f);
 				Buff.affect(ch, ShockResist.class);
 				ch.sprite.centerEmitter().burst(SparkParticle.FACTORY, 3);
@@ -1415,7 +1417,7 @@ public class VaultBossElemental extends Mob {
 		}
 
 		private void shockChar(Char ch){
-			ch.damage(Random.NormalIntRange(10, 15), new Electricity());
+			CustomOffensiveHooks.raw(ch, Random.NormalIntRange(10, 15), new Electricity(), target);
 			Buff.prolong(ch, Paralysis.class, 1f);
 			Buff.affect(ch, ShockResist.class);
 			ch.sprite.centerEmitter().burst(SparkParticle.FACTORY, 3);

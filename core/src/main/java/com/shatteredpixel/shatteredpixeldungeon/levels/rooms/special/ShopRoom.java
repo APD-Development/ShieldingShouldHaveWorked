@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -51,6 +54,8 @@ import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfMagicMappi
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRemoveCurse;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Alchemize;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfAugmentation;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
+import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.TippedDart;
@@ -349,12 +354,31 @@ public class ShopRoom extends SpecialRoom {
 		rare.cursedKnown = true;
 		itemsToSpawn.add( rare );
 
+        if (com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomCombatHooks.percentage(
+                com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomDungeonRules.Slider.EQUIPMENT) != 100) {
+            ArrayList<Item> adjusted = new ArrayList<>();
+            for (final Item original : itemsToSpawn) {
+                adjusted.addAll(com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomEquipmentHooks.adjust(original, () -> {
+                    Item extra = com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomEquipmentHooks.extraLike(original);
+                    if(extra == null)return null;
+                    extra.level(0);extra.cursed=false;
+                    if(extra instanceof Weapon)((Weapon)extra).enchant(null);
+                    if(extra instanceof Armor)((Armor)extra).inscribe(null);
+                    if(original.isIdentified())extra.identify(false);
+                    else extra.cursedKnown=original.cursedKnown;
+                    return extra;
+                }));
+            }
+            itemsToSpawn=adjusted;
+        }
+
 		//use a new generator here to prevent items in shop stock affecting levelgen RNG (e.g. sandbags)
 		//we can use a random long for the seed as it will be the same long every time
 		Random.pushGenerator(Random.Long());
 			Random.shuffle(itemsToSpawn);
 		Random.popGenerator();
 
+		for (Item stock : itemsToSpawn) com.shatteredpixel.shatteredpixeldungeon.apd.qol.GenerationUpgradeRanges.set(stock, 0, 0);
 		return itemsToSpawn;
 	}
 

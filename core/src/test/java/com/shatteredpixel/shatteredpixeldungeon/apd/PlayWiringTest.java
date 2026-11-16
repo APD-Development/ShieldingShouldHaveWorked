@@ -16,10 +16,11 @@ public class PlayWiringTest {
 	//file -> number of ApdPlay.<method> calls it must contain (the restore pair counts as two)
 	private static final Map<String, Integer> HOOKS = new TreeMap<>();
 	static {
-		HOOKS.put("actors/hero/Hero.java", 5);          //turn, move, rest, talent, search
+		HOOKS.put("actors/hero/Hero.java", 7);          //turn, move, rest, talent, search, NPC interaction
 		HOOKS.put("items/Item.java", 1);                //item action
+		HOOKS.put("scenes/AlchemyScene.java", 1);       //successful alchemy craft
 		HOOKS.put("actors/buffs/Buff.java", 2);         //attached, detached
-		HOOKS.put("actors/Char.java", 2);               //restore begin / end
+		HOOKS.put("actors/Char.java", 3);               //restore begin / end, summon ownership
 		HOOKS.put("items/TengusMask.java", 1);          //subclass
 		HOOKS.put("items/KingsCrown.java", 1);          //armor ability chosen
 		HOOKS.put("items/armor/curses/Overgrowth.java", 2);
@@ -34,6 +35,11 @@ public class PlayWiringTest {
 		HOOKS.put("levels/Level.java", 1);             //secret revealed
 		HOOKS.put("actors/blobs/WellWater.java", 1);   //well used
 		HOOKS.put("journal/Document.java", 2);         //page found, page read
+		HOOKS.put("actors/mobs/Goo.java", 1);             //enraged phase
+		HOOKS.put("actors/mobs/Tengu.java", 1);           //arena phase
+		HOOKS.put("actors/mobs/DM300.java", 2);           //supercharged and normal/final
+		HOOKS.put("actors/mobs/DwarfKing.java", 2);       //shielded and final
+		HOOKS.put("actors/mobs/YogDzewa.java", 2);        //fist phases and final
 		HOOKS.put("actors/mobs/npcs/Ghost.java", 3);      //quest given, ready, done
 		HOOKS.put("actors/mobs/npcs/Wandmaker.java", 2);  //quest given, done
 		HOOKS.put("actors/mobs/npcs/Blacksmith.java", 2); //quest given, done

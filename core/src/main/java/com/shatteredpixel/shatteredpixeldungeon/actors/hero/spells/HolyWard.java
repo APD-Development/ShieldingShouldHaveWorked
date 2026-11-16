@@ -60,12 +60,27 @@ public class HolyWard extends ClericSpell {
 
 	@Override
 	public String desc(){
+        if(Messages.lang()==com.shatteredpixel.shatteredpixeldungeon.messages.Languages.ENGLISH)
+            return playerDescription(Messages.decimalFormat("0.##",HolyArmBuff.DURATION),true)+"\n\n"+Messages.get(this,"charge_cost",(int)chargeUse(Dungeon.hero));
 		String desc = Messages.get(this, "desc");
 		if (Dungeon.hero.subClass == HeroSubClass.PALADIN){
 			desc += "\n\n" + Messages.get(this, "desc_paladin");
 		}
 		return desc + "\n\n" + Messages.get(this, "charge_cost", (int)chargeUse(Dungeon.hero));
 	}
+
+    private static String playerDescription(String turns,boolean casting){
+        Hero hero=Dungeon.hero;boolean paladin=hero!=null&&hero.subClass==HeroSubClass.PALADIN;
+        float ring=com.shatteredpixel.shatteredpixeldungeon.apd.ArcanaInfoDisplay.knownArcanaPower(hero);
+        String text;
+        if(hero!=null&&hero.belongings.armor()==null)text="Protects you without armor, but the amount blocked varies with the attacker. ";
+        else if(hero!=null&&hero.buff(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune.class)!=null)text="Magic immunity currently disables the armor’s holy protection. ";
+        else if(Float.isFinite(ring))text="Blocks up to _"+Math.round((paladin?3:1)*(ring+com.shatteredpixel.shatteredpixeldungeon.apd.mechanics.ObfuscationExplanation.aura(hero)))+" extra attack damage_ per hit. ";
+        else text="Blocks extra attack damage. ";
+        text+=casting?"Lasts _"+turns+" turns_ and casts instantly. ":"Turns remaining: _"+turns+"_. ";
+        text+=paladin?"Keeps your armor’s glyph. Other spells extend shorter durations toward 100 turns, by 10 turns per Tome charge spent.":"Temporarily replaces your armor’s beneficial glyph.";
+        return text;
+    }
 
 	public static class HolyArmBuff extends FlavourBuff {
 
@@ -87,6 +102,7 @@ public class HolyWard extends ClericSpell {
 
 		@Override
 		public String desc() {
+            if(Messages.lang()==com.shatteredpixel.shatteredpixeldungeon.messages.Languages.ENGLISH)return playerDescription(dispTurns(),false);
 			if (Dungeon.hero.subClass == HeroSubClass.PALADIN){
 				return Messages.get(this, "desc_paladin", dispTurns());
 			} else {

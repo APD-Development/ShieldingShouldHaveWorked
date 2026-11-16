@@ -24,6 +24,7 @@ package com.shatteredpixel.shatteredpixeldungeon.apd.query;
 
 import com.shatteredpixel.shatteredpixeldungeon.apd.stats.Fact;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -112,6 +113,7 @@ public final class RowMerger {
 				case ANY: {
 					boolean anyKnown = false, anyTrue = false;
 					int prov = Fact.PROV_RECORDED;
+					int falseProv = Fact.PROV_RECORDED;
 					int unknownParts = 0;
 					for (Row p : parts){
 						if (!p.isKnown(i)){ unknownParts++; continue; }
@@ -119,10 +121,10 @@ public final class RowMerger {
 						if (p.num(i) != 0){
 							anyTrue = true;
 							prov = worst(prov, p.prov(i));
-						}
+						} else falseProv = worst(falseProv, p.prov(i));
 					}
 					if (anyTrue) out.setNum(i, 1, prov);
-					else if (anyKnown && unknownParts == 0) out.setNum(i, 0, Fact.PROV_RECORDED);
+					else if (anyKnown && unknownParts == 0) out.setNum(i, 0, falseProv);
 					break;
 				}
 				default: {   //SUM, MAX
@@ -131,8 +133,8 @@ public final class RowMerger {
 						break;
 					}
 					long acc = 0;
+					BigInteger wideSum = null;
 					boolean any = false;
-					int withData = 0;
 					int prov = Fact.PROV_RECORDED;
 					boolean missing = false;
 					for (Row p : parts){
@@ -141,12 +143,25 @@ public final class RowMerger {
 							continue;
 						}
 						long n = p.num(i);
-						acc = !any ? n : c.merge == ColumnDef.Merge.SUM ? acc + n : Math.max(acc, n);
+						if (!any) acc = n;
+						else if (c.merge == ColumnDef.Merge.SUM) {
+							if (wideSum != null) wideSum = wideSum.add(BigInteger.valueOf(n));
+							else {
+								long next = acc + n;
+								if (((acc ^ next) & (n ^ next)) < 0)
+									wideSum = BigInteger.valueOf(acc).add(BigInteger.valueOf(n));
+								else acc = next;
+							}
+						} else acc = Math.max(acc, n);
 						any = true;
-						withData++;
 						prov = worst(prov, p.prov(i));
 					}
 					if (any){
+						if (wideSum != null) {
+							// Raw segments are retained; never label a wrapped total exact.
+							if (wideSum.bitLength() > 63) continue;
+							acc = wideSum.longValue();
+						}
 						//a part that knew nothing may have held more: the result is at least this much
 						//(the number of distinct things across segments is only ever bounded below by the largest part)
 						boolean lower = missing || (c.merge == ColumnDef.Merge.LOWER && parts.size() > 1);
@@ -163,3 +178,4 @@ public final class RowMerger {
 		else to.setText(col, from.text(col), from.prov(col));
 	}
 }
+

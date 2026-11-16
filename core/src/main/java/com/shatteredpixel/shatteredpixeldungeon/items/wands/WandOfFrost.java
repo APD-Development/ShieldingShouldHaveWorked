@@ -95,14 +95,16 @@ public class WandOfFrost extends DamageWand {
 			}
 
 			wandProc(ch, chargesPerCast());
-			ch.damage(damage, this);
+			com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomOffensiveHooks.raw(ch,damage,this,curUser);
 			Sample.INSTANCE.play( Assets.Sounds.HIT_MAGIC, 1, 1.1f * Random.Float(0.87f, 1.15f) );
 
 			if (ch.isAlive()){
 				if (Dungeon.level.water[ch.pos])
-					Buff.affect(ch, Chill.class, 4+buffedLvl());
+					Buff.affectAttributed(ch, Chill.class, 4+buffedLvl(),
+							com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin.capture(curUser, null));
 				else
-					Buff.affect(ch, Chill.class, 2+buffedLvl());
+					Buff.affectAttributed(ch, Chill.class, 2+buffedLvl(),
+							com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin.capture(curUser, null));
 			}
 		} else {
 			Dungeon.level.pressCell(bolt.collisionPos);
@@ -139,13 +141,15 @@ public class WandOfFrost extends DamageWand {
 				float powerMulti = Math.max(1f, procChance);
 
 				//need to delay this through an actor so that the freezing isn't broken by taking damage from the staff hit.
+				final com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin apdOrigin =
+						com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin.capture(attacker, null);
 				new FlavourBuff() {
 					{
 						actPriority = VFX_PRIO;
 					}
 
 					public boolean act() {
-						Buff.affect(target, Frost.class, Math.round(Frost.DURATION * powerMulti));
+						Buff.affectAttributed(target, Frost.class, Math.round(Frost.DURATION * powerMulti), apdOrigin);
 						return super.act();
 					}
 				}.attachTo(defender);

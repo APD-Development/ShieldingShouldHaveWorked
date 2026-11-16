@@ -71,7 +71,7 @@ public class Sickle extends MeleeWeapon {
 		if (levelKnown){
 			return Messages.get(this, "ability_desc", augment.damageFactor(bleedAmt));
 		} else {
-			return Messages.get(this, "typical_ability_desc", bleedAmt);
+			return Messages.get(this, "typical_ability_desc", augment.damageFactor(bleedAmt));
 		}
 	}
 

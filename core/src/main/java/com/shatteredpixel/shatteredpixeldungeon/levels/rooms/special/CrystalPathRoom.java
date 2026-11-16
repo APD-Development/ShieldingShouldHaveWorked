@@ -231,6 +231,12 @@ public class CrystalPathRoom extends SpecialRoom {
 			}
 		});
 
+		// Keep all original generator draws and deck bookkeeping. Only designate the final prizes.
+		moveReservedToEnd(potions, PotionOfExperience.class);
+		moveReservedToEnd(scrolls, ScrollOfTransmutation.class);
+		potions.set(2, new PotionOfExperience());
+		scrolls.set(2, new ScrollOfTransmutation());
+
 		//least valuable items go into rooms 2&3, then rooms 0&1, and finally 4&5
 		int shuffle = Random.Int(2);
 		level.drop(potions.remove(0), level.pointToCell(rooms[shuffle == 1 ? 2 : 3].center()));
@@ -249,6 +255,19 @@ public class CrystalPathRoom extends SpecialRoom {
 
 		entrance().set( Door.Type.REGULAR );
 
+	}
+
+	private static void moveReservedToEnd(ArrayList<Item> items, Class<?> reserved) {
+		for (int i = 0; i < items.size()-1; i++) {
+			Item item = items.get(i);
+			Class<?> type = item.getClass();
+			if (item instanceof ExoticPotion) type = ExoticPotion.exoToReg.get(type);
+			else if (item instanceof ExoticScroll) type = ExoticScroll.exoToReg.get(type);
+			if (type == reserved) {
+				Collections.swap(items, i, items.size()-1);
+				return;
+			}
+		}
 	}
 
 	//this prevents duplicates

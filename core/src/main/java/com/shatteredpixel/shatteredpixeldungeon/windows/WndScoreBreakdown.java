@@ -30,6 +30,8 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.Icons;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.watabou.noosa.Group;
+import com.watabou.noosa.ui.Component;
+import com.shatteredpixel.shatteredpixeldungeon.ui.ScrollPane;
 
 import java.text.NumberFormat;
 
@@ -39,70 +41,109 @@ public class WndScoreBreakdown extends Window {
 
 	private int GAP	= 4;
 
-	public WndScoreBreakdown(){
+	public WndScoreBreakdown(){this(null,Statistics.totalScore);}
 
+	public WndScoreBreakdown(com.watabou.utils.Bundle recordedGameData){this(recordedGameData,Statistics.totalScore);}
+
+	public WndScoreBreakdown(com.watabou.utils.Bundle recordedGameData,long originalScore){
+
+		Component content=new Component();
 		IconTitle title = new IconTitle( Icons.get(Icons.INFO), Messages.get(this, "title"));
 		title.setRect(0, 0, WIDTH, 16);
-		add(title);
+		content.add(title);
 
 		float pos = title.bottom()+2;
 
 		NumberFormat num = NumberFormat.getInstance(Messages.locale());
 		if (Dungeon.initialVersion > ShatteredPixelDungeon.v1_2_3) {
-			pos = statSlot(this, Messages.get(this, "progress_title"),
+			pos = statSlot(content, Messages.get(this, "progress_title"),
 					num.format(Statistics.progressScore), pos, Statistics.progressScore >= 50_000);
-			pos = addInfo(this, Messages.get(this, "progress_desc"), pos);
-			pos = statSlot(this, Messages.get(this, "treasure_title"),
+			pos = addInfo(content, Messages.get(this, "progress_desc"), pos);
+			pos = statSlot(content, Messages.get(this, "treasure_title"),
 					num.format(Statistics.treasureScore), pos, Statistics.treasureScore >= 20_000);
-			pos = addInfo(this, Messages.get(this, "treasure_desc"), pos);
-			pos = statSlot(this, Messages.get(this, "explore_title"),
+			pos = addInfo(content, Messages.get(this, "treasure_desc"), pos);
+			pos = statSlot(content, Messages.get(this, "explore_title"),
 					num.format(Statistics.exploreScore), pos, Statistics.exploreScore >= 20_000);
-			pos = addInfo(this, Messages.get(this, "explore_desc"), pos);
-			pos = statSlot(this, Messages.get(this, "bosses_title"),
+			pos = addInfo(content, Messages.get(this, "explore_desc"), pos);
+			pos = statSlot(content, Messages.get(this, "bosses_title"),
 					num.format(Statistics.totalBossScore), pos, Statistics.totalBossScore >= 15_000);
-			pos = addInfo(this, Messages.get(this, "bosses_desc"), pos);
-			pos = statSlot(this, Messages.get(this, "quests_title"),
+			pos = addInfo(content, Messages.get(this, "bosses_desc"), pos);
+			pos = statSlot(content, Messages.get(this, "quests_title"),
 					num.format(Statistics.totalQuestScore), pos, Statistics.totalQuestScore >= 10_000);
-			pos = addInfo(this, Messages.get(this, "quests_desc"), pos);
+			pos = addInfo(content, Messages.get(this, "quests_desc"), pos);
 		} else {
-			pos = statSlot(this, Messages.get(this, "progress_title"),
+			pos = statSlot(content, Messages.get(this, "progress_title"),
 					num.format(Statistics.progressScore), pos, Statistics.progressScore >= 78_000);
-			pos = addInfo(this, Messages.get(this, "progress_desc"), pos);
-			pos = statSlot(this, Messages.get(this, "treasure_title"),
+			pos = addInfo(content, Messages.get(this, "progress_desc"), pos);
+			pos = statSlot(content, Messages.get(this, "treasure_title"),
 					num.format(Statistics.treasureScore), pos, Statistics.treasureScore >= 30_000);
-			pos = addInfo(this, Messages.get(this, "treasure_desc_old"), pos);
+			pos = addInfo(content, Messages.get(this, "treasure_desc_old"), pos);
 		}
 
 		if (Statistics.winMultiplier > 1) {
-			pos = statSlot(this, Messages.get(this, "win_multiplier"), Messages.decimalFormat("#.##", Statistics.winMultiplier) + "x", pos, false);
+			pos = statSlot(content, Messages.get(this, "win_multiplier"), Messages.decimalFormat("#.##", Statistics.winMultiplier) + "x", pos, false);
 		}
-		if (Statistics.chalMultiplier > 1) {
-			pos = statSlot(this, Messages.get(this, "challenge_multiplier"), Messages.decimalFormat("#.##", Statistics.chalMultiplier) + "x", pos, false);
+		{
+			pos = statSlot(content, Messages.get(this, "challenge_multiplier"), Messages.decimalFormat("#.##", Statistics.chalMultiplier) + "x", pos, false);
 		}
-		pos = statSlot(this, Messages.get(this, "total"), num.format(Statistics.totalScore), pos, false);
+        pos=statSlot(content,"Custom Rules Multiplier",com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomScorePresentation.multiplier(recordedGameData),pos,false);
+        String customNotice=com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomScorePresentation.notice(recordedGameData);
+        if(!customNotice.isEmpty())pos=addInfo(content,customNotice,pos);
+		pos = statSlot(content, "Original score", num.format(originalScore), pos, false);
+        Long adjusted=com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomScorePresentation.adjustedIdentityScore(recordedGameData,originalScore);
+        String unavailable="Not applied".equals(com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomScorePresentation.multiplier(recordedGameData))?"Not applied":"?";
+        pos=statSlot(content,"Custom-rules adjusted score",adjusted==null?unavailable:num.format(adjusted),pos,false);
+        com.shatteredpixel.shatteredpixeldungeon.apd.recorder.SeedReuseScore.Result reuse =
+                com.shatteredpixel.shatteredpixeldungeon.apd.recorder.SeedReuseScore.restore(recordedGameData);
+        if (reuse != null) {
+            pos=statSlot(content,"Seed reuse retention",
+                    Messages.decimalFormat("#.##",reuse.retentionBasisPoints/100f)+"%",pos,false);
+            pos=statSlot(content,"Seed reuse deduction","-"+num.format(reuse.deduction),pos,false);
+            pos=statSlot(content,"Final earned score",num.format(reuse.earned),pos,false);
+            pos=addInfo(content,"Earlier local attempts: "+reuse.priorAttempts
+                    +". Deepest earlier floor: "+(reuse.deepestBefore<0?"unknown":reuse.deepestBefore)
+                    +". Current deepest floor: "+reuse.currentDepth+".",pos);
+            if (reuse.known && reuse.priorAttempts > 0) {
+                pos=addInfo(content,reuse.individualDepthsKnown
+                        ? "Replay scoring: verified individual earlier depths."
+                        : "Replay scoring: conservative fallback; individual earlier depths unavailable.",pos);
+            }
+        } else if (recordedGameData != null && recordedGameData.contains("custom_seed")
+                && !recordedGameData.getString("custom_seed").isEmpty()) {
+            // Only historical seeded records lack an earlier reuse-scoring snapshot.
+            // Ordinary and daily games never used a custom seed and need no disclaimer.
+            pos=addInfo(content,"This seeded run predates recorded seed-reuse scoring.",pos);
+        }
 
 		if (Dungeon.initialVersion <= ShatteredPixelDungeon.v1_2_3){
-			pos = addInfo(this, Messages.get(this, "old_score_desc"), pos);
+			pos = addInfo(content, Messages.get(this, "old_score_desc"), pos);
 		}
 
-		resize(WIDTH, (int)pos);
+		content.setSize(WIDTH,pos);
+        ScrollPane pane=new ScrollPane(content);add(pane);
+        int visibleHeight=Math.min((int)Math.ceil(pos),Math.max(32,(int)PixelScene.uiCamera.height-20));
+        resize(WIDTH,visibleHeight);
+        pane.setRect(0,0,WIDTH,visibleHeight);
 
 	}
 
 	private float statSlot(Group parent, String label, String value, float pos, boolean highlight ) {
 
 		RenderedTextBlock txt = PixelScene.renderTextBlock( label, 7 );
+		txt.maxWidth((int)(WIDTH*0.66f));
 		if (highlight) txt.hardlight(Window.TITLE_COLOR);
 		txt.setPos(0, pos);
 		parent.add( txt );
 
+		float labelHeight=txt.height();
 		txt = PixelScene.renderTextBlock( value, 7 );
 		if (highlight) txt.hardlight(Window.TITLE_COLOR);
-		txt.setPos(WIDTH * 0.7f, pos);
+		if(txt.width()>WIDTH*0.3f){pos+=labelHeight+1;labelHeight=0;txt.setPos(0,pos);}
+        else txt.setPos(WIDTH-txt.width(), pos);
 		PixelScene.align(txt);
 		parent.add( txt );
 
-		return pos + GAP + txt.height();
+		return pos + GAP + Math.max(labelHeight,txt.height());
 	}
 
 	private float addInfo(Group parent, String info, float pos){
@@ -119,3 +160,4 @@ public class WndScoreBreakdown extends Window {
 
 
 }
+

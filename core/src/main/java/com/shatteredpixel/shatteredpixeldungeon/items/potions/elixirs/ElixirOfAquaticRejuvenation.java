@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -66,6 +69,9 @@ public class ElixirOfAquaticRejuvenation extends Elixir {
 		
 		private int left;
 		
+        /** Remaining base healing resource before run modifiers. */
+        public int remainingHealingPool(){return left;}
+
 		public void set( int amount ){
 			if (amount > left) left = amount;
 		}
@@ -86,13 +92,13 @@ public class ElixirOfAquaticRejuvenation extends Elixir {
 					healAmt = (float)Math.floor(healAmt);
 				}
 				int apdHpBefore = target.HP;
-				target.HP += (int)healAmt;
+				target.HP += com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomHealingHooks.amount(target, (int)healAmt);
 				left -= (int)healAmt;
-				target.sprite.showStatusWithIcon( CharSprite.POSITIVE, Integer.toString((int)healAmt), FloatingText.HEALING );
+				target.sprite.showStatusWithIcon( CharSprite.POSITIVE, Integer.toString(com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomHealingHooks.display(target, apdHpBefore, (int)healAmt)), FloatingText.HEALING );
 
 				if (target.HP >= target.HT) {
 					target.HP = target.HT;
-					if (target instanceof Hero) {
+					if (target instanceof Hero && com.shatteredpixel.shatteredpixeldungeon.SPDSettings.waitStopFullHealth()) {
 						((Hero) target).resting = false;
 					}
 				}
@@ -101,7 +107,7 @@ public class ElixirOfAquaticRejuvenation extends Elixir {
 			
 			if (left <= 0){
 				detach();
-				if (target instanceof Hero) {
+				if (target instanceof Hero && (target.HP < target.HT || com.shatteredpixel.shatteredpixeldungeon.SPDSettings.waitStopFullHealth())) {
 					((Hero) target).resting = false;
 				}
 			} else {
@@ -133,7 +139,7 @@ public class ElixirOfAquaticRejuvenation extends Elixir {
 		
 		@Override
 		public String desc() {
-			return Messages.get(this, "desc", left);
+			return Messages.get(this, target instanceof Hero && target == Dungeon.hero && com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomHealingHooks.disabled() ? "desc_disabled" : "desc", left);
 		}
 		
 		private static final String LEFT = "left";
@@ -152,6 +158,13 @@ public class ElixirOfAquaticRejuvenation extends Elixir {
 		}
 	}
 	
+    @Override
+    public String desc() {
+        if (Dungeon.hero != null && Dungeon.isChallenged(Challenges.NO_HEALING)) return Messages.get(this, "desc_pharmacophobia");
+        if (Dungeon.hero != null && com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomHealingHooks.disabled()) return Messages.get(this, "desc_disabled_healing");
+        return super.desc();
+    }
+
 	public static class Recipe extends com.shatteredpixel.shatteredpixeldungeon.items.Recipe.SimpleRecipe {
 		
 		{
@@ -172,3 +185,4 @@ public class ElixirOfAquaticRejuvenation extends Elixir {
 	}
 	
 }
+

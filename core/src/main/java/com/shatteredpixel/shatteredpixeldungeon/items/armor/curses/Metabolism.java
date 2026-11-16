@@ -56,6 +56,7 @@ public class Metabolism extends Glyph {
 					hunger.affectHunger( healing * -10 );
 					
 					int apdHpBefore = defender.HP;
+					healing = Math.min(defender.HT - defender.HP, com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomHealingHooks.amount(defender, (int)Hunger.STARVING/100));
 					defender.HP += healing;
 					ApdCombat.onHeal( defender, apdHpBefore, ApdCombat.HEAL_GEAR_METABOLISM, healing );
 					defender.sprite.showStatusWithIcon( CharSprite.POSITIVE, Integer.toString( healing ), FloatingText.HEALING);
@@ -77,3 +78,4 @@ public class Metabolism extends Glyph {
 		return true;
 	}
 }
+

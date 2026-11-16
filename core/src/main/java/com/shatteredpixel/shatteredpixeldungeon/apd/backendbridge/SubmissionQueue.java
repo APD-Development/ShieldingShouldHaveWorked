@@ -68,7 +68,29 @@ public final class SubmissionQueue {
 		return new File(historyRoot, FILE_NAME);
 	}
 
+	// A partial read is useful for inspection, but must never rewrite away damaged entries.
+	private static void loadForUpdate( Outbox box, File historyRoot ) throws IOException {
+		if (OutboxStore.load(box, fileIn(historyRoot)).skipped > 0){
+			throw new IOException("The queue contains unreadable entries; its existing data was preserved");
+		}
+	}
+
+	public static String readProblem( File historyRoot ){
+		if (historyRoot == null) return null;
+		synchronized (LOCK){
+			try {
+				if (OutboxStore.load(new Outbox(), fileIn(historyRoot)).skipped > 0){
+					return "The queue has unreadable entries. Its count is incomplete; existing data was preserved. Queue updates and sending are blocked.";
+				}
+			} catch (IOException e){
+				return "The queue could not be read. Its count is unknown; existing data was preserved.";
+			}
+			return null;
+		}
+	}
+
 	public static int pending( File historyRoot ){
+		if (historyRoot == null) return 0;
 		synchronized (LOCK){
 			try {
 				Outbox box = new Outbox();
@@ -104,7 +126,7 @@ public final class SubmissionQueue {
 		synchronized (LOCK){
 			try {
 				Outbox box = new Outbox();
-				OutboxStore.load(box, fileIn(historyRoot));
+				loadForUpdate(box, historyRoot);
 				int before = box.size();
 				box.enqueue(id, RunSubmissionCodec.toEnvelope(o.submission), nowMillis);
 				if (box.size() == before) return new Queued(Result.ALREADY_QUEUED, null, "");
@@ -117,6 +139,7 @@ public final class SubmissionQueue {
 	}
 
 	private static Id queueId( String runId ){
+		if (!StatsStore.isValidRunId(runId)) return null;
 		try {
 			return Id.of(Id.Kind.OUTBOX, "ob_" + runId);
 		} catch (IllegalArgumentException e){
@@ -195,7 +218,7 @@ public final class SubmissionQueue {
 		synchronized (LOCK){
 			try {
 				Outbox box = new Outbox();
-				OutboxStore.load(box, fileIn(historyRoot));
+				loadForUpdate(box, historyRoot);
 				if (!box.remove(id)) return false;
 				OutboxStore.save(box, fileIn(historyRoot));
 				return true;
@@ -217,7 +240,7 @@ public final class SubmissionQueue {
 		Outbox box = new Outbox();
 		synchronized (LOCK){
 			try {
-				OutboxStore.load(box, fileIn(historyRoot));
+				loadForUpdate(box, historyRoot);
 			} catch (IOException e){
 				return none;
 			}
@@ -227,20 +250,26 @@ public final class SubmissionQueue {
 		//the copy 'box' is private to this call, so talking to the server does not hold the lock
 		Outbox.FlushResult r = box.flush(gateway, nowMillis);
 		synchronized (LOCK){
+			// An acknowledgement has already happened, even if the local queue cannot be updated.
+			for (Outbox.Item sent : r.sentItems) recordSent(historyRoot, sent, nowMillis);
 			try {
 				//apply the outcome to the queue as it is NOW: runs queued or taken back while the server was being asked are not lost
 				Outbox now = new Outbox();
-				OutboxStore.load(now, fileIn(historyRoot));
-				java.util.Set<String> gone = new java.util.HashSet<>();
-				for (Outbox.Item i : r.sentItems) gone.add(i.id.value);
-				for (Outbox.Item i : r.rejectedItems) gone.add(i.id.value);
+				loadForUpdate(now, historyRoot);
+				java.util.List<Outbox.Item> completed = new java.util.ArrayList<>(r.sentItems);
+				completed.addAll(r.rejectedItems);
 				for (Outbox.Item i : new java.util.ArrayList<>(now.items())){
-					if (gone.contains(i.id.value)){
+					boolean finished = false;
+					for (Outbox.Item tried : completed) if (sameQueuedItem(tried, i)){
+						finished = true;
+						break;
+					}
+					if (finished){
 						now.remove(i.id);
 						continue;
 					}
 					for (Outbox.Item tried : box.items()){
-						if (tried.id.equals(i.id)){
+						if (sameQueuedItem(tried, i)){
 							i.attempts = tried.attempts;
 							i.nextAttemptAtMillis = tried.nextAttemptAtMillis;
 							i.lastDetail = tried.lastDetail;
@@ -249,11 +278,19 @@ public final class SubmissionQueue {
 				}
 				OutboxStore.save(now, fileIn(historyRoot));
 			} catch (IOException e){
-				return none;
+				return r;
 			}
 		}
-		for (Outbox.Item sent : r.sentItems) recordSent(historyRoot, sent, nowMillis);
 		return r;
+	}
+
+	//A newer ballot/settings envelope may reuse the id while a send is in flight.
+	//Only merge the result into the exact queued version that was actually tried.
+	private static boolean sameQueuedItem( Outbox.Item a, Outbox.Item b ){
+		return a.id.equals(b.id) && a.createdAtMillis == b.createdAtMillis
+				&& a.envelope.schema.equals(b.envelope.schema)
+				&& a.envelope.major == b.envelope.major && a.envelope.minor == b.envelope.minor
+				&& a.envelope.payload.equals(b.envelope.payload);
 	}
 
 	//remembers what was sent so a later evidence request can be checked against it
@@ -272,7 +309,7 @@ public final class SubmissionQueue {
 		synchronized (LOCK){
 			try {
 				Outbox box = new Outbox();
-				OutboxStore.load(box, fileIn(historyRoot));
+				loadForUpdate(box, historyRoot);
 				box.remove(id);
 				box.enqueue(id, e, nowMillis);
 				OutboxStore.save(box, fileIn(historyRoot));
@@ -288,7 +325,7 @@ public final class SubmissionQueue {
 		synchronized (LOCK){
 			try {
 				Outbox box = new Outbox();
-				OutboxStore.load(box, fileIn(historyRoot));
+				loadForUpdate(box, historyRoot);
 				box.enqueue(id, e, nowMillis);
 				OutboxStore.save(box, fileIn(historyRoot));
 				return true;

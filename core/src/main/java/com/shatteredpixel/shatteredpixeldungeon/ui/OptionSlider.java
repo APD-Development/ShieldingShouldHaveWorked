@@ -34,6 +34,9 @@ import com.watabou.utils.PointF;
 public abstract class OptionSlider extends Component {
 
 	private PointerArea pointerArea;
+    private ScrollPane verticalPane;
+    /** Opt in only for custom-rules sliders; existing SPD sliders keep their original behavior. */
+    public void scrollVerticallyWith(ScrollPane pane) {verticalPane=pane;}
 
 	private RenderedTextBlock title;
 	private RenderedTextBlock minTxt;
@@ -95,6 +98,14 @@ public abstract class OptionSlider extends Component {
 		sliderNode.alpha( value ? 1.0f : 0.3f );
 	}
 
+    private boolean liveChanges;
+    /** Opt in only for draft controls; existing sliders retain release-only notifications. */
+    public void liveChanges(boolean enabled){liveChanges=enabled;}
+    private void notifyDragValue(){
+        int next=Math.max(minVal,Math.min(minVal+Math.round((sliderNode.x-x)/tickDist),maxVal));
+        if(next!=selectedVal){selectedVal=next;onChange();}
+    }
+
 	@Override
 	protected void createChildren() {
 		super.createChildren();
@@ -112,19 +123,48 @@ public abstract class OptionSlider extends Component {
 
 		pointerArea = new PointerArea(0, 0, 0, 0){
 			boolean pressed = false;
+            int pressedValue;
+            SliderGesture gesture;
+            float lastY;
+            private void position(PointerEvent event) {
+                PointF p=camera().screenToCamera((int)event.current.x,(int)event.current.y);
+                sliderNode.x=GameMath.gate(sliderBG.x-2,p.x-sliderNode.width()/2,sliderBG.x+sliderBG.width()-2);
+            }
+            private void vertical(PointerEvent event) {
+                float delta=(lastY-event.current.y)/verticalPane.content().camera().zoom;
+                verticalPane.scrollTo(verticalPane.content().camera().scroll.x,verticalPane.content().camera().scroll.y+delta);
+                lastY=event.current.y;
+            }
 
 			@Override
 			protected void onPointerDown( PointerEvent event ) {
-				pressed = true;
-				PointF p = camera().screenToCamera((int) event.current.x, (int) event.current.y);
+				if(event!=curEvent || pressed)return;
+                pressed = true;pressedValue=selectedVal;
+                if(verticalPane!=null){
+                    gesture=new SliderGesture(event.current.x,event.current.y,camera().zoom);
+                    lastY=event.current.y;sliderNode.brightness(1.5f);return;
+                }
+                PointF p = camera().screenToCamera((int) event.current.x, (int) event.current.y);
 				sliderNode.x = GameMath.gate(sliderBG.x-2, p.x - sliderNode.width()/2, sliderBG.x+sliderBG.width()-2);
 				sliderNode.brightness(1.5f);
 			}
 
 			@Override
 			protected void onPointerUp( PointerEvent event ) {
-				if (pressed) {
-					PointF p = camera().screenToCamera((int) event.current.x, (int) event.current.y);
+				if (pressed && event==curEvent) {
+                    if(event.type==PointerEvent.Type.CANCEL){
+                        boolean restore=liveChanges&&selectedVal!=pressedValue;
+                        setSelectedValue(pressedValue);sliderNode.resetColor();pressed=false;
+                        if(restore)onChange();
+                        return;
+                    }
+                    if(verticalPane!=null){
+                        SliderGesture.Direction direction=gesture.finish(event.current.x,event.current.y);
+                        if(direction==SliderGesture.Direction.VERTICAL){
+                            vertical(event);setSelectedValue(selectedVal);sliderNode.resetColor();pressed=false;return;
+                        }
+                    }
+                    PointF p = camera().screenToCamera((int) event.current.x, (int) event.current.y);
 					sliderNode.x = GameMath.gate(sliderBG.x - 2, p.x - sliderNode.width()/2, sliderBG.x + sliderBG.width() - 2);
 					sliderNode.resetColor();
 					
@@ -140,7 +180,13 @@ public abstract class OptionSlider extends Component {
 			@Override
 			protected void onDrag( PointerEvent event ) {
 				if (pressed) {
-					PointF p = camera().screenToCamera((int) event.current.x, (int) event.current.y);
+                    if(verticalPane!=null){
+                        SliderGesture.Direction direction=gesture.move(event.current.x,event.current.y);
+                        if(direction==SliderGesture.Direction.VERTICAL)vertical(event);
+                        else if(direction==SliderGesture.Direction.HORIZONTAL){position(event);if(liveChanges)notifyDragValue();}
+                        return;
+                    }
+                    PointF p = camera().screenToCamera((int) event.current.x, (int) event.current.y);
 					sliderNode.x = GameMath.gate(sliderBG.x - 2, p.x - sliderNode.width()/2, sliderBG.x + sliderBG.width() - 2);
 				}
 			}
@@ -199,3 +245,4 @@ public abstract class OptionSlider extends Component {
 
 	}
 }
+

@@ -42,6 +42,7 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeType;
 import com.badlogic.gdx.utils.GdxNativesLoader;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
+import com.shatteredpixel.shatteredpixeldungeon.apd.ApdFeatures;
 import com.shatteredpixel.shatteredpixeldungeon.apd.archive.ApdFiles;
 import com.shatteredpixel.shatteredpixeldungeon.services.news.News;
 import com.shatteredpixel.shatteredpixeldungeon.services.news.NewsImpl;
@@ -49,6 +50,7 @@ import com.shatteredpixel.shatteredpixeldungeon.services.updates.UpdateImpl;
 import com.shatteredpixel.shatteredpixeldungeon.services.updates.Updates;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Button;
 import com.watabou.input.BackGate;
+import com.watabou.input.BackTrace;
 import com.watabou.input.KeyEvent;
 import com.watabou.noosa.Game;
 import com.watabou.utils.FileUtils;
@@ -134,6 +136,8 @@ public class AndroidLauncher extends AndroidApplication {
 			instance = this;
 		}
 
+        AndroidSupportDiagnostics.initialize(this);
+
 		//Shattered still overrides the back gesture behaviour, but we need to do it in a new way
 		// (API added in Android 13, functionality enforced in Android 16)
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -142,12 +146,19 @@ public class AndroidLauncher extends AndroidApplication {
 			runnables.add(new Runnable() {
 				@Override
 				public void run() {
+					if (instance != AndroidLauncher.this || isFinishing() || isDestroyed()) return;
+					// Keep libGDX's route as a fallback: registration does not guarantee
+					// Android will deliver this callback for every Back input source.
+					// BackGate suppresses the one legacy copy only after this callback fires.
 					getOnBackInvokedDispatcher().registerOnBackInvokedCallback(OnBackInvokedDispatcher.PRIORITY_DEFAULT, new OnBackInvokedCallback() {
 						@Override
 						public void onBackInvoked() {
-							sendBack();
+							if (instance == AndroidLauncher.this) sendBack();
 						}
 					});
+					// Only claim the route after registration succeeded. Legacy copies
+					// can arrive hundreds of milliseconds after this callback.
+					BackGate.setSystemBackOwner(AndroidLauncher.this);
 				}
 			});
 		}
@@ -182,12 +193,40 @@ public class AndroidLauncher extends AndroidApplication {
 
 	@Override
 	protected void onResume() {
+		com.watabou.utils.SupportDiagnostics.event("activity.resume", "");
+        com.watabou.utils.SupportActionJournal.resumed(com.watabou.noosa.Game.scene() == null ? "unknown" : com.watabou.noosa.Game.scene().getClass().getSimpleName());
+		com.watabou.utils.SupportDiagnostics.memoryEvent("activity.resume");
 		//prevents weird rare cases where the app is running twice
 		if (instance != this){
 			finishAndRemoveTask();
 		}
 		super.onResume();
 	}
+
+	@Override protected void onDestroy() {
+		// An old Activity must not release the newer Activity's callback ownership.
+		BackGate.clearSystemBackOwner(this);
+		super.onDestroy();
+	}
+
+    @Override protected void onPause() {
+        com.watabou.utils.SupportDiagnostics.event("activity.pause", "");
+        com.watabou.utils.SupportActionJournal.paused(com.watabou.noosa.Game.scene() == null ? "unknown" : com.watabou.noosa.Game.scene().getClass().getSimpleName());
+        com.watabou.utils.SupportDiagnostics.memoryEvent("activity.pause");
+        super.onPause();
+    }
+
+    @Override public void onTrimMemory(int level) {
+        com.watabou.utils.SupportDiagnostics.event("android.trim_memory", "level="+level);
+        com.watabou.utils.SupportDiagnostics.memoryEvent("android.trim_memory", level);
+        super.onTrimMemory(level);
+    }
+
+    @Override public void onLowMemory() {
+        com.watabou.utils.SupportDiagnostics.event("android.low_memory", "OS memory-pressure notification");
+        com.watabou.utils.SupportDiagnostics.memoryEvent("android.low_memory");
+        super.onLowMemory();
+    }
 
 	@SuppressLint("GestureBackNavigation")
 	@Override
@@ -198,9 +237,21 @@ public class AndroidLauncher extends AndroidApplication {
 
 	//one Back for the game, from whichever route it arrived by
 	private static void sendBack() {
-		if (!BackGate.accept()) return;
-		KeyEvent.addKeyEvent(new KeyEvent(Input.Keys.BACK, true));
-		KeyEvent.addKeyEvent(new KeyEvent(Input.Keys.BACK, false));
+		//Timing-only diagnostics are packaged in the private developer APK. They do
+		//not change Back behavior and do not run in the regular player APK.
+		BackTrace.setEnabled(ApdFeatures.testBuild());
+		long trace = BackTrace.route("android-system");
+		if (!BackGate.acceptSystem()) {
+			BackTrace.rejected(trace, "BackGate duplicate");
+			return;
+		}
+		BackTrace.accepted(trace);
+		KeyEvent.addKeyEvent(new KeyEvent(Input.Keys.BACK, true, trace));
+		BackTrace.stage(trace, "key-down-enqueued", "");
+		KeyEvent.addKeyEvent(new KeyEvent(Input.Keys.BACK, false, trace));
+		// The Android callback does not itself pass through libGDX input.
+		// Wake an on-demand or throttled renderer so the queued Back is handled.
+		if (Gdx.graphics != null) Gdx.graphics.requestRendering();
 	}
 
 	@Override

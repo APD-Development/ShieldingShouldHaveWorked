@@ -100,10 +100,25 @@ public class HoldFast extends Buff {
 
 	@Override
 	public String desc() {
-		return Messages.get(this, "desc",
-				Dungeon.hero.pointsInTalent(Talent.HOLD_FAST),
-				2*Dungeon.hero.pointsInTalent(Talent.HOLD_FAST),
-				25 + 25*Dungeon.hero.pointsInTalent(Talent.HOLD_FAST));
+        if(!(target instanceof Hero))return Messages.get(this,"desc_unavailable");
+        Hero owner=(Hero)target;
+        int rank=owner.pointsInTalent(Talent.HOLD_FAST);
+        if(Messages.lang()!=com.shatteredpixel.shatteredpixeldungeon.messages.Languages.ENGLISH){
+            return Messages.get(this,"desc",rank,2*rank,25+25*rank);
+        }
+        if(pos!=owner.pos)return Messages.get(this,"desc_inactive");
+        String fading=rank==1?"fade at half speed":rank==2?"fade at quarter speed":rank==3?"stop fading":"fade at their normal speed";
+        int cap=6;
+        if(owner.heroClass!=HeroClass.WARRIOR){
+            Armor worn=owner.belongings.armor();
+            if(worn!=null&&!worn.levelKnown)return Messages.get(this,"desc_unknown_armor",fading);
+            cap=worn==null?0:worn.tier+worn.buffedLvl();
+        }
+        // Description only: armorBonus() rolls, and buffDecayFactor() can detach a moved effect.
+        int low=Math.min(rank,cap),high=Math.min(2*rank,cap);
+        if(low<0)return Messages.get(this,"desc_penalty",-low,fading);
+        if(low==high)return Messages.get(this,"desc_single",low,fading);
+        return Messages.get(this,"desc_active",low,high,fading);
 	}
 
 	private static final String POS = "pos";

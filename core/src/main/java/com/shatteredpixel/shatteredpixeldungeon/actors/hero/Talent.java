@@ -591,9 +591,9 @@ public enum Talent {
 			if (hero.HP/(float)hero.HT < 0.334f) {
 				int healing = 2 + 2 * hero.pointsInTalent(HEARTY_MEAL);
 				int apdHpBefore = hero.HP;
-				hero.HP = Math.min(hero.HP + healing, hero.HT);
+				hero.HP = Math.min(hero.HP + com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomHealingHooks.amount(hero, healing), hero.HT);
 				ApdCombat.onHeal( hero, apdHpBefore, ApdCombat.HEAL_SKILL_HEARTY_MEAL, healing );
-				hero.sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(healing), FloatingText.HEALING);
+				hero.sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomHealingHooks.display(hero, apdHpBefore, healing)), FloatingText.HEALING);
 
 			}
 		}
@@ -1223,3 +1223,4 @@ public enum Talent {
 	}
 
 }
+

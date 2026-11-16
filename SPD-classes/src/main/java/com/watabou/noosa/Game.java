@@ -32,12 +32,15 @@ import com.watabou.glwrap.Blending;
 import com.watabou.glwrap.Vertexbuffer;
 import com.watabou.input.ControllerHandler;
 import com.watabou.input.InputHandler;
+import com.watabou.input.KeyEvent;
+import com.watabou.input.PointerEvent;
 import com.watabou.noosa.audio.Music;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Callback;
 import com.watabou.utils.DeviceCompat;
 import com.watabou.utils.PlatformSupport;
 import com.watabou.utils.Reflection;
+import com.watabou.utils.Signal;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -66,6 +69,49 @@ public class Game implements ApplicationListener {
 	protected SceneChangeCallback onChange;
 	// New scene class
 	protected static Class<? extends Scene> sceneClass;
+
+	// One return parent. Gameplay and unknown scene types never opt in.
+	private RetainedScene retainedReturn;
+	private volatile boolean invalidateReturn;
+	private static final class RetainedScene {
+		final Scene scene;
+		final Camera.State cameras;
+		final Signal<PointerEvent> pointers;
+		RetainedScene(Scene scene){
+			this.scene = scene;
+			scene.onRetain();
+			scene.active = false;
+			cameras = Camera.detach();
+			pointers = PointerEvent.detachListeners();
+		}
+	}
+
+	protected boolean isReturnMenu(Class<? extends Scene> target){ return false; }
+	protected boolean retainForReturn(Scene current, Class<? extends Scene> target){ return false; }
+
+	public static void invalidateRetainedReturn(){
+		if (instance != null) instance.invalidateReturn = true;
+	}
+
+	private void clearRetainedReturn(){
+		RetainedScene old = retainedReturn;
+		retainedReturn = null;
+		if (old == null) return;
+		Signal<PointerEvent> activePointers = PointerEvent.swapListeners(old.pointers);
+		try {
+			old.scene.destroy();
+			old.cameras.destroy();
+		} finally {
+			PointerEvent.swapListeners(activePointers);
+		}
+	}
+
+	private void discardInvalidReturn(){
+		if (invalidateReturn){
+			invalidateReturn = false;
+			clearRetainedReturn();
+		}
+	}
 	
 	public static float timeScale = 1f;
 	public static float elapsed = 0f;
@@ -127,6 +173,7 @@ public class Game implements ApplicationListener {
 		//If the EGL context was destroyed, we need to refresh some data stored on the GPU.
 		// This checks that by seeing if GLVersion has a new object reference
 		if (versionContextRef != Gdx.graphics.getGLVersion()) {
+			invalidateRetainedReturn();
 			versionContextRef = Gdx.graphics.getGLVersion();
 			Blending.useDefault();
 			TextureCache.reload();
@@ -145,6 +192,9 @@ public class Game implements ApplicationListener {
 	//justResumed is a bit of a hack to improve start time metrics on Android,
 	// as texture refreshing leads to slow warm starts. TODO would be nice to fix this properly
 	private boolean justResumed = true;
+    private long resumeStartedNanos = System.nanoTime();
+    private boolean awaitingFirstDraw = true;
+    private boolean awaitingScenePresentation = true;
 
 	@Override
 	public void render() {
@@ -155,15 +205,41 @@ public class Game implements ApplicationListener {
 		}
 
 		if (justResumed){
+			discardInvalidReturn();
 			justResumed = false;
 			if (DeviceCompat.isAndroid()) return;
 		}
 
+		// The Android system Back callback queues into KeyEvent rather than
+		// libGDX's input processor. If it arrived before this frame, drain all
+		// pending input in its existing pointer/key/scroll order before drawing.
+		// Otherwise drawing can block the Back handler for an additional frame.
+		// Scene switches must still create the new scene before dispatch.
+		if (!requestedReset && scene != null && inputHandler != null
+				&& KeyEvent.hasPendingBackPress()) {
+			inputHandler.processAllEvents();
+			// Back may have requested a menu transition. Apply it before drawing,
+			// rather than drawing the outgoing menu and waiting another frame.
+			applyRequestedScene();
+		}
+
+		// A tap dispatched by the previous update has already chosen its scene.
+		// Create it before this draw instead of showing another outgoing frame.
+		applyRequestedScene();
+		Camera.refreshMatrices();
 		NoosaScript.get().resetCamera();
 		NoosaScriptNoLighting.get().resetCamera();
 		Gdx.gl.glDisable(Gdx.gl.GL_SCISSOR_TEST);
 		Gdx.gl.glClear(Gdx.gl.GL_COLOR_BUFFER_BIT);
 		draw();
+        if(awaitingScenePresentation){
+            awaitingScenePresentation=false;
+            if(inputHandler!=null)inputHandler.scenePresented(System.nanoTime());
+        }
+        if (awaitingFirstDraw) {
+            awaitingFirstDraw = false;
+            com.watabou.utils.SupportDiagnostics.event("render.first_draw", "after_resume_ms="+((System.nanoTime()-resumeStartedNanos)/1000000L));
+        }
 
 		Gdx.gl.glDisable( Gdx.gl.GL_SCISSOR_TEST );
 		
@@ -172,6 +248,9 @@ public class Game implements ApplicationListener {
 	
 	@Override
 	public void pause() {
+		com.watabou.utils.SupportDiagnostics.event("game.pause", scene == null ? "no scene" : scene.getClass().getSimpleName());
+		com.watabou.utils.SupportDiagnostics.memoryEvent("game.pause");
+		InputHandler.discardPendingEvents();
 		if (scene != null) {
 			scene.onPause();
 		}
@@ -181,6 +260,11 @@ public class Game implements ApplicationListener {
 	
 	@Override
 	public void resume() {
+		com.watabou.utils.SupportDiagnostics.event("game.resume", "");
+		com.watabou.utils.SupportDiagnostics.memoryEvent("game.resume");
+		resumeStartedNanos=System.nanoTime();awaitingFirstDraw=true;
+		InputHandler.discardPendingEvents();
+		invalidateRetainedReturn();
 		justResumed = true;
 	}
 	
@@ -190,6 +274,7 @@ public class Game implements ApplicationListener {
 	}
 	
 	public void destroy(){
+		clearRetainedReturn();
 		if (scene != null) {
 			scene.destroy();
 			scene = null;
@@ -206,6 +291,7 @@ public class Game implements ApplicationListener {
 	}
 	
 	public static void resetScene() {
+		invalidateRetainedReturn();
 		switchScene( instance.sceneClass );
 	}
 
@@ -214,6 +300,7 @@ public class Game implements ApplicationListener {
 	}
 	
 	public static void switchScene(Class<? extends Scene> c, SceneChangeCallback callback) {
+		com.watabou.utils.SupportDiagnostics.event("scene.request", c.getSimpleName());
 		instance.sceneClass = c;
 		instance.requestedReset = true;
 		instance.onChange = callback;
@@ -226,20 +313,31 @@ public class Game implements ApplicationListener {
 	public static boolean switchingScene() {
 		return instance.requestedReset;
 	}
+
+    public static boolean switchingTo(Class<? extends Scene> target) {
+        return instance != null && instance.requestedReset && sceneClass == target;
+    }
 	
 	protected void step() {
+		applyRequestedScene();
+		update();
+	}
+
+	protected void applyRequestedScene() {
+		discardInvalidReturn();
 		
 		if (requestedReset) {
 			requestedReset = false;
 			
-			requestedScene = Reflection.newInstance(sceneClass);
+			requestedScene = retainedReturn != null && onChange == null
+					&& retainedReturn.scene.getClass() == sceneClass
+					? retainedReturn.scene : Reflection.newInstance(sceneClass);
 			if (requestedScene != null){
 				switchScene();
 			}
 
 		}
 		
-		update();
 	}
 	
 	protected void draw() {
@@ -247,26 +345,47 @@ public class Game implements ApplicationListener {
 	}
 	
 	protected void switchScene() {
+        awaitingScenePresentation=true;
+        long sceneStart=System.nanoTime();
+        com.watabou.utils.SupportDiagnostics.event("scene.begin", requestedScene.getClass().getSimpleName());
 
-		Camera.reset();
-		
-		if (scene != null) {
-			scene.destroy();
+		if (onChange != null || !isReturnMenu(sceneClass)
+				|| (scene != null && scene.getClass() == sceneClass)) clearRetainedReturn();
+
+		RetainedScene returning = retainedReturn != null && retainedReturn.scene == requestedScene
+				? retainedReturn : null;
+		if (returning != null){
+			retainedReturn = null;
+			if (scene != null) scene.destroy();
+			Camera.restore(returning.cameras);
+			PointerEvent.swapListeners(returning.pointers);
+			scene = returning.scene;
+			scene.active = true;
+			scene.onRestore();
+		} else {
+			if (scene != null){
+				if (retainedReturn == null && onChange == null && retainForReturn(scene, sceneClass)){
+					retainedReturn = new RetainedScene(scene);
+				} else scene.destroy();
+			}
+			Camera.reset();
+			// Retained graphics own their buffers until return or invalidation.
+			if (retainedReturn == null) Vertexbuffer.clear();
+			scene = requestedScene;
+			if (onChange != null) onChange.beforeCreate();
+			scene.create();
+			if (onChange != null) onChange.afterCreate();
 		}
-		//clear any leftover vertex buffers
-		Vertexbuffer.clear();
-		scene = requestedScene;
-		if (onChange != null) onChange.beforeCreate();
-		scene.create();
-		if (onChange != null) onChange.afterCreate();
 		onChange = null;
 		
 		Game.elapsed = 0f;
 		Game.timeScale = 1f;
 		Game.timeTotal = 0f;
+        com.watabou.utils.SupportDiagnostics.event("scene.ready", scene.getClass().getSimpleName()+" load_ms="+((System.nanoTime()-sceneStart)/1000000L));
 	}
 
 	protected void update() {
+		com.watabou.utils.SupportDiagnostics.periodicMemoryEvent();
 		//game will not process more than 200ms of graphics time per frame
 		float frameDelta = Math.min(0.2f, Gdx.graphics.getDeltaTime());
 		Game.elapsed = Game.timeScale * frameDelta;
@@ -296,6 +415,7 @@ public class Game implements ApplicationListener {
 	}
 	
 	protected void logException( Throwable tr ){
+		com.watabou.utils.SupportDiagnostics.error(tr);
 		StringWriter sw = new StringWriter();
 		PrintWriter pw = new PrintWriter(sw);
 		tr.printStackTrace(pw);
@@ -324,3 +444,6 @@ public class Game implements ApplicationListener {
 	}
 	
 }
+
+
+

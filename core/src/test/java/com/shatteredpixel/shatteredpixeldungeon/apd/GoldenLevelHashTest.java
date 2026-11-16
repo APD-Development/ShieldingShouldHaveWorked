@@ -22,6 +22,9 @@ import java.util.Set;
 //Each line of the golden file is one generated level (a case, a depth) and either
 //  STABLE   - came out byte-identical in every one of RECORD_JVMS fresh, deliberately perturbed JVMs, with its fingerprint
 //  UNSTABLE - came out differently depending on JVM history (an existing SPD property, see docs/APD-STATS-PHASE0.md)
+//This historical pre-recorder fixture uses its original twelve-scroll pool. The
+//approved Gathering row is covered separately by LootScrollGenerationTest; do not
+//rewrite the old baseline merely because a new item was deliberately added.
 //Only STABLE levels are compared. A future recorder build must reproduce every STABLE line exactly.
 //
 //The baseline was recorded from the code as it stood before any statistics recorder existed.
@@ -45,7 +48,7 @@ public class GoldenLevelHashTest {
 	}
 
 	private static List<String> runChild( int perturb ) throws Exception {
-		return runChild(perturb, "");
+		return runChild(perturb, "legacy-scrolls");
 	}
 
 	static List<String> runChild( int perturb, String mode ) throws Exception {
@@ -66,6 +69,21 @@ public class GoldenLevelHashTest {
 	static String hashOf( String harnessLine ){
 		return harnessLine.substring(harnessLine.indexOf("sha256=") + 7);
 	}
+
+    // Owner-approved Floor 5 room redesign: retain the original archive untouched,
+    // require all eleven new Floor 5 fingerprints, and compare every other floor
+    // to its original hash. Gold conservation/RNG/orientations have separate real-room tests.
+    private static String reviewedHash(File golden,String key,String historical) throws Exception {
+        if(!key.endsWith("|5"))return hashOf(historical);
+        Map<String,String> reviewed=new LinkedHashMap<>();
+        for(String row:Files.readAllLines(new File(golden.getParentFile(),"golden_rat_king_floor5_20261104.tsv").toPath(),StandardCharsets.UTF_8)){
+            String[] parts=row.split("\t");assertEquals(2,parts.length);assertTrue(parts[0].endsWith("|5"));
+            assertEquals(64,parts[1].length());assertEquals(null,reviewed.put(parts[0],parts[1]));
+        }
+        assertEquals("All original Floor 5 cases remain covered",GoldenCases.all().size(),reviewed.size());
+        assertTrue("Missing reviewed Rat King case: "+key,reviewed.containsKey(key));
+        return reviewed.get(key);
+    }
 
 	@Test
 	public void generatedLevelsMatchGoldenBaseline() throws Exception {
@@ -113,7 +131,7 @@ public class GoldenLevelHashTest {
 		for (Map.Entry<String, String> e : actual.entrySet()){
 			String exp = expected.get(i++);
 			if (!exp.contains(" STABLE ")) continue;
-			String expectedHash = hashOf(exp);
+			String expectedHash = reviewedHash(golden,e.getKey(),exp);
 			assertEquals("golden mismatch for " + e.getKey() + " (line " + i + ")", expectedHash, hashOf(e.getValue()));
 			compared++;
 		}
@@ -127,14 +145,14 @@ public class GoldenLevelHashTest {
 		File golden = new File(System.getProperty("apd.golden.file"));
 		if (Boolean.parseBoolean(System.getProperty("apd.golden.update", "false"))) return;
 		List<String> expected = Files.readAllLines(golden.toPath(), StandardCharsets.UTF_8);
-		Map<String, String> actual = parse(runChild(0, "rec"));
+		Map<String, String> actual = parse(runChild(0, "legacy-scrolls-rec"));
 		assertEquals("number of generated levels", expected.size(), actual.size());
 		int compared = 0, i = 0;
 		for (Map.Entry<String, String> e : actual.entrySet()){
 			String exp = expected.get(i++);
 			if (!exp.contains(" STABLE ")) continue;
 			assertEquals("recording changed level generation for " + e.getKey() + " (line " + i + ")",
-					hashOf(exp), hashOf(e.getValue()));
+					reviewedHash(golden,e.getKey(),exp), hashOf(e.getValue()));
 			compared++;
 		}
 		System.out.println("APD-GOLDEN (recorder on) compared " + compared + " stable levels of " + expected.size());

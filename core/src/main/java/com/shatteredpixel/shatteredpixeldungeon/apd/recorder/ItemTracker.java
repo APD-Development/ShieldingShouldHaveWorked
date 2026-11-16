@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -57,6 +60,7 @@ import java.util.UUID;
 final class ItemTracker {
 
 	private final RunLogWriter w;
+	private final ItemOriginHistory originHistory = new ItemOriginHistory();
 
 	//uids that have a REGISTERED event in this run's canonical history
 	private final Set<String> registered = new HashSet<>();
@@ -104,6 +108,7 @@ final class ItemTracker {
 			if (lastIndex >= 0 && e.index > lastIndex) break;
 			if (timeline.isAbandoned(e)) continue;
 			try {
+				originHistory.accept(e, log);
 				switch (e.type){
 					case EventTypes.ITEM_REGISTERED: {
 						ItemEvents.Registered r = ItemEvents.decodeRegistered(e, log);
@@ -170,6 +175,7 @@ final class ItemTracker {
 				//one unreadable item event must not stop the rest
 			}
 		}
+		originHistory.finishReplay();
 	}
 
 	private static ItemFacts.Truth truthOf( ItemEvents.Registered r ){
@@ -236,6 +242,7 @@ final class ItemTracker {
 			//an identity from outside this run's history: a save from before recording, a log that was lost, bones
 			register(item, ItemEvents.ORIGIN_ADOPTED, 0);
 		}
+		com.shatteredpixel.shatteredpixeldungeon.apd.qol.ItemOrigins.record(item, originHistory.origins.get(item.apdUid));
 		return item.apdUid;
 	}
 

@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -55,6 +58,11 @@ public class BeamingRay extends TargetedClericSpell {
 	@Override
 	public int icon() {
 		return HeroIcon.BEAMING_RAY;
+	}
+
+	public static int movementRange(Hero hero, boolean immovable){
+		int range=4*hero.pointsInTalent(Talent.BEAMING_RAY);
+		return immovable ? range/2 : range;
 	}
 
 	@Override
@@ -115,10 +123,7 @@ public class BeamingRay extends TargetedClericSpell {
 			ally = Stasis.getStasisAlly();
 		}
 
-		int range = 4*hero.pointsInTalent(Talent.BEAMING_RAY);
-		if (Char.hasProp(ally, Char.Property.IMMOVABLE)){
-			range /= 2;
-		}
+		int range = movementRange(hero, Char.hasProp(ally, Char.Property.IMMOVABLE));
 		if (Dungeon.level.distance(ally.pos, telePos) > range){
 			GLog.w(Messages.get(this, "out_of_range"));
 			return;

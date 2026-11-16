@@ -1,6 +1,6 @@
 package com.shatteredpixel.shatteredpixeldungeon.android;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import android.content.Context;
 import android.util.Log;
@@ -91,6 +91,41 @@ public class UimsdDeviceTimingTest {
 			Log.w(TAG, "Home built in " + homeMs + " ms (" + home.cards.size() + " cards, " + home.runs + " runs)");
 			assertTrue("Home has nothing on it", !home.isEmpty() && home.cards.size() >= 5);
 			assertTrue("Home too slow: " + homeMs + " ms", homeMs < 3000);
+
+			//The title-menu path prepares this same fully validated model in the
+			//background. Measure the work separately from the tap-time handoff:
+			//takeReady must only validate file metadata and must never wait for a load.
+			java.lang.reflect.Method resetWarm = com.shatteredpixel.shatteredpixeldungeon.apd.query.UimsdWarmCache.class
+					.getDeclaredMethod("resetForTest");
+			java.lang.reflect.Method awaitWarm = com.shatteredpixel.shatteredpixeldungeon.apd.query.UimsdWarmCache.class
+					.getDeclaredMethod("awaitPrewarmForTest", long.class);
+			resetWarm.setAccessible(true);
+			awaitWarm.setAccessible(true);
+			resetWarm.invoke(null);
+			try {
+				long prewarmStart = System.nanoTime();
+				com.shatteredpixel.shatteredpixeldungeon.apd.query.UimsdWarmCache.prewarm(
+						demo, rules.id, "Device timing", true);
+				awaitWarm.invoke(null, 60000L);
+				long prewarmMs = (System.nanoTime() - prewarmStart) / 1000000;
+				long handoffStart = System.nanoTime();
+				com.shatteredpixel.shatteredpixeldungeon.apd.query.UimsdModel prepared =
+						com.shatteredpixel.shatteredpixeldungeon.apd.query.UimsdWarmCache.takeReady(
+								demo, rules.id, "Device timing", true);
+				long handoffMs = (System.nanoTime() - handoffStart) / 1000000;
+				Log.w(TAG, "title prewarm prepared the fully READY model in " + prewarmMs
+						+ " ms; tap-time validated handoff took " + handoffMs + " ms");
+				assertNotNull("title prewarm did not produce a model", prepared);
+				assertEquals(com.shatteredpixel.shatteredpixeldungeon.apd.query.UimsdModel.State.READY,
+						prepared.state());
+				assertTrue("title prewarm too slow: " + prewarmMs + " ms", prewarmMs < 30000);
+				assertTrue("tap-time handoff too slow: " + handoffMs + " ms", handoffMs < 1000);
+				assertNull("a mutable warm model may only be consumed once",
+						com.shatteredpixel.shatteredpixeldungeon.apd.query.UimsdWarmCache.takeReady(
+								demo, rules.id, "Device timing", true));
+			} finally {
+				resetWarm.invoke(null);
+			}
 
 			//difficulty: the demo history has recorded and unknown difficulties, and the difficulty view runs
 			com.shatteredpixel.shatteredpixeldungeon.apd.query.Dataset runsDs = warm.dataset("runs");

@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -168,12 +171,14 @@ public class GameScene extends PixelScene {
 	private TerrainFeaturesTilemap terrainFeatures;
 	private RaisedTerrainTilemap raisedTerrain;
 	private DungeonWallsTilemap walls;
+    private com.shatteredpixel.shatteredpixeldungeon.tiles.SearchedWallTilemap searchedWalls;
 	private WallBlockingTilemap wallBlocking;
 	private FogOfWar fog;
 	private HeroSprite hero;
 
 	private MenuPane menu;
 	private StatusPane status;
+    private com.shatteredpixel.shatteredpixeldungeon.ui.DotOverlay dotOverlay;
 
 	private BossHealthBar boss;
 
@@ -211,8 +216,11 @@ public class GameScene extends PixelScene {
 	private Toast prompt;
 
 	private AttackIndicator attack;
+    private com.shatteredpixel.shatteredpixeldungeon.ui.StairNavigationTag stairs;
 	private LootIndicator loot;
 	private ActionIndicator action;
+    private com.shatteredpixel.shatteredpixeldungeon.ui.ClericQuickCastTag[] clericSpells;
+    private int tagClericCount;
 	private ResumeIndicator resume;
 
 	{
@@ -221,6 +229,7 @@ public class GameScene extends PixelScene {
 
 	@Override
 	public void create() {
+        UimsdScene.releaseForGameplay();
 		
 		if (Dungeon.hero == null || Dungeon.level == null){
 			ShatteredPixelDungeon.switchNoFade(TitleScene.class);
@@ -248,7 +257,7 @@ public class GameScene extends PixelScene {
 
 		scene = this;
 
-		terrain = new Group();
+		terrain = new com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup();
 		add( terrain );
 
 		water = new SkinnedBlock(
@@ -272,7 +281,7 @@ public class GameScene extends PixelScene {
 		water.autoAdjust = true;
 		terrain.add( water );
 
-		ripples = new Group();
+		ripples = new com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup();
 		terrain.add( ripples );
 
 		DungeonTileSheet.setupVariance(Dungeon.level.map.length, Dungeon.seedCurDepth());
@@ -280,7 +289,7 @@ public class GameScene extends PixelScene {
 		tiles = new DungeonTerrainTilemap();
 		terrain.add( tiles );
 
-		customTiles = new Group();
+		customTiles = new com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup();
 		terrain.add(customTiles);
 
 		visualGrid = new GridTileMap();
@@ -292,29 +301,29 @@ public class GameScene extends PixelScene {
 		terrainFeatures = new TerrainFeaturesTilemap(Dungeon.level.plants, Dungeon.level.traps);
 		terrain.add(terrainFeatures);
 
-		customTerrain = new Group();
+		customTerrain = new com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup();
 		terrain.add(customTerrain);
 
 		levelVisuals = Dungeon.level.addVisuals();
 		add(levelVisuals);
 
-		floorEmitters = new Group();
+		floorEmitters = new com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup();
 		add(floorEmitters);
 
-		heaps = new Group();
+		heaps = new com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup();
 		add( heaps );
 		
 		for ( Heap heap : Dungeon.level.heaps.valueList() ) {
 			addHeapSprite( heap );
 		}
 
-		emitters = new Group();
-		effects = new Group();
-		healthIndicators = new Group();
-		emoicons = new Group();
-		overFogEffects = new Group();
+		emitters = new com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup();
+		effects = new com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup();
+		healthIndicators = new com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup();
+		emoicons = com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup.normalSpeedGroup();
+		overFogEffects = new com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup();
 		
-		mobs = new Group();
+		mobs = new com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup();
 		add( mobs );
 
 		hero = new HeroSprite();
@@ -332,11 +341,14 @@ public class GameScene extends PixelScene {
 		walls = new DungeonWallsTilemap();
 		add(walls);
 
-		customWalls = new Group();
+		customWalls = new com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup();
 		add(customWalls);
 
 		levelWallVisuals = Dungeon.level.addWallVisuals();
 		add( levelWallVisuals );
+
+        searchedWalls = new com.shatteredpixel.shatteredpixeldungeon.tiles.SearchedWallTilemap();
+        add(searchedWalls);
 
 		wallBlocking = new WallBlockingTilemap();
 		add (wallBlocking);
@@ -344,7 +356,7 @@ public class GameScene extends PixelScene {
 		add( emitters );
 		add( effects );
 
-		gases = new Group();
+		gases = com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup.normalSpeedGroup();
 		add( gases );
 
 		for (Blob blob : Dungeon.level.blobs.values()) {
@@ -356,15 +368,15 @@ public class GameScene extends PixelScene {
 		fog = new FogOfWar( Dungeon.level.width(), Dungeon.level.height() );
 		add( fog );
 
-		spells = new Group();
+		spells = new com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup();
 		add( spells );
 
 		add(overFogEffects);
 
-		checkedCells = new Group();
+		checkedCells = new com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup();
 		add(checkedCells);
 
-		targetedCells = new Group();
+		targetedCells = new com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup();
 		add(targetedCells);
 		for (TargetedCell cell : TargetedCell.cells.valueList()){
 			cell.reset(cell.pos, cell.time);
@@ -384,7 +396,7 @@ public class GameScene extends PixelScene {
 			addCustomWall(visual);
 		}
 		
-		statuses = new Group();
+		statuses = com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup.normalSpeedGroup();
 		add( statuses );
 		
 		add( healthIndicators );
@@ -515,6 +527,12 @@ public class GameScene extends PixelScene {
 		action = new ActionIndicator();
 		action.camera = uiCamera;
 		add( action );
+        clericSpells = new com.shatteredpixel.shatteredpixeldungeon.ui.ClericQuickCastTag[4];
+        for (int i=0; i<clericSpells.length; i++) {
+            clericSpells[i] = new com.shatteredpixel.shatteredpixeldungeon.ui.ClericQuickCastTag(i);
+            clericSpells[i].camera = uiCamera;
+            add(clericSpells[i]);
+        }
 
 		loot = new LootIndicator();
 		loot.camera = uiCamera;
@@ -523,11 +541,17 @@ public class GameScene extends PixelScene {
 		attack = new AttackIndicator();
 		attack.camera = uiCamera;
 		add( attack );
+        stairs=new com.shatteredpixel.shatteredpixeldungeon.ui.StairNavigationTag(); stairs.camera=uiCamera; add(stairs);
 
 		log = new GameLog();
 		log.camera = uiCamera;
 		log.newLine();
 		add( log );
+        dotOverlay=new com.shatteredpixel.shatteredpixeldungeon.ui.DotOverlay();
+        dotOverlay.camera=uiCamera;
+        float dotWidth=Math.min(138,Math.max(65,uiCamera.width/2f-4));
+        dotOverlay.setRect(uiCamera.width-dotWidth-3,screentop+42,dotWidth,14);
+        add(dotOverlay);
 
 		if (uiSize > 0){
 			bringToFront(status);
@@ -742,6 +766,7 @@ public class GameScene extends PixelScene {
 			
 		}
 
+		com.shatteredpixel.shatteredpixeldungeon.apd.ApdIntro.finishIfPastEntrance(Dungeon.level, Dungeon.depth, Dungeon.branch, Dungeon.hero.pos);
 		//Tutorial
 		if (SPDSettings.intro()){
 
@@ -757,9 +782,7 @@ public class GameScene extends PixelScene {
 				GameLog.wipe();
 				GLog.p(Messages.get(GameScene.class, "tutorial_move_desktop"));
 			}
-			toolbar.visible = toolbar.active = false;
-			status.visible = status.active = false;
-			if (inventory != null) inventory.visible = inventory.active = false;
+			//APD: tutorial hints never disable the gameplay controls.
 		}
 
 		if (!SPDSettings.intro() &&
@@ -865,6 +888,7 @@ public class GameScene extends PixelScene {
 
 	@Override
 	public synchronized void update() {
+        com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup.speed(SPDSettings.playbackSpeed());
 		lastOffset = null;
 
 		if (updateItemDisplays){
@@ -883,6 +907,8 @@ public class GameScene extends PixelScene {
 
 		super.update();
 
+		com.shatteredpixel.shatteredpixeldungeon.apd.ApdIntro.finishIfPastEntrance(Dungeon.level, Dungeon.depth, Dungeon.branch, Dungeon.hero.pos);
+
 		if (notifyDelay > 0) notifyDelay -= Game.elapsed;
 
 		if (!Emitter.freezeEmitters) {
@@ -892,6 +918,7 @@ public class GameScene extends PixelScene {
 		}
 
 		if (!Actor.processing() && Dungeon.hero.isAlive()) {
+			if (!com.shatteredpixel.shatteredpixeldungeon.apd.loot.LootTransfers.tick()) return;
 			if (actorThread == null || !actorThread.isAlive()) {
 				
 				actorThread = new Thread() {
@@ -921,28 +948,34 @@ public class GameScene extends PixelScene {
 			log.newLine();
 		}
 
-		if (updateTags){
+		if (tagClericCount != com.shatteredpixel.shatteredpixeldungeon.ui.ClericQuickCastTag.count()) {
+            tagClericCount = com.shatteredpixel.shatteredpixeldungeon.ui.ClericQuickCastTag.count();
+            updateTags = true;
+        }
+        if (updateTags){
 			tagAttack = attack.active;
 			tagLoot = loot.visible;
 			tagAction = action.visible;
 			tagResume = resume.visible;
+            tagStairs = stairs.visible;
 
 			layoutTags();
 
 		} else if (tagAttack != attack.active ||
 				tagLoot != loot.visible ||
 				tagAction != action.visible ||
-				tagResume != resume.visible) {
+				tagResume != resume.visible || tagStairs != stairs.visible) {
 
 			boolean tagAppearing = (attack.active && !tagAttack) ||
 									(loot.visible && !tagLoot) ||
 									(action.visible && !tagAction) ||
-									(resume.visible && !tagResume);
+									(resume.visible && !tagResume) || (stairs.visible && !tagStairs);
 
 			tagAttack = attack.active;
 			tagLoot = loot.visible;
 			tagAction = action.visible;
 			tagResume = resume.visible;
+            tagStairs = stairs.visible;
 
 			//if a new tag appears, re-layout tags immediately
 			//otherwise, wait until the hero acts, so as to not suddenly change their position
@@ -976,12 +1009,19 @@ public class GameScene extends PixelScene {
 	private boolean tagLoot      = false;
 	private boolean tagAction    = false;
 	private boolean tagResume    = false;
+    private boolean tagStairs = false;
+
+    private static void placeCombatTag(Tag tag,int column,int row,float edge,float base,float width,boolean left,int rows) {
+        int[] cell=com.shatteredpixel.shatteredpixeldungeon.apd.qol.CombatTagLayout.fit(column,row,rows);
+        tag.setRect(edge+(left?1:-1)*cell[0]*width,base-(cell[1]+1)*Tag.SIZE,width,Tag.SIZE);
+        tag.flip(left);
+    }
 
 	public static void layoutTags() {
 
 		updateTags = false;
 
-		if (scene == null) return;
+		if (scene == null || scene.toolbar == null) return;
 
 		//move the camera center up a bit if we're on full UI and it is taking up lots of space
 		if (scene.inventory != null && scene.inventory.visible
@@ -1001,16 +1041,23 @@ public class GameScene extends PixelScene {
 		float tagWidth = Tag.SIZE + (tagsOnLeft ? insets.left : insets.right);
 		float tagLeft = tagsOnLeft ? 0 : uiCamera.width - tagWidth;
 
-		float y = SPDSettings.interfaceSize() == 0 ? scene.toolbar.top()-2 : scene.status.top()-2;
+        int clericColumns = com.shatteredpixel.shatteredpixeldungeon.ui.ClericQuickCastTag.count() > 0 ? 3 : 1;
+        boolean duelistAction = Dungeon.hero != null && Dungeon.hero.heroClass == com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass.DUELIST
+                && ActionIndicator.action instanceof MeleeWeapon.Charger;
+        boolean extraAction = scene.tagAction && !duelistAction;
+        int occupiedColumns = clericColumns > 1 ? clericColumns + (extraAction ? 1 : 0)
+                : (scene.tagLoot || scene.tagResume || extraAction ? 2 : 1);
+        float logTagWidth = Math.min(tagWidth*occupiedColumns, uiCamera.width-insets.left-insets.right-48);
+		float y = SPDSettings.interfaceSize() == 0 ? scene.toolbar.messageTop()-2 : scene.status.top()-2;
 		if (SPDSettings.interfaceSize() == 0){
 			if (tagsOnLeft) {
-				scene.log.setRect(tagWidth, y, uiCamera.width - tagWidth - insets.right, 0);
+				scene.log.setRect(logTagWidth, y, uiCamera.width - logTagWidth - insets.right, 0);
 			} else {
-				scene.log.setRect(insets.left, y, uiCamera.width - tagWidth - insets.left, 0);
+				scene.log.setRect(insets.left, y, uiCamera.width - logTagWidth - insets.left, 0);
 			}
 		} else {
 			if (tagsOnLeft) {
-				scene.log.setRect(tagWidth, y, 160 - tagWidth, 0);
+				scene.log.setRect(logTagWidth, y, 160 - logTagWidth, 0);
 			} else {
 				scene.log.setRect(insets.left, y, 160 - insets.left, 0);
 			}
@@ -1021,28 +1068,27 @@ public class GameScene extends PixelScene {
 			pos = scene.status.top();
 		}
 
-		if (scene.tagAttack){
-			scene.attack.setRect( tagLeft, pos - Tag.SIZE, tagWidth, Tag.SIZE );
-			scene.attack.flip(tagsOnLeft);
-			pos = scene.attack.top();
-		}
 
-		if (scene.tagLoot) {
-			scene.loot.setRect( tagLeft, pos - Tag.SIZE, tagWidth, Tag.SIZE );
-			scene.loot.flip(tagsOnLeft);
-			pos = scene.loot.top();
-		}
-
-		if (scene.tagAction) {
-			scene.action.setRect( tagLeft, pos - Tag.SIZE, tagWidth, Tag.SIZE );
-			scene.action.flip(tagsOnLeft);
-			pos = scene.action.top();
-		}
-
-		if (scene.tagResume) {
-			scene.resume.setRect( tagLeft, pos - Tag.SIZE, tagWidth, Tag.SIZE );
-			scene.resume.flip(tagsOnLeft);
-		}
+        boolean duelist = Dungeon.hero != null && Dungeon.hero.heroClass == com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass.DUELIST;
+        int spellCount = com.shatteredpixel.shatteredpixeldungeon.ui.ClericQuickCastTag.count();
+        float base = pos;
+        int rows = Math.max(1, (int)((base-insets.top)/Tag.SIZE));
+        placeCombatTag(scene.attack,0,0,tagLeft,base,tagWidth,tagsOnLeft,rows);
+        boolean weaponAbility = scene.tagAction && ActionIndicator.action instanceof MeleeWeapon.Charger && duelist;
+        if (weaponAbility) placeCombatTag(scene.action,0,1,tagLeft,base,tagWidth,tagsOnLeft,rows);
+        if (scene.tagStairs) placeCombatTag(scene.stairs,0,
+                com.shatteredpixel.shatteredpixeldungeon.apd.qol.CombatTagLayout.stairRow(duelist),tagLeft,base,tagWidth,tagsOnLeft,rows);
+        for (int i=0;i<scene.clericSpells.length;i++) {
+            Tag spell=scene.clericSpells[i];
+            spell.visible=spell.active=i<spellCount;
+            if (i<spellCount) placeCombatTag(spell,
+                    com.shatteredpixel.shatteredpixeldungeon.apd.qol.CombatTagLayout.spellColumn(i),
+                    com.shatteredpixel.shatteredpixeldungeon.apd.qol.CombatTagLayout.spellRow(i),tagLeft,base,tagWidth,tagsOnLeft,rows);
+        }
+        // Keep other legitimate actions available without displacing the class/navigation controls.
+        if (scene.tagLoot) placeCombatTag(scene.loot,1,spellCount>0?2:0,tagLeft,base,tagWidth,tagsOnLeft,rows);
+        if (scene.tagResume) placeCombatTag(scene.resume,spellCount>0?2:1,spellCount>0?2:1,tagLeft,base,tagWidth,tagsOnLeft,rows);
+        if (scene.tagAction && !weaponAbility) placeCombatTag(scene.action,spellCount>0?3:1,spellCount>0?0:2,tagLeft,base,tagWidth,tagsOnLeft,rows);
 	}
 	
 	@Override
@@ -1275,6 +1321,21 @@ public class GameScene extends PixelScene {
 		}
 	}
 
+	/** Compatibility entry point retained for C485 diagnostics and tests. */
+	public static synchronized Emitter normalSpeedEmitter() {
+		return wellEmitter();
+	}
+
+	/** Well of Health activation effects share the existing 1x well/gas layer. */
+	public static synchronized Emitter wellEmitter() {
+		if (scene != null && scene.gases != null) {
+			Emitter emitter = (Emitter)scene.gases.recycle( Emitter.class );
+			emitter.revive();
+			return emitter;
+		}
+		return null;
+	}
+
 	public static synchronized Emitter floorEmitter() {
 		if (scene != null) {
 			Emitter emitter = (Emitter)scene.floorEmitters.recycle( Emitter.class );
@@ -1316,26 +1377,7 @@ public class GameScene extends PixelScene {
 	public static void endIntro(){
 		if (scene != null){
 			SPDSettings.intro(false);
-			scene.add(new Tweener(scene, 2f){
-				@Override
-				protected void updateValues(float progress) {
-					if (progress <= 0.5f) {
-						scene.status.alpha(2*progress);
-						scene.status.visible = scene.status.active = true;
-						scene.toolbar.visible = scene.toolbar.active = false;
-						if (scene.inventory != null) scene.inventory.visible = scene.inventory.active = false;
-					} else {
-						scene.status.alpha(1f);
-						scene.status.visible = scene.status.active = true;
-						scene.toolbar.alpha((progress - 0.5f)*2);
-						scene.toolbar.visible = scene.toolbar.active = true;
-						if (scene.inventory != null){
-							scene.inventory.visible = scene.inventory.active = true;
-							scene.inventory.alpha((progress - 0.5f)*2);
-						}
-					}
-				}
-			});
+
 			GameLog.wipe();
 			if (SPDSettings.interfaceSize() == 0){
 				GLog.p(Messages.get(GameScene.class, "tutorial_ui_mobile"));
@@ -1345,13 +1387,7 @@ public class GameScene extends PixelScene {
 						KeyBindings.getKeyName(KeyBindings.getFirstKeyForAction(SPDAction.INVENTORY, ControllerHandler.isControllerConnected()))));
 			}
 
-			//clear hidden doors, it's floor 1 so there are only the entrance ones
-			for (int i = 0; i < Dungeon.level.length(); i++){
-				if (Dungeon.level.map[i] == Terrain.SECRET_DOOR){
-					Dungeon.level.discover(i);
-					discoverTile(i, Terrain.SECRET_DOOR);
-				}
-			}
+
 		}
 	}
 	
@@ -1375,6 +1411,7 @@ public class GameScene extends PixelScene {
 			scene.terrainFeatures.map(Dungeon.level.map, Dungeon.level.width() );
 			scene.raisedTerrain.map(Dungeon.level.map, Dungeon.level.width() );
 			scene.walls.map(Dungeon.level.map, Dungeon.level.width() );
+            if (scene.searchedWalls != null) scene.searchedWalls.map(Dungeon.level.map, Dungeon.level.width());
 		}
 		updateFog();
 	}
@@ -1388,6 +1425,7 @@ public class GameScene extends PixelScene {
 			scene.terrainFeatures.updateMap();
 			scene.raisedTerrain.updateMap();
 			scene.walls.updateMap();
+            if (scene.searchedWalls != null) scene.searchedWalls.updateMap();
 			updateFog();
 		}
 	}
@@ -1400,10 +1438,19 @@ public class GameScene extends PixelScene {
 			scene.terrainFeatures.updateMapCell( cell );
 			scene.raisedTerrain.updateMapCell( cell );
 			scene.walls.updateMapCell( cell );
+            if (scene.searchedWalls != null) scene.searchedWalls.updateMapCell(cell);
 			//update adjacent cells too
 			updateFog( cell, 1 );
 		}
 	}
+
+    public static void updateSearchedWallAppearance(){
+        if(scene!=null&&scene.searchedWalls!=null)scene.searchedWalls.applyAppearance();
+    }
+
+    public static void updateSearchedWall(int cell) {
+        if (scene != null && scene.searchedWalls != null) scene.searchedWalls.updateMapCell(cell);
+    }
 
 	public static void plantSeed( int cell ) {
 		if (scene != null) {
@@ -1417,6 +1464,12 @@ public class GameScene extends PixelScene {
 		}
 	}
 	
+    /** Read-only display focus from an observed buff icon, no modal window. */
+    public static void focusDamageEffect(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff buff) {
+        if (scene != null && scene.dotOverlay != null && buff != null)
+            scene.dotOverlay.focus(buff.target);
+    }
+
 	public static void show( Window wnd ) {
 		if (scene != null) {
 			cancel();
@@ -1512,6 +1565,7 @@ public class GameScene extends PixelScene {
 	
 	public static void afterObserve() {
 		if (scene != null) {
+            if(scene.searchedWalls!=null)scene.searchedWalls.refreshKnownGeometry();
 			for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
 				if (mob.sprite != null) {
 					if (mob instanceof Mimic && mob.state == mob.PASSIVE && ((Mimic) mob).stealthy() && Dungeon.level.visited[mob.pos]){
@@ -1700,6 +1754,7 @@ public class GameScene extends PixelScene {
 	}
 
 	public static boolean cancel() {
+        if(Dungeon.hero!=null)Dungeon.hero.apdWaitCancellationEpoch++;
 		cellSelector.resetKeyHold();
 		if (Dungeon.hero != null && (Dungeon.hero.curAction != null || Dungeon.hero.resting)) {
 			
@@ -1810,7 +1865,12 @@ public class GameScene extends PixelScene {
 				GameScene.flashForDocument(Document.ADVENTURERS_GUIDE, Document.GUIDE_SURPRISE_ATKS);
 			}
 		} else if ( o instanceof Heap && !((Heap) o).isEmpty() ){
-			GameScene.show(new WndInfoItem((Heap)o));
+            Heap examined = (Heap)o;
+            if (com.shatteredpixel.shatteredpixeldungeon.apd.qol.HeapExamination.hasVisiblePile(examined)) {
+                GameScene.show(new com.shatteredpixel.shatteredpixeldungeon.windows.WndInfoPile(examined));
+            } else {
+                GameScene.show(new WndInfoItem(examined));
+            }
 		} else if ( o instanceof Plant ){
 			GameScene.show( new WndInfoPlant((Plant) o) );
 			//plants can be harmful to trample, so let the player ID just by examine
@@ -1941,3 +2001,5 @@ public class GameScene extends PixelScene {
 		}
 	};
 }
+
+

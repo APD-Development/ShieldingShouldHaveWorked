@@ -121,6 +121,7 @@ import java.util.ArrayList;
 public class CursedWand {
 
 	public static void cursedZap(final Item origin, final Char user, final Ballistica bolt, final Callback afterZap){
+        final com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin apdCastOrigin=com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin.capture(user,null);
 
 		boolean positiveOnly = user == Dungeon.hero && Random.Float() < WondrousResin.positiveCurseEffectChance();
 		CursedEffect effect = randomValidEffect(origin, user, bolt, positiveOnly);
@@ -128,7 +129,9 @@ public class CursedWand {
 		effect.FX(origin, user, bolt, new Callback() {
 			@Override
 			public void call() {
-				effect.effect(origin, user, bolt, positiveOnly);
+				try(com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveInvocation scope=com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveInvocation.enter(user,apdCastOrigin)){
+                    effect.effect(origin,user,bolt,positiveOnly);
+                }
 				afterZap.call();
 			}
 		});
@@ -224,11 +227,11 @@ public class CursedWand {
 			Char target = Actor.findChar(bolt.collisionPos);
 			//doesn't affect caster if positive only
 			if (Random.Int(2) == 0) {
-				if (target != null) Buff.affect(target, Burning.class).reignite(target);
-				if (!positiveOnly) Buff.affect(user, Frost.class, Frost.DURATION);
+				if (target != null) Burning.affectAttributed(target, user);
+				if (!positiveOnly) Buff.affectAttributed(user, Frost.class, Frost.DURATION, com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin.capture(user, null));
 			} else {
-				if (!positiveOnly)Buff.affect(user, Burning.class).reignite(user);
-				if (target != null) Buff.affect(target, Frost.class, Frost.DURATION);
+				if (!positiveOnly)Burning.affectAttributed(user, user);
+				if (target != null) Buff.affectAttributed(target, Frost.class, Frost.DURATION, com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin.capture(user, null));
 			}
 			tryForWandProc(target, origin);
 			return true;
@@ -291,7 +294,7 @@ public class CursedWand {
 					GameScene.add( Blob.seed( bolt.collisionPos, 800, ConfusionGas.class ) );
 					return true;
 				case 1:
-					GameScene.add( Blob.seed( bolt.collisionPos, 500, ToxicGas.class ) );
+					GameScene.add( ToxicGas.seedAttributed(bolt.collisionPos,500,com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin.capture(user,null)) );
 					return true;
 				case 2:
 					GameScene.add( Blob.seed( bolt.collisionPos, 200, ParalyticGas.class ) );
@@ -399,7 +402,7 @@ public class CursedWand {
 					Char ch = Actor.findChar(  i );
 					//does not harm hero or allies when positive only
 					if (ch != null && (!positiveOnly || ch.alignment != Char.Alignment.ALLY)){
-						Buff.affect(ch, Ooze.class).set( Ooze.DURATION );
+						Buff.affect(ch, Ooze.class).setAttributed( Ooze.DURATION, user );
 					}
 				}
 			}
@@ -456,7 +459,9 @@ public class CursedWand {
 		public boolean effect(Item origin, Char user, Ballistica bolt, boolean positiveOnly) {
 			if (valid(origin, user, bolt, positiveOnly)) {
 				tryForWandProc(Actor.findChar(bolt.collisionPos), origin);
-				Dungeon.level.plant((Plant.Seed) Generator.randomUsingDefaults(Generator.Category.SEED), bolt.collisionPos);
+				Dungeon.level.plantAttributed(
+						(Plant.Seed) Generator.randomUsingDefaults(Generator.Category.SEED), bolt.collisionPos,
+						com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin.capture(user, null));
 				return true;
 			} else {
 				return false;
@@ -487,12 +492,12 @@ public class CursedWand {
 					toDamage = user;
 				}
 				int apdHpBefore = toHeal.HP;
-				toHeal.HP = Math.min(toHeal.HT, toHeal.HP + damage/2);
+				toHeal.HP = Math.min(toHeal.HT, toHeal.HP + com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomHealingHooks.amount(toHeal, damage/2));
 				ApdCombat.onHeal( toHeal, apdHpBefore, ApdCombat.HEAL_WAND_CURSED, damage/2 );
 				toHeal.sprite.emitter().burst(Speck.factory(Speck.HEALING), 3);
-				toHeal.sprite.showStatusWithIcon( CharSprite.POSITIVE, Integer.toString(damage/2), FloatingText.HEALING );
+				toHeal.sprite.showStatusWithIcon( CharSprite.POSITIVE, Integer.toString(com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomHealingHooks.display(toHeal, apdHpBefore, damage/2)), FloatingText.HEALING );
 
-				toDamage.damage(damage, new CursedWand());
+				com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomOffensiveHooks.raw(toDamage,damage,new CursedWand(),user);
 				toDamage.sprite.emitter().start(ShadowParticle.UP, 0.05f, 10);
 
 				if (toDamage == Dungeon.hero){
@@ -521,7 +526,7 @@ public class CursedWand {
 	public static class Explosion extends CursedEffect {
 		@Override
 		public boolean effect(Item origin, Char user, Ballistica bolt, boolean positiveOnly) {
-			new Bomb.ConjuredBomb().explode(bolt.collisionPos);
+			new Bomb.ConjuredBomb().apdExplodeAttributed(bolt.collisionPos,com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin.capture(user,null));
 			tryForWandProc(Actor.findChar(bolt.collisionPos), origin);
 			return true;
 		}
@@ -578,7 +583,7 @@ public class CursedWand {
 				//does not harm allies if positive only
 				if (ch.alignment != Char.Alignment.ALLY || !positiveOnly){
 					//shocking dart damage and a little stun
-					ch.damage(Random.NormalIntRange(5 + Dungeon.scalingDepth() / 4, 10 + Dungeon.scalingDepth() / 4), new Electricity());
+					com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomOffensiveHooks.raw(ch,Random.NormalIntRange(5 + Dungeon.scalingDepth() / 4, 10 + Dungeon.scalingDepth() / 4),new Electricity(),user);
 					if (ch.isAlive()) {
 						Buff.affect(ch, Paralysis.class, Paralysis.DURATION / 2f);
 					} else if (ch == Dungeon.hero){
@@ -816,13 +821,12 @@ public class CursedWand {
 					CellEmitter.get(i).burst(FlameParticle.FACTORY, 10);
 					if (Actor.findChar(i) != null){
 						Char ch = Actor.findChar(i);
-						Burning burning = Buff.affect(ch, Burning.class);
-						burning.reignite(ch);
+						Burning burning = Burning.affectAttributed(ch, user);
 						int dmg = Random.NormalIntRange(5 + Dungeon.scalingDepth(), 10 + Dungeon.scalingDepth()*2);
-						ch.damage(dmg, burning);
+						com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomOffensiveHooks.raw(ch,dmg,burning,user);
 					}
 					if (Dungeon.level.flamable[i]){
-						GameScene.add(Blob.seed(i, 4, Fire.class));
+						GameScene.add(Fire.seedAttributed(i, 4, com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin.capture(user,null)));
 					}
 
 				}
@@ -901,30 +905,29 @@ public class CursedWand {
 					int dmg = Random.NormalIntRange(5 + Dungeon.scalingDepth(), 10 + Dungeon.scalingDepth()*2);
 					switch (Random.Int(5)){
 						case 0: default:
-							Burning burning = Buff.affect(ch, Burning.class);
-							burning.reignite(ch);
-							ch.damage(dmg, burning);
+							Burning burning = Burning.affectAttributed(ch, user);
+							com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomOffensiveHooks.raw(ch,dmg,burning,user);
 							ch.sprite.emitter().burst(FlameParticle.FACTORY, 20);
 							break;
 						case 1:
-							ch.damage(dmg, new Frost());
-							if (ch.isAlive()) Buff.affect(ch, Frost.class, Frost.DURATION);
+							com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomOffensiveHooks.raw(ch,dmg,new Frost(),user);
+							if (ch.isAlive()) Buff.affectAttributed(ch, Frost.class, Frost.DURATION, com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin.capture(user, null));
 							Splash.at( ch.sprite.center(), 0xFFB2D6FF, 20 );
 							break;
 						case 2:
 							Poison poison = Buff.affect(ch, Poison.class);
-							poison.set(3 + Dungeon.scalingDepth() / 2);
-							ch.damage(dmg, poison);
+							poison.setAttributed(3+Dungeon.scalingDepth()/2,user);
+							com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomOffensiveHooks.raw(ch,dmg,poison,user);
 							ch.sprite.emitter().burst(PoisonParticle.SPLASH, 20);
 							break;
 						case 3:
 							Ooze ooze = Buff.affect(ch, Ooze.class);
-							ooze.set(Ooze.DURATION);
-							ch.damage(dmg, ooze);
+							ooze.setAttributed(Ooze.DURATION,user);
+							com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomOffensiveHooks.raw(ch,dmg,ooze,user);
 							Splash.at( ch.sprite.center(), 0x000000, 20 );
 							break;
 						case 4:
-							ch.damage(dmg, new Electricity());
+							com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomOffensiveHooks.raw(ch,dmg,new Electricity(),user);
 							if (ch.isAlive()) Buff.affect(ch, Paralysis.class, Paralysis.DURATION);
 							ch.sprite.emitter().burst(SparkParticle.FACTORY, 20);
 							break;
@@ -1039,7 +1042,7 @@ public class CursedWand {
 			if (!positiveOnly) {
 				GLog.w(Messages.get(CursedWand.class, "fire"));
 				do {
-					GameScene.add(Blob.seed(Dungeon.level.randomDestination(null), 10, Fire.class));
+					GameScene.add(Fire.seedAttributed(Dungeon.level.randomDestination(null), 10, com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin.capture(user,null)));
 				} while (Random.Int(5) != 0);
 			}
 			return true;
@@ -1294,3 +1297,6 @@ public class CursedWand {
 	}
 
 }
+
+
+

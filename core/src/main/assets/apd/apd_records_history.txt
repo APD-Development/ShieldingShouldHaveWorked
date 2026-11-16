@@ -8,6 +8,37 @@ APD game version, and every recorded run keeps the telemetry version that record
 tied to a version of the recorded data. Minor versions only add things, a new major version changes what existing
 data means.
 
+custom-rules-provisional-v26r | - | APD 4.0.8-apd | 2026-10-16
+- New runs record the exact provisional v2.6R scoring multiplier and its version, alongside original and adjusted scores.
+- Existing runs retain their previously recorded scoring authority and earned scores.
+
+telemetry-1.16-boss-phases | telemetry 1.16 | APD 4.0.8-apd | 2026-10-15
+- Records the visible phase transitions of Goo, Tengu, DM-300, Dwarf King and Yog, with the displayed boss name, boss-specific phase number, floor and visible phase state.
+- Restore-time reconstruction records nothing. Runs recorded before 1.16 show boss phases as unknown, never zero.
+
+telemetry-1.15-movement-commands | telemetry 1.15 | APD 4.0.8-apd | 2026-10-15
+- Records each manual step, point-to-point travel or safe stair-navigation command once, with its public destination and floor width.
+- Existing move.step history is unchanged: its travelling field distinguishes physical walking from instantaneous relocation, not manual from automated movement.
+- This source contains no general auto-explore mechanic. Runs recorded before 1.15 show movement-command mode as unknown, never zero.
+
+telemetry-1.14-alchemy-crafts | telemetry 1.14 | APD 4.0.8-apd | 2026-10-15
+- Records each successful alchemy recipe using only the displayed ingredient and result names, their quantities, the floor and the exact total/carried/toolkit energy split.
+- True unidentified item classes remain confined to existing INTERNAL item history. Failed brews and restore-time reconstruction emit no public craft fact.
+- Runs recorded before 1.14 show alchemy crafts as unknown, never zero.
+
+telemetry-1.13-ally-summons | telemetry 1.13 | APD 4.0.8-apd | 2026-10-15
+- Records player-owned allies when their explicit offensive creator is the hero or another ally the player can see.
+- Public history contains only the displayed ally and creator names plus the floor. Enemy, boss, unattributed and off-screen-creator summons emit no public event.
+- Runs recorded before 1.13 show ally summons as unknown, never zero.
+
+telemetry-1.12-npc-interactions | telemetry 1.12 | APD 4.0.8-apd | 2026-10-15
+- Records each accepted hero interaction with an NPC using only the name already shown to the player and the current floor.
+- Quest state changes remain separate; runs recorded before 1.12 show NPC interactions as unknown, never zero.
+
+custom-rules-scoring-1-11 | telemetry 1.11 | APD 4.0.8-apd | 2026-10-13
+- Records all selected custom settings and frozen scoring status without changing earned scores.
+- Historical settings that were not recorded remain unknown.
+
 uimsd-name | - | APD 4.0.8-apd | 2026-10-06
 - The statistics / records / query system is named UIMSD, the Ultimate Infinite Mega Statistics Database. The title
   screen button that used to say "Statistics" now says "UIMSD". This changes a name only, no recorded data.
@@ -145,3 +176,5 @@ why-apd-keeps-history | - | APD 4.0.8-apd | 2026-10-06
   statistics nobody has thought of yet.
 - Runs that were played before APD recorded history can only ever contain what SPD kept, so they hold less
   information than runs recorded by APD itself. Missing information stays missing, it is never guessed.
+
+

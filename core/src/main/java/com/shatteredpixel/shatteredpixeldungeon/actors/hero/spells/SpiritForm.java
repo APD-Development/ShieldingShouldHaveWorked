@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -147,6 +150,32 @@ public class SpiritForm extends ClericSpell {
 			}
 		}
 
+        /** Current built-in ring bonus without changing the stored Spirit Form item. */
+        public int previewRingBonus(Hero hero, Class<? extends Ring> type) {
+            return previewRingBonus(hero, type, true);
+        }
+
+        public boolean previewRingIdentified() {
+            return !(effect instanceof Ring) || ((Ring) effect).isIdentified();
+        }
+
+        public int previewRingBonus(Hero hero, Class<? extends Ring> type, boolean buffed) {
+            if (hero == null || type == null || !(effect instanceof Ring) || !type.isInstance(effect)) return 0;
+            int level = hero.pointsInTalent(Talent.SPIRIT_FORM);
+            // Match Item.buffedLvl even if an unusual saved effect aliases owned equipment.
+            if (buffed && hero.buff(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Degrade.class) != null
+                    && (((Ring)effect).isEquipped(hero) || hero.belongings.contains((Ring)effect)))
+                level = com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Degrade.reduceLevel(level);
+            if (buffed && hero.buff(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.EnhancedRings.class) != null) level++;
+            return ((Ring) effect).cursed ? Math.min(0, level - 2) : level + 1;
+        }
+
+        /** Same passive bonus as ring().soloBonus, without writing the stored ring level. */
+        public int ringBonusForBuff(Class<? extends Ring.RingBuff> type, boolean buffed) {
+            if (!(effect instanceof Ring) || !((Ring)effect).providesBuffType(type)) return 0;
+            return previewRingBonus(Dungeon.hero, ((Ring)effect).getClass(), buffed);
+        }
+
 		public Ring ring(){
 			if (effect instanceof Ring){
 				((Ring) effect).level(ringLevel());
@@ -167,10 +196,11 @@ public class SpiritForm extends ClericSpell {
 
 		@Override
 		public String desc() {
-			if (ring() != null){
-				return Messages.get(this, "desc", Messages.titleCase(ring().name()), dispTurns());
-			} else if (artifact() != null){
-				return Messages.get(this, "desc", Messages.titleCase(artifact().name()), dispTurns());
+			// Inspection names the stored effect without applying gameplay getter updates.
+			if (effect instanceof Ring){
+				return Messages.get(this, "desc", Messages.titleCase(((Ring)effect).name()), dispTurns());
+			} else if (effect instanceof Artifact){
+				return Messages.get(this, "desc", Messages.titleCase(((Artifact)effect).name()), dispTurns());
 			}
 			return super.desc();
 		}

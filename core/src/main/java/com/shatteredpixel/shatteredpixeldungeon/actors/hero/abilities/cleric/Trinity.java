@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -531,32 +534,37 @@ public class Trinity extends ArmorAbility {
 	}
 
 	public static float trinityChargeUsePerEffect(Class<?> cls){
-		float chargeUse = Dungeon.hero.armorAbility.chargeUse(Dungeon.hero);
+        float chargeUse= Dungeon.hero.armorAbility.chargeUse(Dungeon.hero);
+        return trinityChargeFactor(cls)*chargeUse;
+    }
+
+    /** Effect selection cost factor without invoking or modifying a stored item. */
+	public static float trinityChargeFactor(Class<?> cls){
 		if (Weapon.Enchantment.class.isAssignableFrom(cls) || Armor.Glyph.class.isAssignableFrom(cls)) {
 			for (Class ench : Weapon.Enchantment.rare) {
 				if (ench.equals(cls)) {
-					return 2*chargeUse; //50 charge
+					return 2f; //50 charge
 				}
 			}
 			for (Class glyph : Armor.Glyph.rare){
 				if (glyph.equals(cls)){
-					return 2*chargeUse; //50 charge
+					return 2f; //50 charge
 				}
 			}
 		}
 		if (cls.equals(WandOfFireblast.class) || cls.equals(WandOfRegrowth.class)){
-			return 2*chargeUse;
+			return 2f;
 		}
 		if (Artifact.class.isAssignableFrom(cls)){
 			if (cls.equals(DriedRose.class) || cls.equals(UnstableSpellbook.class) || cls.equals(SkeletonKey.class)){
-				return 2*chargeUse; //50 charge
+				return 2f; //50 charge
 			}
 			if (cls.equals(EtherealChains.class) || cls.equals(TalismanOfForesight.class) || cls.equals(TimekeepersHourglass.class)){
-				return 1.4f*chargeUse; //35 charge
+				return 1.4f; //35 charge
 			}
 		}
 		//all other effects are standard charge use, 25 at base
-		return chargeUse;
+		return 1f;
 	}
 
 }

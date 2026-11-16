@@ -157,9 +157,9 @@ public class Pasty extends Food {
 				//heals for 5% max hp, min of 3
 				int toHeal = Math.max(3, hero.HT/20);
 				int apdHpBefore = hero.HP;
-				hero.HP = Math.min(hero.HP + toHeal, hero.HT);
+				hero.HP = Math.min(hero.HP + com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomHealingHooks.amount(hero, toHeal), hero.HT);
 				ApdCombat.onHeal( hero, apdHpBefore, ApdCombat.HEAL_FOOD_PASTY, toHeal );
-				hero.sprite.showStatusWithIcon( CharSprite.POSITIVE, Integer.toString(toHeal), FloatingText.HEALING );
+				hero.sprite.showStatusWithIcon( CharSprite.POSITIVE, Integer.toString(com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomHealingHooks.display(hero, apdHpBefore, toHeal)), FloatingText.HEALING );
 				break;
 			case WINTER_HOLIDAYS:
 				hero.belongings.charge(0.5f); //2 turns worth
@@ -244,3 +244,4 @@ public class Pasty extends Food {
 		}
 	}
 }
+

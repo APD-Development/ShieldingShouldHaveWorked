@@ -36,13 +36,26 @@ public class QuickSlot {
 	 * which can happen for a stackable item that has been 'used up', these are referred to as placeholders.
 	 */
 
-	//note that the current max size is coded at 6, due to UI constraints, but it could be much much bigger with no issue.
-	public static int SIZE = 6;
-	private Item[] slots = new Item[SIZE];
+    // Six is the mobile presentation limit; the model owns its independent capacity.
+    public static final int MOBILE_VISIBLE_SLOTS = 6;
+    public static int SIZE = MOBILE_VISIBLE_SLOTS; // legacy default, retained for existing callers
+    private Item[] slots;
+
+    public QuickSlot() { this(SIZE); }
+    public QuickSlot(int capacity) {
+        if (capacity < 0) throw new IllegalArgumentException("negative quickslot capacity");
+        slots = new Item[capacity];
+    }
+    public int capacity() { return slots.length; }
+    public void ensureCapacity(int capacity) {
+        if (capacity < 0) throw new IllegalArgumentException("negative quickslot capacity");
+        if (capacity > slots.length) slots = java.util.Arrays.copyOf(slots, capacity);
+    }
 
 
 	//direct array interaction methods, everything should build from these methods.
 	public void setSlot(int slot, Item item){
+        if (slot < 0 || slot >= slots.length) throw new IndexOutOfBoundsException("quickslot " + slot);
 		clearItem(item); //we don't want to allow the same item in multiple slots.
 		slots[slot] = item;
 	}
@@ -52,7 +65,7 @@ public class QuickSlot {
 	}
 
 	public void reset(){
-		slots = new Item[SIZE];
+		slots = new Item[slots.length];
 	}
 
 	public Item getItem(int slot){
@@ -61,7 +74,7 @@ public class QuickSlot {
 
 	//utility methods, for easier use of the internal array.
 	public int getSlot(Item item) {
-		for (int i = 0; i < SIZE; i++) {
+		for (int i = 0; i < slots.length; i++) {
 			if (getItem(i) == item) {
 				return i;
 			}
@@ -88,7 +101,7 @@ public class QuickSlot {
 	}
 
 	public void replacePlaceholder(Item item) {
-		for (int i = 0; i < SIZE; i++) {
+		for (int i = 0; i < slots.length; i++) {
 			if (isPlaceholder(i) && item.isSimilar(getItem(i))) {
 				setSlot(i, item);
 			}
@@ -101,7 +114,7 @@ public class QuickSlot {
 			Item placeholder = item.virtual();
 			if (placeholder == null) return;
 			
-			for (int i = 0; i < SIZE; i++) {
+			for (int i = 0; i < slots.length; i++) {
 				if (getItem(i) == item) setSlot(i, placeholder);
 			}
 		}
@@ -110,7 +123,7 @@ public class QuickSlot {
 	public Item randomNonePlaceholder(){
 
 		ArrayList<Item> result = new ArrayList<>();
-		for (int i = 0; i < SIZE; i ++) {
+		for (int i = 0; i < slots.length; i ++) {
 			if (getItem(i) != null && !isPlaceholder(i)) {
 				result.add(getItem(i));
 			}
@@ -128,10 +141,10 @@ public class QuickSlot {
 	 */
 
 	public void storePlaceholders(Bundle bundle){
-		ArrayList<Item> placeholders = new ArrayList<>(SIZE);
-		boolean[] placements = new boolean[SIZE];
+		ArrayList<Item> placeholders = new ArrayList<>(slots.length);
+		boolean[] placements = new boolean[slots.length];
 
-		for (int i = 0; i < SIZE; i++) {
+		for (int i = 0; i < slots.length; i++) {
 			if (isPlaceholder(i)) {
 				placeholders.add(getItem(i));
 				placements[i] = true;
@@ -142,18 +155,18 @@ public class QuickSlot {
 	}
 
 	public void restorePlaceholders(Bundle bundle){
-		Collection<Bundlable> placeholders = bundle.getCollection(PLACEHOLDERS);
-		boolean[] placements = bundle.getBooleanArray( PLACEMENTS );
-
-		int i = 0;
-		for (Bundlable item : placeholders){
-			while (!placements[i]){
-				i++;
-			}
-			setSlot( i, (Item)item );
-			i++;
-		}
-
+        // This existing array already records the model's saved capacity, including empty slots.
+        boolean[] placements = bundle.getBooleanArray(PLACEMENTS);
+        if (placements == null) return;
+        ensureCapacity(placements.length);
+        Collection<Bundlable> placeholders = bundle.getCollection(PLACEHOLDERS);
+        int i=0;
+        for (Bundlable value : placeholders) {
+            while (i < placements.length && !placements[i]) i++;
+            if (i == placements.length) break; // malformed mapping must not crash run loading
+            if (value instanceof Item && ((Item)value).quantity() == 0) setSlot(i, (Item)value);
+            i++;
+        }
 	}
 
 }

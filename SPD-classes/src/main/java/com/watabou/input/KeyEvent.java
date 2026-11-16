@@ -21,19 +21,29 @@
 
 package com.watabou.input;
 
+import com.badlogic.gdx.Input;
 import com.watabou.noosa.Game;
 import com.watabou.utils.Signal;
 
 import java.util.ArrayList;
 
 public class KeyEvent {
+    public final long diagnosticId=com.watabou.utils.SupportDiagnostics.nextInputId();
+    public final long queuedNanos=System.nanoTime();
+    public long sourceEventNanos; // GDX backend timestamp when available; zero means unknown.
 	
 	public int code;
 	public boolean pressed;
+	public long backTraceId;
 	
 	public KeyEvent( int code, boolean pressed ) {
+		this(code, pressed, 0);
+	}
+
+	public KeyEvent( int code, boolean pressed, long backTraceId ) {
 		this.code = code;
 		this.pressed = pressed;
+		this.backTraceId = backTraceId;
 	}
 	
 	// **********************
@@ -56,28 +66,56 @@ public class KeyEvent {
 	
 	//Accumulated key events
 	private static ArrayList<KeyEvent> keyEvents = new ArrayList<>();
+
+	public static synchronized void discardPendingEvents(){
+        if(!keyEvents.isEmpty())com.watabou.utils.SupportDiagnostics.event("input.discard","keys_queued="+keyEvents.size());
+        keyEvents.clear();
+    }
 	
 	public static synchronized void addKeyEvent( KeyEvent event ){
+        com.watabou.utils.SupportDiagnostics.input("queued",event.code==Input.Keys.BACK?"back":"key (value not recorded)",event.diagnosticId,event.queuedNanos,event.sourceEventNanos);
 		keyEvents.add( event );
 	}
 	
+	// Scan only queued events. A pending Android Back press should not wait
+	// behind the next frame's rendering; other input keeps its normal order.
+	static boolean containsBackPress(Iterable<KeyEvent> events){
+		for (KeyEvent event : events){
+			if (event.pressed && event.code == Input.Keys.BACK) return true;
+		}
+		return false;
+	}
+
+	public static synchronized boolean hasPendingBackPress(){
+		return containsBackPress(keyEvents);
+	}
+
 	public static synchronized void processKeyEvents(){
 		if (keyEvents.isEmpty()) {
 			return;
 		}
 
 		for (KeyEvent k : keyEvents){
-			if (KeyBindings.getActionForKey(k) == GameAction.LEFT_CLICK){
-				Game.inputHandler.emulateTouch(ControllerHandler.CONTROLLER_POINTER_ID, PointerEvent.LEFT, k.pressed);
-				if (KeyBindings.bindingKey) keySignal.dispatch(k);
-			} else if (KeyBindings.getActionForKey(k) == GameAction.RIGHT_CLICK){
-				Game.inputHandler.emulateTouch(ControllerHandler.CONTROLLER_POINTER_ID, PointerEvent.RIGHT, k.pressed);
-				if (KeyBindings.bindingKey) keySignal.dispatch(k);
-			} else if (KeyBindings.getActionForKey(k) == GameAction.MIDDLE_CLICK){
-				Game.inputHandler.emulateTouch(ControllerHandler.CONTROLLER_POINTER_ID, PointerEvent.MIDDLE, k.pressed);
-				if (KeyBindings.bindingKey) keySignal.dispatch(k);
-			} else {
-				keySignal.dispatch(k);
+            com.watabou.utils.SupportDiagnostics.input("dispatched",k.code==Input.Keys.BACK?"back":"key (value not recorded)",k.diagnosticId,k.queuedNanos,k.sourceEventNanos);
+            com.watabou.utils.SupportActionJournal.record("key.event",
+                    "id="+k.diagnosticId+" kind="+(k.code==Input.Keys.BACK?"back":"key_redacted")+" pressed="+k.pressed);
+			boolean tracedBack = k.pressed && k.code == Input.Keys.BACK && k.backTraceId != 0;
+			if (tracedBack) BackTrace.beginDispatch(k.backTraceId);
+			try {
+				if (KeyBindings.getActionForKey(k) == GameAction.LEFT_CLICK){
+					Game.inputHandler.emulateTouch(ControllerHandler.CONTROLLER_POINTER_ID, PointerEvent.LEFT, k.pressed);
+					if (KeyBindings.bindingKey) keySignal.dispatch(k);
+				} else if (KeyBindings.getActionForKey(k) == GameAction.RIGHT_CLICK){
+					Game.inputHandler.emulateTouch(ControllerHandler.CONTROLLER_POINTER_ID, PointerEvent.RIGHT, k.pressed);
+					if (KeyBindings.bindingKey) keySignal.dispatch(k);
+				} else if (KeyBindings.getActionForKey(k) == GameAction.MIDDLE_CLICK){
+					Game.inputHandler.emulateTouch(ControllerHandler.CONTROLLER_POINTER_ID, PointerEvent.MIDDLE, k.pressed);
+					if (KeyBindings.bindingKey) keySignal.dispatch(k);
+				} else {
+					keySignal.dispatch(k);
+				}
+			} finally {
+				if (tracedBack) BackTrace.endDispatch(k.backTraceId);
 			}
 		}
 		keyEvents.clear();

@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -103,12 +106,12 @@ public class WandOfTransfusion extends DamageWand {
 				}
 				
 				int apdHpBefore = ch.HP;
-				ch.HP += healing;
+				ch.HP += com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomHealingHooks.amount(ch, healing);
 				ApdCombat.onHeal( ch, apdHpBefore, ApdCombat.HEAL_WAND_TRANSFUSION, healing );
 				
 				ch.sprite.emitter().burst(Speck.factory(Speck.HEALING), 2 + buffedLvl() / 2);
 				if (healing > 0) {
-					ch.sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(healing), FloatingText.HEALING);
+					ch.sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomHealingHooks.display(ch, apdHpBefore, healing)), FloatingText.HEALING);
 				}
 				if (shielding > 0){
 					ch.sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(shielding), FloatingText.SHIELDING);
@@ -137,7 +140,7 @@ public class WandOfTransfusion extends DamageWand {
 				
 				//harms the undead
 				} else {
-					ch.damage(damageRoll(), this);
+					com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomOffensiveHooks.raw(ch,damageRoll(),this,curUser);
 					ch.sprite.emitter().start(ShadowParticle.UP, 0.05f, 10 + buffedLvl());
 					Sample.INSTANCE.play(Assets.Sounds.BURNING);
 				}
@@ -193,11 +196,13 @@ public class WandOfTransfusion extends DamageWand {
 
 	@Override
 	public String statsDesc() {
-		int selfDMG = Dungeon.hero != null ? Math.round(Dungeon.hero.HT*0.05f): 1;
+        if (Dungeon.hero == null) return Messages.get(this, "stats_desc_without_hero");
+        int selfDMG = Math.round(Dungeon.hero.HT*0.05f);
+        int healthCost = freeCharge ? 0 : selfDMG;
 		if (levelKnown)
-			return Messages.get(this, "stats_desc", selfDMG, selfDMG + 3*buffedLvl(), 5+buffedLvl(), min(), max());
+			return Messages.get(this, "stats_desc", healthCost, selfDMG + 3*previewEffectiveLevels()[0], 5+previewEffectiveLevels()[0], min(previewEffectiveLevels()[0]), max(previewEffectiveLevels()[1])) + previewUncertaintyNote();
 		else
-			return Messages.get(this, "stats_desc", selfDMG, selfDMG, 5, min(0), max(0));
+			return Messages.get(this, "stats_desc", healthCost, selfDMG, 5, min(0), max(0));
 	}
 
 	@Override
@@ -231,3 +236,4 @@ public class WandOfTransfusion extends DamageWand {
 	}
 
 }
+

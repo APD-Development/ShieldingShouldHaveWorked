@@ -83,6 +83,9 @@ public abstract class ExoticScroll extends Scroll {
 		
 		regToExo.put(ScrollOfTransmutation.class, ScrollOfMetamorphosis.class);
 		exoToReg.put(ScrollOfMetamorphosis.class, ScrollOfTransmutation.class);
+
+        regToExo.put(com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfGathering.class, ScrollOfForwarding.class);
+        exoToReg.put(ScrollOfForwarding.class, com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfGathering.class);
 	}
 	
 	@Override
@@ -151,3 +154,4 @@ public abstract class ExoticScroll extends Scroll {
 		}
 	}
 }
+

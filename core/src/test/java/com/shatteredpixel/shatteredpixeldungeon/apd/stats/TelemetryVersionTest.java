@@ -11,9 +11,9 @@ import org.junit.Test;
 public class TelemetryVersionTest {
 
 	@Test
-	public void currentVersionIsTelemetry1Point10(){
-		assertEquals(new TelemetryVersion(1, 10), TelemetryVersion.CURRENT);
-		assertEquals("1.10", TelemetryVersion.CURRENT.toString());
+	public void currentVersionIsTelemetry1Point16(){
+		assertEquals(new TelemetryVersion(1, 16), TelemetryVersion.CURRENT);
+		assertEquals("1.16", TelemetryVersion.CURRENT.toString());
 	}
 
 	@Test
@@ -21,7 +21,7 @@ public class TelemetryVersionTest {
 		assertEquals(new TelemetryVersion(1, 3), TelemetryVersion.parse("1.3"));
 		assertEquals(new TelemetryVersion(2, 0), TelemetryVersion.parse("telemetry 2.0"));
 		assertEquals(new TelemetryVersion(1, 12), TelemetryVersion.parse(" 1.12 "));
-		assertEquals("1.12", TelemetryVersion.parse("1.12").toString());
+		assertEquals("1.14", TelemetryVersion.parse("1.14").toString());
 	}
 
 	@Test

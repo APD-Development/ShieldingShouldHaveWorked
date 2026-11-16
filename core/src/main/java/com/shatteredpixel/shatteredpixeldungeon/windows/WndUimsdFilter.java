@@ -109,7 +109,7 @@ public final class WndUimsdFilter {
 					public void onPick( int index, boolean checked ){
 						pickOp(m, -1, null, cols.get(index));
 					}
-				}));
+				}).restoreWith(() -> add(m)));
 	}
 
 	//what to do with a filter that is already there
@@ -130,7 +130,7 @@ public final class WndUimsdFilter {
 					if (c != null) pickOp(m, index, f, c);
 				}
 			}
-		}));
+		}).restoreWith(() -> chip(m, index)));
 	}
 
 	//step 2: how to compare
@@ -148,7 +148,7 @@ public final class WndUimsdFilter {
 				if (!op.takesValue()) finish(m, index, new Filter(col.id, op, null, null));
 				else pickValue(m, index, existing, col, op);
 			}
-		}));
+		}).restoreWith(() -> pickOp(m, index, existing, col)));
 	}
 
 	private static boolean hasNum( Filter f, ColumnDef col, long v ){
@@ -203,7 +203,7 @@ public final class WndUimsdFilter {
 					}
 					return Filter.text(col.id, op, choices.get(picked.get(0)).value);
 				}
-			}, op == Op.IN ? null : new Runnable(){
+			}, new Runnable(){
 				@Override
 				public void run(){
 					typeText(m, index, col, op, sentence);
@@ -222,7 +222,7 @@ public final class WndUimsdFilter {
 						public void got( String hi ){
 							Long a = CellFormatter.parse(col, lo), b = CellFormatter.parse(col, hi);
 							if (a == null || b == null){
-								ShatteredPixelDungeon.scene().addToFront(new WndMessage("That is not a valid value. " + hint + "."));
+								ShatteredPixelDungeon.scene().addToFront(new WndUimsdText("UIMSD", "That is not a valid value. " + hint + ".", false));
 								return;
 							}
 							finish(m, index, Filter.num(col.id, Op.BETWEEN, a, b));
@@ -236,7 +236,7 @@ public final class WndUimsdFilter {
 				public void got( String s ){
 					Long a = CellFormatter.parse(col, s);
 					if (a == null){
-						ShatteredPixelDungeon.scene().addToFront(new WndMessage("That is not a valid value. " + hint + "."));
+						ShatteredPixelDungeon.scene().addToFront(new WndUimsdText("UIMSD", "That is not a valid value. " + hint + ".", false));
 						return;
 					}
 					finish(m, index, Filter.num(col.id, op, a));
@@ -253,27 +253,13 @@ public final class WndUimsdFilter {
 	private static void choose( final UimsdModel m, final int index, ColumnDef col, final Op op, String sentence, List<Entry> entries,
 	                            final Chosen chosen, final Runnable typeInstead ){
 		if (op == Op.IN){
-			final List<Integer> picked = new ArrayList<>();
-			for (int i = 0; i < entries.size(); i++) entries.get(i).checked(entries.get(i).current);
+			List<Integer> picked = new ArrayList<>();
 			for (int i = 0; i < entries.size(); i++) if (entries.get(i).current) picked.add(i);
-			show(new WndUimsdList(sentence, "Step 3 of 3: tick every value you want, then Done.", true, entries, new WndUimsdList.Picker(){
-				@Override
-				public void onPick( int i, boolean checked ){
-					if (checked){
-						if (!picked.contains(i)) picked.add(i);
-					} else {
-						picked.remove(Integer.valueOf(i));
-					}
-				}
-			}){
-				@Override
-				protected void onDone(){
-					hide();
-					if (!picked.isEmpty()) finish(m, index, chosen.filter(picked));
-				}
-			});
+			chooseMany(m, index, sentence, entries, chosen, picked, typeInstead);
 			return;
 		}
+		final List<Entry> originalEntries = new ArrayList<>(entries);
+		entries = new ArrayList<>(entries);
 		final int typeAt = typeInstead == null ? -1 : entries.size();
 		if (typeInstead != null) entries.add(Entry.item("Something else...", "type a value yourself"));
 		show(WndUimsdList.menu(sentence, "Step 3 of 3: choose a value.", entries, new WndUimsdList.Picker(){
@@ -287,11 +273,36 @@ public final class WndUimsdFilter {
 				one.add(i);
 				finish(m, index, chosen.filter(one));
 			}
-		}));
+		}).restoreWith(() -> choose(m, index, col, op, sentence, originalEntries, chosen, typeInstead)));
+	}
+
+	private static void chooseMany(final UimsdModel m, final int index, String sentence,
+								   List<Entry> entries, final Chosen chosen, final List<Integer> picked, final Runnable typeInstead){
+		for (int i = 0; i < entries.size(); i++) entries.get(i).checked(picked.contains(i));
+        final int typeAt = typeInstead == null ? -1 : entries.size();
+        List<Entry> displayed = new ArrayList<>(entries);
+        if (typeInstead != null) displayed.add(Entry.action("Enter a full text list..."));
+			show(new WndUimsdList(sentence, "Step 3 of 3: tick every value you want, then Done.", true, displayed, new WndUimsdList.Picker(){
+				@Override
+				public void onPick( int i, boolean checked ){
+                    if (i == typeAt){ typeInstead.run(); return; }
+					if (checked){
+						if (!picked.contains(i)) picked.add(i);
+					} else {
+						picked.remove(Integer.valueOf(i));
+					}
+				}
+			}){
+				@Override
+				protected void onDone(){
+					hide();
+					if (!picked.isEmpty()) finish(m, index, chosen.filter(picked));
+				}
+			}.restoreWith(() -> chooseMany(m, index, sentence, entries, chosen, new ArrayList<>(picked), typeInstead)));
 	}
 
 	private static void typeText( final UimsdModel m, final int index, final ColumnDef col, final Op op, String sentence ){
-		ask(sentence, op == Op.IN ? "Values, separated by commas" : op == Op.CONTAINS ? "Some text that appears in it" : "The text to match", new Answer(){
+		ask(sentence, op == Op.IN ? "Enter the full list of values, separated by commas" : op == Op.CONTAINS ? "Some text that appears in it" : "The text to match", op == Op.IN ? Integer.MAX_VALUE : 40, new Answer(){
 			@Override
 			public void got( String s ){
 				if (op == Op.IN){
@@ -313,12 +324,13 @@ public final class WndUimsdFilter {
 	}
 
 	private static void ask( String title, String body, final Answer answer ){
-		show(new WndTextInput(title, body, "", 40, false, "OK", "Cancel"){
-			@Override
-			public void onSelect( boolean positive, String text ){
+        ask(title, body, 40, answer);
+    }
+
+    private static void ask(String title, String body, int limit, final Answer answer){
+		show(new WndUimsdTextInput(title, body, "", limit, false, "OK", "Cancel", (positive, text) -> {
 				if (positive) answer.got(text);
-			}
-		});
+			}));
 	}
 
 	private static void finish( UimsdModel m, int index, Filter f ){
@@ -326,3 +338,4 @@ public final class WndUimsdFilter {
 		if (index < 0) m.addFilter(f); else m.replaceFilter(index, f);
 	}
 }
+

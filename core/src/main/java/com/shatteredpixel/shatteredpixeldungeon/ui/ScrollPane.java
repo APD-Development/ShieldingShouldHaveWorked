@@ -32,6 +32,7 @@ import com.watabou.noosa.Camera;
 import com.watabou.noosa.ColorBlock;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.ScrollArea;
+import com.watabou.noosa.PointerArea;
 import com.watabou.noosa.ui.Component;
 import com.watabou.utils.GameMath;
 import com.watabou.utils.Point;
@@ -49,6 +50,7 @@ public class ScrollPane extends Component {
 	protected ColorBlock thumb;
 
 	private float keyScroll = 0;
+	private boolean dragFromButtons = false;
 
 	public ScrollPane( Component content ) {
 		super();
@@ -94,6 +96,13 @@ public class ScrollPane extends Component {
 		Camera.remove( content.camera );
 		KeyEvent.removeKeyListener(keyListener);
 	}
+
+    /** Share DOWN with child controls, but let a true swipe scroll instead of click. */
+    public void allowDragFromButtons() {
+        dragFromButtons = true;
+        controller.blockLevel = PointerArea.NEVER_BLOCK;
+        controller.givePointerPriority();
+    }
 
 	public void scrollTo( float x, float y ) {
 		Camera c = content.camera;
@@ -178,8 +187,23 @@ public class ScrollPane extends Component {
 			dragging = false;
 		}
 
+        @Override
+        protected void onPointerDown(PointerEvent event) {
+            if (dragFromButtons && event == curEvent && !dragging) {
+                lastPos.set(event.current);
+            }
+        }
+
 		@Override
 		protected void onPointerUp( PointerEvent event ) {
+            if (dragFromButtons && event == curEvent && !dragging
+                    && PointF.distance(event.current, event.start) > dragThreshold) {
+                // Very fast swipes can have no intermediate drag event.
+                event.scrolled = true;
+                lastPos.set(event.start);
+                scroll(event.current);
+                dragging = true;
+            }
 			if (event == curEvent && dragging) {
 				dragging = false;
 				thumb.am = THUMB_ALPHA;
@@ -202,11 +226,16 @@ public class ScrollPane extends Component {
 
 				scroll(event.current);
 
-			} else if (PointF.distance( event.current, event.start ) > dragThreshold) {
-
-				dragging = true;
-				lastPos.set( event.current );
-				thumb.am = 1;
+            } else if (PointF.distance( event.current, event.start ) > dragThreshold) {
+                dragging = true;
+                if (dragFromButtons) {
+                    event.scrolled = true;
+                    lastPos.set(event.start);
+                    scroll(event.current);
+                } else {
+                    lastPos.set(event.current);
+                }
+                thumb.am = 1;
 
 			}
 		}

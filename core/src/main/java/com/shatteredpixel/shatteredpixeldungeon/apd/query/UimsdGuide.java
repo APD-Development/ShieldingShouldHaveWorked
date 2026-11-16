@@ -68,7 +68,7 @@ public final class UimsdGuide {
 						+ "Home shows runs played under your own rules by default. \"Rules: all (mixed)\" adds runs played under other rules, and says so, because "
 						+ "numbers from different rules are not directly comparable.", "home"));
 		t.add(new Topic("ask", start, "Asking a question",
-				"The Ask a question card on Home is the easy way in. A question is a sentence with blanks: how many, or the average, total, highest or lowest of a number; "
+				"The Ask a question card on Home is the easy way in. A question is a sentence with blanks: how many, or the average, total, highest, lowest or median of a number; "
 						+ "of what; per floor, per run, per turn or per hour you played; split by class, spell, floor and so on; only where some condition is true.\n\n"
 						+ "# What it can answer\n"
 						+ "APD writes down what happens while you play: every step, rest and search, every item you use, every effect that starts or ends, every talent, spell and "
@@ -88,6 +88,16 @@ public final class UimsdGuide {
 				"A table has one line for each thing it lists. In tables like Weapons, each line is one KIND of thing, for example every War Hammer together, "
 						+ "with numbers about all of them: how many you met, how often you equipped them, how often you won with them.\n\n"
 						+ "Tap a column heading to sort by it. Tap a line to open it.", "table"));
+		t.add(new Topic("research", read, "Research lab",
+                "Open Research lab on Home, inside a table, or through Options. Run DNA describes a run using explicitly defined rates and can compare two fingerprints. Tap a metric to inspect the source run and its recorded context events.\n\n"
+                        + "Luck laboratory compares recorded generation values with matching finished random-seed runs. Generation details require your explicit hidden-information choice and never expose unfinished-run secrets. Empirical ranks describe your reference history, not theoretical RNG odds or a score multiplier.\n\n"
+                        + "Automatic discoveries screen recorded class/subclass win-rate contrasts with at least 20 known outcomes per group, matching rules and version, and adjusted uncertainty bands. No result is invented when data are insufficient. Inspect both groups; association does not establish a cause.\n\n"
+                        + "For a custom investigation, apply table filters and capture population A, change the filters and capture B, then choose a numeric metric or run win rate. Pins save the question separately from your saved views; values are recalculated. Grouping and paging are not population filters. Unknown and uncertain values are excluded explicitly, and overlapping or unmatched samples suppress inference. Every analysis can be exported with its definitions and evidence.", ""));
+        t.add(new Topic("charts", read, "Charts",
+                "In a grouped table, open Options > Charts. Choose the count or one of the table's totals or averages. "
+                        + "Bars share a zero baseline, including negative values. Unknown values have no bar. The same filters, rules, group order and uncertainty marks apply.\n\n"
+                        + "Tap a group for its details and links to the matching entries. At most 24 groups are shown; extra groups remain in the table. "
+                        + "For an ungrouped table, choose Options > Group by first.", ""));
 		t.add(new Topic("drill", read, "Opening a line: going deeper",
 				"Tapping a line opens a window with everything known about it, value by value, with the colour and mark of how sure each one is.\n\n"
 						+ "From there you can go one level down: to the individual items of that kind, or to the runs they appeared in. Each level down is a new table you can sort and filter too. "
@@ -103,6 +113,12 @@ public final class UimsdGuide {
 				"Tap a column heading to sort by it. Tap again to reverse, and again to go back to the original order. "
 						+ "Lines where the value is unknown (?) always go to the end, so unknown never looks like zero.\n\n"
 						+ "The Sort button lets you sort by up to three columns, so ties are broken by the next one.", "sort"));
+        t.add(new Topic("search", find, "Search all statistics",
+                "Tap Search UIMSD on Home or inside any table. Type the name of a mechanic, item type, enemy, number or category, "
+                        + "and UIMSD finds matching tables and public statistic fields. Tap a result to open that table with normal filters and sorting.\n\n"
+                        + "Search works offline, including Unicode text and a few common terms across languages. It does not use an AI service, "
+                        + "so it does not understand arbitrary questions in every language yet. For custom calculations, use Ask a question.\n\n"
+                        + "Search does not read secret row values or expose unidentified items; incomplete recordings still show unknown data as unknown.", ""));
 		t.add(new Topic("filters", find, "Filters",
 				"A filter keeps only the lines that match a rule, for example \"Class is Mage\" or \"Deepest is at least 5\".\n\n"
 						+ "Tap Filter and follow three steps: choose what to filter on, choose how to compare (is, is not, is at least, is between, is one of...), "
@@ -179,3 +195,4 @@ public final class UimsdGuide {
 		return null;
 	}
 }
+

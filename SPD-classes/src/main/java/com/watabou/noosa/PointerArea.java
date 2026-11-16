@@ -79,7 +79,7 @@ public class PointerArea extends Visual implements Signal.Listener<PointerEvent>
 				
 				if (curEvent == event) {
 					curEvent = null;
-					onClick( event );
+					if (!event.scrolled) onClick( event );
 				}
 
 			//similar to up, but no click
@@ -140,6 +140,12 @@ public class PointerArea extends Visual implements Signal.Listener<PointerEvent>
 		curEvent = null;
 	}
 
+	/** Release visual press state without turning an old press into a later click. */
+	public void cancelPress(){
+		if (curEvent != null) onPointerUp(curEvent);
+		curEvent = null;
+	}
+
 	//moves this pointer area to the front of the pointer event order
 	public void givePointerPriority(){
 		PointerEvent.removePointerListener( this );
@@ -152,3 +158,4 @@ public class PointerArea extends Visual implements Signal.Listener<PointerEvent>
 		super.destroy();
 	}
 }
+

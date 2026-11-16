@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -40,6 +43,7 @@ public class FireImbue extends Buff {
 	}
 
 	public static final float DURATION	= 50f;
+    public static final int IGNITION_ROLL_SIDES = 2;
 
 	protected float left;
 
@@ -57,6 +61,8 @@ public class FireImbue extends Buff {
 		super.restoreFromBundle( bundle );
 		left = bundle.getFloat( LEFT );
 	}
+
+    public float remainingDuration() { return left; }
 
 	public void set( float duration ) {
 		this.left = duration;
@@ -83,8 +89,8 @@ public class FireImbue extends Buff {
 	}
 
 	public void proc(Char enemy){
-		if (Random.Int(2) == 0)
-			Buff.affect( enemy, Burning.class ).reignite( enemy );
+		if (Random.Int(IGNITION_ROLL_SIDES) == 0)
+			Burning.affectAttributed(enemy, target);
 
 		enemy.sprite.emitter().burst( FlameParticle.FACTORY, 2 );
 	}
@@ -111,7 +117,7 @@ public class FireImbue extends Buff {
 
 	@Override
 	public String desc() {
-		return Messages.get(this, "desc", dispTurns(left));
+		return Messages.get(this, "desc", dispTurns(left), Messages.decimalFormat("0.##", 100f/IGNITION_ROLL_SIDES));
 	}
 
 	{

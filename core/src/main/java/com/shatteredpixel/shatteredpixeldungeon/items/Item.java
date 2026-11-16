@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -109,11 +112,18 @@ public class Item implements Bundlable {
 	//APD: set on duplicate(): the uid of the item this one is a copy of, so the copy's lineage can be recorded if it
 	//is ever observed. Not saved.
 	public String apdCopyOf = null;
+	// Optional original location/source; absent in older saves until evidence is available.
+	public com.shatteredpixel.shatteredpixeldungeon.apd.qol.ItemOrigins.Origin apdFoundOrigin;
+	public transient boolean apdOriginLegacyUnknown;
+	public com.shatteredpixel.shatteredpixeldungeon.apd.qol.GenerationUpgradeRanges.Range apdGenerationRange;
+	// Optional, first-collection provenance for Upgrade Scrolls and Strength Potions only.
+	public com.shatteredpixel.shatteredpixeldungeon.apd.ProgressionPickups.Origins apdProgressionOrigins;
+	public boolean apdProgressionLegacy;
 	
 	public static final Comparator<Item> itemComparator = new Comparator<Item>() {
 		@Override
 		public int compare( Item lhs, Item rhs ) {
-			return Generator.Category.order( lhs ) - Generator.Category.order( rhs );
+			return com.shatteredpixel.shatteredpixeldungeon.apd.qol.InventoryOrder.compare(lhs, rhs);
 		}
 	};
 	
@@ -133,6 +143,8 @@ public class Item implements Bundlable {
 	}
 
 	public boolean doPickUp(Hero hero, int pos) {
+		com.shatteredpixel.shatteredpixeldungeon.apd.qol.ItemOrigins.Origin previousOrigin = apdFoundOrigin;
+		if (!apdOriginLegacyUnknown) com.shatteredpixel.shatteredpixeldungeon.apd.qol.ItemOrigins.recordSource(this, Dungeon.level, pos, com.shatteredpixel.shatteredpixeldungeon.apd.qol.ItemOrigins.PICKUP);
 		if (collect( hero.belongings.backpack )) {
 			
 			GameScene.pickUp( this, pos );
@@ -141,6 +153,7 @@ public class Item implements Bundlable {
 			return true;
 			
 		} else {
+			apdFoundOrigin = previousOrigin;
 			return false;
 		}
 	}
@@ -158,6 +171,8 @@ public class Item implements Bundlable {
 		//APD: reset() is how an item from another run (bones) is made fit for this one, it must not keep that run's identity
 		apdUid = null;
 		apdCopyOf = null;
+		apdProgressionOrigins = null;
+		apdProgressionLegacy = false;
 	}
 
 	public boolean keptThroughLostInventory(){
@@ -209,11 +224,16 @@ public class Item implements Bundlable {
 			heap.sprite.drop( cell );
 		}
 	}
+
+	/** Occupied-target impact has resolved its action cost; actors have not resumed yet. */
+	protected void onThrowComplete( Hero user ) {}
 	
 	//takes two items and merges them (if possible)
 	public Item merge( Item other ){
 		if (isSimilar( other )){
 			ApdItems.onMerge( this, other, other.quantity );
+			com.shatteredpixel.shatteredpixeldungeon.apd.qol.ItemOrigins.merge(this, other);
+			com.shatteredpixel.shatteredpixeldungeon.apd.ProgressionPickups.merge(this, other);
 			quantity += other.quantity;
 			other.quantity = 0;
 		}
@@ -226,6 +246,7 @@ public class Item implements Bundlable {
 			return true;
 		}
 
+		com.shatteredpixel.shatteredpixeldungeon.apd.ProgressionPickups.prepare(this);
 		ArrayList<Item> items = container.items;
 
 		if (items.contains( this )) {
@@ -248,6 +269,7 @@ public class Item implements Bundlable {
 			for (Item item:items) {
 				if (isSimilar( item )) {
 					item.merge( this );
+					com.shatteredpixel.shatteredpixeldungeon.apd.ProgressionPickups.collected(item, container);
 					item.updateQuickslot();
 					if (Dungeon.hero != null && Dungeon.hero.isAlive()) {
 						Badges.validateItemLevelAquired( this );
@@ -289,6 +311,7 @@ public class Item implements Bundlable {
 		}
 
 		items.add( this );
+		com.shatteredpixel.shatteredpixeldungeon.apd.ProgressionPickups.collected(this, container);
 		Dungeon.quickslot.replacePlaceholder(this);
 		Collections.sort( items, itemComparator );
 		updateQuickslot();
@@ -317,6 +340,7 @@ public class Item implements Bundlable {
 			split.restoreFromBundle(copy);
 			split.quantity(amount);
 			quantity -= amount;
+			com.shatteredpixel.shatteredpixeldungeon.apd.ProgressionPickups.split(this, split, amount);
 
 			//APD: the piece is a new item, it must not share this stack's identity
 			split.apdUid = null;
@@ -547,17 +571,17 @@ public class Item implements Bundlable {
 			Notes.CustomRecord note = Notes.findCustomRecord(customNoteID);
 			if (note != null) {
 				//we swap underscore(0x5F) with low macron(0x2CD) here to avoid highlighting in the item window
-				return Messages.get(this, "custom_note", note.title().replace('_', 'ˍ')) + "\n\n" + desc();
+				return Messages.get(this, "custom_note", note.title().replace('_', 'ˍ')) + "\n\n" + desc() + com.shatteredpixel.shatteredpixeldungeon.apd.qol.RingItemEffects.describe(this) + com.shatteredpixel.shatteredpixeldungeon.apd.qol.ItemOrigins.describe(this);
 			} else {
 				note = Notes.findCustomRecord(getClass());
 				if (note != null) {
 					//we swap underscore(0x5F) with low macron(0x2CD) here to avoid highlighting in the item window
-					return Messages.get(this, "custom_note_type", note.title().replace('_', 'ˍ')) + "\n\n" + desc();
+					return Messages.get(this, "custom_note_type", note.title().replace('_', 'ˍ')) + "\n\n" + desc() + com.shatteredpixel.shatteredpixeldungeon.apd.qol.RingItemEffects.describe(this) + com.shatteredpixel.shatteredpixeldungeon.apd.qol.ItemOrigins.describe(this);
 				}
 			}
 		}
 
-		return desc();
+		return desc() + com.shatteredpixel.shatteredpixeldungeon.apd.qol.RingItemEffects.describe(this) + com.shatteredpixel.shatteredpixeldungeon.apd.qol.ItemOrigins.describe(this);
 	}
 	
 	public String desc() {
@@ -577,6 +601,9 @@ public class Item implements Bundlable {
 	public int value() {
 		return 0;
 	}
+
+	/** Read-only price for inventory and trade previews. */
+	public int previewValue() { return value(); }
 
 	//item's value in energy crystals
 	public int energyVal() {
@@ -627,6 +654,9 @@ public class Item implements Bundlable {
 		bundle.put( KEPT_LOST, keptThoughLostInvent );
 		if (customNoteID != -1)     bundle.put(CUSTOM_NOTE_ID, customNoteID);
 		if (apdUid != null)         bundle.put(APD_UID, apdUid);
+		com.shatteredpixel.shatteredpixeldungeon.apd.qol.GenerationUpgradeRanges.store(this, bundle);
+		com.shatteredpixel.shatteredpixeldungeon.apd.qol.ItemOrigins.store(this, bundle);
+		com.shatteredpixel.shatteredpixeldungeon.apd.ProgressionPickups.storeItem(this, bundle);
 	}
 	
 	@Override
@@ -647,7 +677,9 @@ public class Item implements Bundlable {
 		//only want to populate slots when restoring belongings
 		if (Belongings.bundleRestoring) {
 			if (bundle.contains(QUICKSLOT)) {
-				Dungeon.quickslot.setSlot(bundle.getInt(QUICKSLOT), this);
+                int slot = bundle.getInt(QUICKSLOT);
+                // A damaged shortcut reference must not prevent the inventory item from loading.
+                if (slot >= 0 && slot < Dungeon.quickslot.capacity()) Dungeon.quickslot.setSlot(slot, this);
 			}
 		}
 
@@ -655,6 +687,9 @@ public class Item implements Bundlable {
 		if (bundle.contains(CUSTOM_NOTE_ID))    customNoteID = bundle.getInt(CUSTOM_NOTE_ID);
 		//APD: saves made before item identity have no apd_uid, the item simply stays without one until it is observed
 		if (bundle.contains(APD_UID))           apdUid = bundle.getString(APD_UID);
+		com.shatteredpixel.shatteredpixeldungeon.apd.qol.GenerationUpgradeRanges.restore(this, bundle);
+		com.shatteredpixel.shatteredpixeldungeon.apd.qol.ItemOrigins.restore(this, bundle);
+		com.shatteredpixel.shatteredpixeldungeon.apd.ProgressionPickups.restoreItem(this, bundle);
 	}
 
 	public int targetingPos( Hero user, int dst ){
@@ -669,7 +704,17 @@ public class Item implements Bundlable {
 		Sample.INSTANCE.play(Assets.Sounds.MISS, 0.6f, 0.6f, 1.5f);
 	}
 	
+    private com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin apdThrowOrigin=com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin.UNATTRIBUTED;
+    protected final com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin apdThrownOrigin(){return apdThrowOrigin;}
+    /** Transient callback attribution; never serialize this temporary state or consult stale curUser. */
+    public final void apdThrowAttributed(int cell,com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin captured){
+        if(captured==null)throw new IllegalArgumentException("Missing throw origin");
+        com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin before=apdThrowOrigin;apdThrowOrigin=captured;
+        try{onThrow(cell);}finally{apdThrowOrigin=before;}
+    }
+
 	public void cast( final Hero user, final int dst ) {
+        final com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin captured=com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin.capture(user,null);
 		
 		final int cell = throwPos( user, dst );
 		user.sprite.zap( cell );
@@ -693,7 +738,7 @@ public class Item implements Bundlable {
 							curUser = user;
 							ApdItems.noteAction( Item.this, ApdItems.ACTION_THROW );
 							Item i = Item.this.detach(user.belongings.backpack);
-							if (i != null) i.onThrow(cell);
+							if (i != null) i.apdThrowAttributed(cell,captured);
 							if (curUser.hasTalent(Talent.IMPROVISED_PROJECTILES)
 									&& !(Item.this instanceof MissileWeapon)
 									&& curUser.buff(Talent.ImprovisedProjectileCooldown.class) == null){
@@ -705,10 +750,12 @@ public class Item implements Bundlable {
 							}
 							if (user.buff(Talent.LethalMomentumTracker.class) != null){
 								user.buff(Talent.LethalMomentumTracker.class).detach();
-								user.next();
 							} else {
-								user.spendAndNext(delay);
+								user.busy();
+								user.spend(delay);
 							}
+							if (i != null) i.onThrowComplete(user);
+							user.next();
 						}
 					});
 		} else {
@@ -723,7 +770,7 @@ public class Item implements Bundlable {
 							ApdItems.noteAction( Item.this, ApdItems.ACTION_THROW );
 							Item i = Item.this.detach(user.belongings.backpack);
 							user.spend(delay);
-							if (i != null) i.onThrow(cell);
+							if (i != null) i.apdThrowAttributed(cell,captured);
 							user.next();
 						}
 					});
@@ -749,7 +796,7 @@ public class Item implements Bundlable {
 		@Override
 		public void onSelect( Integer target ) {
 			if (target != null) {
-				curItem.cast( curUser, target );
+				curItem.cast( curUser, com.shatteredpixel.shatteredpixeldungeon.apd.qol.ThrowAim.aim( curUser, curItem, target ) );
 			}
 		}
 		@Override

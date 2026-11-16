@@ -34,6 +34,8 @@ public final class ResultTable {
 		public final String id;
 		public final String label;
 		public final boolean sortable;
+		//Presentation alignment only; values and query behavior are unchanged.
+		public final boolean numeric;
 		//"17/28": cells known out of cells that may be looked at, "" when it does not apply
 		public final String coverage;
 		//the widest text in this column, in characters, header included (an estimate for sizing)
@@ -43,6 +45,11 @@ public final class ResultTable {
 		public int sortRank;
 
 		Header( String id, String label, boolean sortable, String coverage ){
+			this(id, label, sortable, coverage, false);
+		}
+
+		Header( String id, String label, boolean sortable, String coverage, boolean numeric ){
+			this.numeric = numeric;
 			this.id = id;
 			this.label = label;
 			this.sortable = sortable;
@@ -103,7 +110,7 @@ public final class ResultTable {
 			for (ColumnDef c : r.columns){
 				QueryResult.ColumnCoverage cov = r.coverageOf(c.id);
 				String coverage = cov == null ? "" : cov.known + "/" + cov.total + (cov.hidden > 0 ? "+" + cov.hidden + " hidden" : "");
-				t.headers.add(new Header(c.id, c.label, true, coverage));
+				t.headers.add(new Header(c.id, c.label, true, coverage, c.type == ColumnDef.Type.NUM));
 			}
 			for (int i = start; i < end; i++){
 				Row row = r.rows.get(i);
@@ -112,11 +119,11 @@ public final class ResultTable {
 				t.lines.add(new Line(row, null, cells, null));
 			}
 		} else {
-			for (ColumnDef c : r.groupKeys) t.headers.add(new Header(c.id, c.label, true, ""));
-			t.headers.add(new Header("count", r.def.countLabel, true, ""));
+			for (ColumnDef c : r.groupKeys) t.headers.add(new Header(c.id, c.label, true, "", c.type == ColumnDef.Type.NUM));
+			t.headers.add(new Header("count", r.def.countLabel, true, "", true));
 			for (Aggregate a : r.aggregates){
 				if (a.isPlainCount()) continue;
-				t.headers.add(new Header(a.id(), CellFormatter.aggregateLabel(r.def, a), true, ""));
+				t.headers.add(new Header(a.id(), CellFormatter.aggregateLabel(r.def, a), true, "", true));
 			}
 			for (int i = start; i < end; i++){
 				GroupRow g = r.groups.get(i);

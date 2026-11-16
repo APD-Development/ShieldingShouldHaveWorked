@@ -69,6 +69,7 @@ final class RunRecorder {
 	private boolean levelOpen;
 	private int curDepth, curBranch;
 	private long curEnterClock;
+	private final com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomScoreSnapshot scoringSnapshot= com.shatteredpixel.shatteredpixeldungeon.Dungeon.customScoring();
 	private String rulesetId = "";
 	private int rulesetChanges;
 
@@ -126,6 +127,8 @@ final class RunRecorder {
 		//a run from before difficulty existed (loaded from an older save) stays "not recorded"
 		s.difficulty = Dungeon.difficultyKnown ? Dungeon.difficulty : 0;
 		s.difficultyBalance = Dungeon.difficultyKnown ? Dungeon.difficultyBalance : 0;
+		s.customRules = Dungeon.customRules() == null ? "" : Dungeon.customRules().preferenceText();
+        if(r.scoringSnapshot!=null)r.scoringSnapshot.recordTo(s);
 		LifecycleEvents.emitRunStart(r.writer, clock, partial, s);
 		r.checkpoint(LifecycleEvents.CP_RUN_START);
 		//item identity: a new run starts with its kit, a run picked up from a save is caught up with what the hero holds
@@ -149,10 +152,14 @@ final class RunRecorder {
 			ReadResult r = RunLogReader.read(prev);
 			for (ApdEvent e : r.events){
 				if (e.type == EventTypes.RUN_START){
-					LifecycleEvents.RunStart rs = LifecycleEvents.decodeRunStart(e, r);
-					if (rs.runId != null && !rs.runId.isEmpty()) logical = rs.runId;
-					seg = Math.max(seg, rs.segment);
-					break;
+					try {
+						LifecycleEvents.RunStart rs = LifecycleEvents.decodeRunStart(e, r);
+						if (rs.runId != null && !rs.runId.isEmpty()) logical = rs.runId;
+						seg = Math.max(seg, rs.segment);
+						break;
+					} catch (RuntimeException ignored){
+						//A damaged segment header does not make a later readable one disappear.
+					}
 				}
 			}
 		} catch (Throwable ignored){
@@ -291,9 +298,9 @@ final class RunRecorder {
 
 	//logical run id, segment and ruleset bookkeeping as they were at the end of the canonical timeline
 	private void restoreTrackedState( ReadResult log, RunTimeline timeline ){
-		try {
-			for (ApdEvent e : log.events){
-				if (timeline.isAbandoned(e)) continue;
+		for (ApdEvent e : log.events){
+			if (timeline.isAbandoned(e)) continue;
+			try {
 				if (e.type == EventTypes.RUN_START){
 					LifecycleEvents.RunStart rs = LifecycleEvents.decodeRunStart(e, log);
 					if (!rs.runId.isEmpty()) runId = rs.runId;
@@ -303,8 +310,9 @@ final class RunRecorder {
 					rulesetId = LifecycleEvents.decodeRulesetChange(e, log).newId;
 					rulesetChanges++;
 				}
+			} catch (RuntimeException ignored){
+				//One unreadable lifecycle payload must not hide later readable state.
 			}
-		} catch (Throwable ignored){
 		}
 	}
 
@@ -410,6 +418,8 @@ final class RunRecorder {
 
 		LifecycleEvents.RunEnd e = new LifecycleEvents.RunEnd();
 		e.outcome = outcome;
+		e.ascendedKnown = true;
+		e.ascended = outcome == LifecycleEvents.OUTCOME_WON && Statistics.ascended;
 		if (cause != null){
 			e.cause = GameSnapshot.shortName(cause instanceof Class ? (Class<?>) cause : cause.getClass());
 		}
@@ -417,6 +427,8 @@ final class RunRecorder {
 		e.deepest = Statistics.deepestFloor;
 		e.heroLevel = Dungeon.hero == null ? 0 : Dungeon.hero.lvl;
 		e.score = Statistics.totalScore;
+        Long adjusted=scoringSnapshot==null?null:scoringSnapshot.adjustedIdentityScore(e.score);
+        e.customAdjustedKnown=adjusted!=null;if(adjusted!=null)e.customAdjustedScore=adjusted;
 		e.turns = clock;
 		e.rulesetChanges = rulesetChanges;
 		LifecycleEvents.emitRunEnd(writer, clock, e);
@@ -477,3 +489,5 @@ final class RunRecorder {
 		return "unknown";
 	}
 }
+
+

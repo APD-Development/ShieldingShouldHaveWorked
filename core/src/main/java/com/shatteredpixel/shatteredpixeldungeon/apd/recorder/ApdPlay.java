@@ -25,8 +25,11 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NPC;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.Trap;
+
+import java.util.List;
 
 //The game's one-line entry points for recording what the hero does and what happens around them (movement, items, status effects, talents,
 //spells, gold, shops, traps). Each returns at once (one volatile read) unless a run is being recorded, never throws, and never changes the
@@ -80,6 +83,20 @@ public final class ApdPlay {
 		try { p.onHeroMoved(hero, to, travelling); } catch (Throwable ignored){}
 	}
 
+	//Hero.actMove: one observation when a manual step, point-to-point travel or stair walk command begins
+	public static void onMoveCommand( int destination, String mode ){
+		PlayTracker p = t();
+		if (p == null || restoring > 0) return;
+		try { p.onMoveCommand(destination, mode); } catch (Throwable ignored){}
+	}
+
+	//a visible boss crossed one of its explicit gameplay phase boundaries
+	public static void onBossPhase( String boss, int phase, String state ){
+		PlayTracker p = t();
+		if (p == null || restoring > 0) return;
+		try { p.onBossPhase(boss, phase, state); } catch (Throwable ignored){}
+	}
+
 	public static void onHeroRested( boolean full ){
 		PlayTracker p = t();
 		if (p == null) return;
@@ -131,6 +148,27 @@ public final class ApdPlay {
 		PlayTracker p = t();
 		if (p == null || restoring > 0) return;
 		try { p.onWellUsed(well); } catch (Throwable ignored){}
+	}
+
+	//Hero.actInteract: a visible NPC accepted the hero's interaction; quest progress is recorded separately
+	public static void onNpcInteraction( NPC npc ){
+		PlayTracker p = t();
+		if (p == null || restoring > 0) return;
+		try { p.onNpcInteraction(npc); } catch (Throwable ignored){}
+	}
+
+	//a creature explicitly inherited player ownership from the visible character that created it
+	public static void onAllySummoned( Char summoned, Char creator ){
+		PlayTracker p = t();
+		if (p == null || restoring > 0) return;
+		try { p.onAllySummoned(summoned, creator); } catch (Throwable ignored){}
+	}
+
+	//AlchemyScene.combine: a recipe completed; the ingredient list is the player-visible pre-brew snapshot
+	public static void onAlchemyCrafted( List<Item> ingredients, Item result, int totalEnergy, int carriedEnergy, int toolkitEnergy ){
+		PlayTracker p = t();
+		if (p == null || restoring > 0) return;
+		try { p.onAlchemyCrafted(ingredients, result, totalEnergy, carriedEnergy, toolkitEnergy); } catch (Throwable ignored){}
 	}
 
 	//an NPC quest moved on: "given", "ready" (the thing asked for was found or beaten) or "done" (the reward stage was reached)

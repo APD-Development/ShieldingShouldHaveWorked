@@ -41,7 +41,7 @@ public class CausticSlime extends Slime {
 	@Override
 	public int attackProc( Char enemy, int damage ) {
 		if (Random.Int( 2 ) == 0) {
-			Buff.affect( enemy, Ooze.class ).set( Ooze.DURATION );
+			Buff.affect( enemy, Ooze.class ).setAttributed( Ooze.DURATION, this );
 			enemy.sprite.burst( 0x000000, 5 );
 		}
 		

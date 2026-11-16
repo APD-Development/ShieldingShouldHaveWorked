@@ -31,6 +31,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class PointerEvent {
+    public final long diagnosticId=com.watabou.utils.SupportDiagnostics.nextInputId();
+    public final long queuedNanos=System.nanoTime();
+    public long sourceEventNanos; // GDX backend timestamp when available; zero means unknown.
 
 	public enum Type {
 		DOWN,
@@ -53,6 +56,8 @@ public class PointerEvent {
 	public Type type;
 	public int button;
 	public boolean handled; //for hover events, to ensure hover always ends even with overlapping elements
+	//Set only by scrollable pages that share a gesture with child controls. A swipe is not a click.
+	public boolean scrolled;
 
 	public PointerEvent( int x, int y, int id, Type type){
 		this(x, y, id, type, NONE);
@@ -98,6 +103,17 @@ public class PointerEvent {
 	// **********************
 	
 	private static Signal<PointerEvent> pointerSignal = new Signal<>( true );
+
+	/** Move a dormant scene's listeners out of dispatch without changing their order. */
+	public static synchronized Signal<PointerEvent> detachListeners(){
+		return swapListeners(new Signal<>(true));
+	}
+
+	public static synchronized Signal<PointerEvent> swapListeners(Signal<PointerEvent> listeners){
+		Signal<PointerEvent> previous = pointerSignal;
+		pointerSignal = listeners;
+		return previous;
+	}
 	
 	public static void addPointerListener( Signal.Listener<PointerEvent> listener ){
 		pointerSignal.add(listener);
@@ -115,6 +131,14 @@ public class PointerEvent {
 	private static ArrayList<PointerEvent> pointerEvents = new ArrayList<>();
 	private static HashMap<Integer, PointerEvent> activePointers = new HashMap<>();
 
+	/** A lifecycle boundary cancels held pointers; it must never turn them into clicks. */
+	public static synchronized void discardPendingEvents(){
+        if(!pointerEvents.isEmpty() || !activePointers.isEmpty())com.watabou.utils.SupportDiagnostics.event("input.discard","touch_queued="+pointerEvents.size()+" held="+activePointers.size());
+		for (PointerEvent event : new ArrayList<>(activePointers.values())) pointerSignal.dispatch(event.cancel());
+		activePointers.clear();
+		pointerEvents.clear();
+	}
+
 	private static PointF lastHoverPos = new PointF();
 
 	public static PointF currentHoverPos(){
@@ -130,6 +154,11 @@ public class PointerEvent {
 	}
 	
 	public static synchronized void addPointerEvent( PointerEvent event ){
+		//APD: a moving finger queues a DOWN every frame; tracing each one rewrote the diagnostic
+		//file continuously while dragging. Trace only the first press, release and cancel.
+		boolean dragStep = event.type == Type.DOWN && activePointers.containsKey(event.id)
+				&& activePointers.get(event.id).type == Type.DOWN;
+		if(event.type!=Type.HOVER && !dragStep)com.watabou.utils.SupportDiagnostics.input("queued","touch."+event.type,event.diagnosticId,event.queuedNanos,event.sourceEventNanos);
 		pointerEvents.add( event );
 	}
 
@@ -160,6 +189,13 @@ public class PointerEvent {
 			if (p.type == Type.HOVER){
 				continue;
 			}
+            //APD: a finger held down sends a DOWN every frame while it moves; trace and journal
+            //only the first press, the release and cancels, not every drag step.
+            boolean dragStep = p.type == Type.DOWN && activePointers.containsKey(p.id)
+                    && activePointers.get(p.id).type == Type.DOWN;
+            if (!dragStep) com.watabou.utils.SupportDiagnostics.input("dispatched","touch."+p.type,p.diagnosticId,p.queuedNanos,p.sourceEventNanos);
+            if (!dragStep) com.watabou.utils.SupportActionJournal.record("touch."+p.type,
+                    "id="+p.diagnosticId+" pointer="+p.id+" x="+(int)p.current.x+" y="+(int)p.current.y);
 			clearKeyboardThisPress = true;
 			if (activePointers.containsKey(p.id)){
 				PointerEvent existing = activePointers.get(p.id);
@@ -195,3 +231,5 @@ public class PointerEvent {
 	}
 
 }
+
+

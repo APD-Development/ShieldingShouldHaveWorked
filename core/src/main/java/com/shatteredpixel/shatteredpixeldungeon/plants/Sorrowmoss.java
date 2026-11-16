@@ -51,7 +51,8 @@ public class Sorrowmoss extends Plant {
 			if (ch instanceof Mob){
 				Buff.prolong(ch, Trap.HazardAssistTracker.class, Trap.HazardAssistTracker.DURATION);
 			}
-			Buff.affect( ch, Poison.class ).set( 5 + Math.round(2*Dungeon.scalingDepth() / 3f) );
+			Buff.affect( ch, Poison.class ).setAttributedOrigin(
+					5 + Math.round(2*Dungeon.scalingDepth() / 3f), apdOrigin() );
 		}
 		
 		if (Dungeon.level.heroFOV[pos]) {

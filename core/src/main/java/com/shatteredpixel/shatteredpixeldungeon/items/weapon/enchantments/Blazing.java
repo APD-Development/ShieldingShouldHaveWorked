@@ -48,7 +48,7 @@ public class Blazing extends Weapon.Enchantment {
 			float powerMulti = Math.max(1f, procChance);
 
 			if (defender.buff(Burning.class) == null){
-				Buff.affect(defender, Burning.class).reignite(defender, 8f);
+				Burning.affectAttributed(defender, 8f, attacker);
 				powerMulti -= 1;
 			}
 
@@ -56,7 +56,7 @@ public class Blazing extends Weapon.Enchantment {
 				int burnDamage = Random.NormalIntRange( 1, 3 + Dungeon.scalingDepth()/4 );
 				burnDamage = Math.round(burnDamage * 0.67f * powerMulti);
 				if (burnDamage > 0) {
-					defender.damage(burnDamage, this);
+					com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomOffensiveHooks.raw(defender,burnDamage,this,attacker);
 				}
 			}
 			

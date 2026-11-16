@@ -52,7 +52,7 @@ public class Vampiric extends Weapon.Enchantment {
 			
 			//heals for 50% of damage dealt
 			int healAmt = Math.round(damage * 0.5f * powerMulti);
-			healAmt = Math.min( healAmt, attacker.HT - attacker.HP );
+			healAmt = Math.min( com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomHealingHooks.amount(attacker, healAmt), attacker.HT - attacker.HP );
 			
 			if (healAmt > 0 && attacker.isAlive()) {
 				
@@ -72,3 +72,4 @@ public class Vampiric extends Weapon.Enchantment {
 		return RED;
 	}
 }
+

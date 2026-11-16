@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -96,7 +99,7 @@ public class GnollTrickster extends Gnoll {
 				Buff.affect(enemy, Burning.class).reignite( enemy );
 
 			} else {
-				Buff.affect(enemy, Poison.class).set((effect - 2));
+				Buff.affect(enemy,Poison.class).setAttributed(effect-2,this);
 			}
 
 		}
@@ -127,6 +130,7 @@ public class GnollTrickster extends Gnoll {
 	public Item createLoot() {
 		MissileWeapon drop = (MissileWeapon)super.createLoot();
 		drop.level(0);
+		com.shatteredpixel.shatteredpixeldungeon.apd.qol.GenerationUpgradeRanges.set(drop, 0, 0);
 		if (drop.hasCurseEnchant()){
 			drop.enchant(null);
 		}

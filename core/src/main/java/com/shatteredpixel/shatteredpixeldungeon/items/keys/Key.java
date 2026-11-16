@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -28,6 +31,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.SkeletonKey;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Catalog;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Notes;
+import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndJournal;
 import com.watabou.noosa.audio.Sample;
@@ -45,6 +49,10 @@ public abstract class Key extends Item {
 	//TODO currently keys can only appear on branch = 0, add branch support here if that changes
 	public int depth;
 	
+    @Override public String desc(){
+        return super.desc()+(depth>0?"\n\n"+Messages.get(Key.class,"floor",depth):"");
+    }
+
 	@Override
 	public boolean isSimilar( Item item ) {
 		return super.isSimilar(item) && ((Key)item).depth == depth;

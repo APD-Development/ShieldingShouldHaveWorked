@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -318,6 +321,10 @@ public class Blacksmith extends NPC {
 				completed = node.getBoolean( COMPLETED );
 
 				favor = node.getInt( FAVOR );
+				// Optional legacy fields must belong to this save, not the previous run.
+				freePickaxe = false;
+				smithEnchant = null;
+				smithGlyph = null;
 				if (node.contains(PICKAXE)) {
 					pickaxe = (Item) node.get(PICKAXE);
 				} else {
@@ -362,6 +369,13 @@ public class Blacksmith extends NPC {
 			return rooms;
 		}
 
+        /** Same level-only disclosure as the Sad Ghost; never identify the reward here. */
+        public static void revealOfferedLevels() {
+            if (smithRewards != null) for (Item item : smithRewards) {
+                if (item != null) item.levelKnown = true;
+            }
+        }
+
 		public static void generateRewards( boolean useDecks ){
 			smithRewards = new ArrayList<>();
 			smithRewards.add(Generator.randomWeapon(3, useDecks));
@@ -393,6 +407,7 @@ public class Blacksmith extends NPC {
 
 			for (Item i : smithRewards){
 				i.level(rewardLevel);
+				com.shatteredpixel.shatteredpixeldungeon.apd.qol.GenerationUpgradeRanges.set(i, 0, 3);
 				if (i instanceof Weapon) {
 					((Weapon) i).enchant(null);
 				} else if (i instanceof Armor){

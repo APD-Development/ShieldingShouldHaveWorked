@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -113,10 +116,10 @@ public class TrapsRoom extends SpecialRoom {
 			if (lastRow == Terrain.CHASM) {
 				Painter.set( level, pos, Terrain.EMPTY );
 			}
-			level.drop( prize( level ), pos ).type = Heap.Type.CHEST;
+			com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomEquipmentHooks.dropGenerated(level, prize(level), pos, Heap.Type.CHEST, false);
 		} else {
 			Painter.set( level, pos, Terrain.PEDESTAL );
-			level.drop( prize( level ), pos ).type = Heap.Type.CHEST;
+			com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomEquipmentHooks.dropGenerated(level, prize(level), pos, Heap.Type.CHEST, false);
 		}
 		
 		level.addItemToSpawn( new PotionOfLevitation() );
@@ -129,8 +132,10 @@ public class TrapsRoom extends SpecialRoom {
 		//67% chance for prize item
 		if (Random.Int(3) != 0){
 			prize = level.findPrizeItem();
-			if (prize != null)
+			if (prize != null) {
+				com.shatteredpixel.shatteredpixeldungeon.apd.qol.GenerationUpgradeRanges.optionalBonus(prize);
 				return prize;
+			}
 		}
 		
 		//1 floor set higher in probability, never cursed
@@ -153,6 +158,7 @@ public class TrapsRoom extends SpecialRoom {
 			prize.upgrade();
 		}
 		
+		com.shatteredpixel.shatteredpixeldungeon.apd.qol.GenerationUpgradeRanges.optionalBonus(prize);
 		return prize;
 	}
 

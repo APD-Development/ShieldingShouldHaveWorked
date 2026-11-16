@@ -911,7 +911,7 @@ public class CavesBossLevel extends Level {
 							}
 
 							Sample.INSTANCE.play( Assets.Sounds.LIGHTNING );
-							ch.damage( Random.NormalIntRange(6, 12), new Electricity());
+							com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamage.raw(Random.NormalIntRange(6, 12), new Electricity(), com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin.BOSS).apply(ch);
 							ch.sprite.flash();
 
 							if (ch == Dungeon.hero){

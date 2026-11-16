@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -196,7 +199,7 @@ public class Ring extends KindofMisc {
 		//skip custom notes if anonymized and un-Ided
 		String desc;
 		if (anonymous && (handler == null || !handler.isKnown( this ))){
-			desc = desc();
+			desc = desc() + com.shatteredpixel.shatteredpixeldungeon.apd.qol.ItemOrigins.describe(this);
 
 		} else {
 			desc = super.info();
@@ -215,6 +218,8 @@ public class Ring extends KindofMisc {
 		
 		if (isKnown()) {
 			desc += "\n\n" + statsInfo();
+            if(Dungeon.hero!=null&&Dungeon.hero.buff(MagicImmune.class)!=null)
+                desc += "\n\n"+Messages.get(Ring.class,"magic_suppressed");
 		}
 		
 		return desc;
@@ -280,6 +285,7 @@ public class Ring extends KindofMisc {
 			}
 		}
 		level(n);
+		com.shatteredpixel.shatteredpixeldungeon.apd.qol.GenerationUpgradeRanges.baseline(this);
 		
 		//30% chance to be cursed
 		if (Random.Float() < 0.3f) {
@@ -360,11 +366,14 @@ public class Ring extends KindofMisc {
 	@Override
 	public int buffedLvl() {
 		int lvl = super.buffedLvl();
-		if (Dungeon.hero.buff(EnhancedRings.class) != null){
+		if (Dungeon.hero != null && Dungeon.hero.buff(EnhancedRings.class) != null){
 			lvl++;
 		}
 		return lvl;
 	}
+
+	/** Match a passive stat type without normalizing or activating an item. */
+	public boolean providesBuffType(Class<? extends RingBuff> type){ return buffClass == type; }
 
 	public static int getBonus(Char target, Class<?extends RingBuff> type){
 		if (target.buff(MagicImmune.class) != null) return 0;
@@ -373,11 +382,8 @@ public class Ring extends KindofMisc {
 			bonus += buff.level();
 		}
 		SpiritForm.SpiritFormBuff spiritForm = target.buff(SpiritForm.SpiritFormBuff.class);
-		if (bonus == 0
-				&& spiritForm != null
-				&& spiritForm.ring() != null
-				&& spiritForm.ring().buffClass == type){
-			bonus += spiritForm.ring().soloBonus();
+		if (bonus == 0 && spiritForm != null){
+			bonus += spiritForm.ringBonusForBuff(type, false);
 		}
 		return bonus;
 	}
@@ -388,14 +394,22 @@ public class Ring extends KindofMisc {
 		for (RingBuff buff : target.buffs(type)) {
 			bonus += buff.buffedLvl();
 		}
-		if (bonus == 0
-				&& target.buff(SpiritForm.SpiritFormBuff.class) != null
-				&& target.buff(SpiritForm.SpiritFormBuff.class).ring() != null
-				&& target.buff(SpiritForm.SpiritFormBuff.class).ring().buffClass == type){
-			bonus += target.buff(SpiritForm.SpiritFormBuff.class).ring().soloBuffedBonus();
+		SpiritForm.SpiritFormBuff spiritForm = target.buff(SpiritForm.SpiritFormBuff.class);
+		if (bonus == 0 && spiritForm != null){
+			bonus += spiritForm.ringBonusForBuff(type, true);
 		}
 		return bonus;
 	}
+
+    /** Description-only knowledge gate: an unknown companion must not reveal its type or level. */
+    protected static boolean knownEquippedRings(Hero hero){
+        if(hero==null)return false;
+        for(Item worn:new Item[]{hero.belongings.ring(),hero.belongings.misc()}){
+            if(worn instanceof Ring&&!worn.isIdentified())return false;
+        }
+        SpiritForm.SpiritFormBuff spirit=hero.buff(SpiritForm.SpiritFormBuff.class);
+        return spirit==null||spirit.previewRingIdentified();
+    }
 
 	//just used for ring descriptions
 	public int soloBonus(){

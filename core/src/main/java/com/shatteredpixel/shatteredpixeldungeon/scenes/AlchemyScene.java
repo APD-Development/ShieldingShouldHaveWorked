@@ -22,6 +22,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.scenes;
 
 import com.shatteredpixel.shatteredpixeldungeon.apd.recorder.ApdItems;
+import com.shatteredpixel.shatteredpixeldungeon.apd.recorder.ApdPlay;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Chrome;
@@ -692,13 +693,16 @@ public class AlchemyScene extends PixelScene {
 		
 		Item result = null;
 		
+		int totalCost = 0;
+		int carriedCost = 0;
 		if (recipe != null){
-			int cost = recipe.cost(ingredients);
+			totalCost = recipe.cost(ingredients);
+			carriedCost = totalCost;
 			if (toolkit != null){
-				cost = toolkit.consumeEnergy(cost);
+				carriedCost = toolkit.consumeEnergy(carriedCost);
 			}
-			Catalog.countUses(EnergyCrystal.class, cost);
-			Dungeon.energy -= cost;
+			Catalog.countUses(EnergyCrystal.class, carriedCost);
+			Dungeon.energy -= carriedCost;
 
 			String energyText = Messages.get(AlchemyScene.class, "energy") + " " + Dungeon.energy;
 			if (toolkit != null){
@@ -721,9 +725,8 @@ public class AlchemyScene extends PixelScene {
 		}
 		
 		if (result != null){
-
+			ApdPlay.onAlchemyCrafted(lastIngredients, result, totalCost, carriedCost, totalCost - carriedCost);
 			craftItem(ingredients, result);
-
 		}
 
 		boolean foundItems = true;

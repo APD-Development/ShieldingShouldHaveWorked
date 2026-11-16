@@ -38,6 +38,11 @@ import com.watabou.utils.Callback;
 
 public class RunicBlade extends MeleeWeapon {
 
+    /** One scoring authority for the ability's temporary enchantment power. */
+    public float runicSlashEnchantBoost() {
+        return 3f + 0.50f * buffedLvl();
+    }
+
 	{
 		image = ItemSpriteSheet.RUNIC_BLADE;
 		hitSound = Assets.Sounds.HIT_SLASH;
@@ -74,7 +79,7 @@ public class RunicBlade extends MeleeWeapon {
 
 		//we apply here because of projecting
 		RunicSlashTracker tracker = Buff.affect(hero, RunicSlashTracker.class);
-		tracker.boost = 3f + 0.50f*buffedLvl();
+		tracker.boost = runicSlashEnchantBoost();
 		hero.belongings.abilityWeapon = this;
 		if (!hero.canAttack(enemy)){
 			GLog.w(Messages.get(this, "ability_target_range"));

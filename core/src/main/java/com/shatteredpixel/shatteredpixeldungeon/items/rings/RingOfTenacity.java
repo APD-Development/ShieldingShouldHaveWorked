@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -35,11 +38,9 @@ public class RingOfTenacity extends Ring {
 
 	public String statsInfo() {
 		if (isIdentified()){
-			String info = Messages.get(this, "stats",
-					Messages.decimalFormat("#.##", 100f * (1f - Math.pow(0.85f, soloBuffedBonus()))));
-			if (isEquipped(Dungeon.hero) && soloBuffedBonus() != combinedBuffedBonus(Dungeon.hero)){
-				info += "\n\n" + Messages.get(this, "combined_stats",
-						Messages.decimalFormat("#.##", 100f * (1f - Math.pow(0.85f, combinedBuffedBonus(Dungeon.hero)))));
+			String info = benefitDescription("stats",soloBuffedBonus());
+			if (isEquipped(Dungeon.hero) && knownEquippedRings(Dungeon.hero) && soloBuffedBonus() != combinedBuffedBonus(Dungeon.hero)){
+				info += "\n\n" + benefitDescription("combined_stats",combinedBuffedBonus(Dungeon.hero));
 			}
 			return info;
 		} else {
@@ -47,9 +48,15 @@ public class RingOfTenacity extends Ring {
 		}
 	}
 
+    private String benefitDescription(String key,int bonus){
+        double reduction=100f*(1f-Math.pow(0.85f,bonus));
+        return Messages.get(this,key+(reduction<0?"_harm":""),Messages.decimalFormat("#.##",Math.abs(reduction)));
+    }
+
 	public String upgradeStat1(int level){
 		if (cursed && cursedKnown) level = Math.min(-1, level-3);
-		return Messages.decimalFormat("#.##", 100f * (1f - Math.pow(0.85f, level+1))) + "%";
+		double reduction=100f*(1f-Math.pow(0.85f,level+1));
+        return Messages.get(this,reduction<0?"upgrade_more":"upgrade_less",Messages.decimalFormat("#.##",Math.abs(reduction)));
 	}
 
 	@Override
@@ -59,8 +66,12 @@ public class RingOfTenacity extends Ring {
 	
 	public static float damageMultiplier( Char t ){
 		//(HT - HP)/HT = heroes current % missing health.
-		return (float)Math.pow(0.85, getBuffedBonus( t, Tenacity.class)*((float)(t.HT - t.HP)/t.HT));
+		return damageMultiplier(getBuffedBonus(t, Tenacity.class), (float)(t.HT - t.HP)/t.HT);
 	}
+
+    public static float damageMultiplier(int bonus, float missingHealth) {
+        return (float)Math.pow(0.85, bonus * missingHealth);
+    }
 
 	public class Tenacity extends RingBuff {
 	}

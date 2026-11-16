@@ -26,6 +26,17 @@ import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.apd.recorder.ApdRecorder;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.TitleScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.WelcomeScene;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.AboutScene;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.JournalScene;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.RankingsScene;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.StartScene;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.HeroSelectScene;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.APDTextScene;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.CommunityScene;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.UimsdScene;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.ChangesScene;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.NewsScene;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.SupporterScene;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.audio.Music;
 import com.watabou.noosa.audio.Sample;
@@ -57,11 +68,22 @@ public class ShatteredPixelDungeon extends Game {
 	}
 	
 	@Override
+	protected void update() {
+		super.update();
+		//APD: the Cleric grudge (does nothing while its switch is off)
+		com.shatteredpixel.shatteredpixeldungeon.windows.GrudgeHooks.tick();
+	}
+
+	@Override
 	public void create() {
 		super.create();
 
 		updateSystemUI();
 		SPDAction.loadBindings();
+
+        // Android configured private storage before GDX preferences became available.
+        // Journal collection starts only after an explicit, persisted player opt-in.
+        com.watabou.utils.SupportActionJournal.setEnabled(SPDSettings.apdExtendedBugLogging());
 		
 		Music.INSTANCE.enable( SPDSettings.music() );
 		Music.INSTANCE.volume( SPDSettings.musicVol()*SPDSettings.musicVol()/100f );
@@ -72,6 +94,9 @@ public class ShatteredPixelDungeon extends Game {
 
 		//APD: set up run history recording (on by default, see SPDSettings.apdRecording)
 		ApdRecorder.configureDefault( SPDSettings.apdRecording() );
+
+		//APD: a used install is not a new player, so SPD's first-run tutorial (closed floor-1 start, no Main Menu) ends for it
+		com.shatteredpixel.shatteredpixeldungeon.apd.ApdIntro.endIfNotNew();
 		
 	}
 
@@ -95,6 +120,7 @@ public class ShatteredPixelDungeon extends Game {
 	}
 	
 	public static void seamlessResetScene(SceneChangeCallback callback) {
+		invalidateRetainedReturn();
 		if (scene() instanceof PixelScene){
 			((PixelScene) scene()).saveWindows();
 			switchNoFade((Class<? extends PixelScene>) sceneClass, callback );
@@ -112,7 +138,28 @@ public class ShatteredPixelDungeon extends Game {
 		super.switchScene();
 		if (scene instanceof PixelScene){
 			((PixelScene) scene).restoreWindows();
+			// A retained title skips create(); replenish the single-use UIMSD
+			// preload on return as well as on the first title construction.
+			if (scene instanceof TitleScene) UimsdScene.prewarmTitle();
 		}
+	}
+
+	@Override
+	protected boolean isReturnMenu(Class<? extends com.watabou.noosa.Scene> target){
+		return target == TitleScene.class || target == AboutScene.class
+				|| target == JournalScene.class || target == RankingsScene.class
+				|| target == StartScene.class || target == HeroSelectScene.class
+				|| target == APDTextScene.class || target == CommunityScene.class
+				|| target == UimsdScene.class || target == ChangesScene.class
+				|| target == NewsScene.class || target == SupporterScene.class;
+	}
+
+	@Override
+	protected boolean retainForReturn(com.watabou.noosa.Scene current,
+			Class<? extends com.watabou.noosa.Scene> target){
+		return DeviceCompat.isAndroid() && current instanceof TitleScene
+				&& target != TitleScene.class && isReturnMenu(target)
+				&& ((PixelScene) current).canRetainMenu();
 	}
 	
 	@Override

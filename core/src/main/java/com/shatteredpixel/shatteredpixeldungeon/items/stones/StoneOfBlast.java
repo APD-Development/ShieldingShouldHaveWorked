@@ -32,7 +32,8 @@ public class StoneOfBlast extends Runestone {
 	
 	@Override
 	protected void activate(int cell) {
-		new Bomb.ConjuredBomb().explode(cell);
+		new Bomb.ConjuredBomb().apdExplodeAttributed(cell,apdThrownOrigin());
 	}
 	
 }
+

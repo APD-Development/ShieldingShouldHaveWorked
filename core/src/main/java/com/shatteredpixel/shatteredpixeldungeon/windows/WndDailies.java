@@ -128,11 +128,13 @@ public class WndDailies extends Window {
 				content.add(latestInfo);
 			}
 
-			score = PixelScene.renderTextBlock(num.format(Rankings.INSTANCE.dailyScoreHistory.get(l)), 7);
+			score = PixelScene.renderTextBlock(num.format(Rankings.INSTANCE.dailyEarnedScore(l)), 7);
 			score.setPos(WIDTH - score.width(), top);
+            // Very large earned scores get their own line instead of covering the date/info control.
+            if (score.left() < day.right() + (first ? 20 : 4)) score.setPos(Math.max(0, WIDTH - score.width()), day.bottom() + 2);
 			content.add(score);
 
-			top = (int) day.bottom() + 6;
+			top = (int)Math.ceil(Math.max(day.bottom(), score.bottom())) + 6;
 			if (first){
 				top += 2;
 				first = false;

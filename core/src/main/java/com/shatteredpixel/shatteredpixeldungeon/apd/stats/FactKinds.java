@@ -38,7 +38,8 @@ public final class FactKinds {
 	private FactKinds(){}
 
 	private static final Map<String, FactKind> KINDS = new LinkedHashMap<>();
-	private static boolean builtinsLoaded;
+	// Guarded by the same monitor as registration; declarations are immutable.
+	private static String cachedFingerprint;
 
 	//Registers a kind. Registering the same key twice is a mistake (IllegalStateException), so two mechanics can never share a key by accident.
 	public static synchronized FactKind register( FactKind k ){
@@ -48,38 +49,46 @@ public final class FactKinds {
 			throw new IllegalStateException("fact kind registered twice: " + k.key);
 		}
 		KINDS.put(k.key, k);
+		cachedFingerprint = null;
 		return k;
 	}
 
-	public static synchronized FactKind get( String key ){
+	public static FactKind get( String key ){
 		loadBuiltins();
-		return KINDS.get(key);
+		synchronized (FactKinds.class){
+			return KINDS.get(key);
+		}
 	}
 
 	//all kinds in registration order
-	public static synchronized List<FactKind> all(){
+	public static List<FactKind> all(){
 		loadBuiltins();
-		return Collections.unmodifiableList(new ArrayList<>(KINDS.values()));
+		synchronized (FactKinds.class){
+			return Collections.unmodifiableList(new ArrayList<>(KINDS.values()));
+		}
 	}
 
 	//The kinds the game itself declares. Called lazily so a test that only wants the registry sees them too.
 	private static void loadBuiltins(){
-		if (builtinsLoaded) return;
-		builtinsLoaded = true;
+		// GameFacts initialization registers into this map. Never hold its monitor while
+		// waiting for that class initialization; the JVM already makes initialization once-only.
 		BuiltinFactKinds.register();
 	}
 
 	//Changes whenever the set of kinds or their fields change. Row caches built from the registry are valid only for the same fingerprint.
-	public static synchronized String fingerprint(){
+	public static String fingerprint(){
 		loadBuiltins();
-		long h = 1125899906842597L;
-		for (FactKind k : KINDS.values()){
-			h = mix(h, k.key);
-			h = mix(h, k.isInternal() ? "I" : "P");
-			for (FactKind.Field f : k.values()) h = mix(h, "v" + f.key + f.scale);
-			for (FactKind.Field f : k.tags()) h = mix(h, "t" + f.key);
+		synchronized (FactKinds.class){
+			if (cachedFingerprint != null) return cachedFingerprint;
+			long h = 1125899906842597L;
+			for (FactKind k : KINDS.values()){
+				h = mix(h, k.key);
+				h = mix(h, k.isInternal() ? "I" : "P");
+				for (FactKind.Field f : k.values()) h = mix(h, "v" + f.key + f.scale);
+				for (FactKind.Field f : k.tags()) h = mix(h, "t" + f.key);
+			}
+			return cachedFingerprint = Long.toHexString(h);
 		}
-		return Long.toHexString(h);
 	}
 
 	private static long mix( long h, String s ){

@@ -76,7 +76,7 @@ level summaries). U4 the question builder and topic pages. Each step ends with c
   (what was worn and for how long), and one dataset per registered fact kind. Each gets a table in the Tables picker automatically (sections "Play by play" and "Details: <topic>").
 - **Measures:** count, total, average, highest, lowest, median over any recorded number, grouped by any recorded column, filtered by anything; `PerUnit` divides by runs, floor
   visits, turns, 1,000 turns or hours played, measured against the Floors table so quiet floors count.
-- **Question builder:** Home card "Ask a question" (`WndUimsdAsk`, `Question`, `Questions`); "Open as a table" hands the same question to the full table tools (`UimsdModel.showQuery`).
+- **Question builder:** Home card "Ask a question" (`WndUimsdAsk`, `Question`, `Questions`); "Open as a table" hands the same question to the full table tools (`UimsdModel.showQuery`). `UimsdTerminology` supplies one immutable offline vocabulary to view search, topic discovery and exact interpretation. Dataset/public-column/measure/connector aliases extend by registry copy rather than parser edits; internal columns and recorded values never enter the vocabulary, and unsupported or ambiguous wording fails closed (core verified Oct20, run39437010997).
 - **Recorded in this pass (PUBLIC unless noted):** steps, rest turns, searches, containers opened, traps triggered, item actions (+ INTERNAL true item, level, charges), status effects
   by their shown name (+ INTERNAL true class of every effect), talent points, subclass and armor-ability choices, spell casts, armor-ability uses, every gold change with its cause, shop
   trades, played time. Plus row-level views of everything already recorded.
@@ -93,10 +93,15 @@ level summaries). U4 the question builder and topic pages. Each step ends with c
 - Batch E (telemetry 1.9): `journal.landmark` (shops, alchemy, wells, floor feelings noted or dropped in the journal) and `journal.key` (keys picked up or used). Hook: 4 calls in `Notes` (`ApdPlay.onLandmark/onKey`); only what the journal already shows the player.
 - Batch F (telemetry 1.9): `explore.discover` (secret doors/traps revealed, by searching or magic; hook in `Level.discover`) and `explore.well` (a well was used; hook in `WellWater.affect`). Revealed at the moment the player sees them, so nothing hidden is exposed early.
 - Batch G (telemetry 1.9): `journal.page` (a journal page found, or read for the first time; hook in `Document.findPage/readPage`).
+- Batch H (telemetry 1.12): `npc.interact` (each accepted hero interaction with an NPC, using only the name shown to the player and current floor; hook in the central `Hero.actInteract`). Quest progress remains the separate `npc.quest` event.
+- The queued lever candidate was checked against the current source before Batch H. This game version has no lever class, terrain, message key or interaction path, so no fictional lever event was added.
+- Coverage review (TEST203, no telemetry bump): all seven non-neutral level feelings are already shown in `GameScene` and immediately passed to their matching `Notes.Landmark.*_FLOOR`. The existing `journal.landmark` fact records that public, floor-specific observation exactly once; `NONE` emits nothing and revisiting an already-noted feeling cannot duplicate the fact. A retained behavioral test plus source-wiring guard now protects this boundary.
+- Batch I (telemetry 1.15): `move.command` records each manual step, point-to-point travel or safe stair-navigation command once with its public destination, floor width and mode. The older per-cell `move.step.travelling` field is preserved and clarified: it marks physical walking versus instantaneous relocation. Exact-source review found no general auto-explore mechanic in this game version, so none was invented.
+- Batch J (telemetry 1.16): `boss.phase` records the visible transitions of Goo, Tengu, DM-300, Dwarf King and Yog using only the displayed boss name, boss-specific phase number, floor and a public state label. Initial encounter state is implicit; restore-time reconstruction emits nothing.
 
 ## Not yet recorded (observable; candidates for the next batches, each needs its own hook and a hidden-information review)
-Levers, per-enemy state changes and enemy abilities, boss phase changes, NPC interactions beyond quest steps (quest steps given/ready/done are recorded since telemetry 1.10), artifact charge (no public
-accessor), plant and seed interactions, level feelings acted on, auto-explore and travel usage, throws and targeting, shop stock seen, ally summons and their fates, alchemy details,
+Per-enemy state changes and enemy abilities, artifact charge (no public
+accessor), plant and seed interactions, throws and targeting, shop stock seen, ally fates,
 fall and trap damage sources beyond damage events, and anything a future character adds.
 
 ## UIMSD Demo Unlock (roadmap addition, owner request 2026-10-08; NOT started; lower priority than backend work and pending tests)

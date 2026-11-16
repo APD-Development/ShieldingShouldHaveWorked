@@ -1,3 +1,28 @@
+Bug Fixes:
+- Returning from UIMSD evidence restores each table's filters, sorting, page and horizontal/vertical position. Following a new link starts at its own results; returning or rotating restores the parent position without mixing tables that share the same columns.
+- Resuming a saved run keeps manual hotbar assignments, empty slots and placeholders. Manual edits save immediately while the hero is waiting for input. The Waterskin starting-slot preference only affects new runs and never rearranges an existing run.
+- A completed UIMSD seed replay publishes its result and clears the busy message together.
+- Adding or reversing a secondary sort key keeps that selected statistic visible instead of jumping to the primary key. Column reordering preserves vertical position when the sort itself is unchanged.
+- CSV run reports now include their recorded fact sections, including Outcome and Ascended, alongside existing tables.
+- Final deaths no longer become Abandoned when death cleanup removes the save before the death ranking is submitted. Manually abandoned runs remain distinct. Existing ambiguous records are preserved.
+- UIMSD sorting preserves the horizontal column position through table refreshes. The active column shows an ascending or descending marker. Filters, column edits and table settings preserve the viewport where possible; sorting starts at the first result.
+
+Statistics / UIMSD:
+- Named personal experiments keep a question, both population definitions and a metric. Reopen results to include matching records from the latest loaded history, inspect contributors and recorded condition differences, and rename or delete definitions. Unknown values remain unknown; observational comparisons do not prove causation.
+- Exact questions can be saved by name and reopened later with the same measure, per-unit choice, split, conditions, run scope and hidden-information choice. They are asked again against current history; legacy saved tables still open normally.
+- Damage after equipping: choose a recorded equipment occurrence and a following-turn window, inspect the exact interpreted boundaries and open contributing damage records. Missing history stays unknown; observed totals are lower bounds.
+- Healing after damage: choose an exact recorded hit against the hero and inspect HP healing in the next 1, 5, 10, 20 or 50 turns. Same-turn healing is excluded because its ordering is not recorded; missing history stays unknown, exact contributors remain inspectable, and the result does not claim the damage caused the healing.
+- Research lab: Run DNA measures each run's combat, healing, equipment and exploration rates, compares two fingerprints and opens their source records.
+- Luck laboratory compares recorded generation outcomes against matching finished random-seed runs. It shows reference samples and empirical percentiles without changing scores or inventing RNG probabilities.
+- Automatic discoveries surface exploratory win-rate contrasts only when matched groups have sufficient exact data, adjusted uncertainty bands and inspectable contributors. Insufficient data produces no invented finding.
+- Statistical investigation lab captures filtered populations A and B separately from saved views, compares numeric statistics and win rates, reports exclusions and overlap, and opens contributor records. Population query snapshots persist with integrity checks; every analysis exports its methods and evidence.
+- Options > Charts compares grouped results with scrollable bars. Choose a measure, keep the table's filters and uncertainty marks, and tap a group for details. Unknown values have no bar; the first 24 groups follow table order.
+- Winning runs now record whether the ascent was completed. The Ascended column is available for filtering, summaries and exports; older unrecorded results remain unknown.
+
+Quality of Life:
+- APD Settings now opens a compact category index with focused Gameplay, Difficulty & Rules, Hotbar & Controls, Visibility & Navigation, Statistics & History, and Advanced sections. Controls use consistent compact styling, explain when changes apply, and keep diagnostics out of the main page.
+- Tile examination of open multi-item piles shows every item in top-first order with visible identity, icons and quantities. Inspect an item for its normal description without collecting it, advancing turns or identifying anything.
+
 APD 4.0.8-apd
 Added:
 - UIMSD interface and wording pass: dialogs are now grouped into sections with a short description under each choice and the current choice marked; filtering is a guided three-step flow that offers real choices (your classes, Won/Died/Abandoned, difficulty levels) instead of typed text, with every operator still available; tables show full two-line headings, a selected row, and say when more columns are off to the right; Options, Notes, Sort, Columns and the table list are laid out in sections; row and group sheets are easier to read; the Guide has sections and a plain-language glossary; the tour, status lines, column names and reports use player words (rules, runs, items, worked out, recording version); the first-run Home welcomes you and offers the tour. Nothing was removed and the ? >= ~ hidden marks are unchanged
@@ -33,3 +58,4 @@ Fixed:
 Removed:
 - Cleric as a playable class
 - Support button on the home screen
+

@@ -177,20 +177,17 @@ public class Crystal extends Weapon.Enchantment {
 
 	@Override
 	public String desc() {
-		String desc = super.desc();
-		if (thrownWeapon){
-			desc += " " + Messages.get(this, "desc_thrown");
-		} else if (visualDurability == 100){
-			desc += " " + Messages.get(this, "desc_perfect");
-		}else if (visualDurability > 50){
-			desc += " " + Messages.get(this, "desc_fine");
-		} else if (visualDurability > 10){
-			desc += " " + Messages.get(this, "desc_flawed");
-		} else {
-			desc += " _" + Messages.get(this, "desc_cracked") + "_";
-		}
-		return desc;
-	}
+        return super.desc() + " " + conditionDescription();
+    }
+
+    /** Existing visible condition only; inspection must not repair or expose the hidden exact wear. */
+    public String conditionDescription() {
+        if (thrownWeapon) return Messages.get(this, "desc_thrown");
+        if (visualDurability == 100) return Messages.get(this, "desc_perfect");
+        if (visualDurability > 50) return Messages.get(this, "desc_fine");
+        if (visualDurability > 10) return Messages.get(this, "desc_flawed");
+        return "_" + Messages.get(this, "desc_cracked") + "_";
+    }
 
 	private static final String DURABILITY = "durability";
 	private static final String VISUAL_DUR = "visual_dur";

@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -98,7 +101,7 @@ public class Toolbar extends Component {
 
 		add(btnSwap = new SlotSwapTool(128, 0, 21, 23));
 
-		btnQuick = new QuickslotTool[QuickSlot.SIZE];
+		btnQuick = new QuickslotTool[QuickSlot.MOBILE_VISIBLE_SLOTS];
 		for (int i = 0; i < btnQuick.length; i++){
 			add( btnQuick[i] = new QuickslotTool(64, 0, 22, 24, i) );
 		}
@@ -124,6 +127,11 @@ public class Toolbar extends Component {
 					String[] slotNames = new String[6];
 					Image[] slotIcons = new Image[6];
 					for (int i = 0; i < 6; i++){
+						if (com.shatteredpixel.shatteredpixeldungeon.apd.hotbar.CategoryHotbar.enabled()) {
+                            slotNames[i] = com.shatteredpixel.shatteredpixeldungeon.apd.hotbar.CategoryHotbar.label(i);
+                            slotIcons[i] = new ItemSprite(ItemSpriteSheet.SOMETHING);
+                            continue;
+                        }
 						Item item = Dungeon.quickslot.getItem(i);
 
 						if (item != null && !Dungeon.quickslot.isPlaceholder(i) &&
@@ -150,6 +158,12 @@ public class Toolbar extends Component {
 					Game.scene().addToFront(new RadialMenu(Messages.get(Toolbar.class, "quickslot_prompt"), info, slotNames, slotIcons) {
 						@Override
 						public void onSelect(int idx, boolean alt) {
+                            if (com.shatteredpixel.shatteredpixeldungeon.apd.hotbar.CategoryHotbar.enabled()) {
+                                super.onSelect(idx,alt);
+                                if (alt) com.shatteredpixel.shatteredpixeldungeon.windows.WndCategoryHotbar.configure(idx);
+                                else com.shatteredpixel.shatteredpixeldungeon.windows.WndCategoryHotbar.open(idx);
+                                return;
+                            }
 							Item item = Dungeon.quickslot.getItem(idx);
 
 							if (item == null || Dungeon.quickslot.isPlaceholder(idx)
@@ -287,15 +301,25 @@ public class Toolbar extends Component {
 		add(btnSearch = new Tool(44, 0, 20, 26) {
 			@Override
 			protected void onClick() {
-				if (Dungeon.hero != null && Dungeon.hero.ready) {
-					if (!examining && !GameScene.cancel()) {
-						GameScene.selectCell(informer);
-						examining = true;
-					} else if (examining) {
-						informer.onSelect(null);
-						Dungeon.hero.search(true);
-					}
-				}
+                if (Dungeon.hero != null && Dungeon.hero.ready && Dungeon.hero.isAlive()) {
+                    if (SPDSettings.adaptiveSearchChoice()) {
+                        //APD adaptive: full search only where a door-capable wall is in reach, otherwise inspect
+                        if (apdWallSearchUseful()) {
+                            GameScene.cancel();examining=false;Dungeon.hero.search(true);
+                        } else if (!examining && !GameScene.cancel()) {
+                            GameScene.selectCell(informer);examining=true;
+                        } else if (examining) {
+                            GameScene.cancel();examining=false;
+                        }
+                    } else if (SPDSettings.singleTapSearch()) {
+                        // Cancel targeting/inspection without swallowing the requested search.
+                        GameScene.cancel();examining=false;Dungeon.hero.search(true);
+                    } else if (!examining && !GameScene.cancel()) {
+                        GameScene.selectCell(informer);examining=true;
+                    } else if (examining) {
+                        informer.onSelect(null);Dungeon.hero.search(true);
+                    }
+                }
 			}
 			
 			@Override
@@ -305,14 +329,34 @@ public class Toolbar extends Component {
 
 			@Override
 			protected String hoverText() {
-				return Messages.titleCase(Messages.get(WndKeyBindings.class, "examine"));
+				if (SPDSettings.adaptiveSearchChoice()) {
+					return apdWallSearchUseful() ? "Wall Search (hold: inspect)" : "Inspect (hold: Wall Search)";
+				}
+				return Messages.titleCase(SPDSettings.singleTapSearch()
+                        ? Messages.get(com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero.class,"search")
+                        : Messages.get(WndKeyBindings.class,"examine"));
 			}
 			
 			@Override
 			protected boolean onLongClick() {
-				Dungeon.hero.search(true);
-				return true;
+                if (Dungeon.hero != null && Dungeon.hero.ready && Dungeon.hero.isAlive()) {
+                    if (SPDSettings.adaptiveSearchChoice()) {
+                        //hold does the opposite of the tap
+                        if (apdWallSearchUseful()) {
+                            GameScene.cancel();GameScene.selectCell(informer);examining=true;
+                        } else {
+                            GameScene.cancel();examining=false;Dungeon.hero.search(true);
+                        }
+                    } else if (SPDSettings.singleTapSearch()) {
+                        GameScene.cancel();GameScene.selectCell(informer);examining=true;
+                    } else {
+                        Dungeon.hero.search(true);
+                    }
+                }
+                // Consume the release even when busy; never queue an accidental search.
+                return true;
 			}
+
 		});
 		btnSearch.icon( 192, 0, 16, 16 );
 		
@@ -494,7 +538,7 @@ public class Toolbar extends Component {
 		if (PixelScene.uiCamera.width > 170) quickslotsToShow ++;
 
 		int startingSlot;
-		if (SPDSettings.quickSwapper() && quickslotsToShow < 6){
+		if ((SPDSettings.quickSwapper() || com.shatteredpixel.shatteredpixeldungeon.apd.hotbar.CategoryHotbar.enabled()) && quickslotsToShow < 6){
 			quickslotsToShow = 3;
 			startingSlot = swappedQuickslots ? 3 : 0;
 			btnSwap.visible = true;
@@ -557,6 +601,13 @@ public class Toolbar extends Component {
 			}
 		}
 
+        // At the minimum portrait width, three slots plus the paging control do not
+        // fit beside the original action buttons. Put only the pager above the slots;
+        // never center an overflowing row into Inventory or shrink its touch targets.
+        float rowWidth = btnWait.width() + btnSearch.width() + btnInventory.width();
+        for (int i = startingSlot; i <= endingSlot; i++) rowWidth += btnQuick[i].width();
+        boolean raisedSwap = btnSwap.visible && rowWidth + btnSwap.width() - 2 > width;
+
 		float shift = 0;
 		Toolbar.Mode mode;
 		try {
@@ -581,8 +632,12 @@ public class Toolbar extends Component {
 				}
 
 				if (btnSwap.visible){
-					btnSwap.setPos(btnQuick[endingSlot].left() - (btnSwap.width()-2), y+3);
-					shift = btnSearch.right() - btnSwap.left();
+                    if (raisedSwap) {
+                        btnSwap.setPos((btnQuick[endingSlot].left() + btnQuick[startingSlot].right() - btnSwap.width()) / 2, y - btnSwap.height());
+                    } else {
+						btnSwap.setPos(btnQuick[endingSlot].left() - (btnSwap.width()-2), y+3);
+						shift = btnSearch.right() - btnSwap.left();
+                    }
 				}
 
 				break;
@@ -593,7 +648,7 @@ public class Toolbar extends Component {
 				for(Button slot : btnQuick){
 					if (slot.visible) toolbarWidth += slot.width();
 				}
-				if (btnSwap.visible) toolbarWidth += btnSwap.width()-2;
+				if (btnSwap.visible && !raisedSwap) toolbarWidth += btnSwap.width()-2;
 				right = (width + toolbarWidth)/2;
 
 			case GROUP:
@@ -608,8 +663,12 @@ public class Toolbar extends Component {
 				}
 
 				if (btnSwap.visible){
-					btnSwap.setPos(btnQuick[endingSlot].left() - (btnSwap.width()-2), y+3);
-					shift = -btnSwap.left();
+                    if (raisedSwap) {
+                        btnSwap.setPos((btnQuick[endingSlot].left() + btnQuick[startingSlot].right() - btnSwap.width()) / 2, y - btnSwap.height());
+                    } else {
+						btnSwap.setPos(btnQuick[endingSlot].left() - (btnSwap.width()-2), y+3);
+						shift = -btnSwap.left();
+                    }
 				}
 				
 				break;
@@ -638,15 +697,23 @@ public class Toolbar extends Component {
 			}
 
 			if (btnSwap.visible){
-				btnSwap.setPos( right - btnSwap.right(), y+3);
+				btnSwap.setPos( right - btnSwap.right(), btnSwap.top());
 			}
 
 		}
 
 	}
 
+    /** Message baseline above every visible toolbar control, including a raised pager. */
+    public float messageTop() {
+        return btnSwap.visible ? Math.min(top(), btnSwap.top()) : top();
+    }
+
 	public static void updateLayout(){
-		if (instance != null) instance.layout();
+        if (instance != null) {
+            instance.layout();
+            if (Game.scene() instanceof GameScene) GameScene.layoutTags();
+        }
 	}
 	
 	@Override
@@ -990,5 +1057,11 @@ public class Toolbar extends Component {
 				y = startY*p + endY*(1-p);
 			}
 		}
+	}
+
+	//APD: a full search is worth turns where a door-capable wall is in reach, or in a room with visible traps
+	static boolean apdWallSearchUseful(){
+		return Dungeon.hero != null && Dungeon.level != null
+				&& com.shatteredpixel.shatteredpixeldungeon.apd.qol.SearchControlContext.fullSearchUseful(Dungeon.hero, Dungeon.level);
 	}
 }

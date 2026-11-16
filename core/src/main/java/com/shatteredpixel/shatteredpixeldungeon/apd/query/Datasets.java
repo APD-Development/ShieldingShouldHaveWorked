@@ -63,6 +63,8 @@ public final class Datasets {
 		d.add(ColumnDef.enumeration(FactKeys.OUTCOME, "Outcome").label(0, "Died").label(1, "Won").label(2, "Abandoned").shown()
 				.merge(Merge.LAST).group("Result"));
 		d.add(ColumnDef.num(FactKeys.DEEPEST, "Deepest").shown().merge(Merge.MAX).group("Result"));
+		d.add(yesNo(ColumnDef.enumeration("run.ascended", "Ascended")).merge(Merge.LAST).group("Result")
+				.describe("Whether a winning run completed the ascent. ? means this result was not recorded."));
 		d.add(ColumnDef.num(FactKeys.HERO_LEVEL, "Level").shown().merge(Merge.LAST).group("Result"));
 		d.add(ColumnDef.num(FactKeys.SCORE, "Score").shown().merge(Merge.LAST).group("Result"));
 		d.add(ColumnDef.num(FactKeys.TURNS, "Turns").shown().merge(Merge.LAST).group("Result"));
@@ -81,6 +83,29 @@ public final class Datasets {
 		d.add(ColumnDef.num(FactKeys.DIFFICULTY_BALANCE, "Balance revision").since(1, 7).group("Rules")
 				.describe("Which version of the difficulty balance the run was played with: 0 = none (difficulty 3, the normal game), 1 and up = a balance version. Runs of different versions are never counted together unless you choose all rules."));
 		d.add(ColumnDef.text(FactKeys.RULESET, "Rules code").group("Rules").describe("A code for the exact rules the run was played under: difficulty, challenges and exotic-item chance. Runs with the same code were played the same way."));
+
+        d.add(ColumnDef.num(com.shatteredpixel.shatteredpixeldungeon.apd.stats.CustomRuleFacts.VERSION, "Custom rules version").since(1,11).group("Custom Rules"));
+        d.add(ColumnDef.text(com.shatteredpixel.shatteredpixeldungeon.apd.stats.CustomRuleFacts.IDENTITY, "Exact custom settings").since(1,11).group("Custom Rules"));
+        for (String slider : com.shatteredpixel.shatteredpixeldungeon.apd.stats.RecordedRuleSettings.KEYS) {
+            String label=slider.toLowerCase(java.util.Locale.ROOT).replace('_',' ');
+            label=Character.toUpperCase(label.charAt(0))+label.substring(1);
+            d.add(ColumnDef.num(com.shatteredpixel.shatteredpixeldungeon.apd.stats.CustomRuleFacts.key(slider),
+                label+(slider.equals("UPGRADE_SCROLLS") ? " count" : " %"))
+                .since(1,11).group("Custom Rules").describe("The exact setting locked when this run began. ? means not recorded."));
+        }
+        d.add(ColumnDef.num(com.shatteredpixel.shatteredpixeldungeon.apd.stats.CustomRuleFacts.SCROLL_PERCENT, "Upgrade scroll availability %")
+            .format(ColumnDef.Format.HUNDREDTHS).since(1,11).group("Custom Rules"));
+        d.add(ColumnDef.text(com.shatteredpixel.shatteredpixeldungeon.apd.stats.CustomRuleFacts.SCORE_STATUS, "Custom scoring status").since(1,11).group("Custom Rules"));
+        d.add(ColumnDef.num(com.shatteredpixel.shatteredpixeldungeon.apd.stats.CustomRuleFacts.GENERATED_UPGRADES,"Upgrade scrolls generated").internal().merge(Merge.SUM).since(1,4).group("Custom Rules"));
+        d.add(ColumnDef.num(com.shatteredpixel.shatteredpixeldungeon.apd.stats.CustomRuleFacts.GENERATED_EQUIPMENT,"Equipment generated").internal().merge(Merge.SUM).since(1,4).group("Custom Rules"));
+        d.add(ColumnDef.num(com.shatteredpixel.shatteredpixeldungeon.apd.stats.CustomRuleFacts.SCROLL_PERCENT_NUMERATOR,"Scroll availability numerator").since(1,11).group("Custom Rules"));
+        d.add(ColumnDef.num(com.shatteredpixel.shatteredpixeldungeon.apd.stats.CustomRuleFacts.SCROLL_PERCENT_DENOMINATOR,"Scroll availability denominator").since(1,11).group("Custom Rules"));
+        d.add(ColumnDef.num(com.shatteredpixel.shatteredpixeldungeon.apd.stats.CustomRuleFacts.SCORING_RECORD_VERSION,"Scoring record version").since(1,11).group("Custom Rules"));
+        d.add(ColumnDef.text(com.shatteredpixel.shatteredpixeldungeon.apd.stats.CustomRuleFacts.MULTIPLIER_EXACT,"Exact custom multiplier").since(1,11).group("Custom Rules"));
+        d.add(ColumnDef.num(com.shatteredpixel.shatteredpixeldungeon.apd.stats.CustomRuleFacts.ORIGINAL_SCORE,"Original earned score").group("Custom Rules"));
+        d.add(ColumnDef.num(com.shatteredpixel.shatteredpixeldungeon.apd.stats.CustomRuleFacts.MULTIPLIER,"Custom Rules Multiplier").format(ColumnDef.Format.HUNDREDTHS).since(1,11).group("Custom Rules"));
+        d.add(ColumnDef.text(com.shatteredpixel.shatteredpixeldungeon.apd.stats.CustomRuleFacts.CALCULATION_VERSION,"Custom score calculation version").since(1,11).group("Custom Rules"));
+        d.add(ColumnDef.num(com.shatteredpixel.shatteredpixeldungeon.apd.stats.CustomRuleFacts.ADJUSTED_SCORE,"Adjusted score").since(1,11).group("Custom Rules"));
 		d.add(yesNo(ColumnDef.enumeration(FactKeys.DAILY, "Daily")).group("Rules"));
 		d.add(ColumnDef.enumeration(FactKeys.SEED_TYPE, "Run type").label(0, "Random").label(1, "Custom").label(2, "Daily").label(3, "Daily replay").group("Rules")
 				.describe("How the run's levels were chosen: at random, a custom seed, or the daily. The seed itself is hidden information."));
@@ -449,9 +474,9 @@ public final class Datasets {
 				Query.of(ENEMIES).withGroup(enemyTable()).withMinSample(ALL_TYPES).withSorts(Arrays.asList(new Sort("count", true))))
 				.withInstances(Query.of(ENEMIES)));
 		v.add(new ViewDef("bosses", "Bosses", "Only the bosses, with how fights against each went. Tap one for its statistics, then each meeting and the runs.",
-				Query.of(ENEMIES).withFilters(Arrays.asList(Filter.num("enemy.boss", Op.EQ, 1))).withGroup(enemyTable()).withMinSample(ALL_TYPES)
+				Query.of(ENEMIES).withScope(Scope.DEFAULT.withFinishedOnly(true)).withFilters(Arrays.asList(Filter.num("enemy.boss", Op.EQ, 1))).withGroup(enemyTable()).withMinSample(ALL_TYPES)
 						.withSorts(Arrays.asList(new Sort("count", true))))
-				.withInstances(Query.of(ENEMIES).withFilters(Arrays.asList(Filter.num("enemy.boss", Op.EQ, 1)))));
+				.withInstances(Query.of(ENEMIES).withScope(Scope.DEFAULT.withFinishedOnly(true)).withFilters(Arrays.asList(Filter.num("enemy.boss", Op.EQ, 1)))));
 		v.add(new ViewDef("deaths", "Deaths", "Every death.", Query.of(DEATHS)));
 		v.add(new ViewDef("characters", "Characters", "Runs grouped by hero class.",
 				Query.of(RUNS).withGroup(runStats(FactKeys.HERO_CLASS)).withMinSample(DEFAULT_MIN_SAMPLE)
@@ -498,3 +523,5 @@ public final class Datasets {
 		return views();
 	}
 }
+
+

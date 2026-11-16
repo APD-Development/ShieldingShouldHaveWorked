@@ -239,7 +239,7 @@ public class DifficultyTest {
 	}
 
 	private static int difficultyOf( Ruleset r ){
-		for (int l = 1; l <= 5; l++) if (Ruleset.of(r.exoticChance, challengesOf(r), l).id.equals(r.id)) return l;
+		for (int l = 1; l <= 5; l++) if ((Ruleset.of(r.exoticChance, challengesOf(r), l).id.equals(r.id) || Ruleset.withHealingOnlyConversion(Ruleset.of(r.exoticChance, challengesOf(r), l)).id.equals(r.id))) return l;
 		return -1;
 	}
 
@@ -312,8 +312,8 @@ public class DifficultyTest {
 		Dungeon.loadGame(1);
 		assertEquals("the run's own revision comes back, not the newest", 0, Dungeon.difficultyBalance);
 		assertEquals(1.0, Difficulty.modifier(Difficulty.Modifier.ENEMY_HP), 0);
-		assertEquals(Ruleset.of(SPDSettings.apdExoticChance(), Dungeon.challenges, 4, 0).id, Ruleset.current().id);
-		assertNotEquals(Ruleset.of(SPDSettings.apdExoticChance(), Dungeon.challenges, 4, 1).id, Ruleset.current().id);
+		assertEquals(Ruleset.withHealingOnlyConversion(Ruleset.of(SPDSettings.apdExoticChance(), Dungeon.challenges, 4, 0)).id, Ruleset.current().id);
+		assertNotEquals(Ruleset.withHealingOnlyConversion(Ruleset.of(SPDSettings.apdExoticChance(), Dungeon.challenges, 4, 1)).id, Ruleset.current().id);
 
 		Bundle b = new Bundle();
 		b.put("apd_difficulty", 4);       //a save that has a difficulty but no revision at all
@@ -339,7 +339,8 @@ public class DifficultyTest {
 			assertTrue(Dungeon.apdExoticKnown);
 			assertEquals(30, Dungeon.apdExotic);
 			String id = Ruleset.current().id;
-			assertEquals(Ruleset.of(30, Dungeon.challenges, Dungeon.difficulty, Dungeon.difficultyBalance).id, id);
+			assertEquals(Ruleset.withHealingOnlyConversion(Ruleset.of(30, Dungeon.challenges, Dungeon.difficulty, Dungeon.difficultyBalance)).id, id);
+            assertNotEquals("Historical global-conversion identity remains distinct", Ruleset.of(30, Dungeon.challenges, Dungeon.difficulty, Dungeon.difficultyBalance).id, id);
 
 			SPDSettings.apdExoticChance(80);     //the player moves the slider in the middle of the run
 			assertEquals("gameplay keeps the run's own value", 30, SPDSettings.apdExoticChance());

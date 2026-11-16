@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -46,6 +49,8 @@ public class DivineIntervention extends ClericSpell {
 		return HeroIcon.DIVINE_INTERVENTION;
 	}
 
+	public static int shieldOffer(Hero hero){ return 100 + 50*hero.pointsInTalent(Talent.DIVINE_INTERVENTION); }
+
 	@Override
 	public float chargeUse(Hero hero) {
 		return 5;
@@ -67,7 +72,7 @@ public class DivineIntervention extends ClericSpell {
 
 		for (Char ch : Actor.chars()){
 			if (ch.alignment == Char.Alignment.ALLY && ch != hero){
-				Buff.affect(ch, DivineShield.class).setShield(100 + 50*hero.pointsInTalent(Talent.DIVINE_INTERVENTION));
+				Buff.affect(ch, DivineShield.class).setShield(shieldOffer(hero));
 				new Flare(6, 32).color(0xFFFF00, true).show(ch.sprite, 2f);
 			}
 		}
@@ -76,7 +81,7 @@ public class DivineIntervention extends ClericSpell {
 		onSpellCast(tome, hero);
 
 		//we apply buffs here so that the 5 charge cost and shield boost do not stack
-		hero.buff(AscendedForm.AscendBuff.class).setShield(100 + 50*hero.pointsInTalent(Talent.DIVINE_INTERVENTION));
+		hero.buff(AscendedForm.AscendBuff.class).setShield(shieldOffer(hero));
 		new Flare(6, 32).color(0xFFFF00, true).show(hero.sprite, 2f);
 
 		hero.buff(AscendedForm.AscendBuff.class).divineInverventionCast = true;
@@ -86,7 +91,7 @@ public class DivineIntervention extends ClericSpell {
 
 	@Override
 	public String desc() {
-		int shield = 100 + 50*Dungeon.hero.pointsInTalent(Talent.DIVINE_INTERVENTION);
+		int shield = shieldOffer(Dungeon.hero);
 		int leftBonus = 2+Dungeon.hero.pointsInTalent(Talent.DIVINE_INTERVENTION);
 		return Messages.get(this, "desc", shield, leftBonus) + "\n\n" + Messages.get(this, "charge_cost", (int)chargeUse(Dungeon.hero));
 	}

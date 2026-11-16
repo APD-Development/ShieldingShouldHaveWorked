@@ -58,6 +58,6 @@ public final class WndUimsdStatus {
 			public void onPick( int i, boolean checked ){
 				if (i < actions.size()) m.applyAction(actions.get(i));
 			}
-		}));
+		}).restoreWith(() -> show(m)));
 	}
 }

@@ -39,7 +39,7 @@ public class Stench extends Armor.Glyph {
 		float procChance = 1/8f * procChanceMultiplier(defender);
 		if ( Random.Float() < procChance ) {
 
-			GameScene.add( Blob.seed( defender.pos, 250, ToxicGas.class ) );
+			GameScene.add( ToxicGas.seedAttributed(defender.pos,250,com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin.capture(defender,null)) );
 
 		}
 
@@ -56,3 +56,4 @@ public class Stench extends Armor.Glyph {
 		return true;
 	}
 }
+

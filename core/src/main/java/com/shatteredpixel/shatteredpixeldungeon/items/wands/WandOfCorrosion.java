@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -58,7 +61,7 @@ public class WandOfCorrosion extends Wand {
 	public void onZap(Ballistica bolt) {
 		CorrosiveGas gas = Blob.seed(bolt.collisionPos, 50 + 10 * buffedLvl(), CorrosiveGas.class);
 		CellEmitter.get(bolt.collisionPos).burst(Speck.factory(Speck.CORROSION), 10 );
-		gas.setStrength(2 + buffedLvl(), getClass());
+		gas.setStrengthAttributed(2 + buffedLvl(), getClass(), curUser);
 		GameScene.add(gas);
 		Sample.INSTANCE.play(Assets.Sounds.GAS);
 
@@ -101,7 +104,7 @@ public class WandOfCorrosion extends Wand {
 
 			float powerMulti = Math.max(1f, procChance);
 			
-			Buff.affect( defender, Ooze.class ).set( Ooze.DURATION * powerMulti );
+			Buff.affect( defender, Ooze.class ).setAttributed( Ooze.DURATION * powerMulti, attacker );
 			CellEmitter.center(defender.pos).burst( CorrosionParticle.SPLASH, 5 );
 			
 		}
@@ -120,7 +123,7 @@ public class WandOfCorrosion extends Wand {
 	@Override
 	public String statsDesc() {
 		if (levelKnown)
-			return Messages.get(this, "stats_desc", 2+buffedLvl());
+			return Messages.get(this, "stats_desc", 2+previewEffectiveLevels()[0]) + previewUncertaintyNote();
 		else
 			return Messages.get(this, "stats_desc", 2);
 	}

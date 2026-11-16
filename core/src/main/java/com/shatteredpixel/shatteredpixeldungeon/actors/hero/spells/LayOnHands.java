@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -42,6 +45,8 @@ public class LayOnHands extends TargetedClericSpell {
 
 	public static LayOnHands INSTANCE = new LayOnHands();
 
+	public static int restorationAmount(Hero hero){ return 10 + 5*hero.pointsInTalent(Talent.LAY_ON_HANDS); }
+
 	@Override
 	public int icon() {
 		return HeroIcon.LAY_ON_HANDS;
@@ -49,7 +54,7 @@ public class LayOnHands extends TargetedClericSpell {
 
 	@Override
 	public String desc() {
-		return Messages.get(this, "desc", 10 + 5*Dungeon.hero.pointsInTalent(Talent.LAY_ON_HANDS)) + "\n\n" + Messages.get(this, "charge_cost", (int)chargeUse(Dungeon.hero));
+		return Messages.get(this, "desc", restorationAmount(Dungeon.hero)) + "\n\n" + Messages.get(this, "charge_cost", (int)chargeUse(Dungeon.hero));
 	}
 
 	@Override
@@ -105,7 +110,7 @@ public class LayOnHands extends TargetedClericSpell {
 	}
 
 	private void affectChar(Hero hero, Char ch){
-		int totalHeal = 10 + 5*hero.pointsInTalent(Talent.LAY_ON_HANDS);
+		int totalHeal = restorationAmount(hero);
 		int totalBarrier = 0;
 		if (ch == hero){
 			Barrier barrier = Buff.affect(ch, Barrier.class);

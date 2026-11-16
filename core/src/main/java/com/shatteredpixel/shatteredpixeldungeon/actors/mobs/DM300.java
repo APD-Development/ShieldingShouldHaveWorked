@@ -26,6 +26,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
+import com.shatteredpixel.shatteredpixeldungeon.apd.recorder.ApdPlay;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
@@ -44,6 +45,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Slow;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Terror;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vertigo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.WallOfLight;
+import com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomOffensiveHooks;
 import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
 import com.shatteredpixel.shatteredpixeldungeon.effects.TargetedCell;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.SparkParticle;
@@ -371,6 +373,7 @@ public class DM300 extends Mob {
 	}
 
 	public void ventGas( Char target ){
+        final com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin apdGasOrigin=com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin.capture(this,null);
 		Dungeon.hero.interrupt();
 
 		Ballistica trajectory = new Ballistica(pos, target.pos, Ballistica.STOP_TARGET);
@@ -383,15 +386,15 @@ public class DM300 extends Mob {
 			@Override
 			protected boolean act() {
 				int gasVented = 0;
-				GameScene.add(Blob.seed(trajectory.collisionPos, 100*gasMulti, ToxicGas.class));
+				GameScene.add(ToxicGas.seedAttributed(trajectory.collisionPos,100*gasMulti,apdGasOrigin));
 				for (int i : trajectory.subPath(0, trajectory.dist)){
-					GameScene.add(Blob.seed(i, 20*gasMulti, ToxicGas.class));
+					GameScene.add(ToxicGas.seedAttributed(i,20*gasMulti,apdGasOrigin));
 					gasVented += 20*gasMulti;
 				}
 				if (gasVented < 250*gasMulti){
 					int toVentAround = (int)Math.ceil(((250*gasMulti) - gasVented)/8f);
 					for (int i : PathFinder.NEIGHBOURS8){
-						GameScene.add(Blob.seed(pos+i, toVentAround, ToxicGas.class));
+						GameScene.add(ToxicGas.seedAttributed(pos+i,toVentAround,apdGasOrigin));
 					}
 				}
 				Actor.remove(this);
@@ -531,6 +534,7 @@ public class DM300 extends Mob {
 		((DM300Sprite)sprite).updateChargeState(true);
 		((DM300Sprite)sprite).charge();
 		chargeAnnounced = false;
+		ApdPlay.onBossPhase(name(), pylonsActivated * 2, "supercharged");
 
 	}
 
@@ -541,6 +545,8 @@ public class DM300 extends Mob {
 	public void loseSupercharge(){
 		supercharged = false;
 		((DM300Sprite)sprite).updateChargeState(false);
+		ApdPlay.onBossPhase(name(), pylonsActivated * 2 + 1,
+				pylonsActivated < totalPylonsToActivate() ? "normal" : "final");
 
 		//adjust turns since last ability to prevent DM immediately using an ability when charge ends
 		turnsSinceLastAbility = Math.min(turnsSinceLastAbility, MIN_COOLDOWN-3);
@@ -690,9 +696,9 @@ public class DM300 extends Mob {
 		public void affectChar(Char ch) {
 			if (!(ch instanceof DM300 || ch instanceof Pylon)){
 				if (Dungeon.isChallenged(Challenges.STRONGER_BOSSES)) {
-					ch.damage(Random.NormalIntRange(10, 20), this);
+					CustomOffensiveHooks.raw(ch, Random.NormalIntRange(10, 20), this, target);
 				} else {
-					ch.damage(Random.NormalIntRange(6, 12), this);
+					CustomOffensiveHooks.raw(ch, Random.NormalIntRange(6, 12), this, target);
 				}
 				if (ch.isAlive()) {
 					Buff.prolong(ch, Paralysis.class, Dungeon.isChallenged(Challenges.STRONGER_BOSSES) ? 5 : 3);
@@ -705,3 +711,4 @@ public class DM300 extends Mob {
 
 	}
 }
+

@@ -25,6 +25,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Chrome;
 import com.shatteredpixel.shatteredpixeldungeon.SPDAction;
 import com.shatteredpixel.shatteredpixeldungeon.effects.ShadowBox;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
+import com.watabou.input.BackTrace;
 import com.watabou.input.KeyBindings;
 import com.watabou.input.KeyEvent;
 import com.watabou.input.PointerEvent;
@@ -119,6 +120,11 @@ public class Window extends Group implements Signal.Listener<KeyEvent> {
 		KeyEvent.addKeyListener( this );
 	}
 	
+	//A parameterized window can provide a way to reopen after its scene is rebuilt.
+	public Runnable restoreOnSceneReset(){
+		return null;
+	}
+
 	public void resize( int w, int h ) {
 		this.width = w;
 		this.height = h;
@@ -194,10 +200,13 @@ public class Window extends Group implements Signal.Listener<KeyEvent> {
 	}
 	
 	public void hide() {
+		long trace = BackTrace.currentDispatch();
+		BackTrace.stage(trace, "window-hide-begin", getClass().getName());
 		if (parent != null) {
 			parent.erase(this);
 		}
 		destroy();
+		BackTrace.stage(trace, "window-hide-end", getClass().getName());
 	}
 	
 	@Override
@@ -213,6 +222,7 @@ public class Window extends Group implements Signal.Listener<KeyEvent> {
 		if (event.pressed) {
 			if (KeyBindings.getActionForKey( event ) == SPDAction.BACK
 				|| KeyBindings.getActionForKey( event ) == SPDAction.WAIT){
+				BackTrace.stage(event.backTraceId, "window-back-handler", getClass().getName());
 				onBackPressed();
 			}
 		}

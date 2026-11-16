@@ -125,6 +125,17 @@ public class DatasetBuildersTest {
 	}
 
 	@Test
+	public void equalTimestampBoundarySegmentNumbersUseNumericOrder(){
+		log("zero", V14, 100).start("run-extreme", 0, "ROGUE", RS, 0, 0, false).enter(1)
+				.end(LifecycleEvents.OUTCOME_DIED, "Rat", 1, 1, 1).close(true);
+		log("max", V14, 100).start("run-extreme", Integer.MAX_VALUE, "ROGUE", RS, 0, 0, false).enter(2).close(false);
+		Dataset runs = load().dataset(Datasets.RUNS);
+		assertEquals("both segments are one run", 1, runs.rows.size());
+		assertFalse("the highest valid same-time segment is newest and still open", runs.rows.get(0).finished);
+		assertEquals(2, num(runs, runs.rows.get(0), FactKeys.LEVELS_ENTERED));
+	}
+
+	@Test
 	public void aRulesetChangeDuringARunMakesItMixedNotCurrent(){
 		log("a", V14, 100).start("run-a", 0, "WARRIOR", RS, 0, 30, false).enter(1).rulesetChange(RS, "r1-bbbbbbbbbbbb")
 				.end(LifecycleEvents.OUTCOME_DIED, "Rat", 1, 1, 1).close(true);
@@ -359,6 +370,15 @@ public class DatasetBuildersTest {
 	}
 
 	@Test
+	public void legacyDatesRejectImpossibleCalendarDaysButKeepRealLeapDays(){
+		assertEquals(Long.MIN_VALUE, RowBuilders.parseDate("2025-02-29"));
+		assertEquals(Long.MIN_VALUE, RowBuilders.parseDate("2024-04-31"));
+		assertEquals(Long.MIN_VALUE, RowBuilders.parseDate("1900-02-29"));
+		assertTrue(RowBuilders.parseDate("2024-02-29") != Long.MIN_VALUE);
+		assertTrue(RowBuilders.parseDate("2000-02-29") != Long.MIN_VALUE);
+	}
+
+	@Test
 	public void importedRecordsKeepUnknownFieldsUnknownAndHaveAnUnknownRuleset() throws Exception {
 		importFile("legacy-import-1", 100, rec("g1", "MAGE", 0, 4, 7, 900, "2025-03-04"), rec("g2", "MAGE", 1, 26, 24, 5000, null));
 		Dataset runs = load().dataset(Datasets.RUNS);
@@ -408,6 +428,23 @@ public class DatasetBuildersTest {
 		importFile("legacy-import-1", 300, rec("g1", "WARRIOR", 0, 5, 8, 2000, "2025-01-01"));
 		assertFalse(find(load().dataset(Datasets.RUNS), "g1").duplicate);
 	}
+
+
+ @Test
+ public void aReopenedRunCannotHideAnImportedFinishedRunByProbableMatch() throws Exception {
+  log("ended", V14, 100).start("run-reopened",0,"WARRIOR",RS,0,0,false).enter(1)
+   .end(LifecycleEvents.OUTCOME_DIED,"Rat",5,8,2000).close(true);
+  log("resumed", V14, 200).start("run-reopened",1,"WARRIOR",RS,0,0,false).enter(1).close(false);
+  importFile("legacy-import-1",300,rec("g-reopened","WARRIOR",0,5,8,2000,"2025-01-01"));
+  Dataset runs=load().dataset(Datasets.RUNS);
+  Row reopened=null;
+  for(Row candidate:runs.rows) if("run-reopened".equals(candidate.runId)) reopened=candidate;
+  assertNotNull(reopened);
+  assertFalse(reopened.finished);
+  assertFalse("unfinished run cannot be a probable match for a completed ranking",find(runs,"g-reopened").duplicate);
+  Dataset cached=load().dataset(Datasets.RUNS);
+  assertFalse("cache reload must preserve the imported ranking",find(cached,"g-reopened").duplicate);
+ }
 
 	//---- the row cache ----
 

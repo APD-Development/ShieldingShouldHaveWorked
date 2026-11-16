@@ -34,7 +34,7 @@ public class Scene extends Group {
 		KeyEvent.addKeyListener( keyListener = new Signal.Listener<KeyEvent>() {
 			@Override
 			public boolean onSignal( KeyEvent event ) {
-				if (Game.instance != null && event.pressed) {
+				if (Game.instance != null && isActive() && event.pressed) {
 					if (KeyBindings.getActionForKey( event ) == GameAction.BACK){
 						onBackPressed();
 					}
@@ -58,6 +58,10 @@ public class Scene extends Group {
 	
 	}
 
+	/** Menu-only retention, distinct from the application's pause/resume lifecycle. */
+	public void onRetain() { cancelPointerPresses(); }
+	public void onRestore() {}
+
 	@Override
 	public void update() {
 		super.update();
@@ -73,3 +77,4 @@ public class Scene extends Group {
 	}
 
 }
+

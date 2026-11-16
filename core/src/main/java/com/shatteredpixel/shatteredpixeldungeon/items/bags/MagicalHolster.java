@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -22,6 +25,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.items.bags;
 
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Bomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
@@ -36,6 +40,10 @@ public class MagicalHolster extends Bag {
 	public static final float HOLSTER_SCALE_FACTOR = 0.85f;
 	public static final float HOLSTER_DURABILITY_FACTOR = 1.2f;
 	
+    @Override public String desc(){
+        return Messages.get(this,"desc",Messages.decimalFormat("#.##",100f*(HOLSTER_DURABILITY_FACTOR-1)));
+    }
+
 	@Override
 	public boolean canHold( Item item ) {
 		if (item instanceof Wand || item instanceof MissileWeapon || item instanceof Bomb){

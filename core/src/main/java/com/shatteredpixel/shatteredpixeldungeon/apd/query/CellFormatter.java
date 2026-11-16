@@ -86,9 +86,9 @@ public final class CellFormatter {
 
 	private static String fixed( long n, int div, int decimals ){
 		boolean neg = n < 0;
-		long a = Math.abs(n);
-		long whole = a / div;
-		long frac = a % div;
+		// Divide before taking absolute values: Long.MIN_VALUE cannot be negated.
+		long whole = Math.abs(n / div);
+		long frac = Math.abs(n % div);
 		if (decimals == 1) frac = frac / (div / 10);
 		String f = Long.toString(frac);
 		while (f.length() < decimals) f = "0" + f;
@@ -152,15 +152,34 @@ public final class CellFormatter {
 					long yoe = y - era * 400;
 					long doy = (153 * (m + (m > 2 ? -3 : 9)) + 2) / 5 + d - 1;
 					long doe = yoe * 365 + yoe / 4 - yoe / 100 + doy;
-					return (era * 146097 + doe - 719468) * 86400000L;
+					long millis = (era * 146097 + doe - 719468) * 86400000L;
+					//The arithmetic normalizes impossible dates (e.g. February 31). A filter
+					//must use the date the player typed, rather than quietly moving into March.
+					return date(millis).equals(t) ? millis : null;
 				}
-				case HUNDREDTHS: return Math.round(Double.parseDouble(t) * 100);
-				case THOUSANDTHS: return Math.round(Double.parseDouble(t) * 1000);
+				case HUNDREDTHS: return parseFixed(t, 100);
+				case THOUSANDTHS: return parseFixed(t, 1000);
 				default: return Long.parseLong(t);
 			}
 		} catch (NumberFormatException e){
 			return null;
 		}
+	}
+
+	private static Long parseFixed(String text, int scale){
+		//Parse the player's decimal exactly. Going through double can move a half-step
+		//below its typed value (1.005 * 100 becomes 100.49999...) or lose integer
+		//precision near Long.MAX_VALUE.
+		java.math.BigDecimal scaled = new java.math.BigDecimal(text).multiply(java.math.BigDecimal.valueOf(scale));
+		java.math.BigDecimal min = java.math.BigDecimal.valueOf(Long.MIN_VALUE);
+		java.math.BigDecimal maxExclusive = java.math.BigDecimal.valueOf(Long.MAX_VALUE).add(java.math.BigDecimal.ONE);
+		//Keep Math.round's floor(value + 0.5) tie direction, but apply it to the
+		//decimal the player actually typed.
+		if (scaled.compareTo(min) < 0 || scaled.compareTo(maxExclusive) >= 0) return null;
+		java.math.BigDecimal rounded = scaled.add(new java.math.BigDecimal("0.5"))
+				.setScale(0, java.math.RoundingMode.FLOOR);
+		if (rounded.compareTo(min) < 0 || rounded.compareTo(java.math.BigDecimal.valueOf(Long.MAX_VALUE)) > 0) return null;
+		return rounded.longValueExact();
 	}
 
 	//the value of an aggregate, and in 'detail' how many values it is made of
@@ -200,6 +219,7 @@ public final class CellFormatter {
 			prefix = prefix + "~";
 			if (state == CellText.EXACT) state = CellText.INFERRED;
 		}
+		if (v.isLegacy() && state == CellText.EXACT) state = CellText.LEGACY;
 		String body;
 		String detail = v.contributing + " of " + v.total + " known";
 		ColumnDef c = a.column.isEmpty() ? null : def.column(a.column);
@@ -215,26 +235,66 @@ public final class CellFormatter {
 				body = Long.toString((long) v.value);
 				break;
 			case RATE:
-			case RATIO:
-				body = Math.round(v.value * 100) + "% (" + v.hits + "/" + (a.fn == Aggregate.Fn.RATE ? v.contributing : v.outOf) + ")";
+				body = Math.round(v.value * 100) + "% (" + v.hits + "/" + v.contributing + ")";
 				break;
+			case RATIO: {
+				double displayed = displayRatio(def, a, v.value);
+				ColumnDef over = def.column(a.over);
+				body = Math.round(displayed * 100) + "% (" + ratioPart(c, v.hits) + "/" + ratioPart(over, v.outOf) + ")";
+				break;
+			}
 			case AVG:
 			case MEDIAN:
-				body = oneDecimal(v.value);
+				body = oneDecimal(displayNumber(c, v.value), v.isLowerBound());
 				break;
 			default:
 				body = c != null && c.type == ColumnDef.Type.NUM ? value(c, Math.round(v.value)) : Long.toString(Math.round(v.value));
 		}
 		if (v.isUnsure()) detail += "; some entries could not be judged";
+		if (v.isLegacy()) detail += "; includes imported ranking data";
 		boolean small = a.fn != Aggregate.Fn.COUNT && v.contributing < SMALL_SAMPLE;
 		if (small) detail += "; small sample";
 		String compactBody = body;
-		if (a.fn == Aggregate.Fn.RATE || a.fn == Aggregate.Fn.RATIO) compactBody = Math.round(v.value * 100) + "%";
+		if (a.fn == Aggregate.Fn.RATE) compactBody = Math.round(v.value * 100) + "%";
+		if (a.fn == Aggregate.Fn.RATIO) compactBody = Math.round(displayRatio(def, a, v.value) * 100) + "%";
 		return new AggText(prefix + body, prefix + compactBody, detail, state, small);
 	}
 
+	// Convert stored fixed-point values only at presentation boundaries; query math stays raw.
+	static double displayNumber(ColumnDef column, double value){
+		if (column == null || column.type != ColumnDef.Type.NUM) return value;
+		if (column.format == ColumnDef.Format.HUNDREDTHS) return value / 100d;
+		if (column.format == ColumnDef.Format.THOUSANDTHS) return value / 1000d;
+		return value;
+	}
+
+	//RATIO divides raw stored values. Convert only its presentation when the two columns use different fixed-point scales.
+	private static double displayRatio( DatasetDef def, Aggregate a, double raw ){
+		ColumnDef numerator = def.column(a.column), denominator = def.column(a.over);
+		return raw * storedScale(denominator) / storedScale(numerator);
+	}
+
+	private static double storedScale( ColumnDef column ){
+		if (column != null && column.type == ColumnDef.Type.NUM){
+			if (column.format == ColumnDef.Format.HUNDREDTHS) return 100d;
+			if (column.format == ColumnDef.Format.THOUSANDTHS) return 1000d;
+		}
+		return 1d;
+	}
+
+	private static String ratioPart( ColumnDef column, long raw ){
+		return column != null && column.type == ColumnDef.Type.NUM ? value(column, raw) : Long.toString(raw);
+	}
+
 	//whole numbers without a decimal, others with one
-	private static String oneDecimal( double v ){
+	private static String oneDecimal( double v, boolean lower ){
+		// A rounded lower bound must never claim more than the known minimum.
+		if (lower && Double.isFinite(v)) return java.math.BigDecimal.valueOf(v)
+				.setScale(1, java.math.RoundingMode.FLOOR).stripTrailingZeros().toPlainString();
+		// Keep normal rounding while avoiding scaled-long saturation for large finite values.
+		if (Double.isFinite(v) && Math.abs(v) * 10 >= Long.MAX_VALUE)
+			return java.math.BigDecimal.valueOf(v).setScale(1, java.math.RoundingMode.HALF_UP)
+					.stripTrailingZeros().toPlainString();
 		long tenths = Math.round(v * 10);
 		return tenths % 10 == 0 ? Long.toString(tenths / 10) : fixed(tenths, 10, 1);
 	}
@@ -258,3 +318,5 @@ public final class CellFormatter {
 		}
 	}
 }
+
+

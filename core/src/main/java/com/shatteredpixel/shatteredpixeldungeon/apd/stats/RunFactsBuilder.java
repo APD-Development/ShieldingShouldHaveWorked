@@ -67,7 +67,7 @@ public final class RunFactsBuilder {
 		}
 		if (partial) f.num(FactKeys.PARTIAL, 1, Fact.PROV_RECORDED);
 		//counts are lower bounds when events were dropped or the log starts mid-run
-		int countProv = (r.gapEvents > 0 || partial) ? Fact.PROV_INCOMPLETE : Fact.PROV_RECORDED;
+		int countProv = (r.gapEvents > 0 || partial || !r.status.isClean()) ? Fact.PROV_INCOMPLETE : Fact.PROV_RECORDED;
 
 		boolean wantItems = v.compareTo(V_ITEMS) >= 0, wantCombat = v.compareTo(V_COMBAT) >= 0,
 				wantGen = v.compareTo(V_GENERATION) >= 0, wantLink = v.compareTo(V_LINK) >= 0,
@@ -81,6 +81,8 @@ public final class RunFactsBuilder {
 		long heroAttacks = 0, heroHits = 0, onHero = 0, hitsOnHero = 0, dealt = 0, taken = 0, heroKills = 0, enemyDeaths = 0,
 				xp = 0, levelUps = 0, healed = 0, deaths = 0, revivals = 0, equipEvents = 0, genLevels = 0, genItems = 0, genMobs = 0;
 		Set<String> registered = new HashSet<>(), acquired = new HashSet<>(), equipped = new HashSet<>();
+		long generatedUpgrades=0,generatedEquipment=0;
+		Set<String> countedGenerated=new HashSet<>();
 		LifecycleEvents.Checkpoint lastCheckpoint = null;
 		LifecycleEvents.RunEnd end = null;
 		boolean endDetails = false;
@@ -90,9 +92,10 @@ public final class RunFactsBuilder {
 			try {
 				switch (e.type){
 					case EventTypes.RUN_START: {
-						if (started) break;  //later segments of the same log (none today) never relabel the first
-						started = true;
+						if (started) break;  //later readable segments of the same log never relabel the first
 						LifecycleEvents.RunStart s = LifecycleEvents.decodeRunStart(e, r);
+						// A malformed typed start contributes no setup facts, but must not hide a later readable start.
+						started = true;
 						f.text(FactKeys.RUN_ID, s.runId, Fact.PROV_RECORDED);
 						f.num(FactKeys.SEGMENT, s.segment, Fact.PROV_RECORDED);
 						f.text(FactKeys.APD_VERSION, s.apdVersionName, Fact.PROV_RECORDED);
@@ -116,6 +119,7 @@ public final class RunFactsBuilder {
 							f.num(FactKeys.DIFFICULTY, s.difficulty, Fact.PROV_RECORDED);
 							f.num(FactKeys.DIFFICULTY_BALANCE, s.difficultyBalance, Fact.PROV_RECORDED);
 						}
+						CustomRuleFacts.record(f, s);
 						f.num(FactKeys.START_MILLIS, s.realTimeMillis, Fact.PROV_RECORDED);
 						break;
 					}
@@ -196,7 +200,15 @@ public final class RunFactsBuilder {
 						break;
 					case EventTypes.ITEM_GENERATED:
 						genItems++;
-						break;
+                        GenerationEvents.ItemGenerated generated=GenerationEvents.decodeItemGenerated(e,r);
+                        if(generated.uid.isEmpty() || countedGenerated.add(generated.uid)){
+                            long quantity=Math.max(0,generated.quantity);
+                            if(generated.trueClass.endsWith(".ScrollOfUpgrade"))generatedUpgrades+=quantity;
+                            String prefix="com.shatteredpixel.shatteredpixeldungeon.items.";
+                            if(generated.trueClass.startsWith(prefix+"weapon.") || generated.trueClass.startsWith(prefix+"armor.")
+                                || generated.trueClass.startsWith(prefix+"rings.") || generated.trueClass.startsWith(prefix+"artifacts."))generatedEquipment+=quantity;
+                        }
+                        break;
 					case EventTypes.MOB_GENERATED:
 						genMobs++;
 						break;
@@ -216,12 +228,15 @@ public final class RunFactsBuilder {
 
 		if (end != null){
 			f.num(FactKeys.OUTCOME, end.outcome, Fact.PROV_RECORDED);
+			if (end.ascendedKnown) f.num("run.ascended", end.ascended ? 1 : 0, Fact.PROV_RECORDED);
 			if (endDetails){
 				if (!end.cause.isEmpty()) f.text(FactKeys.CAUSE, end.cause, Fact.PROV_RECORDED);
 				f.num(FactKeys.DEPTH, end.depth, Fact.PROV_RECORDED);
 				f.num(FactKeys.DEEPEST, end.deepest, Fact.PROV_RECORDED);
 				f.num(FactKeys.HERO_LEVEL, end.heroLevel, Fact.PROV_RECORDED);
 				f.num(FactKeys.SCORE, end.score, Fact.PROV_RECORDED);
+				CustomRuleFacts.preserveScore(f,end);
+                if(f.isKnown(CustomRuleFacts.ADJUSTED_SCORE))f.num(FactKeys.SCORE,f.numOr(CustomRuleFacts.ADJUSTED_SCORE,end.score),Fact.PROV_RECORDED);
 				f.num(FactKeys.TURNS, end.turns, Fact.PROV_RECORDED);
 			}
 		}
@@ -268,7 +283,10 @@ public final class RunFactsBuilder {
 			f.num(FactKeys.GEN_LEVELS, genLevels, countProv);
 			f.num(FactKeys.GEN_ITEMS, genItems, countProv);
 			f.num(FactKeys.GEN_MOBS, genMobs, countProv);
+            if(!redacted){f.num(CustomRuleFacts.GENERATED_UPGRADES,generatedUpgrades,countProv);f.num(CustomRuleFacts.GENERATED_EQUIPMENT,generatedEquipment,countProv);}
 		}
 		return f;
 	}
 }
+
+

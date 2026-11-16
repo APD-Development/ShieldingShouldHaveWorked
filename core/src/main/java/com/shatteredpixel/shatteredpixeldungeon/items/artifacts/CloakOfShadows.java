@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -203,6 +206,11 @@ public class CloakOfShadows extends Artifact {
 		chargeCap = Math.min(chargeCap + 1, 10);
 		return super.upgrade();
 	}
+
+    /** Read-only description input; -1 means this Cloak has no active stealth effect. */
+    public int remainingStealthUpdates(){
+        return activeBuff instanceof cloakStealth ? ((cloakStealth)activeBuff).turnsToCost : -1;
+    }
 
 	private static final String STEALTHED = "stealthed";
 	private static final String BUFF = "buff";

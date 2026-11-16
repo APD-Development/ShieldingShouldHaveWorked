@@ -34,17 +34,19 @@ import com.shatteredpixel.shatteredpixeldungeon.apd.query.GroupRow;
 import com.shatteredpixel.shatteredpixeldungeon.apd.query.LinkDef;
 import com.shatteredpixel.shatteredpixeldungeon.apd.query.QueryResult;
 import com.shatteredpixel.shatteredpixeldungeon.apd.query.ResultTable;
+import com.shatteredpixel.shatteredpixeldungeon.apd.query.RunTurnBrowser;
 import com.shatteredpixel.shatteredpixeldungeon.apd.query.Row;
 import com.shatteredpixel.shatteredpixeldungeon.apd.query.UimsdModel;
 import com.shatteredpixel.shatteredpixeldungeon.apd.query.WindowGeometry;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
-import com.shatteredpixel.shatteredpixeldungeon.ui.RedButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
 import com.shatteredpixel.shatteredpixeldungeon.ui.ScrollPane;
 import com.shatteredpixel.shatteredpixeldungeon.ui.UimsdStyle;
 import com.shatteredpixel.shatteredpixeldungeon.ui.UimsdTable;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.watabou.noosa.ColorBlock;
+import com.watabou.noosa.NinePatch;
+import com.shatteredpixel.shatteredpixeldungeon.Chrome;
 import com.watabou.noosa.ui.Component;
 
 import java.util.ArrayList;
@@ -55,9 +57,13 @@ import java.util.List;
 public class WndUimsdRow extends Window {
 
 	private static final int MARGIN = 2;
+	private final UimsdModel model;
+	private final ResultTable.Line selected;
 
 	public WndUimsdRow( final UimsdModel m, ResultTable.Line line ){
 		super();
+		model = m;
+		selected = line;
 		int width = WndUimsdList.windowWidth();
 		QueryResult r = m.result();
 		DatasetDef def = r.def;
@@ -95,14 +101,14 @@ public class WndUimsdRow extends Window {
 						@Override
 						public void run(){
 							String text = SubmissionQueue.preview(m.root(), row.runId);
-							ShatteredPixelDungeon.scene().addToFront(new WndMessage(text == null ? "This run is not queued." : text));
+							ShatteredPixelDungeon.scene().addToFront(new WndUimsdText("UIMSD", text == null ? "This run is not queued." : text, false));
 						}
 					}));
 					actions.add(new Action("Take this run out of the queue", new Runnable(){
 						@Override
 						public void run(){
 							boolean gone = SubmissionQueue.withdraw(m.root(), row.runId);
-							ShatteredPixelDungeon.scene().addToFront(new WndMessage(gone ? "Removed from the queue." : "It could not be removed."));
+							ShatteredPixelDungeon.scene().addToFront(new WndUimsdText("UIMSD", gone ? "Removed from the queue." : "It could not be removed.", false));
 						}
 					}));
 				}
@@ -117,7 +123,7 @@ public class WndUimsdRow extends Window {
 							case REFUSED: msg = "This run cannot be queued: " + q.detail + "."; break;
 							default: msg = q.detail;
 						}
-						ShatteredPixelDungeon.scene().addToFront(new WndMessage(msg));
+						ShatteredPixelDungeon.scene().addToFront(new WndUimsdText("UIMSD", msg, false));
 					}
 				}));
 			}
@@ -131,7 +137,31 @@ public class WndUimsdRow extends Window {
 					}));
 				}
 			}
+			if (RunTurnBrowser.canOpenAt(m.catalog(), r, row))
+				actions.add(new Action("Run history at this turn", () -> {
+					try {
+						ShatteredPixelDungeon.scene().addToFront(new WndRunTurnBrowser(
+								RunTurnBrowser.openAt(m.catalog(), r, row)));
+					} catch (IllegalArgumentException stale) {
+						ShatteredPixelDungeon.scene().addToFront(new WndMessage(
+								"This occurrence or its recorded run changed. Reopen the table."));
+					}
+				}));
+			if (WndUimsdResearch.canEquipmentWindow(r))
+                actions.add(new Action("Damage after equipping", () -> WndUimsdResearch.equipmentWindow(m,r,row)));
+			if (WndUimsdResearch.canDamageRecoveryWindow(r,row))
+                actions.add(new Action("Healing after damage", () -> WndUimsdResearch.damageRecoveryWindow(m,r,row)));
+			if (WndDeathContext.canOpen(r,row))
+                actions.add(new Action("Death context", () -> WndDeathContext.show(m,row)));
 			if (WndUimsdReport.isRunsTable(def)){
+                actions.add(new Action("Run DNA", () -> WndUimsdResearch.dnaRun(m,row)));
+                actions.add(new Action("Luck laboratory", () -> WndUimsdResearch.luckRun(m,row)));
+                if (row.runId != null && !row.runId.isEmpty() && m.catalog() != null){
+                    actions.add(new Action("Turn-by-turn history", () -> {
+                        ShatteredPixelDungeon.scene().addToFront(new WndRunTurnBrowser(
+                                new com.shatteredpixel.shatteredpixeldungeon.apd.query.RunTurnBrowser(m.catalog(),row)));
+                    }));
+                }
 				if (row.finished){
 					shareActions.add(new Action("Compare with another run...", new Runnable(){
 						@Override
@@ -198,31 +228,46 @@ public class WndUimsdRow extends Window {
 		add(tt);
 		float pos = tt.bottom() + 2 * MARGIN;
 
-		float buttonsH = actions.size() * 18f;
 		final Component content = new Component();
 		float contentH = sheet(content, width, sheet);
+		//Actions share the scrolling area with the details. Fixed-height buttons below
+		//the pane clipped long labels and could push the window past the screen.
+		final List<float[]> actionSpans = new ArrayList<>();
+		for (Action act : actions){
+			RenderedTextBlock label = PixelScene.renderTextBlock(act.label, 7);
+			label.maxWidth(WindowGeometry.rowTextWidth(width));
+			float height = WindowGeometry.actionHeight(label.height());
+			NinePatch bg = Chrome.get(Chrome.Type.GREY_BUTTON_TR);
+			bg.size(width - 2 * MARGIN, height);
+			bg.x = MARGIN;
+			bg.y = contentH;
+			content.add(bg);
+			label.setPos(WindowGeometry.ROW_PAD + 1, contentH + (height - label.height()) / 2f);
+			content.add(label);
+			actionSpans.add(new float[]{contentH, contentH + height});
+			contentH += height + MARGIN;
+		}
 		content.setSize(width, contentH);
-		ScrollPane pane = new ScrollPane(content);
-		float h = WindowGeometry.paneHeight(content.height(), WindowGeometry.maxPane(PixelScene.uiCamera.height, pos, buttonsH + MARGIN));
-		float total = pos + h + MARGIN + actions.size() * 18f;
+		ScrollPane pane = new ScrollPane(content){
+			@Override
+			public void onClick(float x, float y){
+				if (x < MARGIN || x >= width - MARGIN) return;
+				for (int i = 0; i < actionSpans.size(); i++){
+					float[] span = actionSpans.get(i);
+					if (y >= span[0] && y < span[1]){
+						WndUimsdRow.this.hide();
+						actions.get(i).run.run();
+						return;
+					}
+				}
+			}
+		};
+		float h = WindowGeometry.paneHeight(content.height(), WindowGeometry.maxPane(PixelScene.uiCamera.height, pos, MARGIN));
+		float total = pos + h + MARGIN;
 		//size the window first: it moves the window's camera, and the pane works out its screen position when it is placed
 		resize(width, (int) total);
 		add(pane);
 		pane.setRect(0, pos, width, h);
-		pos += h + MARGIN;
-
-		for (final Action act : actions){
-			RedButton b = new RedButton(act.label){
-				@Override
-				protected void onClick(){
-					WndUimsdRow.this.hide();
-					act.run.run();
-				}
-			};
-			b.setRect(0, pos, width, 16);
-			add(b);
-			pos += 18;
-		}
 	}
 
 	//one line of the sheet: a section heading, or a label with its value (coloured by what kind of knowledge it is) and a small note under it
@@ -310,10 +355,11 @@ public class WndUimsdRow extends Window {
 		}
 	}
 
-	//"Instances" is "instance", "Encounters" is "encounter", "Rows" is "row"
-	private static String singular( String plural ){
-		String p = plural.toLowerCase();
-		return p.endsWith("s") ? p.substring(0, p.length() - 1) : p;
+	@Override
+	public Runnable restoreOnSceneReset(){
+		final UimsdModel m = model;
+		final ResultTable.Line line = selected;
+		return () -> show(m, line);
 	}
 
 	public static void show( UimsdModel m, ResultTable.Line line ){

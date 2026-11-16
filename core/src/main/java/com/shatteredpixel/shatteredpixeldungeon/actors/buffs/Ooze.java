@@ -22,6 +22,9 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.buffs;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin;
+import com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamage;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
@@ -37,9 +40,16 @@ public class Ooze extends Buff implements Buff.DOTbuff {
 	}
 
 	private float left;
+	private OffensiveDamageOrigin origin=OffensiveDamageOrigin.UNATTRIBUTED;
+	private static final String APD_ORIGIN="apd_ooze_origin";
 	private boolean acted = false; //whether the debuff has done any damage at all yet
 
-	private static final String LEFT	= "left";
+	public float apdRemaining(){return left;}
+    public int apdNextRaw(){
+        if (Dungeon.scalingDepth()>5)return 1+Dungeon.scalingDepth()/5;
+        return Dungeon.scalingDepth()==5 || (int)left%2==0 ? 1 : 0;
+    }
+    private static final String LEFT	= "left";
 	private static final String ACTED   = "acted";
 	
 	@Override
@@ -47,6 +57,7 @@ public class Ooze extends Buff implements Buff.DOTbuff {
 		super.storeInBundle( bundle );
 		bundle.put( LEFT, left );
 		bundle.put( ACTED, acted );
+		origin.store(bundle,APD_ORIGIN);
 	}
 	
 	@Override
@@ -54,6 +65,7 @@ public class Ooze extends Buff implements Buff.DOTbuff {
 		super.restoreFromBundle(bundle);
 		left = bundle.getFloat(LEFT);
 		acted = bundle.getBoolean(ACTED);
+		origin=OffensiveDamageOrigin.restore(bundle,APD_ORIGIN);
 	}
 	
 	@Override
@@ -77,6 +89,16 @@ public class Ooze extends Buff implements Buff.DOTbuff {
 	}
 	
 	public void set(float left){
+		setWithOrigin(left,OffensiveDamageOrigin.UNATTRIBUTED);
+	}
+
+	public void setAttributed(float left,Char attacker){
+		setWithOrigin(left,OffensiveDamageOrigin.capture(attacker,null));
+	}
+
+	public void setWithOrigin(float left,OffensiveDamageOrigin role){
+        if(role==null)throw new IllegalArgumentException("Missing ooze origin");
+		origin=role;
 		this.left = left;
 		acted = false;
 		if (target != null) target.needsIncomingDOTUpdate = true;
@@ -96,11 +118,11 @@ public class Ooze extends Buff implements Buff.DOTbuff {
 
 			acted = true;
 			if (Dungeon.scalingDepth() > 5) {
-				target.damage(1 + Dungeon.scalingDepth() / 5, this);
+				OffensiveDamage.raw(1 + Dungeon.scalingDepth() / 5,this,origin).apply(target);
 			} else if (Dungeon.scalingDepth() == 5){
-				target.damage(1, this); //1 dmg per turn vs Goo
+				OffensiveDamage.raw(1,this,origin).apply(target); //1 dmg per turn vs Goo
 			} else if ((int)left % 2 == 0) {
-				target.damage(1, this); //0.5 dmg per turn in sewers
+				OffensiveDamage.raw(1,this,origin).apply(target); //0.5 dmg per turn in sewers
 			}
 
 			if (!target.isAlive() && target == Dungeon.hero) {
@@ -130,6 +152,14 @@ public class Ooze extends Buff implements Buff.DOTbuff {
 
 	@Override
 	public int totalIncomingDMG() {
+		if(origin.percentage()!=100){
+			int total=0;
+			for(float remaining=left;remaining>0;remaining-=TICK){
+				int raw=Dungeon.scalingDepth()>5?1+Dungeon.scalingDepth()/5:Dungeon.scalingDepth()==5 || (int)remaining%2==0?1:0;
+				total+=OffensiveDamage.raw(raw,this,origin).scaled().amount;
+			}
+			return total;
+		}
 		if (Dungeon.scalingDepth() > 5) {
 			int dmg = 1 + Dungeon.scalingDepth() / 5;
 			return (int)(Math.ceil(left)*dmg);

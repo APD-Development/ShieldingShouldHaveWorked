@@ -229,7 +229,7 @@ public class Necromancer extends Mob {
 				//attempt to damage the blocker in addition to waiting
 				Char blocker = Actor.findChar(summoningPos);
 				if (blocker != null && blocker.alignment != alignment){
-					blocker.damage( Random.NormalIntRange(2, 10), new SummoningBlockDamage() );
+					com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomOffensiveHooks.raw(blocker,Random.NormalIntRange(2,10),new SummoningBlockDamage(),this);
 					if (blocker == Dungeon.hero && !blocker.isAlive()){
 						Badges.validateDeathFromEnemyMagic();
 						Dungeon.fail(this);
@@ -246,6 +246,7 @@ public class Necromancer extends Mob {
 
 		if (mySkeleton == null || !mySkeleton.isActive()) {
 			mySkeleton = new NecroSkeleton();
+            mySkeleton.apdInheritOffensiveOrigin(this);
 			mySkeleton.pos = summoningPos;
 			GameScene.add(mySkeleton);
 			Dungeon.level.occupyCell(mySkeleton);

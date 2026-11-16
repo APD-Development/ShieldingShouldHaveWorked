@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -38,15 +41,12 @@ public class PetrifiedSeed extends Trinket {
 
 	@Override
 	public String statsDesc() {
-		if (isIdentified()){
-			return Messages.get(this, "stats_desc",
-					Messages.decimalFormat("#.##", 100*stoneInsteadOfSeedChance(buffedLvl())),
-					Messages.decimalFormat("#.##", 100*(grassLootMultiplier(buffedLvl())-1f)));
-		} else {
-			return Messages.get(this, "typical_stats_desc",
-					Messages.decimalFormat("#.##", 100*stoneInsteadOfSeedChance(0)),
-					Messages.decimalFormat("#.##", 100*(grassLootMultiplier(0)-1f)));
-		}
+        int visibleLevel=isIdentified()?buffedLvl():0;
+        String key=isIdentified()?"stats_desc":"typical_stats_desc";
+        if(grassLootMultiplier(visibleLevel)==1f)key+="_base";
+        return Messages.get(this,key,
+                Messages.decimalFormat("#.##",100*stoneInsteadOfSeedChance(visibleLevel)),
+                Messages.decimalFormat("#.##",100*(grassLootMultiplier(visibleLevel)-1f)));
 	}
 
 	public static float grassLootMultiplier(){

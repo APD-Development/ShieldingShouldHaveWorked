@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -154,6 +157,8 @@ public abstract class Level implements Bundlable {
 	
 	public int[] map;
 	public boolean[] visited;
+    public final com.shatteredpixel.shatteredpixeldungeon.apd.qol.SearchedWalls searchedWalls =
+            new com.shatteredpixel.shatteredpixeldungeon.apd.qol.SearchedWalls();
 	public boolean[] mapped;
 	public boolean[] discoverable;
 
@@ -178,6 +183,7 @@ public abstract class Level implements Bundlable {
 	public int exit;
 
 	public ArrayList<LevelTransition> transitions;
+    public final java.util.Set<String> apdLootReceipts = new java.util.HashSet<>();
 
 	//when a boss level has become locked.
 	public boolean locked = false;
@@ -226,13 +232,16 @@ public abstract class Level implements Bundlable {
 		//TODO maybe just make this part of RegularLevel?
 		if (!Dungeon.bossLevel() && Dungeon.branch == 0) {
 
-			addItemToSpawn(Generator.random(Generator.Category.FOOD));
+			com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomGenerationHooks.addFloorFood(this, false);
 
 			if (Dungeon.posNeeded()) {
 				Dungeon.LimitedDrops.STRENGTH_POTIONS.count++;
-				addItemToSpawn( new PotionOfStrength() );
+				PotionOfStrength strength = new PotionOfStrength();
+				com.shatteredpixel.shatteredpixeldungeon.apd.ProgressionPickups.mark(strength, Dungeon.depth, true);
+				addItemToSpawn(strength);
 			}
-			if (Dungeon.souNeeded()) {
+			int upgradeCount = com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomGenerationHooks.upgradeScrollsForFloor();
+			for (int upgrade = 0; upgrade < upgradeCount; upgrade++) {
 				Dungeon.LimitedDrops.UPGRADE_SCROLLS.count++;
 				//every 2nd scroll of upgrade is removed with forbidden runes challenge on
 				//TODO while this does significantly reduce this challenge's levelgen impact, it doesn't quite remove it
@@ -278,7 +287,7 @@ public abstract class Level implements Bundlable {
 						break;
 					case 4:
 						feeling = Feeling.LARGE;
-						addItemToSpawn(Generator.random(Generator.Category.FOOD));
+						com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomGenerationHooks.addFloorFood(this, true);
 						break;
 					case 5:
 						feeling = Feeling.TRAPS;
@@ -326,12 +335,14 @@ public abstract class Level implements Bundlable {
 		createMobs();
 		ApdGen.setStage( ApdGen.STAGE_ITEMS );
 		createItems();
+		for (Mob mob : mobs) com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomMobHooks.applyHealth(mob);
 		ApdGen.setStage( ApdGen.STAGE_NONE );
 
 		Random.popGenerator();
 	}
 	
 	public void setSize(int w, int h){
+        searchedWalls.clear();
 		
 		width = w;
 		height = h;
@@ -375,6 +386,13 @@ public abstract class Level implements Bundlable {
 	
 	@Override
 	public void restoreFromBundle( Bundle bundle ) {
+        apdLootReceipts.clear();
+        if (bundle.contains("apd_loot_receipts")) {
+            for (String id : bundle.getStringArray("apd_loot_receipts")) {
+                if (id == null || id.isEmpty() || !apdLootReceipts.add(id))
+                    throw new IllegalArgumentException("Invalid loot delivery receipts");
+            }
+        }
 
 		version = bundle.getInt( VERSION );
 		
@@ -398,6 +416,7 @@ public abstract class Level implements Bundlable {
 
 		visited	= bundle.getBooleanArray( VISITED );
 		mapped	= bundle.getBooleanArray( MAPPED );
+        searchedWalls.restore(bundle, length());
 
 		transitions = new ArrayList<>();
 		for (Bundlable b : bundle.getCollection( TRANSITIONS )){
@@ -490,12 +509,14 @@ public abstract class Level implements Bundlable {
 	
 	@Override
 	public void storeInBundle( Bundle bundle ) {
+        if (!apdLootReceipts.isEmpty()) bundle.put("apd_loot_receipts", apdLootReceipts.toArray(new String[0]));
 		bundle.put( VERSION, Game.versionCode );
 		bundle.put( WIDTH, width );
 		bundle.put( HEIGHT, height );
 		bundle.put( MAP, map );
 		bundle.put( VISITED, visited );
 		bundle.put( MAPPED, mapped );
+        searchedWalls.store(bundle);
 		bundle.put( TRANSITIONS, transitions );
 		bundle.put( LOCKED, locked );
 		bundle.put( HEAPS, heaps.valueList() );
@@ -548,6 +569,7 @@ public abstract class Level implements Bundlable {
 		Mob m = Reflection.newInstance(mobsToSpawn.remove(0));
 		ChampionEnemy.rollForChampion(m);
 		com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.DifficultyHooks.onMobCreated(m);
+		com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomMobHooks.applyHealth(m);
 		return m;
 	}
 
@@ -772,7 +794,7 @@ public abstract class Level implements Bundlable {
 		} else {
 			cooldown = TIME_TO_RESPAWN;
 		}
-		return cooldown / DimensionalSundial.spawnMultiplierAtCurrentTime();
+		return com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomResourceHooks.respawnCooldown(cooldown / DimensionalSundial.spawnMultiplierAtCurrentTime());
 	}
 
 	public boolean spawnMob(int disLimit){
@@ -828,6 +850,7 @@ public abstract class Level implements Bundlable {
 	
 	public void addItemToSpawn( Item item ) {
 		if (item != null) {
+			com.shatteredpixel.shatteredpixeldungeon.apd.ProgressionPickups.mark(item, Dungeon.depth, false);
 			itemsToSpawn.add( item );
 		}
 	}
@@ -972,6 +995,7 @@ public abstract class Level implements Bundlable {
 	}
 	
 	public static void set( int cell, int terrain, Level level ) {
+		if(level.map[cell]!=terrain)level.searchedWalls.invalidate(cell);
 		Painter.set(level, cell, terrain);
 
 		if (terrain != Terrain.TRAP && terrain != Terrain.SECRET_TRAP && terrain != Terrain.INACTIVE_TRAP) {
@@ -1020,6 +1044,7 @@ public abstract class Level implements Bundlable {
 
 		}
 		
+		com.shatteredpixel.shatteredpixeldungeon.apd.ProgressionPickups.mark(item, Dungeon.depth, false);
 		Heap heap = heaps.get( cell );
 		if (heap == null) {
 			
@@ -1090,6 +1115,15 @@ public abstract class Level implements Bundlable {
 		}
 		
 		return plant;
+	}
+
+	public Plant plantAttributed(Plant.Seed seed, int pos,
+			com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin origin) {
+		if (origin == null) throw new IllegalArgumentException("Missing plant origin");
+		try (com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveEffectContext ignored =
+				com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveEffectContext.enter(origin)) {
+			return plant(seed, pos);
+		}
 	}
 	
 	public void uproot( int pos ) {
@@ -1689,3 +1723,5 @@ public abstract class Level implements Bundlable {
 		}
 	}
 }
+
+

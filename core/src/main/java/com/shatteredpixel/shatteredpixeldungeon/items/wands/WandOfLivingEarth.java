@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -114,6 +117,7 @@ public class WandOfLivingEarth extends DamageWand {
 
 			//create a new guardian
 			guardian = new EarthGuardian();
+                guardian.apdInheritOffensiveOrigin(curUser);
 			guardian.setInfo(curUser, buffedLvl(), buff.armor);
 
 			if (buff.powerOfManyTurns > 0){
@@ -127,7 +131,7 @@ public class WandOfLivingEarth extends DamageWand {
 				ch.sprite.centerEmitter().burst(MagicMissile.EarthParticle.BURST, 5 + buffedLvl()/2);
 
 				wandProc(ch, chargesPerCast());
-				ch.damage(damage, this);
+				apdApplyDirectDamage(ch, damage, this, curUser);
 
 				int closest = -1;
 				boolean[] passable = Dungeon.level.passable;
@@ -173,7 +177,7 @@ public class WandOfLivingEarth extends DamageWand {
 				ch.sprite.centerEmitter().burst(MagicMissile.EarthParticle.BURST, 5 + buffedLvl() / 2);
 
 				wandProc(ch, chargesPerCast());
-				ch.damage(damage, this);
+				apdApplyDirectDamage(ch, damage, this, curUser);
 				Sample.INSTANCE.play( Assets.Sounds.HIT_MAGIC, 1, 0.8f * Random.Float(0.87f, 1.15f) );
 				
 				if (guardian == null) {
@@ -288,8 +292,16 @@ public class WandOfLivingEarth extends DamageWand {
 			armor = Math.min(armor, 2*armorToGuardian());
 		}
 
+        public int remainingReserve() { return armor; }
+        public int guardianThreshold() { return armorToGuardian(); }
+
 		private int armorToGuardian(){
 			return 8 + wandLevel*4;
+		}
+
+		/** Read-only result of absorb; does not spend armor or detach the buff. */
+		public int previewAbsorb(int damage) {
+			return damage - Math.min(armor, damage - damage/2);
 		}
 
 		public int absorb( int damage ) {

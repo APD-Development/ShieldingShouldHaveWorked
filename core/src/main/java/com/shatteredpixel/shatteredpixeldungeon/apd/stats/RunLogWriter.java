@@ -95,6 +95,8 @@ public final class RunLogWriter {
 	static final int CLOCK_FRAME_INTERVAL = 128;
 	//queue slots kept free for flush/close requests
 	private static final int CONTROL_RESERVE = 6;
+	//Closing may need a dropped-event gap, a seal and the final close request.
+	private static final int CLOSE_CONTROL_RESERVE = 3;
 
 	private static final class FlushRequest {
 		final CountDownLatch done = new CountDownLatch(1);
@@ -174,6 +176,11 @@ public final class RunLogWriter {
 			}
 
 			byte[] header = LogHeader.encode(version, createdAtMillis, runId, writerBuild);
+			// Claim atomically: another writer/import may have created the log since exists().
+			if (!file.createNewFile()){
+				return disabledWriter(file, runId, version, options, OpenStatus.FAILED_EXISTS,
+						new IOException("log already exists: " + file));
+			}
 			FileOutputStream fos = new FileOutputStream(file);
 			try {
 				fos.write(header);
@@ -201,7 +208,10 @@ public final class RunLogWriter {
 			if (!file.isFile()){
 				return disabledWriter(file, "", version, options, OpenStatus.FAILED_MISSING, new IOException("no such log"));
 			}
-			ReadResult before = RunLogReader.read(file);
+			// Appending only needs the header, string table, clock, event count and seal.
+			// Validate every frame but do not retain the existing gameplay-event list.
+			ReadOptions reopenScan = new ReadOptions().onlyRunStartEvents(true);
+			ReadResult before = RunLogReader.read(file, reopenScan);
 			if (before.status == ReadStatus.UNSUPPORTED_CONTAINER){
 				return disabledWriter(file, "", version, options, OpenStatus.FAILED_UNSUPPORTED_CONTAINER,
 						new IOException(before.problem));
@@ -234,7 +244,7 @@ public final class RunLogWriter {
 				recovered = rep.truncated;
 			}
 			//re-read what is now in the file, this is the state we continue from
-			ReadResult now = RunLogReader.read(file);
+			ReadResult now = RunLogReader.read(file, reopenScan);
 			if (!now.status.isClean()){
 				return disabledWriter(file, runId, version, options, OpenStatus.FAILED_IO,
 						new IOException("log still damaged after repair: " + now.problem));
@@ -400,7 +410,8 @@ public final class RunLogWriter {
 		long deadline = System.currentTimeMillis() + timeoutMillis;
 		while (true){
 			synchronized (lock){
-				if (queue.remainingCapacity() >= 1){
+				if (closed || disabled) return false;
+				if (queue.remainingCapacity() > CLOSE_CONTROL_RESERVE){
 					queue.add(request);
 					return true;
 				}
@@ -426,7 +437,7 @@ public final class RunLogWriter {
 	public boolean close( boolean seal, long timeoutMillis ){
 		try {
 			synchronized (lock){
-				if (closed) return !disabled;
+				if (closed) return !disabled && worker != null && !worker.isAlive();
 				closed = true; //from now on accept() refuses events
 			}
 			CloseRequest req = new CloseRequest();
@@ -458,7 +469,7 @@ public final class RunLogWriter {
 					worker.join(Math.max(1, Math.min(timeoutMillis, 5_000)));
 				}
 			}
-			return queued && !disabled;
+			return queued && req.done.getCount() == 0 && !disabled;
 		} catch (Throwable t){
 			reportFailure("close()", t);
 			return false;

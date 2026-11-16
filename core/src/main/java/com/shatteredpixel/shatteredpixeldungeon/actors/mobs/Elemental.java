@@ -241,7 +241,7 @@ public abstract class Elemental extends Mob {
 		@Override
 		protected void meleeProc( Char enemy, int damage ) {
 			if (Random.Int( 2 ) == 0 && !Dungeon.level.water[enemy.pos]) {
-				Buff.affect( enemy, Burning.class ).reignite( enemy );
+				Burning.affectAttributed(enemy, this);
 				if (enemy.sprite.visible) Splash.at( enemy.sprite.center(), sprite.blood(), 5);
 			}
 		}
@@ -249,7 +249,7 @@ public abstract class Elemental extends Mob {
 		@Override
 		protected void rangedProc( Char enemy ) {
 			if (!Dungeon.level.water[enemy.pos]) {
-				Buff.affect( enemy, Burning.class ).reignite( enemy, 4f );
+				Burning.affectAttributed(enemy, 4f, this);
 			}
 			if (enemy.sprite.visible) Splash.at( enemy.sprite.center(), sprite.blood(), 5);
 		}
@@ -363,14 +363,14 @@ public abstract class Elemental extends Mob {
 					if (!Dungeon.level.solid[targetingPos + i]) {
 						CellEmitter.get(targetingPos + i).burst(ElmoParticle.FACTORY, 5);
 						if (Dungeon.level.water[targetingPos + i]) {
-							GameScene.add(Blob.seed(targetingPos + i, 2, Fire.class));
+							GameScene.add(Fire.seedAttributed(targetingPos + i, 2, com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin.capture(this,null)));
 						} else {
-							GameScene.add(Blob.seed(targetingPos + i, 8, Fire.class));
+							GameScene.add(Fire.seedAttributed(targetingPos + i, 8, com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin.capture(this,null)));
 						}
 
 						Char target = Actor.findChar(targetingPos + i);
 						if (target != null && target != this) {
-							Buff.affect(target, Burning.class).reignite(target);
+							Burning.affectAttributed(target, this);
 							if (target == Dungeon.hero){
 								Statistics.questScores[1] -= 200;
 							}

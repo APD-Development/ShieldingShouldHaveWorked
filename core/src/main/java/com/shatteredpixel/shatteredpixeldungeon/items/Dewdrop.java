@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -80,9 +83,18 @@ public class Dewdrop extends Item {
 		return true;
 	}
 
+    /** Base dew value before health caps, Vial allocation and run healing rules. */
+    public static int baseDewEffect(Hero hero, int drops) {
+        return Math.round(hero.HT * 0.05f * drops);
+    }
+
+    public static int shieldingDewCap(Hero hero) {
+        return Math.round(hero.HT * 0.2f * hero.pointsInTalent(Talent.SHIELDING_DEW));
+    }
+
 	public static boolean consumeDew(int quantity, Hero hero, boolean force){
 		//20 drops for a full heal
-		int effect = Math.round( hero.HT * 0.05f * quantity );
+		int effect = baseDewEffect(hero, quantity);
 
 		int heal = Math.min( hero.HT - hero.HP, effect );
 
@@ -97,7 +109,7 @@ public class Dewdrop extends Item {
 
 			shield = effect - heal;
 
-			int maxShield = Math.round(hero.HT *0.2f*hero.pointsInTalent(Talent.SHIELDING_DEW));
+			int maxShield = shieldingDewCap(hero);
 			int curShield = 0;
 			if (hero.buff(Barrier.class) != null) curShield = hero.buff(Barrier.class).shielding();
 			shield = Math.min(shield, maxShield-curShield);
@@ -110,6 +122,7 @@ public class Dewdrop extends Item {
 				healing.setHeal(heal, 0, VialOfBlood.maxHealPerTurn(), true);
 			} else {
 				int apdHpBefore = hero.HP;
+				heal = Math.min(hero.HT - hero.HP, com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomHealingHooks.amount(hero, effect));
 				hero.HP += heal;
 				ApdCombat.onHeal( hero, apdHpBefore, ApdCombat.HEAL_PLANT_DEWDROP, heal );
 				if (heal > 0){
@@ -129,6 +142,14 @@ public class Dewdrop extends Item {
 
 		return true;
 	}
+
+    @Override
+    public String desc() {
+        if (Dungeon.hero != null && com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomHealingHooks.disabled()) {
+            return Messages.get(this, "desc_no_healing");
+        }
+        return super.desc();
+    }
 
 	@Override
 	public boolean isUpgradable() {
@@ -158,3 +179,4 @@ public class Dewdrop extends Item {
 	}
 
 }
+

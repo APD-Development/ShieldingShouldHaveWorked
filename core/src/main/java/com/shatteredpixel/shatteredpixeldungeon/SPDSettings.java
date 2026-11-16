@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -102,6 +105,25 @@ public class SPDSettings extends GameSettings {
 		return getInt( KEY_GRID, 0, -1, 2 );
 	}
 
+    public static boolean ratKingQuickSearch(){return getBoolean("apd_rat_king_quick_search",false);}
+    public static void ratKingQuickSearch(boolean enabled){put("apd_rat_king_quick_search",enabled);}
+    public static int searchedWallColor(){
+        return com.shatteredpixel.shatteredpixeldungeon.apd.qol.SearchedWallAppearance.normalize(getInt("apd_searched_wall_color",0));
+    }
+    public static void searchedWallColor(int index){
+        put("apd_searched_wall_color",com.shatteredpixel.shatteredpixeldungeon.apd.qol.SearchedWallAppearance.normalize(index));
+        GameScene.updateSearchedWallAppearance();
+    }
+
+    public static boolean enhancedTileVisibility() { return getBoolean("apd_enhanced_tile_visibility", false); }
+    public static void enhancedTileVisibility(boolean value) { put("apd_enhanced_tile_visibility", value); GameScene.updateMap(); }
+    public static boolean stairNavigationShortcut() { return getBoolean("apd_stair_navigation_shortcut", true); }
+    public static void stairNavigationShortcut(boolean value) { put("apd_stair_navigation_shortcut", value); GameScene.updateTags=true; }
+    // Opt-in: the stair shortcut walks normally, then uses that direction's stairs.
+    // A manual map tap or ordinary movement never triggers this preference.
+    public static boolean autoEnterStairs() { return getBoolean("apd_auto_enter_stairs", false); }
+    public static void autoEnterStairs(boolean value) { put("apd_auto_enter_stairs", value); }
+
 	public static void cameraFollow( int value ){
 		put( KEY_CAMERA_FOLLOW, value );
 	}
@@ -188,6 +210,18 @@ public class SPDSettings extends GameSettings {
 
 	public static boolean quickslotWaterskin(){
 		return getBoolean( KEY_SLOTWATERSKIN, true );
+	}
+
+	// -1: legacy first-empty; 0..5: slots 1-6; 6: Off. Default slot 2.
+	// 6: never auto-assign. Separate from the legacy yes/no preference so
+	// updating an older installation does not silently move its Waterskin.
+	public static final String KEY_WATERSKIN_START_SLOT = "apd_waterskin_start_slot";
+	public static int waterskinStartingSlot() {
+		return getInt(KEY_WATERSKIN_START_SLOT, 1, -1, 6);
+	}
+	public static void waterskinStartingSlot(int position) {
+		if (position < -1 || position > 6) throw new IllegalArgumentException("waterskin starting slot");
+		put(KEY_WATERSKIN_START_SLOT, position);
 	}
 
 	public static void systemFont(boolean value){
@@ -296,6 +330,10 @@ public class SPDSettings extends GameSettings {
 
 	//APD
 
+    // -1 preserves normal one-tap drinking; 0..100 are inclusive HP thresholds.
+    public static int healingConfirmationThreshold() { return getInt("apd_healing_confirmation", -1, -1, 100); }
+    public static void healingConfirmationThreshold(int value) { put("apd_healing_confirmation", Math.max(-1, Math.min(100, value))); }
+
 	public static final String KEY_APD_EXOTIC_CHANCE    = "apd_exotic_chance";
 	public static final String KEY_APD_CLERIC_ATTEMPTS  = "apd_cleric_attempts";
 
@@ -357,16 +395,32 @@ public class SPDSettings extends GameSettings {
 		put( KEY_APD_TENTH_SHOWN, value );
 	}
 
-	//The one shared humor preference: false = Clean (the default, and what applies whenever age eligibility is unknown or unavailable), true = Adult.
-	//Nothing ever infers it; only the player's own choice sets it.
+	//One shared preference. Verified adults default to Adult; others default to Clean.
 	public static final String KEY_APD_ADULT_HUMOR = "apd_adult_humor";
 
 	public static boolean apdAdultHumor(){
-		return getBoolean( KEY_APD_ADULT_HUMOR, false );
+		com.shatteredpixel.shatteredpixeldungeon.apd.age.AgeEligibility.State age =
+				com.shatteredpixel.shatteredpixeldungeon.apd.age.AgeEligibility.current();
+		return com.shatteredpixel.shatteredpixeldungeon.apd.age.AgeEligibility.adultHumor(
+				age, getBoolean( KEY_APD_ADULT_HUMOR,
+						com.shatteredpixel.shatteredpixeldungeon.apd.age.AgeEligibility.defaultAdultHumor(age) ));
 	}
 
 	public static void apdAdultHumor( boolean value ){
-		put( KEY_APD_ADULT_HUMOR, value );
+		if (!value || com.shatteredpixel.shatteredpixeldungeon.apd.age.AgeEligibility.permitsAdult(
+				com.shatteredpixel.shatteredpixeldungeon.apd.age.AgeEligibility.current())){
+			put( KEY_APD_ADULT_HUMOR, value );
+		}
+	}
+
+	//The Cleric grudge's preferences (frequency and the five location switches) are kept as small text values under keys of the grudge's own
+	//choosing (see GrudgePrefs); "" when a value was never set.
+	public static String apdGrudgePref( String key ){
+		return getString( key, "", 20 );
+	}
+
+	public static void apdGrudgePref( String key, String value ){
+		put( key, value );
 	}
 
 	public static boolean apdDemoUnlockUsed(){
@@ -397,6 +451,27 @@ public class SPDSettings extends GameSettings {
 		return getString( KEY_APD_SERVER, "", 200 );
 	}
 
+
+    //APD hotbar preferences are separate from the original per-run QuickSlot placements.
+    public static int apdClericQuickSlots() { return getInt("apd_cleric_quick_slots", 1, 1, 4); }
+    public static void apdClericQuickSlots(int value) { put("apd_cleric_quick_slots", Math.max(1, Math.min(4, value))); }
+    public static String apdClericQuickSpell(int slot) {
+        if (slot < 0 || slot >= 4) throw new IllegalArgumentException("Cleric quick slot");
+        return getString("apd_cleric_quick_spell_" + slot, "");
+    }
+    public static void apdClericQuickSpell(int slot, String value) {
+        if (slot < 0 || slot >= 4) throw new IllegalArgumentException("Cleric quick slot");
+        put("apd_cleric_quick_spell_" + slot, value == null ? "" : value);
+    }
+    public static int apdHotbarMode() { return getInt("apd_hotbar_mode", 0, 0, 4); }
+    public static void apdHotbarMode(int value) { put("apd_hotbar_mode", Math.max(0, Math.min(4, value))); }
+    public static int apdHotbarCategory(int slot) { return getInt("apd_hotbar_category_" + slot, slot, 0, 8); }
+    public static void apdHotbarCategory(int slot, int value) { put("apd_hotbar_category_" + slot, Math.max(0, Math.min(8, value))); }
+    public static String apdHotbarItem(int slot) { return getString("apd_hotbar_item_" + slot, ""); }
+    public static void apdHotbarItem(int slot, String value) { put("apd_hotbar_item_" + slot, value == null ? "" : value); }
+    public static boolean apdFoodInHealing() { return getBoolean("apd_food_in_healing", false); }
+    public static void apdFoodInHealing(boolean value) { put("apd_food_in_healing", value); }
+
 	public static final String KEY_APD_RECORDING = "apd_recording";
 
 	//APD run history recording, on by default
@@ -412,6 +487,59 @@ public class SPDSettings extends GameSettings {
 	public static void apdExoticChance( int value ){
 		put( KEY_APD_EXOTIC_CHANCE, value );
 	}
+
+
+    // Next-run preferences only. The active run owns an immutable snapshot.
+    public static com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomDungeonRules apdCustomRules() {
+        String text = getString("apd_custom_rules_v1", "");
+        if (text.isEmpty()) return com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomDungeonRules.defaults();
+        return com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomDungeonRules.fromPreferenceText(text);
+    }
+
+    public static void apdCustomRules(com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomDungeonRules rules) {
+        if (rules == null) throw new IllegalArgumentException("Missing next-run custom rules");
+        put("apd_custom_rules_v1", rules.preferenceText());
+    }
+
+    // Six player-owned configuration slots, pre-labelled by class. No game save slots are used.
+    public static final int APD_CUSTOM_RULE_SLOT_COUNT = 6;
+    private static final String[] APD_CUSTOM_RULE_SLOT_DEFAULT_NAMES = {"Warrior","Mage","Rogue","Huntress","Duelist","Cleric"};
+    public static String apdCustomRuleSlotName(int slot){
+        if(slot<1||slot>APD_CUSTOM_RULE_SLOT_COUNT)throw new IllegalArgumentException("Preset slot out of range");
+        String saved=getString("apd_custom_rules_slot_name_"+slot,"");
+        return saved.isEmpty()?APD_CUSTOM_RULE_SLOT_DEFAULT_NAMES[slot-1]:saved;
+    }
+    public static void apdCustomRuleSlotName(int slot,String name){
+        if(slot<1||slot>APD_CUSTOM_RULE_SLOT_COUNT)throw new IllegalArgumentException("Preset slot out of range");
+        if(name==null)throw new IllegalArgumentException("Missing name");
+        String clean=name.trim();
+        if(clean.length()>24)throw new IllegalArgumentException("Name too long");
+        // An empty name restores the built-in class label.
+        put("apd_custom_rules_slot_name_"+slot,clean);
+    }
+    public static boolean apdCustomRuleSlotOccupied(int slot){
+        if(slot<1||slot>APD_CUSTOM_RULE_SLOT_COUNT)throw new IllegalArgumentException("Preset slot out of range");
+        return !getString("apd_custom_rules_slot_"+slot,"").isEmpty();
+    }
+    public static com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomDungeonRules apdCustomRuleSlot(int slot){
+        if(slot<1||slot>APD_CUSTOM_RULE_SLOT_COUNT)throw new IllegalArgumentException("Preset slot out of range");
+        String value=getString("apd_custom_rules_slot_"+slot,"");
+        return value.isEmpty()?null:com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomDungeonRules.fromPreferenceText(value);
+    }
+    public static void apdCustomRuleSlot(int slot,com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomDungeonRules rules){
+        if(slot<1||slot>APD_CUSTOM_RULE_SLOT_COUNT)throw new IllegalArgumentException("Preset slot out of range");
+        if(rules==null)throw new IllegalArgumentException("Missing saved slider configuration");
+        put("apd_custom_rules_slot_"+slot,rules.preferenceText());
+    }
+
+    /** Private, locally stored consent; logging is disabled on every fresh install. */
+    public static boolean apdExtendedBugLogging() {
+        return getBoolean("apd_extended_bug_logging", false);
+    }
+    public static void apdExtendedBugLogging(boolean allowed) {
+        put("apd_extended_bug_logging", allowed);
+        com.watabou.utils.SupportActionJournal.setEnabled(allowed);
+    }
 
 	public static void apdDifficulty( int value ){
 		put( KEY_APD_DIFFICULTY, com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.Difficulty.normalize( value ) );
@@ -628,4 +756,40 @@ public class SPDSettings extends GameSettings {
 	public static int fulLScreenMonitor(){
 		return getInt( KEY_FULLSCREEN_MONITOR, 0 );
 	}
+    public static boolean waitStopFullHealth(){return getBoolean("apd_wait_stop_full",true);}
+    public static void waitStopFullHealth(boolean value){put("apd_wait_stop_full",value);}
+    public static boolean waitStopStarving(){return getBoolean("apd_wait_stop_starving",true);}
+    public static void waitStopStarving(boolean value){put("apd_wait_stop_starving",value);}
+    public static boolean waitStopCritical(){return getBoolean("apd_wait_stop_critical",false);}
+    public static void waitStopCritical(boolean value){put("apd_wait_stop_critical",value);}
+    public static int waitCriticalPercent(){int value=getInt("apd_wait_critical_percent",20);return value>=10&&value<=50&&value%10==0?value:20;}
+    public static void waitCriticalPercent(int value){put("apd_wait_critical_percent",value>=10&&value<=50&&value%10==0?value:20);}
+    public static boolean autoEatWhileWaiting(){return getBoolean("apd_wait_auto_eat",false);}
+    public static void autoEatWhileWaiting(boolean value){put("apd_wait_auto_eat",value);}
+    public static boolean autoEatWhenHungry(){return getBoolean("apd_wait_eat_hungry",false);}
+    public static void autoEatWhenHungry(boolean value){put("apd_wait_eat_hungry",value);}
+    public static boolean continueOnTrapDiscovery(){return getBoolean("apd_continue_trap_discovery",false);}
+    public static void continueOnTrapDiscovery(boolean enabled){put("apd_continue_trap_discovery",enabled);}
+    /** Chooser preference only: never performs a search or changes its range/cost. */
+    public static boolean adaptiveSearchChoice(){return getBoolean("apd_adaptive_search_choice",true);}
+    public static void adaptiveSearchChoice(boolean enabled){put("apd_adaptive_search_choice",enabled);}
+    public static boolean singleTapSearch(){return getBoolean("apd_single_tap_search",false);}
+    public static void singleTapSearch(boolean enabled){put("apd_single_tap_search",enabled);}
+    public static int playbackSpeed() {
+        int value = getInt("apd_playback_speed", 1);
+        return com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup.allowed(value) ? value : 1;
+    }
+    public static void playbackSpeed(int value) {
+        put("apd_playback_speed", com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup.allowed(value) ? value : 1);
+    }
+    public static boolean dotOverlayEnabled(){return getBoolean("apd_dot_overlay",true);}
+    public static void dotOverlayEnabled(boolean enabled){put("apd_dot_overlay",enabled);}
+    public static boolean autoCollectGrassDew(){return getBoolean("apd_auto_grass_dew",true);}
+    public static void autoCollectGrassDew(boolean enabled){put("apd_auto_grass_dew",enabled);}
+    public static boolean autoCollectDewWithEnemies(){return getBoolean("apd_auto_dew_with_enemies",false);}
+    public static void autoCollectDewWithEnemies(boolean enabled){put("apd_auto_dew_with_enemies",enabled);}
+    public static boolean confirmWaterskin(){return getBoolean("apd_confirm_waterskin",true);}
+    public static void confirmWaterskin(boolean enabled){put("apd_confirm_waterskin",enabled);}
+    public static boolean confirmKnownTraps(){return getBoolean("apd_confirm_known_traps",true);}
+    public static void confirmKnownTraps(boolean enabled){put("apd_confirm_known_traps",enabled);}
 }

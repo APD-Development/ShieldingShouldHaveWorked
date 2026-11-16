@@ -199,7 +199,7 @@ public class WndRanking extends WndTabbed {
 			NumberFormat num = NumberFormat.getInstance(Messages.locale());
 
 			if (Dungeon.hero == null){
-				pos = statSlot( this, Messages.get(this, "score"), num.format( record.score ), pos );
+				pos = statSlot( this, Messages.get(this, "score"), num.format( record.earnedScore() ), pos );
 				pos += GAP;
 
 				Image errorIcon = Icons.WARNING.get();
@@ -213,13 +213,13 @@ public class WndRanking extends WndTabbed {
 
 			} else {
 
-				pos = statSlot(this, Messages.get(this, "score"), num.format(Statistics.totalScore), pos);
+				pos = statSlot(this, Messages.get(this, "score"), num.format(record.earnedScore()), pos);
 
 				IconButton scoreInfo = new IconButton(Icons.get(Icons.INFO)) {
 					@Override
 					protected void onClick() {
 						super.onClick();
-						ShatteredPixelDungeon.scene().addToFront(new WndScoreBreakdown());
+						ShatteredPixelDungeon.scene().addToFront(new WndScoreBreakdown(record.gameData,record.score));
 					}
 				};
 				scoreInfo.setSize(16, 16);
@@ -274,6 +274,7 @@ public class WndRanking extends WndTabbed {
 					@Override
 					protected void onClick() {
 						super.onClick();
+						com.shatteredpixel.shatteredpixeldungeon.ui.SeedHistoryNotice.cancel();
 						ShatteredPixelDungeon.scene().addToFront(new WndOptions(new Image(icon),
 								Messages.get(WndRanking.StatsTab.this, "copy_seed"),
 								Messages.get(WndRanking.StatsTab.this, "copy_seed_desc"),
@@ -284,6 +285,7 @@ public class WndRanking extends WndTabbed {
 								super.onSelect(index);
 								if (index == 0){
 									SPDSettings.customSeed(DungeonSeed.convertToCode(Dungeon.seed));
+									com.shatteredpixel.shatteredpixeldungeon.ui.SeedHistoryNotice.selected(SPDSettings.customSeed());
 									icon.hardlight(1f, 1.5f, 0.67f);
 								}
 							}
@@ -377,7 +379,7 @@ public class WndRanking extends WndTabbed {
 			pos = 0;
 
 			int slotsActive = 0;
-			for (int i = 0; i < QuickSlot.SIZE; i++){
+			for (int i = 0; i < QuickSlot.MOBILE_VISIBLE_SLOTS; i++){
 				if (Dungeon.quickslot.isNonePlaceholder(i)){
 					slotsActive++;
 				}
@@ -390,7 +392,7 @@ public class WndRanking extends WndTabbed {
 
 			float slotWidth = Math.min(28, ((WIDTH - slotsActive + 1) / (float)slotsActive));
 
-			for (int i = -1; i < QuickSlot.SIZE; i++){
+			for (int i = -1; i < QuickSlot.MOBILE_VISIBLE_SLOTS; i++){
 				Item item = null;
 				if (i == -1){
 					item = trinket;

@@ -110,7 +110,7 @@ public final class Aggregate {
 	//the id a Sort can refer to (and what tells two aggregates apart)
 	public String id(){
 		String base = fn == Fn.COUNT ? "count" : fn == Fn.RATE ? "rate:" + column + "=" + target
-				: fn == Fn.RATIO ? "ratio:" + column + "/" + over : fn.name().toLowerCase() + ":" + column;
+				: fn == Fn.RATIO ? "ratio:" + column + "/" + over : fn.name().toLowerCase(java.util.Locale.ROOT) + ":" + column;
 		if (!whereColumn.isEmpty()) base += "|where:" + whereColumn + "=" + whereValue;
 		if (!distinctBy.isEmpty()) base += "|per:" + distinctBy;
 		return base;
@@ -126,3 +126,4 @@ public final class Aggregate {
 		return id().hashCode();
 	}
 }
+

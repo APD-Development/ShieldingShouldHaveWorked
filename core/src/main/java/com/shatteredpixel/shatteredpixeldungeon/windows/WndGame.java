@@ -120,7 +120,6 @@ public class WndGame extends Window {
 			}
 		});
 		curBtn.icon(Icons.get(Icons.DISPLAY));
-		if (SPDSettings.intro()) curBtn.enable(false);
 
 		resize( WIDTH, pos );
 	}

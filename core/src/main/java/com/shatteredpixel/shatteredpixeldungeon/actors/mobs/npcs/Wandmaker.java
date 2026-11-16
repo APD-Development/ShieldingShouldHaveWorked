@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -229,6 +232,12 @@ public class Wandmaker extends NPC {
 		
 		public static Wand wand1;
 		public static Wand wand2;
+
+        /** Same explicit reward-level disclosure as Sad Ghost and Blacksmith. */
+        public static void revealOfferedLevels() {
+            if (wand1 != null) wand1.levelKnown = true;
+            if (wand2 != null) wand2.levelKnown = true;
+        }
 		
 		public static void reset() {
 			spawned = false;
@@ -336,6 +345,7 @@ public class Wandmaker extends NPC {
 				wand1 = (Wand) Generator.random(Generator.Category.WAND);
 				wand1.cursed = false;
 				wand1.upgrade();
+				com.shatteredpixel.shatteredpixeldungeon.apd.qol.GenerationUpgradeRanges.set(wand1, 1, 3);
 
 				wand2 = (Wand) Generator.random(Generator.Category.WAND);
 				ArrayList<Item> toUndo = new ArrayList<>();
@@ -348,6 +358,7 @@ public class Wandmaker extends NPC {
 				}
 				wand2.cursed = false;
 				wand2.upgrade();
+				com.shatteredpixel.shatteredpixeldungeon.apd.qol.GenerationUpgradeRanges.set(wand2, 1, 3);
 				
 			}
 		}

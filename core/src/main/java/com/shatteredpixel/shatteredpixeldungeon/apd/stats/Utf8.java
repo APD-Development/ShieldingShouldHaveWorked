@@ -28,5 +28,23 @@ final class Utf8 {
 
 	static final Charset CHARSET = Charset.forName("UTF-8");
 
+    // ASCII stays on the existing fast String path. Other text must be valid UTF-8,
+    // rather than silently replacing damaged provenance or string identities.
+    static String decode(byte[] bytes) {
+        for (byte value : bytes) {
+            if (value < 0) {
+                try {
+                    return CHARSET.newDecoder()
+                            .onMalformedInput(java.nio.charset.CodingErrorAction.REPORT)
+                            .onUnmappableCharacter(java.nio.charset.CodingErrorAction.REPORT)
+                            .decode(java.nio.ByteBuffer.wrap(bytes)).toString();
+                } catch (java.nio.charset.CharacterCodingException invalid) {
+                    throw new FormatException("invalid UTF-8 text");
+                }
+            }
+        }
+        return new String(bytes, CHARSET);
+    }
+
 	private Utf8(){}
 }

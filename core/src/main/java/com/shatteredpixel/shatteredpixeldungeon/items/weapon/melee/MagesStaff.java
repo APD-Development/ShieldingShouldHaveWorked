@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -295,6 +298,10 @@ public class MagesStaff extends MeleeWeapon {
 		}
 	}
 
+    public String mechanicsDetails() {
+        return com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.Dart.inspect(()->com.shatteredpixel.shatteredpixeldungeon.apd.mechanics.StaffExplanation.details(this, wand, Dungeon.hero));
+    }
+
 	public Class<?extends Wand> wandClass(){
 		return wand != null ? wand.getClass() : null;
 	}
@@ -353,9 +360,13 @@ public class MagesStaff extends MeleeWeapon {
 			if ((!cursed && !hasCurseEnchant()) || !cursedKnown)    info += " " + wand.statsDesc();
 			else                                                    info += " " + Messages.get(this, "cursed_wand");
 
-			if (Dungeon.hero.subClass == HeroSubClass.BATTLEMAGE){
-				info += "\n\n" + Messages.get(wand, "bmage_desc");
+			if (Dungeon.hero != null && Dungeon.hero.subClass == HeroSubClass.BATTLEMAGE){
+				info += "\n\n" + Messages.get(wand, wand instanceof WandOfRegrowth
+                        && com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomHealingHooks.disabled()
+                        ? "bmage_desc_disabled" : "bmage_desc");
 			}
+		} else {
+			info += "\n\n" + Messages.get(this, "no_wand");
 		}
 
 		return info;

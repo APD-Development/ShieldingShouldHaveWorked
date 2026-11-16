@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -31,6 +34,8 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 
+import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+
 public class PotionOfShielding extends ExoticPotion {
 	
 	{
@@ -49,4 +54,11 @@ public class PotionOfShielding extends ExoticPotion {
 			hero.sprite.showStatusWithIcon( CharSprite.POSITIVE, Integer.toString((int) (0.6f * hero.HT + 10)), FloatingText.SHIELDING );
 		}
 	}
+    @Override
+    public String desc() {
+        if (!isKnown() || Dungeon.hero == null) return super.desc();
+        if (Dungeon.isChallenged(Challenges.NO_HEALING)) return Messages.get(this, "desc_pharmacophobia");
+        return Messages.get(this, "desc_amount", (int)(0.6f * Dungeon.hero.HT + 10));
+    }
+
 }

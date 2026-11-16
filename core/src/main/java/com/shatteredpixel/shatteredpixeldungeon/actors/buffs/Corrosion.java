@@ -24,6 +24,9 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.buffs;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin;
+import com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamage;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfCorrosion;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
@@ -35,11 +38,15 @@ public class Corrosion extends Buff implements Hero.Doom, Buff.DOTbuff {
 
 	private float damage = 1;
 	protected float left;
+	private OffensiveDamageOrigin origin = OffensiveDamageOrigin.UNATTRIBUTED;
+	private static final String APD_ORIGIN = "apd_corrosion_origin";
 
 	//used in specific cases where the source of the corrosion is important for death logic
 	private Class source;
 
-	private static final String DAMAGE	= "damage";
+	public float apdRemaining(){return left;}
+    public int apdNextRaw(){return (int)damage;}
+    private static final String DAMAGE	= "damage";
 	private static final String LEFT	= "left";
 	private static final String SOURCE	= "source";
 
@@ -54,6 +61,7 @@ public class Corrosion extends Buff implements Hero.Doom, Buff.DOTbuff {
 		bundle.put( DAMAGE, damage );
 		bundle.put( LEFT, left );
 		bundle.put( SOURCE, source);
+		origin.store(bundle, APD_ORIGIN);
 	}
 
 	@Override
@@ -62,6 +70,7 @@ public class Corrosion extends Buff implements Hero.Doom, Buff.DOTbuff {
 		damage = bundle.getFloat( DAMAGE );
 		left = bundle.getFloat( LEFT );
 		source = bundle.getClass( SOURCE );
+		origin = OffensiveDamageOrigin.restore(bundle, APD_ORIGIN);
 	}
 
 	public void set(float duration, int damage){
@@ -69,6 +78,17 @@ public class Corrosion extends Buff implements Hero.Doom, Buff.DOTbuff {
 	}
 
 	public void set(float duration, int damage, Class source) {
+		setWithOrigin(duration, damage, source, OffensiveDamageOrigin.UNATTRIBUTED);
+	}
+
+	public void setAttributed(float duration, int damage, Class source, Char attacker) {
+		setWithOrigin(duration, damage, source, OffensiveDamageOrigin.capture(attacker, null));
+	}
+
+	/** Preserve SPD's latest-application source policy, including merged strength/duration. */
+	public void setWithOrigin(float duration, int damage, Class source, OffensiveDamageOrigin origin) {
+		if (origin == null) throw new IllegalArgumentException("Missing corrosion origin");
+		this.origin = origin;
 		this.left = Math.max(duration, left);
 		if (this.damage < damage) this.damage = damage;
 		this.source = source;
@@ -103,7 +123,7 @@ public class Corrosion extends Buff implements Hero.Doom, Buff.DOTbuff {
 	@Override
 	public boolean act() {
 		if (target.isAlive()) {
-			target.damage((int)damage, this);
+			OffensiveDamage.raw((int)damage, this, origin).apply(target);
 			if (damage < (Dungeon.scalingDepth()/2)+2) {
 				damage++;
 			} else {
@@ -143,7 +163,7 @@ public class Corrosion extends Buff implements Hero.Doom, Buff.DOTbuff {
 		int total = 0;
 		float curDMG = damage;
 		for (int i = (int)Math.ceil(left); i > 0; i--){
-			total += (int)curDMG;
+			total += OffensiveDamage.raw((int)curDMG, this, origin).scaled().amount;
 			if (curDMG < (Dungeon.scalingDepth()/2)+2) {
 				curDMG++;
 			} else {
@@ -153,3 +173,4 @@ public class Corrosion extends Buff implements Hero.Doom, Buff.DOTbuff {
 		return total;
 	}
 }
+

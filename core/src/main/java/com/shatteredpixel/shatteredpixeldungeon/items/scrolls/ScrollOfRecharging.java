@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -63,6 +66,11 @@ public class ScrollOfRecharging extends Scroll {
 		}
 	}
 	
+    @Override
+    public String desc() {
+        return isKnown() ? Messages.get(this, "desc", Messages.decimalFormat("0.##", Recharging.DURATION)) : super.desc();
+    }
+
 	@Override
 	public int value() {
 		return isKnown() ? 30 * quantity : super.value();

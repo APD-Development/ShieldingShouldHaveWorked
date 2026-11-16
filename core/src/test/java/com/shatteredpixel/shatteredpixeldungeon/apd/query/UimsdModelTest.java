@@ -1,9 +1,27 @@
+/*
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>
+ */
 package com.shatteredpixel.shatteredpixeldungeon.apd.query;
 
 import static com.shatteredpixel.shatteredpixeldungeon.apd.query.QuerySupport.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import com.shatteredpixel.shatteredpixeldungeon.apd.stats.Fact;
@@ -17,6 +35,48 @@ import java.util.List;
 //The view model and the table it feeds, driven with a made-up dataset that is not one of the shipped ones: nothing in them may
 //depend on Runs, Items or any other particular dataset.
 public class UimsdModelTest {
+
+    @Test public void gameplayReleaseDropsTablesAndBackResultsButKeepsQuery()throws Exception{
+        UimsdModel m=new UimsdModel(R,"rules");m.setCatalog(catalog());m.selectView("parts");
+        Query before=m.query();m.releaseForGameplay();
+        assertNull(m.catalog());assertNull(m.result());org.junit.Assert.assertSame(before,m.query());assertEquals(UimsdModel.State.EMPTY,m.state());
+        for(String name:new String[]{"preparedHome","preparedHomeCatalog","listener"}){
+            java.lang.reflect.Field f=UimsdModel.class.getDeclaredField(name);f.setAccessible(true);assertNull(name,f.get(m));
+        }
+        java.lang.reflect.Field back=UimsdModel.class.getDeclaredField("back");back.setAccessible(true);
+        java.util.List<?> places=(java.util.List<?>)back.get(m);assertEquals(1,places.size());
+        for(Object place:places)for(String name:new String[]{"result","dataset"}){java.lang.reflect.Field f=place.getClass().getDeclaredField(name);f.setAccessible(true);assertNull(name,f.get(place));}
+        m.setCatalog(catalog());assertEquals(UimsdModel.State.READY,m.state());assertNotNull(m.result());
+    }
+    @Test public void gameplayReleaseRetiresAnInFlightLoaderBeforeItCanPublish()throws Exception{
+        UimsdModel m=new UimsdModel(R,"rules");java.util.concurrent.CountDownLatch entered=new java.util.concurrent.CountDownLatch(1),finish=new java.util.concurrent.CountDownLatch(1);
+        java.io.File root=java.nio.file.Files.createTempDirectory("apd-retired-load").toFile();
+        try{
+            m.loadForOpen(root,false,()->{entered.countDown();try{finish.await(10,java.util.concurrent.TimeUnit.SECONDS);}catch(InterruptedException expected){}});
+            assertTrue(entered.await(10,java.util.concurrent.TimeUnit.SECONDS));m.releaseForGameplay();finish.countDown();Thread.sleep(100);
+            assertEquals(UimsdModel.State.EMPTY,m.state());assertNull(m.catalog());assertNull(m.result());
+        }finally{finish.countDown();root.delete();}
+    }
+    @Test public void catalogWorkingMemoryIsExclusiveWithoutBlockingTheCaller()throws Exception{
+        java.lang.reflect.Field field=UimsdModel.class.getDeclaredField("CATALOG_LOAD_MEMORY");field.setAccessible(true);Object memory=field.get(null);
+        UimsdModel next=new UimsdModel(R,"next");java.util.concurrent.CountDownLatch interactive=new java.util.concurrent.CountDownLatch(1);
+        java.io.File root=java.nio.file.Files.createTempDirectory("apd-load-memory-ownership").toFile();
+        try{
+            synchronized(memory){
+                next.loadForOpen(root,false,interactive::countDown);
+                assertTrue("interactive flush must not wait for another decoder",interactive.await(10,java.util.concurrent.TimeUnit.SECONDS));
+                next.awaitLoad(200);
+                assertEquals("catalog work cannot allocate while another batch owns memory",UimsdModel.State.LOADING,next.state());assertNull(next.catalog());
+            }
+            next.awaitLoad(10000);assertEquals(UimsdModel.State.READY,next.state());assertNotNull(next.catalog());
+        }finally{next.releaseForGameplay();root.delete();}
+    }
+    @Test public void cancelledCatalogReadDoesNotTouchRecordedFiles()throws Exception{
+        java.io.File root=java.nio.file.Files.createTempDirectory("apd-cancelled-catalog").toFile();java.io.File history=new java.io.File(root,"keep.txt");
+        java.nio.file.Files.write(history.toPath(),new byte[]{1,2,3});
+        try{try{new DatasetStore(root).load(()->true);org.junit.Assert.fail("cancelled load");}catch(java.util.concurrent.CancellationException expected){}assertEquals(3,history.length());}
+        finally{history.delete();root.delete();}
+    }
 
 	private static final String R = "r-now";
 	private final DatasetDef things = QuerySupport.def();
@@ -65,6 +125,198 @@ public class UimsdModelTest {
 		UimsdModel m = new UimsdModel(R, "made up rules");
 		m.setCatalog(catalog());
 		return m;
+	}
+
+	@Test public void initialHomePreparedOnlyForTheLoadedCatalogAndScope() throws Exception {
+		java.io.File root = java.nio.file.Files.createTempDirectory("apd-prepared-home").toFile();
+		try {
+			UimsdModel m = new UimsdModel(R, "");
+			m.load(root, true);
+			m.awaitLoad(10000);
+			assertEquals(UimsdModel.State.READY, m.state());
+			Catalog loaded = m.catalog();
+			assertNotNull("initial Home summary is prepared with the loaded catalog",m.preparedHome(loaded, true));
+			assertNull("a different scope cannot reuse the prepared summary",m.preparedHome(loaded, false));
+			m.setCatalog(catalog());
+			assertNull("replacing the catalog retires the previous summary",m.preparedHome(m.catalog(), true));
+		} finally {
+			assertTrue(root.delete());
+		}
+	}
+
+	@Test public void columnLayoutLoadAndCatalogPublishShareTheSameGeneration() throws Exception {
+		java.io.File root = java.nio.file.Files.createTempDirectory("apd-layout-generation").toFile();
+		try {
+			UimsdModel first = new UimsdModel(R, "");
+			first.load(root);
+			first.awaitLoad(10000);
+			assertEquals(UimsdModel.State.READY, first.state());
+			first.showRoot("runs");
+			List<String> wanted = Arrays.asList(
+					com.shatteredpixel.shatteredpixeldungeon.apd.stats.FactKeys.SCORE,
+					com.shatteredpixel.shatteredpixeldungeon.apd.stats.FactKeys.HERO_CLASS);
+			first.setColumns(wanted);
+			UimsdModel reopened = new UimsdModel(R, "");
+			reopened.load(root);
+			reopened.awaitLoad(10000);
+			assertEquals(UimsdModel.State.READY, reopened.state());
+			reopened.showRoot("runs");
+			assertEquals("saved layout must be available with the loaded catalog", wanted, reopened.query().columns);
+		} finally {
+			java.io.File layout = new java.io.File(root, UimsdModel.COLUMN_LAYOUTS_FILE);
+			if (layout.exists()) assertTrue(layout.delete());
+			if (root.exists()) assertTrue(root.delete());
+		}
+	}
+
+	@Test public void columnsPersistWhenNoRunHasCreatedTheHistoryFolder() throws Exception {
+		java.nio.file.Path parent = java.nio.file.Files.createTempDirectory("apd-first-layout");
+		java.io.File root = parent.resolve("history").toFile();
+		try {
+			assertFalse(root.exists());
+			UimsdModel first = new UimsdModel(R, "");
+			first.load(root); first.awaitLoad(10000); first.showRoot("runs");
+			assertEquals(UimsdModel.State.READY, first.state());
+			List<String> columns = Arrays.asList(
+					com.shatteredpixel.shatteredpixeldungeon.apd.stats.FactKeys.SCORE,
+					com.shatteredpixel.shatteredpixeldungeon.apd.stats.FactKeys.HERO_CLASS);
+			first.setColumns(columns);
+			assertTrue("layout must be saved even without recorded runs", new java.io.File(root, UimsdModel.COLUMN_LAYOUTS_FILE).isFile());
+			UimsdModel second = new UimsdModel(R, "");
+			second.load(root); second.awaitLoad(10000); second.showRoot("runs");
+			assertEquals(columns, second.query().columns);
+			assertFalse("saving preferences creates no run history", new java.io.File(root, "runs").exists());
+		} finally {
+			java.io.File layout = new java.io.File(root, UimsdModel.COLUMN_LAYOUTS_FILE);
+			if (layout.exists()) assertTrue(layout.delete());
+			if (root.exists()) assertTrue(root.delete());
+			assertTrue(parent.toFile().delete());
+		}
+	}
+
+
+	@Test
+	public void anOlderBackgroundLoadCannotOverwriteANewerExplicitCatalog() throws Exception {
+		java.io.File root = java.nio.file.Files.createTempDirectory("apd-stale-load").toFile();
+		UimsdModel m = new UimsdModel(R, "");
+		Catalog newer = catalog();
+		//Holding the monitor makes the old loader complete its disk work but wait before installation.
+		//The newer explicit catalogue is therefore installed first, deterministically reproducing the stale overwrite.
+		synchronized (m){
+			m.load(root);
+			m.setCatalog(newer);
+			assertTrue(newer == m.catalog());
+			assertEquals("all", m.viewId());
+		}
+		m.awaitLoad(10000);
+		assertTrue("the stale loader must not replace the newer catalogue", newer == m.catalog());
+		assertEquals(UimsdModel.State.READY, m.state());
+		assertEquals("all", m.viewId());
+	}
+
+
+	@Test
+	public void aReplayFromAnOlderCatalogCannotReplaceNewerReadyState() throws Exception {
+		UimsdModel m = model();
+		Row run = m.result().rows.get(0);
+		java.util.concurrent.CountDownLatch building = new java.util.concurrent.CountDownLatch(1);
+		java.util.concurrent.CountDownLatch release = new java.util.concurrent.CountDownLatch(1);
+		m.setSeedFloorsProvider(new SeedFloors.Provider(){
+			@Override public boolean applies( Catalog cat, Dataset ds, Row row ){ return true; }
+			@Override public SeedFloors.Built build( Catalog cat, Row row ){
+				building.countDown();
+				try {
+					if (!release.await(5, java.util.concurrent.TimeUnit.SECONDS)) throw new AssertionError("release timeout");
+				} catch (InterruptedException e){
+					throw new AssertionError(e);
+				}
+				SeedFloors.Spec spec = new SeedFloors.Spec();
+				spec.runId = "stale-run";
+				spec.ruleset = R;
+				return SeedFloors.assemble(spec, new ArrayList<SeedFloors.Recorded>(), new ArrayList<ReplayFloor>());
+			}
+		});
+		java.util.concurrent.atomic.AtomicInteger changes = new java.util.concurrent.atomic.AtomicInteger();
+		m.setListener(new UimsdModel.Listener(){
+			@Override public void changed(){ changes.incrementAndGet(); }
+		});
+		m.startSeedFloors(run);
+		assertTrue(building.await(5, java.util.concurrent.TimeUnit.SECONDS));
+		Catalog newer = catalog();
+		m.setCatalog(newer);
+		release.countDown();
+		m.awaitSeedFloors(5000);
+		assertTrue("the stale replay must not replace the newer catalogue", newer == m.catalog());
+		assertEquals(UimsdModel.State.READY, m.state());
+		assertEquals("all", m.viewId());
+		assertEquals("", m.notice());
+		assertEquals("no stale replay notification", 2, changes.get());
+	}
+
+	@Test
+	public void columnOrderAndSelectionSurviveOpeningAnotherView(){
+		UimsdModel m = model();
+		m.setColumns(Arrays.asList("kind", "name", "score"));
+		m.selectView("parts");
+		m.showRoot("all");
+		assertEquals(Arrays.asList("kind", "name", "score"), m.query().columns);
+		m.moveColumn("score", -2);
+		m.showRoot("parts");
+		m.showRoot("all");
+		assertEquals(Arrays.asList("score", "kind", "name"), m.query().columns);
+	}
+
+	@Test
+	public void hiddenOnlySavedColumnsCannotReopenAsABlankTable(){
+		UimsdModel m = model();
+		m.setShowInternal(true);
+		m.setColumns(Arrays.asList("secret"));
+		assertEquals(1, m.table().headers.size());
+
+		m.setShowInternal(false);
+		m.showRoot("parts");
+		m.showRoot("all");
+
+		assertEquals("public defaults replace a hidden-only layout", 4, m.table().headers.size());
+		assertFalse(m.query().showInternal);
+	}
+
+	@Test
+	public void retiredSavedColumnsCannotReopenAsABlankTable(){
+		UimsdModel m = model();
+		//A column that existed in an older build can remain in the local layout file.
+		m.setColumns(Arrays.asList("removed-in-newer-build"));
+		m.showRoot("parts");
+		m.showRoot("all");
+
+		assertEquals("current defaults replace a wholly stale layout", 4, m.table().headers.size());
+	}
+
+	@Test
+	public void columnChoicesSurviveARecreatedModelAndResetIsExplicit() throws Exception {
+		java.io.File root = java.nio.file.Files.createTempDirectory("apd-column-layout").toFile();
+		UimsdModel first = new UimsdModel(R, "");
+		first.load(root);
+		first.awaitLoad(10000);
+		first.showRoot("runs");
+		java.util.List<String> columns = Arrays.asList(
+				com.shatteredpixel.shatteredpixeldungeon.apd.stats.FactKeys.SCORE,
+				com.shatteredpixel.shatteredpixeldungeon.apd.stats.FactKeys.HERO_CLASS,
+				com.shatteredpixel.shatteredpixeldungeon.apd.stats.FactKeys.SEED_TYPE,
+				com.shatteredpixel.shatteredpixeldungeon.apd.stats.FactKeys.EXTERNAL_MODS);
+		first.setColumns(columns);
+		assertTrue(new java.io.File(root, UimsdModel.COLUMN_LAYOUTS_FILE).isFile());
+		UimsdModel second = new UimsdModel(R, "");
+		second.load(root);
+		second.awaitLoad(10000);
+		second.showRoot("runs");
+		assertEquals(columns, second.query().columns);
+		second.resetView();
+		UimsdModel third = new UimsdModel(R, "");
+		third.load(root);
+		third.awaitLoad(10000);
+		third.showRoot("runs");
+		assertEquals(third.view().initialQuery().columns, third.query().columns);
 	}
 
 	@Test
@@ -149,6 +401,23 @@ public class UimsdModelTest {
 		assertEquals(Arrays.asList(new Sort("name", false)), m.query().sorts);
 		assertFalse(m.query().columns.contains("secret"));
 		assertTrue(m.result().problems.isEmpty());
+	}
+
+	@Test
+	public void disablingHiddenInformationRemovesEveryHiddenAggregateDependency(){
+		UimsdModel m = model();
+		m.setShowInternal(true);
+		Aggregate safe = Aggregate.of(Aggregate.Fn.AVG, "score");
+		Aggregate ratio = Aggregate.ratio("score", "secret");
+		Aggregate conditioned = Aggregate.of(Aggregate.Fn.SUM, "score").where("secret", 2);
+		Aggregate distinct = Aggregate.of(Aggregate.Fn.AVG, "score").perDistinct("secret");
+		m.setGroup(new GroupBy(Arrays.asList("kind"), Arrays.asList(safe, ratio, conditioned, distinct)));
+		assertEquals(4, m.query().group.aggregates.size());
+		assertTrue(m.result().problems.isEmpty());
+
+		m.setShowInternal(false);
+		assertEquals(Arrays.asList(safe), m.query().group.aggregates);
+		assertTrue("the cleaned query must not silently omit rejected aggregates", m.result().problems.isEmpty());
 	}
 
 	@Test

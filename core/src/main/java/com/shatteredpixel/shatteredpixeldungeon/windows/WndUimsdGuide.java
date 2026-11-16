@@ -76,6 +76,6 @@ public final class WndUimsdGuide {
 					}
 				}));
 			}
-		}));
+		}).restoreWith(() -> show(starter)));
 	}
 }

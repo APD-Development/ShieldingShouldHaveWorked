@@ -60,9 +60,9 @@ public class SupplyRation extends Food {
 		super.satisfy(hero);
 
 		int apdHpBefore = hero.HP;
-		hero.HP = Math.min(hero.HP + 5, hero.HT);
+		hero.HP = Math.min(hero.HP + com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomHealingHooks.amount(hero, 5), hero.HT);
 		ApdCombat.onHeal( hero, apdHpBefore, ApdCombat.HEAL_FOOD_SUPPLY_RATION, 5 );
-		hero.sprite.showStatusWithIcon( CharSprite.POSITIVE, "5", FloatingText.HEALING );
+		hero.sprite.showStatusWithIcon( CharSprite.POSITIVE, Integer.toString(com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomHealingHooks.display(hero, apdHpBefore, 5)), FloatingText.HEALING );
 
 		CloakOfShadows cloak = hero.belongings.getItem(CloakOfShadows.class);
 		if (cloak != null) {
@@ -77,3 +77,4 @@ public class SupplyRation extends Food {
 	}
 
 }
+

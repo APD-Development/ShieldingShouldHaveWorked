@@ -27,6 +27,10 @@ import com.shatteredpixel.shatteredpixeldungeon.GamesInProgress;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdList;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndMessage;
+import java.util.List;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Journal;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Button;
@@ -84,79 +88,84 @@ public class StartScene extends PixelScene {
 		align(title);
 		add(title);
 		
-		ArrayList<GamesInProgress.Info> games = GamesInProgress.checkAll();
-		
-		int slotCount = Math.min(GamesInProgress.MAX_SLOTS, games.size()+1);
-		int slotGap = 10 - slotCount;
-		int slotsHeight = slotCount*SLOT_HEIGHT + (slotCount-1)* slotGap;
-		slotsHeight += 14;
-
-		while (slotGap >= 2 && slotsHeight > (h-title.bottom()-2)){
-			slotGap--;
-			slotsHeight -= slotCount-1;
-		}
-		
-		float yPos = insets.top + (h - slotsHeight + title.bottom() + 2)/2f - 4;
-		yPos = Math.max(yPos, title.bottom()+2);
-		float slotLeft = insets.left + (w - SLOT_WIDTH) / 2f;
-		
-		for (GamesInProgress.Info game : games) {
-			SaveSlotButton existingGame = new SaveSlotButton();
-			existingGame.set(game.slot);
-			existingGame.setRect(slotLeft, yPos, SLOT_WIDTH, SLOT_HEIGHT);
-			yPos += SLOT_HEIGHT + slotGap;
-			align(existingGame);
-			add(existingGame);
-			
-		}
-		
-		if (games.size() < GamesInProgress.MAX_SLOTS){
-			SaveSlotButton newGame = new SaveSlotButton();
-			newGame.set(GamesInProgress.firstEmpty());
-			newGame.setRect(slotLeft, yPos, SLOT_WIDTH, SLOT_HEIGHT);
-			yPos += SLOT_HEIGHT + slotGap;
-			align(newGame);
-			add(newGame);
-		}
-		
-		GamesInProgress.curSlot = 0;
-
-		String sortText = "";
-		switch (SPDSettings.gamesInProgressSort()){
-			case "level":
-				sortText = Messages.get(this, "sort_level");
-				break;
-			case "last_played":
-				sortText = Messages.get(this, "sort_recent");
-				break;
-		}
-
-		StyledButton btnSort = new StyledButton(Chrome.Type.TOAST_TR, sortText, 6){
-			@Override
-			protected void onClick() {
-				super.onClick();
-
-				if (SPDSettings.gamesInProgressSort().equals("level")){
-					SPDSettings.gamesInProgressSort("last_played");
-				} else {
-					SPDSettings.gamesInProgressSort("level");
-				}
-
-				ShatteredPixelDungeon.seamlessResetScene();
-			}
-		};
-		btnSort.textColor(0xCCCCCC);
-
-		if (yPos + 10 > Camera.main.height) {
-			btnSort.setRect(slotLeft - btnSort.reqWidth() - 6, Camera.main.height - 14, btnSort.reqWidth() + 4, 12);
-		} else {
-			btnSort.setRect(slotLeft, yPos, btnSort.reqWidth() + 4, 12);
-		}
-		if (games.size() >= 2) add(btnSort);
+        // Six class choices are always visible; each opens a scrollable list
+        // of exactly twenty entries. The existing SaveSlotButton visuals remain
+        // unchanged elsewhere, but an unbounded stack of 120 is never rendered.
+        float usable = Math.max(0f, insets.top + h - title.bottom() - 15f);
+        float spacing = 2f;
+        float buttonHeight = Math.min(24f, (usable - 5 * spacing) / 6f);
+        float buttonWidth = Math.min(155f, w - 8f);
+        float x = insets.left + (w - buttonWidth)/2f;
+        float top = title.bottom() + Math.max(3f, (usable - 6*buttonHeight - 5*spacing)/2f);
+        int n = 0;
+        for (final HeroClass cls : HeroClass.values()) {
+            int count = GamesInProgress.activeCount(cls);
+            StyledButton classButton = new StyledButton(Chrome.Type.TOAST_TR,
+                    Messages.titleCase(cls.title()) + "  " + count + "/20", 8) {
+                @Override protected void onClick() {
+                    super.onClick();
+                    showClassSaves(cls);
+                }
+            };
+            classButton.icon(Icons.get(cls));
+            classButton.setRect(x, top + n*(buttonHeight+spacing), buttonWidth, buttonHeight);
+            classButton.leftJustify = true;
+            align(classButton);
+            add(classButton);
+            n++;
+        }
+        GamesInProgress.curSlot = 0;
 
 		fadeIn();
 		
 	}
+
+    /** Existing and empty slots are visually distinct, and the list scrolls
+     *  on narrow portrait devices without shrinking text into unreadability. */
+    private static void showClassSaves(final HeroClass cls) {
+        final List<Integer> slots = GamesInProgress.slotsFor(cls);
+        final List<WndUimsdList.Entry> rows = new ArrayList<>();
+        for (int i = 0; i < slots.size(); i++) {
+            int slot = slots.get(i);
+            GamesInProgress.Info game = GamesInProgress.check(slot);
+            String prefix = "Run " + (i+1) + "  ";
+            if (game == null && GamesInProgress.gameExists(slot)) {
+                rows.add(WndUimsdList.Entry.item(prefix + "Save needs inspection",
+                        "Existing save file preserved; slot is not available for a new run"));
+            } else if (game == null) {
+                rows.add(WndUimsdList.Entry.item(prefix + "Empty", "Start a new " + cls.title() + " run"));
+            } else {
+                String diff = game.difficultyKnown ? Integer.toString(game.difficulty) : "?";
+                String rules = !game.customRulesKnown ? "rules ?" : game.customRulesChanged ? "custom rules" : "normal rules";
+                int challenges = Integer.bitCount(game.challenges);
+                long days = Math.max(0L, (Game.realTime - game.lastPlayed) / 86400000L);
+                String age = game.lastPlayed <= 0 ? "last played ?" : days == 0 ? "played today" : "played " + days + "d ago";
+                rows.add(WndUimsdList.Entry.item(prefix + "Floor " + game.depth + "  Lv " + game.level,
+                        "Difficulty " + diff + " | " + challenges + " challenges | " + rules + " | " + age));
+            }
+        }
+        ShatteredPixelDungeon.scene().addToFront(WndUimsdList.menu(
+                Messages.titleCase(cls.title()) + "  " + GamesInProgress.activeCount(cls) + "/20",
+                "Choose a saved run to continue, or an empty slot to begin.",
+                rows, (index, checked) -> {
+                    if (index < 0 || index >= slots.size()) return;
+                    int slot = slots.get(index);
+                    GamesInProgress.Info existing = GamesInProgress.check(slot);
+                    if (existing != null) {
+                        ShatteredPixelDungeon.scene().addToFront(new WndGameInProgress(slot));
+                    } else if (GamesInProgress.gameExists(slot)) {
+                        ShatteredPixelDungeon.scene().addToFront(new WndMessage(
+                                "This save is unreadable or from an incompatible version. It has not been deleted or replaced."));
+                    } else if (GamesInProgress.isAvailableNewSlot(cls, slot)) {
+                        GamesInProgress.selectedClass = cls;
+                        GamesInProgress.curSlot = slot;
+                        ShatteredPixelDungeon.switchScene(HeroSelectScene.class);
+                    } else {
+                        ShatteredPixelDungeon.scene().addToFront(new WndMessage(
+                                "This class already has 20 active runs."));
+                    }
+                }));
+    }
 
 	@Override
 	protected void onBackPressed() {

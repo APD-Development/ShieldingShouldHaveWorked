@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -582,19 +585,20 @@ public class Armor extends EquipableItem {
 	
 	@Override
 	public String info() {
+        Integer knownStrength=com.shatteredpixel.shatteredpixeldungeon.apd.mechanics.ArmorExplanation.knownStrength(Dungeon.hero);
 		String info = super.info();
 		
 		if (levelKnown) {
 
 			info += "\n\n" + Messages.get(Armor.class, "curr_absorb", tier, DRMin(), DRMax(), STRReq());
 			
-			if (Dungeon.hero != null && STRReq() > Dungeon.hero.STR()) {
+			if (knownStrength != null && STRReq() > knownStrength) {
 				info += " " + Messages.get(Armor.class, "too_heavy");
 			}
 		} else {
 			info += "\n\n" + Messages.get(Armor.class, "avg_absorb", tier, DRMin(0), DRMax(0), STRReq(0));
 
-			if (Dungeon.hero != null && STRReq(0) > Dungeon.hero.STR()) {
+			if (knownStrength != null && STRReq(0) > knownStrength) {
 				info += " " + Messages.get(Armor.class, "probably_too_heavy");
 			}
 		}
@@ -616,7 +620,7 @@ public class Armor extends EquipableItem {
 		} else if (glyph != null  && (cursedKnown || !glyph.curse())) {
 			info += "\n\n" +  Messages.capitalize(Messages.get(Armor.class, "inscribed", glyph.name()));
 			if (glyphHardened) info += " " + Messages.get(Armor.class, "glyph_hardened");
-			info += " " + glyph.desc();
+			info += " " + com.shatteredpixel.shatteredpixeldungeon.apd.mechanics.GlyphExplanation.playerDescription(this,Dungeon.hero);
 		} else if (glyphHardened){
 			info += "\n\n" + Messages.get(Armor.class, "hardened_no_glyph");
 		}
@@ -663,6 +667,7 @@ public class Armor extends EquipableItem {
 			}
 		}
 		level(n);
+		com.shatteredpixel.shatteredpixeldungeon.apd.qol.GenerationUpgradeRanges.baseline(this);
 
 		//we use a separate RNG here so that variance due to things like parchment scrap
 		//does not affect levelgen

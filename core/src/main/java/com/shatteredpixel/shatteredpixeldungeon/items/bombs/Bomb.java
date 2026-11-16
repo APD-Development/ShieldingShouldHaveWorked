@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -76,6 +79,30 @@ public class Bomb extends Item {
 
 	public Fuse fuse;
 
+    private com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin apdFuseOrigin=com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin.UNATTRIBUTED;
+    private static final String APD_FUSE_ORIGIN="apd_bomb_origin";
+    public final void apdExplodeAttributed(int cell,com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin origin){
+        if(origin==null)throw new IllegalArgumentException("Missing explosion origin");
+        com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin previous=apdFuseOrigin;apdFuseOrigin=origin;
+        try{explode(cell);}finally{apdFuseOrigin=previous;}
+    }
+
+    /** A previously owned bomb keeps its creator; an unowned secondary blast inherits its trigger. */
+    public final void apdExplodeTriggered(int cell){
+        com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin origin=apdFuseOrigin;
+        if(origin==com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin.UNATTRIBUTED)
+            origin=com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveEffectContext.current();
+        apdExplodeAttributed(cell,origin);
+    }
+
+    /** Immutable captured creator for secondary fields produced by this explosion. */
+    protected final com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin apdExplosionOrigin(){return apdFuseOrigin;}
+
+    /** Raw special-bomb damage uses the same immutable fuse/throw creator as the base blast. */
+    protected final int apdScaleExplosionDamage(int amount){
+        return apdFuseOrigin.percentage()==100 ? amount : com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamage.raw(amount,this,apdFuseOrigin).scaled().amount;
+    }
+
 	//FIXME using a static variable for this is kinda gross, should be a better way
 	private static boolean lightingFuse = false;
 
@@ -89,6 +116,9 @@ public class Bomb extends Item {
 	public boolean explodesDestructively(){
 		return true;
 	}
+
+    /** Same range authority as detonation; no explosion or path calculation. */
+    public final int previewExplosionRange(){return explosionRange();}
 
 	protected int explosionRange(){
 		return 1;
@@ -120,6 +150,7 @@ public class Bomb extends Item {
 	@Override
 	protected void onThrow( int cell ) {
 		if (!Dungeon.level.pit[ cell ] && lightingFuse) {
+            apdFuseOrigin=apdThrownOrigin();
 			Actor.addDelayed(fuse = createFuse().ignite(this), 2);
 		}
 		super.onThrow( cell );
@@ -127,6 +158,7 @@ public class Bomb extends Item {
 
 	@Override
 	public boolean doPickUp(Hero hero, int pos) {
+        apdFuseOrigin=com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin.UNATTRIBUTED;
 		if (fuse != null) {
 			GLog.w( Messages.get(this, "snuff_fuse") );
 			fuse.snuff();
@@ -182,7 +214,10 @@ public class Bomb extends Item {
 				//destroys items / triggers bombs caught in the blast.
 				Heap heap = Dungeon.level.heaps.get(i);
 				if (heap != null) {
-					heap.explode();
+                    try(com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveEffectContext ignored=
+                        com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveEffectContext.enter(apdFuseOrigin)){
+                        heap.explode();
+                    }
 				}
 			}
 			
@@ -194,7 +229,8 @@ public class Bomb extends Item {
 				}
 
 				int dmg = Random.NormalIntRange(4 + Dungeon.scalingDepth(), 12 + 3*Dungeon.scalingDepth());
-				dmg -= ch.drRoll();
+				dmg = apdScaleExplosionDamage(dmg);
+                dmg -= ch.apdDrRoll();
 
 				if (dmg > 0) {
 					ch.damage(dmg, this);
@@ -262,11 +298,15 @@ public class Bomb extends Item {
 	public void storeInBundle(Bundle bundle) {
 		super.storeInBundle(bundle);
 		bundle.put( FUSE, fuse );
+        if(apdFuseOrigin!=com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin.UNATTRIBUTED)bundle.put(APD_FUSE_ORIGIN,apdFuseOrigin.name());
+        else bundle.remove(APD_FUSE_ORIGIN);
 	}
 
 	@Override
 	public void restoreFromBundle(Bundle bundle) {
+        com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin restored=bundle.contains(APD_FUSE_ORIGIN)?com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin.valueOf(bundle.getString(APD_FUSE_ORIGIN)):com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin.UNATTRIBUTED;
 		super.restoreFromBundle(bundle);
+        apdFuseOrigin=restored;
 		if (bundle.contains( FUSE ))
 			Actor.add( fuse = ((Fuse)bundle.get(FUSE)).ignite(this) );
 	}
@@ -307,6 +347,7 @@ public class Bomb extends Item {
 
 			//can't find our bomb, something must have removed it, do nothing.
 			bomb.fuse = null;
+            bomb.apdFuseOrigin=com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin.UNATTRIBUTED;
 			snuff();
 			return true;
 		}
@@ -320,6 +361,7 @@ public class Bomb extends Item {
 
 		public boolean freeze(){
 			bomb.fuse = null;
+            bomb.apdFuseOrigin=com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin.UNATTRIBUTED;
 			snuff();
 			return true;
 		}
@@ -339,6 +381,7 @@ public class Bomb extends Item {
 
 		@Override
 		public boolean doPickUp(Hero hero, int pos) {
+
 			Bomb bomb = new Bomb();
 			bomb.quantity(2);
 			if (bomb.doPickUp(hero, pos)) {
@@ -447,3 +490,6 @@ public class Bomb extends Item {
 		}
 	}
 }
+
+
+

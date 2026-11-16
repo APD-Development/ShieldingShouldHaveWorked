@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -133,6 +136,12 @@ abstract public class Weapon extends KindOfWeapon {
 	public boolean curseInfusionBonus = false;
 	public boolean masteryPotionBonus = false;
 	
+	/** Applies one custom damage boundary to independent spell bonuses triggered by a weapon hit. */
+	protected static void apdApplyHeroSpellBonusDamage(Char defender, int damage, Object source, Char attacker) {
+		com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomOffensiveHooks.raw(
+				defender, damage, source, attacker);
+	}
+
 	@Override
 	public int proc( Char attacker, Char defender, int damage ) {
 
@@ -158,7 +167,9 @@ abstract public class Weapon extends KindOfWeapon {
 				}
 				if (defender.isAlive()) {
 					int dmg = ((Hero) attacker).subClass == HeroSubClass.PALADIN ? 6 : 2;
-					defender.damage(Math.round(dmg * Enchantment.genericProcChanceMultiplier(attacker)), HolyWeapon.INSTANCE);
+					apdApplyHeroSpellBonusDamage(defender,
+							Math.round(dmg * Enchantment.genericProcChanceMultiplier(attacker)),
+							HolyWeapon.INSTANCE, attacker);
 				}
 
 			} else {
@@ -173,7 +184,8 @@ abstract public class Weapon extends KindOfWeapon {
 
 			if (attacker instanceof Hero && isEquipped((Hero) attacker) &&
 					attacker.buff(Smite.SmiteTracker.class) != null && defender.isAlive()){
-				defender.damage(Smite.bonusDmg((Hero) attacker, defender), Smite.INSTANCE);
+				apdApplyHeroSpellBonusDamage(defender,
+						Smite.bonusDmg((Hero) attacker, defender), Smite.INSTANCE, attacker);
 			}
 		}
 
@@ -285,6 +297,46 @@ abstract public class Weapon extends KindOfWeapon {
 		return !isIdentified() && usesLeftToID <= 0;
 	}
 	
+
+	// Hidden upgrades must not leak through a derived percentage.
+	public int displayedStrengthRequirement() {
+		return levelKnown || this instanceof SpiritBow ? STRReq() : STRReq(0);
+	}
+
+	public static float strengthAccuracyModifier(float baseAccuracy, int requirement, int strength) {
+		int deficit = Math.max(0, requirement - strength);
+		return (float) (baseAccuracy / Math.pow(1.5, deficit));
+	}
+
+    @Override
+    public String info() {
+        String summary=com.shatteredpixel.shatteredpixeldungeon.apd.mechanics.WeaponExplanation.summary(this, Dungeon.hero);
+        return super.info() + (summary.isEmpty()?"":"\n\n"+summary);
+    }
+
+	protected String accuracyDescription() {
+		if (Dungeon.hero == null || (!levelKnown && !(this instanceof SpiritBow))) return "";
+        Integer knownStrength=com.shatteredpixel.shatteredpixeldungeon.apd.mechanics.ArmorExplanation.knownStrength(Dungeon.hero);
+        if(knownStrength==null)return "";
+		float knownAccuracy = ACC;
+		if (cursedKnown && enchantment instanceof Wayward && Dungeon.hero.buff(Wayward.WaywardBuff.class) != null) {
+			knownAccuracy /= 5;
+		}
+		float percent = 100f * strengthAccuracyModifier(knownAccuracy, displayedStrengthRequirement(), knownStrength);
+		String text;
+        if(!(this instanceof MissileWeapon)&&!(this instanceof SpiritBow)&&Math.abs(percent-100f)<.0001f)return "";
+		if (this instanceof MissileWeapon || this instanceof SpiritBow) {
+			float adjacent = 0.5f + 0.25f * Dungeon.hero.pointsInTalent(Talent.POINT_BLANK);
+			text = Messages.get(Weapon.class, "apd_accuracy_ranged", percent * 1.5f, percent * adjacent);
+		} else {
+			text = Messages.get(Weapon.class, "apd_accuracy", percent);
+		}
+		if (!levelKnown && !(this instanceof SpiritBow)) {
+			text += " " + Messages.get(Weapon.class, "apd_accuracy_unknown");
+		}
+		return "\n\n" + text;
+	}
+
 	@Override
 	public float accuracyFactor(Char owner, Char target) {
 		
@@ -343,7 +395,7 @@ abstract public class Weapon extends KindOfWeapon {
 			reach += 2;
 		}
 		if (hasEnchant(Projecting.class, owner)){
-			return reach + Math.round(Enchantment.genericProcChanceMultiplier(owner));
+			return reach + Projecting.additionalReach(Enchantment.genericProcChanceMultiplierReadOnly(owner), reach);
 		} else {
 			return reach;
 		}
@@ -431,6 +483,7 @@ abstract public class Weapon extends KindOfWeapon {
 			}
 		}
 		level(n);
+		com.shatteredpixel.shatteredpixeldungeon.apd.qol.GenerationUpgradeRanges.baseline(this);
 
 		//we use a separate RNG here so that variance due to things like parchment scrap
 		//does not affect levelgen
@@ -546,6 +599,15 @@ abstract public class Weapon extends KindOfWeapon {
 		}
 
 		public static float genericProcChanceMultiplier( Char attacker ){
+            return calculateProcChanceMultiplier(attacker, true);
+        }
+
+        /** Range previews must not consume one-attack enchantment power buffs. */
+        public static float genericProcChanceMultiplierReadOnly( Char attacker ){
+            return calculateProcChanceMultiplier(attacker, false);
+        }
+
+        private static float calculateProcChanceMultiplier(Char attacker, boolean consume) {
 			float multi = RingOfArcana.enchantPowerMultiplier(attacker);
 			Berserk rage = attacker.buff(Berserk.class);
 			if (rage != null) {
@@ -554,7 +616,7 @@ abstract public class Weapon extends KindOfWeapon {
 
 			if (attacker.buff(RunicBlade.RunicSlashTracker.class) != null){
 				multi += attacker.buff(RunicBlade.RunicSlashTracker.class).boost;
-				attacker.buff(RunicBlade.RunicSlashTracker.class).detach();
+                if (consume) attacker.buff(RunicBlade.RunicSlashTracker.class).detach();
 			}
 
 			if (attacker.buff(Smite.SmiteTracker.class) != null){
@@ -563,7 +625,7 @@ abstract public class Weapon extends KindOfWeapon {
 
 			if (attacker.buff(ElementalStrike.DirectedPowerTracker.class) != null){
 				multi += attacker.buff(ElementalStrike.DirectedPowerTracker.class).enchBoost;
-				attacker.buff(ElementalStrike.DirectedPowerTracker.class).detach();
+                if (consume) attacker.buff(ElementalStrike.DirectedPowerTracker.class).detach();
 			}
 
 			if (attacker.buff(Talent.SpiritBladesTracker.class) != null
@@ -665,3 +727,4 @@ abstract public class Weapon extends KindOfWeapon {
 		
 	}
 }
+

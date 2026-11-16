@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -93,13 +96,13 @@ public class Hunger extends Buff implements Hero.Doom {
 				}
 				hungerDelay /= SaltCube.hungerGainMultiplier();
 
-				float newLevel = level + (1f/hungerDelay);
+				float newLevel = level + com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomResourceHooks.hungerAdvance(1f/hungerDelay);
 				if (newLevel >= STARVING) {
 
 					GLog.n( Messages.get(this, "onstarving") );
 					hero.damage( 1, this );
 
-					hero.interrupt();
+                    if(com.shatteredpixel.shatteredpixeldungeon.apd.qol.WaitingPolicy.interruptOnStarving(hero))hero.interrupt();
 					newLevel = STARVING;
 
 				} else if (newLevel >= HUNGRY && level < HUNGRY) {
@@ -135,6 +138,7 @@ public class Hunger extends Buff implements Hero.Doom {
 	}
 
 	public void affectHunger(float energy, boolean overrideLimits ) {
+		energy = com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomResourceHooks.hungerEnergy(energy);
 
 		if (energy < 0 && target.buff(WellFed.class) != null){
 			target.buff(WellFed.class).left += energy;
@@ -167,6 +171,17 @@ public class Hunger extends Buff implements Hero.Doom {
 		ApdCombat.onHungerChanged( energy, (int)Math.ceil(oldLevel), hunger() );
 		BuffIndicator.refreshHero();
 	}
+
+    /** Public status values only; preview never advances starvation or requests damage. */
+    public float hungerPoints(){return level;}
+    public float starvationDamageProgress(){return partialDamage;}
+    public int nextStarvationInput(){
+        if(target==null || !isStarving())return 0;
+        float progress=partialDamage+target.HT/1000f;
+        return progress>1 ? (int)progress : 0;
+    }
+
+    public boolean isHungry(){return level>=HUNGRY;}
 
 	public boolean isStarving() {
 		return level >= STARVING;
@@ -219,3 +234,4 @@ public class Hunger extends Buff implements Hero.Doom {
 		GLog.n( Messages.get(this, "ondeath") );
 	}
 }
+

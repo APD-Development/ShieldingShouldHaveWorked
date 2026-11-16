@@ -114,6 +114,45 @@ public class QuestionsTest {
 	}
 
 	@Test
+	public void turningOffHiddenDetailsRemovesOnlyInternalQuestionParts(){
+		DatasetDef def = QuerySupport.def();
+		Question hidden = Question.about(def.id).withShowInternal(true)
+				.withMeasure(Question.Measure.TOTAL, "secret").withPer(PerUnit.Unit.RUN)
+				.withGroupBy(Arrays.asList("secret", "name"))
+				.addFilter(Filter.num("secret", Op.EQ, 99))
+				.addFilter(Filter.text("name", Op.EQ, "visible"));
+		Question visible = Questions.withInternalVisibility(hidden, def, false);
+		assertFalse(visible.showInternal);
+		assertEquals(Question.Measure.COUNT, visible.measure);
+		assertEquals("", visible.column);
+		assertEquals(PerUnit.Unit.RUN, visible.per);
+		assertEquals(Arrays.asList("name"), visible.groupBy);
+		assertEquals(1, visible.filters.size());
+		assertEquals("name", visible.filters.get(0).column);
+	}
+
+	@Test
+	public void staleHiddenSelectionsCannotDisagreeWithTheAnswer(){
+		DatasetDef def = QuerySupport.def();
+		Question stale = Question.about(def.id)
+				.withMeasure(Question.Measure.TOTAL, "secret")
+				.withGroupBy(Arrays.asList("secret", "name"))
+				.addFilter(Filter.num("secret", Op.EQ, 99))
+				.addFilter(Filter.text("name", Op.EQ, "visible"));
+		Catalog catalog = new Catalog().add(QuerySupport.dataset(def, Arrays.asList(
+				QuerySupport.row(def, "one", "visible", 5L, 0L, 99L, true, RS))));
+		Questions.Answer answer = Questions.answer(catalog, stale, RS);
+		assertFalse(answer.query.showInternal);
+		assertEquals(Aggregate.Fn.COUNT, answer.query.group.aggregates.get(0).fn);
+		assertEquals(Arrays.asList("name"), answer.query.group.keys);
+		assertEquals(1, answer.query.filters.size());
+		assertEquals("name", answer.query.filters.get(0).column);
+		assertFalse(answer.question.toLowerCase().contains("secret"));
+		assertEquals(1, answer.lines.size());
+		assertEquals("1", answer.lines.get(0).value);
+	}
+
+	@Test
 	public void complexityGrowsWithEverythingAsked(){
 		Question plain = ask("x");
 		Question busy = plain.withMeasure(Question.Measure.TOTAL, "a").withPer(PerUnit.Unit.HOUR).withGroupBy(Arrays.asList("a", "b"))

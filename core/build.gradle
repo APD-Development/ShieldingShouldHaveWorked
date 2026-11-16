@@ -15,12 +15,15 @@ dependencies {
     testImplementation "com.badlogicgames.gdx:gdx-backend-headless:$gdxVersion"
     testImplementation "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
     //same version SPD-classes uses at runtime, needed at compile time to canonicalize bundle JSON in tests
-    testImplementation 'org.json:json:20170516'
+    testImplementation 'org.json:json:20240303'
 }
 
 test {
     //game code loads message bundles through Gdx.files.internal, so tests run from the assets folder
     workingDir = file('src/main/assets')
+    // Messages and other game assets are loaded directly rather than processResources.
+    // Changing them must invalidate the test result instead of returning UP-TO-DATE.
+    inputs.dir('src/main/assets').withPropertyName('gameAssets')
     //run with -Papd.golden.update=true to rewrite the golden file instead of comparing against it
     systemProperty 'apd.golden.update', project.findProperty('apd.golden.update') ?: 'false'
     systemProperty 'apd.golden.file', file('src/test/resources/apd/golden_levels.txt').absolutePath

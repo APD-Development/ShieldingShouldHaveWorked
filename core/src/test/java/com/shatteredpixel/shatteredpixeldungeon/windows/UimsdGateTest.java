@@ -9,9 +9,26 @@ import com.shatteredpixel.shatteredpixeldungeon.apd.demo.UimsdUnlock;
 import java.io.File;
 
 import org.junit.Test;
+import org.junit.Before;
+import org.junit.After;
+import org.junit.Rule;
+import org.junit.rules.TemporaryFolder;
+import com.badlogic.gdx.Preferences;
+import com.badlogic.gdx.backends.headless.HeadlessPreferences;
+import com.badlogic.gdx.files.FileHandle;
+import com.watabou.utils.GameSettings;
 
 //The demo-unlock warning is the owner's own wording; it must not drift.
 public class UimsdGateTest {
+	@Rule public TemporaryFolder preferencesDirectory = new TemporaryFolder();
+	private Preferences previous;
+	@Before public void isolatePreferences() throws Exception {
+		java.lang.reflect.Field prefs = GameSettings.class.getDeclaredField("prefs");
+		prefs.setAccessible(true);
+		previous = (Preferences) prefs.get(null);
+		GameSettings.set(new HeadlessPreferences(new FileHandle(new File(preferencesDirectory.getRoot(), "settings.xml"))));
+	}
+	@After public void restorePreferences(){ GameSettings.set(previous); }
 
 	@Test
 	public void theWarningAndBothChoicesAreWordForWord(){
@@ -27,12 +44,12 @@ public class UimsdGateTest {
 
 	@Test
 	public void theGateIsOffUntilTheOwnerSwitchesItOn(){
-		assertFalse(UimsdUnlock.ENFORCED);
+		assertFalse(UimsdUnlock.enforced());
 	}
 
 	@Test
-	public void theTitleArrowKeepsItsUsualTextWhileTheGateIsOff(){
-		assertEquals("HEY, GO HERE FOR DRUGS", UimsdGate.titleAnnotation("HEY, GO HERE FOR DRUGS"));
+	public void theTitleArrowIsAbsentWhileThePrivateGateIsOff(){
+		assertEquals("", UimsdGate.titleAnnotation(""));
 		assertEquals("the guided tour is open too", true, UimsdGate.tourAvailable());
 	}
 
@@ -61,6 +78,7 @@ public class UimsdGateTest {
 
 		//the tenth genuine run queued the arrow: Clean and Adult each get their own message, and it stays for every build of the title
 		flags.setUnlocked();
+		flags.setTourUnlocked();
 		flags.setPromptPending();
 		for (int i = 0; i < 3; i++){
 			assertEquals("HEY, GO HERE FOR UNLIMITED DOPAMINE.", UimsdGate.annotationFor(flags, empty, true, false, "USUAL"));
@@ -68,24 +86,26 @@ public class UimsdGateTest {
 		}
 		//opening UIMSD retires it for good
 		assertTrue(UimsdUnlock.retirePrompt(flags));
-		assertEquals("USUAL", UimsdGate.annotationFor(flags, empty, true, false, "USUAL"));
-		assertEquals("USUAL", UimsdGate.annotationFor(flags, empty, true, true, "USUAL"));
+		assertEquals(UimsdGate.TENTH_RUN_ARROW_CLEAN, UimsdGate.annotationFor(flags, empty, true, false, "USUAL"));
+		assertEquals(UimsdGate.TENTH_RUN_ARROW_ADULT, UimsdGate.annotationFor(flags, empty, true, true, "USUAL"));
 
-		//opened through the demo shortcut and no tenth run yet: no locked message and no humor message
+		//Demo access before the tenth genuine run still shows the instructional notice.
 		Mem demo = new Mem();
 		demo.setUnlocked();
 		demo.setDemoUsed();
-		assertEquals("USUAL", UimsdGate.annotationFor(demo, empty, true, true, "USUAL"));
+		assertEquals(locked, UimsdGate.annotationFor(demo, empty, true, true, "USUAL"));
 		//the tenth genuine run comes later: the arrow appears for that player too
+		demo.setTourUnlocked();
 		demo.setPromptPending();
 		assertEquals("HEY, GO HERE FOR DRUGS.", UimsdGate.annotationFor(demo, empty, true, true, "USUAL"));
 	}
 
 	@Test
-	public void theHumorSettingIsCleanUnlessThePlayerChoseAdult() throws Exception {
-		//nothing asks for or infers an age: the stored value defaults to false (Clean) and only the player's own choice sets it
+	public void theHumorSettingUsesTheAgeDefaultAndTheStoredChoice() throws Exception {
 		String settings = new String(java.nio.file.Files.readAllBytes(new File(System.getProperty("apd.game.src"), "SPDSettings.java").toPath()), "UTF-8");
-		assertTrue(settings.contains("return getBoolean( KEY_APD_ADULT_HUMOR, false );"));
+		assertTrue(settings.contains("AgeEligibility.adultHumor("));
+		assertTrue(settings.contains("AgeEligibility.current()"));
+		assertTrue(settings.contains("AgeEligibility.defaultAdultHumor(age)"));
 	}
 
 }

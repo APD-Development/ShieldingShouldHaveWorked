@@ -78,7 +78,7 @@ public class TitleScene extends PixelScene {
 	private static final int APD_ROW_H = TitleGeometry.APD_ROW_H;
 
 	//APD: joke annotation pointing at the UIMSD button
-	private static final String ANNOTATION_TEXT = "HEY, GO HERE FOR DRUGS";
+	private static final String ANNOTATION_TEXT = "";
 
 	private Image logo;
 	private Image glow;
@@ -95,10 +95,12 @@ public class TitleScene extends PixelScene {
 	private APDMenuButton btnChanges;
 	private APDMenuButton btnAbout;
 	private APDMenuButton btnAPDSettings;
+	private APDMenuButton btnCommunity;
 	private APDAnnotation annotation;
 
 	private BitmapText version;
 	private IconButton btnFade;
+	private TitleGeometry.Layout titleLayout;
 	private ExitButton btnExit;
 
 	@Override
@@ -122,6 +124,7 @@ public class TitleScene extends PixelScene {
 		add( new ColorBlock( fullW, fullH, BG_COLOR ) );
 
 		Image plate = new Image( landscape() ? "splashes/title/apd_bg_land.png" : "splashes/title/apd_bg_port.png" );
+		plate.scale.set(TitleGeometry.backgroundCoverScale(fullW,fullH,plate.width(),plate.height(),Camera.main.zoom));
 		plate.x = (fullW - plate.width()) / 2f;
 		plate.y = (fullH - plate.height()) / 2f;
 		align( plate );
@@ -223,11 +226,16 @@ public class TitleScene extends PixelScene {
 		};
 		add( btnOptions );
 
-		btnQuit = new APDMenuButton( "Quit", Icons.EXIT, true ){
+		final boolean androidTopScores = DeviceCompat.isAndroid();
+		btnQuit = new APDMenuButton( androidTopScores ? "Top Scores" : "Quit", androidTopScores ? Icons.RANKINGS : Icons.EXIT, true ){
 			@Override
 			protected void onClick() {
 				super.onClick();
-				Game.instance.finish();
+				if (androidTopScores) {
+					ShatteredPixelDungeon.switchNoFade( RankingsScene.class );
+				} else {
+					Game.instance.finish();
+				}
 			}
 		};
 		//iOS apps don't quit themselves
@@ -243,6 +251,15 @@ public class TitleScene extends PixelScene {
 			}
 		};
 		add( btnAPDSettings );
+
+		btnCommunity = new APDMenuButton( "Community", Icons.NEWS, false ){
+			@Override
+			protected void onClick() {
+				super.onClick();
+				CommunityScene.open();
+			}
+		};
+		add( btnCommunity );
 
 		//APD: News and Changes open the offline APD screens, not the stock internet/upstream ones
 		btnNews = new APDMenuButton( "News", Icons.NEWS, false ){
@@ -286,16 +303,32 @@ public class TitleScene extends PixelScene {
 		float logoX, logoY;
 		float gridLeft, gridWidth, gridTop;
 
-		annotation = new APDAnnotation( com.shatteredpixel.shatteredpixeldungeon.windows.UimsdGate.titleAnnotation( ANNOTATION_TEXT ), Math.min( 150, landscape() ? w - LOGO_W - 12 : w - 8 ) );
+		String annotationText = com.shatteredpixel.shatteredpixeldungeon.windows.UimsdGate.titleAnnotation( ANNOTATION_TEXT );
+		annotation = new APDAnnotation( annotationText, Math.min( 150, landscape() ? Math.min(LOGO_W, w - Math.min(150, w-8) - 12) : w - 8 ) );
+		annotation.visible = !annotationText.isEmpty();
 		add( annotation );
-		float textH = annotation.textHeight();
+		add(new com.watabou.noosa.PointerArea(0, 0, 0, 0){
+			@Override public void update(){
+				super.update();
+				float left = Float.MAX_VALUE, top = Float.MAX_VALUE, right = 0, bottom = 0;
+				for (BitmapText line : annotation.lines){
+					left = Math.min(left, line.x); top = Math.min(top, line.y);
+					right = Math.max(right, line.x + line.width()); bottom = Math.max(bottom, line.y + line.height());
+				}
+				x = left; y = top; width = Math.max(0, right-left); height = Math.max(0, bottom-top);
+				active = annotation.visible;
+			}
+			@Override protected void onClick(com.watabou.input.PointerEvent event){
+				com.shatteredpixel.shatteredpixeldungeon.windows.UimsdGate.open(TitleScene.class);
+			}
+		});
+		float textH = annotation.visible ? annotation.textHeight() : -1;
 
 		if (landscape()){
 			//logo on the left, button grid on the right
 			TitleGeometry.Layout l = TitleGeometry.landscape( insets.left, insets.top, w, h, version.height(), textH );
-			float totalW = LOGO_W + 8 + l.gridWidth;
-			float left = insets.left + (w - totalW) / 2f;
-			logoX = left;
+			titleLayout = l;
+			logoX = l.logoX;
 			logoY = l.logoY;
 			gridLeft = l.gridLeft;
 			gridWidth = l.gridWidth;
@@ -305,30 +338,46 @@ public class TitleScene extends PixelScene {
 			TitleGeometry.Layout l = TitleGeometry.portrait( insets.left, insets.top, w, h, version.height(), textH );
 			gridWidth = l.gridWidth;
 			gridLeft = l.gridLeft;
-			logoX = insets.left + (w - LOGO_W) / 2f;
+			titleLayout = l;
+			logoX = l.logoX;
 			logoY = l.logoY;
 			gridTop = l.gridTop;
 			layoutGrid( gridLeft, gridTop, gridWidth, l.mainH );
 		}
 
+		float artScale = titleLayout.logoScale;
+		logo.scale.set(artScale); glow.scale.set(artScale);
+		leftFlame.scale.set(artScale); rightFlame.scale.set(artScale);
 		logo.x = logoX;
 		logo.y = logoY;
 		align( logo );
 		glow.x = logo.x;
 		glow.y = logo.y;
 
-		leftFlame.x = logo.x + LEFT_FLAME_X - FLAME_BASE_X;
-		leftFlame.y = logo.y + FLAME_Y - FLAME_BASE_Y;
-		rightFlame.x = logo.x + RIGHT_FLAME_X - FLAME_BASE_X;
-		rightFlame.y = logo.y + FLAME_Y - FLAME_BASE_Y;
+		leftFlame.x = logo.x + (LEFT_FLAME_X - FLAME_BASE_X)*artScale;
+		leftFlame.y = logo.y + (FLAME_Y - FLAME_BASE_Y)*artScale;
+		rightFlame.x = logo.x + (RIGHT_FLAME_X - FLAME_BASE_X)*artScale;
+		rightFlame.y = logo.y + (FLAME_Y - FLAME_BASE_Y)*artScale;
 		align( leftFlame );
 		align( rightFlame );
 
-		version.x = logo.x + (LOGO_W - version.width()) / 2f;
-		version.y = logo.y + LOGO_H - 1;
+		version.x = logo.x + (LOGO_W*artScale - version.width()) / 2f;
+		version.y = titleLayout.versionY;
 		align( version );
 
 		btnFade = new IconButton(Icons.CHEVRON.get()){
+			@Override
+			protected void layout() {
+				super.layout();
+				// Expand only the hit area into the reserved footer space. Keep the
+				// 16px icon, existing Hide UI effect and all menu geometry intact.
+				if (hotArea != null) {
+					hotArea.x = x - TitleGeometry.FADE_TOUCH_SIDE_PADDING;
+					hotArea.y = y - TitleGeometry.FADE_TOUCH_TOP_PADDING;
+					hotArea.width = width + 2 * TitleGeometry.FADE_TOUCH_SIDE_PADDING;
+					hotArea.height = height + TitleGeometry.FADE_TOUCH_TOP_PADDING;
+				}
+			}
 			@Override
 			protected void onClick() {
 				enable(false);
@@ -345,7 +394,7 @@ public class TitleScene extends PixelScene {
 		};
 		btnFade.icon().originToCenter();
 		btnFade.icon().angle = 180f;
-		btnFade.setRect(insets.left + (w-16)/2f, Camera.main.height - 16 - insets.bottom, 16, 16);
+		btnFade.setRect(titleLayout.fadeX, titleLayout.fadeY, TitleGeometry.FADE_SIZE, TitleGeometry.FADE_SIZE);
 		add(btnFade);
 
 		PointerArea fadeResetter = new PointerArea(0, 0, Camera.main.width, Camera.main.height){
@@ -367,6 +416,8 @@ public class TitleScene extends PixelScene {
 			}
 		};
 		add(fadeResetter);
+		// The full-screen restore listener must not swallow a footer-button press.
+		btnFade.givePointerPriority();
 
 		if (DeviceCompat.isDesktop()) {
 			btnExit = new ExitButton();
@@ -381,6 +432,9 @@ public class TitleScene extends PixelScene {
 		}
 
 		fadeIn();
+		// Prepare the exact UIMSD Home in the background while the title is open.
+		// When it is ready, tapping UIMSD does not begin a new history load.
+		UimsdScene.prewarmTitle();
 	}
 
 	//2 columns x 3 rows, then a row of three smaller buttons
@@ -395,10 +449,14 @@ public class TitleScene extends PixelScene {
 		}
 
 		//the arrow points down at the UIMSD button (top row, right column), the text sits above it in the space reserved over the grid
-		annotation.place( left, width, TitleGeometry.colWidth( width ) + MAIN_GAP, top );
+		if (titleLayout.annotationBesideGrid) annotation.placeTextOnly(titleLayout.annotationLeft, titleLayout.annotationTop);
+		else if (titleLayout.annotationCompact) annotation.placeTextOnly(left, top-titleLayout.annotationH);
+		else annotation.place( left, width, TitleGeometry.colWidth( width ) + MAIN_GAP, top );
 
 		float apdY = top + 3*(mainH + MAIN_GAP);
-		btnAPDSettings.setRect( left, apdY, width, BOTTOM_H );
+		btnAPDSettings.setRect( left, apdY, (width - MAIN_GAP)/2f, BOTTOM_H );
+		btnCommunity.setRect( left + (width + MAIN_GAP)/2f, apdY, (width - MAIN_GAP)/2f, BOTTOM_H );
+		align( btnCommunity );
 		align( btnAPDSettings );
 
 		float bottomY = apdY + APD_ROW_H;
@@ -421,7 +479,7 @@ public class TitleScene extends PixelScene {
 		//glow handles its own alpha
 
 		APDMenuButton[] all = { btnPlay, btnStatistics, btnBadges, btnJournal, btnOptions, btnQuit,
-				btnAPDSettings, btnNews, btnChanges, btnAbout };
+				btnAPDSettings, btnCommunity, btnNews, btnChanges, btnAbout };
 		for (APDMenuButton b : all){
 			//Quit is hidden on iOS, enable() would make it tappable again
 			if (b == btnQuit && DeviceCompat.isiOS()) continue;
@@ -458,7 +516,7 @@ public class TitleScene extends PixelScene {
 	}
 
 	//Deliberately out of place: hot pink text and a big, bright, outlined arrow with a pulsing glow, bobbing upwards, pointing
-	//down at the UIMSD button. The text breaks into two lines only when one line is wider than the grid. It is not interactive
+	//down at the UIMSD button. The text wraps by measured words within the grid. It is not interactive
 	//and sits in its own strip above the grid.
 	private static class APDAnnotation extends Component {
 
@@ -492,13 +550,12 @@ public class TitleScene extends PixelScene {
 		private float time;
 
 		APDAnnotation( String text, float maxWidth ){
-			String[] parts = { text };
-			BitmapText probe = new BitmapText( text, pixelFont );
-			probe.measure();
-			if (probe.width() > maxWidth){
-				int cut = text.indexOf( ' ', text.indexOf( "HERE" ) );
-				parts = new String[]{ text.substring( 0, cut ), text.substring( cut + 1 ) };
-			}
+			BitmapText probe = new BitmapText(text, pixelFont);
+			String[] parts = TitleGeometry.annotationLines(text, maxWidth - 1, value -> {
+				probe.text(value);
+				probe.measure();
+				return probe.width();
+			});
 			lines = new BitmapText[parts.length];
 			shadows = new BitmapText[parts.length];
 			float lh = 0;
@@ -559,7 +616,7 @@ public class TitleScene extends PixelScene {
 			arrowX = (float)Math.floor( centre - HEAD_W / 2f );
 			//rest position: the tip, its outline and its glow all end GAP px above the button
 			arrowY = gridTop - GAP - GLOW - 1 - ARROW_H;
-			float textRight = gridLeft + gridWidth;
+			float textRight = gridLeft + gridWidth - 1;
 			float top = gridTop - height();
 			for (int i = 0; i < lines.length; i++){
 				float x = Math.max( gridLeft, textRight - lines[i].width() );
@@ -571,6 +628,18 @@ public class TitleScene extends PixelScene {
 			}
 			positionArrow( 0 );
 		}
+
+        // In a short landscape window the same clickable guidance moves beside the grid.
+        void placeTextOnly(float left,float top){
+            for(int i=0;i<lines.length;i++){
+                lines[i].x=left;lines[i].y=top+i*lines[i].height();
+                shadows[i].x=left+1;shadows[i].y=lines[i].y+1;
+            }
+            for(ColorBlock b:glow)b.visible=false;
+            for(ColorBlock b:outline)b.visible=false;
+            for(ColorBlock b:body)b.visible=false;
+            highlightTop.visible=highlightShaft.visible=false;
+        }
 
 		private void positionArrow( float lift ){
 			float y = arrowY - lift;
@@ -625,7 +694,7 @@ public class TitleScene extends PixelScene {
 			this.stacked = stacked;
 
 			remove( bg );
-			bg = new NinePatch( "interfaces/apd_button.png", 8 );
+			bg = new NinePatch( "interfaces/apd_button.png", 0, 0, 24, 18, 8 );
 			addToBack( bg );
 
 			icon( Icons.get( icon ) );

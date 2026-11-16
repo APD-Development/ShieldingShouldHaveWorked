@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -29,6 +32,7 @@ import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.apd.demo.DemoData;
 import com.shatteredpixel.shatteredpixeldungeon.apd.demo.DemoGenerator;
 import com.shatteredpixel.shatteredpixeldungeon.apd.query.Catalog;
+import com.shatteredpixel.shatteredpixeldungeon.apd.query.UimsdWarmCache;
 import com.shatteredpixel.shatteredpixeldungeon.apd.query.Filter;
 import com.shatteredpixel.shatteredpixeldungeon.apd.query.GuideGeometry;
 import com.shatteredpixel.shatteredpixeldungeon.apd.query.UimsdHome;
@@ -41,17 +45,19 @@ import com.shatteredpixel.shatteredpixeldungeon.apd.query.ViewDef;
 import com.shatteredpixel.shatteredpixeldungeon.apd.recorder.ApdRecorder;
 import com.shatteredpixel.shatteredpixeldungeon.apd.recorder.Ruleset;
 import com.shatteredpixel.shatteredpixeldungeon.ui.ExitButton;
-import com.shatteredpixel.shatteredpixeldungeon.ui.RedButton;
+import com.shatteredpixel.shatteredpixeldungeon.ui.StyledButton;
+import com.shatteredpixel.shatteredpixeldungeon.Chrome;
 import com.shatteredpixel.shatteredpixeldungeon.ui.UimsdStyle;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
-import com.shatteredpixel.shatteredpixeldungeon.ui.TitleBackground;
+import com.shatteredpixel.shatteredpixeldungeon.apd.TitleGeometry;
+import com.watabou.noosa.Image;
 import com.shatteredpixel.shatteredpixeldungeon.ui.UimsdHomePane;
 import com.shatteredpixel.shatteredpixeldungeon.ui.UimsdTable;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdColumns;
-import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdChoices;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdFilter;
-import com.shatteredpixel.shatteredpixeldungeon.windows.WndMessage;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdText;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdGuide;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdReport;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdList;
@@ -90,6 +96,8 @@ public class UimsdScene extends PixelScene {
 	//the player's own model (the one the screen shows unless the tour is running on a model of its own)
 	private static UimsdModel mainModel;
 	private static File mainRoot;
+	// Invalidates an off-thread title claim if another open or navigation wins first.
+	private static long openGeneration;
 	private static String rulesId = "", rulesLabel = "";
 	//Home or the advanced tables; and whether Home counts runs under all rules
 	private static volatile boolean atHome = true;
@@ -99,6 +107,9 @@ public class UimsdScene extends PixelScene {
 	private static boolean cachedAll;
 	//the interactive tour: runs on a model of its own, on the player's data or on a small sample history kept in a folder of its own
 	private static volatile UimsdTutorial tutorial;
+    private static final Object TOUR_LOCK = new Object();
+    private static final Object SAMPLE_LOCK = new Object();
+    private static long tourGeneration;
 	//what Back does when a table was opened from a question's answer and there is no earlier table to go back to
 	private static Runnable returnTo;
 	private static volatile boolean tutorialPreparing;
@@ -110,11 +121,34 @@ public class UimsdScene extends PixelScene {
 	private volatile boolean dirty = true;
 	private Group ui;
 	private ExitButton btnExit;
+	// Timestamp only after a complete, interactive Home has actually been drawn.
+	private volatile long firstReadyHomeDrawNanos;
+	private long createDurationNanos, rebuildDurationNanos, firstHomeDrawDurationNanos;
 
 	//A replay borrows the game's static state: never while a game is open behind this screen.
 	public static com.shatteredpixel.shatteredpixeldungeon.apd.replay.FloorReplay.LiveGameCheck liveGameCheck(){
 		return () -> backTo == GameScene.class ? "a game is open behind this screen" : null;
 	}
+
+    /** Called before level loading and when returning to gameplay; no persistent data is touched. */
+    public static void releaseForGameplay(){
+        ++openGeneration;
+        UimsdWarmCache.releaseForGameplay();
+        if(model!=null)model.releaseForGameplay();
+        if(mainModel!=null&&mainModel!=model)mainModel.releaseForGameplay();
+        cachedHome=null;cachedCatalog=null;
+        com.watabou.utils.SupportDiagnostics.event("memory.release_stats", "gameplay: derived catalogs and pending preload released");
+        com.watabou.utils.SupportDiagnostics.memoryEvent("uimsd.released_for_gameplay");
+    }
+
+    /** A new open must not retain the previous viewer's complete derived history. */
+    private static void retirePreviousViewer(){
+        if(model!=null)model.releaseForGameplay();
+        if(mainModel!=null && mainModel!=model)mainModel.releaseForGameplay();
+        cachedHome=null;cachedCatalog=null;
+        com.watabou.utils.SupportDiagnostics.event("uimsd.retire_previous", "derived viewer catalogs released; player history unchanged");
+        com.watabou.utils.SupportDiagnostics.memoryEvent("uimsd.previous_retired");
+    }
 
 	//Opens UIMSD again where Back would have gone (after switching between demo and real data, or deleting the demo data).
 	public static void reopen(){
@@ -126,9 +160,30 @@ public class UimsdScene extends PixelScene {
 		com.shatteredpixel.shatteredpixeldungeon.windows.UimsdGate.open(from);
 	}
 
+	// Start a complete, validated Home model while the player is at the title.
+	// All file scans and statistics computation run on the prewarm worker.
+	public static void prewarmTitle(){
+		if (!com.shatteredpixel.shatteredpixeldungeon.windows.UimsdGate.canPrewarm()) return;
+		File root = ApdRecorder.historyRoot();
+		if (root == null) return;
+		if (DemoData.viewingDemo() && (DemoData.available() || DemoData.isSyntheticRoot(DemoData.demoRootFor(root)))){
+			root = DemoData.demoRootFor(root);
+			if (!DemoData.isSyntheticRoot(root)) return;
+		}
+		Ruleset rules = Ruleset.forNewRun();
+		String label = "challenges " + SPDSettings.challenges() + ", exotic "
+				+ (rules.isUnknown() ? "not recorded (older run)" : rules.exoticChance + "%")
+				+ ", difficulty " + SPDSettings.apdDifficulty();
+		UimsdWarmCache.prewarm(root, rules.id, label, homeAllRules);
+	}
+
 	//Opens UIMSD from a screen. 'from' is where Back returns to.
 	public static void openNow( Class<? extends PixelScene> from ){
+        com.watabou.utils.SupportDiagnostics.memoryEvent("uimsd.open_begin");
+		com.watabou.utils.SupportDiagnostics.event("uimsd.open", (from == GameScene.class ? "from=game" : "from=menu") + " prewarm_failure=" + UimsdWarmCache.preparationFailure());
 		backTo = from == GameScene.class ? GameScene.class : TitleScene.class;
+		final Class<? extends PixelScene> targetBackTo = backTo;
+		final com.watabou.noosa.Scene openingScene = ShatteredPixelDungeon.scene();
 		File root = ApdRecorder.historyRoot();
 		//demo data can be shown in any build once it exists (the Demo Unlock makes it in release builds too)
 		showingDemo = DemoData.viewingDemo() && (DemoData.available() || DemoData.isSyntheticRoot(DemoData.demoRootFor(root)));
@@ -143,16 +198,44 @@ public class UimsdScene extends PixelScene {
 		rulesLabel = "challenges " + (from == GameScene.class ? com.shatteredpixel.shatteredpixeldungeon.Dungeon.challenges : SPDSettings.challenges()) + ", exotic " + (rules.isUnknown() ? "not recorded (older run)" : rules.exoticChance + "%") + ", difficulty " + level + (levelKnown ? "" : " (older run)");
 		endTutorial();
 		removeLeftoverSample();
+        retirePreviousViewer();
 		atHome = true;
-		model = new UimsdModel(rulesId, rulesLabel);
-		model.setSeedFloorsProvider(com.shatteredpixel.shatteredpixeldungeon.apd.replay.SeedFloorsRunner.INSTANCE);
 		com.shatteredpixel.shatteredpixeldungeon.apd.replay.FloorReplay.setLiveGameCheck(liveGameCheck());
-		if (root == null){
-			model = null;
-		} else {
-			ApdRecorder.flushForReading();
-			model.load(root);
+		final long generation = ++openGeneration;
+		final File openRoot = root;
+		final String openRulesId = rulesId, openRulesLabel = rulesLabel;
+		final boolean openAllRules = homeAllRules;
+		if (openRoot == null){
+			completeOpen(generation, openingScene, targetBackTo, null, null);
+			return;
 		}
+		// Flush and complete freshness validation run on a short prioritized
+		// worker. It hands the exact validated READY model to the render thread;
+		// a cache miss returns to normal priority before starting a cold load.
+		UimsdModel.claimForOpen(openRoot, openRulesId, openRulesLabel, openAllRules,
+				ApdRecorder::flushForReading, new UimsdModel.OpenClaimListener(){
+			@Override
+			public void claimed(final UimsdModel claimed){
+				com.watabou.noosa.Game.runOnRenderThread(new com.watabou.utils.Callback(){
+					@Override
+					public void call(){
+						completeOpen(generation, openingScene, targetBackTo, openRoot, claimed);
+					}
+				});
+			}
+		});
+	}
+
+	private static void completeOpen(long generation, com.watabou.noosa.Scene openingScene,
+			Class<? extends PixelScene> targetBackTo, File root, UimsdModel opened){
+		if (generation != openGeneration || ShatteredPixelDungeon.scene() != openingScene) {
+            if(opened!=null)opened.releaseForGameplay();
+            return;
+        }
+		backTo = targetBackTo;
+		model = opened;
+		if (model != null)
+			model.setSeedFloorsProvider(com.shatteredpixel.shatteredpixeldungeon.apd.replay.SeedFloorsRunner.INSTANCE);
 		mainModel = model;
 		mainRoot = root;
 		//from the title screen it switches the way the other title screens do (no fade through black)
@@ -162,12 +245,19 @@ public class UimsdScene extends PixelScene {
 
 	@Override
 	public void create(){
+		long createStart = System.nanoTime();
 		super.create();
 		uiCamera.visible = false;
 
 		int w = Camera.main.width;
 		int h = Camera.main.height;
-		TitleBackground bg = new TitleBackground(w, h);
+		// Reuse APD's existing title artwork. The inherited animated backdrop
+		// allocates many VBOs and loads several atlases on the first Home frame.
+		Image bg = new Image(landscape() ? "splashes/title/apd_bg_land.png" : "splashes/title/apd_bg_port.png");
+		bg.scale.set(TitleGeometry.backgroundCoverScale(w, h, bg.width(), bg.height(), Camera.main.zoom));
+		bg.x = (w - bg.width()) / 2f;
+		bg.y = (h - bg.height()) / 2f;
+		align(bg);
 		add(bg);
 		add(new com.watabou.noosa.ColorBlock(w, h, 0x66000000));
 
@@ -188,6 +278,8 @@ public class UimsdScene extends PixelScene {
 			model.setListener(new UimsdModel.Listener(){
 				@Override
 				public void changed(){
+					com.watabou.utils.SupportDiagnostics.event("uimsd.model", "state=" + (model == null ? "none" : model.state()) + (model != null && model.state() == UimsdModel.State.FAILED ? " failure=" + model.failure() : ""));
+                    com.watabou.utils.SupportDiagnostics.memoryEvent("uimsd.model_"+(model==null?"none":model.state()));
 					dirty = true;
 				}
 			});
@@ -198,19 +290,42 @@ public class UimsdScene extends PixelScene {
 			SPDSettings.apdUimsdGuideSeen(true);
 			offerPending = true;
 		}
+		// A completed title preload is built by draw(), after scene and camera
+		// creation. draw() calls rebuildIfNeeded() before super.draw(), so the
+		// first visible frame is still the complete Home without doing expensive
+		// text layout inside create().
+		createDurationNanos = System.nanoTime() - createStart;
+	}
+
+	@Override
+	public void draw(){
+		long drawStart = System.nanoTime();
+		// The worker can publish after update(). Build ready content before the
+		// next draw instead of spending another frame on the loading screen.
+		if (rebuildIfNeeded()) Camera.refreshMatrices();
+		super.draw();
+		if (firstReadyHomeDrawNanos == 0 && !dirty && atHome && model != null
+				&& model.state() == UimsdModel.State.READY && targets.containsKey("home.cards")){
+			long readyDraw = System.nanoTime();
+			firstHomeDrawDurationNanos = readyDraw - drawStart;
+			firstReadyHomeDrawNanos = readyDraw;
+		}
+	}
+
+	private boolean rebuildIfNeeded(){
+		if (dirty && !hasWindow(this)){
+			dirty = false;
+			rebuild();
+			return true;
+		}
+		return false;
 	}
 
 	@Override
 	public synchronized void update(){
 		if (offerPending){
 			offerPending = false;
-			addToFront(new WndOptions("New to UIMSD?", "Take a short tour of the real screens. You can skip any step, and the Guide button brings it back whenever you want.",
-					"Start the tour", "Later"){
-				@Override
-				protected void onSelect( int index ){
-					if (index == 0) startTour(0);
-				}
-			});
+			offerTour();
 		}
 		UimsdTutorial t = tutorial;
 		if (t != null && !tutorialPreparing){
@@ -222,20 +337,45 @@ public class UimsdScene extends PixelScene {
 				dirty = true;
 			}
 		}
-		if (dirty){
-			dirty = false;
-			rebuild();
-		}
-		super.update();
+        // A UIMSD modal (especially Columns) can change the table model
+        // while staying open. Rebuilding the screen behind that window creates
+        // new pointer listeners AFTER the modal's listeners, so on phones they
+        // can capture subsequent taps through the apparently visible popup.
+        // Keep the dirty flag until the last window closes. Window picker rows
+        // still redraw their own checked state immediately.
+        rebuildIfNeeded();
+        super.update();
 	}
 
 	private void rebuild(){
+		long rebuildStart = System.nanoTime();
+		com.watabou.utils.SupportDiagnostics.event("uimsd.layout.begin", "home=" + atHome + " state=" + (model == null ? "none" : model.state()));
+		rememberTableViewport();
+		activeTable = null;
 		erase(ui);
 		ui.destroy();
 		ui = new Group();
 		add(ui);
 		bringToFront(btnExit);
 		build();
+		if (activeTable != null) activeTable.restoreViewport(tableModel.viewport());
+		rebuildDurationNanos = System.nanoTime() - rebuildStart;
+		com.watabou.utils.SupportDiagnostics.event("uimsd.layout.ready", "ms=" + (rebuildDurationNanos / 1000000L) + " home=" + atHome);
+	}
+
+	private UimsdTable activeTable;
+	private UimsdModel tableModel;
+	private long tablePlaceId;
+
+	private void rememberTableViewport(){
+		if (activeTable != null && tableModel != null)
+			tableModel.rememberViewport(tablePlaceId, activeTable.captureViewport());
+	}
+
+	@Override public void destroy(){
+		// The model survives rotation; its table cameras do not.
+		rememberTableViewport();
+		super.destroy();
 	}
 
 	//---- drawing the model ----
@@ -243,9 +383,9 @@ public class UimsdScene extends PixelScene {
 	private float x0, contentW, y;
 
 	private RenderedTextBlock text( String s, int size, int color, float maxW ){
-		RenderedTextBlock t = renderTextBlock(s, size);
+		RenderedTextBlock t = renderTextBlock(size);
+		t.text(s, (int) maxW);
 		t.hardlight(color);
-		t.maxWidth((int) maxW);
 		ui.add(t);
 		return t;
 	}
@@ -267,23 +407,27 @@ public class UimsdScene extends PixelScene {
 
 		//the header is the full name, sized to fit in the room left of the exit button (UIMSD stays the short name elsewhere)
 		float room = contentW - Math.max(0, btnExit.width() - margin) - 2;
-		RenderedTextBlock title = text(FULL_NAME, TitleFit.size(room, FULL_NAME), Window.TITLE_COLOR, room);
+		RenderedTextBlock title = text("UIMSD", 12, Window.TITLE_COLOR, room);
 		title.setPos(x0, y);
 		y = title.bottom() + 1;
+		RenderedTextBlock subtitle = text(FULL_NAME, 6, UimsdStyle.MUTED, room);
+		subtitle.setPos(x0, y);
+		y = subtitle.bottom() + 1;
 
 		//which build this is, so a device test can tell what is installed
 		RenderedTextBlock build = text("build " + com.watabou.noosa.Game.version, 5, 0x999999, contentW);
 		build.setPos(x0, y);
 		y = build.bottom() + 3;
 
-		if (showingSample){
-			RenderedTextBlock sample = text("SAMPLE DATA - made up for the tour, NOT your history", 6, 0xFF6666, contentW);
-			sample.setPos(x0, y);
-			y = sample.bottom() + 2;
-		} else if (showingDemo){
-			RenderedTextBlock demo = text("DEMO DATA - made up for testing, NOT your real history", 6, 0xFF6666, contentW);
-			demo.setPos(x0, y);
-			y = demo.bottom() + 2;
+		if (showingSample || showingDemo){
+			StyledButton dataIndicator = new StyledButton(Chrome.Type.GREY_BUTTON_TR, "DEMO DATA", 6){
+				@Override protected void onClick(){
+					UimsdScene.this.addToFront(new WndUimsdText("Fictional statistics", "These records are made-up test data. They are stored separately from your real run history and never count toward the ten-run unlock.", false));
+				}
+			};
+			dataIndicator.icon(com.shatteredpixel.shatteredpixeldungeon.ui.Icons.INFO.get());
+            dataIndicator.textColor(UimsdStyle.WARN);
+            dataIndicator.setRect(x0, y, Math.min(contentW,88), 16);ui.add(dataIndicator);y += 18;
 		}
 
 		if (tutorialPreparing){
@@ -316,10 +460,12 @@ public class UimsdScene extends PixelScene {
 
 	//---- the starter the Guide uses ----
 
-	private final WndUimsdGuide.Starter starter = new WndUimsdGuide.Starter(){
+	private static final WndUimsdGuide.Starter starter = new WndUimsdGuide.Starter(){
 		@Override
 		public void startTour( int stepIndex ){
-			UimsdScene.this.startTour(stepIndex);
+			if (ShatteredPixelDungeon.scene() instanceof UimsdScene){
+				((UimsdScene) ShatteredPixelDungeon.scene()).startTour(stepIndex);
+			}
 		}
 	};
 
@@ -333,12 +479,25 @@ public class UimsdScene extends PixelScene {
 		Catalog c = model.catalog();
 		if (c == null) return null;
 		if (cachedHome == null || cachedCatalog != c || cachedAll != homeAllRules){
-			cachedHome = UimsdHome.build(c, model.currentRuleset(), homeAllRules);
+			UimsdHome prepared = model.preparedHome(c, homeAllRules);
+			cachedHome = prepared == null ? UimsdHome.build(c, model.currentRuleset(), homeAllRules) : prepared;
 			cachedCatalog = c;
 			cachedAll = homeAllRules;
 		}
 		return cachedHome;
 	}
+
+    private void openSearch(){
+        if(model==null || model.catalog()==null)return;
+        com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdSearch.open(
+                model.catalog(),UimsdScene::openSearchResult);
+    }
+
+    private static void openSearchResult(String viewId){
+        if(ShatteredPixelDungeon.scene() instanceof UimsdScene){
+            ((UimsdScene)ShatteredPixelDungeon.scene()).openView(viewId);
+        }
+    }
 
 	private void openView( String viewId ){
 		model.showRoot(viewId);
@@ -348,56 +507,42 @@ public class UimsdScene extends PixelScene {
 
 	//draws the Home page; returns the bottom of the room it used (what the tour panel may sit above)
 	private float buildHome( int h, RectF insets ){
-		float rowH = 16;
-		float guideW = 36;
-		float gap = 2;
-		float reportW = 34;
-		float each = (contentW - guideW - reportW - 3 * gap) / 2f;
-		RedButton guide = new RedButton("Guide", 8){
-			@Override
-			protected void onClick(){
-				openGuide();
-			}
-		};
-		guide.setRect(x0, y, guideW, rowH);
-		ui.add(guide);
-		reg("guide", x0, y, guideW, rowH);
-		RedButton rules = new RedButton(homeAllRules ? "Rules: all (mixed)" : "Rules: yours", 7){
-			@Override
-			protected void onClick(){
-				homeAllRules = !homeAllRules;
-				dirty = true;
-			}
-		};
-		RedButton report = new RedButton("Report", 8){
-			@Override
-			protected void onClick(){
-				WndUimsdReport.ofLifetime(model, homeAllRules);
-			}
-		};
-		report.setRect(x0 + guideW + gap, y, reportW, rowH);
-		ui.add(report);
-		reg("report", x0 + guideW + gap, y, reportW, rowH);
-		rules.setRect(x0 + guideW + reportW + 2 * gap, y, each, rowH);
-		ui.add(rules);
-		RedButton tables = new RedButton("All tables", 8){
-			@Override
-			protected void onClick(){
-				atHome = false;
-				dirty = true;
-			}
-		};
-		tables.setRect(x0 + guideW + reportW + 3 * gap + each, y, each, rowH);
-		ui.add(tables);
-		reg("tables", x0 + guideW + reportW + 3 * gap + each, y, each, rowH);
-		y += rowH + 2;
-
 		UimsdHome home = homeData();
 		float bottom = h - insets.bottom - 4;
 		if (home == null) return bottom;
-		RenderedTextBlock note = text(home.scopeNote, 5, 0xDDDDDD, contentW);
-		note.setPos(x0, y);
-		y = note.bottom() + 3;
+		float gap = 2, each = (contentW - 2 * gap)/3f;
+		StyledButton guide = new StyledButton(Chrome.Type.GREY_BUTTON_TR, "Guide", 7){
+			@Override protected void onClick(){ openGuide(); }
+		};
+		guide.setRect(x0, y, each, 18);ui.add(guide);reg("guide", x0, y, each, 18);
+		StyledButton report = new StyledButton(Chrome.Type.GREY_BUTTON_TR, "Report", 7){
+			@Override protected void onClick(){ WndUimsdReport.ofLifetime(model, homeAllRules); }
+		};
+		report.setRect(guide.right()+gap, y, each, 18);ui.add(report);reg("report", report.left(), y, each, 18);
+		StyledButton tables = new StyledButton(Chrome.Type.GREY_BUTTON_TR, "Tables", 7){
+			@Override protected void onClick(){ atHome=false;dirty=true; }
+		};
+		tables.setRect(report.right()+gap, y, each, 18);ui.add(tables);reg("tables", tables.left(), y, each, 18);
+		y += 20;
+        StyledButton search = new StyledButton(Chrome.Type.GREY_BUTTON_TR, "Search UIMSD", 7){
+            @Override protected void onClick(){openSearch();}
+        };
+        search.setRect(x0,y,(contentW-2)*.6f,16);ui.add(search);
+        StyledButton research=new StyledButton(Chrome.Type.GREY_BUTTON_TR,"Research lab",6){
+            @Override protected void onClick(){com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdResearch.show(model);}
+        };
+        research.setRect(x0+(contentW-2)*.6f+2,y,(contentW-2)*.4f,16);ui.add(research);
+        reg("search",x0,y,(contentW-2)*.6f,16);
+        y+=18;
+		StyledButton rules = new StyledButton(Chrome.Type.GREY_BUTTON_TR, home.mixedRulesets ? "Rules: Mixed" : homeAllRules ? "Rules: all" : "Rules: current", 6){
+			@Override protected void onClick(){ homeAllRules=!homeAllRules;dirty=true; }
+		};
+		rules.setRect(x0,y,contentW-22,18);ui.add(rules);
+		StyledButton scopeInfo = new StyledButton(Chrome.Type.GREY_BUTTON_TR, "?", 7){
+			@Override protected void onClick(){UimsdScene.this.addToFront(new WndUimsdText("Rules and record coverage", home.scopeNote, false));}
+		};
+		scopeInfo.setRect(rules.right()+2,y,20,18);ui.add(scopeInfo);
+		y += 20;
 
 		if (home.isEmpty()){
 			buildFirstRun(home, bottom);
@@ -408,6 +553,10 @@ public class UimsdScene extends PixelScene {
 		pane.setListener(new UimsdHomePane.Listener(){
 			@Override
 			public void onLink( String viewId ){
+				if (viewId.startsWith("!outcome:")){
+					model.showQuery(com.shatteredpixel.shatteredpixeldungeon.apd.query.UimsdHomeNavigation.outcome(viewId, homeAllRules));
+					atHome=false;dirty=true;return;
+				}
 				if (UimsdHome.ASK_LINK.equals(viewId)){
 					WndUimsdAsk.open(model.catalog(), model.currentRuleset(), new WndUimsdAsk.Host(){
 						@Override
@@ -415,8 +564,9 @@ public class UimsdScene extends PixelScene {
 							model.showQuery(q);
 							returnTo = backToAnswer;
 							atHome = false;
-							dirty = true;
+							//showQuery notifies the current scene's model listener.
 						}
+						@Override public File root(){ return model.root(); }
 					});
 					return;
 				}
@@ -440,39 +590,13 @@ public class UimsdScene extends PixelScene {
 
 	//What the Home page shows before there is anything to count: what UIMSD is, what will appear here, and the tour as the main thing to do.
 	private void buildFirstRun( UimsdHome home, float bottom ){
-		boolean elsewhere = home.runsElsewhere > 0 && !homeAllRules;
 		RenderedTextBlock welcome = text("Welcome to UIMSD", UimsdStyle.SIZE_TITLE, UimsdStyle.TITLE, contentW);
 		welcome.setPos(x0, y + 2);
 		y = welcome.bottom() + 2;
-		RenderedTextBlock what = text(elsewhere
-				? "No finished run was played under your current rules yet, but " + home.runsElsewhere + (home.runsElsewhere == 1 ? " was" : " were")
-						+ " played under other rules (a different difficulty, challenges or exotic-item setting). Tap \"Rules: yours\" above to include them."
-				: "UIMSD is the game's statistics system. Every run you play is recorded, and this page turns your history into numbers: "
-						+ "how each class does, what you lean on, what ends your runs, and how difficulty changes your odds.",
-				UimsdStyle.SIZE_HELP, UimsdStyle.TEXT, contentW);
-		what.setPos(x0, y);
-		y = what.bottom() + 4;
-		if (!elsewhere){
-			RenderedTextBlock fills = text("WHEN YOU HAVE FINISHED A RUN, THIS PAGE FILLS WITH", UimsdStyle.SIZE_HELP, UimsdStyle.HEADING, contentW);
-			fills.setPos(x0, y);
-			y = fills.bottom() + 2;
-			String[] bullets = {
-					"Your runs: wins, deaths, win rate, deepest floor",
-					"Characters and difficulty: how each class and level does",
-					"Gear and enemies: what you use, what you meet, what kills you",
-					"Recent runs and records",
-			};
-			for (String b : bullets){
-				RenderedTextBlock t = text("- " + b, UimsdStyle.SIZE_HELP, UimsdStyle.MUTED, contentW - 4);
-				t.setPos(x0 + 4, y);
-				y = t.bottom() + 1;
-			}
-			y += 4;
-			RenderedTextBlock ongoing = text("A run still going counts when it ends. Recording is automatic (see History recording in APD Settings).", UimsdStyle.SIZE_META, UimsdStyle.FAINT, contentW);
-			ongoing.setPos(x0, y);
-			y = ongoing.bottom() + 6;
-		}
-		RedButton tour = new RedButton("Take the tour (2 minutes)", 8){
+		RenderedTextBlock what = text(home.emptyMessage(), UimsdStyle.SIZE_HELP, UimsdStyle.TEXT, contentW);
+		what.setPos(x0, y);y = what.bottom() + 4;
+
+		StyledButton tour = new StyledButton(Chrome.Type.GREY_BUTTON_TR, "Take the tour (2 minutes)", 8){
 			@Override
 			protected void onClick(){
 				startTour(0);
@@ -485,7 +609,7 @@ public class UimsdScene extends PixelScene {
 		RenderedTextBlock sampleNote = text("The tour uses a small made-up history, so it works even before you have played. It never touches your own.", UimsdStyle.SIZE_META, UimsdStyle.FAINT, contentW);
 		sampleNote.setPos(x0, y);
 		y = sampleNote.bottom() + 4;
-		RedButton read = new RedButton("Read the Guide", 7){
+		StyledButton read = new StyledButton(Chrome.Type.GREY_BUTTON_TR, "Read the Guide", 7){
 			@Override
 			protected void onClick(){
 				openGuide();
@@ -495,6 +619,12 @@ public class UimsdScene extends PixelScene {
 		ui.add(read);
 	}
 
+    public static void showResearchEvidence(UimsdModel m,com.shatteredpixel.shatteredpixeldungeon.apd.query.Query q){
+        if(m.openResearchQuery(q) && com.watabou.noosa.Game.scene() instanceof UimsdScene){
+            atHome=false;((UimsdScene)com.watabou.noosa.Game.scene()).dirty=true;
+        }
+    }
+
 	//---- the advanced tables (everything UIMSD could always do) ----
 
 	private float buildAdvanced( int h, RectF insets ){
@@ -503,7 +633,7 @@ public class UimsdScene extends PixelScene {
 		float homeW = 30, helpW = 14, backW = model.canGoBack() ? 32 : 0, gap = 2;
 		float viewW = contentW - homeW - helpW - backW - gap * (model.canGoBack() ? 3 : 2);
 		float cx0 = x0;
-		RedButton homeBtn = new RedButton("Home", 7){
+		StyledButton homeBtn = new StyledButton(Chrome.Type.GREY_BUTTON_TR, "Home", 7){
 			@Override
 			protected void onClick(){
 				atHome = true;
@@ -514,7 +644,7 @@ public class UimsdScene extends PixelScene {
 		ui.add(homeBtn);
 		reg("home", cx0, y, homeW, 16);
 		cx0 += homeW + gap;
-		RedButton viewBtn = new RedButton((view == null ? "Table" : view.title) + "  (change table)", 8){
+		StyledButton viewBtn = new StyledButton(Chrome.Type.GREY_BUTTON_TR, "Tables", 7){
 			@Override
 			protected void onClick(){
 				pickView();
@@ -525,7 +655,7 @@ public class UimsdScene extends PixelScene {
 		reg("view", cx0, y, viewW, 16);
 		cx0 += viewW + gap;
 		if (model.canGoBack()){
-			RedButton back = new RedButton("Back", 8){
+			StyledButton back = new StyledButton(Chrome.Type.GREY_BUTTON_TR, "Back", 8){
 				@Override
 				protected void onClick(){
 					model.back();
@@ -536,7 +666,7 @@ public class UimsdScene extends PixelScene {
 			reg("back", cx0, y, backW, 16);
 			cx0 += backW + gap;
 		}
-		RedButton help = new RedButton("?", 8){
+		StyledButton help = new StyledButton(Chrome.Type.GREY_BUTTON_TR, "?", 8){
 			@Override
 			protected void onClick(){
 				openGuide();
@@ -546,13 +676,16 @@ public class UimsdScene extends PixelScene {
 		ui.add(help);
 		reg("guide", cx0, y, helpW, 16);
 		y += 18;
+        StyledButton search = new StyledButton(Chrome.Type.GREY_BUTTON_TR,"Search UIMSD",6){
+            @Override protected void onClick(){openSearch();}
+        };
+        search.setRect(x0,y,(contentW-2)*.6f,16);ui.add(search);
+        StyledButton research=new StyledButton(Chrome.Type.GREY_BUTTON_TR,"Research lab",6){
+            @Override protected void onClick(){com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdResearch.show(model);}
+        };
+        research.setRect(x0+(contentW-2)*.6f+2,y,(contentW-2)*.4f,16);ui.add(research);y+=18;
 
-		//what this table is, in a line (so the player never has to guess what they are looking at)
-		if (view != null && !view.description.isEmpty()){
-			RenderedTextBlock d = text(view.description, UimsdStyle.SIZE_META, UimsdStyle.MUTED, contentW);
-			d.setPos(x0, y);
-			y = d.bottom() + 2;
-		}
+		//The complete table description remains in the existing Tables picker.
 
 		//work in progress / why something is unavailable (seed floors)
 		String notice = model.notice();
@@ -578,7 +711,7 @@ public class UimsdScene extends PixelScene {
 			shown = 2;
 		}
 		int notes = lines.size() - shown;
-		RedButton statusBtn = new RedButton(notes > 0 ? "Notes (" + notes + ")" : "Notes", 6){
+		StyledButton statusBtn = new StyledButton(Chrome.Type.GREY_BUTTON_TR, notes > 0 ? "Notes (" + notes + ")" : "Notes", 6){
 			@Override
 			protected void onClick(){
 				WndUimsdStatus.show(model);
@@ -590,44 +723,33 @@ public class UimsdScene extends PixelScene {
 		reg("status", x0, y, contentW - 46, Math.max(statusBottom - y, 10));
 		y = Math.max(statusBottom, y + 14) + 3;
 
-		//filter chips
-		float cx = x0;
+		//All conditions remain editable in a scrolling native picker; their count does not consume table height.
 		final List<Filter> filters = model.query().filters;
-		for (int i = 0; i < filters.size(); i++){
-			final int index = i;
-			String label = StatusText.describe(model.dataset().def, filters.get(i));
-			if (label.length() > 34) label = label.substring(0, 32) + "..";
-			float cw = Math.min(contentW, label.length() * 4.2f + 10);
-			if (cx + cw > x0 + contentW){
-				cx = x0;
-				y += 15;
-			}
-			RedButton chip = new RedButton(label, 6){
-				@Override
-				protected void onClick(){
-					WndUimsdFilter.chip(model, index);
+		if (!filters.isEmpty()){
+			StyledButton conditions = new StyledButton(Chrome.Type.GREY_BUTTON_TR, "Conditions (" + filters.size() + ")", 6){
+				@Override protected void onClick(){
+					showConditions();
 				}
 			};
-			chip.setRect(cx, y, cw, 13);
-			ui.add(chip);
-			cx += cw + 2;
+			conditions.setRect(x0,y,contentW,16);ui.add(conditions);y += 18;
 		}
-		y += filters.isEmpty() ? 0 : 15;
 
 		//bottom controls first, so the table gets what is left
 		final ResultTable table = model.table();
 		float bottom = h - insets.bottom - 4;
-		float bar = 17;
+		int controlsPerRow = contentW < 160 ? 2 : 4;
+		float controlH = 18;
+		float bar = controlsPerRow == 2 ? 2 * controlH : controlH;
 		float barTop = bottom - bar;
 		String[] names = { "Filter", "Sort", "Columns", "Options" };
 		String[] ids = { "filter", "sort", "columns", "options" };
-		float bwid = (contentW - 6) / 4f;
+		float bwid = (contentW - 2 * (controlsPerRow-1)) / controlsPerRow;
 		for (int i = 0; i < 4; i++){
 			final int which = i;
 			String shownName = names[i];
 			if (i == 0 && !model.query().filters.isEmpty()) shownName += " (" + model.query().filters.size() + ")";
 			if (i == 1 && !model.query().sorts.isEmpty()) shownName += " (" + model.query().sorts.size() + ")";
-			RedButton b = new RedButton(shownName, 8){
+			StyledButton b = new StyledButton(Chrome.Type.GREY_BUTTON_TR, shownName, 6){
 				@Override
 				protected void onClick(){
 					switch (which){
@@ -638,14 +760,16 @@ public class UimsdScene extends PixelScene {
 					}
 				}
 			};
-			b.setRect(x0 + i * (bwid + 2), barTop, bwid, bar - 1);
+			float bx = x0 + (i % controlsPerRow) * (bwid + 2);
+			float by = barTop + (i / controlsPerRow) * controlH;
+			b.setRect(bx, by, bwid, controlH - 1);
 			ui.add(b);
-			reg(ids[i], x0 + i * (bwid + 2), barTop, bwid, bar - 1);
+			reg(ids[i], bx, by, bwid, controlH - 1);
 		}
 		float tableBottom = barTop - 2;
 		if (table != null && table.pageCount() > 1){
 			float py = barTop - 16;
-			RedButton prev = new RedButton("<", 8){
+			StyledButton prev = new StyledButton(Chrome.Type.GREY_BUTTON_TR, "<", 8){
 				@Override
 				protected void onClick(){
 					model.setPage(model.page() - 1);
@@ -654,7 +778,7 @@ public class UimsdScene extends PixelScene {
 			prev.setRect(x0, py, 20, 14);
 			prev.enable(table.page() > 0);
 			ui.add(prev);
-			RedButton next = new RedButton(">", 8){
+			StyledButton next = new StyledButton(Chrome.Type.GREY_BUTTON_TR, ">", 8){
 				@Override
 				protected void onClick(){
 					model.setPage(model.page() + 1);
@@ -680,6 +804,9 @@ public class UimsdScene extends PixelScene {
 			y = more.bottom() + 2;
 		}
 		UimsdTable t = new UimsdTable();
+		activeTable = t;
+		tableModel = model;
+		tablePlaceId = model.placeId();
 		t.setListener(new UimsdTable.Listener(){
 			@Override
 			public void onSort( String columnId ){
@@ -708,6 +835,16 @@ public class UimsdScene extends PixelScene {
 		return com.shatteredpixel.shatteredpixeldungeon.apd.query.TableGeometry.HEADER_HEIGHT;
 	}
 
+	private void showConditions(){
+		List<WndUimsdList.Entry> entries = new ArrayList<>();
+		for (Filter filter : model.query().filters) entries.add(WndUimsdList.Entry.item(StatusText.describe(model.dataset().def, filter)));
+		UimsdScene.this.addToFront(WndUimsdList.menu("Conditions", "Tap a condition to change or remove it. All conditions must match.", entries,
+				(index, checked) -> WndUimsdFilter.chip(model, index)).restoreWith(() -> {
+			com.watabou.noosa.Scene active = com.watabou.noosa.Game.scene();
+			if (active instanceof UimsdScene) ((UimsdScene) active).showConditions();
+		}));
+	}
+
 	private void pickView(){
 		final List<ViewDef> views = model.catalog() == null ? new ArrayList<ViewDef>() : model.catalog().views();
 		//grouped by section, in the order the sections first appear; the table you are looking at is marked
@@ -729,6 +866,9 @@ public class UimsdScene extends PixelScene {
 			public void onPick( int i, boolean checked ){
 				model.selectView(order.get(i).id);
 			}
+		}).restoreWith(() -> {
+			com.watabou.noosa.Scene active = com.watabou.noosa.Game.scene();
+			if (active instanceof UimsdScene) ((UimsdScene) active).pickView();
 		}));
 	}
 
@@ -782,7 +922,7 @@ public class UimsdScene extends PixelScene {
 		float by = py + ph - buttonsH - 4;
 		boolean last = t.index() >= t.count() - 1;
 		float bw = (pw - 12) / 3f;
-		RedButton next = new RedButton(step.expect == UimsdTutorial.Expect.NEXT ? (last ? "Finish" : "Next") : "Skip step", 7){
+		StyledButton next = new StyledButton(Chrome.Type.GREY_BUTTON_TR, step.expect == UimsdTutorial.Expect.NEXT ? (last ? "Finish" : "Next") : "Skip step", 7){
 			@Override
 			protected void onClick(){
 				UimsdTutorial tt = tutorial;
@@ -794,7 +934,7 @@ public class UimsdScene extends PixelScene {
 		};
 		next.setRect(x0 + 4, by, bw, buttonsH);
 		ui.add(next);
-		RedButton prev = new RedButton("Previous", 7){
+		StyledButton prev = new StyledButton(Chrome.Type.GREY_BUTTON_TR, "Previous", 7){
 			@Override
 			protected void onClick(){
 				UimsdTutorial tt = tutorial;
@@ -807,7 +947,7 @@ public class UimsdScene extends PixelScene {
 		prev.setRect(x0 + 6 + bw, by, bw, buttonsH);
 		prev.enable(t.index() > 0);
 		ui.add(prev);
-		RedButton exit = new RedButton("Exit tour", 7){
+		StyledButton exit = new StyledButton(Chrome.Type.GREY_BUTTON_TR, "Exit tour", 7){
 			@Override
 			protected void onClick(){
 				endTutorial();
@@ -826,6 +966,26 @@ public class UimsdScene extends PixelScene {
 	}
 
 	//the tour can use the player's own runs when there are enough of them to show every kind of screen
+	private void offerTour(){
+		UimsdScene.this.addToFront(new WndUimsdChoices("New to UIMSD?", "Take a short tour of the real screens. You can skip any step, and the Guide button brings it back whenever you want.",
+				"Start the tour", "Later"){
+			@Override
+			protected void onSelect( int index ){
+				if (index == 0) ((UimsdScene) ShatteredPixelDungeon.scene()).startTour(0);
+			}
+		}.restoreWith(() -> ((UimsdScene) ShatteredPixelDungeon.scene()).offerTour()));
+	}
+
+	private void chooseTourData(final int stepIndex){
+		UimsdScene.this.addToFront(new WndUimsdChoices("Tour", "Which data should the tour use? Your own runs, or a small made-up sample history (nothing in your history is changed either way).",
+				"My own runs", "Sample data"){
+			@Override
+			protected void onSelect( int index ){
+				((UimsdScene) ShatteredPixelDungeon.scene()).beginTour(stepIndex, index == 0);
+			}
+		}.restoreWith(() -> ((UimsdScene) ShatteredPixelDungeon.scene()).chooseTourData(stepIndex)));
+	}
+
 	private boolean ownDataIsEnough(){
 		if (mainModel == null || mainModel.state() != UimsdModel.State.READY || mainModel.catalog() == null) return false;
 		UimsdHome home = UimsdHome.build(mainModel.catalog(), rulesId, false);
@@ -834,116 +994,146 @@ public class UimsdScene extends PixelScene {
 
 	private void startTour( final int stepIndex ){
 		if (!com.shatteredpixel.shatteredpixeldungeon.windows.UimsdGate.tourAvailable()){
-			addToFront(new WndMessage("The guided tour opens after you finish 10 runs of your own. Demo runs do not count toward it."));
+			UimsdScene.this.addToFront(new WndUimsdText("UIMSD", "The guided tour opens after you finish 10 runs of your own. Demo runs do not count toward it.", false));
 			return;
 		}
 		if (mainModel == null || ApdRecorder.historyRoot() == null && mainRoot == null) return;
 		if (tutorial != null) endTutorial();
 		if (ownDataIsEnough()){
-			addToFront(new WndOptions("Tour", "Which data should the tour use? Your own runs, or a small made-up sample history (nothing in your history is changed either way).",
-					"My own runs", "Sample data"){
-				@Override
-				protected void onSelect( int index ){
-					beginTour(stepIndex, index == 0);
-				}
-			});
+			chooseTourData(stepIndex);
 		} else {
 			beginTour(stepIndex, false);
 		}
 	}
 
-	private void beginTour( final int stepIndex, final boolean own ){
-		tutorialPreparing = true;
-		dirty = true;
-		Thread worker = new Thread(new Runnable(){
-			@Override
-			public void run(){
-				try {
-					File root;
-					if (own){
-						root = mainRoot;
-					} else {
-						root = DemoData.sampleRootFor(ApdRecorder.historyRoot() != null ? ApdRecorder.historyRoot() : mainRoot);
-						DemoGenerator.generateSample(root, Ruleset.forNewRun(), System.currentTimeMillis());
-						sampleRoot = root;
-					}
-					UimsdModel tm = new UimsdModel(rulesId, rulesLabel);
-					tm.load(root);
-					tm.awaitLoad(30000);
-					if (tm.state() != UimsdModel.State.READY) throw new IllegalStateException("the tour's data could not be read");
-					UimsdTutorial.prepare(tm, stepIndex);
-					UimsdTutorial t = new UimsdTutorial(tm, stepIndex);
-					showingSample = !own;
-					atHome = stepIndex <= UimsdTutorial.indexOf("view");
-					model = tm;
-					tm.setListener(new UimsdModel.Listener(){
-						@Override
-						public void changed(){
-							dirty = true;
-						}
-					});
-					tutorial = t;
-				} catch (Throwable e){
-					tutorial = null;
-					showingSample = false;
-					model = mainModel;
-					deleteSampleLater();
-				} finally {
-					tutorialPreparing = false;
-					dirty = true;
-				}
-			}
-		}, "apd-uimsd-tour");
-		worker.setDaemon(true);
-		worker.start();
+	//The loading worker can outlive the scene that launched it. Resolve the current scene
+	//on the render thread, both at completion and for later changes to its tour model.
+	private static void invalidateTourScene(){
+		com.watabou.noosa.Game.runOnRenderThread(() -> {
+			if (com.watabou.noosa.Game.instance == null) return;
+			com.watabou.noosa.Scene active = com.watabou.noosa.Game.scene();
+			if (active instanceof UimsdScene) ((UimsdScene) active).dirty = true;
+		});
 	}
+
+
+    private static boolean currentTour(long generation){
+        synchronized(TOUR_LOCK){return generation == tourGeneration;}
+    }
+
+    private void beginTour(final int stepIndex, final boolean own){
+        final long generation;
+        synchronized(TOUR_LOCK){
+            generation = ++tourGeneration;
+            tutorialPreparing = true;
+        }
+        dirty = true;
+        final File requestedOwnRoot = mainRoot;
+        File recordedRoot = ApdRecorder.historyRoot();
+        final File requestedSampleBase = recordedRoot != null ? recordedRoot : mainRoot;
+        final String requestedRulesId = rulesId, requestedRulesLabel = rulesLabel;
+        final Ruleset sampleRules = Ruleset.forNewRun();
+        Thread worker = new Thread(() -> {
+            // Preparing/deleting the shared sample folder must not overlap another request.
+            synchronized(SAMPLE_LOCK){
+                if (!currentTour(generation)) return;
+                File root = own ? requestedOwnRoot : DemoData.sampleRootFor(requestedSampleBase);
+                boolean published = false;
+                try {
+                    if (!own) DemoGenerator.generateSample(root, sampleRules, System.currentTimeMillis());
+                    UimsdModel tm = new UimsdModel(requestedRulesId, requestedRulesLabel);
+                    tm.load(root);
+                    tm.awaitLoad(30000);
+                    if (tm.state() != UimsdModel.State.READY)
+                        throw new IllegalStateException("the tour's data could not be read");
+                    UimsdTutorial.prepare(tm, stepIndex);
+                    UimsdTutorial prepared = new UimsdTutorial(tm, stepIndex);
+                    synchronized(TOUR_LOCK){
+                        if (generation != tourGeneration) return;
+                        sampleRoot = own ? null : root;
+                        showingSample = !own;
+                        atHome = stepIndex <= UimsdTutorial.indexOf("view");
+                        model = tm;
+                        tm.setListener(UimsdScene::invalidateTourScene);
+                        tutorial = prepared;
+                        published = true;
+                    }
+                } catch (Throwable error){
+                    synchronized(TOUR_LOCK){
+                        if (generation == tourGeneration){
+                            tutorial = null;
+                            showingSample = false;
+                            model = mainModel;
+                        }
+                    }
+                } finally {
+                    synchronized(TOUR_LOCK){
+                        if (generation == tourGeneration) tutorialPreparing = false;
+                    }
+                    if (!own && !published) deleteSampleLater(root);
+                    if (currentTour(generation)) invalidateTourScene();
+                }
+            }
+        }, "apd-uimsd-tour");
+        worker.setDaemon(true);
+        worker.start();
+    }
 
 	//stops the tour: back to the player's own model, and the sample history (if any) is deleted
-	private static void endTutorial(){
-		tutorial = null;
-		tutorialPreparing = false;
-		showingSample = false;
-		if (mainModel != null && model != mainModel){
-			if (model != null) model.setListener(null);
-			model = mainModel;
-		}
-		deleteSampleLater();
-	}
 
-	private static void deleteSampleLater(){
-		final File r = sampleRoot;
-		sampleRoot = null;
-		if (r == null) return;
-		Thread t = new Thread(new Runnable(){
-			@Override
-			public void run(){
-				DemoData.delete(r);
-			}
-		}, "apd-uimsd-sample-delete");
-		t.setDaemon(true);
-		t.start();
-	}
+    private static void endTutorial(){
+        synchronized(TOUR_LOCK){
+            ++tourGeneration;
+            tutorial = null;
+            tutorialPreparing = false;
+            showingSample = false;
+            if (mainModel != null && model != mainModel){
+                if (model != null) model.setListener(null);
+                model = mainModel;
+            }
+            deleteSampleLater();
+        }
+    }
 
-	//a sample folder left by an app that was closed in the middle of a tour
-	private static void removeLeftoverSample(){
-		File history = ApdRecorder.historyRoot();
-		final File s = history == null ? null : DemoData.sampleRootFor(history);
-		if (s == null || !s.exists()) return;
-		Thread t = new Thread(new Runnable(){
-			@Override
-			public void run(){
-				DemoData.delete(s);
-			}
-		}, "apd-uimsd-sample-delete");
-		t.setDaemon(true);
-		t.start();
-	}
+    private static void deleteSampleLater(){
+        final File root = sampleRoot;
+        sampleRoot = null;
+        deleteSampleLater(root);
+    }
+
+    private static void deleteSampleLater(final File root){
+        if (root == null) return;
+        Thread cleanup = new Thread(() -> {
+            synchronized(SAMPLE_LOCK){
+                synchronized(TOUR_LOCK){
+                    if (root.equals(sampleRoot)) return; // A newer request owns this sample now.
+                }
+                DemoData.delete(root); // Existing marker/name guard protects real history.
+            }
+        }, "apd-uimsd-sample-delete");
+        cleanup.setDaemon(true);
+        cleanup.start();
+    }
+
+    // A sample left by a closed app is removed through the same serialized cleanup path.
+    private static void removeLeftoverSample(){
+        File history = ApdRecorder.historyRoot();
+        File sample = history == null ? null : DemoData.sampleRootFor(history);
+        if (sample != null && sample.exists()) deleteSampleLater(sample);
+    }
 
 	@Override
 	protected void onBackPressed(){
 		com.watabou.utils.DeviceCompat.log("APDUI", "UIMSD Back: tutorial=" + (tutorial != null) + " finished=" + (tutorial != null && tutorial.isFinished())
 				+ " preparing=" + tutorialPreparing + " atHome=" + atHome + " canGoBack=" + (model != null && model.canGoBack()));
-		if (tutorialPreparing) return;
+		if (tutorialPreparing){
+			//Preparation is part of the tour. Back cancels it immediately and advances the
+			//generation so its worker can never publish a stale model after this press.
+			endTutorial();
+			atHome = true;
+			dirty = true;
+			return;
+		}
 		//a tour in progress ends first: Back leaves the tour, it does not leave the screen
 		if (tutorial != null && !tutorial.isFinished()){
 			endTutorial();
@@ -967,7 +1157,15 @@ public class UimsdScene extends PixelScene {
 		returnTo = null;
 		endTutorial();
 		if (model != null) model.setListener(null);
+        retirePreviousViewer();
 		if (backTo == TitleScene.class) ShatteredPixelDungeon.switchNoFade(backTo);
 		else ShatteredPixelDungeon.switchScene(backTo);
 	}
 }
+
+
+
+
+
+
+

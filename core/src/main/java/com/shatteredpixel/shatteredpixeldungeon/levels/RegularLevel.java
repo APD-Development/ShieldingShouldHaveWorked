@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -206,20 +209,20 @@ public abstract class RegularLevel extends Level {
 	public int mobLimit() {
 		if (Dungeon.depth <= 1){
 			if (!Statistics.amuletObtained) return 0;
-			else                            return 10;
+			else                            return com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomResourceHooks.spawnCount(10);
 		}
 
 		int mobs = 3 + Dungeon.depth % 5 + Random.Int(3);
 		if (feeling == Feeling.LARGE){
 			mobs = (int)Math.ceil(mobs * 1.33f);
 		}
-		return mobs;
+		return com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomResourceHooks.spawnCount(mobs);
 	}
 	
 	@Override
 	protected void createMobs() {
 		//on floor 1, 8 pre-set mobs are created so the player can get level 2.
-		int mobsToSpawn = Dungeon.depth == 1 ? 8 : mobLimit();
+		int mobsToSpawn = Dungeon.depth == 1 ? com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomResourceHooks.spawnCount(8) : mobLimit();
 
 		ArrayList<Room> stdRooms = new ArrayList<>();
 		for (Room room : rooms) {
@@ -251,8 +254,13 @@ public abstract class RegularLevel extends Level {
 
 		PathFinder.buildDistanceMap(entrance(), entranceWalkable, 8);
 
+        boolean customSpawn = com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomCombatHooks.percentage(
+                com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomDungeonRules.Slider.ENEMY_SPAWN) != 100;
+        int placementAttempts = Math.max(100, stdRooms.size()*100);
 		Mob mob = null;
 		while (mobsToSpawn > 0) {
+            // A denser custom floor must not loop forever when legal spawn space is exhausted.
+            if (customSpawn && --placementAttempts < 0) break;
 			if (mob == null) mob = createMob();
 			Room roomToSpawn;
 			
@@ -387,8 +395,9 @@ public abstract class RegularLevel extends Level {
 		
 		for (int i=0; i < nItems; i++) {
 
-			Item toDrop = Generator.random();
-			if (toDrop == null) continue;
+            final Item generated = Generator.random();
+            for (Item toDrop : com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomEquipmentHooks.adjust(
+                    generated, () -> com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomEquipmentHooks.extraLike(generated))) {
 
 			int cell = randomDropCell();
 			if (map[cell] == Terrain.HIGH_GRASS || map[cell] == Terrain.FURROWED_GRASS) {
@@ -448,6 +457,8 @@ public abstract class RegularLevel extends Level {
 			}
 			
 		}
+
+        } // ordinary equipment expansion, never the guaranteed item list
 
 		for (Item item : itemsToSpawn) {
 			int cell = randomDropCell();
@@ -687,7 +698,7 @@ public abstract class RegularLevel extends Level {
 					map[cell] = Terrain.GRASS;
 					losBlocking[cell] = false;
 				}
-				drop( Generator.randomUsingDefaults(), cell).hidden = true;
+				for (Heap heap : com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomEquipmentHooks.dropGenerated(this, Generator.randomUsingDefaults(), cell, null, false))heap.hidden=true;
 			}
 		Random.popGenerator();
 
@@ -721,6 +732,8 @@ public abstract class RegularLevel extends Level {
 		return null;
 	}
 	
+	public boolean apdHasRooms() { return rooms != null; }
+
 	public Room room( int pos ) {
 		for (Room room : rooms) {
 			if (room.inside( cellToPoint(pos) )) {
@@ -904,6 +917,28 @@ public abstract class RegularLevel extends Level {
 				roomEntrance = r;
 			} else if (r.isExit()){
 				roomExit = r;
+			}
+		}
+		if (Dungeon.depth == 1 && Dungeon.branch == 0) repairTutorialEntrance();
+	}
+
+	@Override
+	public void create(){
+		super.create();
+		//Only after seeded painting, mobs and items are complete: avoid changing generation decisions.
+		if (Dungeon.depth == 1 && Dungeon.branch == 0) repairTutorialEntrance();
+	}
+
+	//Old floor-1 saves retain forced tutorial doors even after intro is cleared.
+	//Only entrance-room boundary doors are repaired; all other secrets and history stay untouched.
+	public void repairTutorialEntrance(){
+		if (roomEntrance == null) return;
+		for (int y = roomEntrance.top; y <= roomEntrance.bottom; y++){
+			for (int x = roomEntrance.left; x <= roomEntrance.right; x++){
+				if (x != roomEntrance.left && x != roomEntrance.right && y != roomEntrance.top && y != roomEntrance.bottom) continue;
+				if (x < 0 || x >= width() || y < 0 || y >= height()) continue;
+				int cell = x + y * width();
+				if (map[cell] == Terrain.SECRET_DOOR) Level.set(cell, Terrain.DOOR, this);
 			}
 		}
 	}

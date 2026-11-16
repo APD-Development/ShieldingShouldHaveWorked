@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -55,7 +58,20 @@ public abstract class Plant implements Bundlable {
 	public int image;
 	public int pos;
 
+	private com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin apdOrigin =
+			com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin.UNATTRIBUTED;
+	private static final String APD_ORIGIN = "apd_plant_origin";
+
 	protected Class<? extends Plant.Seed> seedClass;
+
+	public final com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin apdOrigin() {
+		return apdOrigin;
+	}
+
+	private void apdOrigin(com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin origin) {
+		if (origin == null) throw new IllegalArgumentException("Missing plant origin");
+		apdOrigin = origin;
+	}
 
 	public void trigger(){
 
@@ -111,11 +127,13 @@ public abstract class Plant implements Bundlable {
 	@Override
 	public void restoreFromBundle( Bundle bundle ) {
 		pos = bundle.getInt( POS );
+		apdOrigin = com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin.restore(bundle, APD_ORIGIN);
 	}
 
 	@Override
 	public void storeInBundle( Bundle bundle ) {
 		bundle.put( POS, pos );
+		apdOrigin.store(bundle, APD_ORIGIN);
 	}
 
 	public String name(){
@@ -142,6 +160,9 @@ public abstract class Plant implements Bundlable {
 		}
 		
 		protected Class<? extends Plant> plantClass;
+
+        /** Visible seed species, without constructing or activating its plant. */
+        public Class<? extends Plant> plantType(){return plantClass;}
 		
 		@Override
 		public ArrayList<String> actions( Hero hero ) {
@@ -159,7 +180,7 @@ public abstract class Plant implements Bundlable {
 				super.onThrow( cell );
 			} else {
 				Catalog.countUse(getClass());
-				Dungeon.level.plant( this, cell );
+				Dungeon.level.plantAttributed( this, cell, apdThrownOrigin() );
 				if (Dungeon.hero.subClass == HeroSubClass.WARDEN) {
 					for (int i : PathFinder.NEIGHBOURS8) {
 						int c = Dungeon.level.map[cell + i];
@@ -182,7 +203,11 @@ public abstract class Plant implements Bundlable {
 			if (action.equals( AC_PLANT )) {
 
 				hero.busy();
-				((Seed)detach( hero.belongings.backpack )).onThrow( hero.pos );
+				Seed planted = (Seed)detach( hero.belongings.backpack );
+				if (planted != null) {
+					planted.apdThrowAttributed(hero.pos,
+							com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin.capture(hero, null));
+				}
 				hero.spend( TIME_TO_PLANT );
 
 				hero.sprite.operate( hero.pos );
@@ -196,7 +221,17 @@ public abstract class Plant implements Bundlable {
 			}
 			Plant plant = Reflection.newInstance(plantClass);
 			plant.pos = pos;
+			plant.apdOrigin(com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveEffectContext.current());
 			return plant;
+		}
+
+		public Plant couchAttributed(int pos, Level level,
+				com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin origin) {
+			if (origin == null) throw new IllegalArgumentException("Missing plant origin");
+			try (com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveEffectContext ignored =
+					com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveEffectContext.enter(origin)) {
+				return couch(pos, level);
+			}
 		}
 		
 		@Override
@@ -230,7 +265,7 @@ public abstract class Plant implements Bundlable {
 
 		@Override
 		public String info() {
-			return Messages.get( Seed.class, "info", super.info() );
+			return Messages.get( Seed.class, Dungeon.hero!=null&&Dungeon.isChallenged(Challenges.NO_HERBALISM)?"info_barren":"info", super.info() );
 		}
 		
 		public static class PlaceHolder extends Seed {

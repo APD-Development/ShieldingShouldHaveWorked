@@ -148,6 +148,7 @@ public class QueryEngineTest {
 		assertEquals(0, run(ds, b.addFilter(Filter.num("score", Op.EQ, 7))).stats.filters.get(0).uncertain);
 		//< 20 cannot be decided for the bound
 		assertEquals(1, run(ds, b.addFilter(Filter.num("score", Op.LT, 20))).stats.filters.get(0).uncertain);
+
 	}
 
 	@Test
@@ -345,4 +346,65 @@ public class QueryEngineTest {
 		assertEquals(q, QueryCodec.decode(QueryCodec.encode(q) + "future-thing\tvalue\n"));
 		assertEquals(Query.of("things"), QueryCodec.decode(QueryCodec.encode(Query.of("things"))));
 	}
+
+    @Test
+    public void sortingLongExtremesKeepsUnknownLastAndEqualValuesStable(){
+        List<Row> rows=Arrays.asList(
+            row(def,"1","minimum",Long.MIN_VALUE,0L,null,true,R),
+            row(def,"2","maximum",Long.MAX_VALUE,0L,null,true,R),
+            row(def,"3","equal-first",Long.MAX_VALUE,0L,null,true,R),
+            row(def,"4","unknown",null,0L,null,true,R),
+            row(def,"5","zero",0L,0L,null,true,R));
+        Dataset ds=dataset(def,rows);
+        assertEquals(Arrays.asList("minimum","zero","maximum","equal-first","unknown"),
+            names(run(ds,Query.of("things").withSorts(Arrays.asList(new Sort("score",false))))));
+        assertEquals(Arrays.asList("maximum","equal-first","zero","minimum","unknown"),
+            names(run(ds,Query.of("things").withSorts(Arrays.asList(new Sort("score",true))))));
+        assertEquals("minimum",ds.rows.get(0).text(NAME));
+    }
+
+    @Test
+    public void extremeBoundaryFilteringAndEmptyResultsDoNotMutateHistory(){
+        List<Row> rows=Arrays.asList(
+            row(def,"1","minimum",Long.MIN_VALUE,0L,null,true,R),
+            row(def,"2","maximum",Long.MAX_VALUE,0L,null,true,R),
+            row(def,"3","unknown",null,0L,null,true,R));
+        Dataset ds=dataset(def,rows);
+        Query q=Query.of("things").withColumns(Arrays.asList("score","name"))
+            .withSorts(Arrays.asList(new Sort("score",true)));
+        assertEquals(Arrays.asList("maximum"),names(run(ds,q.addFilter(Filter.num("score",Op.GE,Long.MAX_VALUE)))));
+        assertEquals(Arrays.asList("minimum"),names(run(ds,q.addFilter(Filter.num("score",Op.LE,Long.MIN_VALUE)))));
+        QueryResult empty=run(ds,q.addFilter(Filter.num("score",Op.GT,Long.MAX_VALUE)));
+        assertTrue(empty.rows.isEmpty());
+        assertEquals(1,empty.stats.filters.get(0).unknown);
+        assertEquals(3,run(ds,Query.of("things")).rows.size());
+        assertEquals(Long.MIN_VALUE,ds.rows.get(0).num(SCORE));
+        assertEquals(Long.MAX_VALUE,ds.rows.get(1).num(SCORE));
+    }
+	@Test
+	public void queryCodecPreservesAllEscapedFieldsAndEmptyTextCardinality(){
+		String odd = "tab\tnewline\npipe|slash\\tail";
+		Aggregate detailed = new Aggregate(Aggregate.Fn.RATE, odd, Long.MIN_VALUE, "", odd, Long.MAX_VALUE, odd, odd);
+		Query q = new Query(odd, Scope.DEFAULT.withRules(Scope.Rules.SPECIFIC, odd),
+				Arrays.asList(Filter.text(odd, Op.IN, "", odd), Filter.text("single", Op.EQ, ""), Filter.known("none")),
+				Arrays.asList(new Sort(odd, true)), Arrays.asList(odd),
+				new GroupBy(Arrays.asList(odd), Arrays.asList(detailed, Aggregate.ratio(odd, "den" + odd))),
+				true, Integer.MAX_VALUE);
+
+		Query back = QueryCodec.decode(QueryCodec.encode(q));
+
+		assertEquals(q, back);
+		assertEquals(2, back.filters.get(0).texts.length);
+		assertEquals("", back.filters.get(0).texts[0]);
+		assertEquals(odd, back.filters.get(0).texts[1]);
+		assertEquals(1, back.filters.get(1).texts.length);
+		assertEquals("", back.filters.get(1).texts[0]);
+		assertEquals(0, back.filters.get(2).texts.length);
+		assertEquals(odd, back.group.aggregates.get(0).label);
+		assertEquals(Long.MIN_VALUE, back.group.aggregates.get(0).target);
+		assertEquals(Long.MAX_VALUE, back.group.aggregates.get(0).whereValue);
+		assertEquals("den" + odd, back.group.aggregates.get(1).over);
+		assertEquals(QueryCodec.encode(q), QueryCodec.encode(back));
+	}
+
 }

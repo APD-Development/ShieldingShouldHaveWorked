@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -50,22 +53,22 @@ public class Healing extends Buff {
 	
 	@Override
 	public boolean act(){
+		int apdHpBefore = target.HP;
 
 		if (target.HP < target.HT) {
-			int apdHpBefore = target.HP;
-			target.HP = Math.min(target.HT, target.HP + healingThisTick());
+			target.HP = Math.min(target.HT, target.HP + com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomHealingHooks.amount(target, healingThisTick()));
 
-			if (target.HP == target.HT && target instanceof Hero) {
+			if (target.HP == target.HT && target instanceof Hero && com.shatteredpixel.shatteredpixeldungeon.SPDSettings.waitStopFullHealth()) {
 				((Hero) target).resting = false;
 			}
 			ApdCombat.onHeal( target, apdHpBefore, ApdCombat.HEAL_POTION_HEALING, -1 );
 		}
 
-		target.sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(healingThisTick()), FloatingText.HEALING);
+		target.sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomHealingHooks.display(target, apdHpBefore, healingThisTick())), FloatingText.HEALING);
 		healingLeft -= healingThisTick();
 		
 		if (healingLeft <= 0){
-			if (target instanceof Hero) {
+			if (target instanceof Hero && (target.HP < target.HT || com.shatteredpixel.shatteredpixeldungeon.SPDSettings.waitStopFullHealth())) {
 				((Hero) target).resting = false;
 			}
 			detach();
@@ -76,6 +79,12 @@ public class Healing extends Buff {
 		return true;
 	}
 	
+	public int remainingHealingPool(){return healingLeft;}
+    public float healingRate(){return percentHealPerTick;}
+    public int flatHealing(){return flatHealPerTick;}
+    public int healingPerTickLimit(){return bloodVialLimitingLevel==-1?Integer.MAX_VALUE:VialOfBlood.maxHealPerTurn(bloodVialLimitingLevel);}
+    public int nextRequestedHealing(){return healingThisTick();}
+
 	private int healingThisTick(){
 		int heal = (int)GameMath.gate(1,
 				Math.round(healingLeft * percentHealPerTick) + flatHealPerTick,
@@ -155,3 +164,4 @@ public class Healing extends Buff {
 		return Messages.get(this, "desc", healingThisTick(), healingLeft);
 	}
 }
+

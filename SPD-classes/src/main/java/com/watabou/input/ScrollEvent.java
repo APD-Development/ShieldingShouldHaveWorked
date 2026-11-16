@@ -27,6 +27,9 @@ import com.watabou.utils.Signal;
 import java.util.ArrayList;
 
 public class ScrollEvent {
+    public final long diagnosticId=com.watabou.utils.SupportDiagnostics.nextInputId();
+    public final long queuedNanos=System.nanoTime();
+    public long sourceEventNanos; // GDX backend timestamp when available; zero means unknown.
 	
 	public PointF pos;
 	public float amount;
@@ -56,8 +59,14 @@ public class ScrollEvent {
 	
 	//Accumulated key events
 	private static ArrayList<ScrollEvent> scrollEvents = new ArrayList<>();
+
+	public static synchronized void discardPendingEvents(){
+        if(!scrollEvents.isEmpty())com.watabou.utils.SupportDiagnostics.event("input.discard","wheel_queued="+scrollEvents.size());
+        scrollEvents.clear();
+    }
 	
 	public static synchronized void addScrollEvent( ScrollEvent event ){
+        com.watabou.utils.SupportDiagnostics.input("queued","wheel",event.diagnosticId,event.queuedNanos,event.sourceEventNanos);
 		scrollEvents.add( event );
 	}
 	
@@ -67,9 +76,11 @@ public class ScrollEvent {
 		}
 
 		for (ScrollEvent k : scrollEvents){
+            com.watabou.utils.SupportDiagnostics.input("dispatched","wheel",k.diagnosticId,k.queuedNanos,k.sourceEventNanos);
 			scrollSignal.dispatch(k);
 		}
 		scrollEvents.clear();
 	}
 	
 }
+

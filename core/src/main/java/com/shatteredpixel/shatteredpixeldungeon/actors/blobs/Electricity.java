@@ -45,10 +45,51 @@ public class Electricity extends Blob {
 	}
 	
 	private boolean[] water;
+	private com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CellDamageOrigins apdOrigins = new com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CellDamageOrigins();
+	private static final String APD_ORIGINS = "apd_electric_origins";
+
+	public static Electricity seedAttributed(int cell, int amount, com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin origin) {
+		try (com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveEffectContext ignored =
+				 com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveEffectContext.enter(origin)) {
+			return Blob.seed(cell, amount, Electricity.class);
+		}
+	}
+
+	@Override
+	public void seed(com.shatteredpixel.shatteredpixeldungeon.levels.Level level, int cell, int amount) {
+		apdOrigins.seed(cur, level.length(), cell, amount,
+				com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveEffectContext.current());
+		super.seed(level, cell, amount);
+	}
+
+	@Override
+	public void clear(int cell) {
+		super.clear(cell);
+		apdOrigins.clear(cell);
+	}
+
+	@Override
+	public void fullyClear() {
+		super.fullyClear();
+		apdOrigins.clearAll();
+	}
+
+	@Override
+	public void storeInBundle(com.watabou.utils.Bundle bundle) {
+		super.storeInBundle(bundle);
+		if (volume > 0) apdOrigins.store(bundle, APD_ORIGINS, cur);
+		else com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CellDamageOrigins.clearMetadata(bundle, APD_ORIGINS);
+	}
+
+	@Override
+	public void restoreFromBundle(com.watabou.utils.Bundle bundle) {
+		super.restoreFromBundle(bundle);
+		apdOrigins = com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CellDamageOrigins.restore(bundle, APD_ORIGINS, cur);
+	}
 	
 	@Override
 	protected void evolve() {
-		
+		apdOrigins.synchronize(cur);
 		water = Dungeon.level.water;
 		int cell;
 		
@@ -74,7 +115,7 @@ public class Electricity extends Blob {
 							Buff.prolong( ch, Paralysis.class, cur[cell]);
 						}
 						if (cur[cell] % 2 == 1) {
-							ch.damage(Math.round(Random.Float(2 + Dungeon.scalingDepth() / 5f)), this);
+							ch.damage(apdOrigins.scale(Math.round(Random.Float(2 + Dungeon.scalingDepth() / 5f)), cell), this);
 							if (!ch.isAlive() && ch == Dungeon.hero){
 								Dungeon.fail( this );
 								GLog.n( Messages.get(this, "ondeath") );
@@ -99,6 +140,8 @@ public class Electricity extends Blob {
 				}
 			}
 		}
+		apdOrigins.synchronize(off);
+		apdOrigins.discardIfUnattributed();
 		
 	}
 	
@@ -110,6 +153,7 @@ public class Electricity extends Blob {
 		
 		for (int c : PathFinder.NEIGHBOURS4){
 			if (water[cell + c] && cur[cell + c] < power){
+				apdOrigins.inheritMax(cur, cell, cell + c, power);
 				spreadFromCell(cell + c, power);
 			}
 		}

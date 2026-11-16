@@ -40,11 +40,15 @@ public class SubmissionQueueTest {
 	public TemporaryFolder tmp = new TemporaryFolder();
 
 	private void log( String runId, boolean finished, int difficulty, int segment ){
+		log(runId, finished, difficulty, segment, "MAGE");
+	}
+
+	private void log( String runId, boolean finished, int difficulty, int segment, String heroClass ){
 		File f = new StatsStore(tmp.getRoot()).logFile(runId);
 		f.getParentFile().mkdirs();
 		RunLogWriter w = RunLogWriter.create(f, TelemetryVersion.CURRENT, runId, "test", 1);
 		LifecycleEvents.RunStart s = new LifecycleEvents.RunStart();
-		s.runId = runId; s.segment = segment; s.heroClass = "MAGE"; s.rulesetId = "exotic30"; s.exoticChance = 30; s.apdVersionName = "4.0.8-apd";
+		s.runId = runId; s.segment = segment; s.heroClass = heroClass; s.rulesetId = "exotic30"; s.exoticChance = 30; s.apdVersionName = "4.0.8-apd";
 		s.difficulty = difficulty; s.difficultyBalance = 0;
 		LifecycleEvents.emitRunStart(w, 1, false, s);
 		if (finished){
@@ -64,6 +68,198 @@ public class SubmissionQueueTest {
 		assertEquals("queuing it again does not duplicate it", SubmissionQueue.Result.ALREADY_QUEUED, SubmissionQueue.enqueueRun(tmp.getRoot(), "run-a", "4.0.8-apd", 200).result);
 		assertEquals(1, SubmissionQueue.pending(tmp.getRoot()));
 		assertTrue(SubmissionQueue.fileIn(tmp.getRoot()).exists());
+	}
+
+	@Test
+	public void addInspectRemovePersistsAndNeverChangesHistory() throws Exception {
+		log("warrior-run", true, 3, 0, "WARRIOR");
+		File root = tmp.getRoot();
+		File run = new StatsStore(root).logFile("warrior-run");
+		byte[] original = java.nio.file.Files.readAllBytes(run.toPath());
+		File statistics = new File(root, "player-statistics-sentinel");
+		java.nio.file.Files.write(statistics.toPath(), new byte[]{1, 2, 3});
+		assertEquals(SubmissionQueue.Result.QUEUED, SubmissionQueue.enqueueRun(root, "warrior-run", "test", 10).result);
+		byte[] queued = java.nio.file.Files.readAllBytes(SubmissionQueue.fileIn(root).toPath());
+		assertEquals(SubmissionQueue.Result.ALREADY_QUEUED, SubmissionQueue.enqueueRun(root, "warrior-run", "new-build", 20).result);
+		assertArrayEquals(queued, java.nio.file.Files.readAllBytes(SubmissionQueue.fileIn(root).toPath()));
+		//Every query reopens the on-disk outbox: no in-memory queue carries this state.
+		File reopenedRoot = new File(root.getCanonicalPath());
+		assertEquals(1, SubmissionQueue.pending(reopenedRoot));
+		assertEquals(1, SubmissionQueue.entries(reopenedRoot).size());
+		assertTrue(SubmissionQueue.preview(reopenedRoot, "warrior-run").contains("runId=warrior-run"));
+		assertTrue(SubmissionQueue.preview(reopenedRoot, "warrior-run").contains("WARRIOR"));
+		assertTrue(SubmissionQueue.withdraw(reopenedRoot, "warrior-run"));
+		assertFalse(SubmissionQueue.withdraw(reopenedRoot, "warrior-run"));
+		assertEquals(0, SubmissionQueue.pending(new File(root.getCanonicalPath())));
+		assertNull(SubmissionQueue.preview(root, "warrior-run"));
+		assertTrue(SubmissionQueue.entries(root).isEmpty());
+		assertArrayEquals(original, java.nio.file.Files.readAllBytes(run.toPath()));
+		assertArrayEquals(new byte[]{1, 2, 3}, java.nio.file.Files.readAllBytes(statistics.toPath()));
+		assertFalse("local queue operations do not record a transmission", SubmittedLedger.fileIn(root).exists());
+	}
+
+	@Test
+	public void missingRootAndInvalidIdsNeverReferToARelativeQueue(){
+		assertEquals(0, SubmissionQueue.pending(null));
+		assertFalse(SubmissionQueue.isQueued(tmp.getRoot(), null));
+		assertNull(SubmissionQueue.preview(tmp.getRoot(), "../bad"));
+		assertFalse(SubmissionQueue.withdraw(tmp.getRoot(), null));
+	}
+
+	@Test
+	public void queueCanBeInspectedAndRemovedByFreshJavaProcesses() throws Exception {
+		log("warrior-restart", true, 3, 0, "WARRIOR");
+		File root = tmp.getRoot();
+		File log = new StatsStore(root).logFile("warrior-restart");
+		byte[] original = java.nio.file.Files.readAllBytes(log.toPath());
+		assertEquals(SubmissionQueue.Result.QUEUED, SubmissionQueue.enqueueRun(root, "warrior-restart", "test", 100).result);
+		probe(root, "inspect", 1);
+		probe(root, "remove", 1);
+		probe(root, "inspect", 0);
+		assertEquals(0, SubmissionQueue.pending(root));
+		assertArrayEquals(original, java.nio.file.Files.readAllBytes(log.toPath()));
+		assertFalse(SubmittedLedger.fileIn(root).exists());
+	}
+
+	private void probe(File root, String operation, int expected) throws Exception {
+		String separator = File.pathSeparator;
+		String classpath = System.getProperty("java.class.path") + separator
+				+ new File(SubmissionQueueTest.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getPath() + separator
+				+ new File(SubmissionQueue.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getPath();
+		String javaBinary = new File(System.getProperty("java.home"), "bin/java").getPath();
+		Process process = new ProcessBuilder(javaBinary, "-cp", classpath, QueueRestartProbe.class.getName(),
+				root.getCanonicalPath(), operation, Integer.toString(expected)).redirectErrorStream(true).start();
+		if (!process.waitFor(15, java.util.concurrent.TimeUnit.SECONDS)) {
+			process.destroyForcibly();
+			fail("fresh-process queue check timed out");
+		}
+		String output = new String(process.getInputStream().readAllBytes(), java.nio.charset.StandardCharsets.UTF_8);
+		assertEquals(output, 0, process.exitValue());
+	}
+
+	private byte[] damagedQueue() throws Exception {
+		log("run-a", true, 3, 0);
+		assertEquals(SubmissionQueue.Result.QUEUED, SubmissionQueue.enqueueRun(tmp.getRoot(), "run-a", "test", 1).result);
+		File file = SubmissionQueue.fileIn(tmp.getRoot());
+		java.nio.file.Files.writeString(file.toPath(), "damaged queue entry\n", java.nio.file.StandardOpenOption.APPEND);
+		return java.nio.file.Files.readAllBytes(file.toPath());
+	}
+
+	@Test
+	public void damagedQueueCannotBeSilentlyRewrittenWhenAddingARun() throws Exception {
+		byte[] before = damagedQueue();
+		log("run-b", true, 3, 0);
+		assertEquals(SubmissionQueue.Result.FAILED, SubmissionQueue.enqueueRun(tmp.getRoot(), "run-b", "test", 2).result);
+		assertArrayEquals(before, java.nio.file.Files.readAllBytes(SubmissionQueue.fileIn(tmp.getRoot()).toPath()));
+	}
+
+	@Test
+	public void damagedQueueCannotBeSilentlyRewrittenWhenRemovingARun() throws Exception {
+		byte[] before = damagedQueue();
+		assertFalse(SubmissionQueue.withdraw(tmp.getRoot(), "run-a"));
+		assertArrayEquals(before, java.nio.file.Files.readAllBytes(SubmissionQueue.fileIn(tmp.getRoot()).toPath()));
+	}
+
+	@Test
+	public void damagedQueueDoesNotContactAGatewayOrLoseItsOriginalBytes() throws Exception {
+		byte[] before = damagedQueue();
+		final int[] contacted = {0};
+		com.shatteredpixel.shatteredpixeldungeon.apd.backend.Gateway gateway = (key, envelope) -> {
+			contacted[0]++;
+			return new com.shatteredpixel.shatteredpixeldungeon.apd.backend.Gateway.Response(
+					com.shatteredpixel.shatteredpixeldungeon.apd.backend.Gateway.Status.OK, "");
+		};
+		assertEquals(0, SubmissionQueue.flush(tmp.getRoot(), gateway, 100, true).sent);
+		assertEquals(0, contacted[0]);
+		assertArrayEquals(before, java.nio.file.Files.readAllBytes(SubmissionQueue.fileIn(tmp.getRoot()).toPath()));
+	}
+
+	@Test
+	public void damageDuringAcknowledgedSendPreservesQueueAndReportsActualTransmission() throws Exception {
+		log("run-a", true, 3, 0);
+		SubmissionQueue.enqueueRun(tmp.getRoot(), "run-a", "test", 1);
+		final byte[][] damaged = {null};
+		com.shatteredpixel.shatteredpixeldungeon.apd.backend.Gateway gateway = (key, envelope) -> {
+			try {
+				File file = SubmissionQueue.fileIn(tmp.getRoot());
+				java.nio.file.Files.writeString(file.toPath(), "damaged entry\n", java.nio.file.StandardOpenOption.APPEND);
+				damaged[0] = java.nio.file.Files.readAllBytes(file.toPath());
+			} catch (java.io.IOException e) { throw new AssertionError(e); }
+			return new com.shatteredpixel.shatteredpixeldungeon.apd.backend.Gateway.Response(
+					com.shatteredpixel.shatteredpixeldungeon.apd.backend.Gateway.Status.OK, "");
+		};
+		assertEquals("a successful gateway acknowledgement is not an unsent result", 1,
+				SubmissionQueue.flush(tmp.getRoot(), gateway, 100, true).sent);
+		assertNotNull(SubmittedLedger.get(tmp.getRoot(), "run-a"));
+		assertArrayEquals(damaged[0], java.nio.file.Files.readAllBytes(SubmissionQueue.fileIn(tmp.getRoot()).toPath()));
+	}
+
+	@Test
+	public void privacyReportsUnreadableQueueInsteadOfClaimingItIsEmpty() throws Exception {
+		File queue = SubmissionQueue.fileIn(tmp.getRoot());
+		java.nio.file.Files.writeString(queue.toPath(), "broken entry\n");
+		String text = String.join(" ", PrivacySummary.of(tmp.getRoot()).lines());
+		assertTrue(text, text.contains("unreadable entries"));
+		assertFalse(text, text.contains("No runs are queued") || text.contains("No items are queued"));
+		assertEquals("broken entry\n", java.nio.file.Files.readString(queue.toPath()));
+	}
+
+	@Test
+	public void privacyReportsUnknownCountWhenQueueIsNotReadable() throws Exception {
+		assertTrue(SubmissionQueue.fileIn(tmp.getRoot()).mkdir());
+		String text = String.join(" ", PrivacySummary.of(tmp.getRoot()).lines());
+		assertTrue(text, text.contains("count is unknown"));
+	}
+
+	@Test
+	public void manualSendReportsDamagedQueueBeforeStartingNetworkWork() throws Exception {
+		damagedQueue();
+		final String[] result = {null};
+		BackendClient.sendNow(tmp.getRoot(), true, "http://127.0.0.1:1", message -> result[0] = message);
+		assertNotNull("the refusal happens before any background sender is started", result[0]);
+		assertTrue(result[0], result[0].contains("unreadable entries"));
+		assertTrue(result[0], result[0].contains("Nothing was sent"));
+	}
+
+	@Test
+	public void repeatedPersistedQueueIdsAreDiagnosedWithoutRewritingTheFile() throws Exception {
+		log("run-a", true, 3, 0);
+		SubmissionQueue.enqueueRun(tmp.getRoot(), "run-a", "test", 1);
+		File file = SubmissionQueue.fileIn(tmp.getRoot());
+		String line = java.nio.file.Files.readString(file.toPath());
+		java.nio.file.Files.writeString(file.toPath(), line, java.nio.file.StandardOpenOption.APPEND);
+		byte[] before = java.nio.file.Files.readAllBytes(file.toPath());
+		assertNotNull(SubmissionQueue.readProblem(tmp.getRoot()));
+		assertEquals(1, SubmissionQueue.pending(tmp.getRoot()));
+		assertFalse(SubmissionQueue.withdraw(tmp.getRoot(), "run-a"));
+		assertArrayEquals(before, java.nio.file.Files.readAllBytes(file.toPath()));
+	}
+
+	@Test
+	public void privacyDoesNotCallSettingsOrEvidenceQueueEntriesFinishedRuns() {
+		assertTrue(SubmissionQueue.enqueueEnvelope(tmp.getRoot(),
+				com.shatteredpixel.shatteredpixeldungeon.apd.backend.Id.of(
+						com.shatteredpixel.shatteredpixeldungeon.apd.backend.Id.Kind.OUTBOX, "settings"),
+				new com.shatteredpixel.shatteredpixeldungeon.apd.backend.Envelope("apd.settings-sync", 1, 0, ""), 1));
+		String text = String.join(" ", PrivacySummary.of(tmp.getRoot()).lines());
+		assertTrue(text, text.contains("1 item is queued"));
+		assertFalse(text, text.contains("finished run is queued") || text.contains("never the full history"));
+	}
+
+	//No Android claim: this checks the actual queue after JVM static state has been discarded.
+	public static final class QueueRestartProbe {
+		public static void main(String[] args) {
+			File root = new File(args[0]);
+			int expected = Integer.parseInt(args[2]);
+			if (SubmissionQueue.pending(root) != expected || SubmissionQueue.entries(root).size() != expected)
+				throw new AssertionError("queue count after restart");
+			String preview = SubmissionQueue.preview(root, "warrior-restart");
+			if (expected == 1 && (preview == null || !preview.contains("runId=warrior-restart") || !preview.contains("WARRIOR")))
+				throw new AssertionError("queue preview after restart");
+			if (expected == 0 && preview != null) throw new AssertionError("removed queue entry returned");
+			if (args[1].equals("remove") && !SubmissionQueue.withdraw(root, "warrior-restart"))
+				throw new AssertionError("queue removal after restart");
+		}
 	}
 
 	@Test
@@ -138,7 +334,7 @@ public class SubmissionQueueTest {
 		assertEquals(1, s.queued);
 		String all = String.join(" ", s.lines());
 		assertTrue(all.contains("Nothing is sent anywhere"));
-		assertTrue(all.contains("1 finished run is queued"));
+		assertTrue(all.contains("1 item is queued"));
 		assertTrue("when sending is on it says it is still manual", String.join(" ", s.lines(true)).contains("only when you press"));
 		assertEquals("a missing folder is simply empty", 0, PrivacySummary.of(null).runLogs);
 	}
@@ -235,4 +431,42 @@ public class SubmissionQueueTest {
 		assertFalse("a run that was only sent is not shown as queued", text.contains("ob_run-a"));
 		assertTrue(text.contains("Nothing is sent anywhere"));
 	}
+	@Test public void aReplacementQueuedDuringAFlushKeepsItsOwnPayloadAndRetryState() throws Exception {
+		com.shatteredpixel.shatteredpixeldungeon.apd.backend.Envelope[] replacements = {
+				new com.shatteredpixel.shatteredpixeldungeon.apd.backend.Envelope("apd.settings-sync", 1, 0, "new"),
+				new com.shatteredpixel.shatteredpixeldungeon.apd.backend.Envelope("apd.settings-sync", 1, 0, "old"),
+				new com.shatteredpixel.shatteredpixeldungeon.apd.backend.Envelope("apd.settings-sync", 1, 1, "old")};
+		long[] created = {100, 200, 100};
+		for (int variant = 0; variant < replacements.length; variant++) {
+			final com.shatteredpixel.shatteredpixeldungeon.apd.backend.Envelope replacement = replacements[variant];
+			final long replacementTime = created[variant];
+			for (com.shatteredpixel.shatteredpixeldungeon.apd.backend.Gateway.Status status : new com.shatteredpixel.shatteredpixeldungeon.apd.backend.Gateway.Status[]{
+					com.shatteredpixel.shatteredpixeldungeon.apd.backend.Gateway.Status.OK,
+					com.shatteredpixel.shatteredpixeldungeon.apd.backend.Gateway.Status.REJECTED,
+					com.shatteredpixel.shatteredpixeldungeon.apd.backend.Gateway.Status.RETRY_LATER}) {
+				File root = tmp.newFolder(status.name() + variant);
+				com.shatteredpixel.shatteredpixeldungeon.apd.backend.Id id = com.shatteredpixel.shatteredpixeldungeon.apd.backend.Id.of(
+						com.shatteredpixel.shatteredpixeldungeon.apd.backend.Id.Kind.OUTBOX, "ob_changed");
+				assertTrue(SubmissionQueue.enqueueEnvelope(root, id,
+						new com.shatteredpixel.shatteredpixeldungeon.apd.backend.Envelope("apd.settings-sync", 1, 0, "old"), 100));
+				//An in-memory gateway only: no server, connection or network traffic.
+				com.shatteredpixel.shatteredpixeldungeon.apd.backend.Gateway gateway = (key, envelope) -> {
+					assertEquals("old", envelope.payload);
+					assertTrue(SubmissionQueue.replaceEnvelope(root, id, replacement, replacementTime));
+					return new com.shatteredpixel.shatteredpixeldungeon.apd.backend.Gateway.Response(status, "old outcome");
+				};
+				SubmissionQueue.flush(root, gateway, 1000, true);
+				assertEquals(status.name() + variant, 1, SubmissionQueue.pending(root));
+				com.shatteredpixel.shatteredpixeldungeon.apd.backend.Outbox stored = new com.shatteredpixel.shatteredpixeldungeon.apd.backend.Outbox();
+				com.shatteredpixel.shatteredpixeldungeon.apd.backend.OutboxStore.load(stored, SubmissionQueue.fileIn(root));
+				com.shatteredpixel.shatteredpixeldungeon.apd.backend.Outbox.Item item = stored.items().get(0);
+				assertEquals(replacement.payload, item.envelope.payload);
+				assertEquals(replacement.minor, item.envelope.minor);
+				assertEquals("replacement starts with its own retry state", 0, item.attempts);
+				assertEquals(replacementTime, item.nextAttemptAtMillis);
+				assertEquals("", item.lastDetail);
+			}
+		}
+	}
+
 }

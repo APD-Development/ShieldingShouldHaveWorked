@@ -95,6 +95,36 @@ public class OutboxStoreTest {
 	}
 
 	@Test
+	public void repeatedQueueIdsAreReportedAndCannotOverwriteTheFirstEntriesMetadata() throws Exception {
+		File file = new File(tmp.getRoot(), "duplicate.txt");
+		OutboxStore.save(sample(), file);
+		List<String> lines = Files.readAllLines(file.toPath(), StandardCharsets.UTF_8);
+		String[] duplicate = lines.get(0).split("\t", -1);
+		duplicate[2] = "99";
+		Files.writeString(file.toPath(), String.join("\t", duplicate)+"\n", java.nio.file.StandardOpenOption.APPEND);
+		Outbox box = new Outbox();
+		OutboxStore.Loaded loaded = OutboxStore.load(box, file);
+		assertEquals(2, loaded.items);
+		assertEquals(1, loaded.skipped);
+		assertEquals(3, box.items().get(0).attempts);
+	}
+
+	@Test
+	public void invalidFirstLineDoesNotPreventLaterValidEntryWithTheSameId() throws Exception {
+		File file = new File(tmp.getRoot(), "invalid-first.txt");
+		OutboxStore.save(sample(), file);
+		List<String> lines = Files.readAllLines(file.toPath(), StandardCharsets.UTF_8);
+		String[] damaged = lines.get(0).split("\t", -1);
+		damaged[2] = "not a number";
+		Files.writeString(file.toPath(), String.join("\t", damaged)+"\n"+String.join("\n", lines)+"\n");
+		Outbox box = new Outbox();
+		OutboxStore.Loaded loaded = OutboxStore.load(box, file);
+		assertEquals(2, loaded.items);
+		assertEquals(1, loaded.skipped);
+		assertEquals(3, box.items().get(0).attempts);
+	}
+
+	@Test
 	public void theOfflineGatewayChangesNothing(){
 		Outbox box = sample();
 		Outbox.FlushResult r = box.flush(new OfflineGateway(), 10 * Backoff.MAX_MILLIS);

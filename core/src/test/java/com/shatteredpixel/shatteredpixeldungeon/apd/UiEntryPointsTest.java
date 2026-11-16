@@ -42,8 +42,13 @@ public class UiEntryPointsTest {
 		//every control must be added to the pane and positioned
 		for (String c : new String[]{"optExotic", "info", "chkRecord", "status", "btnTest", "btnImport", "btnUimsd", "storage", "btnExportHistory", "btnImportHistory"}){
 			assertTrue(c + " not added", pane.contains("add( " + c + " )"));
-			assertTrue(c + " not laid out", pane.contains(c + ".setRect(") || pane.contains(c + ".setPos("));
+			java.util.regex.Matcher route = java.util.regex.Pattern.compile("row\\(ApdSettingsSection\\.[A-Z]+,\\s*" + c + ",").matcher(pane);
+			int routes=0;while(route.find())routes++;
+			assertTrue(c + " must have exactly one reachable category route",routes==1);
 		}
+		assertTrue("Registered controls must be positioned by the category layout",pane.contains("r.control.setRect(x,pos,width,22)"));
+		assertTrue("Every category must be offered by the index",pane.contains("for(ApdSettingsSection choice:ApdSettingsSection.values())"));
+		assertTrue("Hidden sections cannot remain interactive",pane.contains("r.control.visible=r.control.active=false"));
 	}
 
 	@Test
@@ -53,7 +58,7 @@ public class UiEntryPointsTest {
 		assertTrue(title.contains("new WndAPDSettings()"));
 		assertTrue(title.contains("add( btnAPDSettings )"));
 		assertTrue("must be laid out", title.contains("btnAPDSettings.setRect("));
-		assertTrue("must fade with the rest of the menu", title.contains("btnAPDSettings, btnNews"));
+		assertTrue("must fade with the rest of the menu", title.contains("btnAPDSettings, btnCommunity, btnNews"));
 		String options = windows("WndSettings.java");
 		assertTrue("APD settings must stay out of Options", !options.contains("APDSettingsPane") && !options.contains("\"APD\""));
 	}
@@ -63,7 +68,9 @@ public class UiEntryPointsTest {
 		String title = scene("TitleScene.java");
 		assertTrue(title.contains("new APDMenuButton( \"UIMSD\", Icons.STATS"));
 		assertTrue("old name must be gone", !title.contains("new APDMenuButton( \"Statistics\""));
-		assertTrue(title.contains("ANNOTATION_TEXT = \"HEY, GO HERE FOR DRUGS\""));
+		assertTrue("no adult fallback outside its progression stage", title.contains("ANNOTATION_TEXT = \"\""));
+		assertTrue(title.contains("UimsdGate.titleAnnotation( ANNOTATION_TEXT )"));
+		assertTrue(title.contains("annotation.visible = !annotationText.isEmpty()"));
 		assertTrue(title.contains("add( annotation )"));
 		assertTrue("must be placed relative to the grid", title.contains("annotation.place("));
 		assertTrue("must fade with the menu", title.contains("annotation.alpha(alpha)"));

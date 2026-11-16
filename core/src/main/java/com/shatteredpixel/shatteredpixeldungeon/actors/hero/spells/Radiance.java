@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -66,18 +69,7 @@ public class Radiance extends ClericSpell {
 		}
 
 		for (Mob mob : Dungeon.level.mobs.toArray( new Mob[0] )) {
-			if (mob.alignment != Char.Alignment.ALLY && Dungeon.level.heroFOV[mob.pos]) {
-
-				if (mob.buff(GuidingLight.Illuminated.class) != null){
-					mob.damage(hero.lvl+5, GuidingLight.INSTANCE);
-				} else {
-					Buff.affect(mob, GuidingLight.Illuminated.class);
-					Buff.affect(mob, GuidingLight.WasIlluminatedTracker.class);
-				}
-				if (mob.isActive()) {
-					Buff.affect(mob, Paralysis.class, 3f);
-				}
-			}
+			affectVisibleMonster(hero, mob);
 		}
 
 		hero.spend( 1f );
@@ -86,5 +78,21 @@ public class Radiance extends ClericSpell {
 
 		onSpellCast(tome, hero);
 
+	}
+
+	/** Per-target effect step; casting retains its light, time and visual effects. */
+	public static void affectVisibleMonster(Hero hero, Mob mob){
+		if (mob.alignment != Char.Alignment.ALLY && Dungeon.level.heroFOV[mob.pos]) {
+
+			if (mob.buff(GuidingLight.Illuminated.class) != null){
+				com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomOffensiveHooks.raw(mob,hero.lvl+5,GuidingLight.INSTANCE,hero);
+			} else {
+				Buff.affect(mob, GuidingLight.Illuminated.class);
+				Buff.affect(mob, GuidingLight.WasIlluminatedTracker.class);
+			}
+			if (mob.isActive()) {
+				Buff.affect(mob, Paralysis.class, 3f);
+			}
+		}
 	}
 }

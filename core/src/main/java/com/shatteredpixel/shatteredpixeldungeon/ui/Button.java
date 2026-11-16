@@ -44,7 +44,18 @@ public class Button extends Component {
 	//only one button should be pressed at a time
 	protected static Button pressedButton;
 	protected float pressTime;
+	private boolean pressStartedThisUpdate;
 	protected boolean clickReady;
+
+	public static void cancelPressedButton(){
+		Button button = pressedButton;
+		pressedButton = null;
+		if (button != null){
+			button.clickReady = false;
+			button.hotArea.reset();
+			button.onPointerUp();
+		}
+	}
 
 	@Override
 	protected void createChildren() {
@@ -53,6 +64,7 @@ public class Button extends Component {
 			protected void onPointerDown( PointerEvent event ) {
 				pressedButton = Button.this;
 				pressTime = 0;
+				pressStartedThisUpdate = true;
 				clickReady = true;
 				Button.this.onPointerDown();
 			}
@@ -69,6 +81,7 @@ public class Button extends Component {
 			@Override
 			protected void onClick( PointerEvent event ) {
 				if (clickReady) {
+                    com.watabou.utils.SupportActionJournal.record("ui.click", "control="+Button.this.getClass().getName());
 					killTooltip();
 					switch (event.button){
 						case PointerEvent.LEFT: default:
@@ -122,10 +135,11 @@ public class Button extends Component {
 		KeyEvent.addKeyListener( keyListener = new Signal.Listener<KeyEvent>() {
 			@Override
 			public boolean onSignal ( KeyEvent event ) {
-				if ( active && KeyBindings.getActionForKey( event ) == keyAction()){
+				if ( isActive() && KeyBindings.getActionForKey( event ) == keyAction()){
 					if (event.pressed){
 						pressedButton = Button.this;
 						pressTime = 0;
+						pressStartedThisUpdate = true;
 						clickReady = true;
 						Button.this.onPointerDown();
 					} else {
@@ -159,7 +173,11 @@ public class Button extends Component {
 		
 		hotArea.active = visible;
 		
-		if (pressedButton == this && (pressTime += Game.elapsed) >= longClick) {
+		// Game.elapsed covers the interval before input was dispatched too.
+		// A fresh press must not inherit that pre-press frame time.
+		boolean justStarted = pressStartedThisUpdate;
+		pressStartedThisUpdate = false;
+		if (pressedButton == this && !justStarted && (pressTime += Game.elapsed) >= longClick) {
 			pressedButton = null;
 			if (onLongClick()) {
 
@@ -228,3 +246,4 @@ public class Button extends Component {
 	}
 	
 }
+

@@ -26,12 +26,14 @@ import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
+import com.shatteredpixel.shatteredpixeldungeon.apd.recorder.ApdPlay;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Light;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Sheep;
+import com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomOffensiveHooks;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Beam;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Pushing;
@@ -223,9 +225,9 @@ public class YogDzewa extends Mob {
 
 					if (hit( this, ch, true )) {
 						if (Dungeon.isChallenged(Challenges.STRONGER_BOSSES)) {
-							ch.damage(Random.NormalIntRange(30, 50), new Eye.DeathGaze());
+							CustomOffensiveHooks.raw(ch, Random.NormalIntRange(30, 50), new Eye.DeathGaze(), this);
 						} else {
-							ch.damage(Random.NormalIntRange(20, 30), new Eye.DeathGaze());
+							CustomOffensiveHooks.raw(ch, Random.NormalIntRange(20, 30), new Eye.DeathGaze(), this);
 						}
 						if (Dungeon.level.heroFOV[pos]) {
 							ch.sprite.flash();
@@ -245,7 +247,7 @@ public class YogDzewa extends Mob {
 
 			if (abilityCooldown <= 0){
 
-				int beams = 1 + (HT - HP)/400;
+				int beams = 1 + (HT - HP)/com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomBossHealthHooks.threshold(400);
 				HashSet<Integer> affectedCells = new HashSet<>();
 				for (int i = 0; i < beams; i++){
 
@@ -298,6 +300,7 @@ public class YogDzewa extends Mob {
 
 				Class<?extends Mob> cls = regularSummons.remove(0);
 				Mob summon = Reflection.newInstance(cls);
+                summon.apdInheritOffensiveOrigin(this);
 				regularSummons.add(cls);
 
 				int spawnPos = -1;
@@ -364,6 +367,7 @@ public class YogDzewa extends Mob {
 			summonCooldown = -15; //summon a burst of minions!
 			phase = 5;
 			BossHealthBar.bleed(true);
+			ApdPlay.onBossPhase(name(), phase, "final");
 			Game.runOnRenderThread(new Callback() {
 				@Override
 				public void call() {
@@ -397,9 +401,9 @@ public class YogDzewa extends Mob {
 		if (phase == 0 || findFist() != null) return;
 
 		if (phase < 4) {
-			HP = Math.max(HP, HT - 300 * phase);
+			HP = Math.max(HP, HT - com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomBossHealthHooks.threshold(300 * phase));
 		} else if (phase == 4) {
-			HP = Math.max(HP, 100);
+			HP = Math.max(HP, com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomBossHealthHooks.threshold(100));
 		}
 		int dmgTaken = preHP - HP;
 
@@ -408,9 +412,10 @@ public class YogDzewa extends Mob {
 			summonCooldown -= dmgTaken / 10f;
 		}
 
-		if (phase < 4 && HP <= HT - 300*phase){
+		if (phase < 4 && HP <= HT - com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomBossHealthHooks.threshold(300*phase)){
 
 			phase++;
+			ApdPlay.onBossPhase(name(), phase, "fist");
 
 			updateVisibility(Dungeon.level);
 			GLog.n(Messages.get(this, "darkness"));
@@ -440,6 +445,7 @@ public class YogDzewa extends Mob {
 	}
 
 	public void addFist(YogFist fist){
+        fist.apdInheritOffensiveOrigin(this);
 		fist.pos = Dungeon.level.exit();
 
 		CellEmitter.get(Dungeon.level.exit()-1).burst(ShadowParticle.UP, 25);
@@ -691,3 +697,4 @@ public class YogDzewa extends Mob {
 		}
 	}
 }
+

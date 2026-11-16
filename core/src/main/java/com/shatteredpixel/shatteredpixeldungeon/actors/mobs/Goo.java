@@ -25,6 +25,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
+import com.shatteredpixel.shatteredpixeldungeon.apd.recorder.ApdPlay;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
@@ -155,7 +156,7 @@ public class Goo extends Mob {
 	public int attackProc( Char enemy, int damage ) {
 		damage = super.attackProc( enemy, damage );
 		if (Random.Int( 3 ) == 0) {
-			Buff.affect( enemy, Ooze.class ).set( Ooze.DURATION );
+			Buff.affect( enemy, Ooze.class ).setAttributed( Ooze.DURATION, this );
 			enemy.sprite.burst( 0x000000, 5 );
 		}
 
@@ -271,6 +272,7 @@ public class Goo extends Mob {
 			sprite.showStatus(CharSprite.WARNING, Messages.get(this, "enraged"));
 			((GooSprite)sprite).spray(true);
 			yell(Messages.get(this, "gluuurp"));
+			ApdPlay.onBossPhase(name(), 2, "enraged");
 		}
 		LockedFloor lock = Dungeon.hero.buff(LockedFloor.class);
 		if (lock != null && !isImmune(src.getClass()) && !isInvulnerable(src.getClass())){
@@ -284,6 +286,7 @@ public class Goo extends Mob {
 		
 		super.die( cause );
 		
+		if(Dungeon.depth==5&&Dungeon.branch==0&&Dungeon.level instanceof com.shatteredpixel.shatteredpixeldungeon.levels.SewerBossLevel)((com.shatteredpixel.shatteredpixeldungeon.levels.SewerBossLevel)Dungeon.level).apdGooDefeated=true;
 		Dungeon.level.unseal();
 		
 		GameScene.bossSlain();

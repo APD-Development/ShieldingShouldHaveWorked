@@ -5,6 +5,9 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
+ * ADHD Pixel Dungeon
+ * Copyright (C) 2026 Chris Charlton
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -68,7 +71,7 @@ public class CryptRoom extends SpecialRoom {
 			cy = top + 2;
 		}
 		
-		level.drop( prize( level ), cx + cy * level.width() ).type = Heap.Type.TOMB;
+		com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomEquipmentHooks.dropGenerated(level, prize(level), cx + cy * level.width(), Heap.Type.TOMB, false);
 	}
 	
 	private static Item prize( Level level ) {
@@ -93,6 +96,7 @@ public class CryptRoom extends SpecialRoom {
 		}
 		prize.cursed = prize.cursedKnown = true;
 		
+		com.shatteredpixel.shatteredpixeldungeon.apd.qol.GenerationUpgradeRanges.curseConditionalBonus(prize);
 		return prize;
 	}
 }
