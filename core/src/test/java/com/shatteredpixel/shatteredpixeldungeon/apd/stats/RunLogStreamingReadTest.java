@@ -11,6 +11,7 @@ import org.junit.rules.TemporaryFolder;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.RandomAccessFile;
+import java.util.Arrays;
 
 public class RunLogStreamingReadTest {
 
@@ -88,6 +89,44 @@ public class RunLogStreamingReadTest {
 		assertEquals(ordinary.strings, identityBytes.strings);
 		assertArrayEquals(ordinary.events.get(0).payload,
 				RunLogReader.parse(LogTestSupport.bytes(file)).events.get(0).payload);
+	}
+
+
+	@Test
+	public void identityOnlyStreamingReusesEqualLengthFramesAndKeepsDifferentLengthsCorrect() throws Exception {
+		File file = new File(tmp.getRoot(), "repeated-frame-lengths.apdlog");
+		RunLogWriter writer = RunLogWriter.create(file, TelemetryVersion.CURRENT,
+				"repeated-frame-lengths", "test", 1234);
+		byte[] wide = new byte[4096];
+		byte[] narrow = new byte[19];
+		for (int i = 0; i < 768; i++){
+			// Runs of equal-size frames permit reuse; changing sizes must not
+			// expose stale bytes from an earlier, larger payload.
+			byte[] payload = (i / 8) % 3 == 0 ? narrow : wide;
+			Arrays.fill(payload, (byte) (i * 17));
+			writer.event(LogTestSupport.T_PLAIN).clock(i + 1).bytes(payload).emit();
+		}
+		writer.close();
+
+		ReadResult ordinary = RunLogReader.read(file);
+		ReadResult buffered = RunLogReader.parse(LogTestSupport.bytes(file));
+		assertEquivalent(buffered, ordinary);
+		ReadResult imported = RunLogReader.read(file, new ReadOptions().onlyRunStartEvents(true));
+		ReadResult parsed = RunLogReader.parse(LogTestSupport.bytes(file),
+				new ReadOptions().onlyRunStartEvents(true));
+		assertEquals(ReadStatus.SEALED, imported.status);
+		assertEquals(0, imported.events.size());
+		assertEquals(768, imported.eventCount);
+		assertEquals(ordinary.status, imported.status);
+		assertEquals(ordinary.eventCount, imported.eventCount);
+		assertEquals(ordinary.sealEventCount, imported.sealEventCount);
+		assertEquals(ordinary.lastClock, imported.lastClock);
+		assertEquals(ordinary.validBytes, imported.validBytes);
+		assertEquals(ordinary.strings, imported.strings);
+		assertEquals(parsed.status, imported.status);
+		assertEquals(parsed.eventCount, imported.eventCount);
+		assertEquals(parsed.sealEventCount, imported.sealEventCount);
+		assertEquals(parsed.validBytes, imported.validBytes);
 	}
 
 	private static void assertEquivalent( ReadResult expected, ReadResult actual ){
