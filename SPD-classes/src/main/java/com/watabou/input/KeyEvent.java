@@ -97,6 +97,8 @@ public class KeyEvent {
 
 		for (KeyEvent k : keyEvents){
             com.watabou.utils.SupportDiagnostics.input("dispatched",k.code==Input.Keys.BACK?"back":"key (value not recorded)",k.diagnosticId,k.queuedNanos,k.sourceEventNanos);
+            com.watabou.utils.SupportActionJournal.record("key.event",
+                    "id="+k.diagnosticId+" kind="+(k.code==Input.Keys.BACK?"back":"key_redacted")+" pressed="+k.pressed);
 			boolean tracedBack = k.pressed && k.code == Input.Keys.BACK && k.backTraceId != 0;
 			if (tracedBack) BackTrace.beginDispatch(k.backTraceId);
 			try {
