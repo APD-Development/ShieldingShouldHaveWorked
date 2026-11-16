@@ -65,6 +65,9 @@ public class MenuPane extends Component {
 	private Toolbar.PickedUpItem pickedUp;
 
 	private BitmapText version;
+	//APD Developer build: real-world clock under the version, left of the depth icon
+	private BitmapText clock;
+	private int clockMinute = -1;
 	private NinePatch versionOverflowBG;
 
 	private DangerIndicator danger;
@@ -84,6 +87,13 @@ public class MenuPane extends Component {
 		version = new BitmapText( "v" + Game.version , PixelScene.pixelFont);
 		version.hardlight( 0xCACFC2 );
 		add(version);
+
+		if (com.shatteredpixel.shatteredpixeldungeon.apd.ApdFeatures.testBuild()) {
+			clock = new BitmapText( "", PixelScene.pixelFont );
+			clock.hardlight( 0xCACFC2 );
+			add(clock);
+			updateClock();
+		}
 
 		depthIcon = Icons.get(Dungeon.level.feeling);
 		add(depthIcon);
@@ -207,9 +217,43 @@ public class MenuPane extends Component {
 			challengeButton.setRect(challengeIcon.x, challengeIcon.y, challengeIcon.width(), challengeIcon.height() + challengeText.height());
 		}
 
+		if (clock != null) layoutClock();
+
 		danger.setPos( x + WIDTH - danger.width(), y + bg.height + 1 );
 		danger.setSize( camera.width - danger.width(), danger.height());
 	}
+
+	private void layoutClock(){
+		clock.scale.set(PixelScene.align(0.67f));
+		clock.measure();
+		float right = (challengeIcon != null ? challengeIcon.x : depthIcon.x) - 2;
+		clock.x = right - clock.width();
+		clock.y = depthIcon.y + 1;
+		PixelScene.align(clock);
+	}
+
+	//only rebuilds the text when the minute changes
+	private void updateClock(){
+		java.util.Calendar now = java.util.Calendar.getInstance();
+		int minute = now.get(java.util.Calendar.HOUR_OF_DAY) * 60 + now.get(java.util.Calendar.MINUTE);
+		if (minute == clockMinute) return;
+		clockMinute = minute;
+		int hour = now.get(java.util.Calendar.HOUR);
+		if (hour == 0) hour = 12;
+		int m = now.get(java.util.Calendar.MINUTE);
+		clock.text( hour + ":" + (m < 10 ? "0" : "") + m + (now.get(java.util.Calendar.AM_PM) == java.util.Calendar.AM ? "am" : "pm") );
+		if (depthIcon != null) layoutClock();
+	}
+
+	@Override
+	public void update() {
+		super.update();
+		if (clock != null && Game.realTime / 1000 != lastClockCheck) {
+			lastClockCheck = Game.realTime / 1000;
+			updateClock();
+		}
+	}
+	private long lastClockCheck = -1;
 
 	public void pickup(Item item, int cell) {
 		pickedUp.reset( item,
