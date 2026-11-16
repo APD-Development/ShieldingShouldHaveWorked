@@ -34,7 +34,7 @@ BTN	i:INFO	Reports	- Markdown reports keep literal brackets, backticks and aster
 BTN	i:STATS	Memory diagnostics	Android **memory-pressure** warnings are kept in the bug report's heap history, including across background/resume.
 BUILD	C466R4-R7 (Nov 15)
 BTN	s:KATANA	New weapons	**Katana family:** Tanto, Wakizashi, Tachi and Nodachi.\n**Shields, tiers 1-5:** Buckler, Targe and Kite Shield.\n\nThey use their own sprites and share the normal weapon drop weight. The Katana's guard now scales with upgrades.
-BTN	s:SCROLL_METAMORPH	Metamorphosis	**Scroll of Metamorphosis** is back to the original version. **Greater Metamorphosis** is a new spell that lets you pick from any talent in the tier.
+BTN	s:EXOTIC_KAUNAN	Metamorphosis	**Scroll of Metamorphosis** is back to the original version. **Greater Metamorphosis** is a new spell that lets you pick from any talent in the tier.
 BTN	i:BACKPACK_LRG	Full-pack swap	Picking up an item with a full backpack now offers to **swap** it with something you're carrying, instead of leaving it on the floor.
 BTN	i:TARGET	Throw aiming	Thrown weapons can be aimed at **any visible enemy**, not just the closest one.
 BTN	i:MAGNIFY	Adaptive search	The magnifying glass picks the right action for where you are:\n- **Tap:** full search near a wall that could hide a door, Inspect elsewhere.\n- **Hold:** the opposite.\n\nRooms that can't hide a door no longer offer Wall Search or get checkmarks. Wall Search won't start on floors without hidden doors.

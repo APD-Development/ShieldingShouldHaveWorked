@@ -64,7 +64,7 @@ public class ApdChanges {
 	static int sprite(String name){
 		switch (name){
 			case "KATANA": return ItemSpriteSheet.KATANA;
-			case "SCROLL_METAMORPH": return ItemSpriteSheet.SCROLL_METAMORPH;
+			case "EXOTIC_KAUNAN": return ItemSpriteSheet.EXOTIC_KAUNAN;
 			case "ARTIFACT_CLOAK": return ItemSpriteSheet.ARTIFACT_CLOAK;
 			case "RING_SAPPHIRE": return ItemSpriteSheet.RING_SAPPHIRE;
 			case "POTION_CRIMSON": return ItemSpriteSheet.POTION_CRIMSON;
