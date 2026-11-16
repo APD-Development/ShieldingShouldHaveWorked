@@ -22,6 +22,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.apd.stats;
 
+import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -52,7 +53,10 @@ public final class RunLogReader {
 	private static ReadResult readStreaming( File file, ReadOptions options ) throws IOException {
 		ReadResult r = new ReadResult();
 		r.fileLength = file.length();
-		InputStream in = new FileInputStream(file);
+		// Forward-only logs contain many tiny frames. Buffer the file here so
+		// byte-at-a-time sync, varint and CRC reads do not each hit native I/O.
+		// This changes neither the logical byte position nor recovery reads.
+		InputStream in = new BufferedInputStream(new FileInputStream(file), 8192);
 		try {
 			byte[] headerBytes = readHeader(in);
 			int fmt = LogHeader.peekContainerFormat(headerBytes);
