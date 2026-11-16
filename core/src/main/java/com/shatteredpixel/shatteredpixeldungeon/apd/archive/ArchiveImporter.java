@@ -384,6 +384,9 @@ public final class ArchiveImporter {
 		List<File> placed = new ArrayList<>();
 		int imported = 0, already = 0, kept = 0, redacted = 0, redactedKept = 0, newer = 0;
 		List<String> notes = new ArrayList<>();
+		// A history archive can encounter many occupied filenames. Reuse these
+		// scratch bytes for comparisons and the rare rename fallback.
+		byte[] localBuffer = new byte[16 * 1024];
 		try {
 			for (Staged st : staged){
 				File target = new File(root, st.entry.path);
@@ -398,7 +401,7 @@ public final class ArchiveImporter {
 				if (!folder.isDirectory() && !folder.mkdirs()) throw new IOException("cannot create " + folder);
 				//claim the name atomically: an existing log is never replaced
 				if (!target.createNewFile()){
-					if (sameContent(target, st.entry.sha256)) already++;
+					if (sameContent(target, st.entry.sha256, localBuffer)) already++;
 					else {
 						kept++;
 						if (st.entry.redacted) redactedKept++;
@@ -414,7 +417,7 @@ public final class ArchiveImporter {
 				placed.add(target);
 				if (!st.tmp.renameTo(target)){
 					//the claim is an empty file we created ourselves: replace it by copying
-					copy(st.tmp, target);
+					copy(st.tmp, target, localBuffer);
 					st.tmp.delete();
 				}
 				imported++;
@@ -435,12 +438,11 @@ public final class ArchiveImporter {
 		report.details.addAll(notes);
 	}
 
-	private static boolean sameContent( File f, String sha256 ){
+	private static boolean sameContent( File f, String sha256, byte[] buf ){
 		try {
 			MessageDigest d = newDigest();
 			InputStream in = new FileInputStream(f);
 			try {
-				byte[] buf = new byte[16 * 1024];
 				int n;
 				while ((n = in.read(buf)) > 0) d.update(buf, 0, n);
 			} finally {
@@ -452,12 +454,11 @@ public final class ArchiveImporter {
 		}
 	}
 
-	private static void copy( File from, File to ) throws IOException {
+	private static void copy( File from, File to, byte[] buf ) throws IOException {
 		InputStream in = new FileInputStream(from);
 		try {
 			OutputStream out = new FileOutputStream(to);
 			try {
-				byte[] buf = new byte[16 * 1024];
 				int n;
 				while ((n = in.read(buf)) > 0) out.write(buf, 0, n);
 			} finally {
