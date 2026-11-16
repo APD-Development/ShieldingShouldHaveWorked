@@ -1,0 +1,57 @@
+name: Publish exact owner-supplied C488T P488T APK prerelease
+on:
+  push:
+    branches: [chatgpt/publish-exact-488t-apks-20261116]
+    paths: [.github/workflows/apd-488t-exact-release.yml]
+permissions:
+  contents: write
+  actions: read
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - name: Download the exact producing-run artifacts
+        run: |
+          set -euo pipefail
+          mkdir -p apk
+          gh run download 43959275222 --repo APD-Development/ShieldingShouldHaveWorked --name APD-Developer-C488T --dir apk
+          gh run download 43959275222 --repo APD-Development/ShieldingShouldHaveWorked --name APD-Alpha-Testers-P488T --dir apk
+          find apk -maxdepth 3 -type f -printf '%p %s bytes\n'
+          test "$(find apk -name '*.apk' -type f | wc -l)" -eq 2
+          cp "$(find apk -name 'APD-Developer-Trap-Room-Search-C488T.apk' -type f | head -1)" developer.apk
+          cp "$(find apk -name 'APD-Alpha-Testers-Trap-Room-Search-P488T.apk' -type f | head -1)" alpha.apk
+      - name: Prove exact bytes and original source commit
+        run: |
+          set -euo pipefail
+          test "$(sha256sum developer.apk | cut -d' ' -f1)" = "3d5ebde15a3f17eb2aa51afca3d71fff03b51ac87642e3e56e1d07c3131ab168"
+          test "$(sha256sum alpha.apk | cut -d' ' -f1)" = "f208a84965051d9e8ec7e67d8ce99d9426831368584dc07c78ee418d1ce3333d"
+          test "$(wc -c < developer.apk)" -eq 39246948
+          test "$(wc -c < alpha.apk)" -eq 39246928
+          mv developer.apk APD-Developer-Trap-Room-Search-C488T.apk
+          mv alpha.apk APD-Alpha-Testers-Trap-Room-Search-P488T.apk
+          sha256sum APD-*488T.apk > SHA256SUMS.txt
+          cat SHA256SUMS.txt
+      - name: Create clearly marked test prerelease with matching producing source
+        run: |
+          set -euo pipefail
+          cat > notes.md <<'EOF'
+          ADHD Pixel Dungeon **C488T / P488T test candidates**, including the trap-room Search changes from the verified producing source commit `35f4ecc36ae59fad308ec5407e074801a3f76a27`.
+
+          Original-signing identity and application ID retained. Developer and Alpha Testers APKs are different editions; install the correct one.
+
+          **Testing status:** Source tests/build and signer/package checks passed in GitHub Actions run [43959275222](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/43959275222). Native Android install-over-existing-save verification, full device gameplay acceptance and visual inspection have not been confirmed for these exact bytes. This is a **prerelease**, not a qualified public production release.
+
+          The APKs here are byte-identical to the owner-provided Google Drive files; SHA-256 checksums are attached. No automated upload of player diagnostic data is enabled by this release.
+          EOF
+          gh release create apd-488t --repo APD-Development/ShieldingShouldHaveWorked --target 35f4ecc36ae59fad308ec5407e074801a3f76a27 --title "APD C488T / P488T (test candidates)" --notes-file notes.md --prerelease APD-Developer-Trap-Room-Search-C488T.apk APD-Alpha-Testers-Trap-Room-Search-P488T.apk SHA256SUMS.txt
+      - name: Verify both exact published assets
+        run: |
+          set -euo pipefail
+          mkdir -p verified
+          gh release download apd-488t --repo APD-Development/ShieldingShouldHaveWorked --dir verified --pattern '*488T.apk' --clobber
+          test "$(sha256sum verified/APD-Developer-Trap-Room-Search-C488T.apk | cut -d' ' -f1)" = "3d5ebde15a3f17eb2aa51afca3d71fff03b51ac87642e3e56e1d07c3131ab168"
+          test "$(sha256sum verified/APD-Alpha-Testers-Trap-Room-Search-P488T.apk | cut -d' ' -f1)" = "f208a84965051d9e8ec7e67d8ce99d9426831368584dc07c78ee418d1ce3333d"
+          gh release view apd-488t --repo APD-Development/ShieldingShouldHaveWorked --json url,isPrerelease,tagName,assets
