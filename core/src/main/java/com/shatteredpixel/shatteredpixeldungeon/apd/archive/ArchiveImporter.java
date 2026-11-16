@@ -401,7 +401,7 @@ public final class ArchiveImporter {
 				if (!folder.isDirectory() && !folder.mkdirs()) throw new IOException("cannot create " + folder);
 				//claim the name atomically: an existing log is never replaced
 				if (!target.createNewFile()){
-					if (sameContent(target, st.entry.sha256, localBuffer)) already++;
+					if (sameContent(target, st.entry.size, st.entry.sha256, localBuffer)) already++;
 					else {
 						kept++;
 						if (st.entry.redacted) redactedKept++;
@@ -438,7 +438,10 @@ public final class ArchiveImporter {
 		report.details.addAll(notes);
 	}
 
-	private static boolean sameContent( File f, String sha256, byte[] buf ){
+	private static boolean sameContent( File f, long expectedSize, String sha256, byte[] buf ){
+		// A size mismatch proves that the local file is different, without
+		// rereading a potentially very large original history log.
+		if (f.length() != expectedSize) return false;
 		try {
 			MessageDigest d = newDigest();
 			InputStream in = new FileInputStream(f);
