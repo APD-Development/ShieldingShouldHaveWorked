@@ -356,32 +356,28 @@ public class APDSettingsPane extends Component {
                 }
                 // The checkbox is NOT enabled merely because it was tapped.
                 checked(false);
-                ShatteredPixelDungeon.scene().addToFront(new WndOptions(
-                        "Enable extended bug logging?",
-                        "If enabled, APD records the following ON THIS DEVICE until you turn it off: "
-                        +"timestamps and order of touches, taps, swipes and screen positions; "
-                        +"non-text key presses and Back navigation; clicked in-game UI controls; "
-                        +"hero movement, attack and interaction commands; "
-                        +"settings names and non-text numeric/boolean values; "
-                        +"game screen changes; error types, memory samples and performance events; "
-                        +"when APD goes into the background, when it returns, and the time away. "
-                        +"The journal spans reports and may use up to 64 MiB of private storage. "
-                        +"If its limit is reached, later activity may be missing. "
-                        +"A successful EXTENDED report includes that journal and starts the next reporting period. "
-                        +"It does NOT record typed text, passwords, other apps, the contents of your saves, "
-                        +"or everything that happens outside APD. Standard reports remain unchanged. "
-                        +"Nothing is uploaded or sent automatically. Review the saved file before sharing. "
-                        +"Disabling this option stops recording and deletes the local journal.",
-                        "Enable logging", "Keep off") {
-                    @Override protected void onSelect(int choice) {
-                        if (choice == 0) {
-                            SPDSettings.apdExtendedBugLogging(true);
-                            chkExtendedBugLogging.checked(true);
-                        } else {
-                            chkExtendedBugLogging.checked(false);
-                        }
-                    }
-                });
+                java.util.List<WndUimsdList.Entry> disclosures=new java.util.ArrayList<>();
+                disclosures.add(WndUimsdList.Entry.warning("OFF BY DEFAULT. Turning this on begins collecting APD activity on this device until you turn it off."));
+                disclosures.add(WndUimsdList.Entry.heading("Player input"));
+                disclosures.add(WndUimsdList.Entry.note("Time and order of touches, taps, swipes, touch positions, pointer IDs, non-text key press/release and Back navigation. Typed text, passwords and keyboard contents are excluded."));
+                disclosures.add(WndUimsdList.Entry.heading("In-game actions"));
+                disclosures.add(WndUimsdList.Entry.note("Clicked game controls, available hero movement, attacks, interactions, settings changed and their numeric/boolean values. Text settings are redacted."));
+                disclosures.add(WndUimsdList.Entry.heading("Game and device observations"));
+                disclosures.add(WndUimsdList.Entry.note("Game screens opened, error classes, memory usage samples, performance milestones, when APD goes into the background, when it returns and wall-clock time away. These do not reveal which other app you used or prove why you left."));
+                disclosures.add(WndUimsdList.Entry.heading("Retention and sharing"));
+                disclosures.add(WndUimsdList.Entry.note("Collected locally in APD private storage, across play sessions and restarts, up to 64 MiB. If it fills or recording fails, some actions will be missing. Extended bug reports include this history since the last successfully saved extended report; Standard remains the old report. Nothing is automatically sent or uploaded. Review the report before sharing. Turning this setting OFF stops collection and deletes the local action history. Existing game saves are not read for this journal."));
+                disclosures.add(WndUimsdList.Entry.action("Enable Extended logging (I understand)"));
+                disclosures.add(WndUimsdList.Entry.action("Keep logging OFF"));
+                ShatteredPixelDungeon.scene().addToFront(WndUimsdList.menu(
+                        "Extended bug logging: disclosure", "",
+                        disclosures, (index, checked) -> {
+                            if(index==0){
+                                SPDSettings.apdExtendedBugLogging(true);
+                                chkExtendedBugLogging.checked(true);
+                            } else {
+                                chkExtendedBugLogging.checked(false);
+                            }
+                        }));
             }
         };
         chkExtendedBugLogging.checked(SPDSettings.apdExtendedBugLogging());
