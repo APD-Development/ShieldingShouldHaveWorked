@@ -1,5 +1,5 @@
 name: APD C489C/P489C trap-room search
-# Developer stutter probe + clock + frame time, labelled C489C/P489C.
+# OOM fix (Cleric grudge run-facts) + crash fix + 144 Hz + spike watcher, C489C/P489C.
 on:
   push:
     branches: [fix/apd-trap-room-search-20261116]
