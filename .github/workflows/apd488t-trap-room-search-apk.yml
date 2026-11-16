@@ -1,5 +1,5 @@
 name: APD C489F/P489F trap-room search
-# SPD-style APD change history plus room-wide Search tap, C489F/P489F.
+# SPD-style APD change history plus room-wide Search tap, C489F/P489F. Sprite fix.
 on:
   push:
     branches: [fix/apd-trap-room-search-20261116]
