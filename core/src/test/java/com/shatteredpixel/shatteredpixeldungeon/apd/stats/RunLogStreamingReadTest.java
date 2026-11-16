@@ -129,6 +129,57 @@ public class RunLogStreamingReadTest {
 		assertEquals(parsed.validBytes, imported.validBytes);
 	}
 
+	@Test
+	public void streamedFrameLengthVarintBoundariesMatchBufferedReader() throws Exception {
+		File file = new File(tmp.getRoot(), "frame-length-boundaries.apdlog");
+		int[] sizes = {0, 1, 126, 127, 128, 16383, 16384, 65535, 65536};
+		FileOutputStream out = new FileOutputStream(file);
+		try {
+			out.write(LogHeader.encode(TelemetryVersion.CURRENT, 1234, "varint-boundaries", "test"));
+			for (int i = 0; i < sizes.length; i++){
+				byte[] payload = new byte[sizes[i]];
+				Arrays.fill(payload, (byte) (i * 13));
+				out.write(LogFormat.frame(250, payload)); // Unknown frame still requires CRC/length validation.
+			}
+			out.write(LogFormat.sealFrame(0, 0));
+		} finally {
+			out.close();
+		}
+		ReadResult buffered = RunLogReader.parse(LogTestSupport.bytes(file));
+		ReadResult streamed = RunLogReader.read(file);
+		assertEquals(ReadStatus.SEALED, buffered.status);
+		assertEquals(sizes.length, buffered.skippedUnknownFrames);
+		assertEquals(sizes.length, streamed.skippedUnknownFrames);
+		assertEquivalent(buffered, streamed);
+	}
+
+	@Test
+	public void malformedStreamedLengthVarintsRetainExistingTruncationResults() throws Exception {
+		// A missing final length byte, a ten-byte continuation and an overflowing
+		// tenth byte must all match the legacy byte-array parser's refusal.
+		int[][] malformed = {
+			{0x80},
+			{0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80},
+			{0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x02}
+		};
+		for (int i = 0; i < malformed.length; i++){
+			File file = new File(tmp.getRoot(), "malformed-varint-" + i + ".apdlog");
+			FileOutputStream out = new FileOutputStream(file);
+			try {
+				out.write(LogHeader.encode(TelemetryVersion.CURRENT, 1234, "bad-varint-" + i, "test"));
+				out.write(LogFormat.SYNC);
+				out.write(LogFormat.FRAME_EVENT);
+				for (int b : malformed[i]) out.write(b);
+			} finally {
+				out.close();
+			}
+			ReadResult buffered = RunLogReader.parse(LogTestSupport.bytes(file));
+			ReadResult streamed = RunLogReader.read(file);
+			assertEquals(ReadStatus.TRUNCATED, buffered.status);
+			assertEquivalent(buffered, streamed);
+		}
+	}
+
 	private static void assertEquivalent( ReadResult expected, ReadResult actual ){
 		assertEquals(expected.status, actual.status);
 		assertEquals(expected.problem, actual.problem);
