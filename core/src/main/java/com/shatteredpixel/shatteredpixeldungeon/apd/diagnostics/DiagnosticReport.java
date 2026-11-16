@@ -3,6 +3,7 @@ package com.shatteredpixel.shatteredpixeldungeon.apd.diagnostics;
 import com.shatteredpixel.shatteredpixeldungeon.apd.archive.ApdFiles;
 import com.watabou.utils.FileUtils;
 import com.watabou.utils.SupportDiagnostics;
+import com.watabou.utils.SupportActionJournal;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
@@ -26,10 +27,13 @@ public final class DiagnosticReport {
             once.finished("The diagnostic report could not start: "+failure.getClass().getSimpleName());
         }
     }
-    public static void export(Listener listener){
-        SupportDiagnostics.event("report.requested","");
+    /** Standard is byte-for-byte the original support report; Extended adds the on-device action journal. */
+    public static void export(Listener listener) { export(listener, false); }
+
+    public static void export(Listener listener, boolean extended){
+        SupportDiagnostics.event("report.requested",extended?"extended":"standard");
         SimpleDateFormat date=new SimpleDateFormat("yyyyMMdd-HHmmss",Locale.ROOT);date.setTimeZone(TimeZone.getTimeZone("UTC"));
-        String name="APD-diagnostic-"+date.format(new Date())+"-UTC.txt";
+        String name="APD-"+(extended?"extended-":"")+"diagnostic-"+date.format(new Date())+"-UTC.txt";
         // Platform pickers may fail before calling any ExportTarget callback. Report
         // that failure once, without misreporting a stream already accepted by the picker.
         final java.util.concurrent.atomic.AtomicBoolean finished = new java.util.concurrent.atomic.AtomicBoolean();
@@ -43,11 +47,28 @@ public final class DiagnosticReport {
                 streamAccepted.set(true);
                 launchExportWorker(stream, once, ()->{
                     String result;
+                    SupportActionJournal.Checkpoint checkpoint=null;
+                    boolean written=false;
                     try(OutputStream out=stream){
+                        if(extended) checkpoint=SupportActionJournal.checkpoint();
                         out.write(SupportDiagnostics.report().getBytes(StandardCharsets.UTF_8));
-                        result="Diagnostic report saved. You can attach this file to your bug report.\n\n"+displayName;
-                    }catch(IOException|RuntimeException error){result="The diagnostic report could not be saved: "+error.getClass().getSimpleName();}
-                    catch(OutOfMemoryError exhausted){result="The diagnostic report could not be saved because memory was exhausted during export.";}
+                        if(extended) SupportActionJournal.export(out,checkpoint);
+                        out.flush();
+                        written=true;
+                    }catch(IOException|RuntimeException error){
+                        result="The diagnostic report could not be saved: "+error.getClass().getSimpleName();
+                    }catch(OutOfMemoryError exhausted){
+                        result="The diagnostic report could not be saved because memory was exhausted during export.";
+                    }
+                    if(written){
+                        result="Diagnostic report saved. You can attach this file to your bug report.\\n\\n"+displayName;
+                        if(extended){
+                            try { SupportActionJournal.acknowledge(checkpoint); }
+                            catch(IOException incomplete){
+                                result+="\\nThe action journal could not be reset; the next report may repeat earlier events.";
+                            }
+                        }
+                    }
                     once.finished(result);
                 }, job->{
                     Thread worker=new Thread(job,"apd-report-export");
