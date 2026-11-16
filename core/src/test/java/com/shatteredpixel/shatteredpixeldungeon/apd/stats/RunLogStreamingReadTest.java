@@ -3,6 +3,7 @@ package com.shatteredpixel.shatteredpixeldungeon.apd.stats;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertNotSame;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -129,6 +130,38 @@ public class RunLogStreamingReadTest {
 		assertEquals(parsed.sealEventCount, imported.sealEventCount);
 		assertEquals(parsed.validBytes, imported.validBytes);
 	}
+
+
+	@Test
+	public void streamingFrameResultReuseKeepsEveryEventPayloadIndependent() throws Exception {
+		File file = new File(tmp.getRoot(), "streamed-frame-result-reuse.apdlog");
+		RunLogWriter writer = RunLogWriter.create(file, TelemetryVersion.CURRENT,
+				"frame-record-reuse", "test", 1234);
+		for (int i = 0; i < 384; i++){
+			// Repeated sizes expose aliased frame storage; varying sizes exercise
+			// the same result record after short and long frames.
+			byte[] payload = new byte[(i / 12) % 2 == 0 ? 64 : 512];
+			Arrays.fill(payload, (byte) (i * 19));
+			writer.event(LogTestSupport.T_PLAIN).clock(i + 1).bytes(payload).emit();
+		}
+		writer.close();
+
+		ReadResult buffered = RunLogReader.parse(LogTestSupport.bytes(file));
+		ReadResult streamed = RunLogReader.read(file);
+		assertEquals(ReadStatus.SEALED, streamed.status);
+		assertEquals(384, streamed.events.size());
+		assertEquivalent(buffered, streamed);
+		for (int i = 1; i < streamed.events.size(); i++){
+			assertNotSame(streamed.events.get(i - 1).payload, streamed.events.get(i).payload);
+			assertArrayEquals(buffered.events.get(i - 1).payload, streamed.events.get(i - 1).payload);
+		}
+		ReadResult identity = RunLogReader.read(file, new ReadOptions().onlyRunStartEvents(true));
+		assertEquals(ReadStatus.SEALED, identity.status);
+		assertEquals(384, identity.eventCount);
+		assertEquals(0, identity.events.size());
+		assertEquals(streamed.validBytes, identity.validBytes);
+	}
+
 
 	@Test
 	public void streamingChecksumReusePreservesManyValidFramesAndDetectsLaterCorruption() throws Exception {
