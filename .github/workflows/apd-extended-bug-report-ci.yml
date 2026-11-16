@@ -1,4 +1,5 @@
 name: APD opt-in extended bug report verification
+# Reverify exact current source including scrollable consent and close-failure guards.
 on:
   push:
     branches: [chatgpt/apd-complete-action-report-20261116]
