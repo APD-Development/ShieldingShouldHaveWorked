@@ -420,6 +420,76 @@ public class RunLogStreamingReadTest {
 		}
 	}
 
+
+	@Test
+	public void bufferedForwardOnlyReadsMatchParserAcrossRefillsAndDamage() throws Exception {
+		// Force many internal 8 KiB buffer refills, with tiny unknown frames
+		// interleaved with real events and a final seal. The stream must not
+		// change the parser's byte positions or checksum/identity semantics.
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		out.write(LogHeader.encode(TelemetryVersion.CURRENT, 1234, "buffered-refills", "test"));
+		int events = 0;
+		for (int i = 0; i < 900; i++){
+			byte[] noise = new byte[31 + (i % 43)];
+			Arrays.fill(noise, (byte) (i * 13));
+			out.write(LogFormat.frame(250, noise));
+			if (i % 17 == 0){
+				out.write(LogFormat.eventFrame(LogTestSupport.T_PLAIN, i & 1,
+						2, new byte[]{(byte) i, (byte) (i >>> 8)}));
+				events++;
+			}
+		}
+		out.write(LogFormat.sealFrame(events, events * 2));
+		byte[] bytes = out.toByteArray();
+		File file = new File(tmp.getRoot(), "buffered-refills.apdlog");
+		FileOutputStream stream = new FileOutputStream(file);
+		try {
+			stream.write(bytes);
+		} finally {
+			stream.close();
+		}
+		ReadResult ordinary = RunLogReader.read(file);
+		assertEquals(ReadStatus.SEALED, ordinary.status);
+		assertEquals(900, ordinary.skippedUnknownFrames);
+		assertEquals(events, ordinary.eventCount);
+		assertEquals(bytes.length, ordinary.validBytes);
+		assertEquivalent(RunLogReader.parse(bytes), ordinary);
+
+		ReadOptions identity = new ReadOptions().onlyRunStartEvents(true);
+		ReadResult identityStream = RunLogReader.read(file, identity);
+		assertEquals(ReadStatus.SEALED, identityStream.status);
+		assertEquals(0, identityStream.events.size());
+		assertEquals(events, identityStream.eventCount);
+		assertEquivalent(RunLogReader.parse(bytes, new ReadOptions().onlyRunStartEvents(true)),
+				identityStream);
+
+		// A buffered read must never treat bytes prefetched beyond the logical
+		// read position as a complete frame, especially near refill boundaries.
+		int[] cuts = {8191, 8192, 8193, 16383, 16384, 16385, bytes.length - 1};
+		for (int cut : cuts){
+			byte[] truncated = Arrays.copyOf(bytes, cut);
+			File shortFile = new File(tmp.getRoot(), "buffered-cut-" + cut + ".apdlog");
+			stream = new FileOutputStream(shortFile);
+			try {
+				stream.write(truncated);
+			} finally {
+				stream.close();
+			}
+			assertEquivalent(RunLogReader.parse(truncated), RunLogReader.read(shortFile));
+		}
+
+		byte[] damaged = Arrays.copyOf(bytes, bytes.length);
+		damaged[16384] ^= 0x40;
+		File corrupt = new File(tmp.getRoot(), "buffered-corrupt.apdlog");
+		stream = new FileOutputStream(corrupt);
+		try {
+			stream.write(damaged);
+		} finally {
+			stream.close();
+		}
+		assertEquivalent(RunLogReader.parse(damaged), RunLogReader.read(corrupt));
+	}
+
 	private static void assertEquivalent( ReadResult expected, ReadResult actual ){
 		assertEquals(expected.status, actual.status);
 		assertEquals(expected.problem, actual.problem);
