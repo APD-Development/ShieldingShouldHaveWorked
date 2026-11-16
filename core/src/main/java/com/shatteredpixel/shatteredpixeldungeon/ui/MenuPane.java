@@ -68,11 +68,9 @@ public class MenuPane extends Component {
 	//APD Developer build: real-world clock under the version, left of the depth icon
 	private BitmapText clock;
 	private int clockMinute = -1;
-	//APD Developer build: frame time, "average/worst ms" over the last half second
+	//APD Developer build: this frame's time in ms, updated every frame
 	private BitmapText frameTime;
-	private float frameSum, frameWorst, frameWindow;
-	private int frameCount;
-	private String frameShown = "";
+	private int frameShownMs = -1;
 	private NinePatch versionOverflowBG;
 
 	private DangerIndicator danger;
@@ -264,16 +262,12 @@ public class MenuPane extends Component {
 	public void update() {
 		super.update();
 		if (frameTime != null) {
-			float ms = com.badlogic.gdx.Gdx.graphics.getDeltaTime() * 1000f;
-			frameSum += ms; frameCount++; frameWorst = Math.max(frameWorst, ms); frameWindow += ms;
-			if (frameWindow >= 500f) {
-				String text = Math.round(frameSum / frameCount) + "/" + Math.round(frameWorst) + "ms";
-				if (!text.equals(frameShown)) {
-					frameShown = text;
-					frameTime.text(text);
-					if (depthIcon != null) layoutClock();
-				}
-				frameSum = 0; frameCount = 0; frameWorst = 0; frameWindow = 0;
+			//every frame: this frame's time in ms; the text is only rebuilt when the number changes
+			int ms = Math.round(com.badlogic.gdx.Gdx.graphics.getDeltaTime() * 1000f);
+			if (ms != frameShownMs) {
+				frameShownMs = ms;
+				frameTime.text(ms + "ms");
+				if (depthIcon != null) layoutClock();
 			}
 		}
 		if (clock != null && Game.realTime / 1000 != lastClockCheck) {
