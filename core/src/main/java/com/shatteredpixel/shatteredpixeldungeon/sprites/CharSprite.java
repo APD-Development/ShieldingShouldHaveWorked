@@ -21,6 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.sprites;
 
+import com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
@@ -221,7 +222,7 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 
 		play( run );
 		
-		motion = new PosTweener( this, worldToCamera( to ), moveInterval );
+		motion = new PosTweener( this, worldToCamera( to ), PlaybackGroup.movementDuration(moveInterval) );
 		motion.listener = this;
 		parent.add( motion );
 
