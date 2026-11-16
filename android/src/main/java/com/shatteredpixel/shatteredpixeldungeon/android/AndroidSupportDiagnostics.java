@@ -8,6 +8,7 @@ import android.os.Debug;
 import com.watabou.noosa.Game;
 import com.watabou.utils.FileUtils;
 import com.watabou.utils.SupportDiagnostics;
+import com.watabou.utils.SupportActionJournal;
 
 /** Self-package OS exit evidence; no logcat/storage permissions or other-app reads. */
 final class AndroidSupportDiagnostics {
@@ -18,6 +19,7 @@ final class AndroidSupportDiagnostics {
         SupportDiagnostics.configure(new java.io.File(context.getFilesDir(),"apd-diagnostics"),
                 "Version: "+Game.version+"\nVersion code: "+Game.versionCode+"\nApplication ID: "+context.getPackageName()
                 +"\nDevice: "+Build.MANUFACTURER+" "+Build.MODEL+"\nAndroid: "+Build.VERSION.RELEASE+" (API "+Build.VERSION.SDK_INT+")");
+        SupportActionJournal.configure(new java.io.File(context.getFilesDir(),"apd-diagnostics"));
         SupportDiagnostics.platformSnapshot=()->snapshot(context);
         if(!handlerInstalled){
             Thread.UncaughtExceptionHandler previous=Thread.getDefaultUncaughtExceptionHandler();
