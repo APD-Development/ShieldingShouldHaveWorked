@@ -186,6 +186,8 @@ public class PointerEvent {
 				continue;
 			}
 			com.watabou.utils.SupportDiagnostics.input("dispatched","touch."+p.type,p.diagnosticId,p.queuedNanos,p.sourceEventNanos);
+            com.watabou.utils.SupportActionJournal.record("touch."+p.type,
+                    "id="+p.diagnosticId+" pointer="+p.id+" x="+(int)p.current.x+" y="+(int)p.current.y);
 			clearKeyboardThisPress = true;
 			if (activePointers.containsKey(p.id)){
 				PointerEvent existing = activePointers.get(p.id);
