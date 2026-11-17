@@ -172,7 +172,7 @@ public class Bee extends Mob {
 			}
 			
 			//try to find a new enemy in these circumstances
-			if (enemy == null || !enemy.isAlive() || !Actor.chars().contains(enemy) || state == WANDERING
+			if (enemy == null || !enemy.isAlive() || !Actor.containsChar(enemy) || state == WANDERING
 					|| Dungeon.level.distance(enemy.pos, potPos) > 3
 					|| (alignment == Alignment.ALLY && enemy.alignment == Alignment.ALLY)
 					|| (buff( Amok.class ) == null && enemy.isInvulnerable(getClass()))){
