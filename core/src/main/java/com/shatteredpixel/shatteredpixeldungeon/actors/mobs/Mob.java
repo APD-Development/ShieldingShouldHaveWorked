@@ -525,8 +525,8 @@ public abstract class Mob extends Char {
 					|| (currDist < closestDist)){
 				closest = curr;
 				closestDist = currDist;
-			} else if ( curr == Dungeon.hero &&
-					(currDist == closestDist) || (canAttack(curr) && canAttack(closest))){
+			} else if (currDist == closestDist && (curr == Dungeon.hero
+					|| (canAttack(curr) && canAttack(closest) && closest != Dungeon.hero))){
 				closest = curr;
 				closestDist = currDist;
 			}

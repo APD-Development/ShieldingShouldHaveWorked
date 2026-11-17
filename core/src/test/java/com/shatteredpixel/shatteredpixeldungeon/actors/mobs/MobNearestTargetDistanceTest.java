@@ -98,4 +98,43 @@ public class MobNearestTargetDistanceTest {
 
         assertSame(attackable, picker.pick(close, attackable, later));
     }
+
+    @Test
+    public void fartherAttackableTargetCannotReplaceANearerAttackableTarget() {
+        Picker picker = new Picker();
+        Rat nearer = ratAt(63, 2);
+        Rat farther = ratAt(210, 7);
+        picker.attackable.add(nearer);
+        picker.attackable.add(farther);
+
+        // Both are immediately attackable, so the existing nearest-target
+        // rule must not replace the nearer first candidate with a farther one.
+        assertSame(nearer, picker.pick(nearer, farther));
+    }
+
+    @Test
+    public void equallyDistantAttackableHeroStaysPreferredAfterAMob() {
+        Picker picker = new Picker();
+        Hero hero = new Hero();
+        hero.pos = 210;
+        Dungeon.hero = hero;
+        PathFinder.distance[hero.pos + 1] = 4;
+        Rat mob = ratAt(336, 4);
+        picker.attackable.add(hero);
+        picker.attackable.add(mob);
+
+        // A later attackable mob must not reverse the existing hero tie rule.
+        assertSame(hero, picker.pick(hero, mob));
+    }
+
+    @Test
+    public void otherAttackableTargetsRetainTheirExistingEqualDistanceTieOrder() {
+        Picker picker = new Picker();
+        Rat first = ratAt(63, 4);
+        Rat later = ratAt(210, 4);
+        picker.attackable.add(first);
+        picker.attackable.add(later);
+
+        assertSame(later, picker.pick(first, later));
+    }
 }
