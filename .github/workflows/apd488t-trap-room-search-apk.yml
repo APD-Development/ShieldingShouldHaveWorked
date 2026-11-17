@@ -1,5 +1,5 @@
-name: APD C489K/P489K trap-room search
-# Hunger number, food refill amounts, current-only Arcana wording, C489K/P489K. Hero window turns-until-Hungry. Status tab. Tests updated 3.
+name: APD C489L/P489L trap-room search
+# Shorter Change History (dev-only categories removed), C489L/P489L.
 on:
   push:
     branches: [fix/apd-trap-room-search-20261116]
@@ -51,10 +51,10 @@ jobs:
       - name: Assemble independently configured developer and alpha candidates
         run: |
           set -euo pipefail
-          ./gradlew :android:assembleDebug -PapdTestBuild -PapdBuild=C489K --no-daemon
-          cp android/build/outputs/apk/debug/android-debug.apk output/APD-Developer-Trap-Room-Search-C489K.apk
-          ./gradlew :android:assembleDebug -PapdBuild=P489K --no-daemon
-          cp android/build/outputs/apk/debug/android-debug.apk output/APD-Alpha-Testers-Trap-Room-Search-P489K.apk
+          ./gradlew :android:assembleDebug -PapdTestBuild -PapdBuild=C489L --no-daemon
+          cp android/build/outputs/apk/debug/android-debug.apk output/APD-Developer-Trap-Room-Search-C489L.apk
+          ./gradlew :android:assembleDebug -PapdBuild=P489L --no-daemon
+          cp android/build/outputs/apk/debug/android-debug.apk output/APD-Alpha-Testers-Trap-Room-Search-P489L.apk
       - name: Verify original signature, package, version, flags and built feature classes
         run: |
           python3 - <<'PY'
@@ -65,7 +65,7 @@ jobs:
           receipt={'source_sha':subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip(),
                    'source_tree':subprocess.check_output(['git','rev-parse','HEAD^{tree}'],text=True).strip(),
                    'github_run_id':os.environ['GITHUB_RUN_ID'],'native_android_acceptance':False,'install_over_save_verified':False,'published':False,'variants':{}}
-          for edition,name,marker in [('Developer','APD-Developer-Trap-Room-Search-C489K.apk','-bC489K-TEST'),('Alpha','APD-Alpha-Testers-Trap-Room-Search-P489K.apk','-bP489K')]:
+          for edition,name,marker in [('Developer','APD-Developer-Trap-Room-Search-C489L.apk','-bC489L-TEST'),('Alpha','APD-Alpha-Testers-Trap-Room-Search-P489L.apk','-bP489L')]:
             file=pathlib.Path('output')/name
             assert file.stat().st_size>30000000
             cert=subprocess.check_output([str(tools/'apksigner'),'verify','--print-certs',str(file)],text=True)
@@ -88,21 +88,21 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: success()
         with:
-          name: APD-Developer-C489K
-          path: output/APD-Developer-Trap-Room-Search-C489K.apk
+          name: APD-Developer-C489L
+          path: output/APD-Developer-Trap-Room-Search-C489L.apk
           retention-days: 30
           if-no-files-found: error
       - uses: actions/upload-artifact@v4
         if: success()
         with:
-          name: APD-Alpha-Testers-P489K
-          path: output/APD-Alpha-Testers-Trap-Room-Search-P489K.apk
+          name: APD-Alpha-Testers-P489L
+          path: output/APD-Alpha-Testers-Trap-Room-Search-P489L.apk
           retention-days: 30
           if-no-files-found: error
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: APD-C489K-P489K-Trap-Room-Search-Evidence
+          name: APD-C489L-P489L-Trap-Room-Search-Evidence
           path: |
             evidence/
             core/build/test-results/test/TEST-*.xml
