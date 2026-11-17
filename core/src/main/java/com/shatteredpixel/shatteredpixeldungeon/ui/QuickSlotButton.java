@@ -362,7 +362,7 @@ public class QuickSlotButton extends Button {
 	private void useTargeting() {
 
 		if (lastTarget != null &&
-				Actor.chars().contains( lastTarget ) &&
+				Actor.containsChar( lastTarget ) &&
 				lastTarget.isAlive() &&
 				lastTarget.alignment != Char.Alignment.ALLY &&
 				Dungeon.level.heroFOV[lastTarget.pos]) {
