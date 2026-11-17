@@ -42,6 +42,41 @@ public class DoorSearchEligibilityTest {
     @Test public void fixedMapClassesNeverClaimDoorsAtAnUnusualDepthOrBranch(){for(Level l:new Level[]{new PrisonBossLevel(),new CavesBossLevel(),new CityBossLevel(),new HallsBossLevel(),new LastLevel(),new DeadEndLevel(),new VaultLevel(),new MiningLevel()})assertFalse(l.getClass().getSimpleName(),DoorSearchEligibility.supportsDoors(l,7,1));}
     @Test public void ordinaryUnknownBranchesAreNotGuessedFromAMainFloorNumber(){assertTrue(DoorSearchEligibility.supportsDoors(level,10,1));assertTrue(DoorSearchEligibility.supportsDoors(level,1,2));}
     @Test public void allKnownSolidBackingTilesRuleOutThatOrientation(){for(int t=0;t<Terrain.flags.length;t++)if((Terrain.flags[t]&Terrain.SOLID)!=0){level.map[17]=t;assertFalse("known backing "+t,DoorSearchEligibility.candidate(level,24));}}
+    @Test public void unsupportedObservedBackingTilesFailClosedWithoutLeakingUnknownTerrain() {
+        int[] originalMap=level.map.clone();
+        boolean[] originalFov=level.heroFOV.clone();
+        boolean[] originalVisited=level.visited.clone();
+        boolean[] originalMapped=level.mapped.clone();
+        try {
+            for (int backing : new int[]{17,31}) {
+                for (int invalid : new int[]{-1, Terrain.flags.length, Integer.MAX_VALUE}) {
+                    level.map[17]=level.map[31]=Terrain.EMPTY;
+                    level.map[backing]=invalid;
+                    level.heroFOV[backing]=true;
+                    assertFalse("observed invalid backing must be rejected without indexing flags: "+invalid,
+                            DoorSearchEligibility.couldHaveDoor(level,24));
+                    assertFalse("observed invalid backing cannot advertise a wall-search mark: "+invalid,
+                            DoorSearchEligibility.candidate(level,24));
+                    // Hidden backing remains unknown, regardless of the underlying invalid ID.
+                    // The opposite legal approach is still observed and sufficient.
+                    level.heroFOV[backing]=false;
+                    level.visited[backing]=false;
+                    level.mapped[backing]=false;
+                    assertTrue("do not inspect unseen backing terrain "+invalid,
+                            DoorSearchEligibility.candidate(level,24));
+                    level.heroFOV[backing]=true;
+                }
+            }
+            level.map[17]=level.map[31]=Terrain.EMPTY;
+            assertTrue("valid observed approaches remain unchanged",
+                    DoorSearchEligibility.candidate(level,24));
+        } finally {
+            System.arraycopy(originalMap,0,level.map,0,level.length());
+            System.arraycopy(originalFov,0,level.heroFOV,0,level.length());
+            System.arraycopy(originalVisited,0,level.visited,0,level.length());
+            System.arraycopy(originalMapped,0,level.mapped,0,level.length());
+        }
+    }
     @Test public void furnitureCannotPretendToBeStructuralDoorFrames(){for(int t:new int[]{Terrain.BOOKSHELF,Terrain.ALCHEMY,Terrain.STATUE,Terrain.STATUE_SP,Terrain.MINE_CRYSTAL,Terrain.MINE_BOULDER,Terrain.CUSTOM_DECO}){level.map[23]=t;level.map[25]=t;assertFalse("furniture frame "+t,DoorSearchEligibility.candidate(level,24));}}
     @Test public void decoratedStoneRemainsAFrameButExistingDoorwaysDoNot(){
         level.map[23]=Terrain.WALL_DECO;assertTrue(DoorSearchEligibility.candidate(level,24));
