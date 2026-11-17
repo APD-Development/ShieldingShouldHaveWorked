@@ -60,6 +60,31 @@ public class FullPackSwapSelectionTest {
         assertFalse(FullPackSwap.canSwapOut(hero, null, item));
     }
 
+    @Test public void newlyFreedBackpackSlotMakesAStaleSwapUnnecessary() {
+        Hero hero = new Hero();
+        Bag pack = hero.belongings.backpack;
+        Item incoming = new Item();
+        ConditionalDrop chosen = new ConditionalDrop();
+        pack.items.add(chosen);
+
+        int added = 0;
+        while (pack.canHold(incoming) && added < 128) {
+            pack.items.add(new Item());
+            added++;
+        }
+        assertTrue("fixture must actually fill the backpack", added > 0 && added < 128);
+        assertFalse("the incoming item initially needs a slot", pack.canHold(incoming));
+        assertTrue(FullPackSwap.needsSwap(pack, incoming));
+        assertTrue(FullPackSwap.canSwapOut(hero, pack, chosen));
+
+        pack.items.remove(pack.items.size() - 1);
+        assertTrue("a freed slot permits ordinary pickup", pack.canHold(incoming));
+        assertFalse("the stale picker must not drop an item when a slot is free",
+                FullPackSwap.needsSwap(pack, incoming));
+        assertTrue("the selected item itself is still drop-eligible",
+                FullPackSwap.canSwapOut(hero, pack, chosen));
+    }
+
     @Test public void backpackContainersAreNeverDropCandidates() {
         Hero hero = new Hero();
         Bag pack = hero.belongings.backpack;
