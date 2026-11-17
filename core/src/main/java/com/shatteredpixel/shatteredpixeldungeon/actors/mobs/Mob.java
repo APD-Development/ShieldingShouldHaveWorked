@@ -1407,7 +1407,7 @@ public abstract class Mob extends Char {
 			boolean swapped = false;
 			if (!recentlyAttackedBy.isEmpty()){
 				for (Char ch : recentlyAttackedBy){
-					if (ch != null && ch.isActive() && Actor.chars().contains(ch) && alignment != ch.alignment && fieldOfView[ch.pos] && ch.invisible == 0 && !isCharmedBy(ch)) {
+					if (ch != null && ch.isActive() && Actor.containsChar(ch) && alignment != ch.alignment && fieldOfView[ch.pos] && ch.invisible == 0 && !isCharmedBy(ch)) {
 						if (canAttack(ch) || enemy == null || Dungeon.level.distance(pos, ch.pos) < Dungeon.level.distance(pos, enemy.pos)) {
 							enemy = ch;
 							target = ch.pos;
