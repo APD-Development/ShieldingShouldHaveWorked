@@ -1,0 +1,69 @@
+name: APD recent attacker target priority regression
+on:
+  push:
+    branches: [chatgpt/apd-recent-attacker-priority-20261117-1103]
+    paths:
+      - core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/Mob.java
+      - core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/MobRecentAttackerPriorityTest.java
+      - .github/workflows/apd-recent-attacker-priority-ci-20261117.yml
+  pull_request:
+    branches: [codex/apd-phone-fixes-2026-10-09]
+    paths:
+      - core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/Mob.java
+      - core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/MobRecentAttackerPriorityTest.java
+      - .github/workflows/apd-recent-attacker-priority-ci-20261117.yml
+permissions:
+  contents: read
+jobs:
+  verify-source:
+    runs-on: ubuntu-latest
+    timeout-minutes: 70
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Verify combined R7+C485 and latest verified AI ancestry
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor c6fa033167789ef9f2fc6f31bcff39c824dfb4db HEAD
+          git merge-base --is-ancestor 4037667093294d356b46206c50cdcf0e19642535 HEAD
+          git rev-parse HEAD
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - uses: gradle/actions/setup-gradle@v4
+      - name: Install Android Java compilation platform
+        run: '"$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "platforms;android-36"'
+      - name: Full core tests and desktop plus Android Java compilation
+        run: ./gradlew :core:test :desktop:classes :android:compileDebugJavaWithJavac :android:compileReleaseJavaWithJavac :android:compileDebugAndroidTestJavaWithJavac --no-daemon
+      - name: Verify recent attacker priority regressions and complete JUnit results
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import xml.etree.ElementTree as ET
+          files = list(Path('core/build/test-results/test').glob('TEST-*.xml'))
+          suites = [ET.parse(p).getroot() for p in files]
+          assert suites, 'missing core JUnit results'
+          counts = {k: sum(int(s.get(k, '0')) for s in suites) for k in ('tests', 'failures', 'errors', 'skipped')}
+          suite = 'com.shatteredpixel.shatteredpixeldungeon.actors.mobs.MobRecentAttackerPriorityTest'
+          cases = {case.get('name') for s in suites if s.get('name') == suite for case in s.findall('testcase')}
+          required = {
+              'attackableTargetBeatsLaterCloserNonattackableAttacker',
+              'closestOfTwoAttackableAttackersWinsInEitherOrder',
+              'closestEligibleNonattackableAttackerWins',
+              'nonattackableAttackerBeyondOriginalTargetDoesNotReplaceIt',
+              'equalDistanceKeepsFirstEligibleAttacker',
+          }
+          assert required.issubset(cases), ('missing targeted regressions', required - cases)
+          assert counts['tests'] >= 3585, counts
+          assert counts['failures'] == counts['errors'] == counts['skipped'] == 0, counts
+          print('APD_RECENT_ATTACKER_PRIORITY_JUNIT', dict(counts, suites=len(suites)))
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: apd-recent-attacker-priority-junit
+          path: core/build/test-results/test/TEST-*.xml
+          if-no-files-found: warn
+          retention-days: 14

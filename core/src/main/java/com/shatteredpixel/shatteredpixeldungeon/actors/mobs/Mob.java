@@ -1410,20 +1410,34 @@ public abstract class Mob extends Char {
 		}
 
 		protected boolean handleRecentAttackers(){
-			boolean swapped = false;
+			Char bestAttacker = null;
+			boolean bestAttackable = false;
+			int bestDistance = Integer.MAX_VALUE;
 			if (!recentlyAttackedBy.isEmpty()){
+				// Test each attacker against the original target, not against a
+				// target that may already have been replaced during this scan.
+				int originalDistance = enemy == null ? Integer.MAX_VALUE : Dungeon.level.distance(pos, enemy.pos);
 				for (Char ch : recentlyAttackedBy){
 					if (ch != null && ch.isActive() && Actor.containsChar(ch) && alignment != ch.alignment && fieldOfView[ch.pos] && ch.invisible == 0 && !isCharmedBy(ch)) {
-						if (canAttack(ch) || enemy == null || Dungeon.level.distance(pos, ch.pos) < Dungeon.level.distance(pos, enemy.pos)) {
-							enemy = ch;
-							target = ch.pos;
-							swapped = true;
+						boolean attackable = canAttack(ch);
+						int distance = Dungeon.level.distance(pos, ch.pos);
+						if ((attackable || enemy == null || distance < originalDistance)
+								&& (bestAttacker == null || (attackable && !bestAttackable)
+								|| (attackable == bestAttackable && distance < bestDistance))) {
+							bestAttacker = ch;
+							bestAttackable = attackable;
+							bestDistance = distance;
 						}
 					}
 				}
 				recentlyAttackedBy.clear();
 			}
-			return swapped;
+			if (bestAttacker != null){
+				enemy = bestAttacker;
+				target = bestAttacker.pos;
+				return true;
+			}
+			return false;
 		}
 
 		//prevents rare infinite loop cases
