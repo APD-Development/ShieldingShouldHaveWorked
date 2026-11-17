@@ -1,0 +1,67 @@
+name: APD sleeping mob hostile detection regression
+on:
+  push:
+    branches: [chatgpt/apd-sleeping-hostile-detection-20261117-1001]
+    paths:
+      - core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/Mob.java
+      - core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/MobSleepingHostileDetectionTest.java
+      - .github/workflows/apd-sleeping-detection-ci-20261117.yml
+  pull_request:
+    branches: [codex/apd-phone-fixes-2026-10-09]
+    paths:
+      - core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/Mob.java
+      - core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/MobSleepingHostileDetectionTest.java
+      - .github/workflows/apd-sleeping-detection-ci-20261117.yml
+permissions:
+  contents: read
+jobs:
+  verify-source:
+    runs-on: ubuntu-latest
+    timeout-minutes: 70
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Check exact verified R7+C485 ancestor
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor c6fa033167789ef9f2fc6f31bcff39c824dfb4db HEAD
+          git merge-base --is-ancestor ba1f1c319897efd183b9aa33fafbf63907a3bd9e HEAD
+          git rev-parse HEAD
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - uses: gradle/actions/setup-gradle@v4
+      - name: Install Android Java compilation platform
+        run: '"$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "platforms;android-36"'
+      - name: Full core tests and desktop plus Android Java compilation
+        run: ./gradlew :core:test :desktop:classes :android:compileDebugJavaWithJavac :android:compileReleaseJavaWithJavac :android:compileDebugAndroidTestJavaWithJavac --no-daemon
+      - name: Verify sleeping mob detection regressions and complete suite
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import xml.etree.ElementTree as ET
+          suites = [ET.parse(p).getroot() for p in Path('core/build/test-results/test').glob('TEST-*.xml')]
+          assert suites, 'missing core JUnit results'
+          counts = {k: sum(int(s.get(k, '0')) for s in suites) for k in ('tests', 'failures', 'errors', 'skipped')}
+          suite = 'com.shatteredpixel.shatteredpixeldungeon.actors.mobs.MobSleepingHostileDetectionTest'
+          cases = {case.get('name') for s in suites if s.get('name') == suite for case in s.findall('testcase')}
+          required = {
+              'highestDetectionChanceWinsRegardlessOfEncounterOrder',
+              'equalDetectionChanceKeepsExistingFirstSeenTieBehavior',
+              'zeroDetectionChanceStillSelectsAnEligibleHostile',
+              'invisibleUnseenFriendlyNeutralAndSuppressedTargetsRemainExcluded',
+          }
+          assert required.issubset(cases), ('missing sleeping detection regressions', required - cases)
+          assert counts['tests'] >= 3580, counts
+          assert counts['failures'] == counts['errors'] == counts['skipped'] == 0, counts
+          print('APD_SLEEPING_HOSTILE_DETECTION_JUNIT', dict(counts, suites=len(suites)))
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: apd-sleeping-detection-junit
+          path: core/build/test-results/test/TEST-*.xml
+          if-no-files-found: warn
+          retention-days: 14
