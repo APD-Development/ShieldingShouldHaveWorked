@@ -31,6 +31,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.*;
 import com.shatteredpixel.shatteredpixeldungeon.levels.*;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.Room;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.secret.RatKingRoom;
+import com.shatteredpixel.shatteredpixeldungeon.mechanics.ShadowCaster;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.*;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.HeroSprite;
 import com.watabou.noosa.*;
@@ -150,6 +151,38 @@ public class RatKingRoomAndSearchTest {
         assertProximityMatchesForwardRule();
         level.mobs.clear();
         assertProximityMatchesForwardRule();
+    }
+    // Independent fresh-allocation oracle for the old per-position shadow cast.
+    private boolean[] freshQuickSearchSight(int from,int radius,boolean warden){
+        boolean[] sight=new boolean[level.length()];
+        boolean[] blocking=level.losBlocking;
+        if(warden){
+            blocking=blocking.clone();
+            for(int cell=0;cell<blocking.length;cell++)
+                if(level.map[cell]==Terrain.HIGH_GRASS||level.map[cell]==Terrain.FURROWED_GRASS)blocking[cell]=false;
+        }
+        ShadowCaster.castShadow(from%level.width(),from/level.width(),level.width(),sight,blocking,radius);
+        return sight;
+    }
+    @Test public void reusedQuickSearchSightExactlyMatchesFreshCastsIncludingWardenGrass(){
+        // A mix of opaque walls, a narrow gap and grass produces different
+        // sight masks as the quote considers different candidate positions.
+        Arrays.fill(level.map,Terrain.WALL);
+        for(int y=1;y<13;y++)for(int x=1;x<13;x++)level.map[x+y*14]=Terrain.EMPTY;
+        for(int y=1;y<13;y++)level.map[6+y*14]=Terrain.WALL;
+        level.map[6+7*14]=Terrain.EMPTY;
+        for(int y=3;y<=9;y++)level.map[4+y*14]=Terrain.HIGH_GRASS;
+        level.map[8+5*14]=Terrain.FURROWED_GRASS;
+        level.buildFlagMaps();
+        int[] origins={2+2*14,11+11*14,3+8*14,10+4*14};
+        int[] radii={9,2,5,1,8,3}; // Alternate broad/narrow casts to expose stale bits.
+        for(boolean warden:new boolean[]{false,true}){
+            RatKingQuickSearch.SightScratch reused=new RatKingQuickSearch.SightScratch(level,warden);
+            for(int pass=0;pass<3;pass++)for(int origin:origins)for(int radius:radii){
+                assertArrayEquals("Sight origin "+origin+" radius "+radius+" warden "+warden,
+                        freshQuickSearchSight(origin,radius,warden),reused.cast(origin,radius));
+            }
+        }
     }
     @Test public void purePlanningDoesNotConsumeRngOrMoveOrRevealAnything(){enable();int position=hero.pos;int[] map=level.map.clone();Random.pushGenerator(171);long expected=Random.Long();Random.popGenerator();Random.pushGenerator(171);try{RatKingQuickSearch.quote(hero,level,door());assertEquals(expected,Random.Long());}finally{Random.popGenerator();}assertEquals(position,hero.pos);assertArrayEquals(map,level.map);}
     @Test public void hasteExpiryIsIncludedInsteadOfAssumingItLastsForever(){enable();hero.pos=1+6*14;Buff.affect(hero,Haste.class,1f);assertEquals(4,RatKingQuickSearch.quote(hero,level,door()),0.001f);}

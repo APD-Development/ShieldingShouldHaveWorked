@@ -149,7 +149,34 @@ public final class RatKingQuickSearch {
         }
         return nearby;
     }
-    private static boolean searchFrom(Hero hero,Level level,int from,int door,float after){
+    /**
+     * A route quote may try many potential search positions on an unchanged floor.
+     * Reuse its temporary sight array and Warden grass mask instead of allocating
+     * a full-floor pair on every attempted position. A fresh zero fill preserves
+     * the exact per-cast visibility semantics even when a previous cast saw more.
+     * This scratch object lives only for one pure quote; no map/global cache.
+     */
+    static final class SightScratch {
+        private final Level level;
+        private final boolean warden;
+        private boolean[] sight;
+        private boolean[] blocking;
+        SightScratch(Level level,boolean warden){this.level=level;this.warden=warden;}
+        boolean[] cast(int from,int radius){
+            if(sight==null){
+                sight=new boolean[level.length()];
+                blocking=level.losBlocking;
+                if(warden){
+                    blocking=blocking.clone();
+                    for(int i=0;i<blocking.length;i++)
+                        if(level.map[i]==Terrain.HIGH_GRASS||level.map[i]==Terrain.FURROWED_GRASS)blocking[i]=false;
+                }
+            }else Arrays.fill(sight,false);
+            ShadowCaster.castShadow(from%level.width(),from/level.width(),level.width(),sight,blocking,radius);
+            return sight;
+        }
+    }
+    private static boolean searchFrom(Hero hero,Level level,int from,int door,float after,SightScratch sight){
         boolean foresight=active(hero,Foresight.class,after);
         if(!WallSearchSession.footprint(hero,level,from,door,foresight))return false;
         if(foresight)return true;
@@ -158,9 +185,7 @@ public final class RatKingQuickSearch {
         int dx=Math.abs(from%level.width()-door%level.width()),dy=Math.abs(from/level.width()-door/level.width());
         if(sense>1&&dx<=sense&&dy<=sense&&dx<=ShadowCaster.rounding[sense][dy])return true;
         float view=hero.viewDistance*(1f+0.25f*hero.pointsInTalent(Talent.FARSIGHT))*EyeOfNewt.visionRangeMultiplier();
-        boolean[] fov=new boolean[level.length()];boolean[] blocking=level.losBlocking;
-        if(hero.subClass==HeroSubClass.WARDEN){blocking=blocking.clone();for(int i=0;i<blocking.length;i++)if(level.map[i]==Terrain.HIGH_GRASS||level.map[i]==Terrain.FURROWED_GRASS)blocking[i]=false;}
-        ShadowCaster.castShadow(from%level.width(),from/level.width(),level.width(),fov,blocking,Math.round(view));return fov[door];
+        return sight.cast(from,Math.round(view))[door];
     }
     public static float quote(Hero hero,Level level,int door){return plan(hero,level,door).total;}
     public static Quote plan(Hero hero,Level level,int door){
@@ -171,8 +196,9 @@ public final class RatKingQuickSearch {
         // Hostile positions and terrain do not change during a pure route quote.
         // Computing this once avoids a full-map allocation and BFS for every priced step.
         final boolean[] enemyProximity=hero.glyphLevel(Swiftness.class)>=0?swiftnessEnemyProximity(level):null;
+        final SightScratch sight=new SightScratch(level,hero.subClass==HeroSubClass.WARDEN);
         return minimumPlan(level.width(),legal,hero.pos,(from,to,time)->1f/speed(hero,level,to,time,enemyProximity)/(active(hero,Speed.class,time)?2f:1f),new SearchPoint(){
-            public boolean allowed(int cell,float time){return searchFrom(hero,level,cell,door,time);}
+            public boolean allowed(int cell,float time){return searchFrom(hero,level,cell,door,time,sight);}
             public float delay(int cell,float time){return active(hero,Speed.class,time)?1f:2f;}
         });
     }
