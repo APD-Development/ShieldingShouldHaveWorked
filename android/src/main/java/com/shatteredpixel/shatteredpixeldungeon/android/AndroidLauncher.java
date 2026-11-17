@@ -194,6 +194,7 @@ public class AndroidLauncher extends AndroidApplication {
 	@Override
 	protected void onResume() {
 		com.watabou.utils.SupportDiagnostics.event("activity.resume", "");
+        com.watabou.utils.SupportActionJournal.resumed(com.watabou.noosa.Game.scene() == null ? "unknown" : com.watabou.noosa.Game.scene().getClass().getSimpleName());
 		com.watabou.utils.SupportDiagnostics.memoryEvent("activity.resume");
 		//prevents weird rare cases where the app is running twice
 		if (instance != this){
@@ -210,6 +211,7 @@ public class AndroidLauncher extends AndroidApplication {
 
     @Override protected void onPause() {
         com.watabou.utils.SupportDiagnostics.event("activity.pause", "");
+        com.watabou.utils.SupportActionJournal.paused(com.watabou.noosa.Game.scene() == null ? "unknown" : com.watabou.noosa.Game.scene().getClass().getSimpleName());
         com.watabou.utils.SupportDiagnostics.memoryEvent("activity.pause");
         super.onPause();
     }

@@ -80,6 +80,17 @@ public final class SupportDiagnostics {
             // Keep CR and LF from turning one diagnostic record into multiple apparent events.
             String line=System.currentTimeMillis()+" "+shortText(kind,80).replace('\r',' ').replace('\n',' ')
                     +" "+shortText(detail,700).replace('\r',' ').replace('\n',' ');
+            // Preserve selected safe scene and memory milestones in the extended,
+            // opt-in report chronology. Never persist exception messages or typed values.
+            if (kind != null && (kind.equals("scene.request") || kind.equals("scene.begin")
+                    || kind.equals("scene.ready") || kind.equals("game.pause")
+                    || kind.equals("game.resume") || kind.equals("memory.sample")
+                    || kind.equals("input.discard") || kind.equals("ui.scale"))) {
+                SupportActionJournal.record(kind,detail);
+            } else if ("error".equals(kind)) {
+                String type=detail==null?"unknown":detail.split(":",2)[0];
+                SupportActionJournal.record("error.class",type);
+            }
             trace.addLast(line);traceChars+=line.length()+1;
             if ("memory.sample".equals(kind)) {
                 memoryTrace.addLast(line);

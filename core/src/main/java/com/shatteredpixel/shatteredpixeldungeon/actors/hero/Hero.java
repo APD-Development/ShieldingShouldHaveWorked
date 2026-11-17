@@ -912,8 +912,25 @@ public class Hero extends Char {
 			}
 		}
 		
-		checkVisibleMobs();
-		BuffIndicator.refreshHero();
+        checkVisibleMobs();
+        // Extended bug reports record APD gameplay intents, not item names,
+        // inventory contents, or another application's input.
+        if (curAction != null) {
+            int destination = curAction.dst;
+            if (curAction instanceof HeroAction.Attack
+                    && ((HeroAction.Attack)curAction).target != null)
+                destination = ((HeroAction.Attack)curAction).target.pos;
+            else if (curAction instanceof HeroAction.Interact
+                    && ((HeroAction.Interact)curAction).ch != null)
+                destination = ((HeroAction.Interact)curAction).ch.pos;
+            com.watabou.utils.SupportActionJournal.record("hero.action",
+                    "type="+curAction.getClass().getSimpleName()
+                    +" floor="+Dungeon.depth+" from="+pos+" target="+destination);
+        } else if (resting) {
+            com.watabou.utils.SupportActionJournal.record("hero.wait",
+                    "floor="+Dungeon.depth+" position="+pos);
+        }
+        BuffIndicator.refreshHero();
 		BuffIndicator.refreshBoss();
 		
 		if (paralysed > 0) {

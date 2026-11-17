@@ -80,6 +80,10 @@ public class ShatteredPixelDungeon extends Game {
 
 		updateSystemUI();
 		SPDAction.loadBindings();
+
+        // Android configured private storage before GDX preferences became available.
+        // Journal collection starts only after an explicit, persisted player opt-in.
+        com.watabou.utils.SupportActionJournal.setEnabled(SPDSettings.apdExtendedBugLogging());
 		
 		Music.INSTANCE.enable( SPDSettings.music() );
 		Music.INSTANCE.volume( SPDSettings.musicVol()*SPDSettings.musicVol()/100f );

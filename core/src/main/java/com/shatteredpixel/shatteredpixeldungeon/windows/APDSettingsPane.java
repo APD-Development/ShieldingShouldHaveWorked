@@ -102,6 +102,7 @@ public class APDSettingsPane extends Component {
     private RenderedTextBlock sectionInfo;
     private boolean diagnosticsLoaded;
     private RedButton btnDiagnosticReport;
+    private CheckBox chkExtendedBugLogging;
     public interface Navigation { void changed(ApdSettingsSection previous); }
     private Navigation navigation;
     public void navigation(Navigation value){navigation=value;}
@@ -343,20 +344,81 @@ public class APDSettingsPane extends Component {
 		};
 		add( btnTest );
 
+        chkExtendedBugLogging=new SettingCheckBox("Extended bug logging (OFF by default)") {
+            @Override protected void onClick() {
+                super.onClick();
+                if (!checked()) {
+                    SPDSettings.apdExtendedBugLogging(false);
+                    ShatteredPixelDungeon.scene().addToFront(new WndMessage(
+                            "Extended logging is off. The locally stored action journal has been cleared. "
+                            +"Standard bug reports still work."));
+                    return;
+                }
+                // The checkbox is NOT enabled merely because it was tapped.
+                checked(false);
+                java.util.List<WndUimsdList.Entry> disclosures=new java.util.ArrayList<>();
+                disclosures.add(WndUimsdList.Entry.warning("OFF BY DEFAULT. Turning this on begins collecting APD activity on this device until you turn it off."));
+                disclosures.add(WndUimsdList.Entry.heading("Player input"));
+                disclosures.add(WndUimsdList.Entry.note("Time and order of touches, taps, swipes, touch positions, pointer IDs, non-text key press/release and Back navigation. Typed text, passwords and keyboard contents are excluded."));
+                disclosures.add(WndUimsdList.Entry.heading("In-game actions"));
+                disclosures.add(WndUimsdList.Entry.note("Clicked game controls, available hero movement, attacks, interactions, settings changed and their numeric/boolean values. Text settings are redacted."));
+                disclosures.add(WndUimsdList.Entry.heading("Game and device observations"));
+                disclosures.add(WndUimsdList.Entry.note("Game screens opened, error classes, memory usage samples, performance milestones, when APD goes into the background, when it returns and wall-clock time away. These do not reveal which other app you used or prove why you left."));
+                disclosures.add(WndUimsdList.Entry.heading("Retention and sharing"));
+                disclosures.add(WndUimsdList.Entry.note("Collected locally in APD private storage, across play sessions and restarts, up to 64 MiB. If it fills or recording fails, some actions will be missing. Extended bug reports include this history since the last successfully saved extended report; Standard remains the old report. Nothing is automatically sent or uploaded. Review the report before sharing. Turning this setting OFF stops collection and deletes the local action history. Existing game saves are not read for this journal."));
+                disclosures.add(WndUimsdList.Entry.action("Enable Extended logging (I understand)"));
+                disclosures.add(WndUimsdList.Entry.action("Keep logging OFF"));
+                ShatteredPixelDungeon.scene().addToFront(WndUimsdList.menu(
+                        "Extended bug logging: disclosure", "",
+                        disclosures, (index, checked) -> {
+                            if(index==0){
+                                SPDSettings.apdExtendedBugLogging(true);
+                                chkExtendedBugLogging.checked(true);
+                            } else {
+                                chkExtendedBugLogging.checked(false);
+                            }
+                        }));
+            }
+        };
+        chkExtendedBugLogging.checked(SPDSettings.apdExtendedBugLogging());
+        add(chkExtendedBugLogging);
+        row(ApdSettingsSection.ADVANCED,chkExtendedBugLogging,
+                "OFF by default. Explicit opt-in records APD actions locally between extended reports; turn off to erase the journal.");
+
         final RedButton diagnosticReport=new SettingButton("Create bug report") {
             @Override protected void onClick() {
-                final com.watabou.noosa.Game engine=Game.instance;
-                final com.watabou.noosa.Scene owner=Game.scene();
-                enable(false);
-                com.shatteredpixel.shatteredpixeldungeon.apd.diagnostics.DiagnosticReport.export(message->Game.runOnRenderThread(()->{
-                    if(Game.instance!=engine || Game.scene()!=owner || parent==null)return;
-                    enable(true);owner.addToFront(new WndMessage(message));
-                }));
+                final RedButton source=this;
+                ShatteredPixelDungeon.scene().addToFront(new WndOptions(
+                        "Bug report type",
+                        "Standard keeps the original report. Extended requires logging to be turned ON "
+                        +"in Advanced Settings after reading the full disclosure, and adds the chronological "
+                        +"in-game action history since the last successfully saved extended report, "
+                        +"plus time APD spent in the background. Review the saved file before sharing.",
+                        "Standard", "Extended") {
+                    @Override protected void onSelect(int index) {
+                        if(index!=0 && index!=1)return;
+                        if(index==1 && !SPDSettings.apdExtendedBugLogging()){
+                            ShatteredPixelDungeon.scene().addToFront(new WndMessage(
+                                    "Extended bug logging is OFF. Enable it explicitly in Advanced Settings "
+                                    +"and read the full warning before collecting an action history. "
+                                    +"You can still choose Standard now."));
+                            return;
+                        }
+                        final com.watabou.noosa.Game engine=Game.instance;
+                        final com.watabou.noosa.Scene owner=Game.scene();
+                        source.enable(false);
+                        com.shatteredpixel.shatteredpixeldungeon.apd.diagnostics.DiagnosticReport.export(
+                                message->Game.runOnRenderThread(()->{
+                                    if(Game.instance!=engine || Game.scene()!=owner || source.parent==null)return;
+                                    source.enable(true);owner.addToFront(new WndMessage(message));
+                                }),index==1);
+                    }
+                });
             }
         };
         add(diagnosticReport);btnDiagnosticReport=diagnosticReport;
         row(ApdSettingsSection.ADVANCED,diagnosticReport,
-                "Save a support file with build/device details, recent input and screen timings, errors, and memory readings. Saved games and run histories are not included.");
+                "Choose Standard (existing support report) or Extended (adds APD action chronology, touches, and time away). Review before sharing; no automatic upload.");
 
 		btnImport = new SettingButton( "Import APD rankings" ) {
 			@Override

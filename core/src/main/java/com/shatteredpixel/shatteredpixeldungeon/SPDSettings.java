@@ -532,6 +532,15 @@ public class SPDSettings extends GameSettings {
         put("apd_custom_rules_slot_"+slot,rules.preferenceText());
     }
 
+    /** Private, locally stored consent; logging is disabled on every fresh install. */
+    public static boolean apdExtendedBugLogging() {
+        return getBoolean("apd_extended_bug_logging", false);
+    }
+    public static void apdExtendedBugLogging(boolean allowed) {
+        put("apd_extended_bug_logging", allowed);
+        com.watabou.utils.SupportActionJournal.setEnabled(allowed);
+    }
+
 	public static void apdDifficulty( int value ){
 		put( KEY_APD_DIFFICULTY, com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.Difficulty.normalize( value ) );
 	}
