@@ -41,8 +41,12 @@ public final class FullPackSwap {
         if (hero == null || heap == null || item == null || heap.type != Heap.Type.HEAP) return false;
         if (heap.pos != hero.pos || heap.peek() != item) return false;
         if (hero.belongings.lostInventory()) return false;
-        Bag pack = hero.belongings.backpack;
-        if (pack.canHold(item)) return false;
+        return needsSwap(hero.belongings.backpack, item);
+    }
+
+    /** Recheck the actual capacity at commit, not just when the picker opens. */
+    static boolean needsSwap(Bag pack, Item item) {
+        if (pack == null || item == null || pack.canHold(item)) return false;
         for (Item i : pack.items) {
             if (i instanceof Bag && ((Bag) i).canHold(item)) return false;
         }
@@ -80,9 +84,11 @@ public final class FullPackSwap {
     }
 
     static boolean swap(Hero hero, Heap heap, Item item, Item chosen) {
-        if (chosen == null || hero != Dungeon.hero || !hero.isAlive() || !hero.ready) return false;
+        if (hero == null || chosen == null || hero != Dungeon.hero || !hero.isAlive()
+                || !hero.ready || Dungeon.level == null) return false;
         Bag pack = hero.belongings.backpack;
-        if (Dungeon.level.heaps.get(hero.pos) != heap || heap.peek() != item
+        if (Dungeon.level.heaps.get(hero.pos) != heap
+                || !applies(hero, heap, item)
                 || !canSwapOut(hero, pack, chosen)) return false;
 
         ApdItems.noteAction(chosen, ApdItems.ACTION_DROP);
