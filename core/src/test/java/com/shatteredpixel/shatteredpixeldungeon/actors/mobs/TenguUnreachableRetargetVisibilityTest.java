@@ -128,4 +128,51 @@ public class TenguUnreachableRetargetVisibilityTest {
         assertNull(tengu.attackedTarget);
         assertEquals(0, tengu.attacks);
     }
+
+    private static class CyclingTengu extends Tengu {
+        Char first;
+        Char second;
+        int selectionCalls;
+
+        @Override
+        protected Char chooseEnemy() {
+            selectionCalls++;
+            if (selectionCalls > 2) {
+                throw new AssertionError("Tengu repeatedly retried unreachable targets");
+            }
+            return selectionCalls == 1 ? second : first;
+        }
+
+        @Override
+        protected boolean canAttack(Char target) {
+            return false;
+        }
+
+        @Override
+        public boolean canUseAbility() {
+            return false;
+        }
+
+        boolean hunt(Char previous) {
+            enemy = previous;
+            return HUNTING.act(false, false);
+        }
+
+        Char currentTarget() {
+            return enemy;
+        }
+    }
+
+    @Test
+    public void alternatingUnreachableTargetsOnlyRetryOnce() {
+        CyclingTengu cycling = new CyclingTengu();
+        cycling.pos = 11;
+        cycling.fieldOfView = new boolean[25];
+        cycling.first = ratAt(12);
+        cycling.second = ratAt(13);
+
+        assertTrue(cycling.hunt(cycling.first));
+        assertEquals(1, cycling.selectionCalls);
+        assertSame(cycling.second, cycling.currentTarget());
+    }
 }

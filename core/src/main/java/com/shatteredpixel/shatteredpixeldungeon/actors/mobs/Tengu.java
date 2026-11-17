@@ -412,16 +412,21 @@ public class Tengu extends Mob {
 
 		@Override
 		protected boolean handleUnreachableTarget(boolean enemyInFOV, boolean justAlerted) {
-			Char oldEnemy = enemy;
-			enemy = null;
-			enemy = chooseEnemy();
-			if (enemy != null && enemy != oldEnemy) {
-				// Sight of the previous enemy cannot describe this new target.
-				boolean replacementInFOV = enemy.isAlive() && fieldOfView[enemy.pos] && enemy.invisible <= 0;
-				recursing = true;
-				boolean result = act(replacementInFOV, justAlerted);
-				recursing = false;
-				return result;
+			// Avoid cycling indefinitely when no candidate can be reached or attacked.
+			if (!recursing) {
+				Char oldEnemy = enemy;
+				enemy = null;
+				enemy = chooseEnemy();
+				if (enemy != null && enemy != oldEnemy) {
+					// Sight of the previous enemy cannot describe this new target.
+					boolean replacementInFOV = enemy.isAlive() && fieldOfView[enemy.pos] && enemy.invisible <= 0;
+					recursing = true;
+					try {
+						return act(replacementInFOV, justAlerted);
+					} finally {
+						recursing = false;
+					}
+				}
 			}
 
 			//attempt to use an ability, even if enemy can't be decided
