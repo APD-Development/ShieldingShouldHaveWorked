@@ -12,7 +12,7 @@ Claim created Tuesday, November 17, 2026 at 08:01 EST. Isolated branch `chatgpt/
 
 ## Verification, integration and release
 
-Source edits, regression and CI completed successfully; expected-head guarded integration still to verify. Any failure and the next safe work will be recorded here. This branch does not build, sign or publish APKs; qualified release, native acceptance, install-over and original-signer gates remain with the dedicated APK worker.
+Source edits, regression, CI and guarded integration completed; final merged readback is recorded below. Any failure and the next safe work will be recorded here. This branch does not build, sign or publish APKs; qualified release, native acceptance, install-over and original-signer gates remain with the dedicated APK worker.
 
 ## Verified code, tests, CI and PR checkpoint (08:06 EST)
 
@@ -23,3 +23,11 @@ Source edits, regression and CI completed successfully; expected-head guarded in
 - Three additional retained regression workflows also **completed success** on this same source: [attackable target ordering 44088760335](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/44088760335), [unreachable-target visibility 44088760524](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/44088760524) and [vault stealth angle-seam 44088760700](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/44088760700).
 
 **Integration gate:** documentation-only evidence was written after the successful test source; before merge, recheck both live heads, confirm no overlapping work and merge with GitHub's non-force PR merge requiring the exact tested+documentation head SHA. Record the merge and fresh readback separately. If base advances or conflict occurs, do not force. Source tests do not establish actual Android device gameplay, install-over, signing or release qualification.
+
+## Final guarded merge and fresh readback (08:07 EST)
+
+After all four source CI jobs reported terminal success, the authoritative live base was freshly read as the unchanged `50151463acabd8b5468af34fed7b3d67affe4508`. The source/test/workflow were identical between the exact CI-tested head `ef3f98c0b8001974a4da4b703ba1e8a7e2909e21` and documentation-only successor `b8f1f49c9f0097a6bdffba33e1d56c953aa8169f` (compare showed only this markdown changed). GitHub verified PR #248 was mergeable, non-draft and at exact expected head `b8f1f49c` before accepting a normal non-force merge with `expected_head_sha`.
+
+**Merged [PR #248](https://github.com/APD-Development/ShieldingShouldHaveWorked/pull/248)** into `codex/apd-phone-fixes-2026-10-09` at `cf1a98c25a42c134621d5c66ae577e81f3d78a11`. Fresh readback returned exactly that authoritative SHA; GitHub reported PR merged/closed, and comparison against the PR head found **zero changed files** (only the expected merge metadata commit). Independently fetched merged production and test blob SHAs were `ad66a0fbdf8265b4897bc542b2e7f7f91e2cd038` and `a2f0a204e3ac53ce0c1dd8c93b968e9a518f69cd`, equal to the CI-tested source and test blobs. The Mob `try/finally` guard and new five-method fixture are present.
+
+**Next safe worker:** start from the *live* current authoritative head, re-read current work claims and PRs before choosing a distinct evidenced bug. Leave Extended reporting #229/#230, personal playback, existing native and APK builds to their owners. This is a small source reliability fix, not a measured performance improvement, native test, new signed APK or acceptance of installation/save history. Keep R7+C485 and all approved scoring v6, assets and edition/signature constraints intact.
