@@ -45,12 +45,12 @@ public final class FoodExplanation {
     }
     public static String summary(Food food){
         String unavailable=unavailable(food);if(!unavailable.isEmpty())return unavailable;
-        String text=food.getClass()==Food.class&&nutritionBeforeHorn(food)==Hunger.HUNGRY?"":"Hunger relief: _"+n(100f*nutritionBeforeHorn(food)/Hunger.HUNGRY)+"% of a normal ration_.";
+        String text="Refills _"+n(nutritionBeforeHorn(food))+" hunger_.";
         if(Dungeon.isChallenged(Challenges.NO_FOOD))text+=" On Diet's reduction is included.";
         float time=food.previewEatingTime();
         if(Float.isFinite(time))text+=(text.isEmpty()?"":" ")+"Eating takes _"+n(time)+(time==1?" turn_.":" turns_.");
         if(Dungeon.hero!=null&&Dungeon.hero.belongings.getItem(com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HornOfPlenty.class)!=null)
-            text+=" An active Horn of Plenty curse reduces hunger relief by another 33%.";
+            text+=" An active Horn of Plenty curse refills 33% less.";
         if(food instanceof Blandfruit)text+="\n"+BlandfruitExplanation.summary((Blandfruit)food);
         else if(food instanceof Pasty)text+="\n"+PastyExplanation.summary(Dungeon.hero);
         else {String effect=specialEffect(food,Dungeon.hero);if(!effect.isEmpty())text+="\n"+effect.trim();}
@@ -58,7 +58,7 @@ public final class FoodExplanation {
     }
     public static String details(Food food){
         String unavailable=unavailable(food);if(!unavailable.isEmpty())return unavailable;
-        return "_Food and eating_\nThis meal provides "+n(100f*nutritionBeforeHorn(food)/Hunger.HUNGRY)+"% of a normal ration’s nourishment, including On Diet if active. Hunger relief stops when you are full, so excess nourishment is wasted. On Diet reduces food's nourishment to one third. A cursed Horn of Plenty reduces it by another 33%.\nEating normally takes "+n(Food.TIME_TO_EAT)+" turns. Meal talents can shorten this, while berries and Supply Rations already take only one turn without those talents. The eating time above uses your current meal talents."+specialEffect(food,Dungeon.hero);
+        return "_Food and eating_\nThis meal refills "+n(nutritionBeforeHorn(food))+" hunger, including On Diet if active. You're Hungry at "+n(Hunger.HUNGRY)+" hunger and Starving at "+n(Hunger.STARVING)+". Hunger relief stops when you are full, so excess nourishment is wasted. On Diet reduces food's nourishment to one third. A cursed Horn of Plenty reduces it by another 33%.\nEating normally takes "+n(Food.TIME_TO_EAT)+" turns. Meal talents can shorten this, while berries and Supply Rations already take only one turn without those talents. The eating time above uses your current meal talents."+specialEffect(food,Dungeon.hero);
 
     }
     private static String n(float value){return ObfuscationExplanation.number(value);}

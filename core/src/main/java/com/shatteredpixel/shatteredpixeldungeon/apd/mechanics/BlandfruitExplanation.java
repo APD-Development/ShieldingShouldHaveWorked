@@ -73,7 +73,7 @@ public final class BlandfruitExplanation {
         if(harmfulMeal(fruit))text+="\n_Eating is hazardous:_ it releases the described shattering effect at your own location when eaten. Relieving hunger does not protect you from that effect.";
         else text+="\nEating grants the benefit as part of the meal; it takes only the displayed eating time.";
         if(releasesEffectWhenThrown(fruit)){
-            text+="\nThrowing onto ordinary ground releases this form's shattering effect at the landing tile and leaves _1 portion of edible fruit chunks_. Chunks provide "+n(100f*FoodExplanation.nutritionBeforeHorn(Hunger.STARVING)/Hunger.HUNGRY)+"% of a normal ration’s nourishment before an active Horn curse. The potion effect and that later meal are separate; the thrown fruit does not feed you immediately. Wells and pits instead keep their ordinary item-drop/fall behavior.";
+            text+="\nThrowing onto ordinary ground releases this form's shattering effect at the landing tile and leaves _1 portion of edible fruit chunks_. Chunks refill "+n(FoodExplanation.nutritionBeforeHorn(Hunger.STARVING))+" hunger before an active Horn curse. The potion effect and that later meal are separate; the thrown fruit does not feed you immediately. Wells and pits instead keep their ordinary item-drop/fall behavior.";
         }else text+="\nThrowing normally drops the _whole fruit_ without applying its eating effect or creating chunks. Wells and pits keep their ordinary item-drop/fall behavior.";
         return text;
     }

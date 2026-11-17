@@ -43,14 +43,13 @@ public final class GlyphExplanation {
     }
     private static String playerNumber(float value){return com.shatteredpixel.shatteredpixeldungeon.messages.Messages.decimalFormat(value!=0&&Math.abs(value)<.01f?"0.##E0":"0.##",value);}
     private static String arcanaComparison(float before,float after,String unit,Hero hero){
-        return ArcanaInfoDisplay.hasKnownArcana(hero)&&Math.abs(before-after)>.00001f
-                ? " (_"+playerNumber(before)+unit+"_ before your Arcana)" : "";
+        return ""; //APD: show only the value the player actually has
     }
     private static String playerChance(float base,float power,Hero hero){
         String chance="_"+playerNumber(100*Math.max(0,Math.min(1,base*power)))+"%_";
         float ring=ArcanaInfoDisplay.knownArcanaPower(hero),without=1+ObfuscationExplanation.aura(hero);
         if(Float.isFinite(ring)&&ArcanaInfoDisplay.hasKnownArcana(hero)&&Math.abs(Math.min(1,base*power)-Math.min(1,base*without))>.00001f)
-            chance+=" (_"+playerNumber(100*Math.max(0,Math.min(1,base*without)))+"%_ before your Arcana)";
+            {} //APD: show only the value the player actually has
         return chance;
     }
     /** Ordinary glyph explanation, replacing repeated flavor plus mathematical summaries. */
@@ -65,7 +64,6 @@ public final class GlyphExplanation {
                 float ring=ArcanaInfoDisplay.knownArcanaPower(hero),aura=ObfuscationExplanation.aura(hero);
                 if(Float.isFinite(ring)){
                     String text="Move at _"+playerNumber(100*(ring+aura)/3f)+"%_ of normal speed in doorways";
-                    if(ArcanaInfoDisplay.hasKnownArcana(hero)&&Math.abs(ring-1)>.00001f)text+=" (_"+playerNumber(100*(1+aura)/3f)+"%_ before your Arcana)";
                     return text+". Adds no protection.";
                 }
             }
@@ -85,7 +83,7 @@ public final class GlyphExplanation {
         if(armor.glyph instanceof Camouflage){int base=Math.round((3+raw/2f)*(1+ObfuscationExplanation.aura(hero))),current=Math.round((3+raw/2f)*power);return "Trampling tall grass grants _"+current+" turns_ of invisibility"+arcanaComparison(base,current," turns",hero)+". Attacking or using magic can end it early; repeated activations refresh it rather than adding their durations.";}
         if(armor.glyph instanceof AntiMagic){
             int low=Math.round(raw*power),high=Math.round((3+1.5f*raw)*power);float without=1+ObfuscationExplanation.aura(hero);int baseLow=Math.round(raw*without),baseHigh=Math.round((3+1.5f*raw)*without);
-            return "Blocks an extra _"+low+"–"+high+" damage_ from certain magical attacks"+(ArcanaInfoDisplay.hasKnownArcana(hero)&&(low!=baseLow||high!=baseHigh)?" (_"+baseLow+"–"+baseHigh+"_ before your Arcana)":"")+".";
+            return "Blocks an extra _"+low+"–"+high+" damage_ from certain magical attacks"+".";
         }
         if(armor.glyph instanceof Stone)return "Replaces dodging with damage reduction. Attacks that would be easier to dodge deal less damage, up to _75%_ less.";
         if(armor.glyph instanceof Brimstone){

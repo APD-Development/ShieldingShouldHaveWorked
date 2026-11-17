@@ -44,13 +44,8 @@ public final class ObfuscationExplanation {
         float power=ArcanaInfoDisplay.knownArcanaPower(hero),aura=aura(hero);
         if(!Float.isFinite(power))return meaning;
         // Same eligible sleeping-enemy check as Mob.Sleeping.detectionChance, fixed three-tile example.
-        float without=100f/3f, withGlyph=100f/(3f+value*(1+aura)), withArcana=100f/(3f+value*(power+aura));
-        String text=meaning+"\n\nChance a sleeping enemy 3 tiles away notices you (lower is better):"
-                +"\n- no glyph: _"+Messages.decimalFormat("0.#",without)+"%_"
-                +"\n- this glyph: _"+Messages.decimalFormat("0.#",withGlyph)+"%_";
-        if(ArcanaInfoDisplay.hasKnownArcana(hero)&&Math.abs(withArcana-withGlyph)>.00001f)
-            text+="\n- glyph + your Arcana: _"+Messages.decimalFormat("0.#",withArcana)+"%_";
-        return text;
+        float chance=100f/(3f+value*(power+aura));
+        return meaning.substring(0,meaning.length()-1)+": a sleeping enemy 3 tiles away notices you _"+Messages.decimalFormat("0.#",chance)+"%_ of the time.";
     }
     public static String details(Armor armor,Hero hero){
         if(!applies(armor))return "";

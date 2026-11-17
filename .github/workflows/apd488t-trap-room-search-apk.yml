@@ -1,5 +1,5 @@
 name: APD C489K/P489K trap-room search
-# Plain Arcana wording on gear, Bug Note, heavy-armor text, C489K/P489K.
+# Hunger number, food refill amounts, current-only Arcana wording, C489K/P489K.
 on:
   push:
     branches: [fix/apd-trap-room-search-20261116]

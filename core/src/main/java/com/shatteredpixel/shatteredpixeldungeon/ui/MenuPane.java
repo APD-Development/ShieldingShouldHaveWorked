@@ -70,6 +70,9 @@ public class MenuPane extends Component {
 	private int clockMinute = -1;
 	//APD Developer build: this frame's time in ms, updated every frame
 	private BitmapText frameTime;
+	//APD: hunger number for everyone. Alpha: where the Developer clock sits. Developer: under the frame time.
+	private BitmapText hungerText;
+	private int hungerShown = Integer.MIN_VALUE;
 	private int frameShownMs = -1;
 	private NinePatch versionOverflowBG;
 
@@ -91,6 +94,9 @@ public class MenuPane extends Component {
 		version.hardlight( 0xCACFC2 );
 		add(version);
 
+		hungerText = new BitmapText( "", PixelScene.pixelFont );
+		hungerText.hardlight( 0xCACFC2 );
+		add(hungerText);
 		if (com.shatteredpixel.shatteredpixeldungeon.apd.ApdFeatures.testBuild()) {
 			clock = new BitmapText( "", PixelScene.pixelFont );
 			clock.hardlight( 0xCACFC2 );
@@ -223,25 +229,37 @@ public class MenuPane extends Component {
 			challengeButton.setRect(challengeIcon.x, challengeIcon.y, challengeIcon.width(), challengeIcon.height() + challengeText.height());
 		}
 
-		if (clock != null) layoutClock();
+		layoutClock();
 
 		danger.setPos( x + WIDTH - danger.width(), y + bg.height + 1 );
 		danger.setSize( camera.width - danger.width(), danger.height());
 	}
 
 	private void layoutClock(){
+		float right = (challengeIcon != null ? challengeIcon.x : depthIcon.x) - 2;
+		float nextY = depthIcon.y + 1;
+		if (clock != null){
 		clock.scale.set(PixelScene.align(0.67f));
 		clock.measure();
-		float right = (challengeIcon != null ? challengeIcon.x : depthIcon.x) - 2;
 		clock.x = right - clock.width();
-		clock.y = depthIcon.y + 1;
+		clock.y = nextY;
 		PixelScene.align(clock);
+		nextY = clock.y + clock.height() + 1;
+		}
 		if (frameTime != null){
 			frameTime.scale.set(PixelScene.align(0.67f));
 			frameTime.measure();
 			frameTime.x = right - frameTime.width();
-			frameTime.y = clock.y + clock.height() + 1;
+			frameTime.y = nextY;
 			PixelScene.align(frameTime);
+			nextY = frameTime.y + frameTime.height() + 1;
+		}
+		if (hungerText != null){
+			hungerText.scale.set(PixelScene.align(0.67f));
+			hungerText.measure();
+			hungerText.x = right - hungerText.width();
+			hungerText.y = nextY;
+			PixelScene.align(hungerText);
 		}
 	}
 
@@ -261,6 +279,18 @@ public class MenuPane extends Component {
 	@Override
 	public void update() {
 		super.update();
+		if (hungerText != null) {
+			com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger h = Dungeon.hero == null ? null : Dungeon.hero.buff(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger.class);
+			int value = h == null ? -1 : h.hunger();
+			if (value != hungerShown) {
+				hungerShown = value;
+				hungerText.text(value < 0 ? "" : "Hunger " + value + "/" + (int)com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger.STARVING);
+				if (value >= com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger.STARVING) hungerText.hardlight(0xFF4444);
+				else if (value >= com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger.HUNGRY) hungerText.hardlight(0xFFFF44);
+				else hungerText.hardlight(0xCACFC2);
+				if (depthIcon != null) layoutClock();
+			}
+		}
 		if (frameTime != null) {
 			//every frame: this frame's time in ms; the text is only rebuilt when the number changes
 			int ms = Math.round(com.badlogic.gdx.Gdx.graphics.getDeltaTime() * 1000f);

@@ -28,7 +28,7 @@ public final class PastyExplanation {
     public static String summary(Hero hero) {
         switch (Holiday.getCurrentHoliday()) {
             case LUNAR_NEW_YEAR:
-                return "Leaves one extra meal for later, worth _"+ObfuscationExplanation.number(100f*FoodExplanation.nutritionBeforeHorn(Hunger.HUNGRY/2f)/Hunger.HUNGRY)+"% of a normal ration_.";
+                return "Leaves one extra meal for later, that refills _"+ObfuscationExplanation.number(FoodExplanation.nutritionBeforeHorn(Hunger.HUNGRY/2f))+" hunger_.";
             case APRIL_FOOLS: case EASTER:
                 return "Gives non-cursed artifacts a small burst of recharge. The amount depends on the artifact.";
             case PRIDE:

@@ -69,7 +69,7 @@ public class ArcanaInfoDisplayTest {
         equip(0);
         String w=ArcanaInfoDisplay.weapon(sword), a=ArcanaInfoDisplay.armor(armor);
         assertTrue(w,w.contains("17.5% increase")); assertTrue(w,w.contains("33.33% to 39.17%"));
-        assertTrue(a,a.contains("_2x_ normal, or _2.35x_ with your Arcana")); assertTrue(a,a.contains("Only on water"));
+        assertTrue(a,a.contains("_2.35x_ normal")); assertTrue(a,a.contains("Only on water"));
     }
     @Test public void combinedAndEnhancedRingsUseTheirKnownEffectiveLevels() {
         equip(0); Dungeon.hero.belongings.misc=ring(0);
