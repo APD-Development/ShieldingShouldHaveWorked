@@ -1,0 +1,64 @@
+name: APD vault stealth angle-seam regression
+on:
+  push:
+    branches: [chatgpt/apd-stealth-angle-wrap-20261117-0300]
+    paths:
+      - core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/Mob.java
+      - core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/MobStealthAngleSeamTest.java
+      - .github/workflows/apd-stealth-angle-seam-ci-20261117.yml
+permissions:
+  contents: read
+jobs:
+  verify-source:
+    runs-on: ubuntu-latest
+    timeout-minutes: 70
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Verify complete combined R7 C485 and current Mob parent
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor c6fa033167789ef9f2fc6f31bcff39c824dfb4db HEAD
+          git merge-base --is-ancestor eafc8ac650c97b16566161159e62dd228b100378 HEAD
+          git rev-parse HEAD
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - uses: gradle/actions/setup-gradle@v4
+      - name: Install Android compilation platform
+        run: '"$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "platforms;android-36"'
+      - name: Full core tests and desktop plus Android Java compilation (source only)
+        run: ./gradlew :core:test :desktop:classes :android:compileDebugJavaWithJavac :android:compileReleaseJavaWithJavac :android:compileDebugAndroidTestJavaWithJavac --no-daemon
+      - name: Verify exact seam regression and clean full JUnit report
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import xml.etree.ElementTree as ET
+          mob = Path('core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/Mob.java').read_text()
+          section = mob.split('protected class StealthGameplayWandering extends Wandering', 1)[1].split('protected boolean noticeEnemy()', 1)[0]
+          assert 'angleDiff = Math.min(angleDiff, 360f - angleDiff)' in section
+          assert 'Math.abs(enemyDir - movementDir) <=' not in section
+          suites = [ET.parse(p).getroot() for p in Path('core/build/test-results/test').glob('TEST-*.xml')]
+          assert suites, 'missing JUnit test outputs'
+          counts = {k: sum(int(s.get(k, '0')) for s in suites) for k in ('tests', 'failures', 'errors', 'skipped')}
+          cases = {(s.get('name'), t.get('name')) for s in suites for t in s.findall('testcase')}
+          target = 'com.shatteredpixel.shatteredpixeldungeon.actors.mobs.MobStealthAngleSeamTest'
+          required = {
+              'frontConeIsSymmetricAcrossSignedAngleSeam',
+              'outerVisionConeIsSymmetricAcrossSignedAngleSeam',
+              'enemyBehindPatrollerRetainsLowDetectionChance',
+          }
+          assert required.issubset({name for suite, name in cases if suite == target}), 'missing stealth seam test'
+          assert counts['tests'] >= 3557, counts
+          assert counts['failures'] == counts['errors'] == counts['skipped'] == 0, counts
+          print('APD_STEALTH_ANGLE_SEAM_JUNIT', dict(counts, suites=len(suites)))
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: apd-stealth-angle-seam-junit
+          path: core/build/test-results/test/TEST-*.xml
+          if-no-files-found: warn
+          retention-days: 14
