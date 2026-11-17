@@ -6,7 +6,7 @@ MAJOR	Coming Soon
 BTN	i:NEWS	What's next	I'm working on this change history first. After that, the **Cleric Grudge** design and the leftover **talent description** audit are next.\n\nAnything marked "Developer build" only exists in my own test build until I say it's ready for Alpha Testers.
 MAJOR	APD 489
 BUILD	C489K / P489K (Nov 17)
-BTN	s:RATION	Hunger	Your **hunger** is a number now: top-right of the screen and in your hero window (Hungry at 300, Starving at 450). It turns yellow when you're Hungry and red when you're Starving.
+BTN	s:RATION	Hunger	Your **hunger** shows as a number in the top-right (Hungry at 300, Starving at 450), and your hero window shows **how many turns until you get Hungry**. The number turns yellow when you're Hungry and red when you're Starving.
 
 Food says exactly how much hunger it refills instead of "50% of a normal ration".
 BTN	s:RING_RUBY	Arcana wording	Every enchantment, glyph and the **Ring of Arcana** got plainer text. Numbers read as the real value, with what it was **before your Arcana** in brackets.

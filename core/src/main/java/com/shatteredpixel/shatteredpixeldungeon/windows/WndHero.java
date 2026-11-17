@@ -195,7 +195,10 @@ public class WndHero extends WndTabbed {
 			statSlot( Messages.get(this, "exp"), hero.exp + "/" + hero.maxExp() );
 			//APD: hunger as a number. Hungry at 300, Starving at 450; food lowers it.
 			com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger hungerBuff = hero.buff(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger.class);
-			if (hungerBuff != null) statSlot( "Hunger", hungerBuff.hunger() + "/" + (int)com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger.STARVING );
+			if (hungerBuff != null) {
+				int turns = hungerBuff.turnsUntilHungry();
+				statSlot( "Hungry in", hungerBuff.isStarving() ? "Starving" : turns == 0 ? "Hungry now" : turns < 0 ? "Never" : turns + (turns == 1 ? " turn" : " turns") );
+			}
 
 			pos += GAP;
 

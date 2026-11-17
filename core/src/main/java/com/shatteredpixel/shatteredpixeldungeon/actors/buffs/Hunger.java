@@ -187,6 +187,19 @@ public class Hunger extends Buff implements Hero.Doom {
 		return level >= STARVING;
 	}
 
+	/** APD: hunger gained per normal turn right now (Salt Cube and custom rules; ignores temporary Shadows). */
+	public static float perTurn(){
+		return com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomResourceHooks.hungerAdvance(SaltCube.hungerGainMultiplier());
+	}
+
+	/** APD: turns until Hungry at the current rate; 0 when already Hungry, -1 when hunger never rises. */
+	public int turnsUntilHungry(){
+		if (level >= HUNGRY) return 0;
+		float rate = perTurn();
+		if (!(rate > 0)) return -1;
+		return (int)Math.ceil((HUNGRY - level) / rate);
+	}
+
 	public int hunger() {
 		return (int)Math.ceil(level);
 	}
