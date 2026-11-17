@@ -193,12 +193,6 @@ public class WndHero extends WndTabbed {
 			if (hero.shielding() > 0)   statSlot( Messages.get(this, "health"), hero.HP + "+" + hero.shielding() + "/" + hero.HT );
 			else                        statSlot( Messages.get(this, "health"), (hero.HP) + "/" + hero.HT );
 			statSlot( Messages.get(this, "exp"), hero.exp + "/" + hero.maxExp() );
-			//APD: hunger as a number. Hungry at 300, Starving at 450; food lowers it.
-			com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger hungerBuff = hero.buff(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger.class);
-			if (hungerBuff != null) {
-				int turns = hungerBuff.turnsUntilHungry();
-				statSlot( "Hungry in", hungerBuff.isStarving() ? "Starving" : turns == 0 ? "Hungry now" : turns < 0 ? "Never" : turns + (turns == 1 ? " turn" : " turns") );
-			}
 
 			pos += GAP;
 
@@ -306,6 +300,21 @@ public class WndHero extends WndTabbed {
 		
 		private void setupList() {
 			Component content = buffList.content();
+			//APD: hunger is always listed here, even before the Hungry icon appears
+			com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger hunger = Dungeon.hero.buff(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger.class);
+			if (hunger != null) {
+				int turns = hunger.turnsUntilHungry();
+				String when = hunger.isStarving() ? "You are _Starving_."
+						: turns == 0 ? "You are _Hungry_."
+						: turns < 0 ? "Your hunger isn't rising."
+						: "Hungry in _" + turns + (turns == 1 ? " turn_." : " turns_.");
+				RenderedTextBlock hungerRow = PixelScene.renderTextBlock("Hunger: _" + hunger.hunger() + "/" + (int)com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger.STARVING + "_. " + when, 8);
+				hungerRow.maxWidth(WIDTH);
+				hungerRow.setPos(0, pos);
+				PixelScene.align(hungerRow);
+				content.add(hungerRow);
+				pos += GAP + hungerRow.height() + GAP;
+			}
 			for (Buff buff : Dungeon.hero.buffs()) {
 				if (buff.icon() != BuffIndicator.NONE) {
 					BuffSlot slot = new BuffSlot(buff);
