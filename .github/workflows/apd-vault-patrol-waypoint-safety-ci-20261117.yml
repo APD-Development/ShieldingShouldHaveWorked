@@ -1,0 +1,69 @@
+name: APD vault patrol waypoint restore regression
+on:
+  push:
+    branches: [chatgpt/apd-vault-patrol-waypoint-save-20261117-0910]
+    paths:
+      - core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/Mob.java
+      - core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/MobVaultPatrolWaypointSafetyTest.java
+      - .github/workflows/apd-vault-patrol-waypoint-safety-ci-20261117.yml
+  pull_request:
+    branches: [codex/apd-phone-fixes-2026-10-09]
+    paths:
+      - core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/Mob.java
+      - core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/MobVaultPatrolWaypointSafetyTest.java
+      - .github/workflows/apd-vault-patrol-waypoint-safety-ci-20261117.yml
+permissions:
+  contents: read
+jobs:
+  verify-source:
+    runs-on: ubuntu-latest
+    timeout-minutes: 70
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Verify combined baseline and current Mob regression lineage
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor c6fa033167789ef9f2fc6f31bcff39c824dfb4db HEAD
+          git merge-base --is-ancestor 4bda78ba7de02a350be9d51d61386f61b1517851 HEAD
+          git rev-parse HEAD
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - uses: gradle/actions/setup-gradle@v4
+      - name: Install Android Java compilation platform
+        run: '"$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "platforms;android-36"'
+      - name: Full core tests and desktop plus Android Java compilation
+        run: ./gradlew :core:test :desktop:classes :android:compileDebugJavaWithJavac :android:compileReleaseJavaWithJavac :android:compileDebugAndroidTestJavaWithJavac --no-daemon
+      - name: Verify patrol fallback and valid save JUnit regressions
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import xml.etree.ElementTree as ET
+          suites = [ET.parse(p).getroot() for p in Path('core/build/test-results/test').glob('TEST-*.xml')]
+          assert suites, 'missing full core JUnit results'
+          counts = {k: sum(int(s.get(k,'0')) for s in suites) for k in ('tests','failures','errors','skipped')}
+          cases = {(s.get('name'), t.get('name')) for s in suites for t in s.findall('testcase')}
+          suite = 'com.shatteredpixel.shatteredpixeldungeon.actors.mobs.MobVaultPatrolWaypointSafetyTest'
+          required = {
+              'validWaypointIndexKeepsExistingPatrolRoute',
+              'negativeWaypointIndexFallsBackToFirstWaypoint',
+              'tooLargeWaypointIndexFallsBackToFirstWaypoint',
+              'emptyWaypointArrayUsesExistingStationaryFallback',
+              'restoredInvalidIndexCannotCrashNextPatrolWaypoint',
+              'restoredValidWaypointIndexIsPreserved',
+          }
+          assert required.issubset({name for suite_name, name in cases if suite_name == suite}), 'missing patrol regressions'
+          assert counts['tests'] >= 3576, counts
+          assert counts['failures'] == counts['errors'] == counts['skipped'] == 0, counts
+          print('APD_VAULT_PATROL_WAYPOINT_JUNIT', dict(counts, suites=len(suites)))
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: apd-vault-patrol-waypoint-junit
+          path: core/build/test-results/test/TEST-*.xml
+          if-no-files-found: warn
+          retention-days: 14

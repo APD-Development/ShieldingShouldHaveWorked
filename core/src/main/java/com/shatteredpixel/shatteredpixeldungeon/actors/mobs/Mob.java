@@ -223,8 +223,7 @@ public abstract class Mob extends Char {
 
 			investigatingTurns = bundle.getInt(INVEST_TURNS);
 			if (bundle.contains(WANDER_POSITIONS)) {
-				wanderPositions = bundle.getIntArray(WANDER_POSITIONS);
-				wanderPosIdx = bundle.getInt(WANDER_POS_IDX);
+				setupStealthGameplayWanderPositions(bundle.getIntArray(WANDER_POSITIONS), bundle.getInt(WANDER_POS_IDX));
 			}
 		}
 
@@ -1601,8 +1600,15 @@ public abstract class Mob extends Char {
 	}
 
 	public void setupStealthGameplayWanderPositions(int[] wanderPositions, int startingIdx){
-		this.wanderPositions = wanderPositions;
-		wanderPosIdx = startingIdx;
+		// Damaged/old saved patrol data must not index outside a waypoint array.
+		// All generated nonempty patrol routes with a valid index retain their order.
+		if (wanderPositions == null || wanderPositions.length == 0){
+			this.wanderPositions = null;
+			wanderPosIdx = 0;
+		} else {
+			this.wanderPositions = wanderPositions;
+			wanderPosIdx = startingIdx >= 0 && startingIdx < wanderPositions.length ? startingIdx : 0;
+		}
 	}
 
 	//in stealth gameplay mobs wander to more consistent pre-determined locations
