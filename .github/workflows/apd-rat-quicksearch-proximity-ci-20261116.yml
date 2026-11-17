@@ -1,0 +1,54 @@
+name: APD Rat King route proximity source regression
+on:
+  push:
+    branches: [chatgpt/apd-rat-quicksearch-proximity-20261116-2200]
+    paths:
+      - core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/apd/qol/RatKingQuickSearch.java
+      - core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/apd/qol/RatKingRoomAndSearchTest.java
+      - .github/workflows/apd-rat-quicksearch-proximity-ci-20261116.yml
+permissions:
+  contents: read
+jobs:
+  test-source:
+    runs-on: ubuntu-latest
+    timeout-minutes: 70
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Require original approved R7 + C485 baseline and latest safe parent
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor c6fa033167789ef9f2fc6f31bcff39c824dfb4db HEAD
+          git merge-base --is-ancestor 9686de2661e447b45357f3edbe020e787e7ff999 HEAD
+          git rev-parse HEAD
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - uses: gradle/actions/setup-gradle@v4
+      - name: Install compilation platform
+        run: '"$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "platforms;android-36"'
+      - name: Full core tests and desktop/Android Java compilation; no APK build
+        run: ./gradlew :core:test :desktop:classes :android:compileDebugJavaWithJavac :android:compileReleaseJavaWithJavac :android:compileDebugAndroidTestJavaWithJavac --no-daemon
+      - name: Confirm independent proximity regression ran and all suites passed
+        run: |
+          python3 - <<'PY'
+          import pathlib,xml.etree.ElementTree as ET,json
+          paths=list(pathlib.Path('core/build/test-results/test').glob('TEST-*.xml'))
+          assert paths,'missing JUnit XML'
+          suites=[ET.parse(p).getroot() for p in paths]
+          counts={k:sum(int(s.attrib.get(k,'0')) for s in suites) for k in ('tests','failures','errors','skipped')}
+          names=[(s.attrib.get('name',''),t.attrib.get('name','')) for s in suites for t in s.findall('testcase')]
+          assert any('RatKingRoomAndSearchTest' in cls and name=='swiftnessEnemyProximityMatchesForwardRuleAcrossWallsAndEnemyStates' for cls,name in names),names[-20:]
+          assert counts['tests']>=3545 and counts['failures']==counts['errors']==counts['skipped']==0,counts
+          counts['suites']=len(suites)
+          print(json.dumps(counts,sort_keys=True))
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: apd-quicksearch-proximity-junit
+          path: core/build/test-results/test/TEST-*.xml
+          if-no-files-found: warn
+          retention-days: 14

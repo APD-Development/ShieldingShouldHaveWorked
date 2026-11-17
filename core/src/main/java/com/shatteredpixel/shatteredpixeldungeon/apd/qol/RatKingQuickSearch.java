@@ -100,7 +100,7 @@ public final class RatKingQuickSearch {
             return "Quick Search cannot price your temporary movement effect reliably. Wait for it to end, or switch Quick Search off to search normally.";
         return null;
     }
-    private static float speed(Hero hero,Level level,int cell,float after){
+    private static float speed(Hero hero,Level level,int cell,float after,boolean[] enemyProximity){
         float value=hero.apdBaseWalkingSpeed();
         if(active(hero,Stamina.class,after))value*=1.5f;
         if(active(hero,Adrenaline.class,after))value*=2f;
@@ -111,21 +111,43 @@ public final class RatKingQuickSearch {
         float proc=Armor.Glyph.genericProcChanceMultiplier(hero);
         if(flow>=0&&level.water[cell])value*=(2f+0.5f*flow)*proc;
         if(bulk>=0&&(level.map[cell]==Terrain.DOOR||level.map[cell]==Terrain.OPEN_DOOR))value*=proc/3f;
-        if(swift>=0&&!enemyNear(level,cell))value*=(1.2f+0.04f*swift)*proc;
+        if(swift>=0&&enemyProximity!=null&&!enemyProximity[cell])value*=(1.2f+0.04f*swift)*proc;
         return value;
     }
-    private static boolean enemyNear(Level level,int cell){
-        int[] distance=new int[level.length()];Arrays.fill(distance,-1);ArrayDeque<Integer> q=new ArrayDeque<>();q.add(cell);distance[cell]=0;
-        while(!q.isEmpty()){
-            int from=q.removeFirst();for(com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob mob:level.mobs)
-                if(mob.alignment==Char.Alignment.ENEMY&&mob.isAlive()&&mob.pos==from)return true;
-            if(distance[from]>=3)continue;
-            int x=from%level.width(),y=from/level.width();
-            for(int dy=-1;dy<=1;dy++)for(int dx=-1;dx<=1;dx++){
-                int nx=x+dx,ny=y+dy;if(nx<0||nx>=level.width()||ny<0||ny>=level.height())continue;int next=nx+ny*level.width();
-                if(distance[next]<0&&level.passable[next]){distance[next]=distance[from]+1;q.add(next);}
+    /**
+     * Reverse the old per-step radius-three search once per immutable route quote.
+     * Only walkable hostile cells seed the search: the old forward search could not
+     * enter an impassable enemy cell from a legal walking position. Eight-directional
+     * adjacency and passable-only expansion preserve the existing Swiftness rule.
+     */
+    static boolean[] swiftnessEnemyProximity(Level level){
+        int size=level.length(),width=level.width(),height=level.height();
+        boolean[] nearby=new boolean[size];
+        int[] queue=new int[size];
+        int end=0;
+        if(level.mobs!=null)for(com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob mob:level.mobs){
+            int cell=mob.pos;
+            if(mob.alignment==Char.Alignment.ENEMY&&mob.isAlive()&&cell>=0&&cell<size
+                    &&level.passable[cell]&&!nearby[cell]){
+                nearby[cell]=true;queue[end++]=cell;
             }
-        }return false;
+        }
+        int from=0;
+        for(int steps=0;steps<3&&from<end;steps++){
+            int boundary=end;
+            while(from<boundary){
+                int cell=queue[from++],x=cell%width,y=cell/width;
+                for(int dy=-1;dy<=1;dy++)for(int dx=-1;dx<=1;dx++){
+                    int nx=x+dx,ny=y+dy;
+                    if(nx<0||nx>=width||ny<0||ny>=height)continue;
+                    int next=nx+ny*width;
+                    if(!nearby[next]&&level.passable[next]){
+                        nearby[next]=true;queue[end++]=next;
+                    }
+                }
+            }
+        }
+        return nearby;
     }
     private static boolean searchFrom(Hero hero,Level level,int from,int door,float after){
         boolean foresight=active(hero,Foresight.class,after);
@@ -146,7 +168,10 @@ public final class RatKingQuickSearch {
         boolean[] legal=new boolean[level.length()];
         for(int cell=0;cell<legal.length;cell++)legal[cell]=level.passable[cell]&&!level.pit[cell];
         legal[hero.pos]=true;legal[door]=false; // Never enter the undiscovered room or borrow a hidden-door shortcut.
-        return minimumPlan(level.width(),legal,hero.pos,(from,to,time)->1f/speed(hero,level,to,time)/(active(hero,Speed.class,time)?2f:1f),new SearchPoint(){
+        // Hostile positions and terrain do not change during a pure route quote.
+        // Computing this once avoids a full-map allocation and BFS for every priced step.
+        final boolean[] enemyProximity=hero.glyphLevel(Swiftness.class)>=0?swiftnessEnemyProximity(level):null;
+        return minimumPlan(level.width(),legal,hero.pos,(from,to,time)->1f/speed(hero,level,to,time,enemyProximity)/(active(hero,Speed.class,time)?2f:1f),new SearchPoint(){
             public boolean allowed(int cell,float time){return searchFrom(hero,level,cell,door,time);}
             public float delay(int cell,float time){return active(hero,Speed.class,time)?1f:2f;}
         });
