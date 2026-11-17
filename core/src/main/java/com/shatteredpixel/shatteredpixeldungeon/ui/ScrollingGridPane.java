@@ -185,6 +185,13 @@ public class ScrollingGridPane extends ScrollPane {
 			add(this.icon);
 		}
 
+		/** APD: a colored one-pixel outline around the icon (Bestiary trophies). */
+		public void outline( int color ){
+			add(new com.shatteredpixel.shatteredpixeldungeon.apd.trophy.Silhouette(this.icon, color));
+			bringToFront(this.icon);
+			if (secondIcon != null) bringToFront(secondIcon);
+		}
+
 		public void addSecondIcon( Visual icon ){
 			secondIcon = icon;
 			add(secondIcon);

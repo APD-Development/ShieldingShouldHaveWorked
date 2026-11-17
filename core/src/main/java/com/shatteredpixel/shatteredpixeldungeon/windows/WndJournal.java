@@ -911,6 +911,8 @@ public class WndJournal extends WndTabbed {
 					if (Bestiary.encounterCount(entityCls) > 1){
 						desc += "\n\n" + Messages.get(CatalogTab.class, "enemy_count", Bestiary.encounterCount(entityCls));
 					}
+					String trophyLine = com.shatteredpixel.shatteredpixeldungeon.apd.trophy.Trophies.describe(entityCls);
+					if (!trophyLine.isEmpty()) desc += "\n\n" + trophyLine;
 				} else {
 					icon.lightness(0f);
 					title = "???";
@@ -1006,6 +1008,9 @@ public class WndJournal extends WndTabbed {
 			};
 			if (!seen) {
 				gridItem.hardLightBG(2f, 1f, 2f);
+			} else if (mob != null) {
+				int trophy = com.shatteredpixel.shatteredpixeldungeon.apd.trophy.Trophies.tier(entityCls);
+				if (trophy > 0) gridItem.outline(com.shatteredpixel.shatteredpixeldungeon.apd.trophy.Trophies.color(trophy));
 			}
 			grid.addItem(gridItem);
 		}

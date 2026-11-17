@@ -5,6 +5,9 @@ TAB	480+
 MAJOR	Coming Soon
 BTN	i:NEWS	What's next	I'm working on this change history first. After that, the **Cleric Grudge** design and the leftover **talent description** audit are next.\n\nAnything marked "Developer build" only exists in my own test build until I say it's ready for Alpha Testers.
 MAJOR	APD 489
+BUILD	C489N / P489N (Nov 17)
+BTN	i:RANKINGS	Trophy outlines	Enemies you've defeated enough times, across all your runs, get a **bronze, silver or gold outline**, in the dungeon and in the Bestiary. Normal enemies: 100 / 500 / 2,000. Bosses and rare enemies: 5 / 25 / 100. Each Bestiary entry shows your trophy and the next tier.
+BTN	i:STAIRS	Amulet reveals missed areas	Once you hold the **Amulet**, every floor you enter shows its full layout, so you can see what you missed on the way up. Map only: secret doors stay hidden.
 BUILD	C489M / P489M (Nov 17)
 BTN	s:RING_RUBY	Gemstone Dust	New alchemy item, the ring version of arcane resin. Dissolve an **uncursed ring** (5 energy) into **2 dust per level + 1**. Apply dust to raise an identified, uncursed ring by one level, up to **+3** (1, 2 or 3 dust).
 BUILD	C489L / P489L (Nov 17)

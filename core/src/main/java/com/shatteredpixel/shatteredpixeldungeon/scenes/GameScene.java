@@ -197,6 +197,8 @@ public class GameScene extends PixelScene {
 	private Group traps;
 	private Group heaps;
 	private Group mobs;
+	//APD: trophy outlines sit just under the mob sprites
+	private Group trophyOutlines;
 	private Group floorEmitters;
 	private Group emitters;
 	private Group effects;
@@ -323,6 +325,8 @@ public class GameScene extends PixelScene {
 		emoicons = com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup.normalSpeedGroup();
 		overFogEffects = new com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup();
 		
+		trophyOutlines = new Group();
+		add( trophyOutlines );
 		mobs = new com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup();
 		add( mobs );
 
@@ -796,6 +800,13 @@ public class GameScene extends PixelScene {
 			addToFront(new TrinketCatalyst.WndTrinket(cata));
 		}
 
+		//APD: with the Amulet, each floor shows its whole layout, including what you missed
+		if (com.shatteredpixel.shatteredpixeldungeon.apd.qol.AmuletReveal.applies(Dungeon.hero)
+				&& com.shatteredpixel.shatteredpixeldungeon.apd.qol.AmuletReveal.reveal(Dungeon.level) > 0) {
+			updateFog();
+			GLog.i("The Amulet shows you this floor's full layout, including anything you missed.");
+		}
+
 		if (!invVisible) toggleInvPane();
 		fadeIn();
 
@@ -1136,6 +1147,11 @@ public class GameScene extends PixelScene {
 		mobs.add( sprite );
 		sprite.link( mob );
 		sortMobSprites();
+		int trophy = com.shatteredpixel.shatteredpixeldungeon.apd.trophy.Trophies.tier(mob.getClass());
+		if (trophy > 0 && trophyOutlines != null) {
+			trophyOutlines.add(new com.shatteredpixel.shatteredpixeldungeon.apd.trophy.Silhouette(sprite,
+					com.shatteredpixel.shatteredpixeldungeon.apd.trophy.Trophies.color(trophy)));
+		}
 	}
 
 	//ensures that mob sprites are drawn from top to bottom, in case of overlap
