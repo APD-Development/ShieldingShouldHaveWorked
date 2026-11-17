@@ -1,0 +1,35 @@
+name: Publish existing owner-provided C489H and P489H APKs to GitHub Releases
+on:
+  push:
+    branches: [chatgpt/publish-drive-c489h-p489h-20261116]
+    paths: [.github/workflows/apd-owner-drive-c489h-p489h-release.yml]
+permissions:
+  contents: write
+jobs:
+  publish-unchanged-apks:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Download the two already-built owner-provided files
+        run: |
+          set -euo pipefail
+          python3 -m pip install --user 'gdown==5.2.0'
+          "$HOME/.local/bin/gdown" 'https://drive.google.com/uc?id=11pTPL4_IYo2m4xsNKRIX8Blys4tsQzYN' -O APD-Developer-Trap-Room-Search-C489H.apk
+          "$HOME/.local/bin/gdown" 'https://drive.google.com/uc?id=1M8ixL0Hu8vC5D-5apgBz1YubvB3wSPgs' -O APD-Alpha-Testers-Trap-Room-Search-P489H.apk
+      - name: Check exact existing Drive sizes and APK container integrity before publication
+        run: |
+          set -euo pipefail
+          test "$(stat -c%s APD-Developer-Trap-Room-Search-C489H.apk)" -eq 39426352
+          test "$(stat -c%s APD-Alpha-Testers-Trap-Room-Search-P489H.apk)" -eq 39426336
+          unzip -tq APD-Developer-Trap-Room-Search-C489H.apk
+          unzip -tq APD-Alpha-Testers-Trap-Room-Search-P489H.apk
+          sha256sum APD-Developer-Trap-Room-Search-C489H.apk > SHA256-C489H.txt
+          sha256sum APD-Alpha-Testers-Trap-Room-Search-P489H.apk > SHA256-P489H.txt
+      - name: Publish separate candidate releases with original binary files
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          gh release create apd-c489h APD-Developer-Trap-Room-Search-C489H.apk SHA256-C489H.txt --target 84f1fb3872b7b1f978953d567b4d45b90df7ab46 --title "APD Developer C489H (owner-provided test candidate)" --notes "Original Developer APK provided via Google Drive by the repository owner. Uploaded unchanged; container and size checks performed. Not a new build. Installation, signature and in-game acceptance are not independently verified by this publishing workflow." --prerelease
+          gh release create apd-p489h APD-Alpha-Testers-Trap-Room-Search-P489H.apk SHA256-P489H.txt --target 84f1fb3872b7b1f978953d567b4d45b90df7ab46 --title "APD Alpha Testers P489H (owner-provided test candidate)" --notes "Original Alpha Testers APK provided via Google Drive by the repository owner. Uploaded unchanged; container and size checks performed. Not a new build. Installation, signature and in-game acceptance are not independently verified by this publishing workflow." --prerelease
