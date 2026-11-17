@@ -64,6 +64,12 @@ public final class DiagnosticReport {
                                 zip.putNextEntry(new ZipEntry("APD-diagnostic.txt"));
                                 zip.write(SupportDiagnostics.report().getBytes(StandardCharsets.UTF_8));
                                 zip.closeEntry();
+                                String notes=BugNotes.read();
+                                if(!notes.isEmpty()){
+                                    zip.putNextEntry(new ZipEntry("APD-bug-notes.txt"));
+                                    zip.write(notes.getBytes(StandardCharsets.UTF_8));
+                                    zip.closeEntry();
+                                }
                                 zip.putNextEntry(new ZipEntry("APD-action-history.txt"));
                                 SupportActionJournal.export(zip,checkpoint);
                                 zip.closeEntry();
@@ -72,6 +78,9 @@ public final class DiagnosticReport {
                         } else {
                             // Preserve the original Standard bug report bytes and MIME.
                             out.write(SupportDiagnostics.report().getBytes(StandardCharsets.UTF_8));
+                            // Developer build bug notes, only when some exist (otherwise unchanged bytes)
+                            String notes=BugNotes.read();
+                            if(!notes.isEmpty()) out.write(("\n\n=== Bug notes ===\n"+notes).getBytes(StandardCharsets.UTF_8));
                             out.flush();
                         }
                     }catch(IOException|RuntimeException error){

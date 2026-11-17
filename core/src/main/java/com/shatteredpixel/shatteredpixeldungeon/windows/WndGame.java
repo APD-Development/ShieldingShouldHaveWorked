@@ -71,6 +71,31 @@ public class WndGame extends Window {
 		});
 		curBtn.icon(Icons.get(Icons.PREFS));
 
+		//APD Developer build: quick bug note, saved offline with floor/turn/time
+		if (com.shatteredpixel.shatteredpixeldungeon.apd.ApdFeatures.testBuild()) {
+			int saved = com.shatteredpixel.shatteredpixeldungeon.apd.diagnostics.BugNotes.count();
+			addButton( curBtn = new RedButton( saved > 0 ? "Bug Note (" + saved + " saved)" : "Bug Note" ) {
+				@Override
+				protected void onClick() {
+					hide();
+					GameScene.show(new WndTextInput("Bug Note",
+							"What went wrong? One line is enough. Floor, turn and time are added for you, and it goes into your next bug report. Works without service.",
+							"", 300, false, "Save", "Cancel") {
+						@Override
+						public void onSelect(boolean positive, String text) {
+							if (!positive) return;
+							if (com.shatteredpixel.shatteredpixeldungeon.apd.diagnostics.BugNotes.add(text)) {
+								com.shatteredpixel.shatteredpixeldungeon.utils.GLog.p("Bug note saved.");
+							} else if (text != null && !text.trim().isEmpty()) {
+								com.shatteredpixel.shatteredpixeldungeon.utils.GLog.w("The bug note could not be saved.");
+							}
+						}
+					});
+				}
+			});
+			curBtn.icon(Icons.get(Icons.WARNING));
+		}
+
 		// Challenges window
 		if (Dungeon.challenges > 0) {
 			addButton( curBtn = new RedButton( Messages.get(this, "challenges") ) {

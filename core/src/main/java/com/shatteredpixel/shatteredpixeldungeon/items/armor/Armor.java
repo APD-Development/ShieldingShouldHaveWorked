@@ -594,11 +594,16 @@ public class Armor extends EquipableItem {
 			
 			if (knownStrength != null && STRReq() > knownStrength) {
 				info += " " + Messages.get(Armor.class, "too_heavy");
+				info += "\n\n" + strengthPenalty(STRReq() - knownStrength);
 			}
 		} else {
 			info += "\n\n" + Messages.get(Armor.class, "avg_absorb", tier, DRMin(0), DRMax(0), STRReq(0));
 
-			if (knownStrength != null && STRReq(0) > knownStrength) {
+			if (knownStrength != null && isEquipped(Dungeon.hero) && STRReq() > knownStrength) {
+				//APD: worn armor's weight is felt directly, so its real penalty shows even before identifying
+				info += " " + Messages.get(Armor.class, "too_heavy");
+				info += "\n\n" + strengthPenalty(STRReq() - knownStrength);
+			} else if (knownStrength != null && STRReq(0) > knownStrength) {
 				info += " " + Messages.get(Armor.class, "probably_too_heavy");
 			}
 		}
@@ -686,6 +691,15 @@ public class Armor extends EquipableItem {
 		Random.popGenerator();
 
 		return this;
+	}
+
+	/** APD: the exact cost of wearing this while short on strength (matches evasionFactor, speedFactor and Hero.drRoll). */
+	public static String strengthPenalty(int missing){
+		if (missing <= 0) return "";
+		int evasion = Math.round(100f * (1f - (float)Math.pow(1.5, -missing)));
+		int speed = Math.round(100f * (1f - (float)Math.pow(1.2, -missing)));
+		return "You are _" + missing + " strength_ short: _-" + evasion + "% evasion_, _-" + speed
+				+ "% movement speed_ and _-" + (2*missing) + " armor blocking_ per hit.";
 	}
 
 	public int STRReq(){

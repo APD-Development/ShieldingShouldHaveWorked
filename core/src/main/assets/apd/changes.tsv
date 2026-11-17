@@ -5,6 +5,9 @@ TAB	480+
 MAJOR	Coming Soon
 BTN	i:NEWS	What's next	I'm working on this change history first. After that, the **Cleric Grudge** design and the leftover **talent description** audit are next.\n\nAnything marked "Developer build" only exists in my own test build until I say it's ready for Alpha Testers.
 MAJOR	APD 489
+BUILD	C489I / P489I (Nov 17)
+BTN	s:ARMOR_LEATHER	Heavy armor	Armor that's too heavy now shows **exactly what it costs you**: evasion, movement speed and armor blocking lost for each missing point of strength. Shown on your worn armor and on any identified armor.
+BTN	i:WARNING	Bug Note	**Developer build only:** the in-game menu has a **Bug Note** button. Type one line about what went wrong. It's saved on the phone with the time, floor, turn, class and seed, works without service, and goes into every bug report until you clear it.
 BUILD	C489H / P489H (Nov 16)
 BTN	i:CHANGES	Change History	This screen! The **Changes** button opens an SPD-style history with an entry for **every recorded build**, from the earliest builds to now. Use the arrows to page through the tabs.
 BTN	i:MAGNIFY	Search	Tapping the **magnifying glass** now searches anywhere in a room that still has a wall that could hide a door. It used to switch to Inspect unless you were standing next to that wall.\n\nRooms whose walls can't hide anything still tap to **Inspect**, and holding the button still does the opposite.
