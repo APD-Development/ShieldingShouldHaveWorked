@@ -1,0 +1,94 @@
+name: APD C480 P480 frozen-APK history and stats native verification
+on:
+  push:
+    branches: [chatgpt/apd-crc480-native-20261116]
+    paths: [.github/workflows/apd-crc480-native-20261116.yml]
+permissions: {contents: read, actions: read}
+concurrency:
+  group: apd-crc480-native-20261116
+  cancel-in-progress: false
+jobs:
+  native:
+    strategy:
+      fail-fast: false
+      matrix:
+        variant: [Developer, Alpha-Testers]
+    runs-on: ubuntu-latest
+    timeout-minutes: 85
+    steps:
+      - uses: actions/checkout@v4
+        with: {fetch-depth: 0}
+      - uses: actions/setup-java@v4
+        with: {distribution: temurin, java-version: '21'}
+      - uses: gradle/actions/setup-gradle@v4
+      - name: Verify this branch cannot alter frozen production or build source
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor e42fd5c4cb89a15fd4c7d69181a1b72655e9c396 HEAD
+          test "$(git diff --name-only e42fd5c4cb89a15fd4c7d69181a1b72655e9c396 HEAD)" = ".github/workflows/apd-crc480-native-20261116.yml"
+      - name: Download and authenticate exact frozen original-signed C480/P480 APKs
+        env: {GH_TOKEN: '${{ github.token }}'}
+        run: |
+          set -euo pipefail
+          mkdir -p frozen480 native480
+          gh run download 43850337827 --repo "$GITHUB_REPOSITORY" --name apd-stream-crc-reuse-original-signed-c480-p480 --dir frozen480
+          python3 - <<'PY'
+          import hashlib,json,pathlib
+          d=pathlib.Path('frozen480')
+          receipt=json.loads((d/'receipt.json').read_text())
+          assert receipt['production_source_parent']=='e42fd5c4cb89a15fd4c7d69181a1b72655e9c396'
+          assert receipt['source_sha']=='747405b8e482af64945b0db0dc6c980fd55ddb52'
+          assert receipt['verified_source_ci_run']==43849445967
+          assert receipt['versionCode']==920
+          assert receipt['signer_sha256']=='067688b3ab6bd5820a67f4c1ba7d5859db578173771cf31d3252b3e4e012246e'
+          assert receipt['native_android_accepted'] is False
+          assert receipt['install_over_save_verified'] is False
+          assert receipt['published'] is False
+          for variant,name,sha in (
+             ('Developer','APD-Developer-StreamCrcReuse-C480.apk','bb2ad314ae7af487527297973fa3c2ee8e39e7f6d62614ced8046d7091fdad74'),
+             ('Alpha Testers','APD-Alpha-Testers-StreamCrcReuse-P480.apk','445d60920135ca5fa7119c9d2bb9936653b5316bcc2b6928a98e1d24d955a869')):
+             file=d/name
+             assert file.is_file() and file.stat().st_size > 39000000
+             assert hashlib.sha256(file.read_bytes()).hexdigest()==sha
+             assert receipt['variants'][variant]['sha256']==sha
+          src=d/'APD-Source-StreamCrcReuse-C480-P480.zip'
+          assert hashlib.sha256(src.read_bytes()).hexdigest()=='3bff17ae8d9ab01656991adc395f617d3b8e7a1e8946cc295bde9bf2e815180f'
+          print('Exact C480/P480 original APK bytes and source ZIP verified')
+          PY
+      - name: Assemble only a matching instrumentation runner, never rebuild game APKs
+        run: |
+          set -euo pipefail
+          "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "platforms;android-36"
+          ./gradlew :android:assembleDebugAndroidTest -PapdTestBuild -PapdBuild=C480 --no-daemon
+          cp android/build/outputs/apk/androidTest/debug/android-debug-androidTest.apk native480/APD-C480-Instrumentation-ONLY.apk
+          sha256sum native480/APD-C480-Instrumentation-ONLY.apk > native480/instrumentation-sha256.txt
+      - name: Execute actual Android history migration and stats tests using frozen original APKs
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 34
+          arch: x86_64
+          target: default
+          disable-animations: true
+          emulator-options: -no-snapshot -no-window -gpu swiftshader -feature -Vulkan -noaudio -no-boot-anim -camera-back none -skin 320x640
+          script: |
+            set -euo pipefail
+            if [ "${{ matrix.variant }}" = "Developer" ]; then
+              adb install -r frozen480/APD-Developer-StreamCrcReuse-C480.apk
+            else
+              adb install -r frozen480/APD-Alpha-Testers-StreamCrcReuse-P480.apk
+            fi
+            adb install -r native480/APD-C480-Instrumentation-ONLY.apk
+            adb logcat -c
+            for name in ApdStatsDeviceTest ArchiveMigrationDeviceTest; do
+              timeout 1800 adb shell am instrument -w -r -e class "com.shatteredpixel.shatteredpixeldungeon.android.$name" com.charltonchris29.adhdpixeldungeon.indev.test/androidx.test.runner.AndroidJUnitRunner > "native480/$name.txt" 2>&1
+              cat "native480/$name.txt"
+              python3 -c 'import pathlib,re,sys; name,path=sys.argv[1:]; s=pathlib.Path(path).read_text(); expected={"ApdStatsDeviceTest":2,"ArchiveMigrationDeviceTest":5}[name]; match=re.search(r"(?m)^OK [(]([0-9]+) tests?[)]",s); assert match and int(match.group(1))==expected, (name,expected,s[-3000:]); assert "FAILURES!!!" not in s and "INSTRUMENTATION_CODE: -1" in s, (name,s[-3000:]); print(name,"native PASS",expected,"tests")' "$name" "native480/$name.txt"
+            done
+            adb logcat -d -v time > native480/logcat.txt
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: apd-c480p480-native-${{ matrix.variant }}
+          path: native480/
+          if-no-files-found: warn
+          retention-days: 30
