@@ -1285,7 +1285,7 @@ public abstract class Char extends Actor {
 		}
 
 		buffs.add( buff );
-		if (Actor.chars().contains(this)) Actor.add( buff );
+		if (Actor.containsChar(this)) Actor.add( buff );
 
 		if (sprite != null && sprite.alive && buff.announced) {
 			switch (buff.type) {
