@@ -102,6 +102,55 @@ public class RatKingRoomAndSearchTest {
     @Test public void weightedSolverFindsTheMinimumLegalRouteInsteadOfManhattanDistance(){boolean[] legal=new boolean[25];Arrays.fill(legal,true);legal[7]=false;assertEquals(6,RatKingQuickSearch.minimum(5,legal,0,(a,b,t)->1,(p,t)->p==24),0.001f);}
     @Test public void weightedSolverAccountsForDifferentLegitimateStepCosts(){boolean[] legal=new boolean[9];Arrays.fill(legal,true);float cost=RatKingQuickSearch.minimum(3,legal,3,(a,b,t)->b==4?100:1,(p,t)->p==5);assertEquals(4,cost,0.001f);}
     @Test public void noRouteCannotRevealOrChargeAnInventedPrice(){Arrays.fill(level.passable,false);level.passable[hero.pos]=true;enable();assertTrue(Float.isInfinite(RatKingQuickSearch.quote(hero,level,door())));assertTrue(RatKingQuickSearch.start(hero));assertNull(hero.ratSearch);assertEquals(0,hero.cooldown(),0.001f);}
+    // Original forward radius-three rule, retained here as an independent oracle
+    // for the once-per-quote reverse propagation optimization.
+    private boolean originalSwiftnessEnemyNear(int cell){
+        int[] distance=new int[level.length()];Arrays.fill(distance,-1);
+        ArrayDeque<Integer> q=new ArrayDeque<>();q.add(cell);distance[cell]=0;
+        while(!q.isEmpty()){
+            int from=q.removeFirst();
+            for(Mob mob:level.mobs)if(mob.alignment==Char.Alignment.ENEMY&&mob.isAlive()&&mob.pos==from)return true;
+            if(distance[from]>=3)continue;
+            int x=from%level.width(),y=from/level.width();
+            for(int dy=-1;dy<=1;dy++)for(int dx=-1;dx<=1;dx++){
+                int nx=x+dx,ny=y+dy;
+                if(nx<0||nx>=level.width()||ny<0||ny>=level.height())continue;
+                int next=nx+ny*level.width();
+                if(distance[next]<0&&level.passable[next]){distance[next]=distance[from]+1;q.add(next);}
+            }
+        }
+        return false;
+    }
+    private void assertProximityMatchesForwardRule(){
+        boolean[] near=RatKingQuickSearch.swiftnessEnemyProximity(level);
+        assertEquals(level.length(),near.length);
+        for(int cell=0;cell<level.length();cell++)if(level.passable[cell]){
+            assertEquals("Swiftness enemy proximity at cell "+cell,originalSwiftnessEnemyNear(cell),near[cell]);
+        }
+    }
+    @Test public void swiftnessEnemyProximityMatchesForwardRuleAcrossWallsAndEnemyStates(){
+        // Exercise a complete passable field and an unbroken dividing wall. A
+        // living enemy placed inside an impassable wall must not count as reachable.
+        Arrays.fill(level.map,Terrain.WALL);
+        for(int y=1;y<13;y++)for(int x=1;x<13;x++)level.map[x+y*14]=Terrain.EMPTY;
+        for(int y=1;y<13;y++)level.map[6+y*14]=Terrain.WALL;
+        level.buildFlagMaps();
+        assertProximityMatchesForwardRule();
+        Rat left=new Rat();left.pos=3+3*14;left.alignment=Char.Alignment.ENEMY;level.mobs.add(left);
+        Rat right=new Rat();right.pos=10+10*14;right.alignment=Char.Alignment.ENEMY;level.mobs.add(right);
+        Rat insideWall=new Rat();insideWall.pos=6+7*14;insideWall.alignment=Char.Alignment.ENEMY;level.mobs.add(insideWall);
+        Rat ally=new Rat();ally.pos=2+11*14;ally.alignment=Char.Alignment.ALLY;level.mobs.add(ally);
+        Rat dead=new Rat();dead.pos=11+2*14;dead.alignment=Char.Alignment.ENEMY;dead.HP=0;level.mobs.add(dead);
+        assertProximityMatchesForwardRule();
+        assertFalse(RatKingQuickSearch.swiftnessEnemyProximity(level)[5+11*14]);
+        // Open a single passage and change living enemy positions; the cache is
+        // rebuilt each quote rather than persisting stale floor state.
+        level.map[6+7*14]=Terrain.EMPTY;level.buildFlagMaps();
+        insideWall.pos=7+7*14;
+        assertProximityMatchesForwardRule();
+        level.mobs.clear();
+        assertProximityMatchesForwardRule();
+    }
     @Test public void purePlanningDoesNotConsumeRngOrMoveOrRevealAnything(){enable();int position=hero.pos;int[] map=level.map.clone();Random.pushGenerator(171);long expected=Random.Long();Random.popGenerator();Random.pushGenerator(171);try{RatKingQuickSearch.quote(hero,level,door());assertEquals(expected,Random.Long());}finally{Random.popGenerator();}assertEquals(position,hero.pos);assertArrayEquals(map,level.map);}
     @Test public void hasteExpiryIsIncludedInsteadOfAssumingItLastsForever(){enable();hero.pos=1+6*14;Buff.affect(hero,Haste.class,1f);assertEquals(4,RatKingQuickSearch.quote(hero,level,door()),0.001f);}
     @Test public void ordinarySpeedBuffAlsoScalesTheManualSearchCost(){enable();Buff.affect(hero,Speed.class,20f);assertEquals(2.5f,RatKingQuickSearch.quote(hero,level,door()),0.001f);}
