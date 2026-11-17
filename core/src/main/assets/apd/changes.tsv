@@ -6,12 +6,8 @@ MAJOR	Coming Soon
 BTN	i:NEWS	What's next	I'm working on this change history first. After that, the **Cleric Grudge** design and the leftover **talent description** audit are next.\n\nAnything marked "Developer build" only exists in my own test build until I say it's ready for Alpha Testers.
 MAJOR	APD 489
 BUILD	C489K / P489K (Nov 17)
-BTN	s:RATION	Hunger	Your **hunger** shows as a number in the top-right (Hungry at 300, Starving at 450), and the status tab of your hero window always lists your hunger and **how many turns until you get Hungry**. The number turns yellow when you're Hungry and red when you're Starving.
-
-Food says exactly how much hunger it refills instead of "50% of a normal ration".
-BTN	s:RING_RUBY	Arcana wording	Every enchantment, glyph and the **Ring of Arcana** got plainer text. Numbers read as the real value, with what it was **before your Arcana** in brackets.
-
-**Obfuscation** now shows a simple ladder: no glyph, this glyph, glyph + your Arcana, marked **lower is better**.
+BTN	s:RATION	Hunger	Your **hunger** shows as a number in the top-right (Hungry at 300, Starving at 450), and the status tab of your hero window always lists your hunger and **how many turns until you get Hungry**. The number turns yellow when you're Hungry and red when you're Starving.\n\nFood says exactly how much hunger it refills instead of "50% of a normal ration".
+BTN	s:RING_RUBY	Arcana wording	Every enchantment, glyph and the **Ring of Arcana** got plainer text. Gear shows **only the number you actually get** with your current rings, not a list of what-ifs.
 BTN	s:ARMOR_LEATHER	Heavy armor	Armor that's too heavy now shows **exactly what it costs you**: evasion, movement speed and armor blocking lost for each missing point of strength. Identified armor shows the exact cost. Unidentified armor shows what it would cost if it's **unupgraded**, without revealing its real level.
 BTN	i:WARNING	Bug Note	**Developer build only:** the in-game menu has a **Bug Note** button. Type one line about what went wrong. It's saved on the phone with the time, floor, turn, class and seed, works without service, and goes into every bug report until you clear it.
 BUILD	C489H / P489H (Nov 16)

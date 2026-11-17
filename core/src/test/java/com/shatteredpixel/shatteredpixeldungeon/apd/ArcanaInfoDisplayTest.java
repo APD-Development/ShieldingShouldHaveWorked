@@ -63,17 +63,17 @@ public class ArcanaInfoDisplayTest {
     }
     @Test public void inactivePassiveGlyphDoesNotClaimABoost() {
         equip(0); armor.level(-1);
-        assertTrue(ArcanaInfoDisplay.armor(armor).contains("inactive"));
+        assertTrue(ArcanaInfoDisplay.armor(armor).contains("does nothing"));
     }
     @Test public void identifiedRingShowsCalculatedChanceAndMovementEffect() {
         equip(0);
         String w=ArcanaInfoDisplay.weapon(sword), a=ArcanaInfoDisplay.armor(armor);
-        assertTrue(w,w.contains("17.5% increase")); assertTrue(w,w.contains("33.33% to 39.17%"));
+        assertTrue(w,w.contains("+17.5%_ power")); assertTrue(w,w.contains("_39.17%_"));
         assertTrue(a,a.contains("_2.35x_ normal")); assertTrue(a,a.contains("Only on water"));
     }
     @Test public void combinedAndEnhancedRingsUseTheirKnownEffectiveLevels() {
         equip(0); Dungeon.hero.belongings.misc=ring(0);
-        assertTrue(ArcanaInfoDisplay.weapon(sword).contains("38.06% increase"));
+        assertTrue(ArcanaInfoDisplay.weapon(sword).contains("+38.06%_ power"));
         Buff.affect(Dungeon.hero,EnhancedRings.class);
         assertTrue(ArcanaInfoDisplay.weapon(sword).contains("90.61% increase"));
     }
@@ -82,7 +82,7 @@ public class ArcanaInfoDisplayTest {
         String w=ArcanaInfoDisplay.weapon(sword),a=ArcanaInfoDisplay.armor(armor);
         sword.level(9); armor.level(9);
         assertEquals(w,ArcanaInfoDisplay.weapon(sword)); assertEquals(a,ArcanaInfoDisplay.armor(armor));
-        assertTrue(w.contains("stay hidden")); assertTrue(a.contains("stay hidden"));
+        assertTrue(w.contains("Identify this item")); assertTrue(a.contains("Identify this item"));
     }
     @Test public void descriptionsAreWiredForMeleeMissileAndArmor() {
         equip(0); assertTrue(sword.info(),sword.info().contains("39.17%"));
@@ -112,12 +112,12 @@ public class ArcanaInfoDisplayTest {
     @Test public void highPowerChancesSaturateButKineticStillShowsScaling() {
         equip(36); sword.level(12);
         String s=ArcanaInfoDisplay.weapon(sword); assertTrue(s,s.contains("100%")); assertFalse(s,s.contains("33826"));
-        sword.enchant(new Kinetic()); assertTrue(ArcanaInfoDisplay.weapon(sword).contains("stored overkill"));
+        sword.enchant(new Kinetic()); assertTrue(ArcanaInfoDisplay.weapon(sword).contains("overkill damage"));
     }
     @Test public void passiveAndHpDependentDescriptionsStayCompactAndQualified() {
         equip(2); sword.enchant(new Vampiric());
         assertTrue(ArcanaInfoDisplay.weapon(sword).contains("current HP"));
-        armor.inscribe(new Stone()); assertTrue(ArcanaInfoDisplay.armor(armor).contains("depends on the attacker"));
+        armor.inscribe(new Stone()); assertTrue(ArcanaInfoDisplay.armor(armor).contains("Arcana raises the evasion"));
         armor.inscribe(new Brimstone()); assertTrue(ArcanaInfoDisplay.armor(armor).contains("does not strengthen"));
         armor.inscribe(new Viscosity()); assertTrue(ArcanaInfoDisplay.armor(armor).contains("remainder prevented"));
         assertTrue(ArcanaInfoDisplay.armor(armor).length()<250);
@@ -149,7 +149,7 @@ public class ArcanaInfoDisplayTest {
         blade.enchant(new Projecting());
         Dungeon.hero.heroClass=com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass.DUELIST;
         String s=ArcanaInfoDisplay.weapon(blade);
-        assertTrue(s,s.contains("added melee reach 1 to 1 tiles"));
+        assertTrue(s,s.contains("Extra melee reach: _1_ tiles"));
         assertTrue(s,s.contains("Runic Slash separately adds +600%"));
         assertTrue(s,s.contains("total melee reach with other active modifiers: 8 tiles"));
         assertTrue(s,s.contains("rounding grants no additional reach"));
@@ -160,14 +160,14 @@ public class ArcanaInfoDisplayTest {
         equip(0);
         HeavyBoomerang boomerang=new HeavyBoomerang();boomerang.enchant(new Projecting());
         String s=ArcanaInfoDisplay.weapon(boomerang);
-        assertTrue(s,s.contains("wall-penetration target distance 4 to 5 tiles"));
+        assertTrue(s,s.contains("Wall-piercing distance: _5_ tiles"));
         assertFalse(s,s.contains("added melee reach"));
     }
     @Test public void effectDescriptionsExposeCalculatedStrengthWithoutACombatProc(){
         equip(8);
         sword.level(6);sword.enchant(new Blocking());
         String block=ArcanaInfoDisplay.weapon(sword);
-        assertTrue(block,block.contains("Shield on activation:"));
+        assertTrue(block,block.contains("Shield per hit:"));
         sword.enchant(new Chilling());
         String chill=ArcanaInfoDisplay.weapon(sword);
         assertTrue(chill,chill.contains("Chill added per activation:"));
@@ -177,7 +177,7 @@ public class ArcanaInfoDisplayTest {
     }
     @Test public void identifiedArcanaInMiscSlotAlsoWorks() {
         Dungeon.hero.belongings.misc=ring(0);
-        assertTrue(ArcanaInfoDisplay.weapon(sword).contains("17.5% increase"));
+        assertTrue(ArcanaInfoDisplay.weapon(sword).contains("+17.5%_ power"));
     }
     @Test public void armorAndWeaponDescriptionWorkAcrossSaveRoundTrip() {
         equip(2); sword.level(3); armor.level(3);

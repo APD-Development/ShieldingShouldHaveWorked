@@ -1,5 +1,5 @@
 name: APD C489K/P489K trap-room search
-# Hunger number, food refill amounts, current-only Arcana wording, C489K/P489K. Hero window turns-until-Hungry. Status tab.
+# Hunger number, food refill amounts, current-only Arcana wording, C489K/P489K. Hero window turns-until-Hungry. Status tab. Tests updated.
 on:
   push:
     branches: [fix/apd-trap-room-search-20261116]

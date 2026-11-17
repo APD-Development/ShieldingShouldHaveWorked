@@ -107,7 +107,7 @@ public class BlandfruitExplanationTest {
         for(int challenge:new int[]{0,Challenges.NO_FOOD})for(Food meal:new Food[]{fruit(new PotionOfLevitation()),new Blandfruit.Chunks()}){
             Dungeon.challenges=challenge;Hunger hunger=Buff.affect(hero,Hunger.class);Bundle state=new Bundle();hunger.storeInBundle(state);state.put("level",450f);hunger.restoreFromBundle(state);
             float offer=challenge==0?450:150;assertEquals(offer,FoodExplanation.nutritionBeforeHorn(meal),0);satisfy.invoke(meal,hero);assertEquals(450-offer,hunger.hungerPoints(),0);
-            if(meal instanceof Blandfruit)assertTrue(BlandfruitExplanation.details((Blandfruit)meal,hero).contains(ObfuscationExplanation.number(100f*offer/Hunger.HUNGRY)+"% of a normal ration"));
+            if(meal instanceof Blandfruit)assertTrue(BlandfruitExplanation.details((Blandfruit)meal,hero).contains("Chunks refill "+ObfuscationExplanation.number(offer)+" hunger"));
         }
         Food meal=fruit(new PotionOfInvisibility());assertEquals(3,meal.previewEatingTime(),0);hero.talents.get(0).put(Talent.IRON_STOMACH,1);assertEquals(1,meal.previewEatingTime(),0);
     }

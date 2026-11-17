@@ -24,12 +24,12 @@ public class SpiritFormArcanaDisplayTest {
   String description=ArcanaInfoDisplay.weapon(sword);
   assertEquals(before,spiritual.level());
   float actual=RingOfArcana.enchantPowerMultiplier(hero);
-  String expected=Messages.decimalFormat("0.##",100*(actual-1))+"% increase";
+  String expected="+"+Messages.decimalFormat("0.##",100*(actual-1))+"%_ power";
   assertTrue(description,description.contains(expected));
  }
  @Test public void ordinaryPhysicalBonusKeepsCoreNonStackingRule(){
   physical.cursed=false;physical.level(0);
-  String description=ArcanaInfoDisplay.weapon(sword);assertTrue(description,description.contains("17.5% increase"));
+  String description=ArcanaInfoDisplay.weapon(sword);assertTrue(description,description.contains("+17.5%_ power"));
   assertEquals(1.175f,RingOfArcana.enchantPowerMultiplier(hero),0f);
  }
  @Test public void temporaryModifiersMatchCoreAndPreviewDoesNotConsumeRngOrResources(){
@@ -42,7 +42,7 @@ public class SpiritFormArcanaDisplayTest {
    String description;
    com.watabou.utils.Random.pushGenerator(7737);try{description=ArcanaInfoDisplay.weapon(sword);assertEquals(expectedNext,com.watabou.utils.Random.Int());}finally{com.watabou.utils.Random.popGenerator();}
    assertEquals(before,spiritual.level());assertEquals(hp,hero.HP);assertEquals(quantity,sword.quantity());assertEquals(time,hero.cooldown(),0f);
-   float actual=RingOfArcana.enchantPowerMultiplier(hero);assertTrue(description,description.contains(Messages.decimalFormat("0.##",100*(actual-1))+"% increase"));
+   float actual=RingOfArcana.enchantPowerMultiplier(hero);assertTrue(description,description.contains("+"+Messages.decimalFormat("0.##",100*(actual-1))+"%_ power"));
   }
   Buff.detach(hero,com.shatteredpixel.shatteredpixeldungeon.actors.buffs.EnhancedRings.class);physical.level(1);spiritual.level(10);
   assertTrue(ArcanaInfoDisplay.weapon(sword).contains("14.89% decrease"));assertEquals(10,spiritual.level());
