@@ -1,0 +1,60 @@
+name: APD Mob nearest-target regression
+on:
+  push:
+    branches: [chatgpt/apd-mob-nearest-target-20261117-0100]
+    paths:
+      - core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/Mob.java
+      - core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/MobNearestTargetDistanceTest.java
+      - .github/workflows/apd-mob-nearest-target-ci-20261117.yml
+permissions:
+  contents: read
+jobs:
+  verify-source:
+    runs-on: ubuntu-latest
+    timeout-minutes: 70
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Verify exact combined integration and latest AI baseline ancestry
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor c6fa033167789ef9f2fc6f31bcff39c824dfb4db HEAD
+          git merge-base --is-ancestor fa49a12f1cf675195c650452aa508da5ed959734 HEAD
+          git rev-parse HEAD
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - uses: gradle/actions/setup-gradle@v4
+      - name: Install Android compilation platform
+        run: '"$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "platforms;android-36"'
+      - name: Full core tests and desktop plus Android Java compilation (source only)
+        run: ./gradlew :core:test :desktop:classes :android:compileDebugJavaWithJavac :android:compileReleaseJavaWithJavac :android:compileDebugAndroidTestJavaWithJavac --no-daemon
+      - name: Verify nearest-target regressions and complete JUnit results
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import xml.etree.ElementTree as ET
+          suites = [ET.parse(p).getroot() for p in Path('core/build/test-results/test').glob('TEST-*.xml')]
+          assert suites, 'missing full JUnit suite'
+          counts = {k:sum(int(s.get(k,'0')) for s in suites) for k in ('tests','failures','errors','skipped')}
+          cases = {(s.get('name'),t.get('name')) for s in suites for t in s.findall('testcase')}
+          target = 'com.shatteredpixel.shatteredpixeldungeon.actors.mobs.MobNearestTargetDistanceTest'
+          required = {
+              'laterIntermediateDistanceCannotReplaceTheActualNearestTarget',
+              'heroStillWinsAnEqualDistanceTie',
+              'currentlyAttackableEnemyKeepsItsExistingPriority'
+          }
+          assert required.issubset({name for suite,name in cases if suite==target}), 'missing nearest-target regression'
+          assert counts['tests'] >= 3551, counts
+          assert counts['failures'] == counts['errors'] == counts['skipped'] == 0, counts
+          print('APD_NEAREST_TARGET_JUNIT', dict(counts, suites=len(suites)))
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: apd-mob-nearest-target-junit
+          path: core/build/test-results/test/TEST-*.xml
+          if-no-files-found: warn
+          retention-days: 14
