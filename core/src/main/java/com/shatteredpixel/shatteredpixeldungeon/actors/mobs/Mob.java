@@ -492,47 +492,58 @@ public abstract class Mob extends Char {
 			} else {
 				//go after the closest potential enemy, preferring enemies that can be reached/attacked, and the hero if two are equidistant
 				PathFinder.buildDistanceMap(pos, Dungeon.findPassable(this, Dungeon.level.passable, fieldOfView, true));
-				Char closest = null;
-				int closestDist = Integer.MAX_VALUE;
-
-				for (Char curr : enemies){
-					int currDist = Integer.MAX_VALUE;
-					//we aren't trying to move into the target, just toward them
-					for (int i : PathFinder.NEIGHBOURS8){
-						if (PathFinder.distance[curr.pos+i] < currDist){
-							currDist = PathFinder.distance[curr.pos+i];
-						}
-					}
-					if (closest == null){
-						closest = curr;
-						closestDist = currDist;
-					} else if (canAttack(closest) && !canAttack(curr)){
-						continue;
-					} else if ((canAttack(curr) && !canAttack(closest))
-							|| (currDist < closestDist)){
-						closest = curr;
-					} else if ( curr == Dungeon.hero &&
-							(currDist == closestDist) || (canAttack(curr) && canAttack(closest))){
-						closest = curr;
-					}
-				}
-				//if we were going to target the hero, but an afterimage exists, target that instead
-				if (closest == Dungeon.hero){
-					for (Char ch : enemies){
-						if (ch instanceof Feint.AfterImage){
-							closest = ch;
-							break;
-						}
-					}
-				}
-
-				return closest;
+				return chooseClosestEnemy(enemies);
 			}
 
 		} else
 			return enemy;
 	}
 	
+	/**
+	 * Select the closest candidate from an already built path distance map.
+	 * Keep the current attackable-target and hero/afterimage preferences intact.
+	 * Accept ordered candidates in regressions; normal AI still supplies its HashSet.
+	 */
+	protected Char chooseClosestEnemy(Iterable<Char> enemies) {
+		Char closest = null;
+		int closestDist = Integer.MAX_VALUE;
+
+		for (Char curr : enemies){
+			int currDist = Integer.MAX_VALUE;
+			//we aren't trying to move into the target, just toward them
+			for (int i : PathFinder.NEIGHBOURS8){
+				if (PathFinder.distance[curr.pos+i] < currDist){
+					currDist = PathFinder.distance[curr.pos+i];
+				}
+			}
+			if (closest == null){
+				closest = curr;
+				closestDist = currDist;
+			} else if (canAttack(closest) && !canAttack(curr)){
+				continue;
+			} else if ((canAttack(curr) && !canAttack(closest))
+					|| (currDist < closestDist)){
+				closest = curr;
+				closestDist = currDist;
+			} else if ( curr == Dungeon.hero &&
+					(currDist == closestDist) || (canAttack(curr) && canAttack(closest))){
+				closest = curr;
+				closestDist = currDist;
+			}
+		}
+		//if we were going to target the hero, but an afterimage exists, target that instead
+		if (closest == Dungeon.hero){
+			for (Char ch : enemies){
+				if (ch instanceof Feint.AfterImage){
+					closest = ch;
+					break;
+				}
+			}
+		}
+
+		return closest;
+	}
+
 	@Override
 	public boolean add( Buff buff ) {
 		if (super.add( buff )) {
