@@ -599,12 +599,10 @@ public class Armor extends EquipableItem {
 		} else {
 			info += "\n\n" + Messages.get(Armor.class, "avg_absorb", tier, DRMin(0), DRMax(0), STRReq(0));
 
-			if (knownStrength != null && isEquipped(Dungeon.hero) && STRReq() > knownStrength) {
-				//APD: worn armor's weight is felt directly, so its real penalty shows even before identifying
-				info += " " + Messages.get(Armor.class, "too_heavy");
-				info += "\n\n" + strengthPenalty(STRReq() - knownStrength);
-			} else if (knownStrength != null && STRReq(0) > knownStrength) {
+			if (knownStrength != null && STRReq(0) > knownStrength) {
 				info += " " + Messages.get(Armor.class, "probably_too_heavy");
+				//APD: unidentified, so show the cost at +0 without revealing the real upgrade level
+				info += "\n\n" + strengthPenaltyUnupgraded(STRReq(0) - knownStrength);
 			}
 		}
 
@@ -699,6 +697,15 @@ public class Armor extends EquipableItem {
 		int evasion = Math.round(100f * (1f - (float)Math.pow(1.5, -missing)));
 		int speed = Math.round(100f * (1f - (float)Math.pow(1.2, -missing)));
 		return "You are _" + missing + " strength_ short: _-" + evasion + "% evasion_, _-" + speed
+				+ "% movement speed_ and _-" + (2*missing) + " armor blocking_ per hit.";
+	}
+
+	/** APD: same numbers, worded for unidentified armor measured at +0. */
+	public static String strengthPenaltyUnupgraded(int missing){
+		if (missing <= 0) return "";
+		int evasion = Math.round(100f * (1f - (float)Math.pow(1.5, -missing)));
+		int speed = Math.round(100f * (1f - (float)Math.pow(1.2, -missing)));
+		return "This armor might need too much strength. If it's unupgraded, you'd be _" + missing + " strength_ short: _-" + evasion + "% evasion_, _-" + speed
 				+ "% movement speed_ and _-" + (2*missing) + " armor blocking_ per hit.";
 	}
 
