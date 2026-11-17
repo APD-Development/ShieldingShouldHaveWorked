@@ -39,6 +39,25 @@ public class MobUnreachableRetargetVisibilityTest {
         Char currentTarget() {
             return enemy;
         }
+
+        boolean throwOnNextRetry;
+        int persistentRetryCalls;
+        final Hunting persistentRetryState = new Hunting() {
+            @Override
+            public boolean act(boolean enemyInFOV, boolean justAlerted) {
+                persistentRetryCalls++;
+                if (throwOnNextRetry) {
+                    throwOnNextRetry = false;
+                    throw new IllegalStateException("injected hunting retry failure");
+                }
+                return true;
+            }
+        };
+
+        boolean retryUsingPersistentState(Char previous) {
+            enemy = previous;
+            return persistentRetryState.handleUnreachableTarget(true, false);
+        }
     }
 
     private RetargetingRat hunter;
@@ -110,4 +129,25 @@ public class MobUnreachableRetargetVisibilityTest {
         assertFalse(hunter.visibilityAtRetry);
         assertSame(replacement, hunter.currentTarget());
     }
+    @Test
+    public void retryGuardRecoversAfterActThrowsAndAllowsNextRetry() {
+        Rat previous = ratAt(12);
+        Rat replacement = ratAt(13);
+        hunter.replacement = replacement;
+        hunter.fieldOfView[replacement.pos] = true;
+        hunter.throwOnNextRetry = true;
+
+        try {
+            hunter.retryUsingPersistentState(previous);
+            fail("Expected injected retry failure");
+        } catch (IllegalStateException expected) {
+            assertEquals("injected hunting retry failure", expected.getMessage());
+        }
+
+        assertEquals(1, hunter.persistentRetryCalls);
+        assertTrue(hunter.retryUsingPersistentState(previous));
+        assertEquals("The same hunting state must permit a new retry", 2, hunter.persistentRetryCalls);
+        assertSame(replacement, hunter.currentTarget());
+    }
+
 }

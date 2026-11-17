@@ -1434,9 +1434,11 @@ public abstract class Mob extends Char {
 					// The prior sight flag belongs to oldEnemy, not this replacement.
 					boolean replacementInFOV = enemy.isAlive() && fieldOfView[enemy.pos] && enemy.invisible <= 0;
 					recursing = true;
-					boolean result = act(replacementInFOV, justAlerted);
-					recursing = false;
-					return result;
+					try {
+						return act(replacementInFOV, justAlerted);
+					} finally {
+						recursing = false;
+					}
 				}
 			}
 
