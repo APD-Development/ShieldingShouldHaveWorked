@@ -119,7 +119,7 @@ public class ArcanaInfoDisplayTest {
         assertTrue(ArcanaInfoDisplay.weapon(sword).contains("current HP"));
         armor.inscribe(new Stone()); assertTrue(ArcanaInfoDisplay.armor(armor).contains("Arcana raises the evasion"));
         armor.inscribe(new Brimstone()); assertTrue(ArcanaInfoDisplay.armor(armor).contains("already immune to fire"));
-        armor.inscribe(new Viscosity()); assertTrue(ArcanaInfoDisplay.armor(armor).contains("remainder prevented"));
+        armor.inscribe(new Viscosity()); assertTrue(ArcanaInfoDisplay.armor(armor).contains("part of it is prevented"));
         assertTrue(ArcanaInfoDisplay.armor(armor).length()<250);
     }
     @Test public void everyBuiltInEnchantmentGlyphAndCurseHasResolvableText() throws Exception {
@@ -151,8 +151,8 @@ public class ArcanaInfoDisplayTest {
         String s=ArcanaInfoDisplay.weapon(blade);
         assertTrue(s,s.contains("Extra melee reach: _1_ tiles"));
         assertTrue(s,s.contains("Runic Slash adds another _+600%_ power"));
-        assertTrue(s,s.contains("total melee reach with other active modifiers: 8 tiles"));
-        assertTrue(s,s.contains("rounding grants no additional reach"));
+        assertTrue(s,s.contains("for _8_ tiles of total reach"));
+        assertTrue(s,s.contains("round up to another tile"));
         assertFalse(s,s.contains("\uFFFD"));
         assertFalse(s,s.contains("→"));
     }
@@ -161,7 +161,7 @@ public class ArcanaInfoDisplayTest {
         HeavyBoomerang boomerang=new HeavyBoomerang();boomerang.enchant(new Projecting());
         String s=ArcanaInfoDisplay.weapon(boomerang);
         assertTrue(s,s.contains("Wall-piercing distance: _5_ tiles"));
-        assertFalse(s,s.contains("added melee reach"));
+        assertFalse(s,s.contains("Extra melee reach"));
     }
     @Test public void effectDescriptionsExposeCalculatedStrengthWithoutACombatProc(){
         equip(8);
@@ -173,7 +173,7 @@ public class ArcanaInfoDisplayTest {
         assertTrue(chill,chill.contains("Chill per hit:"));
         armor.level(6);armor.inscribe(new Thorns());
         String thorns=ArcanaInfoDisplay.armor(armor);
-        assertTrue(thorns,thorns.contains("Bleeding amount offered on activation:"));
+        assertTrue(thorns,thorns.contains("Bleeding:"));
     }
     @Test public void identifiedArcanaInMiscSlotAlsoWorks() {
         Dungeon.hero.belongings.misc=ring(0);
