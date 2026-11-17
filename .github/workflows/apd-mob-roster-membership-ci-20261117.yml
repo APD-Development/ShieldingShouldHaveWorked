@@ -1,0 +1,57 @@
+name: APD Mob target roster membership regression
+on:
+  push:
+    branches: [chatgpt/apd-mob-roster-membership-20261117-0000]
+    paths:
+      - core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/Actor.java
+      - core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/Mob.java
+      - core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/actors/ActorMembershipSnapshotParityTest.java
+      - .github/workflows/apd-mob-roster-membership-ci-20261117.yml
+permissions:
+  contents: read
+jobs:
+  verify-source:
+    runs-on: ubuntu-latest
+    timeout-minutes: 70
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Check combined R7 and C485 plus current source ancestry
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor c6fa033167789ef9f2fc6f31bcff39c824dfb4db HEAD
+          git merge-base --is-ancestor 5a48b0ab233e992c2f32b62a736b9f9897a8490d HEAD
+          git rev-parse HEAD
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - uses: gradle/actions/setup-gradle@v4
+      - name: Install Android compile platform
+        run: '"$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "platforms;android-36"'
+      - name: Full core tests and desktop/Android Java compilation; no APK build
+        run: ./gradlew :core:test :desktop:classes :android:compileDebugJavaWithJavac :android:compileReleaseJavaWithJavac :android:compileDebugAndroidTestJavaWithJavac --no-daemon
+      - name: Check roster parity regressions and complete suite
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import xml.etree.ElementTree as ET
+          suites=[ET.parse(p).getroot() for p in Path('core/build/test-results/test').glob('TEST-*.xml')]
+          assert suites,'missing junit'
+          counts={k:sum(int(s.get(k,'0')) for s in suites) for k in ('tests','failures','errors','skipped')}
+          cases={(s.get('name'),t.get('name')) for s in suites for t in s.findall('testcase')}
+          target='com.shatteredpixel.shatteredpixeldungeon.actors.ActorMembershipSnapshotParityTest'
+          assert (target,'lookupMatchesCopiedRosterAcrossRegistrationAndRemoval') in cases
+          assert (target,'unregisteredQueriesDoNotAssignIdsOrModifyRoster') in cases
+          assert counts['tests']>=3548 and counts['failures']==counts['errors']==counts['skipped']==0,counts
+          counts['suites']=len(suites)
+          print(counts)
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: apd-mob-roster-membership-junit
+          path: core/build/test-results/test/TEST-*.xml
+          if-no-files-found: warn
+          retention-days: 14

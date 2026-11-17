@@ -400,7 +400,7 @@ public abstract class Mob extends Char {
 		//find a new enemy if..
 		boolean newEnemy = false;
 		//we have no enemy, or the current one is dead/missing
-		if ( enemy == null || !enemy.isAlive() || !Actor.chars().contains(enemy) || state == WANDERING) {
+		if ( enemy == null || !enemy.isAlive() || !Actor.containsChar(enemy) || state == WANDERING) {
 			newEnemy = true;
 		//We are amoked and current enemy is the hero
 		} else if (buff( Amok.class ) != null && enemy == Dungeon.hero) {
