@@ -416,8 +416,10 @@ public class Tengu extends Mob {
 			enemy = null;
 			enemy = chooseEnemy();
 			if (enemy != null && enemy != oldEnemy) {
+				// Sight of the previous enemy cannot describe this new target.
+				boolean replacementInFOV = enemy.isAlive() && fieldOfView[enemy.pos] && enemy.invisible <= 0;
 				recursing = true;
-				boolean result = act(enemyInFOV, justAlerted);
+				boolean result = act(replacementInFOV, justAlerted);
 				recursing = false;
 				return result;
 			}
