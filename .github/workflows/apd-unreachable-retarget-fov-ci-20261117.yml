@@ -1,0 +1,67 @@
+name: APD unreachable-target visibility regression
+on:
+  push:
+    branches: [chatgpt/apd-unreachable-retarget-fov-20261117-0500]
+    paths:
+      - core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/Mob.java
+      - core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/MobUnreachableRetargetVisibilityTest.java
+      - .github/workflows/apd-unreachable-retarget-fov-ci-20261117.yml
+  pull_request:
+    branches: [codex/apd-phone-fixes-2026-10-09]
+    paths:
+      - core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/Mob.java
+      - core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/MobUnreachableRetargetVisibilityTest.java
+      - .github/workflows/apd-unreachable-retarget-fov-ci-20261117.yml
+permissions:
+  contents: read
+jobs:
+  verify-source:
+    runs-on: ubuntu-latest
+    timeout-minutes: 70
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Check combined baseline and completed targeting fix
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor c6fa033167789ef9f2fc6f31bcff39c824dfb4db HEAD
+          git merge-base --is-ancestor 7da7eee1f3867bd0f9677a5df964c589a4a1aeee HEAD
+          git rev-parse HEAD
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - uses: gradle/actions/setup-gradle@v4
+      - name: Install Android compilation platform
+        run: '"$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "platforms;android-36"'
+      - name: Full core tests and desktop plus Android Java compilation
+        run: ./gradlew :core:test :desktop:classes :android:compileDebugJavaWithJavac :android:compileReleaseJavaWithJavac :android:compileDebugAndroidTestJavaWithJavac --no-daemon
+      - name: Verify retargeted-visibility tests and complete passing JUnit suite
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import xml.etree.ElementTree as ET
+          suites = [ET.parse(p).getroot() for p in Path('core/build/test-results/test').glob('TEST-*.xml')]
+          assert suites, 'missing core JUnit suite'
+          counts = {key: sum(int(s.get(key, '0')) for s in suites) for key in ('tests','failures','errors','skipped')}
+          cases = {(s.get('name'), case.get('name')) for s in suites for case in s.findall('testcase')}
+          target = 'com.shatteredpixel.shatteredpixeldungeon.actors.mobs.MobUnreachableRetargetVisibilityTest'
+          required = {
+              'newlyVisibleTargetIsNotTreatedAsPreviouslyUnseenEnemy',
+              'replacementOutsideSightDoesNotInheritPriorTargetVisibility',
+              'invisibleReplacementDoesNotInheritPriorTargetVisibility',
+              'deadReplacementDoesNotInheritPriorTargetVisibility'
+          }
+          assert required.issubset({name for suite, name in cases if suite == target}), 'retarget tests missing'
+          assert counts['tests'] >= 3564, counts
+          assert counts['failures'] == counts['errors'] == counts['skipped'] == 0, counts
+          print('APD_RETARGET_VISIBILITY_JUNIT', dict(counts, suites=len(suites)))
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: apd-unreachable-retarget-fov-junit
+          path: core/build/test-results/test/TEST-*.xml
+          if-no-files-found: warn
+          retention-days: 14
