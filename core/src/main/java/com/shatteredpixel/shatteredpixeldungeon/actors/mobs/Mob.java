@@ -1240,31 +1240,8 @@ public abstract class Mob extends Char {
 			//can be awoken by the least stealthy hostile present, not necessarily just our target
 			if (enemyInFOV || (enemy != null && enemy.invisible > 0)) {
 
-				float highestChance = Float.POSITIVE_INFINITY;
-				Char closestHostile = null;
-
-				for (Char ch : Actor.chars()){
-					if (fieldOfView[ch.pos] && ch.invisible == 0 && ch.alignment != alignment && ch.alignment != Alignment.NEUTRAL){
-						float bestChance = detectionChance(ch);
-						//silent steps rogue talent, which also applies to rogue's shadow clone
-						if ((ch instanceof Hero || ch instanceof ShadowClone.ShadowAlly)
-								&& Dungeon.hero.hasTalent(Talent.SILENT_STEPS)){
-							if (distance(ch) >= 4 - Dungeon.hero.pointsInTalent(Talent.SILENT_STEPS)) {
-								bestChance = Float.POSITIVE_INFINITY;
-							}
-						}
-						//flying characters are naturally stealthy
-						if (ch.flying && distance(ch) >= 2){
-							bestChance = Float.POSITIVE_INFINITY;
-						}
-						if (bestChance < highestChance){
-							highestChance = bestChance;
-							closestHostile = ch;
-						}
-					}
-				}
-
-				if (closestHostile != null && Random.Float() < detectionChance(closestHostile)) {
+				Char mostDetectable = mostDetectableHostile(Actor.chars());
+				if (mostDetectable != null && Random.Float() < detectionChance(mostDetectable)) {
 					awaken(enemyInFOV);
 					if (state == SLEEPING){
 						spend(TICK); //wait if we can't wake up for some reason
@@ -1278,6 +1255,36 @@ public abstract class Mob extends Char {
 			spend( TICK );
 
 			return true;
+		}
+
+		//A sleeping mob notices the least stealthy visible hostile, not the one
+		//with the lowest detection probability. Infinite chance is the existing
+		//sentinel for Silent Steps/flying exclusion; equal chances keep first-seen.
+		protected Char mostDetectableHostile(Iterable<Char> candidates) {
+			Char mostDetectable = null;
+			float highestChance = Float.NEGATIVE_INFINITY;
+			for (Char ch : candidates) {
+				if (fieldOfView[ch.pos] && ch.invisible == 0
+						&& ch.alignment != alignment && ch.alignment != Alignment.NEUTRAL) {
+					float bestChance = detectionChance(ch);
+					//silent steps rogue talent, which also applies to rogue's shadow clone
+					if ((ch instanceof Hero || ch instanceof ShadowClone.ShadowAlly)
+							&& Dungeon.hero.hasTalent(Talent.SILENT_STEPS)) {
+						if (distance(ch) >= 4 - Dungeon.hero.pointsInTalent(Talent.SILENT_STEPS)) {
+							bestChance = Float.POSITIVE_INFINITY;
+						}
+					}
+					//flying characters are naturally stealthy
+					if (ch.flying && distance(ch) >= 2) {
+						bestChance = Float.POSITIVE_INFINITY;
+					}
+					if (bestChance < Float.POSITIVE_INFINITY && bestChance > highestChance) {
+						highestChance = bestChance;
+						mostDetectable = ch;
+					}
+				}
+			}
+			return mostDetectable;
 		}
 
 		//chance is 1 in (distance + stealth)
