@@ -1,0 +1,17 @@
+# APD FullPackSwap stale-backpack-capacity fix, November 16, 2026
+
+## Work claim and exact baseline (evening, Eastern)
+- Authorized APD evening source-only development, started approximately 9:02 PM EST November 16. No other game or scheduler modified. No new APK built.
+- Required C466R7+C485 minimum integrated commit `c6fa033167789ef9f2fc6f31bcff39c824dfb4db` preserved. Primary branch `codex/apd-phone-fixes-2026-10-09` was at exact `c11cb3aaefea4811064c10fa85bfd4fa26006e8a` when isolated branch was created, after merged PR #233 implemented the owner-authorized item DROP-action revalidation. The owner-required C488Y APK release was independently checked as published at `apd-c488y`, November 16, 5:18:26 PM EST; this fix does not repeat PR #233.
+- Read AGENTS.md, exact APD486 R7 integration verification, handoffs, live primary head, open PRs, and release gate before choosing scope. Existing open claims #230/#229 are bug-report history; #226-#211 original-signer builds/native; other claims concern playback, hero fade and GPL. None claim a stale backpack **capacity** check at FullPackSwap commit.
+- Isolated branch `chatgpt/apd-fullpackswap-stale-room-20261116-2100` from `c11cb3a`; draft [PR #234](https://github.com/APD-Development/ShieldingShouldHaveWorked/pull/234).
+
+## Evidenced source defect, bounded repair and regression
+- FullPackSwap.applies checked whether the backpack and its embedded bags could hold the ground item **before opening** the picker. FullPackSwap.swap rechecked selected item's DROP action/ownership and the live heap, but did not recheck whether any item still needed to be dropped. An asynchronously freed backpack slot could therefore result in an unnecessary item drop at commit.
+- Source commit `a30e8e4dcb306d067b24f1ba824d5fc6ede8d9c0`: extracts the same capacity/subbag predicate as `needsSwap`, used at offer and again at commit through `applies`; also handles a missing active Dungeon.level. No change to game time/turn cost for valid swaps, no new mechanics, no change to R7 equipment, Wall Search, playback, scoring v6, RNG, history/save, signing, assets or edition flags.
+- Test commit `0032ca2b1bff567ce85e2c1d3e1bd481c356ac1b`: headless `newlyFreedBackpackSlotMakesAStaleSwapUnnecessary` fills an actual backpack with distinct ordinary items, frees a slot, and proves that need for swap goes false while chosen item's drop action remains eligible. Existing stale DROP-action and bag selection tests remain.
+- Workflow-only commit `19c1324994661ec1970a68fdf6107a67742743e8`: isolated GitHub CI runs full core suite, desktop Java plus Android debug/release/instrumentation Java compilation, source ancestry and focused regression. [Exact workflow run 44000485444](https://github.com/APD-Development/ShieldingShouldHaveWorked/actions/runs/44000485444) was **in progress** when drafted; no pass, APK, native test or release claimed until observed.
+- This is an isolated draft; no merge to primary was attempted pending terminal CI and a fresh expected-head/claims check.
+
+## Continuation
+Check terminal run 44000485444, inspect any test failures and correct only actual fixture or source issues without weakening assertions. After clean full-suite and Java compilation, recheck `codex/apd-phone-fixes-2026-10-09` live head and overlapping PRs. Integrate only by non-force expected-head update preserving every authoritative change, or leave draft if conflict. Record exact result, commit/tree, and status. Do not build/release a new APK from this source-only change or duplicate the dedicated 4 PM APK worker.
