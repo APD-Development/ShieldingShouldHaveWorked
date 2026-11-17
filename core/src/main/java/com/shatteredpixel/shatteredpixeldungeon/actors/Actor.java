@@ -447,5 +447,10 @@ public abstract class Actor implements Bundlable {
 		return new HashSet<>(all);
 	}
 
+	/** Exact actor-roster membership without copying the roster on each AI turn. */
+	public static synchronized boolean containsChar(Char character) {
+		return chars.contains(character);
+	}
+
 	public static synchronized HashSet<Char> chars() { return new HashSet<>(chars); }
 }
