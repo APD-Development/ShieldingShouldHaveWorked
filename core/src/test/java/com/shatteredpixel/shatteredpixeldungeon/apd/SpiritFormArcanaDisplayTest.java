@@ -45,7 +45,7 @@ public class SpiritFormArcanaDisplayTest {
    float actual=RingOfArcana.enchantPowerMultiplier(hero);assertTrue(description,description.contains("+"+Messages.decimalFormat("0.##",100*(actual-1))+"%_ power"));
   }
   Buff.detach(hero,com.shatteredpixel.shatteredpixeldungeon.actors.buffs.EnhancedRings.class);physical.level(1);spiritual.level(10);
-  assertTrue(ArcanaInfoDisplay.weapon(sword).contains("14.89% decrease"));assertEquals(10,spiritual.level());
+  assertTrue(ArcanaInfoDisplay.weapon(sword).contains("-14.89%_ power"));assertEquals(10,spiritual.level());
  }
  @Test public void spiritFormDoesNotRevealUnknownOrUnequippedPhysicalRings(){
   physical.levelKnown=false;assertEquals("",ArcanaInfoDisplay.weapon(sword));

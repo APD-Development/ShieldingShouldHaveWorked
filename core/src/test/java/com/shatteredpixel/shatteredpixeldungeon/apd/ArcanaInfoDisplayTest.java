@@ -69,13 +69,13 @@ public class ArcanaInfoDisplayTest {
         equip(0);
         String w=ArcanaInfoDisplay.weapon(sword), a=ArcanaInfoDisplay.armor(armor);
         assertTrue(w,w.contains("+17.5%_ power")); assertTrue(w,w.contains("_39.17%_"));
-        assertTrue(a,a.contains("_2.35x_ normal")); assertTrue(a,a.contains("Only on water"));
+        assertTrue(a,a.contains("_2.35x_ normal")); assertTrue(a,a.contains("Only while in water"));
     }
     @Test public void combinedAndEnhancedRingsUseTheirKnownEffectiveLevels() {
         equip(0); Dungeon.hero.belongings.misc=ring(0);
         assertTrue(ArcanaInfoDisplay.weapon(sword).contains("+38.06%_ power"));
         Buff.affect(Dungeon.hero,EnhancedRings.class);
-        assertTrue(ArcanaInfoDisplay.weapon(sword).contains("90.61% increase"));
+        assertTrue(ArcanaInfoDisplay.weapon(sword).contains("+90.61%_ power"));
     }
     @Test public void unknownEquipmentUpgradesDoNotLeak() {
         equip(2); sword.levelKnown=false; armor.levelKnown=false;
@@ -118,7 +118,7 @@ public class ArcanaInfoDisplayTest {
         equip(2); sword.enchant(new Vampiric());
         assertTrue(ArcanaInfoDisplay.weapon(sword).contains("current HP"));
         armor.inscribe(new Stone()); assertTrue(ArcanaInfoDisplay.armor(armor).contains("Arcana raises the evasion"));
-        armor.inscribe(new Brimstone()); assertTrue(ArcanaInfoDisplay.armor(armor).contains("does not strengthen"));
+        armor.inscribe(new Brimstone()); assertTrue(ArcanaInfoDisplay.armor(armor).contains("already immune to fire"));
         armor.inscribe(new Viscosity()); assertTrue(ArcanaInfoDisplay.armor(armor).contains("remainder prevented"));
         assertTrue(ArcanaInfoDisplay.armor(armor).length()<250);
     }
@@ -150,7 +150,7 @@ public class ArcanaInfoDisplayTest {
         Dungeon.hero.heroClass=com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass.DUELIST;
         String s=ArcanaInfoDisplay.weapon(blade);
         assertTrue(s,s.contains("Extra melee reach: _1_ tiles"));
-        assertTrue(s,s.contains("Runic Slash separately adds +600%"));
+        assertTrue(s,s.contains("Runic Slash adds another _+600%_ power"));
         assertTrue(s,s.contains("total melee reach with other active modifiers: 8 tiles"));
         assertTrue(s,s.contains("rounding grants no additional reach"));
         assertFalse(s,s.contains("\uFFFD"));
@@ -170,7 +170,7 @@ public class ArcanaInfoDisplayTest {
         assertTrue(block,block.contains("Shield per hit:"));
         sword.enchant(new Chilling());
         String chill=ArcanaInfoDisplay.weapon(sword);
-        assertTrue(chill,chill.contains("Chill added per activation:"));
+        assertTrue(chill,chill.contains("Chill per hit:"));
         armor.level(6);armor.inscribe(new Thorns());
         String thorns=ArcanaInfoDisplay.armor(armor);
         assertTrue(thorns,thorns.contains("Bleeding amount offered on activation:"));
