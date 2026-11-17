@@ -1,5 +1,11 @@
 name: APD vault stealth angle-seam regression
 on:
+  pull_request:
+    branches: [codex/apd-phone-fixes-2026-10-09]
+    paths:
+      - core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/Mob.java
+      - core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/MobStealthAngleSeamTest.java
+      - .github/workflows/apd-stealth-angle-seam-ci-20261117.yml
   push:
     branches: [chatgpt/apd-stealth-angle-wrap-20261117-0300]
     paths:
