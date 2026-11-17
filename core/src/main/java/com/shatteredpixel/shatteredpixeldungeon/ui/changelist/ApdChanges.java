@@ -70,6 +70,19 @@ public class ApdChanges {
 			case "POTION_CRIMSON": return ItemSpriteSheet.POTION_CRIMSON;
 			case "SEED_SUNGRASS": return ItemSpriteSheet.SEED_SUNGRASS;
 			case "WATERSKIN": return ItemSpriteSheet.WATERSKIN;
+			case "WAND_MAGIC_MISSILE": return ItemSpriteSheet.WAND_MAGIC_MISSILE;
+			case "ARMOR_LEATHER": return ItemSpriteSheet.ARMOR_LEATHER;
+			case "SWORD": return ItemSpriteSheet.SWORD;
+			case "POTION_AMBER": return ItemSpriteSheet.POTION_AMBER;
+			case "SCROLL_KAUNAN": return ItemSpriteSheet.SCROLL_KAUNAN;
+			case "RING_RUBY": return ItemSpriteSheet.RING_RUBY;
+			case "ARTIFACT_HOURGLASS": return ItemSpriteSheet.ARTIFACT_HOURGLASS;
+			case "SEED_ROTBERRY": return ItemSpriteSheet.SEED_ROTBERRY;
+			case "BOMB": return ItemSpriteSheet.BOMB;
+			case "RATION": return ItemSpriteSheet.RATION;
+			case "DART": return ItemSpriteSheet.DART;
+			case "SPIRIT_BOW": return ItemSpriteSheet.SPIRIT_BOW;
+			case "GOLD": return ItemSpriteSheet.GOLD;
 			default: throw new IllegalArgumentException(name);
 		}
 	}
