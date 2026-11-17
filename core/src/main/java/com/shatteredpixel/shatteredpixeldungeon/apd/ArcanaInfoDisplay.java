@@ -92,7 +92,7 @@ public final class ArcanaInfoDisplay {
     private static String chance(float base, float multi) {
         // Probability saturates at 100%; excess is effect strength, never a >100% chance.
         float before=100f*Math.max(0,Math.min(1,base)),after=100f*Math.max(0,Math.min(1,base*multi));
-        return text("chance",number(before),number(after))+" "+text(after>=before?"chance_increase":"chance_decrease",number(Math.abs(after-before)));
+        return text("chance",number(before),number(after));
     }
 
 

@@ -614,7 +614,7 @@ public class QolItemFeedbackDeviceTest {
         AtomicReference<WndInfoItem> luckyWindow=new AtomicReference<>();float[] luckyTime=new float[1];
         TopScoresDeviceTest.render(()->{
             Sword lucky=new Sword();lucky.levelKnown=lucky.cursedKnown=true;lucky.enchant(new com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Lucky());
-            assertTrue(lucky.info(),lucky.info().contains("_19.06%_ (_10%_ without Arcana)"));assertEquals(1,lucky.info().split("19.06%",-1).length-1);
+            assertTrue(lucky.info(),lucky.info().contains("_19.06%_ (_10%_ before your Arcana)"));assertEquals(1,lucky.info().split("19.06%",-1).length-1);
             luckyTime[0]=Dungeon.hero.cooldown();WndInfoItem window=new WndInfoItem(lucky);GameScene.show(window);luckyWindow.set(window);
         });
         Thread.sleep(300);
@@ -937,7 +937,7 @@ public class QolItemFeedbackDeviceTest {
             for(String name:new String[]{"Flow","Swiftness","Camouflage","AntiMagic"}){
                 com.shatteredpixel.shatteredpixeldungeon.items.armor.MailArmor armor=new com.shatteredpixel.shatteredpixeldungeon.items.armor.MailArmor();
                 TopScoresDeviceTest.render(()->{try{armor.level(3);armor.levelKnown=armor.cursedKnown=true;armor.inscribe((com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor.Glyph)Class.forName("com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs."+name).getDeclaredConstructor().newInstance());}catch(Exception e){throw new RuntimeException(e);}});
-                showItem(armor,"without Arcana","qol-passive-glyph-"+name+"-arcana.png",true);
+                showItem(armor,"before your Arcana","qol-passive-glyph-"+name+"-arcana.png",true);
             }
         }finally{TopScoresDeviceTest.render(()->{for(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff buff:new java.util.ArrayList<>(Dungeon.hero.buffs(Ring.RingBuff.class)))buff.detach();Dungeon.hero.belongings.ring=(Ring)previous[0];Dungeon.hero.belongings.misc=previous[1];if(previous[0]!=null)previous[0].activate(Dungeon.hero);if(previous[1] instanceof Ring)previous[1].activate(Dungeon.hero);});}
     }

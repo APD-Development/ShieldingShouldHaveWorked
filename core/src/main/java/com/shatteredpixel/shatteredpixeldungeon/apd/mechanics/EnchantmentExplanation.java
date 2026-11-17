@@ -80,7 +80,7 @@ public final class EnchantmentExplanation {
         String value="_"+playerNumber(100*Math.max(0,Math.min(1,base*power)))+"%_";
         float without=knownPowerWithoutArcana(hero);
         if(ArcanaInfoDisplay.hasKnownArcana(hero)&&Float.isFinite(without)&&Math.abs(Math.min(1,base*power)-Math.min(1,base*without))>.00001f)
-            value+=" (_"+playerNumber(100*Math.max(0,Math.min(1,base*without)))+"%_ without Arcana)";
+            value+=" (_"+playerNumber(100*Math.max(0,Math.min(1,base*without)))+"%_ before your Arcana)";
         return value;
     }
     /** Complete ordinary enchantment text; do not append the old generic Arcana breakdown. */
@@ -118,14 +118,14 @@ public final class EnchantmentExplanation {
                 Kinetic.ConservedDamage stored=hero==null?null:hero.buff(Kinetic.ConservedDamage.class);
                 String amount=Math.abs(power-1f)<.00001f?"excess damage":"_"+playerNumber(100*power)+"%_ of new excess damage";
                 float without=knownPowerWithoutArcana(hero);
-                if(ArcanaInfoDisplay.hasKnownArcana(hero)&&Float.isFinite(without)&&Math.abs(power-without)>.00001f)amount+=" (_"+playerNumber(100*without)+"%_ without Arcana)";
+                if(ArcanaInfoDisplay.hasKnownArcana(hero)&&Float.isFinite(without)&&Math.abs(power-without)>.00001f)amount+=" (_"+playerNumber(100*without)+"%_ before your Arcana)";
                 return "Stores "+amount+" from killing blows for your next Kinetic hit. It fades over time. Stored bonus: _"+(stored==null?0:stored.damageBonus())+" damage_.";
             }
             case "Projecting":{
                 boolean ranged=weapon instanceof MissileWeapon||weapon instanceof SpiritBow;
                 int current=ranged?Math.round(4*power):Projecting.additionalReach(power,weapon.RCH);
                 float without=knownPowerWithoutArcana(hero);int baseReach=ranged?Math.round(4*without):Projecting.additionalReach(without,weapon.RCH);
-                String comparison=ArcanaInfoDisplay.hasKnownArcana(hero)&&Float.isFinite(without)&&current!=baseReach?" (_"+baseReach+" "+(baseReach==1?"tile":"tiles")+"_ without Arcana)":"";
+                String comparison=ArcanaInfoDisplay.hasKnownArcana(hero)&&Float.isFinite(without)&&current!=baseReach?" (_"+baseReach+" "+(baseReach==1?"tile":"tiles")+"_ before your Arcana)":"";
                 return ranged?"Shots can pass through walls at targets within _"+current+" tiles_ of you"+comparison+".":"Adds up to _"+current+" "+(current==1?"tile":"tiles")+"_ to melee reach"+comparison+".";
             }
             case "Crystal":return "Deals an extra _"+playerNumber(25*power)+"%_ magic damage. "+(weapon instanceof MissileWeapon?"":"Can shatter if worn out; repairs slowly over time. ")+((Crystal)weapon.enchantment).conditionDescription();

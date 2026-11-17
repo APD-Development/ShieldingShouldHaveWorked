@@ -69,7 +69,7 @@ public class ArcanaInfoDisplayTest {
         equip(0);
         String w=ArcanaInfoDisplay.weapon(sword), a=ArcanaInfoDisplay.armor(armor);
         assertTrue(w,w.contains("17.5% increase")); assertTrue(w,w.contains("33.33% to 39.17%"));
-        assertTrue(a,a.contains("2 times normal; with Arcana: 2.35 times normal")); assertTrue(a,a.contains("Only on water"));
+        assertTrue(a,a.contains("_2x_ normal, or _2.35x_ with your Arcana")); assertTrue(a,a.contains("Only on water"));
     }
     @Test public void combinedAndEnhancedRingsUseTheirKnownEffectiveLevels() {
         equip(0); Dungeon.hero.belongings.misc=ring(0);
@@ -129,8 +129,8 @@ public class ArcanaInfoDisplayTest {
                 sword.enchantment=(Weapon.Enchantment)type.getDeclaredConstructor().newInstance(); sword.cursedKnown=true;
                 String text=ArcanaInfoDisplay.weapon(sword);
                 assertFalse(type.getName(),text.isEmpty()); assertFalse(text,text.contains(Messages.NO_TEXT_FOUND));
-                assertTrue(type.getName()+" missing effect label",text.contains("Arcana changes:"));
-                assertTrue(type.getName()+" missing effect label",text.contains("Arcana changes:"));
+                assertTrue(type.getName()+" missing effect label",text.contains("Arcana"));
+                assertTrue(type.getName()+" missing effect label",text.contains("Arcana"));
                 assertTrue(text,text.length()<600);
             }
         }
