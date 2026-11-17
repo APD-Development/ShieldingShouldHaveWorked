@@ -1,0 +1,64 @@
+name: APD Mob recent-attacker roster regression
+on:
+  push:
+    branches: [chatgpt/apd-mob-recent-attacker-roster-20261117-0200]
+    paths:
+      - core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/Mob.java
+      - core/src/test/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/MobRecentAttackerRosterTest.java
+      - .github/workflows/apd-mob-recent-attacker-roster-ci-20261117.yml
+permissions:
+  contents: read
+jobs:
+  verify-source:
+    runs-on: ubuntu-latest
+    timeout-minutes: 70
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Verify combined R7 C485 and latest Mob baseline ancestry
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor c6fa033167789ef9f2fc6f31bcff39c824dfb4db HEAD
+          git merge-base --is-ancestor d1abeaa7331a121e6bcceef5ba87b7a0802efdc7 HEAD
+          git rev-parse HEAD
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - uses: gradle/actions/setup-gradle@v4
+      - name: Install Android compilation platform
+        run: '"$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "platforms;android-36"'
+      - name: Full core tests and desktop plus Android Java compilation (source only)
+        run: ./gradlew :core:test :desktop:classes :android:compileDebugJavaWithJavac :android:compileReleaseJavaWithJavac :android:compileDebugAndroidTestJavaWithJavac --no-daemon
+      - name: Verify recent-attacker regressions, roster lookup and full JUnit results
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import xml.etree.ElementTree as ET
+          source = Path('core/src/main/java/com/shatteredpixel/shatteredpixeldungeon/actors/mobs/Mob.java').read_text()
+          region = source.split('protected boolean handleRecentAttackers()', 1)[1].split('protected boolean recursing', 1)[0]
+          assert 'Actor.containsChar(ch)' in region, 'expected direct membership lookup'
+          assert 'Actor.chars()' not in region, 'copied roster still present'
+          suites = [ET.parse(p).getroot() for p in Path('core/build/test-results/test').glob('TEST-*.xml')]
+          assert suites, 'missing full JUnit suite'
+          counts = {k: sum(int(s.get(k,'0')) for s in suites) for k in ('tests','failures','errors','skipped')}
+          cases = {(s.get('name'), t.get('name')) for s in suites for t in s.findall('testcase')}
+          target = 'com.shatteredpixel.shatteredpixeldungeon.actors.mobs.MobRecentAttackerRosterTest'
+          required = {
+              'registeredVisibleAttackerCanBeSelected',
+              'removedButLivingAttackerCannotBeSelected',
+              'registeredAttackerStillRequiresVisibility',
+          }
+          assert required.issubset({name for suite,name in cases if suite == target}), 'missing attacker roster regression'
+          assert counts['tests'] >= 3554, counts
+          assert counts['failures'] == counts['errors'] == counts['skipped'] == 0, counts
+          print('APD_RECENT_ATTACKER_ROSTER_JUNIT', dict(counts, suites=len(suites)))
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: apd-mob-recent-attacker-roster-junit
+          path: core/build/test-results/test/TEST-*.xml
+          if-no-files-found: warn
+          retention-days: 14
