@@ -20,7 +20,7 @@ unapproved features. Each run codes for at least 30 minutes (Chris, Nov 18).
 2. [x] (Nov 18 7 AM batch; GenerationTracker covers draw counting only) Tests for the 17 untested APD classes: ApdFacts, BuiltinFactKinds, CustomBossHealthHooks, CustomDefenseHooks,
    DewExplanation, EventBuilder, GameSnapshot, GenerationTracker, HotbarPersistence, KeyExplanation, Mailbox,
    PositionedStringLookup, ProgressGuardInputStream, ReplayScan, StaffExplanation, StringLookup, Utf8.
-3. (Nov 18 7 AM: traps (text, saving, gas/weakening activation), blobs, Bestiary mobs, every item/buff/creature/badge/talent/class text, all recipes, floor walkability 1-24 incl. all challenges, Remove Curse, wands, rings, armor/weapon strength, hero basics, dew math done. Next: room-by-room paint checks, potions, remaining spell behavior) Behavior tests for untested SPD gameplay classes: traps, rooms (valid generation on every floor), mobs, spells,
+3. (Nov 18 7 AM: traps (text, saving, gas/weakening activation), blobs, Bestiary mobs, every item/buff/creature/badge/talent/class text, all recipes, floor walkability 1-24 incl. all challenges, Remove Curse, wands, rings, armor/weapon strength, hero basics, dew math done. Nov 18 8 AM: floor contents placement 1-24 (mobs, heaps, traps, room overlap), thrown potions' clouds, exotic potion/scroll twins, scroll-to-stone, tipped darts, spell targets, random enchant/glyph/curse, loot tables done. Next: drink effects that need a hero sprite, remaining spell behavior) Behavior tests for untested SPD gameplay classes: traps, rooms (valid generation on every floor), mobs, spells,
    scrolls, blobs.
 4. Construction smoke tests for sprites, windows and UI classes where the headless runner allows.
 
