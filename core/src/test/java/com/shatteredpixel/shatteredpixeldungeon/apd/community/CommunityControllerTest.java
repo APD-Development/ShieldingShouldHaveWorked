@@ -138,7 +138,7 @@ public class CommunityControllerTest {
 		List<String> l = labels(last());
 		int a = l.indexOf("Chris: Love it"), b = l.indexOf("  > Bo: Thanks"), c = l.indexOf("[removed]");
 		assertTrue(l.toString(), a >= 0 && b == a + 1 && c > b);
-		assertTrue("voting phase, someone else's idea", has(last(), "Upvote"));
+		assertTrue("voting phase, someone else's idea", has(last(), "Upvote this idea"));
 		tap("  > Bo: Thanks");
 		assertTrue(has(last(), "Report this comment"));
 	}
@@ -227,5 +227,21 @@ public class CommunityControllerTest {
 		tap("Troll");
 		assertTrue(has(last(), "Troll is unbanned."));
 		assertTrue(requests.stream().anyMatch(r -> r.startsWith("POST /v1/admin/unban {\"accountId\":\"ee05\"}")));
+	}
+
+	@Test public void theUpvoteButtonSaysWhetherIUpvotedAndTheCount(){
+		store.age = "pass"; store.token = "tok";
+		signedInWorld(false);
+		reply("GET /v1/submissions", 200, "{\"submissions\":[{\"id\":\"5501\",\"title\":\"Idea A\",\"author\":{\"id\":\"bb02\",\"displayName\":\"Bo\"},\"comments\":0}]}");
+		reply("GET /v1/submissions/5501", 200, "{\"id\":\"5501\",\"title\":\"Idea A\",\"body\":\"b\",\"author\":{\"id\":\"bb02\",\"displayName\":\"Bo\"},\"comments\":[]}");
+		reply("GET /v1/season/results", 200, "{\"season\":{\"phase\":\"voting\"},\"standings\":[{\"id\":\"5501\",\"title\":\"Idea A\",\"upvotes\":3}],\"myUpvotes\":[\"5501\"]}");
+		reply("DELETE /v1/submissions/5501/upvote", 200, "{\"upvoted\":false}");
+		controller().start();
+		tap("Submissions");
+		tap("Idea A");
+		assertTrue(has(last(), "Take back my upvote"));
+		assertTrue(has(last(), "3 upvotes"));
+		tap("Take back my upvote");
+		assertTrue(requests.stream().anyMatch(r -> r.startsWith("DELETE /v1/submissions/5501/upvote")));
 	}
 }

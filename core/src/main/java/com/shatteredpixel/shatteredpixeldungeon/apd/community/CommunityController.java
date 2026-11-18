@@ -305,6 +305,20 @@ public final class CommunityController {
 	}
 
 	private void detail(String id){
+		// In Month 2 the results say how many upvotes it has and whether I've upvoted it, so the button can say so.
+		if ("voting".equals(phase())){
+			call(api::results, rr -> {
+				int count = -1; boolean mine = false;
+				if (rr.ok()){
+					if (rr.body.get("myUpvotes") != null) for (JsonValue v = rr.body.get("myUpvotes").child; v != null; v = v.next) if (id.equals(v.asString())) mine = true;
+					if (rr.body.get("standings") != null) for (JsonValue v = rr.body.get("standings").child; v != null; v = v.next) if (id.equals(v.getString("id", ""))) count = v.getInt("upvotes", 0);
+				}
+				detail(id, count, mine);
+			});
+		} else detail(id, -1, false);
+	}
+
+	private void detail(String id, int upvotes, boolean upvoted){
 		call(() -> api.submission(id), r -> {
 			if (!r.ok()){ problem(r, this::submissions); return; }
 			JsonValue b = r.body;
@@ -313,7 +327,11 @@ public final class CommunityController {
 			Screen s = new Screen(b.getString("title", ""), "by " + b.get("author").getString("displayName", "?"));
 			s.back = this::submissions;
 			s.note(b.getString("body", ""));
-			if ("voting".equals(phase()) && !mine) upvoteRow(s, id);
+			if ("voting".equals(phase()) && !mine){
+				String count = upvotes < 0 ? null : upvotes + (upvotes == 1 ? " upvote" : " upvotes");
+				s.item(upvoted ? "Take back my upvote" : "Upvote this idea", count, () ->
+						call(() -> api.upvote(id, !upvoted), x -> { if (x.ok()) detail(id); else problem(x, () -> detail(id)); }));
+			} else if ("voting".equals(phase()) && upvotes >= 0) s.note(upvotes + (upvotes == 1 ? " upvote" : " upvotes") + " (you can't upvote your own idea)");
 			s.item("Comment", null, () -> comment(id, null));
 			if (!mine){
 				s.item("Report this idea", null, () -> report("submission", id, () -> detail(id)));
@@ -326,16 +344,6 @@ public final class CommunityController {
 			s.item("Back", null, this::submissions);
 			ui.show(s);
 		});
-	}
-
-	private void upvoteRow(Screen s, String id){
-		// The results endpoint says which ideas I've upvoted; it's checked when tapped, so the toggle is always right.
-		Set<String> mine = new LinkedHashSet<>();
-		s.item("Upvote / take back upvote", "You can't upvote your own idea", () -> call(api::results, rr -> {
-			if (rr.ok() && rr.body.get("myUpvotes") != null) for (JsonValue v = rr.body.get("myUpvotes").child; v != null; v = v.next) mine.add(v.asString());
-			boolean on = !mine.contains(id);
-			call(() -> api.upvote(id, on), x -> { if (x.ok()) detail(id); else problem(x, () -> detail(id)); });
-		}));
 	}
 
 	// Comments in thread order: each reply right under its parent, indented by depth.
