@@ -43,4 +43,20 @@ public class PlayerFacingBrandingTest {
 		assertTrue("checked only " + checked, checked >= KEYS.length);
 		assertTrue(problems.toString(), problems.isEmpty());
 	}
+
+	// Every message in every language: only the Pasty cake's lore line (Shattered's anniversary cake) may name Shattered.
+	@Test public void noOtherMessageNamesShattered() throws Exception {
+		File messages = new File(System.getProperty("apd.game.src"), "../../../../assets/messages");
+		List<String> problems = new ArrayList<>();
+		for (File dir : messages.listFiles()) {
+			if (!dir.isDirectory()) continue;
+			for (File f : dir.listFiles((d, n) -> n.endsWith(".properties"))) {
+				for (String line : Files.readAllLines(f.toPath(), StandardCharsets.UTF_8)) {
+					String key = line.split("=", 2)[0];
+					if (line.contains("Shattered") && !key.contains("pasty") && !key.endsWith("shattered_desc")) problems.add(f.getName() + ": " + key);
+				}
+			}
+		}
+		assertTrue(problems.toString(), problems.isEmpty());
+	}
 }
