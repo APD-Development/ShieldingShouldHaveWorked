@@ -3,7 +3,9 @@
 Owner schedule (set Nov 17, 2026): hourly coding runs 6 AM-2 PM Eastern, one APK a day started at 3 PM and delivered by 4 PM.
 Hourly runs work top-down, commit and push to `fix/apd-trap-room-search-20261116`, and never edit
 `.github/workflows/apd488t-trap-room-search-apk.yml` (that file triggers the APK build; only the 3 PM run touches it).
-Only approved work. New gameplay or design decisions wait for Chris.
+Chris, Nov 18: ChatGPT is not touching this branch. Fix real bugs a test finds right away. When a decision comes up,
+make the reasonable call yourself, list it in that run's summary, and revert it if Chris later says no. Still no big
+unapproved features.
 
 ## Approved, in order
 1. Tests for this week's features:
