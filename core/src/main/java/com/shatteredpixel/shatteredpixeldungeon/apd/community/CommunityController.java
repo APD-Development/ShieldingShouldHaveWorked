@@ -172,11 +172,21 @@ public final class CommunityController {
 	private void signedInOrOut(){
 		if (!api.signedIn()){ ui.show(signedOut(null)); return; }
 		call(api::me, r -> {
-			if (!r.ok()){ forget(); ui.show(signedOut(r.status == 0 ? "Can't reach the Community server. Check your connection." : null)); return; }
+			if (r.status == 0 || r.status >= 500){ ui.show(cantReach()); return; } // keep the sign-in: it's the connection, not the account
+			if (!r.ok()){ forget(); ui.show(signedOut(message(r))); return; }
 			me = r.body;
 			if (!me.getBoolean("ageOk", false)) call(api::ageGatePassed, x -> hub());
 			else hub();
 		});
+	}
+
+	private Screen cantReach(){
+		Screen s = new Screen("Community", null);
+		s.warning("Can't reach the Community server. Check your connection and try again. You're still signed in.");
+		s.item("Try again", null, this::signedInOrOut);
+		s.item("Back", null, ui::leave);
+		s.back = ui::leave;
+		return s;
 	}
 
 	// ---- signed out ----

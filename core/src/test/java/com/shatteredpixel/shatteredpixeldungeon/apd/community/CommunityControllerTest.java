@@ -270,4 +270,13 @@ public class CommunityControllerTest {
 		tap("Save my picks");
 		assertTrue(requests.get(requests.size() - 1).startsWith("POST /v1/tournament/picks {\"submissionIds\":[\"b2\"]}"));
 	}
+
+	@Test public void noConnectionKeepsTheSignInAndOffersRetry(){
+		store.age = "pass"; store.token = "tok";
+		CommunityApi dead = new CommunityApi("http://127.0.0.1:1", 500);
+		new CommunityController(dead, ui, (call, then) -> then.accept(call.get()), store, new int[]{11, 2026}).start();
+		assertEquals("tok", store.token);
+		assertTrue(has(last(), "You're still signed in."));
+		assertTrue(has(last(), "Try again"));
+	}
 }
