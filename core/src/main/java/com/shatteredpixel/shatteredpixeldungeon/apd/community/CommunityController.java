@@ -554,6 +554,7 @@ public final class CommunityController {
 			case "too_many_comments": return "Slow down a little: too many comments in a short time.";
 			case "too_many_reports": return "You've sent a lot of reports today.";
 			case "not_found": return "That isn't there any more.";
+			case "slow_down": return "Too many tries. Wait a few minutes and try again.";
 			case "no_matchups_open": case "not_week_one": return "That vote isn't open right now.";
 			default:
 				if (e.startsWith("too_long_")) return "That's too long.";

@@ -29,6 +29,28 @@ async function rateLimit(env, account, kind) {
   if (row.n >= r.max) fail(429, `too_many_${kind}`);
 }
 
+// Guessing and spam limits (Claude's call, Nov 18): failed sign-ins per email and per network address, sign-ups and
+// code requests per network address, counted over a window.
+const GUARD = {
+  login_email: { max: 10, ms: 15 * 60 * 1000 },
+  login_ip: { max: 30, ms: 15 * 60 * 1000 },
+  register_ip: { max: 5, ms: 60 * 60 * 1000 },
+  code_ip: { max: 10, ms: 60 * 60 * 1000 },
+};
+
+function ipOf(req) { return req.headers.get('cf-connecting-ip') || 'unknown'; }
+
+async function guarded(env, kind, who) {
+  const g = GUARD[kind];
+  const row = await env.DB.prepare('SELECT COUNT(*) AS n FROM throttle WHERE key = ? AND at > ?').bind(`${kind}:${who}`, now(env) - g.ms).first();
+  if (row.n >= g.max) fail(429, 'slow_down');
+}
+
+async function strike(env, kind, who) {
+  await env.DB.prepare('INSERT INTO throttle (key, at) VALUES (?, ?)').bind(`${kind}:${who}`, now(env)).run();
+  if (Math.random() < 0.02) await env.DB.prepare('DELETE FROM throttle WHERE at < ?').bind(now(env) - 24 * 3600 * 1000).run();
+}
+
 const LIMITS = { name: 24, title: 80, body: 4000, comment: 2000, reason: 200, password: 8 };
 
 class HttpError extends Error {
@@ -132,6 +154,8 @@ const route = (method, pattern, fn) => routes.push({ method, re: new RegExp(`^${
 // ---- accounts ----
 
 route('POST', '/v1/auth/register', async (env, req) => {
+  await guarded(env, 'register_ip', ipOf(req));
+  await strike(env, 'register_ip', ipOf(req));
   const b = await body(req);
   const email = text(b.email, 254, 'email').toLowerCase();
   if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) fail(400, 'bad_email');
@@ -156,6 +180,8 @@ route('POST', '/v1/auth/register', async (env, req) => {
 });
 
 route('POST', '/v1/auth/resend', async (env, req) => {
+  await guarded(env, 'code_ip', ipOf(req));
+  await strike(env, 'code_ip', ipOf(req));
   const b = await body(req);
   const email = text(b.email, 254, 'email').toLowerCase();
   const a = await env.DB.prepare('SELECT * FROM accounts WHERE email = ? AND email_verified = 0').bind(email).first();
@@ -183,8 +209,14 @@ route('POST', '/v1/auth/verify', async (env, req) => {
 route('POST', '/v1/auth/login', async (env, req) => {
   const b = await body(req);
   const email = text(b.email, 254, 'email').toLowerCase();
+  await guarded(env, 'login_email', email);
+  await guarded(env, 'login_ip', ipOf(req));
   const a = await env.DB.prepare('SELECT * FROM accounts WHERE email = ?').bind(email).first();
-  if (!a || !(await verifyPassword(String(b.password || ''), a.password_hash))) fail(401, 'wrong_login');
+  if (!a || !(await verifyPassword(String(b.password || ''), a.password_hash))) {
+    await strike(env, 'login_email', email);
+    await strike(env, 'login_ip', ipOf(req));
+    fail(401, 'wrong_login');
+  }
   if (a.banned) fail(403, 'banned');
   if (!a.email_verified) fail(403, 'email_not_verified');
   return json(200, { token: await startSession(env, a.id) });
@@ -233,6 +265,12 @@ route('POST', '/v1/account/age', async (env, req) => {
 // Deletes the account and everything it posted, voted or reported. Replies by others under deleted comments go too.
 route('DELETE', '/v1/account', async (env, req) => {
   const a = await need(env, req);
+  // My comments that others replied to stay as empty placeholders owned by [deleted], so their replies aren't lost.
+  // Everything else I wrote, voted, reported or blocked goes with the account.
+  await env.DB.prepare(
+    `UPDATE comments SET author_id = 'deleted', body = '', status = 'removed'
+      WHERE author_id = ? AND id IN (SELECT parent_id FROM comments WHERE parent_id IS NOT NULL AND author_id != ?)`)
+    .bind(a.id, a.id).run();
   await env.DB.prepare('DELETE FROM accounts WHERE id = ?').bind(a.id).run();
   return json(200, { deleted: true });
 });

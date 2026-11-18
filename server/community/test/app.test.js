@@ -16,8 +16,10 @@ function setup() {
     ADMIN_EMAILS: 'chris@example.com',
     now: () => clock,
   };
-  const call = async (method, path, body, token) => {
-    const headers = { 'content-type': 'application/json' };
+  let ipCounter = 0;
+  // Each test request comes from its own address unless a test sets one (the sign-up limit is per address).
+  const call = async (method, path, body, token, ip) => {
+    const headers = { 'content-type': 'application/json', 'cf-connecting-ip': ip || `10.0.0.${++ipCounter}` };
     if (token) headers.authorization = `Bearer ${token}`;
     const res = await handle(new Request(`https://x${path}`, { method, headers, body: body ? JSON.stringify(body) : undefined }), env);
     return { status: res.status, body: await res.json() };
@@ -66,7 +68,7 @@ test('passwords are hashed, short ones refused, wrong ones rejected, verified em
   const { env, call, member } = setup();
   assert.equal((await call('POST', '/v1/auth/register', { email: 'c@x.com', password: 'short', displayName: 'C' })).body.error, 'weak_password');
   await member('c@x.com');
-  const row = env.DB.raw.prepare('SELECT password_hash FROM accounts').get();
+  const row = env.DB.raw.prepare("SELECT password_hash FROM accounts WHERE id != 'deleted'").get();
   assert.ok(row.password_hash.startsWith('pbkdf2$') && !row.password_hash.includes('hunter2'));
   assert.equal((await call('POST', '/v1/auth/login', { email: 'c@x.com', password: 'nope-nope-nope' })).status, 401);
   assert.equal((await call('POST', '/v1/auth/register', { email: 'c@x.com', password: 'longenough', displayName: 'C' })).body.error, 'email_taken');
@@ -181,7 +183,7 @@ test('account deletion removes the account, its sessions, posts, comments, repor
   assert.equal((await call('DELETE', '/v1/account', null, a.token)).status, 200);
   assert.equal((await call('GET', '/v1/me', null, a.token)).status, 401);
   const count = (t) => env.DB.raw.prepare(`SELECT COUNT(*) AS n FROM ${t}`).get().n;
-  assert.deepEqual(['accounts', 'submissions', 'comments', 'reports', 'blocks'].map(count), [1, 1, 0, 0, 0]);
+  assert.deepEqual(['accounts', 'submissions', 'comments', 'reports', 'blocks'].map(count), [2, 1, 0, 0, 0]); // + the [deleted] placeholder
   assert.equal((await call('POST', '/v1/auth/login', { email: 'gone@x.com', password: 'hunter2hunter2' })).status, 401);
 });
 
@@ -293,4 +295,32 @@ test('anti-spam caps: 5 submissions a day, 10 comments per 10 minutes', async ()
   assert.equal((await call('POST', `/v1/submissions/${s}/comments`, { body: 'later' }, m.token)).status, 201);
   tick(24 * 3600 * 1000);
   assert.equal((await call('POST', '/v1/submissions', { title: 'next day', body: 'b' }, m.token)).status, 201);
+});
+
+test('deleting an account keeps other players\' replies; the deleted comment becomes an empty placeholder', async () => {
+  const { call, member } = setup();
+  const a = await member('leaving@x.com', 'Leaving');
+  const b = await member('staying@x.com', 'Staying');
+  const s = (await call('POST', '/v1/submissions', { title: 't', body: 'b' }, b.token)).body.id;
+  const parent = (await call('POST', `/v1/submissions/${s}/comments`, { body: 'my take' }, a.token)).body.id;
+  await call('POST', `/v1/submissions/${s}/comments`, { body: 'lonely' }, a.token);
+  await call('POST', `/v1/submissions/${s}/comments`, { body: 'good point', parentId: parent }, b.token);
+  await call('DELETE', '/v1/account', null, a.token);
+  const view = (await call('GET', `/v1/submissions/${s}`)).body;
+  assert.equal(view.comments.length, 2);
+  assert.deepEqual([view.comments[0].id, view.comments[0].body, view.comments[0].author], [parent, null, null]);
+  assert.deepEqual([view.comments[1].body, view.comments[1].parentId], ['good point', parent]);
+});
+
+test('guessing limits: 10 wrong passwords per email in 15 minutes, 5 sign-ups per address per hour', async () => {
+  const { call, member, tick } = setup();
+  await member('target@x.com');
+  for (let i = 0; i < 10; i++) assert.equal((await call('POST', '/v1/auth/login', { email: 'target@x.com', password: `guess${i}xx` })).status, 401);
+  const blocked = await call('POST', '/v1/auth/login', { email: 'target@x.com', password: 'hunter2hunter2' });
+  assert.deepEqual([blocked.status, blocked.body.error], [429, 'slow_down']);
+  tick(15 * 60 * 1000 + 1);
+  assert.equal((await call('POST', '/v1/auth/login', { email: 'target@x.com', password: 'hunter2hunter2' })).status, 200);
+  for (let i = 0; i < 5; i++) assert.equal((await call('POST', '/v1/auth/register', { email: `s${i}@x.com`, password: 'longenough', displayName: 'S' }, null, '9.9.9.9')).status, 201);
+  assert.equal((await call('POST', '/v1/auth/register', { email: 's6@x.com', password: 'longenough', displayName: 'S' }, null, '9.9.9.9')).status, 429);
+  assert.equal((await call('POST', '/v1/auth/register', { email: 's7@x.com', password: 'longenough', displayName: 'S' }, null, '8.8.8.8')).status, 201);
 });
