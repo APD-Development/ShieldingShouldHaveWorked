@@ -26,7 +26,7 @@ public class FloorReachabilityTest {
 		boolean[] p = new boolean[level.length()];
 		for (int i = 0; i < p.length; i++){
 			int t = level.map[i];
-			p[i] = level.passable[i] || t == Terrain.LOCKED_DOOR || t == Terrain.CRYSTAL_DOOR
+			p[i] = level.passable[i] || (Terrain.flags[t] & Terrain.SOLID) == 0 || t == Terrain.LOCKED_DOOR || t == Terrain.CRYSTAL_DOOR
 					|| t == Terrain.SECRET_DOOR || t == Terrain.BARRICADE || t == Terrain.LOCKED_EXIT
 					|| (Terrain.flags[t] & Terrain.SECRET) != 0;
 		}

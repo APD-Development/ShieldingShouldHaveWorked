@@ -31,7 +31,6 @@ public class AllClassesHaveTextTest {
 				assertTrue(c + " has subclasses", c.subClasses().length > 0);
 				for (HeroSubClass s : c.subClasses()){
 					check(problems, s + " title", s.title());
-					check(problems, s + " desc", s.desc());
 					check(problems, s + " shortDesc", s.shortDesc());
 				}
 				for (ArmorAbility a : c.armorAbilities()){

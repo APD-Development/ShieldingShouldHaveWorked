@@ -36,6 +36,11 @@ public class ReplayScanTest {
 		level.blobs = new HashMap<>();
 		level.heaps = new SparseArray<>();
 		level.plants = new SparseArray<>();
+		try {
+			java.lang.reflect.Field rooms = com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel.class.getDeclaredField("rooms");
+			rooms.setAccessible(true);
+			rooms.set(level, new java.util.ArrayList<>());
+		} catch (ReflectiveOperationException e){ throw new AssertionError(e); }
 		return level;
 	}
 

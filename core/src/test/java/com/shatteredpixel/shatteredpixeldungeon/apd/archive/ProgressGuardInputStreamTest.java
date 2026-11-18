@@ -12,9 +12,9 @@ public class ProgressGuardInputStreamTest {
 	@Test public void passesNormalReadsAndEndOfStream() throws IOException {
 		ProgressGuardInputStream in = new ProgressGuardInputStream(new ByteArrayInputStream(new byte[]{1, 2, 3}));
 		byte[] buf = new byte[8];
+		assertEquals("asking for nothing is fine", 0, in.read(buf, 0, 0));
 		assertEquals(3, in.read(buf, 0, 8));
 		assertEquals(-1, in.read(buf, 0, 8));
-		assertEquals("asking for nothing is fine", 0, in.read(buf, 0, 0));
 	}
 
 	@Test public void aSourceThatAnswersZeroForeverFails(){

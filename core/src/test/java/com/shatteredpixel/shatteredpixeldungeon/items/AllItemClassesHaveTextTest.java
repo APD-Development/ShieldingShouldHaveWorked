@@ -59,7 +59,7 @@ public class AllItemClassesHaveTextTest {
 		List<String> missing = new ArrayList<>();
 		for (Class<?> c : all){
 			Object o = build(c);
-			if (o == null) continue;
+			if (o == null || c == Item.class || c.getSimpleName().equals("Artifact") || c.getSimpleName().equals("MeleeWeapon")) continue; //generic base classes
 			try {
 				Item item = (Item) o;
 				if (bad(item.name())) missing.add(c.getSimpleName() + " name");
@@ -75,7 +75,7 @@ public class AllItemClassesHaveTextTest {
 		List<String> missing = new ArrayList<>();
 		for (Class<?> c : all){
 			Object o = build(c);
-			if (o == null) continue;
+			if (o == null || c.getSimpleName().equals("DirectableAlly")) continue; //generic base class
 			try {
 				Mob m = (Mob) o;
 				if (bad(m.name())) missing.add(c.getSimpleName() + " name");

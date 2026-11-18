@@ -30,6 +30,7 @@ public class AmuletRevealTest {
 		HeadlessTestSupport.start();
 		SewerLevel level = new SewerLevel();
 		level.setSize(8, 8);
+		level.discoverable = new boolean[level.length()];
 		Arrays.fill(level.discoverable, true);
 		level.discoverable[0] = false;
 		level.map[10] = Terrain.SECRET_DOOR;

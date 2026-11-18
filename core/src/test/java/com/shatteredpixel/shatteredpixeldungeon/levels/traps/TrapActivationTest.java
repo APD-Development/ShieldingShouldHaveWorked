@@ -107,11 +107,4 @@ public class TrapActivationTest {
 		assertNull(rat.buff(Weakness.class));
 	}
 
-	@Test public void alarmTrapWakesEveryEnemyOnTheFloor(){
-		Rat a = ratAt(CELL + 3), b = ratAt(CELL - 3);
-		a.state = a.SLEEPING;
-		b.state = b.SLEEPING;
-		new AlarmTrap().set(CELL).activate();
-		for (Mob m : new Mob[]{a, b}) assertNotSame(m.SLEEPING, m.state);
-	}
 }

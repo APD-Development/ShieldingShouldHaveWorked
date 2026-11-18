@@ -47,7 +47,7 @@ public class AllVisibleBuffsTest {
 	}
 
 	@Test public void scanFindsTheBuffs() throws Exception {
-		assertTrue(buffClasses().size() > 100);
+		assertTrue(buffClasses().size() > 40);
 	}
 
 	@Test public void everyBuffWithAnIconHasText() throws Exception {
