@@ -253,4 +253,21 @@ public class CommunityControllerTest {
 		tap("What's coming next");
 		assertTrue(planned);
 	}
+
+	@Test public void weekOnePicksToggleLocallyAndOnlySaveSendsThem(){
+		store.age = "pass"; store.token = "tok";
+		signedInWorld(false);
+		reply("GET /v1/season/results", 200, "{\"season\":{\"phase\":\"tournament\"},\"week\":1,\"qualifiers\":[{\"id\":\"a1\",\"title\":\"Alpha\",\"picks\":2},{\"id\":\"b2\",\"title\":\"Beta\",\"picks\":0}],\"rounds\":[]}");
+		reply("POST /v1/tournament/picks", 200, "{\"picks\":[\"b2\"]}");
+		controller().start();
+		tap("Voting and results");
+		int before = requests.size();
+		tap("Beta");
+		tap("Alpha");
+		tap("Alpha");
+		assertEquals("no network for toggles", before, requests.size());
+		assertTrue(has(last(), "1 picked"));
+		tap("Save my picks");
+		assertTrue(requests.get(requests.size() - 2).startsWith("POST /v1/tournament/picks {\"submissionIds\":[\"b2\"]}"));
+	}
 }

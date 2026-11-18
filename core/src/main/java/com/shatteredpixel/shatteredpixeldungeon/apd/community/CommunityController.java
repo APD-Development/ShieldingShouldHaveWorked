@@ -422,7 +422,14 @@ public final class CommunityController {
 	private final Set<String> picks = new LinkedHashSet<>();
 
 	private void results(){
-		call(api::results, r -> {
+		call(api::results, this::showResults);
+	}
+
+	private CommunityApi.Result lastResults;
+
+	private void showResults(CommunityApi.Result r){
+		lastResults = r;
+		{
 			Screen s = new Screen("Voting and results", null);
 			s.back = this::hub;
 			if (!r.ok()){ s.warning(message(r)); s.item("Back", null, this::hub); ui.show(s); return; }
@@ -447,7 +454,7 @@ public final class CommunityController {
 			}
 			s.item("Back", null, this::hub);
 			ui.show(s);
-		});
+		}
 	}
 
 	private void weekOne(Screen s, JsonValue b){
@@ -456,7 +463,7 @@ public final class CommunityController {
 			final String id = v.getString("id");
 			s.check(v.getString("title", ""), v.getInt("picks", 0) + " picks so far", picks.contains(id), () -> {
 				if (picks.contains(id)) picks.remove(id); else if (picks.size() < 8) picks.add(id);
-				results();
+				showResults(lastResults); // toggling is local; only Save talks to the server
 			});
 		}
 		s.item("Save my picks", picks.isEmpty() ? "Pick at least one" : picks.size() + " of 8", () ->
