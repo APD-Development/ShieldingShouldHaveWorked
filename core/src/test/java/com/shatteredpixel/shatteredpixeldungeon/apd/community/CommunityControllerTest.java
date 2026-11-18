@@ -279,4 +279,23 @@ public class CommunityControllerTest {
 		assertTrue(has(last(), "You're still signed in."));
 		assertTrue(has(last(), "Try again"));
 	}
+
+	// Every error code the server can send has plain words in the app (except a few that only a broken client causes).
+	@Test public void everyServerErrorHasPlainWords() throws Exception {
+		java.io.File app = new java.io.File(System.getProperty("apd.game.src"), "../../../../../../../server/community/src/app.js");
+		String src = new String(java.nio.file.Files.readAllBytes(app.toPath()), java.nio.charset.StandardCharsets.UTF_8);
+		java.util.regex.Matcher m = java.util.regex.Pattern.compile("fail\\(\\d+, '([a-z_]+)'\\)").matcher(src);
+		java.util.Set<String> internal = new java.util.HashSet<>(java.util.Arrays.asList("bad_json", "bad_kind", "only_pass_is_recorded"));
+		List<String> unmapped = new ArrayList<>();
+		int seen = 0;
+		while (m.find()){
+			seen++;
+			String code = m.group(1);
+			if (internal.contains(code)) continue;
+			String text = CommunityController.message(new CommunityApi.Result(400, null, code));
+			if (text.startsWith("Something went wrong")) unmapped.add(code);
+		}
+		assertTrue("found the server's errors", seen > 30);
+		assertTrue(unmapped.toString(), unmapped.isEmpty());
+	}
 }

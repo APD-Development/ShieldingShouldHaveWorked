@@ -677,6 +677,14 @@ public final class CommunityController {
 			case "too_many_comments": return "Slow down a little: too many comments in a short time.";
 			case "too_many_reports": return "You've sent a lot of reports today.";
 			case "not_found": return "That isn't there any more.";
+			case "no_season": return "No season is running right now.";
+			case "not_admin": return "Only moderators can do that.";
+			case "cannot_block_self": return "You can't block yourself.";
+			case "bad_parent": return "That comment isn't there any more.";
+			case "not_a_qualifier": return "That idea isn't in the tournament.";
+			case "bye_no_vote": case "bad_matchup": case "not_in_matchup": return "That vote isn't open right now.";
+			case "signed_out": return "You were signed out. Please sign in again.";
+			case "server_error": return "The Community server had a problem. Try again in a moment.";
 			case "slow_down": return "Too many tries. Wait a few minutes and try again.";
 			case "bad_google_token": return "Google sign-in didn't work. Try again or use email.";
 			case "search_too_short": return "Type at least 2 letters.";
