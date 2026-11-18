@@ -195,9 +195,16 @@ public class Hunger extends Buff implements Hero.Doom {
 	/** APD: turns until Hungry at the current rate; 0 when already Hungry, -1 when hunger never rises. */
 	public int turnsUntilHungry(){
 		if (level >= HUNGRY) return 0;
+		//the same pauses act() makes: a locked boss arena, the tutorial, a challenge arena
+		if ((Dungeon.level != null && Dungeon.level.locked) || SPDSettings.intro()
+				|| (target != null && target.buff(ScrollOfChallenge.ChallengeArena.class) != null)) return -1;
 		float rate = perTurn();
 		if (!(rate > 0)) return -1;
-		return (int)Math.ceil((HUNGRY - level) / rate);
+		int turns = (int)Math.ceil((HUNGRY - level) / rate);
+		//Well Fed holds hunger still until it runs out
+		WellFed fed = target == null ? null : target.buff(WellFed.class);
+		if (fed != null) turns += Math.max(0, fed.remainingNutritionUpdates());
+		return turns;
 	}
 
 	public int hunger() {
