@@ -361,3 +361,16 @@ test('an account made before its email was set as admin becomes admin at the nex
   const t = (await call('POST', '/v1/auth/login', { email: 'later@x.com', password: 'hunter2hunter2' })).body.token;
   assert.equal((await call('GET', '/v1/me', null, t)).body.admin, true);
 });
+
+test('admin can find players by part of their name or exact email, banned ones included', async () => {
+  const { call, member } = setup();
+  const chris = await member('chris@example.com', 'Chris');
+  const t = await member('troll99@x.com', 'TrollFace');
+  await call('POST', '/v1/admin/ban', { accountId: t.id }, chris.token);
+  const byName = (await call('GET', '/v1/admin/accounts?q=troll', null, chris.token)).body.accounts;
+  assert.deepEqual(byName.map((a) => [a.displayName, a.banned]), [['TrollFace', true]]);
+  assert.equal((await call('GET', '/v1/admin/accounts?q=troll99@x.com', null, chris.token)).body.accounts[0].id, t.id);
+  assert.equal((await call('GET', '/v1/admin/accounts?q=%25%25', null, chris.token)).body.accounts.length, 0); // % is literal
+  assert.equal((await call('GET', '/v1/admin/accounts?q=t', null, chris.token)).body.error, 'search_too_short');
+  assert.equal((await call('GET', '/v1/admin/accounts?q=troll', null, (await member('x@x.com')).token)).status, 403);
+});

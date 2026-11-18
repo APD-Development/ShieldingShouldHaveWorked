@@ -151,6 +151,11 @@ public final class CommunityApi {
 				+ ",\"votingMs\":" + votingDays * day + ",\"tournamentMs\":" + tournamentDays * day + "}");
 	}
 
+	public Result adminFind(String query){
+		try { return call("GET", "/v1/admin/accounts?q=" + java.net.URLEncoder.encode(query, "UTF-8"), null); }
+		catch (java.io.UnsupportedEncodingException e){ return new Result(0, null, "offline"); }
+	}
+
 	public Result adminBan(String accountId, boolean banned){
 		return call("POST", banned ? "/v1/admin/ban" : "/v1/admin/unban", obj("accountId", accountId));
 	}

@@ -212,4 +212,20 @@ public class CommunityControllerTest {
 		assertTrue(requests.stream().anyMatch(r -> r.startsWith("POST /v1/admin/seasons {\"title\":\"Season 2\",\"submissionMs\":864000000,\"votingMs\":864000000,\"tournamentMs\":2419200000}")));
 		assertTrue(has(last(), "Season started."));
 	}
+
+	@Test public void adminFindsAndUnbansAPlayer(){
+		store.age = "pass"; store.token = "tok";
+		signedInWorld(true);
+		reply("GET /v1/admin/reports", 200, "{\"reports\":[]}");
+		reply("GET /v1/admin/accounts", 200, "{\"accounts\":[{\"id\":\"ee05\",\"displayName\":\"Troll\",\"email\":\"t@x.com\",\"banned\":true}]}");
+		reply("POST /v1/admin/unban", 200, "{\"ok\":true}");
+		answers.add("tro ll");
+		controller().start();
+		tap("Moderation");
+		tap("Find a player");
+		assertTrue(has(last(), "Troll  (banned)"));
+		tap("Troll");
+		assertTrue(has(last(), "Troll is unbanned."));
+		assertTrue(requests.stream().anyMatch(r -> r.startsWith("POST /v1/admin/unban {\"accountId\":\"ee05\"}")));
+	}
 }

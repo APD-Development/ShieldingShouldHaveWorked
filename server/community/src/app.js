@@ -638,6 +638,19 @@ route('GET', '/v1/admin/reports', async (env, req) => {
   return json(200, { reports: results });
 });
 
+// Find players by name (part of it) or exact email, banned ones included, so Chris can ban or unban anyone.
+route('GET', '/v1/admin/accounts', async (env, req) => {
+  await needAdmin(env, req);
+  const q = (new URL(req.url).searchParams.get('q') || '').trim().toLowerCase();
+  if (q.length < 2) fail(400, 'search_too_short');
+  const like = `%${q.replace(/[\\%_]/g, (c) => '\\' + c)}%`;
+  const { results } = await env.DB.prepare(
+    `SELECT id, display_name, email, banned, role, created_at FROM accounts
+      WHERE id != 'deleted' AND (lower(display_name) LIKE ? ESCAPE '\\' OR email = ?) ORDER BY created_at DESC LIMIT 50`)
+    .bind(like, q).all();
+  return json(200, { accounts: results.map((a) => ({ id: a.id, displayName: a.display_name, email: a.email, banned: !!a.banned, admin: a.role === 'admin' })) });
+});
+
 async function setStatus(env, req, status) {
   const admin = await needAdmin(env, req);
   const b = await body(req);

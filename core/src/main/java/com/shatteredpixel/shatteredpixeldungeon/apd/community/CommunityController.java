@@ -515,6 +515,7 @@ public final class CommunityController {
 			Screen s = new Screen("Moderation", "Open reports, most reported first.");
 			s.back = this::hub;
 			s.item("Start a new season", "Opens submissions now", this::startSeason);
+			s.item("Find a player", "Ban or unban anyone by name or email", this::findPlayer);
 			if (!r.ok()){ s.warning(message(r)); s.item("Back", null, this::hub); ui.show(s); return; }
 			JsonValue list = r.body.get("reports");
 			if (list == null || list.size == 0) s.note("No open reports.");
@@ -542,6 +543,31 @@ public final class CommunityController {
 		}
 		s.item("Back", null, this::moderation);
 		ui.show(s);
+	}
+
+	private void findPlayer(){
+		ui.ask("Find a player", "Part of their name, or their exact email.", "", 254, false, q -> {
+			if (q == null || q.trim().isEmpty()){ moderation(); return; }
+			call(() -> api.adminFind(q.trim()), r -> {
+				Screen s = new Screen("Players matching \"" + q.trim() + "\"", null);
+				s.back = this::moderation;
+				if (!r.ok()){ s.warning(message(r)); s.item("Back", null, this::moderation); ui.show(s); return; }
+				JsonValue list = r.body.get("accounts");
+				if (list == null || list.size == 0) s.note("Nobody found.");
+				else for (JsonValue v = list.child; v != null; v = v.next){
+					final String id = v.getString("id"), name = v.getString("displayName", "?");
+					final boolean banned = v.getBoolean("banned", false);
+					String email = v.getString("email", null);
+					s.item(name + (banned ? "  (banned)" : ""), (email == null ? "Google account" : email) + " · tap to " + (banned ? "unban" : "ban"),
+							() -> call(() -> api.adminBan(id, !banned), x -> {
+								if (x.ok()) done(name + (banned ? " is unbanned." : " is banned and signed out."), this::moderation);
+								else problem(x, this::moderation);
+							}));
+				}
+				s.item("Back", null, this::moderation);
+				ui.show(s);
+			});
+		});
 	}
 
 	// Title, then the three phase lengths in days (30 / 30 / 28 suggested), then confirm.
@@ -625,6 +651,8 @@ public final class CommunityController {
 			case "not_found": return "That isn't there any more.";
 			case "slow_down": return "Too many tries. Wait a few minutes and try again.";
 			case "bad_google_token": return "Google sign-in didn't work. Try again or use email.";
+			case "search_too_short": return "Type at least 2 letters.";
+			case "cannot_ban_self": return "You can't ban yourself.";
 			case "season_overlaps": return "A season is already running in that time. Wait for it to finish first.";
 			case "no_matchups_open": case "not_week_one": return "That vote isn't open right now.";
 			default:
