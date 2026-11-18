@@ -11,7 +11,7 @@ migrations_dir = "migrations"
 
 [vars]
 ADMIN_EMAILS = "charltonchris29@gmail.com"      # Chris's email: signing up with it makes that account the admin
-GOOGLE_CLIENT_ID = ""  # Google OAuth web client id(s), comma-separated
+GOOGLE_CLIENT_ID = "1075731906356-tr7miehsnl77ld9ru05h3ijv84cd60jb.apps.googleusercontent.com"  # Google OAuth web client id(s), comma-separated
 MAIL_FROM = ""         # e.g. community@charltonbornstudios.com (a domain onboarded to Email Sending)
 
 # Verification-code emails (Cloudflare Email Service). Needs the Workers Paid plan and the sending domain onboarded
