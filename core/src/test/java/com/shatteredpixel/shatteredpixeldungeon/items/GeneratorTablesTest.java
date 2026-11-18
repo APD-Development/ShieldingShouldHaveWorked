@@ -40,7 +40,9 @@ public class GeneratorTablesTest {
 				for (int i = 0; i < 20; i++){
 					Item it = Generator.randomUsingDefaults(c);
 					assertNotNull(c + " gave nothing", it);
-					assertTrue(it.getClass().getSimpleName() + " drawn from " + c, c.superClass.isInstance(it));
+					// once artifacts run out the game hands out a ring instead (SPD rule)
+					boolean ok = c.superClass.isInstance(it) || (c == Generator.Category.ARTIFACT && it instanceof com.shatteredpixel.shatteredpixeldungeon.items.rings.Ring);
+					assertTrue(it.getClass().getSimpleName() + " drawn from " + c, ok);
 				}
 			}
 		} finally { com.watabou.utils.Random.popGenerator(); }
