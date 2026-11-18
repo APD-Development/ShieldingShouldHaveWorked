@@ -77,6 +77,8 @@ default-on settings (SPDSettings.keepOldDefaultsForExistingPlayers). Next: Googl
 (Credential Manager), server URL default once deployed, run reviews. HttpGateway contract routes, deployment workflow, Android Community screens wired to it, Play Age Signals.
 
 ## Run log
+- 2026-11-18 6 PM (scheduled): no code; a live session was still pushing to this branch (Google-only Community,
+  Play build 922, last push 17:49), so this run stood down again to avoid clashing.
 - 2026-11-18 5 PM (scheduled): no code; a live session was pushing the Cloudflare Workers deploy to this branch
   (16:34-16:52), so this run stood down to avoid clashing. Next: Android Google sign-in (needs OAuth client id from Chris).
 - 2026-11-18 2 PM: upvote button shows state + count, week-1 picks toggle locally, offline no longer signs out
