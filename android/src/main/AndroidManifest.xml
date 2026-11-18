@@ -17,6 +17,7 @@
 		android:xlargeScreens="true"/>
 
 	<application
+		android:largeHeap="true"
 		android:icon="@mipmap/ic_launcher"
 		android:label="${appName}"
 		android:theme="@style/GameTheme"
