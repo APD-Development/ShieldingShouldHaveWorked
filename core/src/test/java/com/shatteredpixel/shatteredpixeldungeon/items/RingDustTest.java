@@ -2,6 +2,11 @@ package com.shatteredpixel.shatteredpixeldungeon.items;
 
 import static org.junit.Assert.*;
 
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.apd.HeadlessTestSupport;
+import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfArcana;
+import com.shatteredpixel.shatteredpixeldungeon.items.rings.Ring;
+
 import org.junit.Test;
 
 public class RingDustTest {
@@ -35,5 +40,59 @@ public class RingDustTest {
 		assertTrue(d.isIdentified());
 		assertFalse(d.isUpgradable());
 		assertEquals(90, d.quantity(3).value());
+	}
+
+	private static Ring ring(int level, boolean identified, boolean cursed){
+		HeadlessTestSupport.start();
+		RingOfArcana r = new RingOfArcana();
+		r.anonymize();
+		r.level(level);
+		r.levelKnown = identified;
+		r.cursedKnown = identified;
+		r.cursed = cursed;
+		return r;
+	}
+
+	@Test public void dustRaisesARealRingOneLevelAndSpendsTheCost(){
+		com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero oldHero = Dungeon.hero;
+		Dungeon.hero = null; // stack is not in a backpack
+		try {
+			Ring r = ring(1, true, false);
+			RingDust dust = new RingDust();
+			dust.quantity(5);
+			assertTrue(RingDust.canApply(r));
+			assertTrue(dust.applyTo(r));
+			assertEquals(2, r.level());
+			assertEquals("+1 to +2 costs 2", 3, dust.quantity());
+			assertTrue(dust.applyTo(r));
+			assertEquals(3, r.level());
+			assertEquals(0, dust.quantity());
+			assertFalse("capped at +3", RingDust.canApply(r));
+		} finally { Dungeon.hero = oldHero; }
+	}
+
+	@Test public void refusesCursedUnidentifiedAndUnaffordable(){
+		RingDust dust = new RingDust();
+		dust.quantity(1);
+		assertFalse(RingDust.canApply(ring(0, false, false)));
+		assertFalse(RingDust.canApply(ring(0, true, true)));
+		Ring two = ring(2, true, false);
+		assertFalse("needs 3, has 1", dust.applyTo(two));
+		assertEquals(2, two.level());
+		assertEquals(1, dust.quantity());
+	}
+
+	@Test public void recipeTurnsAKnownUncursedRingIntoDust(){
+		Ring r = ring(1, true, false);
+		java.util.ArrayList<Item> in = new java.util.ArrayList<>();
+		in.add(r);
+		RingDust.Recipe recipe = new RingDust.Recipe();
+		assertTrue(recipe.testIngredients(in));
+		Item out = recipe.brew(in);
+		assertTrue(out instanceof RingDust);
+		assertEquals(4, out.quantity());
+		assertEquals("ring consumed", 0, r.quantity());
+		in.clear(); in.add(ring(0, true, true));
+		assertFalse("cursed rings are refused", recipe.testIngredients(in));
 	}
 }

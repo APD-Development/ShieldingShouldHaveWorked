@@ -34,4 +34,19 @@ public class TrophiesTest {
 		t[0] = 1;
 		assertEquals(100, Trophies.thresholds(Object.class)[0]);
 	}
+
+	@Test public void bossesUseTheLowerThresholds(){
+		com.shatteredpixel.shatteredpixeldungeon.apd.HeadlessTestSupport.start();
+		assertTrue(Trophies.special(com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Goo.class));
+		assertFalse(Trophies.special(com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Rat.class));
+		assertEquals(5, Trophies.thresholds(com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Goo.class)[0]);
+		assertEquals(100, Trophies.thresholds(com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Rat.class)[0]);
+	}
+
+	@Test public void bestiaryLineNamesTheTierAndTheNextOne(){
+		com.shatteredpixel.shatteredpixeldungeon.apd.HeadlessTestSupport.start();
+		String line = Trophies.describe(com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Rat.class);
+		assertTrue(line, line.startsWith("Trophy: "));
+		assertTrue(line, line.contains(" at _") || line.contains("_Gold_"));
+	}
 }
