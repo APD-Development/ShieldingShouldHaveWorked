@@ -291,7 +291,7 @@ public class TitleScene extends PixelScene {
 		};
 		add( btnAbout );
 
-		version = new BitmapText( "v4.0.8", pixelFont);
+		version = new BitmapText( "v4.0.9", pixelFont);
 		version.measure();
 		version.hardlight( 0x8C938C );
 		add( version );
