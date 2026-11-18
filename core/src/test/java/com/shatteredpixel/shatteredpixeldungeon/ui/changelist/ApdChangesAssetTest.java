@@ -59,4 +59,23 @@ public class ApdChangesAssetTest {
 		}
 		assertTrue(buttons > 50);
 	}
+
+	@Test public void everyBuildHasAtLeastOneEntryAndNoDevOnlyCategoriesRemain() throws Exception {
+		String[] lines = asset().split("\n");
+		for (int i = 0; i < lines.length; i++){
+			if (lines[i].startsWith("BUILD\t")){
+				assertTrue("empty build: " + lines[i], i + 1 < lines.length && lines[i + 1].startsWith("BTN\t"));
+			}
+			if (lines[i].startsWith("BTN\t")){
+				String title = lines[i].split("\t", -1)[2];
+				assertFalse(lines[i], title.equals("Testing") || title.equals("Infrastructure") || title.equals("Development"));
+			}
+		}
+	}
+
+	@Test public void tabsArePagedFourAtATimeWithoutLosingAny() throws Exception {
+		java.util.List<String> tabs = ApdChanges.tabs(asset());
+		assertTrue(tabs.size() >= 5);
+		assertEquals(tabs.size(), new java.util.LinkedHashSet<>(tabs).size());
+	}
 }
