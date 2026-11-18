@@ -352,3 +352,12 @@ test('web deletion page (for Google Play): form, wrong password refused, right p
   assert.equal(env.DB.raw.prepare("SELECT COUNT(*) AS n FROM accounts WHERE email = 'web@x.com'").get().n, 0);
   assert.equal((await call('POST', '/v1/auth/login', { email: 'web@x.com', password: 'hunter2hunter2' })).status, 401);
 });
+
+test('an account made before its email was set as admin becomes admin at the next sign-in', async () => {
+  const { env, call, member } = setup();
+  env.ADMIN_EMAILS = '';
+  await member('later@x.com', 'Later');
+  env.ADMIN_EMAILS = 'later@x.com';
+  const t = (await call('POST', '/v1/auth/login', { email: 'later@x.com', password: 'hunter2hunter2' })).body.token;
+  assert.equal((await call('GET', '/v1/me', null, t)).body.admin, true);
+});

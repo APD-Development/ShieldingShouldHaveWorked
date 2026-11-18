@@ -85,7 +85,16 @@ function isAdminEmail(env, email) {
   return !!email && String(env.ADMIN_EMAILS || '').split(',').map((s) => s.trim().toLowerCase()).includes(email);
 }
 
+// Chris's account becomes admin whenever it signs in, even if it was made before his email was configured.
+async function promoteIfAdmin(env, accountId) {
+  const a = await env.DB.prepare('SELECT email, role FROM accounts WHERE id = ?').bind(accountId).first();
+  if (a && a.role !== 'admin' && isAdminEmail(env, a.email)) {
+    await env.DB.prepare("UPDATE accounts SET role = 'admin' WHERE id = ?").bind(accountId).run();
+  }
+}
+
 async function startSession(env, accountId) {
+  await promoteIfAdmin(env, accountId);
   const token = randomHex(32);
   await env.DB.prepare('INSERT INTO sessions (token_hash, account_id, expires_at) VALUES (?, ?, ?)')
     .bind(await sha256(token), accountId, now(env) + SESSION_MS).run();
