@@ -158,12 +158,18 @@ async function audit(env, admin, action, target) {
     .bind(admin.id, action, target, now(env)).run();
 }
 
+// Launch is Google sign-in only (Chris, Nov 18). Email/password stays in the code for a later Steam build, off unless
+// env.EMAIL_SIGNIN is "on"; while off its routes answer 404 as if they did not exist.
+const emailOn = (env) => String(env.EMAIL_SIGNIN || '').toLowerCase() === 'on';
+const needEmail = (env) => { if (!emailOn(env)) fail(404, 'not_found'); };
+
 const routes = [];
 const route = (method, pattern, fn) => routes.push({ method, re: new RegExp(`^${pattern}$`), fn });
 
 // ---- accounts ----
 
 route('POST', '/v1/auth/register', async (env, req) => {
+  needEmail(env);
   await guarded(env, 'register_ip', ipOf(req));
   await strike(env, 'register_ip', ipOf(req));
   const b = await body(req);
@@ -190,6 +196,7 @@ route('POST', '/v1/auth/register', async (env, req) => {
 });
 
 route('POST', '/v1/auth/resend', async (env, req) => {
+  needEmail(env);
   await guarded(env, 'code_ip', ipOf(req));
   await strike(env, 'code_ip', ipOf(req));
   const b = await body(req);
@@ -200,6 +207,7 @@ route('POST', '/v1/auth/resend', async (env, req) => {
 });
 
 route('POST', '/v1/auth/verify', async (env, req) => {
+  needEmail(env);
   const b = await body(req);
   const email = text(b.email, 254, 'email').toLowerCase();
   const code = text(b.code, 6, 'code');
@@ -217,6 +225,7 @@ route('POST', '/v1/auth/verify', async (env, req) => {
 });
 
 route('POST', '/v1/auth/login', async (env, req) => {
+  needEmail(env);
   const b = await body(req);
   const email = text(b.email, 254, 'email').toLowerCase();
   await guarded(env, 'login_email', email);
@@ -241,14 +250,16 @@ route('POST', '/v1/auth/google', async (env, req) => {
     const name = clean(String(b.displayName || '').trim().slice(0, LIMITS.name)) || 'Adventurer';
     a = { id: newId() };
     const email = who.email ? String(who.email).toLowerCase() : null;
-    const taken = email && await env.DB.prepare('SELECT id FROM accounts WHERE email = ?').bind(email).first();
-    // Never merge into an existing email account silently: a Google account gets its own account.
+    // No email is stored for Google accounts: the Google id is enough, and the email is only read here for the admin check.
     await env.DB.prepare(
-      'INSERT INTO accounts (id, display_name, email, google_sub, email_verified, role, created_at) VALUES (?, ?, ?, ?, 1, ?, ?)')
-      .bind(a.id, name, taken ? null : email, who.sub, isAdminEmail(env, email) ? 'admin' : 'player', now(env)).run();
+      'INSERT INTO accounts (id, display_name, email, google_sub, email_verified, role, created_at) VALUES (?, ?, NULL, ?, 1, ?, ?)')
+      .bind(a.id, name, who.sub, isAdminEmail(env, email) ? 'admin' : 'player', now(env)).run();
     a = await env.DB.prepare('SELECT * FROM accounts WHERE id = ?').bind(a.id).first();
   }
   if (a.banned) fail(403, 'banned');
+  if (a.role !== 'admin' && isAdminEmail(env, who.email ? String(who.email).toLowerCase() : null)) {
+    await env.DB.prepare("UPDATE accounts SET role = 'admin' WHERE id = ?").bind(a.id).run();
+  }
   return json(200, { token: await startSession(env, a.id) });
 });
 
@@ -333,42 +344,43 @@ route('POST', '/v1/admin/seasons', async (env, req) => {
 
 // ---- account deletion on the web (Google Play requires a link that works without the app) ----
 
-const PAGE = (msg) => `<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+const esc = (v) => String(v).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
+const clientIdOf = (env) => String(env.GOOGLE_CLIENT_ID || '').split(',')[0].trim();
+
+const PAGE = (env, msg) => `<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Delete your ADHD Pixel Dungeon Community account</title>
+<script src="https://accounts.google.com/gsi/client" async></script>
 <body style="font-family:system-ui,sans-serif;max-width:32rem;margin:2rem auto;padding:0 1rem;line-height:1.5">
 <h1 style="font-size:1.4rem">Delete your ADHD Pixel Dungeon Community account</h1>
 ${msg}
 <p>Deleting removes your account, your ideas, comments, votes, reports and blocks. Comments other players replied to
 are kept as empty "[deleted]" placeholders so their replies still make sense. This can't be undone. Your game saves
 and run history stay on your phone and are not affected.</p>
-<form method="post" action="/delete">
-<p><label>Email<br><input name="email" type="email" required style="width:100%"></label></p>
-<p><label>Password<br><input name="password" type="password" required style="width:100%"></label></p>
-<p><button type="submit">Delete my account</button></p>
-</form>
-<p>Signed up with Google? Open Community in the game, go to Account, then Delete my account.</p>
+<p>Sign in with the Google account you use for Community. Your account is deleted as soon as you sign in.</p>
+<form id="del" method="post" action="/delete"><input type="hidden" name="credential" id="cred"></form>
+<div id="g_id_onload" data-client_id="${esc(clientIdOf(env))}" data-callback="apdDelete" data-auto_prompt="false"></div>
+<div class="g_id_signin" data-type="standard" data-text="continue_with"></div>
+<script>function apdDelete(r){document.getElementById('cred').value=r.credential;document.getElementById('del').submit();}</script>
+<p>You can also delete it in the game: Community, then Account, then Delete my account.</p>
 </body></html>`;
 
 const html = (status, body) => new Response(body, { status, headers: { 'content-type': 'text/html; charset=utf-8' } });
 
-route('GET', '/delete', async () => html(200, PAGE('')));
+route('GET', '/delete', async (env) => html(200, PAGE(env, '')));
 
 route('POST', '/delete', async (env, req) => {
   const form = await req.formData().catch(() => null);
-  const email = String(form?.get('email') || '').trim().toLowerCase();
-  const password = String(form?.get('password') || '');
-  try {
-    await guarded(env, 'login_email', email);
-    await guarded(env, 'login_ip', ipOf(req));
-  } catch (e) {
-    return html(429, PAGE('<p style="color:#b00"><b>Too many tries. Wait a few minutes and try again.</b></p>'));
+  const credential = String(form?.get('credential') || '');
+  try { await guarded(env, 'login_ip', ipOf(req)); } catch (e) {
+    return html(429, PAGE(env, '<p style="color:#b00"><b>Too many tries. Wait a few minutes and try again.</b></p>'));
   }
-  const a = email && await env.DB.prepare('SELECT * FROM accounts WHERE email = ?').bind(email).first();
-  if (!a || !(await verifyPassword(password, a.password_hash))) {
-    await strike(env, 'login_email', email);
+  const who = credential ? await env.GOOGLE.verify(credential) : null;
+  const a = who && who.sub && await env.DB.prepare('SELECT * FROM accounts WHERE google_sub = ?').bind(who.sub).first();
+  if (!who || !who.sub) {
     await strike(env, 'login_ip', ipOf(req));
-    return html(401, PAGE('<p style="color:#b00"><b>That email and password don\'t match.</b></p>'));
+    return html(401, PAGE(env, '<p style="color:#b00"><b>Google sign-in didn\'t work. Try again.</b></p>'));
   }
+  if (!a) return html(404, PAGE(env, '<p style="color:#b00"><b>That Google account has no Community account. Nothing was deleted.</b></p>'));
   await deleteAccount(env, a);
   return html(200, '<!doctype html><meta charset="utf-8"><body style="font-family:system-ui,sans-serif;max-width:32rem;margin:2rem auto"><h1>Your account is deleted.</h1><p>Everything you posted in ADHD Pixel Dungeon Community is gone.</p></body>');
 });

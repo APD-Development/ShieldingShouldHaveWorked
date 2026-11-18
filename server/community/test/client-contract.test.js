@@ -14,7 +14,7 @@ const has = (obj, path) => {
 test('every field the app reads exists in the server replies, through a whole season', async () => {
   const mail = [];
   let clock = 1_800_000_000_000, ip = 0;
-  const env = { DB: testDb(), ADMIN_EMAILS: 'chris@x.com', now: () => clock,
+  const env = { DB: testDb(), EMAIL_SIGNIN: 'on', ADMIN_EMAILS: 'chris@x.com', now: () => clock,
     MAILER: { async send(to, s, text) { mail.push({ to, text }); } }, GOOGLE: { async verify() { return null; } } };
   const call = async (method, path, body, token) => {
     const headers = { 'content-type': 'application/json', 'cf-connecting-ip': `10.1.0.${++ip}` };

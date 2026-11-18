@@ -14,6 +14,8 @@ function setup() {
     MAILER: { async send(to, subject, text) { mail.push({ to, subject, text }); } },
     GOOGLE: { async verify(t) { return t.startsWith('good:') ? { sub: t.slice(5), email: `${t.slice(5)}@gmail.com` } : null; } },
     ADMIN_EMAILS: 'chris@example.com',
+    EMAIL_SIGNIN: 'on', // most tests use the (dormant) email path to make members quickly
+    GOOGLE_CLIENT_ID: 'cid.apps.googleusercontent.com',
     now: () => clock,
   };
   let ipCounter = 0;
@@ -337,20 +339,50 @@ test('blocked players list shows who I blocked, and unblocking removes them', as
   assert.equal((await call('GET', '/v1/blocks')).status, 401);
 });
 
-test('web deletion page (for Google Play): form, wrong password refused, right password deletes everything', async () => {
-  const { env, member, call } = setup();
-  await member('web@x.com', 'Web');
+test('web deletion page (for Google Play): Google sign-in deletes that account, nothing else', async () => {
+  const { env, call } = setup();
+  const g = (await call('POST', '/v1/auth/google', { idToken: 'good:web1', displayName: 'Web' })).body.token;
+  await call('POST', '/v1/auth/google', { idToken: 'good:other', displayName: 'Other' });
   const page = await handle(new Request('https://x/delete'), env);
   assert.equal(page.status, 200);
-  assert.match(await page.text(), /<form method="post" action="\/delete">/);
-  const post = (pw) => handle(new Request('https://x/delete', { method: 'POST', body: new URLSearchParams({ email: 'Web@x.com', password: pw }) }), env);
-  assert.equal((await post('wrong-wrong')).status, 401);
-  assert.equal(env.DB.raw.prepare("SELECT COUNT(*) AS n FROM accounts WHERE email = 'web@x.com'").get().n, 1);
-  const ok = await post('hunter2hunter2');
+  const htmlText = await page.text();
+  assert.match(htmlText, /accounts\.google\.com\/gsi\/client/);
+  assert.match(htmlText, /data-client_id="cid\.apps\.googleusercontent\.com"/);
+  assert.doesNotMatch(htmlText, /type="password"/);
+  const post = (cred) => handle(new Request('https://x/delete', { method: 'POST', body: new URLSearchParams({ credential: cred }) }), env);
+  assert.equal((await post('bad')).status, 401);
+  assert.equal((await post('good:nobody')).status, 404);
+  const ok = await post('good:web1');
   assert.equal(ok.status, 200);
   assert.match(await ok.text(), /Your account is deleted/);
-  assert.equal(env.DB.raw.prepare("SELECT COUNT(*) AS n FROM accounts WHERE email = 'web@x.com'").get().n, 0);
-  assert.equal((await call('POST', '/v1/auth/login', { email: 'web@x.com', password: 'hunter2hunter2' })).status, 401);
+  assert.equal((await call('GET', '/v1/me', null, g)).status, 401);
+  assert.equal(env.DB.raw.prepare("SELECT COUNT(*) AS n FROM accounts WHERE google_sub = 'other'").get().n, 1);
+});
+
+test('launch is Google-only: email sign-up and login answer 404 unless EMAIL_SIGNIN is on', async () => {
+  const { env, call } = setup();
+  env.EMAIL_SIGNIN = '';
+  for (const path of ['/v1/auth/register', '/v1/auth/resend', '/v1/auth/verify', '/v1/auth/login']) {
+    assert.equal((await call('POST', path, { email: 'a@x.com', password: 'longenough', displayName: 'A', code: '123456' })).status, 404, path);
+  }
+  assert.equal((await call('POST', '/v1/auth/google', { idToken: 'good:ok' })).status, 200);
+});
+
+test('Google accounts store no email or password; the admin email in the token still makes the admin', async () => {
+  const { env, call } = setup();
+  env.EMAIL_SIGNIN = '';
+  const p = await call('POST', '/v1/auth/google', { idToken: 'good:player1' });
+  const row = env.DB.raw.prepare("SELECT email, password_hash FROM accounts WHERE google_sub = 'player1'").get();
+  assert.equal(row.email, null);
+  assert.equal(row.password_hash, null);
+  assert.equal((await call('GET', '/v1/me', null, p.body.token)).body.admin, false);
+  env.ADMIN_EMAILS = 'chris@gmail.com';
+  const c = await call('POST', '/v1/auth/google', { idToken: 'good:chris' });
+  assert.equal((await call('GET', '/v1/me', null, c.body.token)).body.admin, true);
+  assert.equal(env.DB.raw.prepare("SELECT email FROM accounts WHERE google_sub = 'chris'").get().email, null);
+  env.ADMIN_EMAILS = 'player1@gmail.com';
+  const again = await call('POST', '/v1/auth/google', { idToken: 'good:player1' });
+  assert.equal((await call('GET', '/v1/me', null, again.body.token)).body.admin, true);
 });
 
 test('an account made before its email was set as admin becomes admin at the next sign-in', async () => {

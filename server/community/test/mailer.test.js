@@ -15,7 +15,7 @@ test('mailer sends through the EMAIL binding from MAIL_FROM, and is absent until
 
 test('the deployed entry point wires the mailer: sign-up sends a code through the binding', async () => {
   const sent = [];
-  const env = { DB: testDb(), EMAIL: { async send(msg) { sent.push(msg); } }, MAIL_FROM: 'community@charltonbornstudios.com', GOOGLE: { async verify() { return null; } } };
+  const env = { DB: testDb(), EMAIL_SIGNIN: 'on', EMAIL: { async send(msg) { sent.push(msg); } }, MAIL_FROM: 'community@charltonbornstudios.com', GOOGLE: { async verify() { return null; } } };
   const res = await worker.fetch(new Request('https://x/v1/auth/register', { method: 'POST', body: JSON.stringify({ email: 'n@x.com', password: 'longenough', displayName: 'N' }) }), env);
   assert.equal(res.status, 201);
   assert.equal(sent.length, 1);
@@ -23,7 +23,7 @@ test('the deployed entry point wires the mailer: sign-up sends a code through th
 });
 
 test('without email set up, sign-up says so instead of pretending', async () => {
-  const env = { DB: testDb(), GOOGLE: { async verify() { return null; } } };
+  const env = { DB: testDb(), EMAIL_SIGNIN: 'on', GOOGLE: { async verify() { return null; } } };
   const res = await worker.fetch(new Request('https://x/v1/auth/register', { method: 'POST', body: JSON.stringify({ email: 'n@x.com', password: 'longenough', displayName: 'N' }) }), env);
   assert.deepEqual([res.status, (await res.json()).error], [503, 'email_not_set_up']);
 });
