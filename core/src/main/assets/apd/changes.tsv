@@ -5,6 +5,8 @@ TAB	480+
 MAJOR	Coming Soon
 BTN	i:NEWS	What's next	I'm working on this change history first. After that, the **Cleric Grudge** design and the leftover **talent description** audit are next.\n\nAnything marked "Developer build" only exists in my own test build until I say it's ready for Alpha Testers.
 MAJOR	APD 489
+BUILD	C489R / P489R (Nov 18)
+BTN	i:RANKINGS	Trophy outlines setting	The bronze, silver and gold **trophy outlines** on enemies in the dungeon are now a setting in **APD Settings > Visibility**, **off by default**. The Bestiary still shows them.
 BUILD	C489Q / P489Q (Nov 18)
 BTN	i:WARNING	UIMSD crash fix	Opening **UIMSD** with a lot of history could run out of memory and crash. It now uses about a third of the memory to load, and the game can use more memory on phones that allow it.
 BUILD	C489P / P489P (Nov 18)
