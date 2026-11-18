@@ -29,4 +29,20 @@ public class GeneratorTablesTest {
 			}
 		}
 	}
+
+	@Test public void drawsMatchTheirCategory(){
+		HeadlessTestSupport.start();
+		Generator.fullReset();
+		com.watabou.utils.Random.pushGenerator(1118L);
+		try {
+			for (Generator.Category c : Generator.Category.values()){
+				if (c == Generator.Category.GOLD) continue;
+				for (int i = 0; i < 20; i++){
+					Item it = Generator.randomUsingDefaults(c);
+					assertNotNull(c + " gave nothing", it);
+					assertTrue(it.getClass().getSimpleName() + " drawn from " + c, c.superClass.isInstance(it));
+				}
+			}
+		} finally { com.watabou.utils.Random.popGenerator(); }
+	}
 }
