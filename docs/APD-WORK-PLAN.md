@@ -19,7 +19,9 @@ Package `com.charltonchris29.adhdpixeldungeon`, personal account: 12-tester clos
 before production, so the closed test must start by Nov 23.
 
 ### Priority order (Chris, Nov 18 09:49; 09:55: "Only community is important above all else")
-All coding time goes to Community. Phase 1 needs only Chris's secrets now; remind him once per summary, don't code on it.
+Chris 09:57: don't drop Phase 1: closed test as close to Nov 23 as possible. Phase 1 code is done; the moment the
+APD_UPLOAD_* secrets exist, push to release/play-closed-test (touch the workflow) to rebuild, confirm the .aab is signed
+(`jarsigner -verify` in CI), then give Chris the Play Console upload steps one at a time. Otherwise all time goes to Community.
 
 1. **Phase 1 (target Nov 21-22):** signed release .aab. Done except signing: blocked on Chris adding the
    APD_UPLOAD_* secrets. Then: Play Console upload steps for Chris, one at a time.
@@ -52,6 +54,12 @@ Merge `release/play-closed-test` into `fix/apd-trap-room-search-20261116`, add t
 (core/src/main/assets/apd/changes.tsv, player-noticeable changes only), bump the build label in
 `.github/workflows/apd488t-trap-room-search-apk.yml` (C489O -> C489P -> ...; that push triggers the build), fix any
 failure, and give Chris both artifact links (Developer = C, Alpha Testers = P) by 4 PM ET.
+
+## Community server
+`server/community/` (Worker + D1). Tests: `npm test` (node 22 `--experimental-sqlite`), CI workflow
+`apd-community-server.yml`. Done Nov 18: accounts (email+code, Google), age pass flag, submissions, threaded comments,
+filter, reports, blocks, admin, account deletion. Next: voting to top 16 + weekly elimination (ask Chris tie/matchup
+rules), HttpGateway contract routes, deployment workflow, Android Community screens wired to it, Play Age Signals.
 
 ## Run log
 - 2026-11-18: Phase 1 build/emulator check done, unsigned (secrets pending). noNews/noUpdates, auto-dev disabled,
