@@ -17,7 +17,7 @@ echo "${CRASH:-none}"
 if [ -z "$PID" ]; then echo "FAIL: $PKG is not running after 60 seconds"; exit 1; fi
 if [ -n "$CRASH" ]; then echo "FAIL: crash in logcat"; exit 1; fi
 for f in smoke-screen-20s.png smoke-screen-60s.png; do
-  C=$(identify -format "%k" "$f" 2>/dev/null || echo 0)
+  C=$(python3 .github/ci/png-colors.py "$f" 2>/dev/null || echo 0)
   echo "$f: $(stat -c %s "$f") bytes, $C distinct colors"
   if [ "${C:-0}" -lt 50 ]; then echo "FAIL: $f looks blank ($C colors)"; exit 1; fi
 done
