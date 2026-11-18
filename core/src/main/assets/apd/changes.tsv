@@ -5,6 +5,8 @@ TAB	480+
 MAJOR	Coming Soon
 BTN	i:NEWS	What's next	I'm working on this change history first. After that, the **Cleric Grudge** design and the leftover **talent description** audit are next.\n\nAnything marked "Developer build" only exists in my own test build until I say it's ready for Alpha Testers.
 MAJOR	APD 489
+BUILD	C489S / P489S (Nov 18)
+BTN	i:PREFS	APD settings start off	Every **APD setting** now starts **off** for new players (stair shortcut, adaptive search, damage-over-time panel, grass dew pickup, waterskin and known-trap confirmations, trophy outlines). Settings you already changed stay as you set them. Recording stays on, and resting still stops at full health and when starving.
 BUILD	C489R / P489R (Nov 18)
 BTN	i:RANKINGS	Trophy outlines setting	The bronze, silver and gold **trophy outlines** on enemies in the dungeon are now a setting in **APD Settings > Visibility**, **off by default**. The Bestiary still shows them.
 BUILD	C489Q / P489Q (Nov 18)
