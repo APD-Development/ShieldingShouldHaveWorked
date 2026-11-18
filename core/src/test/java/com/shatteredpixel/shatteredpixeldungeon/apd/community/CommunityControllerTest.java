@@ -268,6 +268,6 @@ public class CommunityControllerTest {
 		assertEquals("no network for toggles", before, requests.size());
 		assertTrue(has(last(), "1 picked"));
 		tap("Save my picks");
-		assertTrue(requests.get(requests.size() - 2).startsWith("POST /v1/tournament/picks {\"submissionIds\":[\"b2\"]}"));
+		assertTrue(requests.get(requests.size() - 1).startsWith("POST /v1/tournament/picks {\"submissionIds\":[\"b2\"]}"));
 	}
 }
