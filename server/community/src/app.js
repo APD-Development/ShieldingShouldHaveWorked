@@ -10,6 +10,7 @@
 import { newId, newCode, sha256, hashPassword, verifyPassword, randomHex, constantTimeEqual } from './crypto.js';
 import { clean } from './filter.js';
 import { googleVerifier } from './google.js';
+import { cloudflareMailer } from './mailer.js';
 import { qualifiers, weekOneSeeds, bracket, ADVANCE } from './tournament.js';
 
 const SESSION_MS = 30 * 24 * 3600 * 1000;
@@ -630,7 +631,7 @@ export default {
       google = google || googleVerifier({ clientId: env.GOOGLE_CLIENT_ID });
       env = { ...env, GOOGLE: google };
     }
-    if (!env.MAILER) env = { ...env, MAILER: { async send() { throw new HttpError(503, 'email_not_set_up'); } } };
+    if (!env.MAILER) env = { ...env, MAILER: cloudflareMailer(env) || { async send() { throw new HttpError(503, 'email_not_set_up'); } } };
     return handle(request, env);
   },
 };

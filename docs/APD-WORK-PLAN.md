@@ -66,8 +66,14 @@ failure, and give Chris both artifact links (Developer = C, Alpha Testers = P) b
 ## Community server
 `server/community/` (Worker + D1). Tests: `npm test` (node 22 `--experimental-sqlite`), CI workflow
 `apd-community-server.yml`. Done Nov 18: accounts (email+code, Google), age pass flag, submissions, threaded comments,
-filter, reports, blocks, admin, account deletion. Seasons + voting + tournament done (17 tests). Next: HttpGateway contract routes, deployment workflow, Android Community screens wired to it, Play Age Signals.
+filter, reports, blocks, admin, account deletion. Seasons + voting + tournament done. Nov 18 PM: login/sign-up rate limits, deletion keeps others' replies,
+real Google token check, Cloudflare Email Service mailer (needs Workers Paid + domain onboarding: ASK CHRIS, costs
+money), deploy workflow (needs CLOUDFLARE_API_TOKEN/ACCOUNT_ID secrets + D1 id), Java client + all Community screens
+wired (CommunityController/CommunityScene; live when SPDSettings.communityServer is set). Existing players keep old
+default-on settings (SPDSettings.keepOldDefaultsForExistingPlayers). Next: Google sign-in button on Android
+(Credential Manager), server URL default once deployed, run reviews. HttpGateway contract routes, deployment workflow, Android Community screens wired to it, Play Age Signals.
 
 ## Run log
+- 2026-11-18 12 PM: Community server 24 tests, client screens + tests, settings migration; APKs paused (Chris).
 - 2026-11-18: Phase 1 build/emulator check done, unsigned (secrets pending). noNews/noUpdates, auto-dev disabled,
   Clean humor default, player-facing Shattered text replaced. Alpha C489O/P489O delivered.

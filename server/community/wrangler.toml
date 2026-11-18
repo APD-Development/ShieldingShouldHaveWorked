@@ -11,3 +11,8 @@ migrations_dir = "migrations"
 
 [vars]
 ADMIN_EMAILS = ""   # Chris's email goes here
+
+# Verification-code emails (Cloudflare Email Service). Needs the Workers Paid plan and the sending domain onboarded
+# (npx wrangler email sending enable charltonbornstudios.com). Until then sign-up answers "email_not_set_up".
+# [[send_email]]
+# name = "EMAIL"
