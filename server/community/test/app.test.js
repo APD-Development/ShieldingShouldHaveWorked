@@ -6,8 +6,11 @@ import { testDb } from './d1-node.js';
 function setup() {
   const mail = [];
   let clock = 1_800_000_000_000;
+  const db = testDb();
+  // An open season so posting works; season tests make their own.
+  db.raw.prepare('INSERT INTO seasons VALUES (?, ?, ?, ?, ?, ?, ?)').run('s0', 'Test season', clock - 1, clock + 1e12, clock + 2e12, clock + 3e12, clock);
   const env = {
-    DB: testDb(),
+    DB: db,
     MAILER: { async send(to, subject, text) { mail.push({ to, subject, text }); } },
     GOOGLE: { async verify(t) { return t.startsWith('good:') ? { sub: t.slice(5), email: `${t.slice(5)}@gmail.com` } : null; } },
     ADMIN_EMAILS: 'chris@example.com',
@@ -186,4 +189,94 @@ test('there is no private-message route', async () => {
   const { call, member } = setup();
   const m = await member('pm@x.com');
   for (const p of ['/v1/messages', '/v1/dm', '/v1/inbox']) assert.equal((await call('POST', p, { to: 'x', body: 'hi' }, m.token)).status, 404);
+});
+
+test('seasons: submissions only during Month 1, discussion continues, the list shows the current season', async () => {
+  const { env, call, member, tick } = setup();
+  env.DB.raw.prepare('DELETE FROM seasons').run();
+  const chris = await member('chris@example.com', 'Chris');
+  const ana = await member('ana@x.com', 'Ana');
+  assert.equal((await call('GET', '/v1/season')).body.season, null);
+  assert.equal((await call('POST', '/v1/submissions', { title: 't', body: 'b' }, ana.token)).body.error, 'submissions_closed');
+  const min = 60 * 1000;
+  assert.equal((await call('POST', '/v1/admin/seasons', { title: 'x' }, ana.token)).status, 403);
+  const r = await call('POST', '/v1/admin/seasons', { title: 'Season 1', submissionMs: 10 * min, votingMs: 10 * min, tournamentMs: 20 * min }, chris.token);
+  assert.equal(r.status, 201);
+  assert.equal((await call('POST', '/v1/admin/seasons', { title: 'Clash' }, chris.token)).body.error, 'season_overlaps');
+  assert.equal((await call('GET', '/v1/season')).body.season.phase, 'submissions');
+  const s = (await call('POST', '/v1/submissions', { title: 'Idea', body: 'b' }, ana.token)).body.id;
+  tick(10 * min);
+  assert.equal((await call('GET', '/v1/season')).body.season.phase, 'voting');
+  assert.equal((await call('POST', '/v1/submissions', { title: 'Late', body: 'b' }, ana.token)).body.error, 'submissions_closed');
+  assert.equal((await call('POST', `/v1/submissions/${s}/comments`, { body: 'still talking' }, chris.token)).status, 201);
+  tick(10 * min);
+  assert.equal((await call('GET', '/v1/season')).body.season.phase, 'tournament');
+  tick(20 * min);
+  assert.equal((await call('GET', '/v1/season')).body.season.phase, 'finished');
+  assert.equal((await call('GET', '/v1/submissions')).body.submissions.length, 1);
+  await call('POST', '/v1/admin/seasons', { title: 'Season 2' }, chris.token);
+  assert.equal((await call('GET', '/v1/season')).body.season.title, 'Season 2');
+  assert.equal((await call('GET', '/v1/submissions')).body.submissions.length, 0);
+});
+
+test('full season on a fast clock: upvotes to qualify, week 1 picks to 8, then the 1v1 bracket to a champion', async () => {
+  const { env, call, member, tick } = setup();
+  env.DB.raw.prepare('DELETE FROM seasons').run();
+  const min = 60 * 1000;
+  const chris = await member('chris@example.com', 'Chris');
+  const authors = [];
+  for (let i = 0; i < 10; i++) authors.push(await member(`author${i}@x.com`, `A${i}`));
+  const voters = [];
+  for (let i = 0; i < 4; i++) voters.push(await member(`voter${i}@x.com`, `V${i}`));
+  await call('POST', '/v1/admin/seasons', { title: 'S', submissionMs: 10 * min, votingMs: 10 * min, tournamentMs: 40 * min }, chris.token);
+  const subs = [];
+  for (let i = 0; i < 10; i++) { subs.push((await call('POST', '/v1/submissions', { title: `Idea ${i}`, body: 'b' }, authors[i].token)).body.id); tick(1); }
+  assert.equal((await call('POST', `/v1/submissions/${subs[0]}/upvote`, null, voters[0].token)).body.error, 'voting_closed');
+  tick(10 * min); // Month 2
+  assert.equal((await call('POST', `/v1/submissions/${subs[0]}/upvote`, null, authors[0].token)).body.error, 'own_submission');
+  // Idea 9 gets 4 upvotes, Idea 8 gets 3, ... ; one upvote taken back
+  for (let i = 0; i < 4; i++) for (let k = 9; k >= 9 - i; k--) await call('POST', `/v1/submissions/${subs[k]}/upvote`, null, voters[i].token);
+  await call('POST', `/v1/submissions/${subs[0]}/upvote`, null, voters[0].token);
+  await call('DELETE', `/v1/submissions/${subs[0]}/upvote`, null, voters[0].token);
+  let r = (await call('GET', '/v1/season/results', null, voters[0].token)).body;
+  assert.equal(r.standings[0].title, 'Idea 9');
+  assert.equal(r.standings[0].upvotes, 4);
+  assert.ok(!r.myUpvotes.includes(subs[0]));
+  // A banned voter's upvotes stop counting
+  await call('POST', '/v1/admin/ban', { accountId: voters[3].id }, chris.token);
+  r = (await call('GET', '/v1/season/results')).body;
+  assert.equal(r.standings.find((x) => x.title === 'Idea 6').upvotes, 0);
+  await call('POST', '/v1/admin/unban', { accountId: voters[3].id }, chris.token);
+  voters[3].token = (await call('POST', '/v1/auth/login', { email: 'voter3@x.com', password: 'hunter2hunter2' })).body.token; // the ban signed them out
+  tick(10 * min); // Tournament week 1
+  r = (await call('GET', '/v1/season/results')).body;
+  assert.deepEqual([r.season.phase, r.week, r.qualifiers.length], ['tournament', 1, 10]);
+  assert.equal((await call('POST', '/v1/tournament/picks', { submissionIds: subs.slice(0, 9) }, voters[0].token)).body.error, 'too_many_picks');
+  assert.equal((await call('POST', '/v1/tournament/picks', { submissionIds: [subs[1]] }, authors[1].token)).body.error, 'own_submission');
+  // Everyone picks Ideas 0-7, so Ideas 8 and 9 (the Month 2 leaders) are cut
+  for (const v of voters) assert.equal((await call('POST', '/v1/tournament/picks', { submissionIds: subs.slice(0, 8) }, v.token)).status, 200);
+  tick(10 * min); // Week 2: 8 seeds, all tied on picks, so Month 2 score then age decides the seeds
+  r = (await call('GET', '/v1/season/results')).body;
+  assert.equal(r.week, 2);
+  assert.deepEqual(r.seeds.map((s) => s.title), ['Idea 7', 'Idea 6', 'Idea 0', 'Idea 1', 'Idea 2', 'Idea 3', 'Idea 4', 'Idea 5']);
+  const m0 = r.rounds[0].matchups[0];
+  assert.deepEqual([m0.a.title, m0.b.title], ['Idea 7', 'Idea 5']);
+  assert.equal((await call('POST', '/v1/tournament/vote', { matchup: 0, submissionId: subs[8] }, voters[0].token)).body.error, 'not_in_matchup');
+  // Upset: seed 8 (Idea 5) beats seed 1; a voter changes their mind and only the latest vote counts
+  await call('POST', '/v1/tournament/vote', { matchup: 0, submissionId: m0.a.id }, voters[0].token);
+  await call('POST', '/v1/tournament/vote', { matchup: 0, submissionId: m0.b.id }, voters[0].token);
+  await call('POST', '/v1/tournament/vote', { matchup: 0, submissionId: m0.b.id }, voters[1].token);
+  r = (await call('GET', '/v1/season/results')).body;
+  assert.deepEqual([r.rounds[0].matchups[0].a.votes, r.rounds[0].matchups[0].b.votes, r.rounds[0].matchups[0].winner], [0, 2, null]);
+  tick(10 * min); // Week 3
+  r = (await call('GET', '/v1/season/results')).body;
+  assert.equal(r.rounds[0].matchups[0].winner, m0.b.id);
+  assert.equal(r.rounds[1].matchups[0].a.title, 'Idea 5');
+  tick(10 * min); // Week 4: final, no votes -> higher seed
+  tick(10 * min); // finished
+  r = (await call('GET', '/v1/season/results')).body;
+  assert.equal(r.season.phase, 'finished');
+  assert.equal(r.rounds.length, 3);
+  assert.ok(r.champion && r.champion.title);
+  assert.equal((await call('POST', '/v1/tournament/vote', { matchup: 0, submissionId: m0.a.id }, voters[0].token)).body.error, 'no_matchups_open');
 });

@@ -35,7 +35,11 @@ APD_UPLOAD_* secrets exist, push to release/play-closed-test (touch the workflow
    apd/backendbridge; the HttpGateway contract `/v1/envelope`, `/v1/requests` and EndToEndSubmissionTest's
    reference server). Real tests for the server and the age gate. Design: docs/APD-COMMUNITY-ALPHA-DESIGN.md
    (Month 1 submissions, Month 2 voting to top 16, Month 3 weekly elimination; comments never count as votes).
-   OPEN, ask Chris: tie rules for the top 16; how a tournament matchup is decided. Test the full cycle with a
+   DECIDED Nov 18 (Chris): Month 2 upvote-only, one per submission, never your own; top 16 plus everything tied with
+   16th. Tournament week 1: everyone picks up to 8 of the qualifiers, top 8 advance, cut ties to higher Month 2 score.
+   Weeks 2-4: seeded 1v1 bracket (1v8, 4v5, 2v7, 3v6), one vote per account per matchup, changeable until the week
+   ends, tie to the higher seed. Claude's calls (revertable): full ties go to the earlier submission; no voting for
+   your own entry in the tournament either; banned voters' and removed posts' votes don't count; byes with <8. Test the full cycle with a
    compressed clock. Needs from Chris: Cloudflare account + API token secret, Google OAuth client, email sender.
    If done early: run reviews, then events.
 3. **Phase 2 cleanup, alongside Community (due Dec 10):** GPL source public (new public repo, clean history;
@@ -58,8 +62,7 @@ failure, and give Chris both artifact links (Developer = C, Alpha Testers = P) b
 ## Community server
 `server/community/` (Worker + D1). Tests: `npm test` (node 22 `--experimental-sqlite`), CI workflow
 `apd-community-server.yml`. Done Nov 18: accounts (email+code, Google), age pass flag, submissions, threaded comments,
-filter, reports, blocks, admin, account deletion. Next: voting to top 16 + weekly elimination (ask Chris tie/matchup
-rules), HttpGateway contract routes, deployment workflow, Android Community screens wired to it, Play Age Signals.
+filter, reports, blocks, admin, account deletion. Seasons + voting + tournament done (17 tests). Next: HttpGateway contract routes, deployment workflow, Android Community screens wired to it, Play Age Signals.
 
 ## Run log
 - 2026-11-18: Phase 1 build/emulator check done, unsigned (secrets pending). noNews/noUpdates, auto-dev disabled,

@@ -9,6 +9,7 @@
 
 import { newId, newCode, sha256, hashPassword, verifyPassword, randomHex, constantTimeEqual } from './crypto.js';
 import { clean } from './filter.js';
+import { qualifiers, weekOneSeeds, bracket, ADVANCE } from './tournament.js';
 
 const SESSION_MS = 30 * 24 * 3600 * 1000;
 const CODE_MS = 15 * 60 * 1000;
@@ -221,6 +222,49 @@ route('DELETE', '/v1/account', async (env, req) => {
   return json(200, { deleted: true });
 });
 
+// ---- seasons ----
+
+const DAY = 24 * 3600 * 1000;
+
+export function phaseOf(season, t) {
+  if (!season || t < season.starts_at) return 'none';
+  if (t < season.voting_at) return 'submissions';
+  if (t < season.tournament_at) return 'voting';
+  if (t < season.ends_at) return 'tournament';
+  return 'finished';
+}
+
+// The season players see: the latest one that has started.
+async function currentSeason(env) {
+  return env.DB.prepare('SELECT * FROM seasons WHERE starts_at <= ? ORDER BY starts_at DESC LIMIT 1').bind(now(env)).first();
+}
+
+function publicSeason(s, t) {
+  return s && { id: s.id, title: s.title, phase: phaseOf(s, t), startsAt: s.starts_at, votingAt: s.voting_at,
+    tournamentAt: s.tournament_at, endsAt: s.ends_at };
+}
+
+route('GET', '/v1/season', async (env) => json(200, { season: publicSeason(await currentSeason(env), now(env)) }));
+
+// Chris opens a season. Default: 30 days per phase from the given start. Phases may not overlap another season.
+route('POST', '/v1/admin/seasons', async (env, req) => {
+  const admin = await needAdmin(env, req);
+  const b = await body(req);
+  const title = filtered(b.title, LIMITS.title, 'title');
+  const start = Number.isFinite(b.startsAt) ? b.startsAt : now(env);
+  const len = (k, d) => (Number.isFinite(b[k]) && b[k] > 0 ? b[k] : d);
+  const voting = start + len('submissionMs', 30 * DAY);
+  const tournament = voting + len('votingMs', 30 * DAY);
+  const ends = tournament + len('tournamentMs', 28 * DAY);
+  const clash = await env.DB.prepare('SELECT id FROM seasons WHERE starts_at < ? AND ends_at > ?').bind(ends, start).first();
+  if (clash) fail(409, 'season_overlaps');
+  const id = newId();
+  await env.DB.prepare('INSERT INTO seasons (id, title, starts_at, voting_at, tournament_at, ends_at, created_at) VALUES (?, ?, ?, ?, ?, ?, ?)')
+    .bind(id, title, start, voting, tournament, ends, now(env)).run();
+  await audit(env, admin, 'season', id);
+  return json(201, { id });
+});
+
 // ---- submissions and comments ----
 
 route('GET', '/v1/submissions', async (env, req) => {
@@ -230,7 +274,8 @@ route('GET', '/v1/submissions', async (env, req) => {
     `SELECT s.id, s.title, s.created_at, s.author_id, a.display_name,
             (SELECT COUNT(*) FROM comments c WHERE c.submission_id = s.id AND c.status = 'visible') AS comments
        FROM submissions s JOIN accounts a ON a.id = s.author_id
-      WHERE s.status = 'visible' AND a.banned = 0 ORDER BY s.created_at DESC LIMIT 200`).all();
+      WHERE s.status = 'visible' AND a.banned = 0 AND s.season_id = ? ORDER BY s.created_at DESC LIMIT 500`)
+    .bind(((await currentSeason(env)) || {}).id ?? '').all();
   return json(200, { submissions: results.filter((s) => !blocked.has(s.author_id)).map((s) => ({
     id: s.id, title: s.title, author: { id: s.author_id, displayName: s.display_name }, createdAt: s.created_at, comments: s.comments,
   })) });
@@ -239,9 +284,11 @@ route('GET', '/v1/submissions', async (env, req) => {
 route('POST', '/v1/submissions', async (env, req) => {
   const a = await needMember(env, req);
   const b = await body(req);
+  const season = await currentSeason(env);
+  if (phaseOf(season, now(env)) !== 'submissions') fail(409, 'submissions_closed');
   const id = newId();
-  await env.DB.prepare('INSERT INTO submissions (id, author_id, title, body, created_at) VALUES (?, ?, ?, ?, ?)')
-    .bind(id, a.id, filtered(b.title, LIMITS.title, 'title'), filtered(b.body, LIMITS.body, 'body'), now(env)).run();
+  await env.DB.prepare('INSERT INTO submissions (id, author_id, title, body, season_id, created_at) VALUES (?, ?, ?, ?, ?, ?)')
+    .bind(id, a.id, filtered(b.title, LIMITS.title, 'title'), filtered(b.body, LIMITS.body, 'body'), season.id, now(env)).run();
   return json(201, { id });
 });
 
@@ -279,6 +326,147 @@ route('POST', '/v1/submissions/([0-9a-f]+)/comments', async (env, req, [id]) => 
   await env.DB.prepare('INSERT INTO comments (id, submission_id, parent_id, author_id, body, created_at) VALUES (?, ?, ?, ?, ?, ?)')
     .bind(cid, id, parent ? parent.id : null, a.id, filtered(b.body, LIMITS.comment, 'body'), now(env)).run();
   return json(201, { id: cid });
+});
+
+// ---- voting and the tournament ----
+
+function tournamentWeek(season, t) {
+  const week = Math.floor((t - season.tournament_at) / ((season.ends_at - season.tournament_at) / 4)) + 1;
+  return Math.max(1, Math.min(4, week));
+}
+
+// Everything the results depend on, read fresh. Only visible submissions by unbanned authors, and only votes by
+// unbanned accounts, count.
+async function seasonState(env, season) {
+  const t = now(env);
+  const { results: entries } = await env.DB.prepare(
+    `SELECT s.id, s.title, s.created_at, s.author_id,
+            (SELECT COUNT(*) FROM upvotes u JOIN accounts v ON v.id = u.account_id
+              WHERE u.submission_id = s.id AND v.banned = 0) AS score
+       FROM submissions s JOIN accounts a ON a.id = s.author_id
+      WHERE s.season_id = ? AND s.status = 'visible' AND a.banned = 0`).bind(season.id).all();
+  const phase = phaseOf(season, t);
+  const state = { season, phase, entries, t };
+  if (phase !== 'tournament' && phase !== 'finished') return state;
+  state.week = phase === 'finished' ? 5 : tournamentWeek(season, t);
+  state.qualified = qualifiers(entries);
+  const { results: tv } = await env.DB.prepare(
+    `SELECT tv.week, tv.slot, tv.submission_id, COUNT(*) AS n FROM tournament_votes tv JOIN accounts v ON v.id = tv.account_id
+      WHERE tv.season_id = ? AND v.banned = 0 GROUP BY tv.week, tv.slot, tv.submission_id`).bind(season.id).all();
+  const picks = new Map();
+  const byWeek = new Map();
+  for (const r of tv) {
+    if (r.week === 1) { picks.set(r.submission_id, (picks.get(r.submission_id) || 0) + r.n); continue; }
+    if (!byWeek.has(r.week)) byWeek.set(r.week, new Map());
+    const w = byWeek.get(r.week);
+    if (!w.has(r.slot)) w.set(r.slot, new Map());
+    w.get(r.slot).set(r.submission_id, r.n);
+  }
+  state.picks = picks;
+  // The seeds only exist once week 1 is over; until then week 1 standings are live.
+  state.seeds = state.week >= 2 ? weekOneSeeds(state.qualified, picks) : null;
+  state.rounds = state.seeds ? bracket(state.seeds, byWeek, Math.min(state.week, 4)) : [];
+  if (phase === 'finished' && state.rounds.length) {
+    const last = state.rounds[state.rounds.length - 1].matchups;
+    if (last.length === 1) state.champion = last[0].winner;
+  }
+  return state;
+}
+
+function liveSeason(env, season) {
+  if (!season) fail(409, 'no_season');
+  return season;
+}
+
+route('POST', '/v1/submissions/([0-9a-f]+)/upvote', async (env, req, [id]) => {
+  const a = await needMember(env, req);
+  const season = liveSeason(env, await currentSeason(env));
+  if (phaseOf(season, now(env)) !== 'voting') fail(409, 'voting_closed');
+  const s = await env.DB.prepare("SELECT author_id FROM submissions WHERE id = ? AND season_id = ? AND status = 'visible'").bind(id, season.id).first();
+  if (!s) fail(404, 'not_found');
+  if (s.author_id === a.id) fail(403, 'own_submission');
+  await env.DB.prepare('INSERT OR IGNORE INTO upvotes (account_id, submission_id, created_at) VALUES (?, ?, ?)').bind(a.id, id, now(env)).run();
+  return json(200, { upvoted: true });
+});
+
+route('DELETE', '/v1/submissions/([0-9a-f]+)/upvote', async (env, req, [id]) => {
+  const a = await needMember(env, req);
+  const season = liveSeason(env, await currentSeason(env));
+  if (phaseOf(season, now(env)) !== 'voting') fail(409, 'voting_closed');
+  await env.DB.prepare('DELETE FROM upvotes WHERE account_id = ? AND submission_id = ?').bind(a.id, id).run();
+  return json(200, { upvoted: false });
+});
+
+// Week 1: replace my picks with up to 8 of the qualifiers.
+route('POST', '/v1/tournament/picks', async (env, req) => {
+  const a = await needMember(env, req);
+  const season = liveSeason(env, await currentSeason(env));
+  const st = await seasonState(env, season);
+  if (st.phase !== 'tournament' || st.week !== 1) fail(409, 'not_week_one');
+  const b = await body(req);
+  const ids = Array.isArray(b.submissionIds) ? [...new Set(b.submissionIds.map(String))] : fail(400, 'missing_submissionIds');
+  if (ids.length > ADVANCE) fail(400, 'too_many_picks');
+  const q = new Map(st.qualified.map((e) => [e.id, e]));
+  for (const id of ids) {
+    if (!q.has(id)) fail(400, 'not_a_qualifier');
+    if (q.get(id).author_id === a.id) fail(403, 'own_submission');
+  }
+  await env.DB.prepare('DELETE FROM tournament_votes WHERE season_id = ? AND week = 1 AND account_id = ?').bind(season.id, a.id).run();
+  for (let i = 0; i < ids.length; i++) {
+    await env.DB.prepare('INSERT INTO tournament_votes (season_id, week, slot, account_id, submission_id, created_at) VALUES (?, 1, ?, ?, ?, ?)')
+      .bind(season.id, i, a.id, ids[i], now(env)).run();
+  }
+  return json(200, { picks: ids });
+});
+
+// Weeks 2-4: one vote per matchup of this week's round, changeable until the week ends.
+route('POST', '/v1/tournament/vote', async (env, req) => {
+  const a = await needMember(env, req);
+  const season = liveSeason(env, await currentSeason(env));
+  const st = await seasonState(env, season);
+  if (st.phase !== 'tournament' || st.week < 2) fail(409, 'no_matchups_open');
+  const b = await body(req);
+  const round = st.rounds.find((r) => r.week === st.week);
+  const m = round && round.matchups[b.matchup];
+  if (!m) fail(400, 'bad_matchup');
+  if (m.bye) fail(400, 'bye_no_vote');
+  const pick = String(b.submissionId || '');
+  if (pick !== m.a && pick !== m.b) fail(400, 'not_in_matchup');
+  const authorOf = new Map(st.entries.map((e) => [e.id, e.author_id]));
+  if (authorOf.get(pick) === a.id) fail(403, 'own_submission');
+  await env.DB.prepare(
+    'INSERT INTO tournament_votes (season_id, week, slot, account_id, submission_id, created_at) VALUES (?, ?, ?, ?, ?, ?) ' +
+    'ON CONFLICT(season_id, week, slot, account_id) DO UPDATE SET submission_id = excluded.submission_id, created_at = excluded.created_at')
+    .bind(season.id, st.week, b.matchup, a.id, pick, now(env)).run();
+  return json(200, { ok: true });
+});
+
+route('GET', '/v1/season/results', async (env, req) => {
+  const season = await currentSeason(env);
+  if (!season) return json(200, { season: null });
+  const st = await seasonState(env, season);
+  const viewer = await currentAccount(env, req);
+  const title = new Map(st.entries.map((e) => [e.id, e.title]));
+  const out = { season: publicSeason(season, st.t) };
+  if (st.phase === 'voting' || st.phase === 'submissions') {
+    out.standings = st.phase === 'voting'
+      ? [...st.entries].sort((x, y) => y.score - x.score || x.created_at - y.created_at).map((e) => ({ id: e.id, title: e.title, upvotes: e.score }))
+      : [];
+    if (viewer) {
+      const { results } = await env.DB.prepare('SELECT submission_id FROM upvotes WHERE account_id = ?').bind(viewer.id).all();
+      out.myUpvotes = results.map((r) => r.submission_id);
+    }
+    return json(200, out);
+  }
+  out.week = Math.min(st.week, 4);
+  out.qualifiers = st.qualified.map((e) => ({ id: e.id, title: e.title, upvotes: e.score, picks: st.picks.get(e.id) || 0 }));
+  out.seeds = st.seeds && st.seeds.map((e, i) => ({ seed: i + 1, id: e.id, title: e.title }));
+  out.rounds = st.rounds.map((r) => ({ week: r.week, final: r.week < st.week, matchups: r.matchups.map((m, i) => ({
+    matchup: i, bye: !!m.bye, a: m.a && { id: m.a, title: title.get(m.a), votes: m.votesA },
+    b: m.b && { id: m.b, title: title.get(m.b), votes: m.votesB },
+    winner: r.week < st.week ? m.winner : null })) }));
+  if (st.champion) out.champion = { id: st.champion, title: title.get(st.champion) };
+  return json(200, out);
 });
 
 // ---- reports and blocks ----
