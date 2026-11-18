@@ -1,8 +1,11 @@
 name: APD Community server deploy
 # Deploys server/community to Cloudflare after its tests pass. Needs the CLOUDFLARE_API_TOKEN and
 # CLOUDFLARE_ACCOUNT_ID secrets (Chris adds them). The D1 database is found by name, or created on the first deploy.
-# Without the secrets it stops after the tests and says so. Run by hand only: nothing deploys by itself.
+# Without the secrets it stops after the tests and says so. It runs only when the deploy/community-server branch is
+# pushed (manual dispatch needs the workflow on main, which this project never touches): nothing deploys by itself.
 on:
+  push:
+    branches: [deploy/community-server]
   workflow_dispatch:
 permissions:
   contents: read

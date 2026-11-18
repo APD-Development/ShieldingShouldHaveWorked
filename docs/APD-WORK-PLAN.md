@@ -70,7 +70,8 @@ failure, and give Chris both artifact links (Developer = C, Alpha Testers = P) b
 `apd-community-server.yml`. Done Nov 18: accounts (email+code, Google), age pass flag, submissions, threaded comments,
 filter, reports, blocks, admin, account deletion. Seasons + voting + tournament done. Nov 18 PM: login/sign-up rate limits, deletion keeps others' replies,
 real Google token check, Cloudflare Email Service mailer (needs Workers Paid + domain onboarding: ASK CHRIS, costs
-money), deploy workflow (needs CLOUDFLARE_API_TOKEN/ACCOUNT_ID secrets + D1 id), Java client + all Community screens
+money), deploy workflow (needs CLOUDFLARE_API_TOKEN/ACCOUNT_ID secrets; D1 found/created by name; deploy = push the
+release head to branch deploy/community-server), Java client + all Community screens
 wired (CommunityController/CommunityScene; live when SPDSettings.communityServer is set). Existing players keep old
 default-on settings (SPDSettings.keepOldDefaultsForExistingPlayers). Next: Google sign-in button on Android
 (Credential Manager), server URL default once deployed, run reviews. HttpGateway contract routes, deployment workflow, Android Community screens wired to it, Play Age Signals.
