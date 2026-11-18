@@ -38,3 +38,17 @@ Without the upload secrets the `.aab` is built unsigned and Play will refuse it.
 breaking every commit link in the docs, so instead: publish the GPL source as a **new public repo** with one clean
 starting commit and no keystore, and keep this repo private. Once the debug secrets exist, the keystore file is deleted
 from this repo going forward. The old key only signs alpha `.indev` builds, so its exposure can't touch the Play app.
+
+## Progress (Nov 18, 9 AM run)
+- Phase 1: release build signs from secrets (unsigned until Chris adds them); 921 / 4.0.9-apd; targetSdk 36 verified
+  against Google's policy page; release APK installs and launches with a real screen and no crash on API 34 and 36.
+- Item 6 done early: release (Android), desktop and iOS builds use `noNews` / `noUpdates`, which fetch nothing. CI fails if
+  `shatteredpixel.com` or Evan's GitHub address is in the release code. The About screen's ShatteredPixel.com credit link
+  stays (attribution, opened only if the player taps it).
+- Item 7: the ChatGPT "APD Auto Development" workflow had an invalid `schedule:` block and failed on every push. Disabled
+  in GitHub (not deleted; main untouched).
+- Item 8: `AgeEligibility.defaultAdultHumor` now returns false for everyone. Choosing Adult in settings works as before.
+- Item 5 check so far: SupporterScene already goes straight back to About; the Changes screen shows only APD tabs (the
+  stock SPD changelog classes are compiled in but never displayed). Full text sweep still to do.
+- Item 4 open: `GplLicense.SOURCE_URL` points at this private repo. It must point at the public source repo once that
+  exists (name needed from Chris).
