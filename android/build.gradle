@@ -52,11 +52,20 @@ android {
 
     signingConfigs {
         //APD: committed keystore so every debug build is signed with the same key, see docs/SIGNING.md
+        //Alpha/Developer key. Read from the APD_DEBUG_* environment variables (CI writes them from GitHub secrets);
+        //the committed keystore is only a fallback until those secrets exist, then it is deleted from the repo.
         apdDebug {
-            storeFile rootProject.file('keystore/apd-debug.jks')
-            storePassword 'apdpassword'
-            keyAlias 'apd'
-            keyPassword 'apdpassword'
+            if (System.getenv('APD_DEBUG_KEYSTORE')) {
+                storeFile file(System.getenv('APD_DEBUG_KEYSTORE'))
+                storePassword System.getenv('APD_DEBUG_STORE_PASSWORD')
+                keyAlias System.getenv('APD_DEBUG_KEY_ALIAS') ?: 'apd'
+                keyPassword System.getenv('APD_DEBUG_KEY_PASSWORD') ?: System.getenv('APD_DEBUG_STORE_PASSWORD')
+            } else {
+                storeFile rootProject.file('keystore/apd-debug.jks')
+                storePassword 'apdpassword'
+                keyAlias 'apd'
+                keyPassword 'apdpassword'
+            }
         }
         //APD: Play upload key. Never committed: CI writes it from GitHub secrets and passes these environment variables.
         //Without them the release build is left unsigned (it can still be signed afterwards with apksigner/jarsigner).
