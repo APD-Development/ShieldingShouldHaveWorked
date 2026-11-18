@@ -131,6 +131,8 @@ dependencies {
     natives "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-x86"
     natives "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-x86_64"
     implementation "com.badlogicgames.gdx-controllers:gdx-controllers-android:$gdxControllersVersion"
+    //APD: Community's 16+ gate asks Google Play for an age range first (see PlayAgeSignals)
+    implementation 'com.google.android.play:age-signals:0.0.4'
 
     androidTestImplementation "androidx.test.ext:junit:1.2.1"
     androidTestImplementation "androidx.test:core:1.6.1"

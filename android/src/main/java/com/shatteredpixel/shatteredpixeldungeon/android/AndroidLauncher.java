@@ -116,6 +116,9 @@ public class AndroidLauncher extends AndroidApplication {
 				Updates.service = UpdateImpl.getUpdateService();
 			}
 
+			//APD: Community's 16+ gate asks Google Play first; asked only when the player opens Community
+			com.shatteredpixel.shatteredpixeldungeon.apd.age.CommunityAgeGate.play = new PlayAgeSignals(this);
+
 			//F-Droid specifically considers auto news checking to be an 'anti-feature', so default it to false
 			if (NewsImpl.supportsNews()) {
 				if (installer.contains("fdroid") || installer.contains("com.looker.droidify")){
@@ -134,6 +137,7 @@ public class AndroidLauncher extends AndroidApplication {
 
 		} else {
 			instance = this;
+			com.shatteredpixel.shatteredpixeldungeon.apd.age.CommunityAgeGate.play = new PlayAgeSignals(this);
 		}
 
         AndroidSupportDiagnostics.initialize(this);

@@ -52,6 +52,20 @@ public final class CommunityAgeGate {
 
 	public static final String PASS = "pass", FAIL = "fail";
 
+	// The platform's way to ask Google Play (set by the Android launcher; desktop and tests leave it null = no answer).
+	// Must call done exactly once, on any thread, with PlaySignal.none() when Play can't or won't say.
+	public interface PlaySource {
+		void request(java.util.function.Consumer<PlaySignal> done);
+	}
+
+	public static volatile PlaySource play = null;
+
+	public static void askPlay(java.util.function.Consumer<PlaySignal> done){
+		PlaySource p = play;
+		if (p == null) { done.accept(PlaySignal.none()); return; }
+		try { p.request(done); } catch (RuntimeException e){ done.accept(PlaySignal.none()); }
+	}
+
 	private CommunityAgeGate(){}
 
 	public static Result check(PlaySignal play, Store store){
