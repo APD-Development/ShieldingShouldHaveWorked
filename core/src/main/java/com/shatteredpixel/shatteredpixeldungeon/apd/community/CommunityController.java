@@ -107,17 +107,16 @@ public final class CommunityController {
 	public void start(){
 		if (api == null){ offline(); return; }
 		ui.busy("Checking Community access...");
-		CommunityAgeGate.askPlay(play -> ui.show(gateThen(CommunityAgeGate.check(play, storage))));
+		CommunityAgeGate.askPlay(play -> gateThen(CommunityAgeGate.check(play, storage)));
 	}
 
-	private Screen gateThen(CommunityAgeGate.Result r){
-		if (r == CommunityAgeGate.Result.LOCKED) return locked();
-		if (r == CommunityAgeGate.Result.ASK_BIRTH_DATE) return askBirth();
-		signedInOrOut();
-		return loading();
+	// Shows the locked or birth-date screen, or goes on to sign-in. (Never shows a screen after starting sign-in:
+	// with a fast answer that would cover the screen sign-in just showed.)
+	private void gateThen(CommunityAgeGate.Result r){
+		if (r == CommunityAgeGate.Result.LOCKED) ui.show(locked());
+		else if (r == CommunityAgeGate.Result.ASK_BIRTH_DATE) ui.show(askBirth());
+		else signedInOrOut();
 	}
-
-	private Screen loading(){ return new Screen("Community", "Loading..."); }
 
 	private Screen offline(){
 		Screen s = new Screen("Community", "The Community server isn't live yet. Here's what's coming.");
@@ -150,7 +149,7 @@ public final class CommunityController {
 			ui.ask("Birth year", "Year you were born (for example 2004).", "", 4, false, y -> {
 				Integer year = number(y, today[1] - 120, today[1]);
 				if (year == null){ if (y != null) ui.show(askBirth().warning("That isn't a real birth year.")); else ui.show(askBirth()); return; }
-				ui.show(gateThen(CommunityAgeGate.answer(month, year, today[0], today[1], storage)));
+				gateThen(CommunityAgeGate.answer(month, year, today[0], today[1], storage));
 			});
 		});
 	}

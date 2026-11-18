@@ -80,6 +80,9 @@ public class ShatteredPixelDungeon extends Game {
 
 		updateSystemUI();
 		SPDAction.loadBindings();
+		//APD: existing players keep the settings that used to be on by default (new installs start with them off)
+		SPDSettings.keepOldDefaultsForExistingPlayers();
+		com.watabou.utils.SupportDiagnostics.appSettings = SPDSettings::apdSettingsReport;
 
         // Android configured private storage before GDX preferences became available.
         // Journal collection starts only after an explicit, persisted player opt-in.

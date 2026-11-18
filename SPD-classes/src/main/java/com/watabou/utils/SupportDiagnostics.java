@@ -41,6 +41,8 @@ public final class SupportDiagnostics {
     private static int traceChars;
     private static final java.util.concurrent.atomic.AtomicLong inputIds=new java.util.concurrent.atomic.AtomicLong();
     public static volatile java.util.function.Supplier<String> platformSnapshot=()->"Platform details unavailable.";
+    // The game's saved settings (APD: every APD setting and whether it's saved or still on its default), for bug reports.
+    public static volatile java.util.function.Supplier<String> appSettings=()->"";
     private static boolean scheduled;
     private static long lastPeriodicMemoryNanos;
     private static final byte[] EMERGENCY="Uncaught failure; detailed capture failed, possibly because memory was exhausted. This is not proof of an out-of-memory cause.\n".getBytes(StandardCharsets.UTF_8);
@@ -213,6 +215,8 @@ public final class SupportDiagnostics {
         StringBuilder out=new StringBuilder("APD diagnostic session v1\n").append(environment).append('\n');
         Runtime r=Runtime.getRuntime();
         out.append("Java heap bytes: used=").append(r.totalMemory()-r.freeMemory()).append(" committed=").append(r.totalMemory()).append(" limit=").append(r.maxMemory()).append('\n');
+        try { String settings=appSettings.get(); if(settings!=null && !settings.isEmpty()) out.append("APD SETTINGS (unset = nothing saved, default applies)\n").append(settings); }
+        catch(RuntimeException unavailable) { out.append("APD SETTINGS unavailable\n"); }
         out.append("MEMORY HISTORY (bounded, most recent first not guaranteed by crash)\n");
         for(String line:memoryTrace)out.append(line).append('\n');
         out.append("RECENT EVENTS\n");

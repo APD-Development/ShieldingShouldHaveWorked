@@ -405,6 +405,41 @@ public class SPDSettings extends GameSettings {
 	public static String communityAgeGate(){ String v = getString("apd_community_age", "", 8); return v.isEmpty() ? null : v; }
 	public static void communityAgeGate(String passOrFail){ put("apd_community_age", passOrFail == null ? "" : passOrFail); }
 
+	//Nov 18: every APD setting now starts off for NEW players. Players who already had the game keep what they had:
+	//the settings that used to default to on are saved as on for them, unless they already saved a choice.
+	static final String[] OLD_ON_BY_DEFAULT = {
+		"apd_stair_navigation_shortcut", "apd_adaptive_search_choice", "apd_dot_overlay",
+		"apd_auto_grass_dew", "apd_confirm_waterskin", "apd_confirm_known_traps" };
+	static final String DEFAULTS_MIGRATED = "apd_defaults_v2_kept";
+
+	//Runs once per install, before any screen reads settings. version() is the last build that ran on this phone
+	//(0 on a fresh install). Returns how many settings were kept on.
+	public static int keepOldDefaultsForExistingPlayers(){
+		if (contains(DEFAULTS_MIGRATED)) return 0;
+		int kept = 0;
+		if (version() > 0){
+			for (String key : OLD_ON_BY_DEFAULT){
+				if (!contains(key)){ put(key, true); kept++; }
+			}
+		}
+		put(DEFAULTS_MIGRATED, true);
+		return kept;
+	}
+
+	//Every APD setting's saved value ("unset" = nothing saved, the default applies), for bug reports.
+	public static String apdSettingsReport(){
+		StringBuilder b = new StringBuilder();
+		String[] keys = { "apd_stair_navigation_shortcut", "apd_auto_enter_stairs", "apd_adaptive_search_choice",
+			"apd_dot_overlay", "apd_auto_grass_dew", "apd_auto_dew_with_enemies", "apd_confirm_waterskin",
+			"apd_confirm_known_traps", "apd_single_tap_search", "apd_continue_trap_discovery", "apd_rat_king_quick_search",
+			"apd_trophy_outlines", "apd_enhanced_tile_visibility", "apd_wait_stop_full", "apd_wait_stop_starving",
+			"apd_wait_stop_critical", KEY_APD_ADULT_HUMOR, KEY_APD_RECORDING, DEFAULTS_MIGRATED };
+		for (String k : keys){
+			b.append(k).append('=').append(contains(k) ? String.valueOf(getBoolean(k, false)) : "unset").append('\n');
+		}
+		return b.toString();
+	}
+
 	//One shared preference. Everyone defaults to Clean; Adult is opt-in.
 	public static final String KEY_APD_ADULT_HUMOR = "apd_adult_humor";
 
