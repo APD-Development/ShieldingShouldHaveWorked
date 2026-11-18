@@ -117,7 +117,7 @@ public class SPDSettings extends GameSettings {
 
     public static boolean enhancedTileVisibility() { return getBoolean("apd_enhanced_tile_visibility", false); }
     public static void enhancedTileVisibility(boolean value) { put("apd_enhanced_tile_visibility", value); GameScene.updateMap(); }
-    public static boolean stairNavigationShortcut() { return getBoolean("apd_stair_navigation_shortcut", true); }
+    public static boolean stairNavigationShortcut() { return getBoolean("apd_stair_navigation_shortcut",false); }
     public static void stairNavigationShortcut(boolean value) { put("apd_stair_navigation_shortcut", value); GameScene.updateTags=true; }
     // Opt-in: the stair shortcut walks normally, then uses that direction's stairs.
     // A manual map tap or ordinary movement never triggers this preference.
@@ -756,9 +756,9 @@ public class SPDSettings extends GameSettings {
 	public static int fulLScreenMonitor(){
 		return getInt( KEY_FULLSCREEN_MONITOR, 0 );
 	}
-    public static boolean waitStopFullHealth(){return getBoolean("apd_wait_stop_full",true);}
+    public static boolean waitStopFullHealth(){return getBoolean("apd_wait_stop_full",false);}
     public static void waitStopFullHealth(boolean value){put("apd_wait_stop_full",value);}
-    public static boolean waitStopStarving(){return getBoolean("apd_wait_stop_starving",true);}
+    public static boolean waitStopStarving(){return getBoolean("apd_wait_stop_starving",false);}
     public static void waitStopStarving(boolean value){put("apd_wait_stop_starving",value);}
     public static boolean waitStopCritical(){return getBoolean("apd_wait_stop_critical",false);}
     public static void waitStopCritical(boolean value){put("apd_wait_stop_critical",value);}
@@ -771,7 +771,7 @@ public class SPDSettings extends GameSettings {
     public static boolean continueOnTrapDiscovery(){return getBoolean("apd_continue_trap_discovery",false);}
     public static void continueOnTrapDiscovery(boolean enabled){put("apd_continue_trap_discovery",enabled);}
     /** Chooser preference only: never performs a search or changes its range/cost. */
-    public static boolean adaptiveSearchChoice(){return getBoolean("apd_adaptive_search_choice",true);}
+    public static boolean adaptiveSearchChoice(){return getBoolean("apd_adaptive_search_choice",false);}
     public static void adaptiveSearchChoice(boolean enabled){put("apd_adaptive_search_choice",enabled);}
     public static boolean singleTapSearch(){return getBoolean("apd_single_tap_search",false);}
     public static void singleTapSearch(boolean enabled){put("apd_single_tap_search",enabled);}
@@ -785,14 +785,14 @@ public class SPDSettings extends GameSettings {
     //Trophy outlines on enemies in the dungeon (Chris, Nov 18: a player setting, OFF by default). The Bestiary always shows them.
     public static boolean trophyOutlines(){return getBoolean("apd_trophy_outlines",false);}
     public static void trophyOutlines(boolean enabled){put("apd_trophy_outlines",enabled);}
-    public static boolean dotOverlayEnabled(){return getBoolean("apd_dot_overlay",true);}
+    public static boolean dotOverlayEnabled(){return getBoolean("apd_dot_overlay",false);}
     public static void dotOverlayEnabled(boolean enabled){put("apd_dot_overlay",enabled);}
-    public static boolean autoCollectGrassDew(){return getBoolean("apd_auto_grass_dew",true);}
+    public static boolean autoCollectGrassDew(){return getBoolean("apd_auto_grass_dew",false);}
     public static void autoCollectGrassDew(boolean enabled){put("apd_auto_grass_dew",enabled);}
     public static boolean autoCollectDewWithEnemies(){return getBoolean("apd_auto_dew_with_enemies",false);}
     public static void autoCollectDewWithEnemies(boolean enabled){put("apd_auto_dew_with_enemies",enabled);}
-    public static boolean confirmWaterskin(){return getBoolean("apd_confirm_waterskin",true);}
+    public static boolean confirmWaterskin(){return getBoolean("apd_confirm_waterskin",false);}
     public static void confirmWaterskin(boolean enabled){put("apd_confirm_waterskin",enabled);}
-    public static boolean confirmKnownTraps(){return getBoolean("apd_confirm_known_traps",true);}
+    public static boolean confirmKnownTraps(){return getBoolean("apd_confirm_known_traps",false);}
     public static void confirmKnownTraps(boolean enabled){put("apd_confirm_known_traps",enabled);}
 }
