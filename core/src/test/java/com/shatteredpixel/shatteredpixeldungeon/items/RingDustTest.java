@@ -95,4 +95,16 @@ public class RingDustTest {
 		in.clear(); in.add(ring(0, true, true));
 		assertFalse("cursed rings are refused", recipe.testIngredients(in));
 	}
+
+	@Test public void ringsCanActuallyGoInTheAlchemyPot(){
+		//bug found Nov 18: rings are equipment, and equipment other than thrown weapons was refused by the pot
+		assertTrue(Recipe.usableInRecipe(ring(0, true, false)));
+		assertFalse("cursed rings stay out", Recipe.usableInRecipe(ring(0, true, true)));
+		assertFalse("curse status must be known", Recipe.usableInRecipe(ring(0, false, false)));
+		java.util.ArrayList<Item> in = new java.util.ArrayList<>();
+		in.add(ring(1, true, false));
+		java.util.ArrayList<Recipe> found = Recipe.findRecipes(in);
+		assertEquals(1, found.size());
+		assertTrue(found.get(0) instanceof RingDust.Recipe);
+	}
 }

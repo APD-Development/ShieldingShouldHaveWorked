@@ -258,7 +258,10 @@ public abstract class Recipe {
 	
 	public static boolean usableInRecipe(Item item){
 		//only upgradeable thrown weapons and wands allowed among equipment items
-		if (item instanceof EquipableItem){
+		if (item instanceof com.shatteredpixel.shatteredpixeldungeon.items.rings.Ring){
+			//APD: rings go in the pot to become Gemstone Dust
+			return item.cursedKnown && !item.cursed;
+		} else if (item instanceof EquipableItem){
 			return item.cursedKnown && !item.cursed &&
 					item instanceof MissileWeapon && item.isUpgradable();
 		} else if (item instanceof Wand) {
