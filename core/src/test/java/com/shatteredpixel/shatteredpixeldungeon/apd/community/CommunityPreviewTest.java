@@ -28,7 +28,7 @@ public class CommunityPreviewTest {
         }
     }
     @Test public void undecidedRulesAreNotPresentedAsFinalizedAndWinnersAreNotDiscarded() {
-        assertTrue(CommunityPreview.Page.TOURNAMENT.explanation.contains("final 16"));
+        assertTrue(CommunityPreview.Page.TOURNAMENT.explanation.contains("16-seed bracket"));
         assertTrue(CommunityPreview.Page.QUALIFICATION.explanation.contains("top 16"));
         assertTrue(CommunityPreview.Page.REVIEWS.explanation.contains("replay scope is undecided"));
         assertTrue(CommunityPreview.Page.REVIEWS.explanation.contains("not AI-generated judgments"));
