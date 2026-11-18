@@ -1,4 +1,4 @@
-# APD Community Worker. Deployed by CI with Chris's Cloudflare API token (a GitHub secret), never from a laptop key.
+# APD Community Worker. Deployed by Cloudflare Workers Builds straight from the deploy/community-server branch (no API token anywhere).
 name = "apd-community"
 main = "src/app.js"
 compatibility_date = "2026-11-01"
@@ -6,11 +6,11 @@ compatibility_date = "2026-11-01"
 [[d1_databases]]
 binding = "DB"
 database_name = "apd-community"
-database_id = "SET-AFTER-CREATING-THE-D1-DATABASE"
+database_id = "1ca6717a-e895-44a6-901a-50791060bb3d"
 migrations_dir = "migrations"
 
 [vars]
-ADMIN_EMAILS = ""      # Chris's email: signing up with it makes that account the admin
+ADMIN_EMAILS = "charltonchris29@gmail.com"      # Chris's email: signing up with it makes that account the admin
 GOOGLE_CLIENT_ID = ""  # Google OAuth web client id(s), comma-separated
 MAIL_FROM = ""         # e.g. community@charltonbornstudios.com (a domain onboarded to Email Sending)
 
