@@ -21,16 +21,17 @@ public class AgeEligibilityTest {
 		assertFalse(AgeEligibility.adultHumor(AgeEligibility.State.UNAVAILABLE, false));
 		assertEquals(AgeEligibility.State.UNAVAILABLE, AgeEligibility.current());
 	}
-	@Test public void onlyVerifiedAdultsDefaultToAdultHumor(){
+	@Test public void everyoneDefaultsToCleanHumor(){
 		for (AgeEligibility.State state : AgeEligibility.State.values()) {
-			boolean defaultChoice = AgeEligibility.defaultAdultHumor(state);
-			assertEquals(state == AgeEligibility.State.ELIGIBLE, defaultChoice);
-			assertEquals(state == AgeEligibility.State.ELIGIBLE, AgeEligibility.adultHumor(state, defaultChoice));
+			assertFalse(state.toString(), AgeEligibility.defaultAdultHumor(state));
+			assertFalse(state.toString(), AgeEligibility.adultHumor(state, AgeEligibility.defaultAdultHumor(state)));
 		}
 		assertFalse(AgeEligibility.defaultAdultHumor(null));
 	}
-	@Test public void anExplicitCleanChoiceOverridesTheVerifiedAdultDefault(){
-		assertTrue(AgeEligibility.defaultAdultHumor(AgeEligibility.State.ELIGIBLE));
+	@Test public void adultHumorIsStillAChoiceForAnyoneNotKnownUnderage(){
+		assertTrue(AgeEligibility.adultHumor(AgeEligibility.State.ELIGIBLE, true));
+		assertTrue(AgeEligibility.adultHumor(AgeEligibility.State.UNAVAILABLE, true));
+		assertFalse(AgeEligibility.adultHumor(AgeEligibility.State.INELIGIBLE, true));
 		assertFalse(AgeEligibility.adultHumor(AgeEligibility.State.ELIGIBLE, false));
 	}
 	@Test public void settingsAndTitleAreWiredThroughThePolicy() throws Exception {

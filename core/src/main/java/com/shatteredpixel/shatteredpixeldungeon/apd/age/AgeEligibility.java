@@ -17,9 +17,11 @@ public final class AgeEligibility {
 		return state != State.INELIGIBLE;
 	}
 
-	//Verified adults default to Adult; otherwise Clean. An explicit Clean choice wins.
+	//Everyone defaults to Clean. Only a player not known to be underage may choose Adult.
+	//Chris, Nov 18 2026: Adult humor is OFF by default for everyone (Clean mode), even a verified adult.
+	//A verified adult can still turn it on in settings; nothing else about the choice changed.
 	public static boolean defaultAdultHumor(State state){
-		return state == State.ELIGIBLE;
+		return false;
 	}
 
 	public static boolean adultHumor(State state, boolean preferred){

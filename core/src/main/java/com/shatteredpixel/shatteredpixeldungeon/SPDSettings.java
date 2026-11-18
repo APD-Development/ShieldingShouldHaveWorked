@@ -395,7 +395,7 @@ public class SPDSettings extends GameSettings {
 		put( KEY_APD_TENTH_SHOWN, value );
 	}
 
-	//One shared preference. Verified adults default to Adult; others default to Clean.
+	//One shared preference. Everyone defaults to Clean; Adult is opt-in.
 	public static final String KEY_APD_ADULT_HUMOR = "apd_adult_humor";
 
 	public static boolean apdAdultHumor(){
