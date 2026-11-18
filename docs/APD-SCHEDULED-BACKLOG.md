@@ -20,7 +20,7 @@ unapproved features. Each run codes for at least 30 minutes (Chris, Nov 18).
 2. [x] (Nov 18 7 AM batch; GenerationTracker covers draw counting only) Tests for the 17 untested APD classes: ApdFacts, BuiltinFactKinds, CustomBossHealthHooks, CustomDefenseHooks,
    DewExplanation, EventBuilder, GameSnapshot, GenerationTracker, HotbarPersistence, KeyExplanation, Mailbox,
    PositionedStringLookup, ProgressGuardInputStream, ReplayScan, StaffExplanation, StringLookup, Utf8.
-3. Behavior tests for untested SPD gameplay classes: traps, rooms (valid generation on every floor), mobs, spells,
+3. (Nov 18 7 AM: all traps, all blobs, Bestiary mobs, floor reachability 1-24 done; spells, scrolls, trap activation next) Behavior tests for untested SPD gameplay classes: traps, rooms (valid generation on every floor), mobs, spells,
    scrolls, blobs.
 4. Construction smoke tests for sprites, windows and UI classes where the headless runner allows.
 
