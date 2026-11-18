@@ -9,8 +9,8 @@ unapproved features.
 
 ## Approved, in order
 1. Tests for this week's features:
-   - room-wide Search tap (`SearchControlContext.roomHasSearchableWall`, `fullSearchUseful`)
-   - `Hunger.turnsUntilHungry` / `perTurn` (Salt Cube, custom hunger rule, Hungry, Starving, never)
+   - [x] room-wide Search tap (Nov 18, 6 AM) (`SearchControlContext.roomHasSearchableWall`, `fullSearchUseful`)
+   - [x] `Hunger.turnsUntilHungry` / `perTurn` (Nov 18, 6 AM; rate<=0 case not forced) (Salt Cube, custom hunger rule, Hungry, Starving, never)
    - hunger text in the status tab and top-right (values, yellow at 300, red at 450)
    - Bug Notes inside both report formats; Standard report byte-identical when no notes
    - Bug Note button Developer-only

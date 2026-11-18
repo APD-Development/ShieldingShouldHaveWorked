@@ -1105,4 +1105,30 @@ public class SearchControlContextTest {
             hero.pos = at(10, 10);
         }
     }
+
+    /** Scheduled Nov 18: tap searches anywhere in a room that still has an unsearched door-capable wall. */
+    @Test public void roomWideUnsearchedWallMakesTapSearchFromTheMiddle() {
+        EmptyRoom room = new EmptyRoom();
+        room.set(7, 7, 13, 13);
+        level.setRooms(room);
+        int wall = candidate(-3, 0); // west wall, out of the Warrior's radius-1 reach
+        assertFalse("wall is outside search reach", SearchControlContext.hasMeaningfulWall(hero, level));
+        assertTrue(SearchControlContext.roomHasSearchableWall(hero, level));
+        assertTrue(SearchControlContext.fullSearchUseful(hero, level));
+
+        level.searchedWalls.recordCompletedDoorCheck(level, wall, true);
+        assertTrue(level.searchedWalls.confirmed(level, wall));
+        assertFalse("a fully searched room taps to Inspect", SearchControlContext.roomHasSearchableWall(hero, level));
+    }
+
+    @Test public void roomWideRuleSkipsSpecialRoomsAndRoomlessLevels() {
+        assertFalse("no rooms recorded", SearchControlContext.roomHasSearchableWall(hero, level));
+        StorageRoom special = new StorageRoom();
+        special.set(7, 7, 13, 13);
+        level.setRooms(special);
+        candidate(-3, 0);
+        assertFalse(SearchControlContext.roomHasSearchableWall(hero, level));
+        assertFalse(SearchControlContext.roomHasSearchableWall(null, level));
+        assertFalse(SearchControlContext.roomHasSearchableWall(hero, null));
+    }
 }
