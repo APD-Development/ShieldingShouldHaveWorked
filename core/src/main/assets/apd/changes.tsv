@@ -5,6 +5,8 @@ TAB	480+
 MAJOR	Coming Soon
 BTN	i:NEWS	What's next	I'm working on this change history first. After that, the **Cleric Grudge** design and the leftover **talent description** audit are next.\n\nAnything marked "Developer build" only exists in my own test build until I say it's ready for Alpha Testers.
 MAJOR	APD 489
+BUILD	C489Q / P489Q (Nov 18)
+BTN	i:WARNING	UIMSD crash fix	Opening **UIMSD** with a lot of history could run out of memory and crash. It now uses about a third of the memory to load, and the game can use more memory on phones that allow it.
 BUILD	C489P / P489P (Nov 18)
 BTN	i:RANKINGS	UIMSD unlock arrow	The title screen arrow now works in every build: before **10 real runs** it says the UIMSD button is useless until then, and after that it points you to **unlimited dopamine** (or something stronger with Adult humor on).
 BTN	i:NEWS	Cleaner text	Update notices, save warnings and the victory screen now say **ADHD Pixel Dungeon**, the title shows **v4.0.9**, and Adult humor now starts **off** for everyone.
