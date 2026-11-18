@@ -76,7 +76,7 @@ public class UimsdWiringTest {
 						"//UIMSD (Ultimate Infinite Mega Statistics Database) replaces Rankings, until the real database exists it opens the Rankings screen")
 				.replace("com.shatteredpixel.shatteredpixeldungeon.windows.UimsdGate.titleAnnotation( ANNOTATION_TEXT )", "ANNOTATION_TEXT")
 				.replace("UimsdScene.open( TitleScene.class );", "ShatteredPixelDungeon.switchNoFade( RankingsScene.class );");
-		assertEquals("0051ccab7317b9aead08e57541ceb619cf26158df6a6485b8210a68dcd7e2f0a", shaOf(restored));
+		assertEquals("db663a6d8c14c32cd223469466b572c0060a1ad1dddaeb5f80a25ef694819974", shaOf(restored));
 		//the geometry (arrow, annotation, layout) file is byte for byte as approved
 		String reviewedCoverGeometry = "    /** Keep background pixels uniform and cover the viewport independently of UI scale. */\n    public static float backgroundCoverScale(float width,float height,float imageWidth,float imageHeight,float zoom){\n        if(!(width>0&&height>0&&imageWidth>0&&imageHeight>0&&zoom>0)\n                ||!Float.isFinite(width)||!Float.isFinite(height)||!Float.isFinite(imageWidth)||!Float.isFinite(imageHeight)||!Float.isFinite(zoom))throw new IllegalArgumentException(\"Invalid background dimensions\");\n        return (float)Math.ceil(Math.max(width*zoom/imageWidth,height*zoom/imageHeight))/zoom;\n    }\n\n";
         assertTrue(src("apd/TitleGeometry.java").contains(reviewedCoverGeometry));

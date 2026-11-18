@@ -56,6 +56,8 @@ public class TitleButtonWiringTest {
 		return (Preferences) Proxy.newProxyInstance(Preferences.class.getClassLoader(), new Class[]{ Preferences.class }, new InvocationHandler(){
 			@Override
 			public Object invoke( Object proxy, Method m, Object[] args ){
+				//a player who has unlocked UIMSD (the gate is on in every build since Nov 18), so the button goes straight to it
+				if (m.getName().equals("getBoolean") && args != null && SPDSettings.KEY_APD_UIMSD_UNLOCKED.equals(args[0])) return true;
 				if (m.getName().startsWith("get") && args != null && args.length == 2) return args[1];
 				if (m.getName().equals("contains")) return false;
 				Class<?> r = m.getReturnType();
