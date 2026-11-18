@@ -54,6 +54,7 @@ public class CommunityControllerTest {
 	@Before public void start() throws Exception {
 		CommunityAgeGate.play = null; // no Google Play in tests: the birth month/year question is used
 		CommunityController.google = null;
+		CommunityController.emailSignIn = true; //most tests sign up through the (dormant) email path
 		server = HttpServer.create(new InetSocketAddress("127.0.0.1", 0), 0);
 		server.createContext("/", ex -> {
 			String key = ex.getRequestMethod() + " " + ex.getRequestURI().getPath();
@@ -165,6 +166,20 @@ public class CommunityControllerTest {
 		tap("Submissions");
 		assertNull(store.token);
 		assertTrue(has(last(), "Sign in with email"));
+	}
+
+	@Test public void launchShowsOnlyGoogleSignIn(){
+		CommunityController.emailSignIn = false;
+		store.age = "pass";
+		CommunityController.google = done -> done.accept(null);
+		controller().start();
+		assertTrue(has(last(), "Sign in with Google"));
+		assertFalse(has(last(), "Sign in with email"));
+		assertFalse(has(last(), "Create an account"));
+		assertFalse(has(last(), "I have a verification code"));
+		CommunityController.google = null;
+		controller().start();
+		assertFalse(has(last(), "Sign in with email"));
 	}
 
 	@Test public void googleSignInSendsTheTokenAndCancelGoesBack(){

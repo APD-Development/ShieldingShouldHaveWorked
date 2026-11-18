@@ -66,6 +66,8 @@ public final class CommunityController {
 	}
 
 	public static volatile GoogleSource google = null;
+	// Launch is Google sign-in only (Chris, Nov 18). The email screens stay for a possible Steam build; off = hidden.
+	public static volatile boolean emailSignIn = false;
 
 	public static final class Row {
 		public final String label, detail;
@@ -195,9 +197,12 @@ public final class CommunityController {
 		Screen s = new Screen("Community", "Sign in to post ideas, comment and vote.");
 		if (problem != null) s.warning(problem);
 		if (google != null) s.item("Sign in with Google", null, this::signInGoogle);
-		s.item("Sign in with email", null, this::signIn);
-		s.item("Create an account", null, this::register);
-		s.item("I have a verification code", null, () -> askEmailThen(this::askCode));
+		else if (!emailSignIn) s.warning("Community needs Google sign-in, which isn't available on this device.");
+		if (emailSignIn){
+			s.item("Sign in with email", null, this::signIn);
+			s.item("Create an account", null, this::register);
+			s.item("I have a verification code", null, () -> askEmailThen(this::askCode));
+		}
 		s.item("Back", null, ui::leave);
 		s.back = ui::leave;
 		return s;
