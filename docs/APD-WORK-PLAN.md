@@ -18,7 +18,9 @@ Every scheduled run starts fresh. This file is the memory: read it, work, then a
 Package `com.charltonchris29.adhdpixeldungeon`, personal account: 12-tester closed test for 14 straight days
 before production, so the closed test must start by Nov 23.
 
-### Priority order (Chris, Nov 18 09:49)
+### Priority order (Chris, Nov 18 09:49; 09:55: "Only community is important above all else")
+All coding time goes to Community. Phase 1 needs only Chris's secrets now; remind him once per summary, don't code on it.
+
 1. **Phase 1 (target Nov 21-22):** signed release .aab. Done except signing: blocked on Chris adding the
    APD_UPLOAD_* secrets. Then: Play Console upload steps for Chris, one at a time.
 2. **Community (most important for Jan 1), starts right after Phase 1.** Goal for Dec 22: full Community loop:

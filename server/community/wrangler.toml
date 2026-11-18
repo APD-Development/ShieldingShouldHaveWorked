@@ -1,0 +1,13 @@
+# APD Community Worker. Deployed by CI with Chris's Cloudflare API token (a GitHub secret), never from a laptop key.
+name = "apd-community"
+main = "src/app.js"
+compatibility_date = "2026-11-01"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "apd-community"
+database_id = "SET-AFTER-CREATING-THE-D1-DATABASE"
+migrations_dir = "migrations"
+
+[vars]
+ADMIN_EMAILS = ""   # Chris's email goes here
