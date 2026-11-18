@@ -15,12 +15,14 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Map;
 
-/** Every regular scroll has one exotic twin and turns into its own runestone, and nothing else does. */
+/** Every regular scroll has one exotic twin; every SPD scroll turns into its own runestone, and exotic scrolls never do. */
 public class ScrollPairsTest {
 	@Test public void everyScrollHasExactlyOneExoticTwin(){
 		HeadlessTestSupport.start();
-		assertEquals(12, ExoticScroll.regToExo.size());
-		assertEquals(12, new HashSet<>(ExoticScroll.regToExo.values()).size());
+		// 12 SPD scrolls plus APD's prototype Scroll of Gathering (twin: Forwarding)
+		assertEquals(13, ExoticScroll.regToExo.size());
+		assertEquals(13, new HashSet<>(ExoticScroll.regToExo.values()).size());
+		assertEquals(com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfForwarding.class, ExoticScroll.regToExo.get(ScrollOfGathering.class));
 		for (Map.Entry<Class<? extends Scroll>, Class<? extends ExoticScroll>> e : ExoticScroll.regToExo.entrySet())
 			assertEquals(e.getKey(), ExoticScroll.exoToReg.get(e.getValue()));
 	}
@@ -31,7 +33,10 @@ public class ScrollPairsTest {
 		Field f = Scroll.ScrollToStone.class.getDeclaredField("stones");
 		f.setAccessible(true);
 		Map<Class<? extends Scroll>, Class<? extends Runestone>> stones = (Map<Class<? extends Scroll>, Class<? extends Runestone>>) f.get(null);
-		assertEquals(ExoticScroll.regToExo.keySet(), stones.keySet());
+		// Scroll of Gathering is a prototype with no runestone yet (not approved), so it is the only scroll without one
+		HashSet<Class<? extends Scroll>> expected = new HashSet<>(ExoticScroll.regToExo.keySet());
+		expected.remove(ScrollOfGathering.class);
+		assertEquals(expected, stones.keySet());
 		assertEquals(12, new HashSet<>(stones.values()).size());
 		Scroll.ScrollToStone r = new Scroll.ScrollToStone();
 		for (Class<? extends Scroll> c : stones.keySet()){
