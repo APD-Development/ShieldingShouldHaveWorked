@@ -526,8 +526,14 @@ route('DELETE', '/v1/blocks/([0-9a-f]+)', async (env, req, [other]) => {
 route('GET', '/v1/admin/reports', async (env, req) => {
   await needAdmin(env, req);
   const { results } = await env.DB.prepare(
-    `SELECT target_kind, target_id, COUNT(*) AS reports, GROUP_CONCAT(reason, ' | ') AS reasons, MIN(created_at) AS first
-       FROM reports WHERE resolved = 0 GROUP BY target_kind, target_id ORDER BY reports DESC, first`).all();
+    `SELECT r.target_kind, r.target_id, COUNT(*) AS reports, GROUP_CONCAT(r.reason, ' | ') AS reasons, MIN(r.created_at) AS first,
+            CASE r.target_kind WHEN 'account' THEN r.target_id
+              WHEN 'submission' THEN (SELECT author_id FROM submissions WHERE id = r.target_id)
+              ELSE (SELECT author_id FROM comments WHERE id = r.target_id) END AS author_id,
+            CASE r.target_kind WHEN 'account' THEN (SELECT display_name FROM accounts WHERE id = r.target_id)
+              WHEN 'submission' THEN (SELECT title FROM submissions WHERE id = r.target_id)
+              ELSE (SELECT body FROM comments WHERE id = r.target_id) END AS preview
+       FROM reports r WHERE r.resolved = 0 GROUP BY r.target_kind, r.target_id ORDER BY reports DESC, first`).all();
   return json(200, { reports: results });
 });
 

@@ -395,6 +395,16 @@ public class SPDSettings extends GameSettings {
 		put( KEY_APD_TENTH_SHOWN, value );
 	}
 
+	//Community (Nov 18): the server address (empty until the server is live), the signed-in session, and the 16+ gate's
+	//single pass/fail answer. The birth date itself is never stored anywhere.
+	public static final String COMMUNITY_SERVER_DEFAULT = "";
+	public static String communityServer(){ return getString("apd_community_server", COMMUNITY_SERVER_DEFAULT, 200); }
+	public static void communityServer(String url){ put("apd_community_server", url == null ? "" : url); }
+	public static String communityToken(){ String t = getString("apd_community_token", "", 200); return t.isEmpty() ? null : t; }
+	public static void communityToken(String token){ put("apd_community_token", token == null ? "" : token); }
+	public static String communityAgeGate(){ String v = getString("apd_community_age", "", 8); return v.isEmpty() ? null : v; }
+	public static void communityAgeGate(String passOrFail){ put("apd_community_age", passOrFail == null ? "" : passOrFail); }
+
 	//One shared preference. Everyone defaults to Clean; Adult is opt-in.
 	public static final String KEY_APD_ADULT_HUMOR = "apd_adult_humor";
 
