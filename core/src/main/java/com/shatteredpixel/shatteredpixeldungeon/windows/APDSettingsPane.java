@@ -63,6 +63,7 @@ public class APDSettingsPane extends Component {
 	private RenderedTextBlock info;
 	private CheckBox chkRecord;
     private CheckBox chkDotOverlay;
+    private CheckBox chkTrophyOutlines;
 	private CheckBox chkAdult;
     private CheckBox chkTileVisibility;
     private RedButton btnSearchedWallColor;
@@ -175,6 +176,11 @@ public class APDSettingsPane extends Component {
         };
         chkDotOverlay.checked(SPDSettings.dotOverlayEnabled());
         add(chkDotOverlay);
+        chkTrophyOutlines=new SettingCheckBox("Trophy outlines"){
+            @Override protected void onClick(){super.onClick();SPDSettings.trophyOutlines(checked());}
+        };
+        chkTrophyOutlines.checked(SPDSettings.trophyOutlines());
+        add(chkTrophyOutlines);
 
 		//Unknown age leaves the choice usable; verified underage players receive Clean.
 		chkAdult = new SettingCheckBox( "Adult humor (18+)" ) {
@@ -527,6 +533,7 @@ public class APDSettingsPane extends Component {
         row(ApdSettingsSection.VISIBILITY,btnSearchedWallColor,"Immediate display preference, saved between sessions. Choose a high-contrast checkmark color. Corner/end pieces are left unmarked. Checkmarks record searches, not proof that a wall is clear. Search chances stay unchanged.");
         row(ApdSettingsSection.VISIBILITY,chkTileVisibility,"Display preference. Make visible tiles easier to distinguish without revealing undiscovered terrain.");
         row(ApdSettingsSection.VISIBILITY,chkDotOverlay,"Immediate display preference. Show or hide the collapsible damage-over-time panel.");
+        row(ApdSettingsSection.VISIBILITY,chkTrophyOutlines,"Immediate display preference, off by default. Show bronze, silver and gold outlines on enemies you've defeated enough times. The Bestiary always shows them.");
         row(ApdSettingsSection.VISIBILITY,chkStairNavigation,"Immediate shortcut to discovered stairs only. This does not reveal hidden stairs.");
         row(ApdSettingsSection.VISIBILITY,chkAutoEnterStairs,"Immediate. Automatically change floors when a stair-navigation path reaches the staircase.");
         row(ApdSettingsSection.HISTORY,btnUimsd,"Open your recorded statistics, queries and investigation tools.");

@@ -782,6 +782,9 @@ public class SPDSettings extends GameSettings {
     public static void playbackSpeed(int value) {
         put("apd_playback_speed", com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup.allowed(value) ? value : 1);
     }
+    //Trophy outlines on enemies in the dungeon (Chris, Nov 18: a player setting, OFF by default). The Bestiary always shows them.
+    public static boolean trophyOutlines(){return getBoolean("apd_trophy_outlines",false);}
+    public static void trophyOutlines(boolean enabled){put("apd_trophy_outlines",enabled);}
     public static boolean dotOverlayEnabled(){return getBoolean("apd_dot_overlay",true);}
     public static void dotOverlayEnabled(boolean enabled){put("apd_dot_overlay",enabled);}
     public static boolean autoCollectGrassDew(){return getBoolean("apd_auto_grass_dew",true);}

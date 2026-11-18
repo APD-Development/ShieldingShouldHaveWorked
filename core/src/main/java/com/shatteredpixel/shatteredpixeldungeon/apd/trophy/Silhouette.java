@@ -36,7 +36,7 @@ public class Silhouette extends Group {
 
 	private void sync(){
 		if (target == null || target.texture == null) { visible = false; return; }
-		visible = target.visible;
+		visible = target.visible && com.shatteredpixel.shatteredpixeldungeon.SPDSettings.trophyOutlines();
 		float px = target.scale.x;
 		for (int i = 0; i < copies.length; i++){
 			Image c = copies[i];
