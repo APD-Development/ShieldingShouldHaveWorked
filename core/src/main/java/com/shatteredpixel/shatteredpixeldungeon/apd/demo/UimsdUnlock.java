@@ -37,10 +37,10 @@ public final class UimsdUnlock {
 	public static final int TEN_RUNS = UnlockProgression.TEN_RUNS;
 	public static final int DEMO_RUNS = 10;
 
-	// Until the owner switches the gate on, UIMSD stays open for everyone and no unlock screen is shown. (The gate is part of the Demo
-	// Unlock feature; the rules below are complete and tested, only the switch is kept off so nobody is locked out by surprise.)
+	// Chris, Nov 18 2026: the gate is on in every build (Developer, Alpha and the Play release), not only the Developer build.
+	// Before 10 genuine runs the title arrow says the button is useless until then; after, the dopamine/drugs arrow by humor setting.
 	public static boolean enforced(){
-		return com.shatteredpixel.shatteredpixeldungeon.apd.ApdFeatures.demoUnlock();
+		return true;
 	}
 
 	// Where the two permanent flags live (settings in the game, memory in tests).

@@ -43,14 +43,10 @@ public class UimsdGateTest {
 	}
 
 	@Test
-	public void theGateIsOffUntilTheOwnerSwitchesItOn(){
-		assertFalse(UimsdUnlock.enforced());
-	}
-
-	@Test
-	public void theTitleArrowIsAbsentWhileThePrivateGateIsOff(){
-		assertEquals("", UimsdGate.titleAnnotation(""));
-		assertEquals("the guided tour is open too", true, UimsdGate.tourAvailable());
+	public void theGateIsOnInEveryBuild(){
+		com.shatteredpixel.shatteredpixeldungeon.apd.ApdFeatures.resetForTest();
+		assertFalse(com.shatteredpixel.shatteredpixeldungeon.apd.ApdFeatures.demoUnlock());
+		assertTrue("Alpha and Play builds have the gate too (Chris, Nov 18)", UimsdUnlock.enforced());
 	}
 
 	private static final class Mem implements UimsdUnlock.Flags {

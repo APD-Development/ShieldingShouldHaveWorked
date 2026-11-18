@@ -21,7 +21,8 @@ public class ApdFeaturesTest {
 		ApdFeatures.resetForTest();
 		assertFalse(ApdFeatures.testBuild());
 		assertFalse(ApdFeatures.grudge() || ClericGrudge.enabled());
-		assertFalse(ApdFeatures.demoUnlock() || UimsdUnlock.enforced());
+		assertFalse(ApdFeatures.demoUnlock());
+		assertTrue("the UIMSD gate is on in every build", UimsdUnlock.enforced());
 		assertFalse(ApdFeatures.clericPlayable());
 	}
 
