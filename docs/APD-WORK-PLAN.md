@@ -46,7 +46,9 @@ APD_UPLOAD_* secrets exist, push to release/play-closed-test (touch the workflow
    `GplLicense.SOURCE_URL` must point to it; repo name from Chris), keep LICENSE and copyright headers, About
    credits Shattered Pixel Dungeon; remove Shattered/Evan branding, support and Patreon text and anything implying
    endorsement; nothing contacts Shattered servers (done Nov 18); ChatGPT auto-dev workflow disabled (done);
-   adult humor OFF by default (done).
+   adult humor OFF by default (done). `tools/export-public-source.sh` makes the GPL source zip (no history, no
+   keystore) and REFUSES while android/build.gradle still has the old alpha key password fallback: remove that
+   fallback (and keystore/) once Chris adds the APD_DEBUG_* secrets.
 4. **Phase 4, Dec 23-31:** bug fixing only, final build; Chris submits for production.
 
 ### Play Console paperwork Chris must do (remind him)
