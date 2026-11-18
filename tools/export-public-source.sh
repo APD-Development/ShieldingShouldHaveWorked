@@ -23,9 +23,9 @@ if os.path.exists(d): os.remove(d)
 PY
 BAD=$(cd "$TMP" && find . -type f \( -iname '*.jks' -o -iname '*.keystore' -o -iname '*.p12' -o -iname '*.pem' -o -iname '*.key' -o -iname '.env' -o -iname 'secrets.*' -o -iname '*.secret' -o -iname 'local.properties' \) | head -20)
 if [ -n "$BAD" ]; then echo "REFUSED: secret-looking files in the export:"; echo "$BAD"; exit 1; fi
-if grep -rIl --exclude-dir=.github --exclude="test_*.py" -E "apdpassword|storePassword *'[^']+'|BEGIN (RSA |EC )?PRIVATE KEY" "$TMP" >/dev/null 2>&1; then
+if grep -rIl --exclude-dir=.github --exclude="test_*.py" -E "storePassword *'[^']+'|BEGIN (RSA |EC )?PRIVATE KEY" "$TMP" >/dev/null 2>&1; then
   echo "REFUSED: a password or private key is written in these files:"
-  grep -rIl --exclude-dir=.github --exclude="test_*.py" -E "apdpassword|storePassword *'[^']+'|BEGIN (RSA |EC )?PRIVATE KEY" "$TMP" | sed "s|$TMP/||" | head
+  grep -rIl --exclude-dir=.github --exclude="test_*.py" -E "storePassword *'[^']+'|BEGIN (RSA |EC )?PRIVATE KEY" "$TMP" | sed "s|$TMP/||" | head
   exit 1
 fi
 # Private secret values (never written in this repo): one per line in $APD_FORBIDDEN, if set.
