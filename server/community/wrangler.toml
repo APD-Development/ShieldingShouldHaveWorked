@@ -10,7 +10,9 @@ database_id = "SET-AFTER-CREATING-THE-D1-DATABASE"
 migrations_dir = "migrations"
 
 [vars]
-ADMIN_EMAILS = ""   # Chris's email goes here
+ADMIN_EMAILS = ""      # Chris's email: signing up with it makes that account the admin
+GOOGLE_CLIENT_ID = ""  # Google OAuth web client id(s), comma-separated
+MAIL_FROM = ""         # e.g. community@charltonbornstudios.com (a domain onboarded to Email Sending)
 
 # Verification-code emails (Cloudflare Email Service). Needs the Workers Paid plan and the sending domain onboarded
 # (npx wrangler email sending enable charltonbornstudios.com). Until then sign-up answers "email_not_set_up".

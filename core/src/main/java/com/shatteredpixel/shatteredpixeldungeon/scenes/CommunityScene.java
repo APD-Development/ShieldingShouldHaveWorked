@@ -136,6 +136,9 @@ public class CommunityScene extends PixelScene {
             message = "Offline alpha preview: explore APD's planned community hub. Online features are not available here yet.";
             for (CommunityPreview.Page page : CommunityPreview.Page.values())
                 entries.add(WndUimsdList.Entry.item(page.title, page.summary));
+            //Developer build only: point Community at a test server without a new build
+            if (com.shatteredpixel.shatteredpixeldungeon.apd.ApdFeatures.testBuild())
+                entries.add(WndUimsdList.Entry.item("Community server address (Developer)", SPDSettings.communityServer().isEmpty() ? "Not set" : SPDSettings.communityServer()));
         } else {
             title = selected.title;
             message = "Planned feature — offline preview";
@@ -156,6 +159,15 @@ public class CommunityScene extends PixelScene {
             if (selected == null && index < CommunityPreview.Page.values().length) {
                 selected = CommunityPreview.Page.values()[index];
                 showPage();
+            } else if (selected == null && index == CommunityPreview.Page.values().length
+                    && com.shatteredpixel.shatteredpixeldungeon.apd.ApdFeatures.testBuild()) {
+                addToFront(new WndTextInput("Community server", "https address of the Community server (empty to clear).",
+                        SPDSettings.communityServer(), 200, false, "Save", "Cancel") {
+                    @Override public void onSelect(boolean positive, String text) {
+                        if (positive) SPDSettings.communityServer(text == null ? "" : text.trim());
+                        ShatteredPixelDungeon.switchNoFade(CommunityScene.class);
+                    }
+                });
             } else onBackPressed();
         }) {
             @Override public void onBackPressed() {
