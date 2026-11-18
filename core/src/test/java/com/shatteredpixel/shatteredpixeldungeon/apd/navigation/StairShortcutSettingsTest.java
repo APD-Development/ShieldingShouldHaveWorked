@@ -11,9 +11,9 @@ import java.io.File;
 import static org.junit.Assert.*;
 
 public class StairShortcutSettingsTest {
-    @Test public void missingPreferenceShowsShortcutWithoutWritingPlayerData() throws Exception {
+    @Test public void missingPreferenceHidesShortcutWithoutWritingPlayerData() throws Exception {
         withPreferences(prefs -> {
-            assertTrue(SPDSettings.stairNavigationShortcut());
+            assertFalse("every APD setting starts off (Chris, Nov 18)", SPDSettings.stairNavigationShortcut());
             assertFalse(prefs.contains("apd_stair_navigation_shortcut"));
         });
     }
@@ -24,11 +24,11 @@ public class StairShortcutSettingsTest {
             SPDSettings.autoEnterStairs(true);
             GameSettings.set(new HeadlessPreferences(prefs.getFile()));
             assertTrue(SPDSettings.autoEnterStairs());
-            assertTrue(SPDSettings.stairNavigationShortcut());
+            assertFalse(SPDSettings.stairNavigationShortcut());
             SPDSettings.autoEnterStairs(false);
             GameSettings.set(new HeadlessPreferences(prefs.getFile()));
             assertFalse(SPDSettings.autoEnterStairs());
-            assertTrue(SPDSettings.stairNavigationShortcut());
+            assertFalse(SPDSettings.stairNavigationShortcut());
         });
     }
     @Test public void explicitOffAndOnSurviveReload() throws Exception {

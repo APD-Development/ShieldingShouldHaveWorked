@@ -20,7 +20,7 @@ public class ActionConfirmationTest {
         if(m.getName().equals("get"))return values;
         return null;
     });}
-    @Before public void setup(){previousHero=Dungeon.hero;previousLevel=Dungeon.level;SPDSettings.set(preferences());}
+    @Before public void setup(){previousHero=Dungeon.hero;previousLevel=Dungeon.level;SPDSettings.set(preferences());SPDSettings.confirmWaterskin(true);SPDSettings.confirmKnownTraps(true);}
     @After public void cleanup(){Dungeon.hero=previousHero;Dungeon.level=previousLevel;SPDSettings.set(null);}
     static class Empty extends Level {protected boolean build(){return true;}protected void createMobs(){}protected void createItems(){}}
     static class Skin extends Waterskin {
@@ -31,7 +31,7 @@ public class ActionConfirmationTest {
     private String volume(Waterskin skin){try{Field f=Waterskin.class.getDeclaredField("volume");f.setAccessible(true);return Integer.toString(f.getInt(skin));}catch(Exception e){throw new AssertionError(e);}}
     private Skin skin(){Hero hero=new Hero();hero.ready=true;hero.HP=10;Dungeon.hero=hero;Skin skin=new Skin();skin.fill();hero.belongings.backpack.items.add(skin);return skin;}
     private Level trapLevel(){Level level=new Empty();level.setSize(5,5);level.traps=new com.watabou.utils.SparseArray<>();Dungeon.level=level;return level;}
-    @Test public void bothPreferencesDefaultOnAndPersistIndependently(){
+    @Test public void bothPreferencesPersistIndependently(){
         assertTrue(SPDSettings.confirmWaterskin());assertTrue(SPDSettings.confirmKnownTraps());
         SPDSettings.confirmWaterskin(false);SPDSettings.set(preferences());
         assertFalse(SPDSettings.confirmWaterskin());assertTrue(SPDSettings.confirmKnownTraps());

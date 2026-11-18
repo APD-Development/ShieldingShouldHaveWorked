@@ -98,8 +98,12 @@ public class SearchControlContextTest {
 
     private static int at(int x, int y) { return y * SIZE + x; }
 
+    private boolean oldAdaptiveChoice;
+
     @Before public void setup() throws Exception {
         HeadlessTestSupport.start();
+        oldAdaptiveChoice = SPDSettings.adaptiveSearchChoice();
+        SPDSettings.adaptiveSearchChoice(true); //off by default since Nov 18; these tests exercise it
         Random.pushGenerator(445202611L);
         oldHero = Dungeon.hero;
         oldLevel = Dungeon.level;
@@ -147,6 +151,7 @@ public class SearchControlContextTest {
     }
 
     @After public void restore() throws Exception {
+        SPDSettings.adaptiveSearchChoice(oldAdaptiveChoice);
         if (hero != null) for (Buff buff : new ArrayList<>(hero.buffs())) buff.detach();
         for (Map.Entry<Field, Object> entry : oldActors.entrySet()) entry.getKey().set(null, entry.getValue());
         selector.set(null, oldSelector);

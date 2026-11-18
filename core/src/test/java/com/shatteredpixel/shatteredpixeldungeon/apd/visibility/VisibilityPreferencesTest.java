@@ -14,7 +14,7 @@ public class VisibilityPreferencesTest {
  @Rule public TemporaryFolder temp=new TemporaryFolder();private Preferences previous;private File file;
  @Before public void setup() throws Exception {HeadlessTestSupport.start();Field f=GameSettings.class.getDeclaredField("prefs");f.setAccessible(true);previous=(Preferences)f.get(null);file=new File(temp.newFolder(),"settings.xml");GameSettings.set(new HeadlessPreferences(new FileHandle(file)));}
  @After public void cleanup(){GameSettings.set(previous);}
- @Test public void originalVisualsAndDiscoverableStairControlsAreTheDefaults(){assertFalse(SPDSettings.enhancedTileVisibility());assertTrue(SPDSettings.stairNavigationShortcut());}
+ @Test public void originalVisualsAreTheDefaultAndStairControlsStartOff(){assertFalse(SPDSettings.enhancedTileVisibility());assertFalse(SPDSettings.stairNavigationShortcut());}
  @Test public void bothOptionsPersistAcrossPreferenceReload(){SPDSettings.enhancedTileVisibility(true);SPDSettings.stairNavigationShortcut(true);GameSettings.set(new HeadlessPreferences(new FileHandle(file)));assertTrue(SPDSettings.enhancedTileVisibility());assertTrue(SPDSettings.stairNavigationShortcut());}
  @Test public void turningEnhancementOffPreservesTheOriginalGridChoice(){SPDSettings.visualGrid(1);SPDSettings.enhancedTileVisibility(true);SPDSettings.enhancedTileVisibility(false);assertEquals(1,SPDSettings.visualGrid());}
 }
