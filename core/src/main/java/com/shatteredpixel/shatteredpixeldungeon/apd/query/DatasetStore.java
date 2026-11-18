@@ -222,13 +222,26 @@ public final class DatasetStore {
 		return data.length >= 2 && (data[0] & 0xff) == 0x1f && (data[1] & 0xff) == 0x8b;
 	}
 
+	// Decompresses into one array of exactly the right size. The gzip trailer's last 4 bytes give the uncompressed size
+	// (mod 4 GiB); trusting it only as a starting size and checking the real length keeps a damaged trailer safe.
+	// The old growable-buffer version doubled and copied as it grew and copied once more at the end, so a big run's cache
+	// briefly needed 3-4x its size and ran the 256 MB heap out (Chris's diagnostic, Nov 18: 13 MB -> 222 MB in 0.2 s).
 	public static byte[] gunzip( byte[] data ) throws IOException {
+		long trailer = data.length >= 4 ? ((data[data.length - 4] & 0xffL) | (data[data.length - 3] & 0xffL) << 8
+				| (data[data.length - 2] & 0xffL) << 16 | (data[data.length - 1] & 0xffL) << 24) : 0;
+		if (trailer > Integer.MAX_VALUE - 16) throw new IOException("row cache too large");
 		try (java.util.zip.GZIPInputStream in = new java.util.zip.GZIPInputStream(new java.io.ByteArrayInputStream(data), 64 * 1024)) {
-			java.io.ByteArrayOutputStream out = new java.io.ByteArrayOutputStream(Math.max(1024, data.length * 6));
+			byte[] out = new byte[(int) trailer];
+			int off = 0, n;
+			while (off < out.length && (n = in.read(out, off, out.length - off)) > 0) off += n;
+			if (off == out.length && in.read() == -1) return out;
+			// The trailer was wrong (damaged or concatenated stream): fall back to growing, from what was read so far.
+			java.io.ByteArrayOutputStream grow = new java.io.ByteArrayOutputStream(Math.max(1024, off * 2));
+			grow.write(out, 0, off);
+			if (off == out.length) { int b = in.read(); if (b != -1) grow.write(b); }
 			byte[] buffer = new byte[64 * 1024];
-			int n;
-			while ((n = in.read(buffer)) != -1) out.write(buffer, 0, n);
-			return out.toByteArray();
+			while ((n = in.read(buffer)) != -1) grow.write(buffer, 0, n);
+			return grow.toByteArray();
 		}
 	}
 
