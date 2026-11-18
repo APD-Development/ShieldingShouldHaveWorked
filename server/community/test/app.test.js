@@ -280,3 +280,17 @@ test('full season on a fast clock: upvotes to qualify, week 1 picks to 8, then t
   assert.ok(r.champion && r.champion.title);
   assert.equal((await call('POST', '/v1/tournament/vote', { matchup: 0, submissionId: m0.a.id }, voters[0].token)).body.error, 'no_matchups_open');
 });
+
+test('anti-spam caps: 5 submissions a day, 10 comments per 10 minutes', async () => {
+  const { call, member, tick } = setup();
+  const m = await member('spam@x.com');
+  for (let i = 0; i < 5; i++) assert.equal((await call('POST', '/v1/submissions', { title: `t${i}`, body: 'b' }, m.token)).status, 201);
+  assert.equal((await call('POST', '/v1/submissions', { title: 'six', body: 'b' }, m.token)).body.error, 'too_many_submissions');
+  const s = (await call('GET', '/v1/submissions')).body.submissions[0].id;
+  for (let i = 0; i < 10; i++) await call('POST', `/v1/submissions/${s}/comments`, { body: `c${i}` }, m.token);
+  assert.equal((await call('POST', `/v1/submissions/${s}/comments`, { body: 'more' }, m.token)).status, 429);
+  tick(10 * 60 * 1000 + 1);
+  assert.equal((await call('POST', `/v1/submissions/${s}/comments`, { body: 'later' }, m.token)).status, 201);
+  tick(24 * 3600 * 1000);
+  assert.equal((await call('POST', '/v1/submissions', { title: 'next day', body: 'b' }, m.token)).status, 201);
+});

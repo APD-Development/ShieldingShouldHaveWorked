@@ -9,11 +9,26 @@
 
 import { newId, newCode, sha256, hashPassword, verifyPassword, randomHex, constantTimeEqual } from './crypto.js';
 import { clean } from './filter.js';
+import { googleVerifier } from './google.js';
 import { qualifiers, weekOneSeeds, bracket, ADVANCE } from './tournament.js';
 
 const SESSION_MS = 30 * 24 * 3600 * 1000;
 const CODE_MS = 15 * 60 * 1000;
 const MAX_CODE_ATTEMPTS = 5;
+// Anti-spam caps per account (Claude's call, Nov 18; Chris can change them): how many of each in a rolling window.
+const RATE = {
+  submissions: { table: 'submissions', col: 'author_id', max: 5, ms: 24 * 3600 * 1000 },
+  comments: { table: 'comments', col: 'author_id', max: 10, ms: 10 * 60 * 1000 },
+  reports: { table: 'reports', col: 'reporter_id', max: 30, ms: 24 * 3600 * 1000 },
+};
+
+async function rateLimit(env, account, kind) {
+  const r = RATE[kind];
+  const row = await env.DB.prepare(`SELECT COUNT(*) AS n FROM ${r.table} WHERE ${r.col} = ? AND created_at > ?`)
+    .bind(account.id, now(env) - r.ms).first();
+  if (row.n >= r.max) fail(429, `too_many_${kind}`);
+}
+
 const LIMITS = { name: 24, title: 80, body: 4000, comment: 2000, reason: 200, password: 8 };
 
 class HttpError extends Error {
@@ -286,6 +301,7 @@ route('POST', '/v1/submissions', async (env, req) => {
   const b = await body(req);
   const season = await currentSeason(env);
   if (phaseOf(season, now(env)) !== 'submissions') fail(409, 'submissions_closed');
+  await rateLimit(env, a, 'submissions');
   const id = newId();
   await env.DB.prepare('INSERT INTO submissions (id, author_id, title, body, season_id, created_at) VALUES (?, ?, ?, ?, ?, ?)')
     .bind(id, a.id, filtered(b.title, LIMITS.title, 'title'), filtered(b.body, LIMITS.body, 'body'), season.id, now(env)).run();
@@ -317,6 +333,7 @@ route('POST', '/v1/submissions/([0-9a-f]+)/comments', async (env, req, [id]) => 
   const b = await body(req);
   const s = await env.DB.prepare("SELECT id FROM submissions WHERE id = ? AND status = 'visible'").bind(id).first();
   if (!s) fail(404, 'not_found');
+  await rateLimit(env, a, 'comments');
   let parent = null;
   if (b.parentId != null) {
     parent = await env.DB.prepare("SELECT id FROM comments WHERE id = ? AND submission_id = ?").bind(String(b.parentId), id).first();
@@ -478,6 +495,7 @@ route('POST', '/v1/reports', async (env, req) => {
   const b = await body(req);
   const table = KINDS[b.kind];
   if (!table) fail(400, 'bad_kind');
+  await rateLimit(env, a, 'reports');
   const target = await env.DB.prepare(`SELECT id FROM ${table} WHERE id = ?`).bind(String(b.id || '')).first();
   if (!target) fail(404, 'not_found');
   const reason = clean(text(b.reason, LIMITS.reason, 'reason')) ?? '[reason contained blocked words]';
@@ -559,4 +577,16 @@ export async function handle(request, env) {
   return json(404, { error: 'no_route' });
 }
 
-export default { fetch: handle };
+// Real deployment: Google tokens are checked against GOOGLE_CLIENT_ID. The mail sender is a binding set up once the
+// email provider is chosen; until then sign-up codes can't be delivered and registration answers 503.
+let google = null;
+export default {
+  fetch(request, env) {
+    if (!env.GOOGLE) {
+      google = google || googleVerifier({ clientId: env.GOOGLE_CLIENT_ID });
+      env = { ...env, GOOGLE: google };
+    }
+    if (!env.MAILER) env = { ...env, MAILER: { async send() { throw new HttpError(503, 'email_not_set_up'); } } };
+    return handle(request, env);
+  },
+};
