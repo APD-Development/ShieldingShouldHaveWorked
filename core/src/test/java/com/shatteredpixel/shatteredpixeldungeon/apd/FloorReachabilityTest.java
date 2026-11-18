@@ -36,6 +36,15 @@ public class FloorReachabilityTest {
 	private static boolean bossFloor(int depth){ return depth % 5 == 0; }
 
 	@Test public void everyFloorIsWalkableFromEntranceToExit() throws Exception {
+		check(new long[]{918271L, 20261118L}, 0, HeroClass.WARRIOR);
+	}
+
+	@Test public void stillWalkableWithEveryChallengeAndOtherClasses() throws Exception {
+		check(new long[]{4242L}, com.shatteredpixel.shatteredpixeldungeon.Challenges.MAX_VALUE, HeroClass.ROGUE);
+		check(new long[]{777L}, 0, HeroClass.HUNTRESS);
+	}
+
+	private static void check(long[] seeds, int challenges, HeroClass heroClass) throws Exception {
 		List<String> problems = new ArrayList<>();
 		LevelGenerationHarness.levelObserver = (depth, level) -> {
 			int in = level.entrance(), out = level.exit();
@@ -54,8 +63,8 @@ public class FloorReachabilityTest {
 				}
 			}
 		};
-		for (long seed : new long[]{918271L, 20261118L}){
-			LevelGenerationHarness.generate(seed, 0, HeroClass.WARRIOR, LevelGenerationHarness.Context.VETERAN, 24);
+		for (long seed : seeds){
+			LevelGenerationHarness.generate(seed, challenges, heroClass, LevelGenerationHarness.Context.VETERAN, 24);
 		}
 		assertTrue(problems.toString(), problems.isEmpty());
 	}
