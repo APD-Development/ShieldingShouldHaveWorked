@@ -25,7 +25,7 @@ import java.util.List;
 public final class GplLicense {
     private GplLicense() {}
     public static final String ASSET = "legal/GPL-3.0.txt";
-    public static final String SOURCE_URL = "https://github.com/APD-Development/ShieldingShouldHaveWorked";
+    public static final String SOURCE_URL = "https://github.com/APD-Development/adhd-pixel-dungeon";
     public static final String NOTICE = "ADHD Pixel Dungeon is modified by Chris Charlton (2026). "
             + "It is based on Shattered Pixel Dungeon by Evan Debenham and Pixel Dungeon by Oleg Dolya (Watabou).\n\n"
             + "Licensed under GNU GPL version 3 or later, without warranty. "
