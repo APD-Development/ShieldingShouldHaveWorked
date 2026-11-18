@@ -77,6 +77,9 @@ default-on settings (SPDSettings.keepOldDefaultsForExistingPlayers). Next: Googl
 (Credential Manager), server URL default once deployed, run reviews. HttpGateway contract routes, deployment workflow, Android Community screens wired to it, Play Age Signals.
 
 ## Run log
+- 2026-11-18 2 PM: upvote button shows state + count, week-1 picks toggle locally, offline no longer signs out
+  (Try again), plain words for every server error (+ test), hub links to planned pages, preview text matches decided
+  rules, deploy finds/creates D1 and runs on push to deploy/community-server (dry run verified: tests pass, no token).
 - 2026-11-18 1 PM: blocked-players list, in-game Start a season, Find a player (ban/unban), web /delete page (Play),
   admin promoted at sign-in, client/server field contract test, GPL export script, last Shattered text in all languages
   and crash messages. Play paperwork draft: docs/PLAY-COMMUNITY-PAPERWORK.md. Run reviews need Chris's design answers.
