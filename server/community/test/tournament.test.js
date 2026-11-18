@@ -15,20 +15,19 @@ test('Month 2: the 16 most-upvoted are seeded 1-16; a tie for a seed goes to the
   assert.ok(!s.some((x) => x.id === 'tieLate' || x.id === 'low'));
 });
 
-test('Week 1 is a 16-seed round: 1v16, 8v9, 5v12, 4v13, 6v11, 3v14, 7v10, 2v15, then 8 -> 4 -> 2 -> 1', () => {
+test('Week 1 is 1v16, 2v15 ... 8v9; every later round reseeds so the highest seed left plays the lowest', () => {
   const s = Array.from({ length: 16 }, (_, i) => ({ id: `s${i + 1}` }));
   const quiet = bracket(s, new Map(), 4);
-  assert.equal(quiet.length, 4);
   assert.deepEqual(quiet[0].matchups.map((m) => [m.a, m.b]),
-    [['s1', 's16'], ['s8', 's9'], ['s5', 's12'], ['s4', 's13'], ['s6', 's11'], ['s3', 's14'], ['s7', 's10'], ['s2', 's15']]);
+    [['s1', 's16'], ['s2', 's15'], ['s3', 's14'], ['s4', 's13'], ['s5', 's12'], ['s6', 's11'], ['s7', 's10'], ['s8', 's9']]);
   assert.deepEqual(quiet.map((r) => r.matchups.length), [8, 4, 2, 1]);
-  assert.deepEqual(quiet[1].matchups.map((m) => [m.a, m.b]), [['s1', 's8'], ['s5', 's4'], ['s6', 's3'], ['s7', 's2']]);
-  assert.equal(quiet[3].matchups[0].winner, 's1'); // no votes anywhere: higher seed always wins
-  // Upset in week 1, tie in week 2 goes to the higher seed
+  assert.deepEqual(quiet[1].matchups.map((m) => [m.a, m.b]), [['s1', 's8'], ['s2', 's7'], ['s3', 's6'], ['s4', 's5']]);
+  assert.equal(quiet[3].matchups[0].winner, 's1');
+  // Upsets: 16 beats 1 and 9 beats 8. Reseeded week 2: 2v16, 3v9, 4v7, 5v6. A tie goes to the higher seed.
   const v = (pairs) => new Map(pairs.map(([slot, a, va, b, vb]) => [slot, new Map([[a, va], [b, vb]])]));
-  const r = bracket(s, new Map([[1, v([[0, 's1', 1, 's16', 4]])], [2, v([[0, 's16', 2, 's8', 2]])]]), 2);
-  assert.equal(r[0].matchups[0].winner, 's16');
-  assert.equal(r[1].matchups[0].winner, 's8');
+  const r = bracket(s, new Map([[1, v([[0, 's1', 1, 's16', 4], [7, 's8', 0, 's9', 2]])], [2, v([[0, 's2', 3, 's16', 3]])]]), 2);
+  assert.deepEqual(r[1].matchups.map((m) => [m.a, m.b]), [['s2', 's16'], ['s3', 's9'], ['s4', 's7'], ['s5', 's6']]);
+  assert.equal(r[1].matchups[0].winner, 's2');
 });
 
 test('Fewer than 16 entries: missing opponents are byes', () => {

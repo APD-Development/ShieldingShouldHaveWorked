@@ -261,19 +261,19 @@ test('full season on a fast clock: upvotes to qualify, a 16-seed bracket from we
   const m0 = r.rounds[0].matchups[0]; // seed 1 vs seed 16: only 10 entries, so a bye
   assert.ok(m0.bye);
   assert.equal((await call('POST', '/v1/tournament/vote', { matchup: 0, submissionId: m0.a.id }, voters[0].token)).body.error, 'bye_no_vote');
-  const m1 = r.rounds[0].matchups[1]; // seed 8 vs seed 9
+  const m1 = r.rounds[0].matchups[7]; // seed 8 vs seed 9
   assert.deepEqual([m1.a.title, m1.b.title], ['Idea 3', 'Idea 4']);
-  assert.equal((await call('POST', '/v1/tournament/vote', { matchup: 1, submissionId: subs[9] }, voters[0].token)).body.error, 'not_in_matchup');
-  assert.equal((await call('POST', '/v1/tournament/vote', { matchup: 1, submissionId: m1.b.id }, authors[4].token)).body.error, 'own_submission');
+  assert.equal((await call('POST', '/v1/tournament/vote', { matchup: 7, submissionId: subs[9] }, voters[0].token)).body.error, 'not_in_matchup');
+  assert.equal((await call('POST', '/v1/tournament/vote', { matchup: 7, submissionId: m1.b.id }, authors[4].token)).body.error, 'own_submission');
   // Upset: seed 9 beats seed 8; a voter changes their mind and only the latest vote counts
-  await call('POST', '/v1/tournament/vote', { matchup: 1, submissionId: m1.a.id }, voters[0].token);
-  await call('POST', '/v1/tournament/vote', { matchup: 1, submissionId: m1.b.id }, voters[0].token);
-  await call('POST', '/v1/tournament/vote', { matchup: 1, submissionId: m1.b.id }, voters[1].token);
+  await call('POST', '/v1/tournament/vote', { matchup: 7, submissionId: m1.a.id }, voters[0].token);
+  await call('POST', '/v1/tournament/vote', { matchup: 7, submissionId: m1.b.id }, voters[0].token);
+  await call('POST', '/v1/tournament/vote', { matchup: 7, submissionId: m1.b.id }, voters[1].token);
   r = (await call('GET', '/v1/season/results')).body;
-  assert.deepEqual([r.rounds[0].matchups[1].a.votes, r.rounds[0].matchups[1].b.votes, r.rounds[0].matchups[1].winner], [0, 2, null]);
+  assert.deepEqual([r.rounds[0].matchups[7].a.votes, r.rounds[0].matchups[7].b.votes, r.rounds[0].matchups[7].winner], [0, 2, null]);
   tick(10 * min); // Week 2
   r = (await call('GET', '/v1/season/results')).body;
-  assert.equal(r.rounds[0].matchups[1].winner, m1.b.id);
+  assert.equal(r.rounds[0].matchups[7].winner, m1.b.id);
   assert.deepEqual([r.rounds[1].matchups[0].a.title, r.rounds[1].matchups[0].b.title], ['Idea 9', 'Idea 4']);
   tick(10 * min); // Week 3
   tick(10 * min); // Week 4: final
@@ -282,7 +282,7 @@ test('full season on a fast clock: upvotes to qualify, a 16-seed bracket from we
   assert.equal(r.season.phase, 'finished');
   assert.equal(r.rounds.length, 4);
   assert.ok(r.champion && r.champion.title);
-  assert.equal((await call('POST', '/v1/tournament/vote', { matchup: 1, submissionId: m1.a.id }, voters[0].token)).body.error, 'no_matchups_open');
+  assert.equal((await call('POST', '/v1/tournament/vote', { matchup: 7, submissionId: m1.a.id }, voters[0].token)).body.error, 'no_matchups_open');
 });
 
 test('anti-spam caps: 5 submissions a day, 10 comments per 10 minutes', async () => {

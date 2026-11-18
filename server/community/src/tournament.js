@@ -1,8 +1,8 @@
 // Season results, worked out from the votes every time they're asked for (nothing stored that could drift).
 // Rules (Chris, Nov 18 2026, final): a March Madness style bracket.
 //  Month 2: upvote any number of submissions, one upvote each, never your own. The 16 most-upvoted are seeded 1-16.
-//  Tournament weeks 1-4: seeded 1v1 bracket from week 1 (1v16, 8v9, 5v12, 4v13, 6v11, 3v14, 7v10, 2v15, winners meet:
-//           16 -> 8 -> 4 -> 2 -> 1). One vote per account per matchup, changeable until the week ends.
+//  Tournament weeks 1-4: 1v1 rounds 16 -> 8 -> 4 -> 2 -> 1. Week 1 is 1v16, 2v15, 3v14 ... 8v9. Every later round
+//           is reseeded: the highest seed left plays the lowest seed left, and so on inward. One vote per account per matchup, changeable until the week ends.
 //           A tied matchup goes to the higher seed.
 // Decisions made for Chris (revert if he says no): a tie for a seed (including at 16th) goes to the earlier submission;
 // you can't vote for your own submission in the tournament either; votes from banned accounts and hidden/removed
@@ -20,15 +20,19 @@ export function seeds(entries) {
   return rank(entries).slice(0, SEEDS);
 }
 
-// Bracket order so 1 and 2 can only meet in the final (standard 16-team order).
-const FIRST_ROUND = [[0, 15], [7, 8], [4, 11], [3, 12], [5, 10], [2, 13], [6, 9], [1, 14]];
+// Highest seed left vs lowest seed left, then inward: [1v16, 2v15, ...]. ids must be in seed order.
+function pairUp(ids, size) {
+  const out = [];
+  for (let i = 0; i < size / 2; i++) out.push([ids[i] ?? null, ids[size - 1 - i] ?? null]);
+  return out;
+}
 
 // seeded: seeds() order. votesByWeek: week -> Map(matchupIndex -> Map(submissionId -> votes)).
 // Returns the rounds for weeks 1..upToWeek: each matchup {a, b, votesA, votesB, winner}.
 export function bracket(seeded, votesByWeek, upToWeek) {
   if (seeded.length < 2) return [];
   const seedOf = new Map(seeded.map((e, i) => [e.id, i]));
-  let pairs = FIRST_ROUND.map(([x, y]) => [seeded[x]?.id ?? null, seeded[y]?.id ?? null]);
+  let pairs = pairUp(seeded.map((e) => e.id), 16);
   const rounds = [];
   for (let week = 1; week <= Math.min(upToWeek, 4); week++) {
     const votes = votesByWeek.get(week) || new Map();
@@ -41,8 +45,8 @@ export function bracket(seeded, votesByWeek, upToWeek) {
     rounds.push({ week, matchups: round });
     const winners = round.map((m) => m.winner);
     if (winners.length < 2) break;
-    pairs = [];
-    for (let i = 0; i + 1 < winners.length; i += 2) pairs.push([winners[i], winners[i + 1]]);
+    // Reseed: survivors in seed order, highest plays lowest.
+    pairs = pairUp([...winners].sort((x, y) => seedOf.get(x) - seedOf.get(y)), winners.length);
   }
   return rounds;
 }
