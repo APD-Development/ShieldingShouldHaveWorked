@@ -53,7 +53,11 @@ APD_UPLOAD_* secrets exist, push to release/play-closed-test (touch the workflow
 Add the 4 upload-key secrets; Data safety form (accounts, user content); content rating questionnaire again (users
 interact); privacy policy update; account deletion web link.
 
-## Daily alpha APK (3 PM ET run only)
+## Daily alpha APK: PAUSED (Chris, Nov 18 11:30)
+No more alpha APKs after C489S/P489S until the Community server is up and running. Do not run the steps below
+until Chris says so.
+
+## Daily alpha APK steps (3 PM ET run only, when un-paused)
 Merge `release/play-closed-test` into `fix/apd-trap-room-search-20261116`, add the Change History entry
 (core/src/main/assets/apd/changes.tsv, player-noticeable changes only), bump the build label in
 `.github/workflows/apd488t-trap-room-search-apk.yml` (C489O -> C489P -> ...; that push triggers the build), fix any
