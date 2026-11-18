@@ -5,6 +5,9 @@ TAB	480+
 MAJOR	Coming Soon
 BTN	i:NEWS	What's next	I'm working on this change history first. After that, the **Cleric Grudge** design and the leftover **talent description** audit are next.\n\nAnything marked "Developer build" only exists in my own test build until I say it's ready for Alpha Testers.
 MAJOR	APD 489
+BUILD	C489P / P489P (Nov 18)
+BTN	i:RANKINGS	UIMSD unlock arrow	The title screen arrow now works in every build: before **10 real runs** it says the UIMSD button is useless until then, and after that it points you to **unlimited dopamine** (or something stronger with Adult humor on).
+BTN	i:NEWS	Cleaner text	Update notices, save warnings and the victory screen now say **ADHD Pixel Dungeon**, the title shows **v4.0.8**, and Adult humor now starts **off** for everyone.
 BUILD	C489O / P489O (Nov 18)
 BTN	s:RING_RUBY	Gemstone Dust fix	The alchemy pot was refusing rings, so **Gemstone Dust could never be made**. Identified, uncursed rings now go in.
 BTN	s:RATION	Hunger countdown fix	**Turns until Hungry** now counts the extra time from being **Well Fed**, and shows nothing while hunger is paused (tutorial, boss fights, challenge arena).
