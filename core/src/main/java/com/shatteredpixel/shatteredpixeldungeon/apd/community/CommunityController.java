@@ -457,9 +457,10 @@ public final class CommunityController {
 		for (JsonValue m = round.get("matchups").child; m != null; m = m.next){
 			final int idx = m.getInt("matchup");
 			if (m.getBoolean("bye", false)){
-				JsonValue only = m.get("a").isNull() ? m.get("b") : m.get("a");
-				s.note((only == null || only.isNull() ? "-" : only.getString("title", "")) + " goes through (no opponent)");
-				continue;
+				JsonValue a = m.get("a"), b = m.get("b");
+				JsonValue only = a != null && !a.isNull() ? a : b;
+				if (only != null && !only.isNull()) s.note(only.getString("title", "") + " goes through (no opponent)");
+				continue; // an empty slot (fewer than 8 entries) shows nothing
 			}
 			JsonValue a = m.get("a"), bb = m.get("b");
 			String winner = m.get("winner") == null || m.get("winner").isNull() ? null : m.getString("winner");
