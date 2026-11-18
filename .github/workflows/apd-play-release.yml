@@ -52,6 +52,15 @@ jobs:
           APK=$(find android/build/outputs/apk/release -name "*.apk" | head -1)
           "$ANDROID_HOME/build-tools/$BT/aapt" dump badging "$APK" | grep -E "^package:|sdkVersion|targetSdkVersion"
           rm -f "$RUNNER_TEMP/apd-upload.jks"
+      - name: Bundle signature
+        run: |
+          AAB=android/build/outputs/bundle/release/android-release.aab
+          if jarsigner -verify -verbose:summary "$AAB" | grep -q "jar verified"; then
+            jarsigner -verify -verbose -certs "$AAB" | grep -m1 "Signed by" || true
+            echo "SIGNED: the .aab is signed and ready for Play"
+          else
+            echo "UNSIGNED: add the APD_UPLOAD_* secrets, then rerun this workflow"
+          fi
       - name: No Shattered servers in the release
         run: |
           APK=$(find android/build/outputs/apk/release -name "*.apk" | head -1)
