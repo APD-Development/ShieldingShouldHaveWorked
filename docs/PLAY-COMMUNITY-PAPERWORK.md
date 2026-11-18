@@ -12,27 +12,25 @@ Nothing here has been submitted.
 **Encrypted in transit?** Yes (HTTPS only; the app refuses non-https addresses).
 
 **Can users ask for their data to be deleted?** Yes: in the app (Community > Account > Delete my account) and on the
-web at `https://<community server>/delete`.
+web at `https://apd-community.charltonchris29.workers.dev/delete`.
 
 | Play data type | Collected? | Why | Optional? |
 |---|---|---|---|
-| Personal info > Email address | Yes | Account management (sign-in, verification code) | Yes (only if they use Community) |
 | Personal info > Name | Yes (the display name they pick) | App functionality (shown on posts) | Yes |
-| Personal info > User IDs | Yes (account id; Google account id for Google sign-in) | Account management | Yes |
+| Personal info > User IDs | Yes (account id and the Google account id from Google sign-in) | Account management | Yes |
 | Messages > Other in-app messages | Yes (ideas and comments; there are no private messages) | App functionality | Yes |
 | App activity > Other user-generated content | Yes (upvotes, tournament votes, reports, blocks) | App functionality | Yes |
 | Personal info > Other info | Yes: only "passed the 16+ check" (never the birth date or age) | App functionality (age gate) | Yes |
 
 Not collected: location, contacts, photos, files, payment info, device IDs, crash logs sent automatically (bug
-reports are only shared when the player chooses to send one), advertising IDs. Passwords are stored only as salted
-hashes.
+reports are only shared when the player chooses to send one), advertising IDs, email addresses (Google sign-in is the only way in; the server keeps the Google account id, never the
+email), passwords (there are none).
 
 ## 2. Account deletion (App content > Data deletion)
 
 - In-app path: Community > Account > Delete my account (type DELETE to confirm).
-- Web link: `https://<community server>/delete` (email + password). Google sign-in accounts are told to delete in the
-  app. **Decide:** add a contact email to that page for people who can't open the app, so Google-account players can
-  ask too. I didn't invent one.
+- Web link: `https://apd-community.charltonchris29.workers.dev/delete`. The player signs in with Google there and that
+  account is deleted. No email or password involved.
 - What's deleted: the account, its ideas, comments, votes, reports and blocks. Comments other players replied to are
   kept as empty "[deleted]" placeholders. Nothing is kept afterwards.
 
@@ -46,12 +44,11 @@ hashes.
 
 ## 4. Privacy policy (https://charltonbornstudios.com/apd-privacy)
 
-Add a Community section saying: what's collected (table above), that Cloudflare hosts it, that it's only used to run
+Add a Community section saying: sign-in is Google only and no email or password is stored, what's collected (table above), that Cloudflare hosts it, that it's only used to run
 Community, that there's no advertising or selling, how to delete (in-app path and web link), that only a pass/fail
 of the 16+ check is kept, and how to contact you.
 
 ## Also needed before Community goes live
 
-- Cloudflare account + API token (deploys the server), D1 database id.
-- Email sending for verification codes (Cloudflare Workers Paid, about $5/month; your call).
-- Google OAuth web client id (for the Google sign-in button).
+- Done Nov 18: Cloudflare Worker + D1 deployed from `deploy/community-server`; Google OAuth web and Android clients;
+  consent screen published. Launch is Google sign-in only, so no email service and no monthly cost.
