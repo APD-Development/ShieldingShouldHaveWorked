@@ -52,6 +52,7 @@ public class CommunityControllerTest {
 
 	@Before public void start() throws Exception {
 		CommunityAgeGate.play = null; // no Google Play in tests: the birth month/year question is used
+		CommunityController.google = null;
 		server = HttpServer.create(new InetSocketAddress("127.0.0.1", 0), 0);
 		server.createContext("/", ex -> {
 			String key = ex.getRequestMethod() + " " + ex.getRequestURI().getPath();
@@ -163,5 +164,24 @@ public class CommunityControllerTest {
 		tap("Submissions");
 		assertNull(store.token);
 		assertTrue(has(last(), "Sign in with email"));
+	}
+
+	@Test public void googleSignInSendsTheTokenAndCancelGoesBack(){
+		store.age = "pass";
+		signedInWorld(false);
+		reply("POST /v1/auth/google", 200, "{\"token\":\"gtok\"}");
+		CommunityController.google = done -> done.accept("google-id-token");
+		controller().start();
+		tap("Sign in with Google");
+		assertEquals("gtok", store.token);
+		assertTrue(requests.get(0).startsWith("POST /v1/auth/google {\"idToken\":\"google-id-token\"}"));
+		assertTrue(has(last(), "Signed in as Chris"));
+		store.token = null; screens.clear(); requests.clear();
+		CommunityController.google = done -> done.accept(null);
+		controller().start();
+		tap("Sign in with Google");
+		assertTrue(has(last(), "Sign in with email"));
+		assertTrue("cancelling sends nothing", requests.isEmpty());
+		CommunityController.google = null;
 	}
 }

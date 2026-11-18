@@ -133,6 +133,10 @@ dependencies {
     implementation "com.badlogicgames.gdx-controllers:gdx-controllers-android:$gdxControllersVersion"
     //APD: Community's 16+ gate asks Google Play for an age range first (see PlayAgeSignals)
     implementation 'com.google.android.play:age-signals:0.0.4'
+    //APD: Community "Sign in with Google" (see GoogleCommunitySignIn)
+    implementation 'androidx.credentials:credentials:1.5.0'
+    implementation 'androidx.credentials:credentials-play-services-auth:1.5.0'
+    implementation 'com.google.android.libraries.identity.googleid:googleid:1.1.1'
 
     androidTestImplementation "androidx.test.ext:junit:1.2.1"
     androidTestImplementation "androidx.test:core:1.6.1"

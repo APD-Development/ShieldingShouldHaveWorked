@@ -57,6 +57,14 @@ public final class CommunityController {
 		void token(String token);
 	}
 
+	// Google sign-in on the platform (Android Credential Manager). Calls done once with a Google ID token, or null
+	// when the player cancels or Google sign-in isn't available. Null source = no Google button.
+	public interface GoogleSource {
+		void request(Consumer<String> done);
+	}
+
+	public static volatile GoogleSource google = null;
+
 	public static final class Row {
 		public final String label, detail;
 		public final int kind; // 0 heading, 1 note, 2 item, 3 warning
@@ -174,12 +182,24 @@ public final class CommunityController {
 	private Screen signedOut(String problem){
 		Screen s = new Screen("Community", "Sign in to post ideas, comment and vote.");
 		if (problem != null) s.warning(problem);
+		if (google != null) s.item("Sign in with Google", null, this::signInGoogle);
 		s.item("Sign in with email", null, this::signIn);
 		s.item("Create an account", null, this::register);
 		s.item("I have a verification code", null, () -> askEmailThen(this::askCode));
 		s.item("Back", null, ui::leave);
 		s.back = ui::leave;
 		return s;
+	}
+
+	private void signInGoogle(){
+		ui.busy("Waiting for Google...");
+		google.request(idToken -> {
+			if (idToken == null){ ui.show(signedOut(null)); return; }
+			call(() -> api.google(idToken), r -> {
+				if (r.ok()){ remember(); signedInOrOut(); }
+				else ui.show(signedOut(message(r)));
+			});
+		});
 	}
 
 	private void askEmailThen(Consumer<String> next){
@@ -555,6 +575,7 @@ public final class CommunityController {
 			case "too_many_reports": return "You've sent a lot of reports today.";
 			case "not_found": return "That isn't there any more.";
 			case "slow_down": return "Too many tries. Wait a few minutes and try again.";
+			case "bad_google_token": return "Google sign-in didn't work. Try again or use email.";
 			case "no_matchups_open": case "not_week_one": return "That vote isn't open right now.";
 			default:
 				if (e.startsWith("too_long_")) return "That's too long.";

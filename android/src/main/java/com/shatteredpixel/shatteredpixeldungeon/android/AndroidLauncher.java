@@ -118,6 +118,8 @@ public class AndroidLauncher extends AndroidApplication {
 
 			//APD: Community's 16+ gate asks Google Play first; asked only when the player opens Community
 			com.shatteredpixel.shatteredpixeldungeon.apd.age.CommunityAgeGate.play = new PlayAgeSignals(this);
+			if (!com.shatteredpixel.shatteredpixeldungeon.SPDSettings.COMMUNITY_GOOGLE_CLIENT_ID.isEmpty())
+				com.shatteredpixel.shatteredpixeldungeon.apd.community.CommunityController.google = new GoogleCommunitySignIn(this, com.shatteredpixel.shatteredpixeldungeon.SPDSettings.COMMUNITY_GOOGLE_CLIENT_ID);
 
 			//F-Droid specifically considers auto news checking to be an 'anti-feature', so default it to false
 			if (NewsImpl.supportsNews()) {
@@ -138,6 +140,8 @@ public class AndroidLauncher extends AndroidApplication {
 		} else {
 			instance = this;
 			com.shatteredpixel.shatteredpixeldungeon.apd.age.CommunityAgeGate.play = new PlayAgeSignals(this);
+			if (!com.shatteredpixel.shatteredpixeldungeon.SPDSettings.COMMUNITY_GOOGLE_CLIENT_ID.isEmpty())
+				com.shatteredpixel.shatteredpixeldungeon.apd.community.CommunityController.google = new GoogleCommunitySignIn(this, com.shatteredpixel.shatteredpixeldungeon.SPDSettings.COMMUNITY_GOOGLE_CLIENT_ID);
 		}
 
         AndroidSupportDiagnostics.initialize(this);
