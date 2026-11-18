@@ -28,10 +28,14 @@ public class HeroBasicsTest {
 	@Test public void levelStrengthHpAndExpSurviveASave(){
 		HeadlessTestSupport.start();
 		Hero h = new Hero();
+		h.heroClass = HeroClass.WARRIOR;
+		Talent.initClassTalents(h);
 		h.lvl = 7; h.STR = 13; h.HT = 50; h.HP = 31; h.exp = 4;
 		Bundle b = new Bundle();
 		h.storeInBundle(b);
 		Hero back = new Hero();
+		back.heroClass = HeroClass.WARRIOR;
+		Talent.initClassTalents(back);
 		back.restoreFromBundle(b);
 		assertEquals(7, back.lvl);
 		assertEquals(13, back.STR);
