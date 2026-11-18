@@ -10,6 +10,8 @@ on:
       - .github/ci/release-smoke-test.sh
       - build.gradle
       - android/**
+      - services/**
+      - settings.gradle
   workflow_dispatch:
 
 permissions:
@@ -50,6 +52,13 @@ jobs:
           APK=$(find android/build/outputs/apk/release -name "*.apk" | head -1)
           "$ANDROID_HOME/build-tools/$BT/aapt" dump badging "$APK" | grep -E "^package:|sdkVersion|targetSdkVersion"
           rm -f "$RUNNER_TEMP/apd-upload.jks"
+      - name: No Shattered servers in the release
+        run: |
+          APK=$(find android/build/outputs/apk/release -name "*.apk" | head -1)
+          mkdir -p apkx && unzip -q -o "$APK" -d apkx
+          HITS=$(grep -a -o -h -E "shatteredpixel\.com|00-Evan/shattered|api\.github\.com/repos/00-Evan" apkx/classes*.dex | sort | uniq -c || true)
+          if [ -n "$HITS" ]; then echo "FAIL: release code still names Shattered servers:"; echo "$HITS"; exit 1; fi
+          echo "PASS: no shatteredpixel.com or 00-Evan GitHub address in the release code"
       - uses: actions/upload-artifact@v4
         with:
           name: APD-Play-Release-Bundle
