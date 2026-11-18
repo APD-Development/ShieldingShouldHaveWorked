@@ -29,7 +29,7 @@ public class CommunityControllerTest {
 	private final List<CommunityController.Screen> screens = new ArrayList<>();
 	private final Deque<String> answers = new ArrayDeque<>();
 	private final List<String> asked = new ArrayList<>();
-	private boolean left;
+	private boolean left, planned;
 
 	private final CommunityController.Ui ui = new CommunityController.Ui(){
 		public void show(CommunityController.Screen s){ screens.add(s); }
@@ -39,6 +39,7 @@ public class CommunityControllerTest {
 		}
 		public void busy(String m){}
 		public void leave(){ left = true; }
+		public void planned(){ planned = true; }
 	};
 
 	private static final class Store implements CommunityController.Storage {
@@ -243,5 +244,13 @@ public class CommunityControllerTest {
 		assertTrue(has(last(), "3 upvotes"));
 		tap("Take back my upvote");
 		assertTrue(requests.stream().anyMatch(r -> r.startsWith("DELETE /v1/submissions/5501/upvote")));
+	}
+
+	@Test public void theHubLinksToWhatsComingNext(){
+		store.age = "pass"; store.token = "tok";
+		signedInWorld(false);
+		controller().start();
+		tap("What's coming next");
+		assertTrue(planned);
 	}
 }

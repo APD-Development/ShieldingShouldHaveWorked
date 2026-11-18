@@ -44,6 +44,8 @@ public final class CommunityController {
 		void ask(String title, String body, String initial, int maxLength, boolean multiLine, Consumer<String> answer);
 		void busy(String message);
 		void leave();
+		// The read-only pages about what's planned (run reviews, mods, events...). Returning from them restarts Community.
+		void planned();
 	}
 
 	// Runs a network call off the render thread, then hands the result back on it. Tests run both at once.
@@ -257,6 +259,7 @@ public final class CommunityController {
 			s.item("Voting and results", "Upvotes, the top 16 and the tournament", this::results);
 			s.item("Account", "Sign out or delete your account", this::account);
 			if (me.getBoolean("admin", false)) s.item("Moderation", "Reports, hide, remove, ban", this::moderation);
+			s.item("What's coming next", "Run reviews, mods, events and more", ui::planned);
 			s.item("Back", null, ui::leave);
 			s.back = ui::leave;
 			ui.show(s);

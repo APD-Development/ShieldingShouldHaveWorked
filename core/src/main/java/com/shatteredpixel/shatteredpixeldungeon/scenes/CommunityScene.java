@@ -122,7 +122,17 @@ public class CommunityScene extends PixelScene {
         }
 
         @Override public void leave() { ShatteredPixelDungeon.switchNoFade(TitleScene.class); }
+
+        @Override public void planned() {
+            if (shown != null) { shown.hide(); shown = null; }
+            fromLive = true;
+            selected = null;
+            showPage();
+        }
     }
+
+    // True while the planned-features pages were opened from the live hub: backing out goes to the hub, not the title.
+    private boolean fromLive;
 
     // ---- offline preview (no server address yet) ----
 
@@ -132,8 +142,8 @@ public class CommunityScene extends PixelScene {
         String title;
         String message;
         if (selected == null) {
-            title = "Community";
-            message = "Offline alpha preview: explore APD's planned community hub. Online features are not available here yet.";
+            title = fromLive ? "What's coming next" : "Community";
+            message = fromLive ? "What's live now and what's planned for Community." : "Offline alpha preview: explore APD's planned community hub. Online features are not available here yet.";
             for (CommunityPreview.Page page : CommunityPreview.Page.values())
                 entries.add(WndUimsdList.Entry.item(page.title, page.summary));
             //Developer build only: point Community at a test server without a new build
@@ -154,7 +164,7 @@ public class CommunityScene extends PixelScene {
             entries.add(WndUimsdList.Entry.heading("Availability"));
             entries.add(WndUimsdList.Entry.note(selected.availability()));
         }
-        entries.add(WndUimsdList.Entry.item(selected == null ? "Main menu" : "Back to Community"));
+        entries.add(WndUimsdList.Entry.item(selected == null && !fromLive ? "Main menu" : "Back to Community"));
         addToFront(new WndUimsdList(title, message, false, entries, (index, checked) -> {
             if (selected == null && index < CommunityPreview.Page.values().length) {
                 selected = CommunityPreview.Page.values()[index];
@@ -178,6 +188,7 @@ public class CommunityScene extends PixelScene {
     }
     @Override protected void onBackPressed() {
         if (selected != null) { selected = null; showPage(); }
+        else if (fromLive) ShatteredPixelDungeon.switchNoFade(CommunityScene.class);
         else ShatteredPixelDungeon.switchNoFade(TitleScene.class);
     }
 }
