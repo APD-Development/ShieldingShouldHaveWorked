@@ -1,5 +1,5 @@
 name: APD C489P/P489P trap-room search
-# UIMSD gate in every build, v4.0.8 title, C489P/P489P.
+# UIMSD gate in every build, v4.0.8 title, C489P/P489P (rebuild after test fixes).
 on:
   push:
     branches: [fix/apd-trap-room-search-20261116]
