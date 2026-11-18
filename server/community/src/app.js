@@ -264,8 +264,7 @@ route('POST', '/v1/account/age', async (env, req) => {
 });
 
 // Deletes the account and everything it posted, voted or reported. Replies by others under deleted comments go too.
-route('DELETE', '/v1/account', async (env, req) => {
-  const a = await need(env, req);
+async function deleteAccount(env, a) {
   // My comments that others replied to stay as empty placeholders owned by [deleted], so their replies aren't lost.
   // Everything else I wrote, voted, reported or blocked goes with the account.
   await env.DB.prepare(
@@ -273,6 +272,10 @@ route('DELETE', '/v1/account', async (env, req) => {
       WHERE author_id = ? AND id IN (SELECT parent_id FROM comments WHERE parent_id IS NOT NULL AND author_id != ?)`)
     .bind(a.id, a.id).run();
   await env.DB.prepare('DELETE FROM accounts WHERE id = ?').bind(a.id).run();
+}
+
+route('DELETE', '/v1/account', async (env, req) => {
+  await deleteAccount(env, await need(env, req));
   return json(200, { deleted: true });
 });
 
@@ -317,6 +320,48 @@ route('POST', '/v1/admin/seasons', async (env, req) => {
     .bind(id, title, start, voting, tournament, ends, now(env)).run();
   await audit(env, admin, 'season', id);
   return json(201, { id });
+});
+
+// ---- account deletion on the web (Google Play requires a link that works without the app) ----
+
+const PAGE = (msg) => `<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Delete your ADHD Pixel Dungeon Community account</title>
+<body style="font-family:system-ui,sans-serif;max-width:32rem;margin:2rem auto;padding:0 1rem;line-height:1.5">
+<h1 style="font-size:1.4rem">Delete your ADHD Pixel Dungeon Community account</h1>
+${msg}
+<p>Deleting removes your account, your ideas, comments, votes, reports and blocks. Comments other players replied to
+are kept as empty "[deleted]" placeholders so their replies still make sense. This can't be undone. Your game saves
+and run history stay on your phone and are not affected.</p>
+<form method="post" action="/delete">
+<p><label>Email<br><input name="email" type="email" required style="width:100%"></label></p>
+<p><label>Password<br><input name="password" type="password" required style="width:100%"></label></p>
+<p><button type="submit">Delete my account</button></p>
+</form>
+<p>Signed up with Google? Open Community in the game, go to Account, then Delete my account.</p>
+</body></html>`;
+
+const html = (status, body) => new Response(body, { status, headers: { 'content-type': 'text/html; charset=utf-8' } });
+
+route('GET', '/delete', async () => html(200, PAGE('')));
+
+route('POST', '/delete', async (env, req) => {
+  const form = await req.formData().catch(() => null);
+  const email = String(form?.get('email') || '').trim().toLowerCase();
+  const password = String(form?.get('password') || '');
+  try {
+    await guarded(env, 'login_email', email);
+    await guarded(env, 'login_ip', ipOf(req));
+  } catch (e) {
+    return html(429, PAGE('<p style="color:#b00"><b>Too many tries. Wait a few minutes and try again.</b></p>'));
+  }
+  const a = email && await env.DB.prepare('SELECT * FROM accounts WHERE email = ?').bind(email).first();
+  if (!a || !(await verifyPassword(password, a.password_hash))) {
+    await strike(env, 'login_email', email);
+    await strike(env, 'login_ip', ipOf(req));
+    return html(401, PAGE('<p style="color:#b00"><b>That email and password don\'t match.</b></p>'));
+  }
+  await deleteAccount(env, a);
+  return html(200, '<!doctype html><meta charset="utf-8"><body style="font-family:system-ui,sans-serif;max-width:32rem;margin:2rem auto"><h1>Your account is deleted.</h1><p>Everything you posted in ADHD Pixel Dungeon Community is gone.</p></body>');
 });
 
 // ---- submissions and comments ----

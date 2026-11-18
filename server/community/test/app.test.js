@@ -336,3 +336,19 @@ test('blocked players list shows who I blocked, and unblocking removes them', as
   assert.deepEqual((await call('GET', '/v1/blocks', null, me.token)).body.blocked, []);
   assert.equal((await call('GET', '/v1/blocks')).status, 401);
 });
+
+test('web deletion page (for Google Play): form, wrong password refused, right password deletes everything', async () => {
+  const { env, member, call } = setup();
+  await member('web@x.com', 'Web');
+  const page = await handle(new Request('https://x/delete'), env);
+  assert.equal(page.status, 200);
+  assert.match(await page.text(), /<form method="post" action="\/delete">/);
+  const post = (pw) => handle(new Request('https://x/delete', { method: 'POST', body: new URLSearchParams({ email: 'Web@x.com', password: pw }) }), env);
+  assert.equal((await post('wrong-wrong')).status, 401);
+  assert.equal(env.DB.raw.prepare("SELECT COUNT(*) AS n FROM accounts WHERE email = 'web@x.com'").get().n, 1);
+  const ok = await post('hunter2hunter2');
+  assert.equal(ok.status, 200);
+  assert.match(await ok.text(), /Your account is deleted/);
+  assert.equal(env.DB.raw.prepare("SELECT COUNT(*) AS n FROM accounts WHERE email = 'web@x.com'").get().n, 0);
+  assert.equal((await call('POST', '/v1/auth/login', { email: 'web@x.com', password: 'hunter2hunter2' })).status, 401);
+});
