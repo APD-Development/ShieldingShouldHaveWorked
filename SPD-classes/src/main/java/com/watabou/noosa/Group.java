@@ -92,6 +92,11 @@ public class Group extends Gizmo {
 		super.kill();
 	}
 	
+	//APD: a copy of the children, so callers can safely remove while iterating
+	public synchronized Gizmo[] snapshot() {
+		return members.toArray(new Gizmo[0]);
+	}
+
 	public synchronized int indexOf( Gizmo g ) {
 		return members.indexOf( g );
 	}

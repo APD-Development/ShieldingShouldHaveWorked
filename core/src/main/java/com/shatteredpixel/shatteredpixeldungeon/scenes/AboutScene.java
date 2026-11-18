@@ -368,7 +368,7 @@ public class AboutScene extends PixelScene {
 
 		//keep only this page's part of the scroll content
 		final float cut = creditsTop - 8;
-		for (com.watabou.noosa.Gizmo g : content.members.toArray(new com.watabou.noosa.Gizmo[0])){
+		for (com.watabou.noosa.Gizmo g : content.snapshot()){
 			if (g == null) continue;
 			float top = g instanceof Component ? ((Component) g).top() : g instanceof com.watabou.noosa.Visual ? ((com.watabou.noosa.Visual) g).y : 0;
 			boolean apdPart = top < cut;
