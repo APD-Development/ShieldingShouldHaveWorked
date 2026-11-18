@@ -324,3 +324,15 @@ test('guessing limits: 10 wrong passwords per email in 15 minutes, 5 sign-ups pe
   assert.equal((await call('POST', '/v1/auth/register', { email: 's6@x.com', password: 'longenough', displayName: 'S' }, null, '9.9.9.9')).status, 429);
   assert.equal((await call('POST', '/v1/auth/register', { email: 's7@x.com', password: 'longenough', displayName: 'S' }, null, '8.8.8.8')).status, 201);
 });
+
+test('blocked players list shows who I blocked, and unblocking removes them', async () => {
+  const { call, member } = setup();
+  const me = await member('me@x.com', 'Me');
+  const pest = await member('pest@x.com', 'Pest');
+  assert.deepEqual((await call('GET', '/v1/blocks', null, me.token)).body.blocked, []);
+  await call('POST', '/v1/blocks', { accountId: pest.id }, me.token);
+  assert.deepEqual((await call('GET', '/v1/blocks', null, me.token)).body.blocked, [{ id: pest.id, displayName: 'Pest' }]);
+  await call('DELETE', `/v1/blocks/${pest.id}`, null, me.token);
+  assert.deepEqual((await call('GET', '/v1/blocks', null, me.token)).body.blocked, []);
+  assert.equal((await call('GET', '/v1/blocks')).status, 401);
+});

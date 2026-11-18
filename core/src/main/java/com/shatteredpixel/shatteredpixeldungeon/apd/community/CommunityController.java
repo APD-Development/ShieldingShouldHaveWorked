@@ -478,6 +478,7 @@ public final class CommunityController {
 	private void account(){
 		Screen s = new Screen("Account", "Signed in as " + me.getString("displayName", "?") + ".");
 		s.back = this::hub;
+		s.item("Blocked players", "See and unblock players you blocked", this::blockedList);
 		s.item("Sign out", null, () -> call(api::logout, r -> { forget(); ui.show(signedOut(null)); }));
 		s.item("Delete my account", "Removes your account, ideas, comments and votes for good", () ->
 				ui.ask("Delete account", "Type DELETE to remove your account and everything you posted. This can't be undone.", "", 10, false, t -> {
@@ -488,12 +489,31 @@ public final class CommunityController {
 		ui.show(s);
 	}
 
+	private void blockedList(){
+		call(api::blocked, r -> {
+			Screen s = new Screen("Blocked players", "Tap a player to unblock them.");
+			s.back = this::account;
+			if (!r.ok()){ s.warning(message(r)); s.item("Back", null, this::account); ui.show(s); return; }
+			JsonValue list = r.body.get("blocked");
+			if (list == null || list.size == 0) s.note("You haven't blocked anyone.");
+			else for (JsonValue v = list.child; v != null; v = v.next){
+				final String id = v.getString("id"), name = v.getString("displayName", "?");
+				s.item(name, "Tap to unblock", () -> call(() -> api.unblock(id), x -> {
+					if (x.ok()) done(name + " is unblocked.", this::blockedList); else problem(x, this::blockedList);
+				}));
+			}
+			s.item("Back", null, this::account);
+			ui.show(s);
+		});
+	}
+
 	// ---- moderation (Chris) ----
 
 	private void moderation(){
 		call(api::adminReports, r -> {
 			Screen s = new Screen("Moderation", "Open reports, most reported first.");
 			s.back = this::hub;
+			s.item("Start a new season", "Opens submissions now", this::startSeason);
 			if (!r.ok()){ s.warning(message(r)); s.item("Back", null, this::hub); ui.show(s); return; }
 			JsonValue list = r.body.get("reports");
 			if (list == null || list.size == 0) s.note("No open reports.");
@@ -521,6 +541,34 @@ public final class CommunityController {
 		}
 		s.item("Back", null, this::moderation);
 		ui.show(s);
+	}
+
+	// Title, then the three phase lengths in days (30 / 30 / 28 suggested), then confirm.
+	private void startSeason(){
+		ui.ask("Season title", "What should this season be called?", "", 80, false, title -> {
+			if (title == null || title.trim().isEmpty()){ moderation(); return; }
+			ui.ask("Submissions (days)", "How many days are submissions open?", "30", 3, false, a -> {
+				Integer sub = number(a, 1, 120);
+				if (sub == null){ moderation(); return; }
+				ui.ask("Voting (days)", "How many days does Month 2 voting run?", "30", 3, false, b -> {
+					Integer vote = number(b, 1, 120);
+					if (vote == null){ moderation(); return; }
+					ui.ask("Tournament (days)", "How many days does the tournament run? (4 weeks = 28)", "28", 3, false, c -> {
+						Integer tour = number(c, 4, 120);
+						if (tour == null){ moderation(); return; }
+						Screen s = new Screen("Start " + title.trim() + "?", "Submissions " + sub + " days, voting " + vote + " days, tournament " + tour + " days. Starts now.");
+						s.item("Start it", null, () -> call(() -> api.adminStartSeason(title.trim(), sub, vote, tour), r -> {
+							if (r.ok()) done("Season started. Submissions are open.", this::hub);
+							else if ("season_overlaps".equals(r.error)) problem(r, this::moderation);
+							else problem(r, this::moderation);
+						}));
+						s.item("Cancel", null, this::moderation);
+						s.back = this::moderation;
+						ui.show(s);
+					});
+				});
+			});
+		});
 	}
 
 	private void after(CommunityApi.Result r){ if (r.ok()) moderation(); else problem(r, this::moderation); }
@@ -576,6 +624,7 @@ public final class CommunityController {
 			case "not_found": return "That isn't there any more.";
 			case "slow_down": return "Too many tries. Wait a few minutes and try again.";
 			case "bad_google_token": return "Google sign-in didn't work. Try again or use email.";
+			case "season_overlaps": return "A season is already running in that time. Wait for it to finish first.";
 			case "no_matchups_open": case "not_week_one": return "That vote isn't open right now.";
 			default:
 				if (e.startsWith("too_long_")) return "That's too long.";

@@ -135,6 +135,7 @@ public final class CommunityApi {
 
 	public Result block(String accountId){ return call("POST", "/v1/blocks", obj("accountId", accountId)); }
 	public Result unblock(String accountId){ return call("DELETE", "/v1/blocks/" + id(accountId), null); }
+	public Result blocked(){ return call("GET", "/v1/blocks", null); }
 
 	// ---- admin (only works for an admin account; the server checks) ----
 
@@ -143,6 +144,13 @@ public final class CommunityApi {
 		if (!action.equals("hide") && !action.equals("remove") && !action.equals("restore")) throw new IllegalArgumentException(action);
 		return call("POST", "/v1/admin/" + action, obj("kind", kind, "id", targetId));
 	}
+	// Opens a season starting now; phase lengths in days (the server stores milliseconds).
+	public Result adminStartSeason(String title, int submissionDays, int votingDays, int tournamentDays){
+		long day = 24L * 3600 * 1000;
+		return call("POST", "/v1/admin/seasons", "{\"title\":" + quote(title) + ",\"submissionMs\":" + submissionDays * day
+				+ ",\"votingMs\":" + votingDays * day + ",\"tournamentMs\":" + tournamentDays * day + "}");
+	}
+
 	public Result adminBan(String accountId, boolean banned){
 		return call("POST", banned ? "/v1/admin/ban" : "/v1/admin/unban", obj("accountId", accountId));
 	}

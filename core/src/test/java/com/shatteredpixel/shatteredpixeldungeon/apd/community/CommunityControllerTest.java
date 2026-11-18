@@ -184,4 +184,32 @@ public class CommunityControllerTest {
 		assertTrue("cancelling sends nothing", requests.isEmpty());
 		CommunityController.google = null;
 	}
+
+	@Test public void unblockFromTheAccountScreen(){
+		store.age = "pass"; store.token = "tok";
+		signedInWorld(false);
+		reply("GET /v1/blocks", 200, "{\"blocked\":[{\"id\":\"dd04\",\"displayName\":\"Pest\"}]}");
+		reply("DELETE /v1/blocks/dd04", 200, "{\"ok\":true}");
+		controller().start();
+		tap("Account");
+		tap("Blocked players");
+		tap("Pest");
+		assertTrue(has(last(), "Pest is unblocked."));
+		assertTrue(requests.stream().anyMatch(r -> r.startsWith("DELETE /v1/blocks/dd04")));
+	}
+
+	@Test public void adminStartsASeasonWithDaysTurnedIntoTheServersMilliseconds(){
+		store.age = "pass"; store.token = "tok";
+		signedInWorld(true);
+		reply("GET /v1/admin/reports", 200, "{\"reports\":[]}");
+		reply("POST /v1/admin/seasons", 201, "{\"id\":\"s2\"}");
+		answers.add("Season 2"); answers.add("10"); answers.add("10"); answers.add("28");
+		controller().start();
+		tap("Moderation");
+		tap("Start a new season");
+		assertEquals("Start Season 2?", last().title);
+		tap("Start it");
+		assertTrue(requests.stream().anyMatch(r -> r.startsWith("POST /v1/admin/seasons {\"title\":\"Season 2\",\"submissionMs\":864000000,\"votingMs\":864000000,\"tournamentMs\":2419200000}")));
+		assertTrue(has(last(), "Season started."));
+	}
 }

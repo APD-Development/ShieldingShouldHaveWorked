@@ -554,6 +554,14 @@ route('POST', '/v1/blocks', async (env, req) => {
   return json(201, { ok: true });
 });
 
+route('GET', '/v1/blocks', async (env, req) => {
+  const a = await need(env, req);
+  const { results } = await env.DB.prepare(
+    'SELECT b.blocked_id AS id, x.display_name FROM blocks b JOIN accounts x ON x.id = b.blocked_id WHERE b.blocker_id = ? ORDER BY b.created_at DESC')
+    .bind(a.id).all();
+  return json(200, { blocked: results.map((r) => ({ id: r.id, displayName: r.display_name })) });
+});
+
 route('DELETE', '/v1/blocks/([0-9a-f]+)', async (env, req, [other]) => {
   const a = await need(env, req);
   await env.DB.prepare('DELETE FROM blocks WHERE blocker_id = ? AND blocked_id = ?').bind(a.id, other).run();
