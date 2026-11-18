@@ -78,7 +78,7 @@ public class CommunityControllerTest {
 		fail("no row '" + labelStart + "' on " + last().title + ": " + labels(last()));
 	}
 	private static List<String> labels(CommunityController.Screen s){ List<String> l = new ArrayList<>(); for (CommunityController.Row r : s.rows) l.add(r.label); return l; }
-	private static boolean has(CommunityController.Screen s, String text){ for (String l : labels(s)) if (l.contains(text)) return true; return s.message != null && s.message.contains(text); }
+	private static boolean has(CommunityController.Screen s, String text){ for (CommunityController.Row r : s.rows) if (r.label.contains(text) || r.detail.contains(text)) return true; return s.message != null && s.message.contains(text); }
 
 	private void signedInWorld(boolean admin){
 		reply("GET /v1/me", 200, "{\"id\":\"aa01\",\"displayName\":\"Chris\",\"emailVerified\":true,\"ageOk\":true,\"admin\":" + admin + "}");
