@@ -756,9 +756,9 @@ public class SPDSettings extends GameSettings {
 	public static int fulLScreenMonitor(){
 		return getInt( KEY_FULLSCREEN_MONITOR, 0 );
 	}
-    public static boolean waitStopFullHealth(){return getBoolean("apd_wait_stop_full",false);}
+    public static boolean waitStopFullHealth(){return getBoolean("apd_wait_stop_full",true);}
     public static void waitStopFullHealth(boolean value){put("apd_wait_stop_full",value);}
-    public static boolean waitStopStarving(){return getBoolean("apd_wait_stop_starving",false);}
+    public static boolean waitStopStarving(){return getBoolean("apd_wait_stop_starving",true);}
     public static void waitStopStarving(boolean value){put("apd_wait_stop_starving",value);}
     public static boolean waitStopCritical(){return getBoolean("apd_wait_stop_critical",false);}
     public static void waitStopCritical(boolean value){put("apd_wait_stop_critical",value);}
