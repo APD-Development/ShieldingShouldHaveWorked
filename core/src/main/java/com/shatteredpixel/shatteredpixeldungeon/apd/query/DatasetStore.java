@@ -230,6 +230,9 @@ public final class DatasetStore {
 		long trailer = data.length >= 4 ? ((data[data.length - 4] & 0xffL) | (data[data.length - 3] & 0xffL) << 8
 				| (data[data.length - 2] & 0xffL) << 16 | (data[data.length - 1] & 0xffL) << 24) : 0;
 		if (trailer > Integer.MAX_VALUE - 16) throw new IOException("row cache too large");
+		// Deflate can't expand more than ~1032x, so a bigger claim means a damaged trailer: don't pre-allocate it
+		// (a forged size used to allocate hundreds of MB and crash with OutOfMemoryError; Nov 18 CI).
+		if (trailer > data.length * 1032L + 1024) trailer = 0;
 		try (java.util.zip.GZIPInputStream in = new java.util.zip.GZIPInputStream(new java.io.ByteArrayInputStream(data), 64 * 1024)) {
 			byte[] out = new byte[(int) trailer];
 			int off = 0, n;

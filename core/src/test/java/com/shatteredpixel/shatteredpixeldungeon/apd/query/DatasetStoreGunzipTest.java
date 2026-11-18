@@ -39,4 +39,19 @@ public class DatasetStoreGunzipTest {
 			}
 		}
 	}
+
+	@org.junit.Test public void aDamagedTrailerClaimingAHugeSizeIsNotPreallocated() throws Exception {
+		byte[] plain = "row,row,row\n".repeat(50).getBytes("UTF-8");
+		java.io.ByteArrayOutputStream bos = new java.io.ByteArrayOutputStream();
+		try (java.util.zip.GZIPOutputStream g = new java.util.zip.GZIPOutputStream(bos)) { g.write(plain); }
+		byte[] gz = bos.toByteArray();
+		int n = gz.length;
+		gz[n-4] = (byte)0xff; gz[n-3] = (byte)0xff; gz[n-2] = (byte)0xff; gz[n-1] = (byte)0x70; //claims ~1.9 GB
+		try {
+			byte[] out = DatasetStore.gunzip(gz);
+			org.junit.Assert.assertArrayEquals(plain, out);
+		} catch (java.io.IOException acceptable) {
+			//a damaged file may be refused; it must never try to allocate the claimed size
+		}
+	}
 }
