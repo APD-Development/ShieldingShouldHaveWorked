@@ -101,6 +101,19 @@ public class CommunityApiTest {
 		assertFalse("deleting the account signs out", api.signedIn());
 	}
 
+	@Test public void newerCallsHitTheirRoutes(){
+		CommunityApi api = api();
+		api.token("t");
+		api.blocked();
+		api.adminFind("Troll Face&x");
+		api.adminStartSeason("S \"2\"", 1, 2, 28);
+		api.google("idtok");
+		assertEquals("GET /v1/blocks  Bearer t", seen.get(0));
+		assertEquals("GET /v1/admin/accounts  Bearer t", seen.get(1)); // the query string isn't part of the path
+		assertEquals("POST /v1/admin/seasons {\"title\":\"S \\\"2\\\"\",\"submissionMs\":86400000,\"votingMs\":172800000,\"tournamentMs\":2419200000} Bearer t", seen.get(2));
+		assertEquals("POST /v1/auth/google {\"idToken\":\"idtok\"} Bearer t", seen.get(3));
+	}
+
 	@Test public void refusesUnsafeAddressesAndIds(){
 		try { new CommunityApi("http://example.com", 1000); fail(); } catch (IllegalArgumentException expected) {}
 		try { api().submission("../admin"); fail(); } catch (IllegalArgumentException expected) {}
