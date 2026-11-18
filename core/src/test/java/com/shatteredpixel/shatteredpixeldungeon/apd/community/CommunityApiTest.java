@@ -81,7 +81,6 @@ public class CommunityApiTest {
 		api.token("t");
 		api.upvote("aa", true);
 		api.upvote("aa", false);
-		api.picks(Arrays.asList("01", "02"));
 		api.vote(2, "0b");
 		api.comment("aa", "bb", "reply");
 		api.ageGatePassed();
@@ -91,7 +90,6 @@ public class CommunityApiTest {
 		assertEquals(Arrays.asList(
 			"POST /v1/submissions/aa/upvote  Bearer t",
 			"DELETE /v1/submissions/aa/upvote  Bearer t",
-			"POST /v1/tournament/picks {\"submissionIds\":[\"01\",\"02\"]} Bearer t",
 			"POST /v1/tournament/vote {\"matchup\":2,\"submissionId\":\"0b\"} Bearer t",
 			"POST /v1/submissions/aa/comments {\"body\":\"reply\",\"parentId\":\"bb\"} Bearer t",
 			"POST /v1/account/age {\"passed\":true} Bearer t",

@@ -114,15 +114,6 @@ public final class CommunityApi {
 		return call(on ? "POST" : "DELETE", "/v1/submissions/" + id(submissionId) + "/upvote", null);
 	}
 
-	public Result picks(List<String> submissionIds){
-		StringBuilder b = new StringBuilder("{\"submissionIds\":[");
-		for (int i = 0; i < submissionIds.size(); i++){
-			if (i > 0) b.append(',');
-			b.append(quote(submissionIds.get(i)));
-		}
-		return call("POST", "/v1/tournament/picks", b.append("]}").toString());
-	}
-
 	public Result vote(int matchup, String submissionId){
 		return call("POST", "/v1/tournament/vote", "{\"matchup\":" + matchup + ",\"submissionId\":" + quote(submissionId) + "}");
 	}

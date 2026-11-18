@@ -33,7 +33,7 @@ public final class CommunityPreview {
         QUALIFICATION("Qualification voting", "Month 2: vote to select the top 16",
                 "Month 2 lets players upvote the submissions they want, as many as they like, but never their own. The top 16 advance to Month 3, and anything tied with 16th place advances too. Discussion continues during voting. Comments are not votes and do not increase a submission's voting score. Android and Steam share one community."),
         TOURNAMENT("Tournament brackets", "Month 3: weekly head-to-head elimination",
-                "Month 3 starts with the final 16 and runs four weeks. In week 1 everyone picks up to 8 of them and the top 8 stay in. Weeks 2 to 4 are one-on-one matchups with one vote per player each week, until one idea wins. A tie goes to the higher seed. Eventually different categories and submission groups can progress through overlapping cycles."),
+                "Month 3 is a 16-seed bracket over four weeks, like March Madness: 1 vs 16, 8 vs 9 and so on, then 8 to 4 to 2 to 1. One vote per player per matchup each week, until one idea wins. A tie goes to the higher seed. Eventually different categories and submission groups can progress through overlapping cycles."),
         WINNERS("Community selected content", "Follow selected ideas into development",
                 "Winning ideas enter development. The approximate two-month implementation goal is not a deadline for discarding a winner."),
         REVIEWS("Run reviews and challenges", "Peer-review runs and attempt disputed situations",

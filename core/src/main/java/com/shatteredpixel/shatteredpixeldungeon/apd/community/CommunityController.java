@@ -285,7 +285,7 @@ public final class CommunityController {
 		switch (phase){
 			case "submissions": return "Month 1: submissions are open. Post your ideas and discuss everyone's.";
 			case "voting": return "Month 2: voting. Upvote the ideas you want; the top 16 go to the tournament. You can't upvote your own.";
-			case "tournament": return "Month 3: the tournament. Week 1 everyone picks up to 8, then it's one-on-one each week.";
+			case "tournament": return "Month 3: the bracket. The top 16 go one-on-one, 16 to 8 to 4 to 2 to 1, one round a week.";
 			case "finished": return "This season is over. See the results for the winner.";
 			default: return "The season hasn't started yet.";
 		}
@@ -434,7 +434,6 @@ public final class CommunityController {
 
 	// ---- voting and the tournament ----
 
-	private final Set<String> picks = new LinkedHashSet<>();
 
 	private void results(){
 		call(api::results, this::showResults);
@@ -463,26 +462,12 @@ public final class CommunityController {
 			} else if ("tournament".equals(phase) || "finished".equals(phase)){
 				int week = b.getInt("week", 1);
 				if (b.get("champion") != null) s.heading("Winner: " + b.get("champion").getString("title", ""));
-				if ("tournament".equals(phase) && week == 1) weekOne(s, b);
 				JsonValue rounds = b.get("rounds");
 				if (rounds != null) for (JsonValue round = rounds.child; round != null; round = round.next) matchups(s, round, "tournament".equals(phase) && round.getInt("week") == week);
 			}
 			s.item("Back", null, this::hub);
 			ui.show(s);
 		}
-	}
-
-	private void weekOne(Screen s, JsonValue b){
-		s.heading("Week 1: pick up to 8 (" + picks.size() + " picked)");
-		for (JsonValue v = b.get("qualifiers").child; v != null; v = v.next){
-			final String id = v.getString("id");
-			s.check(v.getString("title", ""), v.getInt("picks", 0) + " picks so far", picks.contains(id), () -> {
-				if (picks.contains(id)) picks.remove(id); else if (picks.size() < 8) picks.add(id);
-				showResults(lastResults); // toggling is local; only Save talks to the server
-			});
-		}
-		s.item("Save my picks", picks.isEmpty() ? "Pick at least one" : picks.size() + " of 8", () ->
-				call(() -> api.picks(new ArrayList<>(picks)), r -> { if (r.ok()) done("Picks saved. You can change them until the week ends.", this::results); else problem(r, this::results); }));
 	}
 
 	private void matchups(Screen s, JsonValue round, boolean open){
@@ -677,7 +662,6 @@ public final class CommunityController {
 			case "submissions_closed": return "Submissions are closed for this season.";
 			case "voting_closed": return "Voting isn't open right now.";
 			case "own_submission": return "You can't vote for your own idea.";
-			case "too_many_picks": return "You can pick up to 8.";
 			case "too_many_submissions": return "You've posted a lot of ideas today. Try again tomorrow.";
 			case "too_many_comments": return "Slow down a little: too many comments in a short time.";
 			case "too_many_reports": return "You've sent a lot of reports today.";
@@ -695,7 +679,7 @@ public final class CommunityController {
 			case "search_too_short": return "Type at least 2 letters.";
 			case "cannot_ban_self": return "You can't ban yourself.";
 			case "season_overlaps": return "A season is already running in that time. Wait for it to finish first.";
-			case "no_matchups_open": case "not_week_one": return "That vote isn't open right now.";
+			case "no_matchups_open": return "That vote isn't open right now.";
 			default:
 				if (e.startsWith("too_long_")) return "That's too long.";
 				if (e.startsWith("missing_")) return "Something was left empty.";

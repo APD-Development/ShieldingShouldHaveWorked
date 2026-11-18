@@ -11,7 +11,7 @@ import { newId, newCode, sha256, hashPassword, verifyPassword, randomHex, consta
 import { clean } from './filter.js';
 import { googleVerifier } from './google.js';
 import { cloudflareMailer } from './mailer.js';
-import { qualifiers, weekOneSeeds, bracket, ADVANCE } from './tournament.js';
+import { seeds, bracket } from './tournament.js';
 
 const SESSION_MS = 30 * 24 * 3600 * 1000;
 const CODE_MS = 15 * 60 * 1000;
@@ -471,23 +471,19 @@ async function seasonState(env, season) {
   const state = { season, phase, entries, t };
   if (phase !== 'tournament' && phase !== 'finished') return state;
   state.week = phase === 'finished' ? 5 : tournamentWeek(season, t);
-  state.qualified = qualifiers(entries);
   const { results: tv } = await env.DB.prepare(
     `SELECT tv.week, tv.slot, tv.submission_id, COUNT(*) AS n FROM tournament_votes tv JOIN accounts v ON v.id = tv.account_id
       WHERE tv.season_id = ? AND v.banned = 0 GROUP BY tv.week, tv.slot, tv.submission_id`).bind(season.id).all();
-  const picks = new Map();
   const byWeek = new Map();
   for (const r of tv) {
-    if (r.week === 1) { picks.set(r.submission_id, (picks.get(r.submission_id) || 0) + r.n); continue; }
     if (!byWeek.has(r.week)) byWeek.set(r.week, new Map());
     const w = byWeek.get(r.week);
     if (!w.has(r.slot)) w.set(r.slot, new Map());
     w.get(r.slot).set(r.submission_id, r.n);
   }
-  state.picks = picks;
-  // The seeds only exist once week 1 is over; until then week 1 standings are live.
-  state.seeds = state.week >= 2 ? weekOneSeeds(state.qualified, picks) : null;
-  state.rounds = state.seeds ? bracket(state.seeds, byWeek, Math.min(state.week, 4)) : [];
+  // The 16 seeds come straight from Month 2's upvotes; the bracket starts in week 1.
+  state.seeds = seeds(entries);
+  state.rounds = bracket(state.seeds, byWeek, Math.min(state.week, 4));
   if (phase === 'finished' && state.rounds.length) {
     const last = state.rounds[state.rounds.length - 1].matchups;
     if (last.length === 1) state.champion = last[0].winner;
@@ -519,34 +515,12 @@ route('DELETE', '/v1/submissions/([0-9a-f]+)/upvote', async (env, req, [id]) => 
   return json(200, { upvoted: false });
 });
 
-// Week 1: replace my picks with up to 8 of the qualifiers.
-route('POST', '/v1/tournament/picks', async (env, req) => {
-  const a = await needMember(env, req);
-  const season = liveSeason(env, await currentSeason(env));
-  const st = await seasonState(env, season);
-  if (st.phase !== 'tournament' || st.week !== 1) fail(409, 'not_week_one');
-  const b = await body(req);
-  const ids = Array.isArray(b.submissionIds) ? [...new Set(b.submissionIds.map(String))] : fail(400, 'missing_submissionIds');
-  if (ids.length > ADVANCE) fail(400, 'too_many_picks');
-  const q = new Map(st.qualified.map((e) => [e.id, e]));
-  for (const id of ids) {
-    if (!q.has(id)) fail(400, 'not_a_qualifier');
-    if (q.get(id).author_id === a.id) fail(403, 'own_submission');
-  }
-  await env.DB.prepare('DELETE FROM tournament_votes WHERE season_id = ? AND week = 1 AND account_id = ?').bind(season.id, a.id).run();
-  for (let i = 0; i < ids.length; i++) {
-    await env.DB.prepare('INSERT INTO tournament_votes (season_id, week, slot, account_id, submission_id, created_at) VALUES (?, 1, ?, ?, ?, ?)')
-      .bind(season.id, i, a.id, ids[i], now(env)).run();
-  }
-  return json(200, { picks: ids });
-});
-
-// Weeks 2-4: one vote per matchup of this week's round, changeable until the week ends.
+// Weeks 1-4: one vote per matchup of this week's round, changeable until the week ends.
 route('POST', '/v1/tournament/vote', async (env, req) => {
   const a = await needMember(env, req);
   const season = liveSeason(env, await currentSeason(env));
   const st = await seasonState(env, season);
-  if (st.phase !== 'tournament' || st.week < 2) fail(409, 'no_matchups_open');
+  if (st.phase !== 'tournament') fail(409, 'no_matchups_open');
   const b = await body(req);
   const round = st.rounds.find((r) => r.week === st.week);
   const m = round && round.matchups[b.matchup];
@@ -581,8 +555,7 @@ route('GET', '/v1/season/results', async (env, req) => {
     return json(200, out);
   }
   out.week = Math.min(st.week, 4);
-  out.qualifiers = st.qualified.map((e) => ({ id: e.id, title: e.title, upvotes: e.score, picks: st.picks.get(e.id) || 0 }));
-  out.seeds = st.seeds && st.seeds.map((e, i) => ({ seed: i + 1, id: e.id, title: e.title }));
+  out.seeds = st.seeds.map((e, i) => ({ seed: i + 1, id: e.id, title: e.title, upvotes: e.score }));
   out.rounds = st.rounds.map((r) => ({ week: r.week, final: r.week < st.week, matchups: r.matchups.map((m, i) => ({
     matchup: i, bye: !!m.bye, a: m.a && { id: m.a, title: title.get(m.a), votes: m.votesA },
     b: m.b && { id: m.b, title: title.get(m.b), votes: m.votesB },

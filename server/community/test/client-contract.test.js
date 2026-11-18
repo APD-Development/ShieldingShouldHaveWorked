@@ -58,11 +58,9 @@ test('every field the app reads exists in the server replies, through a whole se
 
   clock += 10 * min;
   const w1 = await call('GET', '/v1/season/results', null, chris);
-  has(w1, 'week'); for (const k of ['id', 'title', 'picks']) has(w1.qualifiers[0], k);
-  clock += 10 * min;
-  const w2 = await call('GET', '/v1/season/results', null, chris);
-  has(w2.rounds[0], 'week');
-  for (const k of ['matchup', 'bye', 'winner']) has(w2.rounds[0].matchups[0], k);
+  has(w1, 'week'); for (const k of ['seed', 'id', 'title']) has(w1.seeds[0], k);
+  has(w1.rounds[0], 'week');
+  for (const k of ['matchup', 'bye', 'winner']) has(w1.rounds[0].matchups[0], k);
   clock += 40 * min;
   const done = await call('GET', '/v1/season/results', null, chris);
   has(done, 'champion.title');
