@@ -284,10 +284,8 @@ public class MenuPane extends Component {
 			int value = h == null ? -1 : h.hunger();
 			if (value != hungerShown) {
 				hungerShown = value;
-				hungerText.text(value < 0 ? "" : "Hunger " + value + "/" + (int)com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger.STARVING);
-				if (value >= com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger.STARVING) hungerText.hardlight(0xFF4444);
-				else if (value >= com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger.HUNGRY) hungerText.hardlight(0xFFFF44);
-				else hungerText.hardlight(0xCACFC2);
+				hungerText.text(com.shatteredpixel.shatteredpixeldungeon.apd.qol.HungerDisplay.corner(value));
+				hungerText.hardlight(com.shatteredpixel.shatteredpixeldungeon.apd.qol.HungerDisplay.color(value));
 				if (depthIcon != null) layoutClock();
 			}
 		}

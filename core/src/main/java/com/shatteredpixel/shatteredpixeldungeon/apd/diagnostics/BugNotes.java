@@ -27,6 +27,11 @@ public final class BugNotes {
 		return new File(dir, "bug-notes.txt");
 	}
 
+	/** The Bug Note menu button exists only in the Developer build. */
+	public static boolean buttonVisible(){
+		return com.shatteredpixel.shatteredpixeldungeon.apd.ApdFeatures.testBuild();
+	}
+
 	/** Context line: UTC time, floor, turn and hero class when a run is active. */
 	public static String context(){
 		SimpleDateFormat f = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ROOT);

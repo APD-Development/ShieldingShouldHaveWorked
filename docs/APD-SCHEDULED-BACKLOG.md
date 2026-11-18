@@ -11,9 +11,9 @@ unapproved features.
 1. Tests for this week's features:
    - [x] room-wide Search tap (Nov 18, 6 AM) (`SearchControlContext.roomHasSearchableWall`, `fullSearchUseful`)
    - [x] `Hunger.turnsUntilHungry` / `perTurn` (Nov 18, 6 AM; rate<=0 case not forced) (Salt Cube, custom hunger rule, Hungry, Starving, never)
-   - hunger text in the status tab and top-right (values, yellow at 300, red at 450)
-   - Bug Notes inside both report formats; Standard report byte-identical when no notes
-   - Bug Note button Developer-only
+   - [x] hunger text in the status tab and top-right (values, yellow at 300, red at 450)
+   - [x] Bug Notes inside both report formats (Standard path; Extended ZIP not unit-tested); Standard report byte-identical when no notes
+   - [x] Bug Note button Developer-only
    - heavy armor in the real `Armor.info()` (identified exact, unidentified +0, no level leak)
    - every food's "Refills N hunger" equals what eating removes (incl. On Diet)
    - Gemstone Dust apply/recipe on real rings; trophy outline and Bestiary line; Amulet layout reveal on a real level

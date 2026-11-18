@@ -43,4 +43,21 @@ public class BugNotesTest {
 		Files.write(new File(dir, "bug-notes.txt").toPath(), new byte[(int) BugNotes.MAX_BYTES + 1]);
 		assertFalse(BugNotes.add("too much"));
 	}
+
+	@Test public void standardReportIsUnchangedWithoutNotesAndGainsASectionWithThem(){
+		assertEquals("REPORT", DiagnosticReport.withBugNotes("REPORT", ""));
+		assertEquals("REPORT", DiagnosticReport.withBugNotes("REPORT", null));
+		assertEquals("REPORT\n\n=== Bug notes ===\nnote\n", DiagnosticReport.withBugNotes("REPORT", "note\n"));
+	}
+
+	@Test public void buttonOnlyInTheDeveloperBuild(){
+		try {
+			com.shatteredpixel.shatteredpixeldungeon.apd.ApdFeatures.parse("");
+			assertFalse("Alpha Testers never see Bug Note", BugNotes.buttonVisible());
+			com.shatteredpixel.shatteredpixeldungeon.apd.ApdFeatures.parse("testBuild\n");
+			assertTrue(BugNotes.buttonVisible());
+		} finally {
+			com.shatteredpixel.shatteredpixeldungeon.apd.ApdFeatures.resetForTest();
+		}
+	}
 }

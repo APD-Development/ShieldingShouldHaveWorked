@@ -72,7 +72,7 @@ public class WndGame extends Window {
 		curBtn.icon(Icons.get(Icons.PREFS));
 
 		//APD Developer build: quick bug note, saved offline with floor/turn/time
-		if (com.shatteredpixel.shatteredpixeldungeon.apd.ApdFeatures.testBuild()) {
+		if (com.shatteredpixel.shatteredpixeldungeon.apd.diagnostics.BugNotes.buttonVisible()) {
 			int saved = com.shatteredpixel.shatteredpixeldungeon.apd.diagnostics.BugNotes.count();
 			addButton( curBtn = new RedButton( saved > 0 ? "Bug Note (" + saved + " saved)" : "Bug Note" ) {
 				@Override

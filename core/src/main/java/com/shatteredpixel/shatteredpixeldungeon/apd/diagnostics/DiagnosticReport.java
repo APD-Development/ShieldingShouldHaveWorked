@@ -79,8 +79,7 @@ public final class DiagnosticReport {
                             // Preserve the original Standard bug report bytes and MIME.
                             out.write(SupportDiagnostics.report().getBytes(StandardCharsets.UTF_8));
                             // Developer build bug notes, only when some exist (otherwise unchanged bytes)
-                            String notes=BugNotes.read();
-                            if(!notes.isEmpty()) out.write(("\n\n=== Bug notes ===\n"+notes).getBytes(StandardCharsets.UTF_8));
+                            out.write(withBugNotes("",BugNotes.read()).getBytes(StandardCharsets.UTF_8));
                             out.flush();
                         }
                     }catch(IOException|RuntimeException error){
@@ -116,5 +115,11 @@ public final class DiagnosticReport {
             if (!streamAccepted.get()) once.finished("The diagnostic report could not be opened for saving: "
                     +pickerFailure.getClass().getSimpleName());
         }
+    }
+
+    /** Standard report tail: unchanged when there are no notes, otherwise a "Bug notes" section. */
+    public static String withBugNotes(String report,String notes){
+        if(notes==null||notes.isEmpty())return report;
+        return report+"\n\n=== Bug notes ===\n"+notes;
     }
 }

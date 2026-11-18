@@ -304,11 +304,7 @@ public class WndHero extends WndTabbed {
 			com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger hunger = Dungeon.hero.buff(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger.class);
 			if (hunger != null) {
 				int turns = hunger.turnsUntilHungry();
-				String when = hunger.isStarving() ? "You are _Starving_."
-						: turns == 0 ? "You are _Hungry_."
-						: turns < 0 ? "Your hunger isn't rising."
-						: "Hungry in _" + turns + (turns == 1 ? " turn_." : " turns_.");
-				RenderedTextBlock hungerRow = PixelScene.renderTextBlock("Hunger: _" + hunger.hunger() + "/" + (int)com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger.STARVING + "_. " + when, 8);
+				RenderedTextBlock hungerRow = PixelScene.renderTextBlock(com.shatteredpixel.shatteredpixeldungeon.apd.qol.HungerDisplay.status(hunger.hunger(), hunger.isStarving(), turns), 8);
 				hungerRow.maxWidth(WIDTH);
 				hungerRow.setPos(0, pos);
 				PixelScene.align(hungerRow);
