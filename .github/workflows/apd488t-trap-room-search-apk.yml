@@ -73,7 +73,7 @@ jobs:
             assert fp==expected,fp
             badge=subprocess.check_output([str(tools/'aapt'),'dump','badging',str(file)],text=True)
             package=next(x for x in badge.splitlines() if x.startswith('package:'))
-            assert "name='com.charltonchris29.adhdpixeldungeon.indev'" in package and "versionCode='920'" in package and marker in package,package
+            assert "name='com.charltonchris29.adhdpixeldungeon.indev'" in package and "versionCode='921'" in package and marker in package,package
             with zipfile.ZipFile(file) as z:
               flags=z.read('assets/apd/features.txt').decode().strip().splitlines()
               expect=['testBuild','grudge','demoUnlock','clericPlayable'] if edition=='Developer' else ['extendedPlayback','grudge']
