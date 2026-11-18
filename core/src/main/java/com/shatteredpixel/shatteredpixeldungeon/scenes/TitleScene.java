@@ -286,7 +286,7 @@ public class TitleScene extends PixelScene {
 			@Override
 			protected void onClick() {
 				super.onClick();
-				ShatteredPixelDungeon.switchScene( AboutScene.class );
+				AboutScene.section = AboutScene.Section.MENU; ShatteredPixelDungeon.switchScene( AboutScene.class );
 			}
 		};
 		add( btnAbout );

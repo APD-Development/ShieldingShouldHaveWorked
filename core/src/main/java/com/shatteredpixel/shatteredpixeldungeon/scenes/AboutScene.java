@@ -44,6 +44,15 @@ import com.watabou.utils.RectF;
 
 public class AboutScene extends PixelScene {
 
+	//APD (Nov 18, Chris): About opens on a two-button menu; APD and the original credits each have their own page.
+	public enum Section { MENU, APD, CREDITS }
+	public static Section section = Section.MENU;
+
+	private static void show(Section s){
+		section = s;
+		ShatteredPixelDungeon.switchNoFade(AboutScene.class);
+	}
+
 	@Override
 	public void create() {
 		super.create();
@@ -335,6 +344,51 @@ public class AboutScene extends PixelScene {
 
 		content.setSize( fullWidth, freesound.bottom()+10 + insets.bottom );
 
+		if (section == Section.MENU){
+			list.visible = list.active = false;
+			com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock title = renderTextBlock("About Game", 9);
+			title.hardlight(Window.TITLE_COLOR);
+			title.setPos((w - title.width())/2f, insets.top + 8);
+			add(title);
+			float bw = Math.min(colWidth, w - 20);
+			RedButton toApd = new RedButton("ADHD Pixel Dungeon"){
+				@Override protected void onClick(){ show(Section.APD); }
+			};
+			toApd.setRect((w - bw)/2f, h/2f - 26, bw, 22);
+			add(toApd);
+			RedButton toCredits = new RedButton("Shattered & Pixel Dungeon credits"){
+				@Override protected void onClick(){ show(Section.CREDITS); }
+			};
+			toCredits.multiline = true;
+			toCredits.setRect((w - bw)/2f, h/2f + 4, bw, 22);
+			add(toCredits);
+			addExit();
+			return;
+		}
+
+		//keep only this page's part of the scroll content
+		final float cut = creditsTop - 8;
+		for (com.watabou.noosa.Gizmo g : content.members.toArray(new com.watabou.noosa.Gizmo[0])){
+			if (g == null) continue;
+			float top = g instanceof Component ? ((Component) g).top() : g instanceof com.watabou.noosa.Visual ? ((com.watabou.noosa.Visual) g).y : 0;
+			boolean apdPart = top < cut;
+			if (apdPart != (section == Section.APD)) {
+				content.remove(g);
+			} else if (section == Section.CREDITS) {
+				if (g instanceof Component) ((Component) g).setPos(((Component) g).left(), top - creditsTop + insets.top + 4);
+				else if (g instanceof com.watabou.noosa.Visual) ((com.watabou.noosa.Visual) g).y = top - creditsTop + insets.top + 4;
+			}
+		}
+		if (section == Section.CREDITS){
+			content.setSize(fullWidth, freesound.bottom() + 10 + insets.bottom);
+			list.setRect(0, 0, w, h);
+			list.allowDragFromButtons();
+			list.scrollTo(0, 0);
+			addExit();
+			return;
+		}
+		content.setSize(fullWidth, cut + insets.bottom);
+
 		//APD: News and Changes buttons in a bar along the bottom, the credits scroll above it
 		final float apdBarHeight = 22 + insets.bottom;
 		final float apdBtnWidth = Math.min(colWidth, (w - 6) / 2f - 1);
@@ -367,12 +421,16 @@ public class AboutScene extends PixelScene {
 		list.allowDragFromButtons();
 		list.scrollTo(0, 0);
 
-		ExitButton btnExit = new ExitButton();
+		addExit();
+	}
+
+	private void addExit(){
+		ExitButton btnExit = new ExitButton(){
+			@Override protected void onClick(){ onBackPressed(); }
+		};
 		int ofs = PixelScene.landscape() ? 0 : 4;
 		btnExit.setPos( Camera.main.width - btnExit.width() - ofs, ofs );
 		add( btnExit );
-
-		//fadeIn();
 	}
 	
 	@Override
@@ -380,6 +438,7 @@ public class AboutScene extends PixelScene {
 		// A Back return must not hide an otherwise ready title behind the
 		// standard one-second scene-entry fade. A genuine scene switch is still
 		// required, but the title can be visible on its first rendered frame.
+		if (section != Section.MENU){ show(Section.MENU); return; }
 		ShatteredPixelDungeon.switchNoFade(TitleScene.class);
 	}
 
