@@ -115,6 +115,10 @@ default-on settings (SPDSettings.keepOldDefaultsForExistingPlayers). Next: Googl
 (Credential Manager), server URL default once deployed, run reviews. HttpGateway contract routes, deployment workflow, Android Community screens wired to it, Play Age Signals.
 
 ## Run log
+- 2026-11-18 11 PM (scheduled): Tonight #3 speed part done: Community hub/submissions/results/selected-content show
+  the last good answer instantly and refresh in background (redraw only if changed and still on screen; errors keep it;
+  sign-out clears). +2 controller tests; full CI 44456108772 green. Next: real tests of admin tools; app review screens.
+  Still open for Chris: luck-drop meaning + the 3 review questions above; server deploy needs a live session.
 - 2026-11-18 10 PM (scheduled): Selected content DONE (server: migration 0005, /v1/champions history + page, frozen
   champion, admin status/notes, threaded reportable comments, deletion strips author; app: hub "Selected content",
   page, admin Set status / notes). Server tests CI 44448975431 green. Run reviews SERVER done (migration 0006,
