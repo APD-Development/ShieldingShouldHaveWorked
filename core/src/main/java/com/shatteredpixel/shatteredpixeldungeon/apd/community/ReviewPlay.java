@@ -54,7 +54,11 @@ public final class ReviewPlay {
 		if (c == null || depth < 1) return;
 		boolean before = c.reachedDeathFloor();
 		c.reached(depth);
-		if (!before && c.reachedDeathFloor()) finish(c);
+		if (!before && c.reachedDeathFloor()){
+			finish(c);
+			com.shatteredpixel.shatteredpixeldungeon.utils.GLog.p("You reached floor " + c.deathDepth
+					+ ", where this player died. Your review counts. Open Community to send your verdict.");
+		}
 	}
 
 	/** The reviewer died. If they hadn't reached the death floor yet it's a failed review, which still counts. */
@@ -66,7 +70,7 @@ public final class ReviewPlay {
 	}
 
 	private static void finish(ReviewClaim c){
-		if (CommunityController.finishedReview == null) CommunityController.finishedReview = c;
+		if (!c.sent && CommunityController.finishedReview == null) CommunityController.finishedReview = c;
 	}
 
 	// ---- saved with the run ----
@@ -84,5 +88,7 @@ public final class ReviewPlay {
 	 *  is dropped rather than guessed. */
 	public static void restore(Bundle bundle){
 		active = bundle != null && bundle.contains(NODE) ? ReviewClaim.restore(bundle.getBundle(NODE)) : null;
+		// The app was closed after reaching the death floor but before the verdict was sent: ask for it again.
+		if (active != null && active.reachedDeathFloor() && !active.sent) finish(active);
 	}
 }

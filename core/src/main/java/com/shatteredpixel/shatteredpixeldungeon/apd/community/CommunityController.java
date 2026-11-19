@@ -725,7 +725,7 @@ public final class CommunityController {
 			call(() -> api.reviewResult(claim.requestId, claim.reachedDepth(), salvageable, tone, advice.trim()), r -> {
 				if (r.status == 0 || r.status >= 500){ reviewVerdict(claim, message(r)); return; } // try again later: keep it
 				if (!r.ok() && "not_allowed_words".equals(r.error)){ reviewVerdict(claim, message(r)); return; }
-				if (finishedReview == claim) finishedReview = null;
+				claim.sent = true; if (finishedReview == claim) finishedReview = null;
 				Screen s = new Screen("Your review", !r.ok() ? message(r)
 						: r.body != null && r.body.getBoolean("held", false)
 						? "Sent. Your comment doesn't match what this player asked for, so a moderator will check it before it's shown. Your vote still counts."

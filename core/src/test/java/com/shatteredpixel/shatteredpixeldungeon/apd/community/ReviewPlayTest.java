@@ -73,4 +73,26 @@ public class ReviewPlayTest {
 		ReviewPlay.store(normal);
 		assertFalse(normal.contains("apd_review"));
 	}
+
+	@Test public void reachedDeathFloorThenAppClosed_verdictIsAskedAgainOnLoad_untilSent(){
+		ReviewPlay.starting = claim(4);
+		ReviewClaim c = ReviewPlay.beginRun();
+		ReviewPlay.onFloor(4);
+		assertSame(c, CommunityController.finishedReview);
+		Bundle saved = new Bundle();
+		ReviewPlay.store(saved);
+		CommunityController.finishedReview = null; ReviewPlay.active = null; // app closed before sending
+		ReviewPlay.restore(saved);
+		assertNotNull("asked again after reload", CommunityController.finishedReview);
+		assertEquals(4, CommunityController.finishedReview.reachedDepth());
+		// once the server has answered, a reload never asks again
+		CommunityController.finishedReview.sent = true;
+		ReviewPlay.active.sent = true;
+		Bundle after = new Bundle();
+		ReviewPlay.store(after);
+		CommunityController.finishedReview = null; ReviewPlay.active = null;
+		ReviewPlay.restore(after);
+		assertNull(CommunityController.finishedReview);
+		assertTrue(ReviewPlay.isReviewRun());
+	}
 }

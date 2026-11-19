@@ -39,6 +39,8 @@ public final class ReviewClaim {
 	/** What the reviewed player asked for: roasts / advice / encouraging (Chris, Nov 19). */
 	public final String reviewType;
 	private int reachedDepth;
+	/** The server has answered this reviewer's verdict (accepted or refused for good); never ask again. */
+	public volatile boolean sent;
 
 	private ReviewClaim(String requestId, String seed, int deathDepth, ReviewSetup setup, boolean roasts, String reviewType, int reachedDepth){
 		this.requestId = requestId; this.seed = seed; this.deathDepth = deathDepth;
@@ -75,12 +77,12 @@ public final class ReviewClaim {
 	public boolean reachedDeathFloor(){ return ReviewSetup.survived(reachedDepth, deathDepth); }
 
 	// ---- survives an app restart mid-review (one attempt, no retry) ----
-	private static final String ID = "rv_id", SEED = "rv_seed", DEPTH = "rv_death", ROASTS = "rv_roasts", REACHED = "rv_reached", TYPE = "rv_type";
+	private static final String ID = "rv_id", SEED = "rv_seed", DEPTH = "rv_death", ROASTS = "rv_roasts", REACHED = "rv_reached", TYPE = "rv_type", SENT = "rv_sent";
 	private static final String[] SETUP_KEYS = {"heroClass", "challenges", "difficulty", "exotic", "customRules"};
 
 	public void store(Bundle bundle){
 		bundle.put(ID, requestId); bundle.put(SEED, seed); bundle.put(DEPTH, deathDepth);
-		bundle.put(ROASTS, roasts); bundle.put(REACHED, reachedDepth); bundle.put(TYPE, reviewType);
+		bundle.put(ROASTS, roasts); bundle.put(REACHED, reachedDepth); bundle.put(TYPE, reviewType); bundle.put(SENT, sent);
 		Map<String, String> m = ReviewSetup.capture(setup.heroClass, setup.challenges, setup.difficulty, true, setup.exotic, setup.rules);
 		for (String k : SETUP_KEYS) bundle.put("rv_s_" + k, m.get(k));
 	}
@@ -95,6 +97,7 @@ public final class ReviewClaim {
 		if (setup == null || !id.matches("[0-9a-f]+") || seed.trim().isEmpty() || depth < 1 || depth > 100) return null;
 		ReviewClaim c = new ReviewClaim(id, seed, depth, setup, bundle.getBoolean(ROASTS), bundle.contains(TYPE) ? bundle.getString(TYPE) : null, 0);
 		c.reached(bundle.getInt(REACHED));
+		c.sent = bundle.contains(SENT) && bundle.getBoolean(SENT);
 		return c;
 	}
 }
