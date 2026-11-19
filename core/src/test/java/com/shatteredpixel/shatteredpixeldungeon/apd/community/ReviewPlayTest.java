@@ -19,6 +19,19 @@ public class ReviewPlayTest {
 		ReviewPlay.starting = null; ReviewPlay.active = null; CommunityController.finishedReview = null;
 	}
 
+	@Test public void savedReviewRunIsRecognisedSoPreviewsHideItsSeed(){
+		Bundle normal = new Bundle();
+		ReviewPlay.active = null;
+		ReviewPlay.store(normal);
+		assertFalse(ReviewPlay.savedIsReview(normal));
+		assertFalse(ReviewPlay.savedIsReview(null));
+		Bundle review = new Bundle();
+		ReviewPlay.active = claim(5);
+		ReviewPlay.store(review);
+		assertTrue(ReviewPlay.savedIsReview(review));
+		assertFalse(ReviewPlay.HIDDEN_SEED_TEXT.matches(".*[A-Z]{3}-[A-Z]{3}-[A-Z]{3}.*"));
+	}
+
 	@Test public void aNormalRunIsNeverAReview(){
 		ReviewPlay.active = claim(5);
 		assertNull(ReviewPlay.beginRun()); // no pending claim: old review state is dropped

@@ -198,7 +198,9 @@ public class WndHero extends WndTabbed {
 
 			statSlot( Messages.get(this, "gold"), Statistics.goldCollected );
 			statSlot( Messages.get(this, "depth"), Statistics.deepestFloor );
-			if (Dungeon.daily){
+			if (com.shatteredpixel.shatteredpixeldungeon.apd.community.ReviewPlay.isReviewRun()){
+				statSlot( com.shatteredpixel.shatteredpixeldungeon.apd.community.ReviewPlay.HIDDEN_SEED_TEXT, "" );
+			} else if (Dungeon.daily){
 				if (!Dungeon.dailyReplay) {
 					statSlot(Messages.get(this, "daily_for"), "_" + Dungeon.customSeedText + "_");
 				} else {

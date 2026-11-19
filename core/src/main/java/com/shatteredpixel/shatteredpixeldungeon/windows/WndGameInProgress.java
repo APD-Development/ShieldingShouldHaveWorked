@@ -99,7 +99,9 @@ public class WndGameInProgress extends Window {
 		pos += GAP;
 		statSlot( Messages.get(this, "gold"), info.goldCollected );
 		statSlot( Messages.get(this, "depth"), info.maxDepth );
-		if (info.daily) {
+		if (info.reviewRun) {
+			statSlot( com.shatteredpixel.shatteredpixeldungeon.apd.community.ReviewPlay.HIDDEN_SEED_TEXT, "" );
+		} else if (info.daily) {
 			if (info.dailyReplay) {
 				statSlot(Messages.get(this, "replay_for"), "_" + info.customSeed + "_");
 			} else {

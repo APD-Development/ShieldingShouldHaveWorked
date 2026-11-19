@@ -39,6 +39,14 @@ public final class ReviewPlay {
 
 	public static boolean isReviewRun(){ return active != null; }
 
+	/** Shown instead of the seed anywhere a review run's seed would appear (hero window, saved-game window). */
+	public static final String HIDDEN_SEED_TEXT = "Review run: seed hidden";
+
+	/** True when a saved game's bundle is a review run (its seed must not be shown in previews). */
+	public static boolean savedIsReview(Bundle bundle){
+		return bundle != null && bundle.contains(NODE);
+	}
+
 	/** Dungeon.init: take the pending claim (if any) as this run's review. Any older review state is dropped, so a
 	 *  normal new run is never treated as a review. */
 	public static ReviewClaim beginRun(){

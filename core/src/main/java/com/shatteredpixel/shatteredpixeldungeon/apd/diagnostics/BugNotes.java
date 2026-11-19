@@ -42,7 +42,7 @@ public final class BugNotes {
 				b.append(" | floor ").append(Dungeon.depth)
 				 .append(" | turn ").append((long) Math.floor(com.shatteredpixel.shatteredpixeldungeon.actors.Actor.now()))
 				 .append(" | ").append(Dungeon.hero.heroClass.name());
-				if (Dungeon.seed != 0) b.append(" | seed ").append(com.shatteredpixel.shatteredpixeldungeon.utils.DungeonSeed.convertToCode(Dungeon.seed));
+				if (Dungeon.seed != 0 && !com.shatteredpixel.shatteredpixeldungeon.apd.community.ReviewPlay.isReviewRun()) b.append(" | seed ").append(com.shatteredpixel.shatteredpixeldungeon.utils.DungeonSeed.convertToCode(Dungeon.seed));
 			}
 		} catch (RuntimeException ignored){ }
 		return b.toString();

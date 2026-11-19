@@ -203,6 +203,7 @@ public class GamesInProgress {
         info.customRulesChanged = info.customRulesKnown && !Dungeon.customRules().isNeutral();
 
 		info.seed = Dungeon.seed;
+		info.reviewRun = com.shatteredpixel.shatteredpixeldungeon.apd.community.ReviewPlay.isReviewRun();
 		info.customSeed = Dungeon.customSeedText;
 		info.daily = Dungeon.daily;
 		info.dailyReplay = Dungeon.dailyReplay;
@@ -244,6 +245,8 @@ public class GamesInProgress {
         public boolean customRulesChanged;
 
 		public long seed;
+		/** Run reviews: this slot is a review run, so its seed is never shown. */
+		public boolean reviewRun;
 		public String customSeed;
 		public boolean daily;
 		public boolean dailyReplay;

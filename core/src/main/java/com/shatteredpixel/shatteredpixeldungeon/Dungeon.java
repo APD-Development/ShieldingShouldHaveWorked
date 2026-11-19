@@ -1040,6 +1040,7 @@ public class Dungeon {
             }
         }
 		info.seed = bundle.getLong( SEED );
+		info.reviewRun = com.shatteredpixel.shatteredpixeldungeon.apd.community.ReviewPlay.savedIsReview( bundle );
 		info.customSeed = bundle.getString( CUSTOM_SEED );
 		info.daily = bundle.getBoolean( DAILY );
 		info.dailyReplay = bundle.getBoolean( DAILY_REPLAY );
