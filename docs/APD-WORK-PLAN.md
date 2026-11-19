@@ -27,6 +27,19 @@ Every scheduled run starts fresh. This file is the memory: read it, work, then a
   including at 16th, goes to the earlier submission. Week-1 picks are gone.
 - Public GPL source: github.com/APD-Development/adhd-pixel-dungeon (export with tools/export-public-source.sh).
 
+## RUN REVIEW ANSWERS (Chris, Nov 19 6:30 AM) — these override earlier defaults/questions. Build them next.
+- Luck drop: reviewers play the same seed; drops vary naturally like for any player (more/fewer potions is part of the
+  test). No luck bonus or adjustment. Reviewers can say in their advice that a verdict depends on luck.
+- Failed reviewers still vote + give advice, but their vote shows they died and on which floor.
+- Bullying: moderator-only for launch. LATER (not now): flagged comment goes to a random other player (peer jury).
+- REPLACE roasts on/off with a REVIEW TYPE the reviewed player picks: roasts allowed / straight advice only / encouraging.
+  Reviewers see the choice before writing. Comments that don't match it or read as bullying are HELD for moderation
+  instead of shown.
+- Custom dungeon rules ARE reviewable: send the run's full custom rule settings with the submission; reviewers play the
+  seed with exactly the same rules, challenges and difficulty LOCKED (can't change them). Remove the "custom rules not
+  offered" restriction.
+- Chris: don't ask permission for things he already said to do (e.g. deploy after tests pass).
+
 ## TONIGHT (Chris, Nov 18 21:32: "work throughout the night till I wake up at 6"). Build in this order.
 1. **Community selected content** (DECIDED): when a bracket finishes, the champion gets a page with a status
    Planned -> In development -> Testing -> Released, set by the admin, plus admin dev notes; players comment on it.
@@ -115,6 +128,7 @@ default-on settings (SPDSettings.keepOldDefaultsForExistingPlayers). Next: Googl
 (Credential Manager), server URL default once deployed, run reviews. HttpGateway contract routes, deployment workflow, Android Community screens wired to it, Play Age Signals.
 
 ## Run log
+- 2026-11-19 6:30 AM (live): server tests pass; deployed release head f73909dd to deploy/community-server (selected content + run reviews server live after Workers build). Chris answered all run-review questions (section above).
 - 2026-11-19 6 AM (scheduled): Run reviews ReviewClaim: strict reader for the claim reply (hex id, non-blank seed, integer
   death floor 1-100, exact setup via ReviewSetup; anything off = null, never guessed), deepest-floor tracker that only goes up,
   and save/restore so a mid-review restart keeps progress. Pure, seed never displayed, loot untouched. +4 tests; full CI
