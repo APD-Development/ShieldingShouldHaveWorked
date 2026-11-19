@@ -150,6 +150,7 @@ default-on settings (SPDSettings.keepOldDefaultsForExistingPlayers). Next: Googl
 (Credential Manager), server URL default once deployed, run reviews. HttpGateway contract routes, deployment workflow, Android Community screens wired to it, Play Age Signals.
 
 ## Run log
+- 2026-11-19 6:35 PM (live): Tester lag (National Pie, extended reporting on, slowed over ~1 h, reopen fixed it, memory flat): action journal held its lock during disk writes so the render thread waited on disk per touch/step; writes now happen outside the lock. Every build now logs avg fps / slow frames / worst frame per 30 s in diagnostics. CI 44638018099 green. Not device-verified; ask for a new report after a long session on the next build.
 - 2026-11-19 6:05 PM (live): Play 927 uploaded to the closed test via the API (wraith 0-HP fix, ZIP-incomplete message, run review tone/reveal/report, hero mod groundwork). Last uploaded build = 927 at commit 96f6b6ae.
 - 2026-11-19 6 PM (scheduled): no code; a live session was pushing to this branch (wraith 1-HP fix, Play build 927, last push 18:00), so this run stood down to avoid clashing.
 - 2026-11-19 5:15 PM (live): Hero mods: HeroMod format+validator, ModLibrary folder scan, HeroModRun gameplay hooks; CI 44622805155 + 44623985199 green. Chris answered: mod runs count only on their own app; mod-only badges (set TBD by Chris). Next: gating, then hero select.
