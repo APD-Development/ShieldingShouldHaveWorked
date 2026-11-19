@@ -115,6 +115,11 @@ default-on settings (SPDSettings.keepOldDefaultsForExistingPlayers). Next: Googl
 (Credential Manager), server URL default once deployed, run reviews. HttpGateway contract routes, deployment workflow, Android Community screens wired to it, Play Age Signals.
 
 ## Run log
+- 2026-11-19 2 AM (scheduled): Run reviews app screens: hub "Run reviews" shows my runs (open = "2/5 reviewers so far",
+  closed = verdicts: salvageable count, each reviewer's verdict, how far they got, advice) and runs waiting for reviewers
+  (setup, progress, roasts flag; no seed). No "Take this run" button yet: claiming spends the only attempt, and the in-game
+  seed playthrough isn't built. +1 controller test; full CI 44477210933 green. Next: in-game review playthrough + sending a
+  finished run for review. Still open for Chris: luck-drop + 3 review questions.
 - 2026-11-19 1 AM (scheduled): Tonight #3 app-side admin test: +1 controller test (reports list shows counts/reasons,
   Hide and Ban author send the right request and return to Moderation, server refusal in plain words, accounts can't be
   hidden). Full CI 44469850674 green. Next: app review screens. Still open for Chris: luck-drop + 3 review questions.
