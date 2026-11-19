@@ -427,7 +427,7 @@ public class CommunityControllerTest {
 		assertTrue(has(s, "Warrior · normal · 2 challenges: 2/5 reviewers so far"));
 		assertFalse("open runs show no verdicts", has(s, "salvageable"));
 		assertTrue(has(s, "Reviewed: 5/5"));
-		assertTrue(has(s, "1/5 reviewed · roasts on"));
+		assertTrue(has(s, "1/5 reviewed · roasts allowed"));
 		tap("Pat: Rogue");
 		assertTrue(has(last(), "isn't ready yet"));
 		assertFalse("no way to spend the only attempt yet", itemLabels(last()).stream().anyMatch(l -> l.startsWith("Take")));
@@ -457,9 +457,9 @@ public class CommunityControllerTest {
 			assertTrue(has(s, "Huntress · 1 challenge · died on floor 4"));
 			assertFalse("the seed is never shown", has(s, "ABC-DEF-GHI"));
 			assertNull("shown once", CommunityController.pendingReview);
-			tap("Send with roasts off");
+			tap("Straight advice only");
 			String sent = requests.stream().filter(q -> q.startsWith("POST /v1/reviews")).findFirst().orElse("");
-			assertTrue(sent, sent.contains("\"seed\":\"ABC-DEF-GHI\"") && sent.contains("\"deathDepth\":4") && sent.contains("\"roasts\":false"));
+			assertTrue(sent, sent.contains("\"seed\":\"ABC-DEF-GHI\"") && sent.contains("\"deathDepth\":4") && sent.contains("\"reviewType\":\"advice\""));
 			assertTrue(has(last(), "Sent."));
 			tap("Back");
 			assertEquals("Community", last().title);

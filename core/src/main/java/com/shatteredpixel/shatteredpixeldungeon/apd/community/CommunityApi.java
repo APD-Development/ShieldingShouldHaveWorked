@@ -141,11 +141,13 @@ public final class CommunityApi {
 	/** Sends a finished run for review. setup and ending are flat name/value pairs (class, challenges, difficulty...;
 	 *  how the run ended). The server never shows the seed or ending publicly; reviewers get them only as Chris's design says. */
 	public Result reviewSubmit(String seed, int deathDepth, java.util.Map<String, String> setup,
-	                           java.util.Map<String, String> ending, boolean roasts){
+	                           java.util.Map<String, String> ending, String reviewType){
+		if (!"roasts".equals(reviewType) && !"advice".equals(reviewType) && !"encouraging".equals(reviewType))
+			throw new IllegalArgumentException("reviewType");
 		if (seed == null || seed.isEmpty()) throw new IllegalArgumentException("seed");
 		if (deathDepth < 1 || deathDepth > 100) throw new IllegalArgumentException("deathDepth");
 		return call("POST", "/v1/reviews", "{\"seed\":" + quote(seed) + ",\"deathDepth\":" + deathDepth
-				+ ",\"setup\":" + flat(setup) + ",\"ending\":" + flat(ending) + ",\"roasts\":" + roasts + "}");
+				+ ",\"setup\":" + flat(setup) + ",\"ending\":" + flat(ending) + ",\"reviewType\":" + quote(reviewType) + "}");
 	}
 
 	static String flat(java.util.Map<String, String> m){

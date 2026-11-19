@@ -767,17 +767,22 @@ function jsonText(v, max, field) {
   return t;
 }
 
+const REVIEW_TYPES = ['roasts', 'advice', 'encouraging'];
+
 route('POST', '/v1/reviews', async (env, req) => {
   const a = await needMember(env, req);
   const b = await body(req);
   const seed = text(b.seed, 64, 'seed');
   const depth = Number(b.deathDepth);
   if (!Number.isInteger(depth) || depth < 1 || depth > 100) fail(400, 'missing_deathDepth');
+  // Review type replaces roasts on/off; an old app's `roasts` flag still maps onto it.
+  const type = b.reviewType == null ? (b.roasts === true ? 'roasts' : 'advice') : b.reviewType;
+  if (!REVIEW_TYPES.includes(type)) fail(400, 'bad_reviewType');
   await rateLimit(env, a, 'reviewRequests');
   const id = newId();
   await env.DB.prepare(
-    'INSERT INTO review_requests (id, account_id, seed, setup, death_depth, ending, roasts, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)')
-    .bind(id, a.id, seed, jsonText(b.setup, 4000, 'setup'), depth, jsonText(b.ending, 8000, 'ending'), b.roasts === true ? 1 : 0, now(env)).run();
+    'INSERT INTO review_requests (id, account_id, seed, setup, death_depth, ending, roasts, review_type, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)')
+    .bind(id, a.id, seed, jsonText(b.setup, 4000, 'setup'), depth, jsonText(b.ending, 8000, 'ending'), type === 'roasts' ? 1 : 0, type, now(env)).run();
   return json(201, { id });
 });
 
@@ -786,14 +791,14 @@ route('GET', '/v1/reviews/open', async (env, req) => {
   const a = await needReviewer(env, req);
   const blocked = await blockedIds(env, a);
   const { results } = await env.DB.prepare(
-    `SELECT r.id, r.account_id, r.setup, r.roasts, r.created_at, x.display_name,
+    `SELECT r.id, r.account_id, r.setup, r.roasts, r.review_type, r.created_at, x.display_name,
             (SELECT COUNT(*) FROM reviews v WHERE v.request_id = r.id AND v.finished_at IS NOT NULL) AS done
        FROM review_requests r JOIN accounts x ON x.id = r.account_id
       WHERE r.status = 'open' AND x.banned = 0 AND r.account_id != ?
         AND NOT EXISTS (SELECT 1 FROM reviews v WHERE v.request_id = r.id AND v.reviewer_id = ?)
       ORDER BY r.created_at LIMIT 100`).bind(a.id, a.id).all();
   return json(200, { runs: results.filter((r) => !blocked.has(r.account_id)).map((r) => ({
-    id: r.id, player: r.display_name, setup: JSON.parse(r.setup), roasts: !!r.roasts, done: r.done, needed: REVIEWS_NEEDED })) });
+    id: r.id, player: r.display_name, setup: JSON.parse(r.setup), roasts: !!r.roasts, reviewType: r.review_type, done: r.done, needed: REVIEWS_NEEDED })) });
 });
 
 // Take a run to review. Only now does the seed come down, so the game can start it; the app never displays it.
@@ -808,7 +813,7 @@ route('POST', '/v1/reviews/([0-9a-f]+)/claim', async (env, req, [id]) => {
     await env.DB.prepare('INSERT INTO reviews (request_id, reviewer_id, id, claimed_at) VALUES (?, ?, ?, ?)')
       .bind(id, a.id, newId(), now(env)).run();
   }
-  return json(200, { id, seed: r.seed, setup: JSON.parse(r.setup), deathDepth: r.death_depth, roasts: !!r.roasts });
+  return json(200, { id, seed: r.seed, setup: JSON.parse(r.setup), deathDepth: r.death_depth, roasts: !!r.roasts, reviewType: r.review_type });
 });
 
 // One result per reviewer, no retry. Then they may see how the original run ended.
@@ -856,7 +861,7 @@ route('GET', '/v1/reviews/mine', async (env, req) => {
   const out = [];
   for (const r of results) {
     const c = await reviewCounts(env, r.id);
-    const item = { id: r.id, setup: JSON.parse(r.setup), roasts: !!r.roasts, status: r.status, done: c.done, needed: REVIEWS_NEEDED, createdAt: r.created_at };
+    const item = { id: r.id, setup: JSON.parse(r.setup), roasts: !!r.roasts, reviewType: r.review_type, status: r.status, done: c.done, needed: REVIEWS_NEEDED, createdAt: r.created_at };
     if (r.status === 'closed') {
       const { results: rows } = await env.DB.prepare(
         `SELECT v.*, x.display_name, x.banned FROM reviews v JOIN accounts x ON x.id = v.reviewer_id

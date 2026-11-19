@@ -588,3 +588,21 @@ test('admin tools: acting on a post or account clears its reports, bad input is 
   assert.deepEqual(log, [`removed comment:${c}`, `removed submission:${s}`, `ban account:${bad.id}`, `ban account:${gid}`,
     `unban account:${gid}`, `unban account:${bad.id}`, `visible submission:${s}`]);
 });
+
+test('run reviews: review type (roasts / straight advice / encouraging) replaces roasts on/off and reviewers see it', async () => {
+  const { call, member } = setup();
+  await member('chris@example.com', 'Chris');
+  const pat = await member('pat@x.com', 'Pat');
+  const rev = await member('rev@x.com', 'Rev');
+  const s = { heroClass: 'MAGE', challenges: 0, difficulty: 'normal' };
+  const ending = { cause: 'Rat', depth: 2 };
+  assert.equal((await call('POST', '/v1/reviews', { seed: 'S1', setup: s, deathDepth: 2, ending, reviewType: 'mean' }, pat.token)).body.error, 'bad_reviewType');
+  const enc = (await call('POST', '/v1/reviews', { seed: 'S1', setup: s, deathDepth: 2, ending, reviewType: 'encouraging' }, pat.token)).body.id;
+  const old = (await call('POST', '/v1/reviews', { seed: 'S2', setup: s, deathDepth: 2, ending, roasts: true }, pat.token)).body.id;
+  const plain = (await call('POST', '/v1/reviews', { seed: 'S3', setup: s, deathDepth: 2, ending }, pat.token)).body.id;
+  const open = Object.fromEntries((await call('GET', '/v1/reviews/open', null, rev.token)).body.runs.map((r) => [r.id, r.reviewType]));
+  assert.deepEqual([open[enc], open[old], open[plain]], ['encouraging', 'roasts', 'advice']);
+  assert.equal((await call('POST', `/v1/reviews/${enc}/claim`, null, rev.token)).body.reviewType, 'encouraging');
+  const mine = Object.fromEntries((await call('GET', '/v1/reviews/mine', null, pat.token)).body.runs.map((r) => [r.id, r.reviewType]));
+  assert.equal(mine[enc], 'encouraging');
+});

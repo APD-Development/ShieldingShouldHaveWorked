@@ -120,14 +120,15 @@ public class CommunityApiTest {
 		setup.put("challenges", "0");
 		java.util.Map<String, String> ending = new java.util.HashMap<>();
 		ending.put("cause", "Gnoll \"brute\"");
-		api.reviewSubmit("ABC-DEF-GHI", 7, setup, ending, true);
-		api.reviewSubmit("XYZ", 1, null, null, false);
+		api.reviewSubmit("ABC-DEF-GHI", 7, setup, ending, "roasts");
+		api.reviewSubmit("XYZ", 1, null, null, "encouraging");
 		assertEquals("POST /v1/reviews {\"seed\":\"ABC-DEF-GHI\",\"deathDepth\":7,\"setup\":{\"challenges\":\"0\",\"heroClass\":\"WARRIOR\"},"
-				+ "\"ending\":{\"cause\":\"Gnoll \\\"brute\\\"\"},\"roasts\":true} Bearer t", seen.get(0));
-		assertEquals("POST /v1/reviews {\"seed\":\"XYZ\",\"deathDepth\":1,\"setup\":{},\"ending\":{},\"roasts\":false} Bearer t", seen.get(1));
-		try { api.reviewSubmit("", 3, null, null, false); fail(); } catch (IllegalArgumentException expected) {}
-		try { api.reviewSubmit("S", 0, null, null, false); fail(); } catch (IllegalArgumentException expected) {}
-		try { api.reviewSubmit("S", 101, null, null, false); fail(); } catch (IllegalArgumentException expected) {}
+				+ "\"ending\":{\"cause\":\"Gnoll \\\"brute\\\"\"},\"reviewType\":\"roasts\"} Bearer t", seen.get(0));
+		assertEquals("POST /v1/reviews {\"seed\":\"XYZ\",\"deathDepth\":1,\"setup\":{},\"ending\":{},\"reviewType\":\"encouraging\"} Bearer t", seen.get(1));
+		try { api.reviewSubmit("XYZ", 3, null, null, "mean"); fail(); } catch (IllegalArgumentException expected) {}
+		try { api.reviewSubmit("", 3, null, null, "advice"); fail(); } catch (IllegalArgumentException expected) {}
+		try { api.reviewSubmit("S", 0, null, null, "advice"); fail(); } catch (IllegalArgumentException expected) {}
+		try { api.reviewSubmit("S", 101, null, null, "advice"); fail(); } catch (IllegalArgumentException expected) {}
 		assertEquals(2, seen.size());
 	}
 

@@ -586,7 +586,7 @@ public final class CommunityController {
 				if (list == null || list.size == 0) s.note("No runs are waiting for review.");
 				else for (JsonValue v = list.child; v != null; v = v.next){
 					final JsonValue run = v;
-					s.item(v.getString("player", "?") + ": " + setupText(v.get("setup")), v.getInt("done", 0) + "/" + v.getInt("needed", 5) + " reviewed" + (v.getBoolean("roasts", false) ? " · roasts on" : ""), () -> openRun(run));
+					s.item(v.getString("player", "?") + ": " + setupText(v.get("setup")), v.getInt("done", 0) + "/" + v.getInt("needed", 5) + " reviewed · " + reviewTypeText(v), () -> openRun(run));
 				}
 			}
 			s.item("Back", null, this::hub);
@@ -610,22 +610,31 @@ public final class CommunityController {
 				+ "They never see the seed's code or how you died until they've played. You see their verdicts once all 5 are done.");
 		s.back = this::hub;
 		s.heading(setupText(setupJson(run.setup)) + (run.deathDepth > 0 ? " · died on floor " + run.deathDepth : ""));
-		s.note("Roasts on lets reviewers be blunt and funny about your run. Bullying can still be reported.");
-		s.item("Send with roasts on", null, () -> submitReview(run, true));
-		s.item("Send with roasts off", null, () -> submitReview(run, false));
+		s.note("Pick what kind of review you want. Reviewers see your choice before they write. Bullying can still be reported.");
+		s.item("Roasts allowed", null, () -> submitReview(run, "roasts"));
+		s.item("Straight advice only", null, () -> submitReview(run, "advice"));
+		s.item("Encouraging", null, () -> submitReview(run, "encouraging"));
 		s.item("Don't send", null, this::hub);
 		ui.show(s);
 	}
 
-	private void submitReview(ReviewRun run, boolean roasts){
+	private void submitReview(ReviewRun run, String reviewType){
 		ui.busy("Sending your run...");
-		call(() -> api.reviewSubmit(run.seed, run.deathDepth, run.setup, run.ending, roasts), r -> {
+		call(() -> api.reviewSubmit(run.seed, run.deathDepth, run.setup, run.ending, reviewType), r -> {
 			Screen s = new Screen("Run reviews", r.ok() ? "Sent. Check Run reviews to see how many players have reviewed it." : message(r));
 			s.back = this::hub;
 			if (r.ok()) s.item("Run reviews", null, this::reviews);
 			s.item("Back", null, this::hub);
 			ui.show(s);
 		});
+	}
+
+	/** The review type the reviewed player picked; an old server's roasts flag maps onto it. */
+	static String reviewTypeText(JsonValue run){
+		String t = run.getString("reviewType", run.getBoolean("roasts", false) ? "roasts" : "advice");
+		if ("roasts".equals(t)) return "roasts allowed";
+		if ("encouraging".equals(t)) return "encouraging";
+		return "straight advice only";
 	}
 
 	private static JsonValue setupJson(java.util.Map<String, String> m){
@@ -643,7 +652,7 @@ public final class CommunityController {
 		Screen s = new Screen(run.getString("player", "?") + "'s run", setupText(run.get("setup")));
 		s.back = this::reviews;
 		s.note("You'd play this exact start once, with no retry. How it ended stays hidden until you've played.");
-		if (run.getBoolean("roasts", false)) s.note("This player has roasts on.");
+		s.note("This player asked for: " + reviewTypeText(run) + ".");
 		s.warning("Playing a review run in the game isn't ready yet. It's coming in a later update.");
 		s.item("Back", null, this::reviews);
 		ui.show(s);
