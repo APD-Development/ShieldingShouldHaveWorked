@@ -413,6 +413,34 @@ public class CommunityControllerTest {
 		assertFalse("notes are plain text for players", itemLabels(last()).contains("Note"));
 	}
 
+	@Test public void runReviews_progressHiddenUntilClosed_verdictsAfter_noSeedAndNoTakeButton(){
+		store.age = "pass"; store.token = "tok";
+		signedInWorld(false);
+		reply("GET /v1/reviews/mine", 200, "{\"runs\":[{\"id\":\"r1\",\"setup\":{\"heroClass\":\"WARRIOR\",\"challenges\":3,\"difficulty\":\"normal\"},\"status\":\"open\",\"done\":2,\"needed\":5},"
+				+ "{\"id\":\"r2\",\"setup\":{\"heroClass\":\"MAGE\"},\"status\":\"closed\",\"done\":5,\"needed\":5,\"reviews\":["
+				+ "{\"survived\":true,\"reachedDepth\":6,\"salvageable\":true,\"advice\":\"Drink the potion earlier\",\"reviewer\":{\"id\":\"b1\",\"displayName\":\"Bo\"}},"
+				+ "{\"survived\":false,\"reachedDepth\":3,\"salvageable\":false,\"advice\":null,\"reviewer\":null}]}]}");
+		reply("GET /v1/reviews/open", 200, "{\"runs\":[{\"id\":\"r9\",\"player\":\"Pat\",\"setup\":{\"heroClass\":\"ROGUE\",\"challenges\":1},\"roasts\":true,\"done\":1,\"needed\":5}]}");
+		controller().start();
+		tap("Run reviews");
+		CommunityController.Screen s = last();
+		assertTrue(has(s, "Warrior · normal · 2 challenges: 2/5 reviewers so far"));
+		assertFalse("open runs show no verdicts", has(s, "salvageable"));
+		assertTrue(has(s, "Reviewed: 5/5"));
+		assertTrue(has(s, "1/5 reviewed · roasts on"));
+		tap("Pat: Rogue");
+		assertTrue(has(last(), "isn't ready yet"));
+		assertFalse("no way to spend the only attempt yet", itemLabels(last()).stream().anyMatch(l -> l.startsWith("Take")));
+		assertFalse("never claims or fetches a seed", requests.stream().anyMatch(q -> q.contains("/claim")));
+		tap("Back");
+		tap("Mage");
+		CommunityController.Screen v = last();
+		assertTrue(has(v, "1 of 2 said it was salvageable"));
+		assertTrue(has(v, "Bo: salvageable (got past where you died)"));
+		assertTrue(has(v, "Drink the potion earlier"));
+		assertTrue(has(v, "[removed]: not salvageable (died earlier, on floor 3)"));
+	}
+
 	private static List<String> itemLabels(CommunityController.Screen s){ List<String> l = new ArrayList<>(); for (CommunityController.Row r : s.items()) l.add(r.label); return l; }
 
 	// Every error code the server can send has plain words in the app (except a few that only a broken client causes).

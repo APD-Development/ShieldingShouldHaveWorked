@@ -277,6 +277,7 @@ public final class CommunityController {
 			s.item("Submissions", "Ideas and their discussions", this::submissions);
 			s.item("Voting and results", "Upvotes, the top 16 and the tournament", this::results);
 			s.item("Selected content", "Every champion and how its development is going", this::champions);
+			s.item("Run reviews", "Your runs' review progress, and runs waiting for reviewers", this::reviews);
 			s.item("Account", "Sign out or delete your account", this::account);
 			if (me.getBoolean("admin", false)) s.item("Moderation", "Reports, hide, remove, ban", this::moderation);
 			s.item("What's coming next", "Run reviews, mods, events and more", ui::planned);
@@ -543,6 +544,81 @@ public final class CommunityController {
 			case "released": return "Released";
 			default: return "?";
 		}
+	}
+
+	// ---- run reviews (Chris's design, Nov 18). Screens only: playing a claimed seed in-game isn't wired yet, so
+	// there is no "Take this run" button (taking one would spend the reviewer's only attempt). The seed is never shown.
+
+	static String setupText(JsonValue setup){
+		if (setup == null || setup.isNull()) return "";
+		StringBuilder b = new StringBuilder();
+		String hero = setup.getString("heroClass", null);
+		if (hero != null && !hero.isEmpty()) b.append(hero.substring(0, 1).toUpperCase()).append(hero.substring(1).toLowerCase());
+		String diff = setup.getString("difficulty", null);
+		if (diff != null && !diff.isEmpty()) b.append(b.length() > 0 ? " · " : "").append(diff);
+		int ch = setup.getInt("challenges", 0);
+		if (ch > 0) b.append(b.length() > 0 ? " · " : "").append(Integer.bitCount(ch)).append(Integer.bitCount(ch) == 1 ? " challenge" : " challenges");
+		return b.toString();
+	}
+
+	private void reviews(){
+		call(api::reviewsMine, mine -> call(api::reviewsOpen, open -> {
+			Screen s = new Screen("Run reviews", "Other players replay your finished run from the same start. You see their verdicts once 5 have played it.");
+			s.back = this::hub;
+			s.heading("Your runs");
+			if (!mine.ok()) s.warning(message(mine));
+			else {
+				JsonValue list = mine.body.get("runs");
+				if (list == null || list.size == 0) s.note("You haven't sent a run for review.");
+				else for (JsonValue v = list.child; v != null; v = v.next){
+					final JsonValue run = v;
+					boolean closed = "closed".equals(v.getString("status", ""));
+					if (closed) s.item(setupText(v.get("setup")), "Reviewed: " + v.getInt("done", 0) + "/" + v.getInt("needed", 5) + " · tap for verdicts", () -> verdictsScreen(run));
+					else s.note(setupText(v.get("setup")) + ": " + v.getInt("done", 0) + "/" + v.getInt("needed", 5) + " reviewers so far");
+				}
+			}
+			s.heading("Waiting for reviewers");
+			if (!open.ok()) s.warning(message(open));
+			else {
+				JsonValue list = open.body.get("runs");
+				if (list == null || list.size == 0) s.note("No runs are waiting for review.");
+				else for (JsonValue v = list.child; v != null; v = v.next){
+					final JsonValue run = v;
+					s.item(v.getString("player", "?") + ": " + setupText(v.get("setup")), v.getInt("done", 0) + "/" + v.getInt("needed", 5) + " reviewed" + (v.getBoolean("roasts", false) ? " · roasts on" : ""), () -> openRun(run));
+				}
+			}
+			s.item("Back", null, this::hub);
+			ui.show(s);
+		}));
+	}
+
+	private void openRun(JsonValue run){
+		Screen s = new Screen(run.getString("player", "?") + "'s run", setupText(run.get("setup")));
+		s.back = this::reviews;
+		s.note("You'd play this exact start once, with no retry. How it ended stays hidden until you've played.");
+		if (run.getBoolean("roasts", false)) s.note("This player has roasts on.");
+		s.warning("Playing a review run in the game isn't ready yet. It's coming in a later update.");
+		s.item("Back", null, this::reviews);
+		ui.show(s);
+	}
+
+	private void verdictsScreen(JsonValue run){
+		Screen s = new Screen("Verdicts", setupText(run.get("setup")));
+		s.back = this::reviews;
+		JsonValue list = run.get("reviews");
+		int salvageable = 0, n = 0;
+		if (list != null) for (JsonValue v = list.child; v != null; v = v.next){ n++; if (v.getBoolean("salvageable", false)) salvageable++; }
+		s.heading(salvageable + " of " + n + " said it was salvageable");
+		if (list != null) for (JsonValue v = list.child; v != null; v = v.next){
+			JsonValue who = v.get("reviewer");
+			String name = who == null || who.isNull() ? "[removed]" : who.getString("displayName", "?");
+			String how = v.getBoolean("survived", false) ? "got past where you died" : "died earlier, on floor " + v.getInt("reachedDepth", 0);
+			s.heading(name + ": " + (v.getBoolean("salvageable", false) ? "salvageable" : "not salvageable") + " (" + how + ")");
+			String advice = v.getString("advice", null);
+			if (advice != null && !advice.isEmpty()) s.note(advice);
+		}
+		s.item("Back", null, this::reviews);
+		ui.show(s);
 	}
 
 	private void champions(){
