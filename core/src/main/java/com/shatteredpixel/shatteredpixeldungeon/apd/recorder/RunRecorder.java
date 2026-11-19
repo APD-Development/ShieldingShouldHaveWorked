@@ -115,6 +115,12 @@ final class RunRecorder {
 		s.seedType = Dungeon.daily ? (Dungeon.dailyReplay ? LifecycleEvents.SEED_DAILY_REPLAY : LifecycleEvents.SEED_DAILY)
 				: (Dungeon.customSeedText == null || Dungeon.customSeedText.isEmpty() ? LifecycleEvents.SEED_RANDOM : LifecycleEvents.SEED_CUSTOM);
 		s.customSeedText = Dungeon.customSeedText == null ? "" : Dungeon.customSeedText;
+		//APD run reviews: a review run's seed is never kept in the reviewer's history (like its ranking)
+		if (com.shatteredpixel.shatteredpixeldungeon.apd.community.ReviewPlay.isReviewRun()){
+			s.seed = 0;
+			s.seedType = LifecycleEvents.SEED_REVIEW;
+			s.customSeedText = "";
+		}
 		s.challenges = Dungeon.challenges;
 		s.heroClass = Dungeon.hero == null || Dungeon.hero.heroClass == null ? "" : Dungeon.hero.heroClass.name();
 		s.rulesetId = rules.id;

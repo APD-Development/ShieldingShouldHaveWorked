@@ -102,7 +102,8 @@ public final class RunFactsBuilder {
 						f.num(FactKeys.INITIAL_VERSION, s.initialVersion, Fact.PROV_RECORDED);
 						//a redacted copy (from an archive of a run that was not finished) has its seed taken out: unknown, not 0
 						boolean redactedCopy = r.header != null && r.header.writerBuild != null && r.header.writerBuild.startsWith(LogHeader.REDACTED_PREFIX);
-						if (!redactedCopy){
+						//a review run never recorded its seed: unknown, not 0
+						if (!redactedCopy && s.seedType != LifecycleEvents.SEED_REVIEW){
 							f.num(FactKeys.SEED, s.seed, Fact.PROV_RECORDED);
 							f.text(FactKeys.CUSTOM_SEED, s.customSeedText, Fact.PROV_RECORDED);
 						}

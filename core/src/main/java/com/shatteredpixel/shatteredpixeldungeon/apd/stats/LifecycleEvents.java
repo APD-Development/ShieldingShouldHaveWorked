@@ -43,6 +43,8 @@ public final class LifecycleEvents {
 
 	//RUN_START.seedType
 	public static final int SEED_RANDOM = 0, SEED_CUSTOM = 1, SEED_DAILY = 2, SEED_DAILY_REPLAY = 3;
+	/** APD run reviews: the seed came from a review claim and is never written to the log (recorded as 0 with no text). */
+	public static final int SEED_REVIEW = 4;
 
 	//RUN_START.startKind: why this log begins
 	public static final int START_NEW_RUN = 0;
