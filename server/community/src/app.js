@@ -990,8 +990,19 @@ async function setBan(env, req, banned) {
 route('POST', '/v1/admin/ban', (env, req) => setBan(env, req, true));
 route('POST', '/v1/admin/unban', (env, req) => setBan(env, req, false));
 
+// Chris, Nov 19 2026: Community is blocked until the player installs the update. Every /v1 request from an app older
+// than MIN_APP_VERSION (or one that doesn't say its version, i.e. every build before this check) gets 426 update_required.
+// Web pages (/privacy, /delete) stay open.
+function tooOld(request, env, url) {
+  const min = Number(env.MIN_APP_VERSION || 0);
+  if (!min || !url.pathname.startsWith('/v1/')) return false;
+  const v = Number(request.headers.get('x-apd-version'));
+  return !Number.isInteger(v) || v < min;
+}
+
 export async function handle(request, env) {
   const url = new URL(request.url);
+  if (tooOld(request, env, url)) return json(426, { error: 'update_required' });
   for (const r of routes) {
     if (r.method !== request.method) continue;
     const m = url.pathname.match(r.re);

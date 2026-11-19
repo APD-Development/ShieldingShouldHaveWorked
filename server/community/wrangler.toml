@@ -10,6 +10,7 @@ database_id = "1ca6717a-e895-44a6-901a-50791060bb3d"
 migrations_dir = "migrations"
 
 [vars]
+MIN_APP_VERSION = "925"   # Community is blocked (426 update_required) for app versionCodes below this. Chris, Nov 19.
 ADMIN_EMAILS = "charltonchris29@gmail.com"      # Chris's email: signing up with it makes that account the admin
 GOOGLE_CLIENT_ID = "1075731906356-tr7miehsnl77ld9ru05h3ijv84cd60jb.apps.googleusercontent.com"  # Google OAuth web client id(s), comma-separated
 MAIL_FROM = ""         # e.g. community@charltonbornstudios.com (a domain onboarded to Email Sending)

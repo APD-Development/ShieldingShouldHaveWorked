@@ -251,6 +251,8 @@ public final class CommunityApi {
 			c.setRequestMethod(method);
 			c.setInstanceFollowRedirects(false);
 			c.setRequestProperty("Accept", "application/json");
+			// The server blocks Community for app versions older than its minimum (update required).
+			c.setRequestProperty("X-APD-Version", Integer.toString(com.watabou.noosa.Game.versionCode));
 			if (token != null) c.setRequestProperty("Authorization", "Bearer " + token);
 			if (json != null){
 				byte[] out = json.getBytes(StandardCharsets.UTF_8);

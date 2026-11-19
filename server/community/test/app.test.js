@@ -606,3 +606,20 @@ test('run reviews: review type (roasts / straight advice / encouraging) replaces
   const mine = Object.fromEntries((await call('GET', '/v1/reviews/mine', null, pat.token)).body.runs.map((r) => [r.id, r.reviewType]));
   assert.equal(mine[enc], 'encouraging');
 });
+
+test('update required: Community blocks apps older than MIN_APP_VERSION (and apps that never say), web pages stay open', async () => {
+  const { env } = setup();
+  env.MIN_APP_VERSION = '925';
+  const get = async (path, version) => {
+    const headers = version == null ? {} : { 'x-apd-version': String(version) };
+    return handle(new Request(`https://x${path}`, { headers }), env);
+  };
+  for (const v of [null, 924, 'abc']) {
+    const r = await get('/v1/me', v);
+    assert.equal(r.status, 426);
+    assert.equal((await r.json()).error, 'update_required');
+  }
+  assert.equal((await get('/v1/me', 925)).status, 401); // past the gate: just not signed in
+  assert.equal((await get('/v1/me', 930)).status, 401);
+  assert.equal((await get('/privacy', null)).status, 200);
+});

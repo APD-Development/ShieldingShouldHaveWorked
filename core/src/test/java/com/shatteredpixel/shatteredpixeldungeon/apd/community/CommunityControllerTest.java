@@ -102,6 +102,18 @@ public class CommunityControllerTest {
 		assertFalse(asked.size() > 2);
 	}
 
+	@Test public void oldAppVersion_blocksCommunityUntilTheUpdateIsInstalled(){
+		store.age = "pass"; store.token = "tok";
+		reply("GET /v1/me", 426, "{\"error\":\"update_required\"}");
+		controller().start();
+		CommunityController.Screen s = last();
+		assertTrue(has(s, "Download and install the update"));
+		assertEquals(java.util.Arrays.asList("Back"), itemLabels(s));
+		assertEquals("still signed in for after the update", "tok", store.token);
+		tap("Back");
+		assertTrue(left);
+	}
+
 	@Test public void signUpVerifyAndLandOnTheHub(){
 		store.age = "pass";
 		signedInWorld(false);

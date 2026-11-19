@@ -141,6 +141,21 @@ public final class CommunityController {
 		return s;
 	}
 
+	/** Chris, Nov 19: Community is blocked until the player has downloaded and installed the update. The server
+	 *  refuses older app versions with update_required; nothing else in Community opens, and cached screens are dropped. */
+	static boolean updateRequired(CommunityApi.Result r){
+		return r != null && (r.status == 426 || "update_required".equals(r.error));
+	}
+
+	private Screen updateScreen(){
+		synchronized (CACHE){ CACHE.clear(); }
+		Screen s = new Screen("Community", "Update required");
+		s.note("Community needs the newest version of ADHD Pixel Dungeon. Download and install the update from Google Play, then open Community again. The rest of the game still works.");
+		s.item("Back", null, ui::leave);
+		s.back = ui::leave;
+		return s;
+	}
+
 	private Screen locked(){
 		Screen s = new Screen("Community", "Community is for players 16 and older.");
 		s.note("The rest of ADHD Pixel Dungeon is yours to play. Community's submissions, comments and votes are only open to players 16 and up.");
@@ -898,6 +913,7 @@ public final class CommunityController {
 		then.accept(new CommunityApi.Result(200, new JsonReader().parse(old), null));
 		final int shownAt = uiChanges;
 		runner.run(call, r -> {
+			if (updateRequired(r)){ ui.show(updateScreen()); return; }
 			if (r.status == 401 && me != null){ forget(); ui.show(signedOut("You were signed out. Please sign in again.")); return; }
 			if (!r.ok()) return; // keep showing the cached screen
 			String fresh = store(k, r);
@@ -915,6 +931,7 @@ public final class CommunityController {
 	private void call(Supplier<CommunityApi.Result> call, Consumer<CommunityApi.Result> then){
 		ui.busy("Talking to the Community server...");
 		runner.run(call, r -> {
+			if (updateRequired(r)){ ui.show(updateScreen()); return; }
 			if (r.status == 401 && me != null){ forget(); ui.show(signedOut("You were signed out. Please sign in again.")); return; }
 			then.accept(r);
 		});
