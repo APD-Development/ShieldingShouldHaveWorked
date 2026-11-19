@@ -128,6 +128,11 @@ default-on settings (SPDSettings.keepOldDefaultsForExistingPlayers). Next: Googl
 (Credential Manager), server URL default once deployed, run reviews. HttpGateway contract routes, deployment workflow, Android Community screens wired to it, Play Age Signals.
 
 ## Run log
+- 2026-11-19 6:40 AM (scheduled): Run reviews REVIEW TYPE replaces roasts on/off (server migration 0007 review_type
+  roasts/advice/encouraging, old roasts flag maps over; open/claim/mine return it; app send screen has 3 choices, reviewers
+  see "This player asked for: ..."). Server CI 44516548221 + full core CI 44516549185 green; deployed to deploy/community-server.
+  Failed-reviewer vote already shows died + floor. Next: custom rules locked in review setup; HOLD for moderation.
+  QUESTION for Chris: how is a comment that "doesn't match the review type" detected — reviewed player flags it, or a word filter?
 - 2026-11-19 6:30 AM (live): server tests pass; deployed release head f73909dd to deploy/community-server (selected content + run reviews server live after Workers build). Chris answered all run-review questions (section above).
 - 2026-11-19 6 AM (scheduled): Run reviews ReviewClaim: strict reader for the claim reply (hex id, non-blank seed, integer
   death floor 1-100, exact setup via ReviewSetup; anything off = null, never guessed), deepest-floor tracker that only goes up,
