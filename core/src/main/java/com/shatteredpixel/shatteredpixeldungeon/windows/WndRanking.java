@@ -272,7 +272,7 @@ public class WndRanking extends WndTabbed {
 			boolean canReview = Dungeon.hero != null && Dungeon.seed != -1 && !Dungeon.daily && !record.win
 					&& Statistics.highestAscent == 0 && record.depth >= 1
 					&& !SPDSettings.communityServer().isEmpty()
-					&& com.shatteredpixel.shatteredpixeldungeon.apd.community.ReviewSetup.reviewable(Dungeon.difficultyKnown, Dungeon.customRules() != null);
+					&& com.shatteredpixel.shatteredpixeldungeon.apd.community.ReviewSetup.reviewable(Dungeon.difficultyKnown);
 			boolean canCopy = Dungeon.hero != null && Dungeon.seed != -1 && !Dungeon.daily &&
 					(DeviceCompat.isDebug() || Badges.isUnlocked(Badges.Badge.VICTORY));
 			if (canReview){
@@ -283,7 +283,7 @@ public class WndRanking extends WndTabbed {
 						String seed = Dungeon.customSeedText.isEmpty() ? DungeonSeed.convertToCode(Dungeon.seed) : Dungeon.customSeedText;
 						java.util.Map<String, String> setup = com.shatteredpixel.shatteredpixeldungeon.apd.community.ReviewSetup.capture(
 								record.heroClass, Dungeon.challenges, Dungeon.difficulty, Dungeon.difficultyKnown,
-								Dungeon.apdExotic, Dungeon.customRules() != null);
+								Dungeon.apdExotic, Dungeon.customRules());
 						java.util.Map<String, String> ending = new java.util.HashMap<>();
 						if (record.cause != null) ending.put("cause", record.cause.getSimpleName());
 						com.shatteredpixel.shatteredpixeldungeon.apd.community.CommunityController.pendingReview =

@@ -23,6 +23,7 @@ package com.shatteredpixel.shatteredpixeldungeon.apd.community;
 
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
+import com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomDungeonRules;
 import com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.Difficulty;
 
 import java.util.HashMap;
@@ -37,27 +38,30 @@ public final class ReviewSetup {
 	public final HeroClass heroClass;
 	public final int challenges, difficulty, exotic;
 	public final boolean customRules;
+	/** The run's exact custom dungeon rules (Chris, Nov 19: reviewable, LOCKED for the reviewer); null for none. */
+	public final CustomDungeonRules rules;
 
-	private ReviewSetup(HeroClass heroClass, int challenges, int difficulty, int exotic, boolean customRules){
+	private ReviewSetup(HeroClass heroClass, int challenges, int difficulty, int exotic, CustomDungeonRules rules){
 		this.heroClass = heroClass; this.challenges = challenges; this.difficulty = difficulty;
-		this.exotic = exotic; this.customRules = customRules;
+		this.exotic = exotic; this.rules = rules; this.customRules = rules != null;
 	}
 
 	/** What a run sends. An unknown difficulty is not sent, so the reviewer side refuses it rather than guessing. */
 	public static Map<String, String> capture(HeroClass heroClass, int challenges, int difficulty, boolean difficultyKnown,
-	                                          int exotic, boolean customRules){
+	                                          int exotic, CustomDungeonRules rules){
 		Map<String, String> m = new HashMap<>();
 		m.put("heroClass", heroClass.name());
 		m.put("challenges", Integer.toString(challenges));
 		if (difficultyKnown) m.put("difficulty", Integer.toString(difficulty));
 		m.put("exotic", Integer.toString(exotic));
-		m.put("customRules", customRules ? "1" : "0");
+		// "0" = no custom rules; otherwise every rule setting, so the reviewer plays exactly the same rules.
+		m.put("customRules", rules == null ? "0" : rules.preferenceText());
 		return m;
 	}
 
-	/** Whether this run can be reviewed with an exact setup. Custom dungeon rules aren't sent yet, so those runs can't. */
-	public static boolean reviewable(boolean difficultyKnown, boolean customRules){
-		return difficultyKnown && !customRules;
+	/** Whether this run can be reviewed with an exact setup. Custom-rule runs are reviewable (their full settings are sent). */
+	public static boolean reviewable(boolean difficultyKnown){
+		return difficultyKnown;
 	}
 
 	/** Reads a claimed setup back; null when anything is missing or out of range (never a guessed default). */
@@ -69,8 +73,14 @@ public final class ReviewSetup {
 		if (ch == null || ch < 0 || ch > Challenges.MAX_VALUE) return null;
 		if (diff == null || !Difficulty.isValid(diff)) return null;
 		if (ex == null || ex < 0) return null;
-		if ("1".equals(m.get("customRules"))) return null;
-		return new ReviewSetup(hc, ch, diff, ex, false);
+		String cr = m.get("customRules");
+		if (cr == null) return null;
+		CustomDungeonRules rules = null;
+		if (!"0".equals(cr)){
+			// An old flag-only "1" (or anything incomplete/invalid) has no settings to lock to: refused, never guessed.
+			try { rules = CustomDungeonRules.fromPreferenceText(cr); } catch (RuntimeException e){ return null; }
+		}
+		return new ReviewSetup(hc, ch, diff, ex, rules);
 	}
 
 	/** A reviewer "counts" once they reach the floor where the original player died; dying before is a failed review. */

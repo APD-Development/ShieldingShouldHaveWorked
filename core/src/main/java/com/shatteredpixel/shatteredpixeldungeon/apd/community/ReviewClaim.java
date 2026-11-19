@@ -74,7 +74,7 @@ public final class ReviewClaim {
 	public void store(Bundle bundle){
 		bundle.put(ID, requestId); bundle.put(SEED, seed); bundle.put(DEPTH, deathDepth);
 		bundle.put(ROASTS, roasts); bundle.put(REACHED, reachedDepth);
-		Map<String, String> m = ReviewSetup.capture(setup.heroClass, setup.challenges, setup.difficulty, true, setup.exotic, false);
+		Map<String, String> m = ReviewSetup.capture(setup.heroClass, setup.challenges, setup.difficulty, true, setup.exotic, setup.rules);
 		for (String k : SETUP_KEYS) bundle.put("rv_s_" + k, m.get(k));
 	}
 
