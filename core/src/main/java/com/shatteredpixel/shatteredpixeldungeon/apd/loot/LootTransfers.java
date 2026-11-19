@@ -79,7 +79,8 @@ public final class LootTransfers {
     }
     static boolean roomDiscovered(Level level, com.shatteredpixel.shatteredpixeldungeon.levels.rooms.Room room) {
         if (level.visited == null) return false;
-        for (int y = room.top; y <= room.bottom; y++) for (int x = room.left; x <= room.right; x++) {
+        // Interior only: seeing a room's door or wall from the corridor is not discovering the room.
+        for (int y = room.top + 1; y < room.bottom; y++) for (int x = room.left + 1; x < room.right; x++) {
             if (x < 0 || y < 0 || x >= level.width() || y >= level.height()) continue;
             if (level.visited[x + y * level.width()]) return true;
         }
