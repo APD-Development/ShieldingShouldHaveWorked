@@ -115,6 +115,10 @@ default-on settings (SPDSettings.keepOldDefaultsForExistingPlayers). Next: Googl
 (Credential Manager), server URL default once deployed, run reviews. HttpGateway contract routes, deployment workflow, Android Community screens wired to it, Play Age Signals.
 
 ## Run log
+- 2026-11-19 6 AM (scheduled): Run reviews ReviewClaim: strict reader for the claim reply (hex id, non-blank seed, integer
+  death floor 1-100, exact setup via ReviewSetup; anything off = null, never guessed), deepest-floor tracker that only goes up,
+  and save/restore so a mid-review restart keeps progress. Pure, seed never displayed, loot untouched. +4 tests; full CI
+  44511908961 green. Not device-verified. Next: start the game from a ReviewClaim + report result. Open for Chris: luck-drop + 3 questions.
 - 2026-11-19 5 AM (scheduled): Run reviews exact setup: rankings "Send for review" now sends class, challenges, difficulty,
   exotic and a custom-rules flag (was class + challenges only); runs with unknown difficulty or custom dungeon rules aren't
   offered (my call, revertable: custom rules aren't transmitted yet). New ReviewSetup strict parser for the reviewer side
