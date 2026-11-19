@@ -313,17 +313,18 @@ public class LootRuntimeTest {
         Dungeon.level.heaps.clear();int away=safeAway();Room home=roomOf(away);
         Room other=null;int cell=-1;
         for(int i=0;i<Dungeon.level.length()&&cell<0;i++){Room r=roomOf(i);
-            if(r!=null&&r!=home&&LootPlacement.safe(Dungeon.level,i)&&LootTransfers.cellAllowed(Dungeon.level,i)
+            if(r!=null&&r!=home&&r.inside(Dungeon.level.cellToPoint(i))&&!r.inside(Dungeon.level.cellToPoint(away))&&LootPlacement.safe(Dungeon.level,i)&&LootTransfers.cellAllowed(Dungeon.level,i)
                     &&i!=LootPlacement.besideDownstairs(Dungeon.level)&&r!=roomOf(LootPlacement.besideDownstairs(Dungeon.level))){other=r;cell=i;}}
         assertNotNull(other);
-        for(int y=other.top;y<=other.bottom;y++)for(int x=other.left;x<=other.right;x++)Dungeon.level.visited[x+y*Dungeon.level.width()]=false;
+                for(int y=other.top;y<=other.bottom;y++)for(int x=other.left;x<=other.right;x++)Dungeon.level.visited[x+y*Dungeon.level.width()]=false;
+        Dungeon.level.visited[away]=true; // walls are shared; keep the home pile's tile seen
         assertFalse(LootTransfers.cellAllowed(Dungeon.level,cell));
         Pasty hidden=new Pasty();hidden.apdUid="undiscovered";pile(cell,Heap.Type.HEAP,hidden);
         Pasty free=new Pasty();free.apdUid="free";pile(away,Heap.Type.HEAP,free);
         readGathering();
         assertEquals(1,gatherCount("free"));assertEquals(0,gatherCount("undiscovered"));
         // seeing a single tile of that room makes it discovered
-        Dungeon.level.visited[other.left+other.top*Dungeon.level.width()]=true;
+        Dungeon.level.visited[cell]=true;
         assertTrue(LootTransfers.cellAllowed(Dungeon.level,cell));
     }
 
