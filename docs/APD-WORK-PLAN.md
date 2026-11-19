@@ -70,7 +70,10 @@ A recent push is not a clash: `git pull --rebase` before every push and resolve 
    armor abilities. Anything needing new code: modder submits, Chris approves, it ships in an app update.
    BUILD ORDER: (a) DONE 4:45 PM: apd/mods/HeroMod parser + validator + tests. (b) DONE 5 PM: apd/mods/ModLibrary scans a mods folder (needs wiring to the real files dir): load
    <files>/mods/<id>/hero.json + sprite.png (same layout as hero sprites), list valid ones, show refusal reasons.
-   (c) hero select: modded heroes appear after the normal classes (name, sprite, description, author).
+   (d-core) DONE 5:15 PM: apd/mods/HeroModRun gameplay hooks (talents, armor abilities, base HP, STR, extra items on top of the class kit
+   ("keep class kit" = safe default so class mechanics don't break), mod json stored in the save).
+   BEFORE (c) exposes mods: gate mod runs (HeroModRun.isModRun()) out of Community (rankings upload, tournament, run reviews,
+   send-for-review) and out of normal badges; local rankings entry marked Mod. Then (c) hero select: modded heroes appear after the normal classes (name, sprite, description, author).
    (d) game: start a run as the mod: base class engine, mod HP/STR, mod starting items instead of the class kit,
    mod talent tiers in place of the class lists, mod armor abilities; save/load keeps the mod id (missing mod on load =
    clear message, never a crash). (e) Community workshop: upload (signed in, 16+), browse, subscribe/download,
@@ -147,6 +150,7 @@ default-on settings (SPDSettings.keepOldDefaultsForExistingPlayers). Next: Googl
 (Credential Manager), server URL default once deployed, run reviews. HttpGateway contract routes, deployment workflow, Android Community screens wired to it, Play Age Signals.
 
 ## Run log
+- 2026-11-19 5:15 PM (live): Hero mods: HeroMod format+validator, ModLibrary folder scan, HeroModRun gameplay hooks; CI 44622805155 + 44623985199 green. Chris answered: mod runs count only on their own app; mod-only badges (set TBD by Chris). Next: gating, then hero select.
 - 2026-11-19 4 PM (scheduled): Run reviews bug: claiming by id skipped the open-list rules, so a reviewer could take (and get the seed of) a run from a player they blocked or a banned player; now 404 not_found. +1 server test (39 pass locally); server CI 44615552402 green. NOT deployed (live session pushes deploy/community-server). Next: Chris's next priority.
 - 2026-11-19 3 PM (scheduled): reviewResult (app API) now refuses a bad tone, reached floor outside 0-100 or blank advice before any request, matching the server and reviewSubmit. +1 API test; full CI 44605387754 green. Daily alpha APK skipped: still PAUSED (Chris, Nov 18). Deploy of the 12 PM server change (re-claim window) to deploy/community-server refused again by the sandbox: a live session must push it. Next: Chris's next priority.
 - 2026-11-19 2 PM (scheduled): Seed history checked for review seeds: SeedHistory/rankings already skip them (no custom seed, ranking keeps no seed), but the reviewer's own run log still recorded the seed, which hidden-info stats/Seed floors could show after the run. Now a review run logs seed type 'review' with no seed (facts: unknown, not 0). +1 test; full CI 44595069967 green. Not device-verified. Next: Tonight #3 leftovers / Chris's next priority.
