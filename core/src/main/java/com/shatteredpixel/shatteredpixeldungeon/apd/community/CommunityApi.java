@@ -138,6 +138,23 @@ public final class CommunityApi {
 
 	// ---- run reviews (server side done; the in-game seed playthrough is not wired yet) ----
 
+	/** Sends a finished run for review. setup and ending are flat name/value pairs (class, challenges, difficulty...;
+	 *  how the run ended). The server never shows the seed or ending publicly; reviewers get them only as Chris's design says. */
+	public Result reviewSubmit(String seed, int deathDepth, java.util.Map<String, String> setup,
+	                           java.util.Map<String, String> ending, boolean roasts){
+		if (seed == null || seed.isEmpty()) throw new IllegalArgumentException("seed");
+		if (deathDepth < 1 || deathDepth > 100) throw new IllegalArgumentException("deathDepth");
+		return call("POST", "/v1/reviews", "{\"seed\":" + quote(seed) + ",\"deathDepth\":" + deathDepth
+				+ ",\"setup\":" + flat(setup) + ",\"ending\":" + flat(ending) + ",\"roasts\":" + roasts + "}");
+	}
+
+	static String flat(java.util.Map<String, String> m){
+		if (m == null) return "{}";
+		java.util.List<String> kv = new java.util.ArrayList<>();
+		for (java.util.Map.Entry<String, String> e : new java.util.TreeMap<>(m).entrySet()){ kv.add(e.getKey()); kv.add(e.getValue()); }
+		return obj(kv.toArray(new String[0]));
+	}
+
 	public Result reviewsOpen(){ return call("GET", "/v1/reviews/open", null); }
 	public Result reviewsMine(){ return call("GET", "/v1/reviews/mine", null); }
 	public Result reviewClaim(String requestId){ return call("POST", "/v1/reviews/" + id(requestId) + "/claim", null); }

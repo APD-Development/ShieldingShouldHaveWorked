@@ -112,6 +112,25 @@ public class CommunityApiTest {
 		assertEquals("POST /v1/auth/google {\"idToken\":\"idtok\"} Bearer t", seen.get(3));
 	}
 
+	@Test public void sendingARunForReviewPostsSeedSetupEndingAndRoasts(){
+		CommunityApi api = api();
+		api.token("t");
+		java.util.Map<String, String> setup = new java.util.HashMap<>();
+		setup.put("heroClass", "WARRIOR");
+		setup.put("challenges", "0");
+		java.util.Map<String, String> ending = new java.util.HashMap<>();
+		ending.put("cause", "Gnoll \"brute\"");
+		api.reviewSubmit("ABC-DEF-GHI", 7, setup, ending, true);
+		api.reviewSubmit("XYZ", 1, null, null, false);
+		assertEquals("POST /v1/reviews {\"seed\":\"ABC-DEF-GHI\",\"deathDepth\":7,\"setup\":{\"challenges\":\"0\",\"heroClass\":\"WARRIOR\"},"
+				+ "\"ending\":{\"cause\":\"Gnoll \\\"brute\\\"\"},\"roasts\":true} Bearer t", seen.get(0));
+		assertEquals("POST /v1/reviews {\"seed\":\"XYZ\",\"deathDepth\":1,\"setup\":{},\"ending\":{},\"roasts\":false} Bearer t", seen.get(1));
+		try { api.reviewSubmit("", 3, null, null, false); fail(); } catch (IllegalArgumentException expected) {}
+		try { api.reviewSubmit("S", 0, null, null, false); fail(); } catch (IllegalArgumentException expected) {}
+		try { api.reviewSubmit("S", 101, null, null, false); fail(); } catch (IllegalArgumentException expected) {}
+		assertEquals(2, seen.size());
+	}
+
 	@Test public void refusesUnsafeAddressesAndIds(){
 		try { new CommunityApi("http://example.com", 1000); fail(); } catch (IllegalArgumentException expected) {}
 		try { api().submission("../admin"); fail(); } catch (IllegalArgumentException expected) {}
