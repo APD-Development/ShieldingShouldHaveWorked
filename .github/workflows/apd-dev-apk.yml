@@ -1,0 +1,27 @@
+name: APD Developer APK (Chris only)
+# Builds the Developer edition (.indev package, alpha key) from the release branch and hands the APK to a branch,
+# because artifact downloads aren't reachable from the build session.
+on:
+  workflow_dispatch:
+    inputs:
+      build:
+        description: Build label
+        default: C490D
+permissions:
+  contents: write
+jobs:
+  dev:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with: { distribution: temurin, java-version: '21' }
+      - uses: gradle/actions/setup-gradle@v4
+      - run: ./gradlew :android:assembleDebug -PapdTestBuild -PapdBuild=${{ inputs.build }} --no-daemon
+      - name: Hand the APK to a branch
+        run: |
+          mkdir -p /tmp/h && cp android/build/outputs/apk/debug/android-debug.apk /tmp/h/APD-Developer-${{ inputs.build }}.apk
+          cd /tmp/h && git init -q -b handoff/dev-apk && git config user.name apd-ci && git config user.email ci@users.noreply.github.com
+          git add . && git commit -qm "Developer APK ${{ inputs.build }}"
+          git push -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" handoff/dev-apk
