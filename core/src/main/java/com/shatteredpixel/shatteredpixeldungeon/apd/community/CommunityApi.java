@@ -161,6 +161,12 @@ public final class CommunityApi {
 	public Result reviewsMine(){ return call("GET", "/v1/reviews/mine", null); }
 	public Result reviewClaim(String requestId){ return call("POST", "/v1/reviews/" + id(requestId) + "/claim", null); }
 	public Result reviewResult(String requestId, int reachedDepth, boolean salvageable, String tone, String advice){
+		// Same limits the server checks (reachedDepth 0-100, tone untagged or one of the review types, advice required),
+		// refused before any request like reviewSubmit.
+		if (tone != null && !"roasts".equals(tone) && !"advice".equals(tone) && !"encouraging".equals(tone))
+			throw new IllegalArgumentException("tone");
+		if (reachedDepth < 0 || reachedDepth > 100) throw new IllegalArgumentException("reachedDepth");
+		if (advice == null || advice.trim().isEmpty()) throw new IllegalArgumentException("advice");
 		return call("POST", "/v1/reviews/" + id(requestId) + "/result",
 				"{\"reachedDepth\":" + reachedDepth + ",\"salvageable\":" + salvageable + ",\"tone\":" + quote(tone) + ",\"advice\":" + quote(advice) + "}");
 	}

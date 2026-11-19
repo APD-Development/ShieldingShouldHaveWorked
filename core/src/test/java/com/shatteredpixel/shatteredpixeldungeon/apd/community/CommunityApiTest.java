@@ -132,6 +132,21 @@ public class CommunityApiTest {
 		assertEquals(2, seen.size());
 	}
 
+	@Test public void reviewResultSendsVerdictAndRefusesBadValuesBeforeAnyRequest(){
+		CommunityApi api = api();
+		api.token("t");
+		api.reviewResult("ab12", 5, true, "advice", "Use the potion");
+		api.reviewResult("ab12", 0, false, null, "Run");
+		assertEquals("POST /v1/reviews/ab12/result {\"reachedDepth\":5,\"salvageable\":true,\"tone\":\"advice\",\"advice\":\"Use the potion\"} Bearer t", seen.get(0));
+		assertEquals("POST /v1/reviews/ab12/result {\"reachedDepth\":0,\"salvageable\":false,\"tone\":null,\"advice\":\"Run\"} Bearer t", seen.get(1));
+		try { api.reviewResult("ab12", 3, true, "mean", "x"); fail(); } catch (IllegalArgumentException expected) {}
+		try { api.reviewResult("ab12", -1, true, "advice", "x"); fail(); } catch (IllegalArgumentException expected) {}
+		try { api.reviewResult("ab12", 101, true, "advice", "x"); fail(); } catch (IllegalArgumentException expected) {}
+		try { api.reviewResult("ab12", 3, true, "advice", "  "); fail(); } catch (IllegalArgumentException expected) {}
+		try { api.reviewResult("../x", 3, true, "advice", "x"); fail(); } catch (IllegalArgumentException expected) {}
+		assertEquals(2, seen.size());
+	}
+
 	@Test public void refusesUnsafeAddressesAndIds(){
 		try { new CommunityApi("http://example.com", 1000); fail(); } catch (IllegalArgumentException expected) {}
 		try { api().submission("../admin"); fail(); } catch (IllegalArgumentException expected) {}
