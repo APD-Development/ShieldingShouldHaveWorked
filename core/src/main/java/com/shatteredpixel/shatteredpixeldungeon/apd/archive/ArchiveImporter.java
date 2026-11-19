@@ -270,7 +270,9 @@ public final class ArchiveImporter {
 				return report;
 			} catch (Throwable t){
 				report.ok = false;
-				report.problem = String.valueOf(t);
+				report.problem = truncated(t)
+						? "this ZIP ends early, so the file is incomplete. If it was just exported, wait until the export says it finished, then import it again."
+						: String.valueOf(t);
 				return report;
 			} finally {
 				if (tmpDir != null) deleteTree(tmpDir);
@@ -278,6 +280,16 @@ public final class ArchiveImporter {
 				try { zip.close(); } catch (IOException ignored){}
 			}
 		}
+	}
+
+	/** The ZIP stream ran out mid-file: the file is cut short (e.g. imported while its export was still writing). */
+	static boolean truncated( Throwable t ){
+		for (Throwable c = t; c != null; c = c.getCause()){
+			if (c instanceof java.io.EOFException) return true;
+			String m = c.getMessage();
+			if (m != null && (m.contains("Unexpected end of ZLIB") || m.contains("Unexpected end of"))) return true;
+		}
+		return false;
 	}
 
 	private static final class NonClosingInputStream extends FilterInputStream {

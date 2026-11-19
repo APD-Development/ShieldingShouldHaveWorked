@@ -54,6 +54,9 @@ public final class HistoryTransfer {
 		return StorageMeter.measure(ApdRecorder.historyRoot());
 	}
 
+	/** An export is still writing its ZIP; importing a file meanwhile could read it half-written. */
+	public static volatile boolean exporting = false;
+
 	public static void export( final Listener listener ){
 		final File root = ApdRecorder.historyRoot();
 		if (root == null){
@@ -68,6 +71,7 @@ public final class HistoryTransfer {
 						@Override
 						public void run(){
 							String message;
+							exporting = true;
 							try {
 								ApdRecorder.flushForReading();
 								ArchiveExporter.Report r = ArchiveExporter.export(root, out, Game.version, System.currentTimeMillis());
@@ -75,6 +79,8 @@ public final class HistoryTransfer {
 								message = r.summary();
 							} catch (Throwable e){
 								message = "Export failed: " + e;
+							} finally {
+								exporting = false;
 							}
 							listener.finished(message);
 						}
@@ -100,6 +106,10 @@ public final class HistoryTransfer {
 
 	public static void importHistory( final Listener listener ){
 		final File root = ApdRecorder.historyRoot();
+		if (exporting){
+			listener.finished("An export is still being written. Wait until it says it finished, then import.");
+			return;
+		}
 		if (root == null){
 			listener.finished("History is not set up, so nothing can be imported.");
 			return;
