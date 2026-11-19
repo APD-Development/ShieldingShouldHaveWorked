@@ -14,6 +14,44 @@ Every scheduled run starts fresh. This file is the memory: read it, work, then a
 - Chris is the designer: never invent mechanics or features. Brainstorms are not approvals.
 - Say exactly what was verified (which CI run passed) vs assumed.
 
+## CURRENT STATE, Nov 18 21:35 (overrides anything older below)
+- Closed test LIVE on Play since Nov 18, 12+ testers opted in (14-day clock running; earliest production apply ~Dec 2).
+  Builds: 921 approved; 922, 923 superseded; 924 (Community text + Google sign-in crash fixes) uploaded by Chris.
+- Play builds are signed OUTSIDE CI (GitHub secrets won't save on Chris's account): the manual run of
+  apd-play-release.yml pushes the unsigned .aab to branch handoff/unsigned-aab and a Developer APK to handoff/dev-apk;
+  the live session signs with the upload key (never in the repo). Scheduled runs: do NOT build Play bundles.
+- Community server LIVE: Cloudflare Workers Builds from branch `deploy/community-server` (push HEAD there to deploy;
+  D1 migrations run on deploy). https://apd-community.charltonchris29.workers.dev (/privacy, /delete).
+- SUPERSEDED decisions: sign-in is GOOGLE ONLY (email code behind EMAIL_SIGNIN, off). Tournament is a 16-seed
+  bracket from week 1 (1v16, 2v15 ... 8v9), RESEEDED every round (highest left vs lowest left); a tie for a seed,
+  including at 16th, goes to the earlier submission. Week-1 picks are gone.
+- Public GPL source: github.com/APD-Development/adhd-pixel-dungeon (export with tools/export-public-source.sh).
+
+## TONIGHT (Chris, Nov 18 21:32: "work throughout the night till I wake up at 6"). Build in this order.
+1. **Community selected content** (DECIDED): when a bracket finishes, the champion gets a page with a status
+   Planned -> In development -> Testing -> Released, set by the admin, plus admin dev notes; players comment on it.
+   A browsable history of every past champion and its status ("an accessible history of what is being worked on").
+   Server routes + D1 migration + admin controls in the app + tests.
+2. **Run reviews** (DECIDED, Chris's design, do not add to it):
+   - A player submits a finished run for review. Reviewers get the seed and play it in-game; the seed is never shown
+     publicly, and reviewers see NOTHING about how the original player died or what loot they found until they've played.
+   - Reviewer plays exactly the original setup (class, challenges, difficulty, settings) EXCEPT the original player's
+     "luck drop". OPEN QUESTION, ask Chris in the morning before building that part: does "luck drop" mean the
+     reviewer gets different random loot, or the same seed loot without the original player's luck bonus? Build
+     everything else first; keep loot generation unchanged until he answers.
+   - A reviewer counts once they reach the point where the original player died. Dying before that = a "failed
+     review", which COUNTS toward the 5. No retry.
+   - Review closes when 5 reviewers have finished (no time limit); the player sees progress like "2/5". Verdicts stay
+     hidden until it closes. Each reviewer votes salvageable or not and says what the player should have done.
+   - The reviewed player picks roasts on or off. Bullying comments can be reported; a peer or moderator decides if the
+     reviewer keeps review access. No appeals: peer review decides it.
+   - LATER, not now: in-game tips for beginners on how they could have escaped.
+3. Ship-ready: speed (cache the last Community screen, refresh in background); real tests of admin tools.
+4. NOT designed yet, do NOT build or invent: mods and competitions, community events, development and testing.
+   Chris will be asked one question at a time.
+Every change: tests, CI (apd-extended-bug-report-ci.yml) green, push release/play-closed-test, and push the server to
+deploy/community-server only when server tests pass. Log what was verified.
+
 ## Release: public on Google Play Jan 1, 2027
 Package `com.charltonchris29.adhdpixeldungeon`, personal account: 12-tester closed test for 14 straight days
 before production, so the closed test must start by Nov 23.
