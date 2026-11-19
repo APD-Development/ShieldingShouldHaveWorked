@@ -37,7 +37,9 @@ public class LootRuntimeTest {
         Dungeon.level.heaps.put(cell,heap);return heap;
     }
     private int safeAway() {
+        Arrays.fill(Dungeon.level.visited,true); // fixture: whole floor discovered
         for(int i=0;i<Dungeon.level.length();i++) if(LootPlacement.safe(Dungeon.level,i)
+                && LootTransfers.cellAllowed(Dungeon.level,i)
                 && i!=LootPlacement.besideDownstairs(Dungeon.level)) return i;
         throw new AssertionError("Fixture has no safe source");
     }
@@ -284,5 +286,64 @@ public class LootRuntimeTest {
     }
     public static class NaturalForwarding extends ScrollOfForwarding {
         @Override public void execute(com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero hero,String action){curUser=hero;doRead();}
+    }
+
+    // Chris, Nov 19: loot on a trap, in a locked room or in an undiscovered room stays where it is.
+    private Room roomOf(int cell){return ((RegularLevel)Dungeon.level).room(cell);}
+    private int gatherCount(String uid){int n=0;int dest=LootPlacement.besideDownstairs(Dungeon.level);
+        Heap h=Dungeon.level.heaps.get(dest);if(h!=null)for(Item i:h.items)if(uid.equals(i.apdUid))n++;return n;}
+    private void readGathering(){Gathering scroll=new Gathering();assertTrue(scroll.collect(Dungeon.hero.belongings.backpack));
+        scroll.execute(Dungeon.hero,com.shatteredpixel.shatteredpixeldungeon.items.scrolls.Scroll.AC_READ);}
+
+    @Test public void lootOnATrapStaysPut() throws Exception {
+        Dungeon.level.heaps.clear();int away=safeAway();int trapCell=-1;
+        for(int i=0;i<Dungeon.level.length();i++)if(i!=away&&LootPlacement.safe(Dungeon.level,i)&&LootTransfers.cellAllowed(Dungeon.level,i)
+                &&i!=LootPlacement.besideDownstairs(Dungeon.level)){trapCell=i;break;}
+        assertTrue(trapCell>=0);
+        Dungeon.level.setTrap(new com.shatteredpixel.shatteredpixeldungeon.levels.traps.AlarmTrap().hide(),trapCell);
+        assertFalse("hidden trap blocks transfer",LootTransfers.cellAllowed(Dungeon.level,trapCell));
+        Pasty onTrap=new Pasty();onTrap.apdUid="on-trap";pile(trapCell,Heap.Type.HEAP,onTrap);
+        Pasty free=new Pasty();free.apdUid="free";pile(away,Heap.Type.HEAP,free);
+        readGathering();
+        assertEquals(1,gatherCount("free"));assertEquals(0,gatherCount("on-trap"));
+        assertSame(onTrap,Dungeon.level.heaps.get(trapCell).items.get(0));
+    }
+
+    @Test public void lootInAnUndiscoveredRoomStaysPut() throws Exception {
+        Dungeon.level.heaps.clear();int away=safeAway();Room home=roomOf(away);
+        Room other=null;int cell=-1;
+        for(int i=0;i<Dungeon.level.length()&&cell<0;i++){Room r=roomOf(i);
+            if(r!=null&&r!=home&&LootPlacement.safe(Dungeon.level,i)&&LootTransfers.cellAllowed(Dungeon.level,i)
+                    &&i!=LootPlacement.besideDownstairs(Dungeon.level)&&r!=roomOf(LootPlacement.besideDownstairs(Dungeon.level))){other=r;cell=i;}}
+        assertNotNull(other);
+        for(int y=other.top;y<=other.bottom;y++)for(int x=other.left;x<=other.right;x++)Dungeon.level.visited[x+y*Dungeon.level.width()]=false;
+        assertFalse(LootTransfers.cellAllowed(Dungeon.level,cell));
+        Pasty hidden=new Pasty();hidden.apdUid="undiscovered";pile(cell,Heap.Type.HEAP,hidden);
+        Pasty free=new Pasty();free.apdUid="free";pile(away,Heap.Type.HEAP,free);
+        readGathering();
+        assertEquals(1,gatherCount("free"));assertEquals(0,gatherCount("undiscovered"));
+        // seeing a single tile of that room makes it discovered
+        Dungeon.level.visited[other.left+other.top*Dungeon.level.width()]=true;
+        assertTrue(LootTransfers.cellAllowed(Dungeon.level,cell));
+    }
+
+    @Test public void lootBehindALockedDoorStaysPutUntilUnlocked() throws Exception {
+        Dungeon.level.heaps.clear();int away=safeAway();Room home=roomOf(away);
+        int cell=-1;Room locked=null;Room.Door door=null;
+        for(int i=0;i<Dungeon.level.length()&&cell<0;i++){Room r=roomOf(i);
+            if(r==null||r==home||r.connected.isEmpty()||!LootPlacement.safe(Dungeon.level,i)||!LootTransfers.cellAllowed(Dungeon.level,i)
+                    ||i==LootPlacement.besideDownstairs(Dungeon.level)||r==roomOf(LootPlacement.besideDownstairs(Dungeon.level)))continue;
+            for(Room.Door d:r.connected.values())if(d!=null){door=d;break;}
+            if(door!=null){cell=i;locked=r;}}
+        assertNotNull(locked);int doorCell=Dungeon.level.pointToCell(door);int old=Dungeon.level.map[doorCell];
+        for(int t:new int[]{Terrain.LOCKED_DOOR,Terrain.HERO_LKD_DR,Terrain.CRYSTAL_DOOR}){
+            Dungeon.level.map[doorCell]=t;assertFalse("terrain "+t,LootTransfers.cellAllowed(Dungeon.level,cell));}
+        Pasty inside=new Pasty();inside.apdUid="locked-in";pile(cell,Heap.Type.HEAP,inside);
+        Pasty free=new Pasty();free.apdUid="free";pile(away,Heap.Type.HEAP,free);
+        readGathering();
+        assertEquals(1,gatherCount("free"));assertEquals(0,gatherCount("locked-in"));
+        Dungeon.level.map[doorCell]=Terrain.DOOR;
+        assertTrue("unlocked room counts again",LootTransfers.cellAllowed(Dungeon.level,cell));
+        Dungeon.level.map[doorCell]=old;
     }
 }

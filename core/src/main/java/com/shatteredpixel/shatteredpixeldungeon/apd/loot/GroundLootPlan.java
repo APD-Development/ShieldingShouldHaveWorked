@@ -27,12 +27,16 @@ public final class GroundLootPlan {
     public final List<Source> sources;
     private final Level level;
     private final Predicate<Item> eligible;
-    private GroundLootPlan(Level level,Predicate<Item> eligible,List<Source> sources) {
-        this.level=level;this.eligible=eligible;
+    private final java.util.function.IntPredicate cellAllowed;
+    private GroundLootPlan(Level level,Predicate<Item> eligible,java.util.function.IntPredicate cellAllowed,List<Source> sources) {
+        this.level=level;this.eligible=eligible;this.cellAllowed=cellAllowed;
         this.sources=Collections.unmodifiableList(sources);
     }
     public static GroundLootPlan capture(Level level,Predicate<Item> eligible) {
-        Objects.requireNonNull(level);Objects.requireNonNull(eligible);
+        return capture(level,eligible,cell->true);
+    }
+    public static GroundLootPlan capture(Level level,Predicate<Item> eligible,java.util.function.IntPredicate cellAllowed) {
+        Objects.requireNonNull(level);Objects.requireNonNull(eligible);Objects.requireNonNull(cellAllowed);
         List<Heap> heaps=new ArrayList<>(level.heaps.valueList());
         heaps.sort(Comparator.comparingInt(h->h.pos));
         List<Source> sources=new ArrayList<>();
@@ -42,11 +46,11 @@ public final class GroundLootPlan {
             for(Item item:heap.items) {
                 if(item==null || item.quantity()<=0 || !seen.add(item))
                     throw new IllegalStateException("Invalid or aliased ground item");
-                if(heap.type==Heap.Type.HEAP && eligible.test(item))items.add(item);
+                if(heap.type==Heap.Type.HEAP && cellAllowed.test(heap.pos) && eligible.test(item))items.add(item);
             }
             if(!items.isEmpty())sources.add(new Source(heap,items));
         }
-        return new GroundLootPlan(level,eligible,sources);
+        return new GroundLootPlan(level,eligible,cellAllowed,sources);
     }
     public int stacks() {
         int count=0;for(Source source:sources)count+=source.items.size();return count;
@@ -55,7 +59,7 @@ public final class GroundLootPlan {
     public boolean stillValid() {
         for(Source source:sources) {
             Heap current=level.heaps.get(source.cell);
-            if(current!=source.heap || current.pos!=source.cell || current.type!=Heap.Type.HEAP)return false;
+            if(current!=source.heap || current.pos!=source.cell || current.type!=Heap.Type.HEAP || !cellAllowed.test(source.cell))return false;
             for(int i=0;i<source.items.size();i++) {
                 Item item=source.items.get(i);
                 boolean identical=false;for(Item currentItem:current.items)if(currentItem==item){identical=true;break;}

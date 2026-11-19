@@ -63,6 +63,39 @@ public final class LootTransfers {
                 || item.getClass().getPackage().getName().endsWith(".items.quest"));
     }
 
+    /**
+     * Chris, Nov 19: loot does not transfer if it sits on a trap (hidden or revealed), in a room behind a
+     * still-locked door (locked, skeleton-key-locked or crystal), or in a room the hero hasn't discovered yet.
+     */
+    public static boolean cellAllowed(Level level, int cell) {
+        if (level.traps != null && level.traps.get(cell) != null) return false;
+        if (level instanceof com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel
+                && ((com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel) level).apdHasRooms()) {
+            com.shatteredpixel.shatteredpixeldungeon.levels.rooms.Room room =
+                    ((com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel) level).room(cell);
+            if (room != null) return roomDiscovered(level, room) && !roomLocked(level, room);
+        }
+        return level.visited != null && level.visited[cell];
+    }
+    static boolean roomDiscovered(Level level, com.shatteredpixel.shatteredpixeldungeon.levels.rooms.Room room) {
+        if (level.visited == null) return false;
+        for (int y = room.top; y <= room.bottom; y++) for (int x = room.left; x <= room.right; x++) {
+            if (x < 0 || y < 0 || x >= level.width() || y >= level.height()) continue;
+            if (level.visited[x + y * level.width()]) return true;
+        }
+        return false;
+    }
+    static boolean roomLocked(Level level, com.shatteredpixel.shatteredpixeldungeon.levels.rooms.Room room) {
+        for (com.shatteredpixel.shatteredpixeldungeon.levels.rooms.Room.Door door : room.connected.values()) {
+            if (door == null) continue;
+            int terrain = level.map[level.pointToCell(door)];
+            if (terrain == com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.LOCKED_DOOR
+                    || terrain == com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.HERO_LKD_DR
+                    || terrain == com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.CRYSTAL_DOOR) return true;
+        }
+        return false;
+    }
+
     /** Validate before consuming anything. completion performs normal scroll read effects once. */
     public static String cast(boolean exotic, Runnable completion) {
         Level level = Dungeon.level;
@@ -71,7 +104,7 @@ public final class LootTransfers {
         if (!exotic && cell < 0) return "There is no safe space beside the downstairs. The scroll is not consumed.";
         int destination = LootScrollRules.destinationDepth(Dungeon.depth);
         if (exotic && destination < 0) return "There is no shop destination. The scroll is not consumed.";
-        GroundLootPlan plan = GroundLootPlan.capture(level, LootTransfers::eligible);
+        GroundLootPlan plan = GroundLootPlan.capture(level, LootTransfers::eligible, c -> cellAllowed(level, c));
         if (plan.stacks() == 0) return "There is no eligible loose loot to gather. The scroll is not consumed.";
         if (exotic) for (GroundLootPlan.Source source : plan.sources) for (Item item : source.items)
             if (item instanceof Bomb && ((Bomb)item).fuse != null)
