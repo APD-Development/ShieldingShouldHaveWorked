@@ -68,7 +68,7 @@ A recent push is not a clash: `git pull --rebase` before every push and resolve 
    name/author/description, baseClass (class engine + subclasses), starting HP + STR, starting items (+level, quantity),
    talents for tiers 1-3 picked from ANY class's talents of that tier (same count as the base class), 1-3 existing
    armor abilities. Anything needing new code: modder submits, Chris approves, it ships in an app update.
-   BUILD ORDER: (a) DONE 4:45 PM: apd/mods/HeroMod parser + validator + tests. (b) local mods folder: load
+   BUILD ORDER: (a) DONE 4:45 PM: apd/mods/HeroMod parser + validator + tests. (b) DONE 5 PM: apd/mods/ModLibrary scans a mods folder (needs wiring to the real files dir): load
    <files>/mods/<id>/hero.json + sprite.png (same layout as hero sprites), list valid ones, show refusal reasons.
    (c) hero select: modded heroes appear after the normal classes (name, sprite, description, author).
    (d) game: start a run as the mod: base class engine, mod HP/STR, mod starting items instead of the class kit,
