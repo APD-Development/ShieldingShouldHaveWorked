@@ -701,6 +701,16 @@ public final class CommunityController {
 		ui.show(s);
 	}
 
+	/** Chris's design: how the original run ended is shown only after the reviewer has played and sent their result. */
+	static void endingNotes(Screen s, JsonValue e){
+		if (e == null || !e.isObject()) return;
+		s.heading("How this player's run ended");
+		String cause = e.getString("cause", null), gear = e.getString("gear", null), lvl = e.getString("heroLevel", null);
+		if (cause != null) s.note("Killed by: " + cause.replaceAll("([a-z])([A-Z])", "$1 $2"));
+		if (lvl != null) s.note("Hero level: " + lvl);
+		if (gear != null) s.note("Their gear: " + gear);
+	}
+
 	static String typeText(String t){
 		if ("roasts".equals(t)) return "roasts allowed";
 		if ("encouraging".equals(t)) return "encouraging";
@@ -721,6 +731,7 @@ public final class CommunityController {
 						? "Sent. Your comment doesn't match what this player asked for, so a moderator will check it before it's shown. Your vote still counts."
 						: "Sent. Thanks for reviewing.");
 				s.back = this::hub;
+				if (r.ok() && r.body != null) endingNotes(s, r.body.get("ending"));
 				s.item("Run reviews", null, this::reviews);
 				s.item("Back", null, this::hub);
 				ui.show(s);
@@ -773,7 +784,11 @@ public final class CommunityController {
 			String how = v.getBoolean("survived", false) ? "got past where you died" : "died earlier, on floor " + v.getInt("reachedDepth", 0);
 			s.heading(name + ": " + (v.getBoolean("salvageable", false) ? "salvageable" : "not salvageable") + " (" + how + ")");
 			String advice = v.getString("advice", null);
-			if (advice != null && !advice.isEmpty()) s.note(advice);
+			if (advice != null && !advice.isEmpty()){
+				s.note(advice);
+				String rid = v.getString("id", null);
+				if (rid != null && who != null && !who.isNull()) s.item("Report " + name + "'s review", null, () -> report("review", rid, () -> verdictsScreen(run)));
+			}
 		}
 		s.item("Back", null, this::reviews);
 		ui.show(s);

@@ -286,6 +286,18 @@ public class WndRanking extends WndTabbed {
 								Dungeon.apdExotic, Dungeon.customRules());
 						java.util.Map<String, String> ending = new java.util.HashMap<>();
 						if (record.cause != null) ending.put("cause", record.cause.getSimpleName());
+						// What they had on: revealed to a reviewer only after the reviewer's own result is sent.
+						StringBuilder gear = new StringBuilder();
+						com.shatteredpixel.shatteredpixeldungeon.actors.hero.Belongings b = Dungeon.hero.belongings;
+						for (com.shatteredpixel.shatteredpixeldungeon.items.Item it : new com.shatteredpixel.shatteredpixeldungeon.items.Item[]{
+								b.weapon(), b.armor(), b.artifact(), b.misc(), b.ring()}){
+							if (it == null) continue;
+							if (gear.length() > 0) gear.append(", ");
+							gear.append(it.name());
+							if (it.level() > 0) gear.append(" +").append(it.level());
+						}
+						if (gear.length() > 0) ending.put("gear", gear.toString());
+						ending.put("heroLevel", String.valueOf(Dungeon.hero.lvl));
 						com.shatteredpixel.shatteredpixeldungeon.apd.community.CommunityController.pendingReview =
 								new com.shatteredpixel.shatteredpixeldungeon.apd.community.CommunityController.ReviewRun(seed, record.depth, setup, ending);
 						com.shatteredpixel.shatteredpixeldungeon.scenes.CommunityScene.open();

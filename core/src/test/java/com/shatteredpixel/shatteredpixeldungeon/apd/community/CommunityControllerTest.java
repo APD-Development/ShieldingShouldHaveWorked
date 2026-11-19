@@ -432,7 +432,7 @@ public class CommunityControllerTest {
 		signedInWorld(false);
 		reply("GET /v1/reviews/mine", 200, "{\"runs\":[{\"id\":\"r1\",\"setup\":{\"heroClass\":\"WARRIOR\",\"challenges\":3,\"difficulty\":\"normal\"},\"status\":\"open\",\"done\":2,\"needed\":5},"
 				+ "{\"id\":\"r2\",\"setup\":{\"heroClass\":\"MAGE\"},\"status\":\"closed\",\"done\":5,\"needed\":5,\"reviews\":["
-				+ "{\"survived\":true,\"reachedDepth\":6,\"salvageable\":true,\"advice\":\"Drink the potion earlier\",\"reviewer\":{\"id\":\"b1\",\"displayName\":\"Bo\"}},"
+				+ "{\"id\":\"v1\",\"survived\":true,\"reachedDepth\":6,\"salvageable\":true,\"advice\":\"Drink the potion earlier\",\"reviewer\":{\"id\":\"b1\",\"displayName\":\"Bo\"}},"
 				+ "{\"survived\":false,\"reachedDepth\":3,\"salvageable\":false,\"advice\":null,\"reviewer\":null}]}]}");
 		reply("GET /v1/reviews/open", 200, "{\"runs\":[{\"id\":\"r9\",\"player\":\"Pat\",\"setup\":{\"heroClass\":\"ROGUE\",\"challenges\":1},\"roasts\":true,\"done\":1,\"needed\":5}]}");
 		controller().start();
@@ -452,6 +452,14 @@ public class CommunityControllerTest {
 		assertTrue(has(v, "Bo: salvageable (got past where you died)"));
 		assertTrue(has(v, "Drink the potion earlier"));
 		assertTrue(has(v, "[removed]: not salvageable (died earlier, on floor 3)"));
+		// the reviewed player can report a review (bullying goes to a moderator); removed reviews have no button
+		assertTrue(itemLabels(v).contains("Report Bo's review"));
+		assertEquals(1, itemLabels(v).stream().filter(l -> l.startsWith("Report")).count());
+		reply("POST /v1/reports", 201, "{\"ok\":true}");
+		answers.add("Bullying");
+		tap("Report Bo's review");
+		String sent = requests.stream().filter(q -> q.startsWith("POST /v1/reports")).findFirst().orElse("");
+		assertTrue(sent, sent.contains("\"kind\":\"review\"") && sent.contains("\"id\":\"v1\"") && sent.contains("Bullying"));
 	}
 
 	@Test public void runReviews_takeThisRun_confirmsThenClaimsAndStartsTheGame_seedNeverShown(){
@@ -566,7 +574,7 @@ public class CommunityControllerTest {
 			assertEquals("Your review", last().title);
 			assertSame(c, CommunityController.finishedReview);
 			// accepted: exact body sent, then cleared
-			reply("POST /v1/reviews/ab12/result", 200, "{\"ok\":true}");
+			reply("POST /v1/reviews/ab12/result", 200, "{\"survived\":false,\"held\":false,\"ending\":{\"cause\":\"GreatCrab\",\"gear\":\"sword +2, leather armor\",\"heroLevel\":\"6\"},\"done\":1,\"needed\":5}");
 			requests.clear();
 			answers.add("Use the scroll earlier");
 			tap("Salvageable");
@@ -575,6 +583,8 @@ public class CommunityControllerTest {
 			String sent = requests.stream().filter(q -> q.startsWith("POST /v1/reviews/ab12/result")).findFirst().orElse("");
 			assertTrue(sent, sent.contains("\"reachedDepth\":4") && sent.contains("\"salvageable\":true") && sent.contains("\"tone\":\"advice\"") && sent.contains("\"advice\":\"Use the scroll earlier\""));
 			assertTrue(has(last(), "Sent."));
+			// only now: how the original run ended
+			assertTrue(has(last(), "Killed by: Great Crab") && has(last(), "sword +2, leather armor") && has(last(), "Hero level: 6"));
 			assertNull(CommunityController.finishedReview);
 		} finally { CommunityController.finishedReview = null; }
 	}
