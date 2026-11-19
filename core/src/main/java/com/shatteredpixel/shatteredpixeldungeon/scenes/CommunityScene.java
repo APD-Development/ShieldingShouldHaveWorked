@@ -137,6 +137,28 @@ public class CommunityScene extends PixelScene {
 
         @Override public void leave() { ShatteredPixelDungeon.switchNoFade(TitleScene.class); }
 
+        // Run reviews: start the claimed run with the reviewer's own class slot for the locked hero class. The seed and
+        // setup come from the claim (Dungeon.initSeed/init); the player's own settings are left untouched.
+        @Override public void playReview(com.shatteredpixel.shatteredpixeldungeon.apd.community.ReviewClaim claim) {
+            if (shown != null) { shown.hide(); shown = null; }
+            com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass cl = claim.setup.heroClass;
+            int slot = com.shatteredpixel.shatteredpixeldungeon.GamesInProgress.firstEmpty(cl);
+            if (slot < 0) {
+                ShatteredPixelDungeon.scene().addToFront(new com.shatteredpixel.shatteredpixeldungeon.windows.WndMessage(
+                        "All 20 " + cl.title() + " runs are occupied. Finish or remove one, then take this run again."));
+                return;
+            }
+            com.shatteredpixel.shatteredpixeldungeon.GamesInProgress.selectedClass = cl;
+            com.shatteredpixel.shatteredpixeldungeon.GamesInProgress.curSlot = slot;
+            com.shatteredpixel.shatteredpixeldungeon.apd.community.ReviewPlay.starting = claim;
+            com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero = null;
+            com.shatteredpixel.shatteredpixeldungeon.Dungeon.daily = com.shatteredpixel.shatteredpixeldungeon.Dungeon.dailyReplay = false;
+            com.shatteredpixel.shatteredpixeldungeon.Dungeon.initSeed();
+            com.shatteredpixel.shatteredpixeldungeon.ui.ActionIndicator.clearAction();
+            InterlevelScene.mode = InterlevelScene.Mode.DESCEND;
+            com.watabou.noosa.Game.switchScene(InterlevelScene.class);
+        }
+
         @Override public void planned() {
             if (shown != null) { shown.hide(); shown = null; }
             fromLive = true;

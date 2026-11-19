@@ -40,7 +40,9 @@ public class CommunityControllerTest {
 		public void busy(String m){}
 		public void leave(){ left = true; }
 		public void planned(){ planned = true; }
+		public void playReview(ReviewClaim c){ played.add(c); }
 	};
+	private final List<ReviewClaim> played = new ArrayList<>();
 
 	private static final class Store implements CommunityController.Storage {
 		String token, age;
@@ -425,7 +427,7 @@ public class CommunityControllerTest {
 		assertFalse("notes are plain text for players", itemLabels(last()).contains("Note"));
 	}
 
-	@Test public void runReviews_progressHiddenUntilClosed_verdictsAfter_noSeedAndNoTakeButton(){
+	@Test public void runReviews_progressHiddenUntilClosed_verdictsAfter_noSeedUntilTaken(){
 		store.age = "pass"; store.token = "tok";
 		signedInWorld(false);
 		reply("GET /v1/reviews/mine", 200, "{\"runs\":[{\"id\":\"r1\",\"setup\":{\"heroClass\":\"WARRIOR\",\"challenges\":3,\"difficulty\":\"normal\"},\"status\":\"open\",\"done\":2,\"needed\":5},"
@@ -441,9 +443,8 @@ public class CommunityControllerTest {
 		assertTrue(has(s, "Reviewed: 5/5"));
 		assertTrue(has(s, "1/5 reviewed · roasts allowed"));
 		tap("Pat: Rogue");
-		assertTrue(has(last(), "isn't ready yet"));
-		assertFalse("no way to spend the only attempt yet", itemLabels(last()).stream().anyMatch(l -> l.startsWith("Take")));
-		assertFalse("never claims or fetches a seed", requests.stream().anyMatch(q -> q.contains("/claim")));
+		assertTrue(itemLabels(last()).contains("Take this run"));
+		assertFalse("opening a run never claims or fetches a seed", requests.stream().anyMatch(q -> q.contains("/claim")));
 		tap("Back");
 		tap("Mage");
 		CommunityController.Screen v = last();
@@ -451,6 +452,53 @@ public class CommunityControllerTest {
 		assertTrue(has(v, "Bo: salvageable (got past where you died)"));
 		assertTrue(has(v, "Drink the potion earlier"));
 		assertTrue(has(v, "[removed]: not salvageable (died earlier, on floor 3)"));
+	}
+
+	@Test public void runReviews_takeThisRun_confirmsThenClaimsAndStartsTheGame_seedNeverShown(){
+		store.age = "pass"; store.token = "tok";
+		signedInWorld(false);
+		reply("GET /v1/reviews/mine", 200, "{\"runs\":[]}");
+		reply("GET /v1/reviews/open", 200, "{\"runs\":[{\"id\":\"ab12\",\"player\":\"Pat\",\"setup\":{\"heroClass\":\"ROGUE\"},\"reviewType\":\"advice\",\"done\":1,\"needed\":5}]}");
+		reply("POST /v1/reviews/ab12/claim", 200, "{\"id\":\"ab12\",\"seed\":\"XYZ-ABC-DEF\",\"deathDepth\":7,\"reviewType\":\"advice\","
+				+ "\"setup\":{\"challenges\":\"5\",\"customRules\":\"0\",\"difficulty\":\"3\",\"exotic\":\"1\",\"heroClass\":\"ROGUE\"}}");
+		controller().start();
+		tap("Run reviews");
+		tap("Pat: Rogue");
+		tap("Take this run");
+		assertTrue(has(last(), "one attempt"));
+		assertFalse("asking again never claims", requests.stream().anyMatch(q -> q.contains("/claim")));
+		tap("Not now");
+		assertTrue(played.isEmpty());
+		tap("Take this run");
+		tap("Start the run");
+		assertTrue(requests.stream().anyMatch(q -> q.startsWith("POST /v1/reviews/ab12/claim")));
+		assertEquals(1, played.size());
+		ReviewClaim c = played.get(0);
+		assertEquals("ab12", c.requestId);
+		assertEquals(7, c.deathDepth);
+		assertEquals(com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass.ROGUE, c.setup.heroClass);
+		for (CommunityController.Screen sc : screens) assertFalse("the seed is never shown", has(sc, "XYZ-ABC-DEF"));
+	}
+
+	@Test public void runReviews_takeThisRun_refusedOrBadClaim_neverStartsTheGame(){
+		store.age = "pass"; store.token = "tok";
+		signedInWorld(false);
+		reply("GET /v1/reviews/mine", 200, "{\"runs\":[]}");
+		reply("GET /v1/reviews/open", 200, "{\"runs\":[{\"id\":\"ab12\",\"player\":\"Pat\",\"setup\":{\"heroClass\":\"ROGUE\"},\"done\":1,\"needed\":5}]}");
+		reply("POST /v1/reviews/ab12/claim", 409, "{\"error\":\"already_reviewed\"}");
+		controller().start();
+		tap("Run reviews");
+		tap("Pat: Rogue");
+		tap("Take this run");
+		tap("Start the run");
+		assertTrue(has(last(), "no retries"));
+		reply("POST /v1/reviews/ab12/claim", 200, "{\"id\":\"ab12\",\"seed\":\"XYZ\",\"deathDepth\":7,\"setup\":{\"heroClass\":\"NOBODY\"}}");
+		tap("Back");
+		tap("Pat: Rogue");
+		tap("Take this run");
+		tap("Start the run");
+		assertTrue(has(last(), "can't be played on this version"));
+		assertTrue(played.isEmpty());
 	}
 
 	@Test public void runReviews_sendFromRankings_showsOnceAfterSignIn_roastsChoiceSent(){

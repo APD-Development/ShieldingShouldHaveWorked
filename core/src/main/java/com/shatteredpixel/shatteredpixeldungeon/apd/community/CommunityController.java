@@ -50,6 +50,8 @@ public final class CommunityController {
 		void leave();
 		// The read-only pages about what's planned (run reviews, mods, events...). Returning from them restarts Community.
 		void planned();
+		// Run reviews: start the one review playthrough from a validated claim (seed hidden, setup locked).
+		default void playReview(ReviewClaim claim){}
 	}
 
 	// Runs a network call off the render thread, then hands the result back on it. Tests run both at once.
@@ -565,8 +567,8 @@ public final class CommunityController {
 		}
 	}
 
-	// ---- run reviews (Chris's design, Nov 18). Screens only: playing a claimed seed in-game isn't wired yet, so
-	// there is no "Take this run" button (taking one would spend the reviewer's only attempt). The seed is never shown.
+	// ---- run reviews (Chris's design, Nov 18). "Take this run" asks once more (one attempt, no retry), then claims the
+	// run and starts the game from the claim. The seed is never shown.
 
 	static String setupText(JsonValue setup){
 		if (setup == null || setup.isNull()) return "";
@@ -731,9 +733,31 @@ public final class CommunityController {
 		s.back = this::reviews;
 		s.note("You'd play this exact start once, with no retry. How it ended stays hidden until you've played.");
 		s.note("This player asked for: " + reviewTypeText(run) + ".");
-		s.warning("Playing a review run in the game isn't ready yet. It's coming in a later update.");
+		s.item("Take this run", null, () -> confirmTake(run));
 		s.item("Back", null, this::reviews);
 		ui.show(s);
+	}
+
+	private void confirmTake(JsonValue run){
+		Screen s = new Screen("Take this run?", "You get one attempt. If you die before the floor where this player died, "
+				+ "it's a failed review, and it still counts. You can't retry.");
+		s.back = () -> openRun(run);
+		s.item("Start the run", null, () -> takeRun(run));
+		s.item("Not now", null, () -> openRun(run));
+		ui.show(s);
+	}
+
+	private void takeRun(JsonValue run){
+		ui.busy("Getting the run...");
+		call(() -> api.reviewClaim(run.getString("id", "")), r -> {
+			ReviewClaim claim = r.ok() ? ReviewClaim.parse(r.body) : null;
+			if (claim != null){ ui.playReview(claim); return; }
+			Screen s = new Screen(run.getString("player", "?") + "'s run", setupText(run.get("setup")));
+			s.back = this::reviews;
+			s.warning(r.ok() ? "This run can't be played on this version of the game." : message(r));
+			s.item("Back", null, this::reviews);
+			ui.show(s);
+		});
 	}
 
 	private void verdictsScreen(JsonValue run){
@@ -960,6 +984,7 @@ public final class CommunityController {
 			public void busy(String m){ uiChanges++; inner.busy(m); }
 			public void leave(){ uiChanges++; inner.leave(); }
 			public void planned(){ uiChanges++; inner.planned(); }
+			public void playReview(ReviewClaim c){ uiChanges++; inner.playReview(c); }
 		};
 	}
 
