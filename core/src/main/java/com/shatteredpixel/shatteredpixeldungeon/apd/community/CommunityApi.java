@@ -160,9 +160,9 @@ public final class CommunityApi {
 	public Result reviewsOpen(){ return call("GET", "/v1/reviews/open", null); }
 	public Result reviewsMine(){ return call("GET", "/v1/reviews/mine", null); }
 	public Result reviewClaim(String requestId){ return call("POST", "/v1/reviews/" + id(requestId) + "/claim", null); }
-	public Result reviewResult(String requestId, int reachedDepth, boolean salvageable, String advice){
+	public Result reviewResult(String requestId, int reachedDepth, boolean salvageable, String tone, String advice){
 		return call("POST", "/v1/reviews/" + id(requestId) + "/result",
-				"{\"reachedDepth\":" + reachedDepth + ",\"salvageable\":" + salvageable + ",\"advice\":" + quote(advice) + "}");
+				"{\"reachedDepth\":" + reachedDepth + ",\"salvageable\":" + salvageable + ",\"tone\":" + quote(tone) + ",\"advice\":" + quote(advice) + "}");
 	}
 	public Result adminReviewAccess(String accountId, boolean allowed){
 		return call("POST", "/v1/admin/review-access", "{\"accountId\":" + quote(accountId) + ",\"allowed\":" + allowed + "}");

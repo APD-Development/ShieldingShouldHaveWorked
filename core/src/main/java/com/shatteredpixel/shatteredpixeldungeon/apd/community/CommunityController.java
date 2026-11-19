@@ -648,10 +648,7 @@ public final class CommunityController {
 
 	/** The review type the reviewed player picked; an old server's roasts flag maps onto it. */
 	static String reviewTypeText(JsonValue run){
-		String t = run.getString("reviewType", run.getBoolean("roasts", false) ? "roasts" : "advice");
-		if ("roasts".equals(t)) return "roasts allowed";
-		if ("encouraging".equals(t)) return "encouraging";
-		return "straight advice only";
+		return typeText(run.getString("reviewType", run.getBoolean("roasts", false) ? "roasts" : "advice"));
 	}
 
 	private static JsonValue setupJson(java.util.Map<String, String> m){
@@ -677,8 +674,8 @@ public final class CommunityController {
 		s.back = this::reviewVerdictLater;
 		if (warning != null) s.warning(warning);
 		s.note("Could this run have been saved? Then say what the player should have done. There are no retries.");
-		s.item("Salvageable", null, () -> reviewAdvice(claim, true));
-		s.item("Not salvageable", null, () -> reviewAdvice(claim, false));
+		s.item("Salvageable", null, () -> reviewTone(claim, true));
+		s.item("Not salvageable", null, () -> reviewTone(claim, false));
 		s.item("Later", null, this::reviewVerdictLater);
 		ui.show(s);
 	}
@@ -690,16 +687,37 @@ public final class CommunityController {
 		ui.show(s);
 	}
 
-	private void reviewAdvice(ReviewClaim claim, boolean salvageable){
+	/** Chris, Nov 19: the reviewer tags the tone of their own comment. A tone that doesn't match what the player asked
+	 *  for is held for a moderator instead of shown (the vote still counts). */
+	private void reviewTone(ReviewClaim claim, boolean salvageable){
+		Screen s = new Screen("Your comment's tone", "This player asked for: " + typeText(claim.reviewType) + ".");
+		s.back = () -> reviewVerdict(claim, null);
+		s.note("Pick the tone of what you're about to write. If it doesn't match what they asked for, a moderator checks it before it's shown.");
+		s.item("Roast", null, () -> reviewAdvice(claim, salvageable, "roasts"));
+		s.item("Straight advice", null, () -> reviewAdvice(claim, salvageable, "advice"));
+		s.item("Encouraging", null, () -> reviewAdvice(claim, salvageable, "encouraging"));
+		ui.show(s);
+	}
+
+	static String typeText(String t){
+		if ("roasts".equals(t)) return "roasts allowed";
+		if ("encouraging".equals(t)) return "encouraging";
+		return "straight advice only";
+	}
+
+	private void reviewAdvice(ReviewClaim claim, boolean salvageable, String tone){
 		ui.ask("What should they have done?", "Your advice for this player (up to 2000 characters).", "", 2000, true, advice -> {
 			if (advice == null){ reviewVerdict(claim, null); return; }
 			if (advice.trim().isEmpty()){ reviewVerdict(claim, "Write some advice before sending."); return; }
 			ui.busy("Sending your review...");
-			call(() -> api.reviewResult(claim.requestId, claim.reachedDepth(), salvageable, advice.trim()), r -> {
+			call(() -> api.reviewResult(claim.requestId, claim.reachedDepth(), salvageable, tone, advice.trim()), r -> {
 				if (r.status == 0 || r.status >= 500){ reviewVerdict(claim, message(r)); return; } // try again later: keep it
 				if (!r.ok() && "not_allowed_words".equals(r.error)){ reviewVerdict(claim, message(r)); return; }
 				if (finishedReview == claim) finishedReview = null;
-				Screen s = new Screen("Your review", r.ok() ? "Sent. Thanks for reviewing." : message(r));
+				Screen s = new Screen("Your review", !r.ok() ? message(r)
+						: r.body != null && r.body.getBoolean("held", false)
+						? "Sent. Your comment doesn't match what this player asked for, so a moderator will check it before it's shown. Your vote still counts."
+						: "Sent. Thanks for reviewing.");
 				s.back = this::hub;
 				s.item("Run reviews", null, this::reviews);
 				s.item("Back", null, this::hub);

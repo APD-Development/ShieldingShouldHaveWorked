@@ -36,11 +36,18 @@ public final class ReviewClaim {
 	public final int deathDepth;
 	public final ReviewSetup setup;
 	public final boolean roasts;
+	/** What the reviewed player asked for: roasts / advice / encouraging (Chris, Nov 19). */
+	public final String reviewType;
 	private int reachedDepth;
 
-	private ReviewClaim(String requestId, String seed, int deathDepth, ReviewSetup setup, boolean roasts, int reachedDepth){
+	private ReviewClaim(String requestId, String seed, int deathDepth, ReviewSetup setup, boolean roasts, String reviewType, int reachedDepth){
 		this.requestId = requestId; this.seed = seed; this.deathDepth = deathDepth;
 		this.setup = setup; this.roasts = roasts; this.reachedDepth = reachedDepth;
+		this.reviewType = type(reviewType, roasts);
+	}
+	static String type(String t, boolean roasts){
+		if ("roasts".equals(t) || "advice".equals(t) || "encouraging".equals(t)) return t;
+		return roasts ? "roasts" : "advice";
 	}
 
 	/** null when anything is missing or invalid: never start a review game from a guessed setup or seed. */
@@ -58,7 +65,7 @@ public final class ReviewClaim {
 		for (JsonValue v = s.child; v != null; v = v.next) if (v.isValue()) m.put(v.name, v.asString());
 		ReviewSetup setup = ReviewSetup.parse(m);
 		if (setup == null) return null;
-		return new ReviewClaim(id, seed, depth, setup, b.getBoolean("roasts", false), 0);
+		return new ReviewClaim(id, seed, depth, setup, b.getBoolean("roasts", false), b.getString("reviewType", null), 0);
 	}
 
 	/** Called whenever the reviewer arrives on a floor; only ever goes up. */
@@ -68,12 +75,12 @@ public final class ReviewClaim {
 	public boolean reachedDeathFloor(){ return ReviewSetup.survived(reachedDepth, deathDepth); }
 
 	// ---- survives an app restart mid-review (one attempt, no retry) ----
-	private static final String ID = "rv_id", SEED = "rv_seed", DEPTH = "rv_death", ROASTS = "rv_roasts", REACHED = "rv_reached";
+	private static final String ID = "rv_id", SEED = "rv_seed", DEPTH = "rv_death", ROASTS = "rv_roasts", REACHED = "rv_reached", TYPE = "rv_type";
 	private static final String[] SETUP_KEYS = {"heroClass", "challenges", "difficulty", "exotic", "customRules"};
 
 	public void store(Bundle bundle){
 		bundle.put(ID, requestId); bundle.put(SEED, seed); bundle.put(DEPTH, deathDepth);
-		bundle.put(ROASTS, roasts); bundle.put(REACHED, reachedDepth);
+		bundle.put(ROASTS, roasts); bundle.put(REACHED, reachedDepth); bundle.put(TYPE, reviewType);
 		Map<String, String> m = ReviewSetup.capture(setup.heroClass, setup.challenges, setup.difficulty, true, setup.exotic, setup.rules);
 		for (String k : SETUP_KEYS) bundle.put("rv_s_" + k, m.get(k));
 	}
@@ -86,7 +93,7 @@ public final class ReviewClaim {
 		String id = bundle.getString(ID), seed = bundle.getString(SEED);
 		int depth = bundle.getInt(DEPTH);
 		if (setup == null || !id.matches("[0-9a-f]+") || seed.trim().isEmpty() || depth < 1 || depth > 100) return null;
-		ReviewClaim c = new ReviewClaim(id, seed, depth, setup, bundle.getBoolean(ROASTS), 0);
+		ReviewClaim c = new ReviewClaim(id, seed, depth, setup, bundle.getBoolean(ROASTS), bundle.contains(TYPE) ? bundle.getString(TYPE) : null, 0);
 		c.reached(bundle.getInt(REACHED));
 		return c;
 	}

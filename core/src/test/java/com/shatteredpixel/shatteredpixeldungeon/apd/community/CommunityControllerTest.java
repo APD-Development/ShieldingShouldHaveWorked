@@ -507,12 +507,14 @@ public class CommunityControllerTest {
 			// empty advice is refused before any request
 			answers.add("   ");
 			tap("Not salvageable");
+			tap("Straight advice");
 			assertTrue(has(last(), "Write some advice"));
 			assertFalse(requests.stream().anyMatch(q -> q.contains("/result")));
 			// server down: the verdict is kept, nothing lost
 			reply("POST /v1/reviews/ab12/result", 503, "{\"error\":\"unavailable\"}");
 			answers.add("Use the scroll earlier");
 			tap("Not salvageable");
+			tap("Straight advice");
 			assertEquals("Your review", last().title);
 			assertSame(c, CommunityController.finishedReview);
 			// accepted: exact body sent, then cleared
@@ -520,9 +522,33 @@ public class CommunityControllerTest {
 			requests.clear();
 			answers.add("Use the scroll earlier");
 			tap("Salvageable");
+			assertTrue("reviewer sees what was asked", has(last(), "This player asked for: straight advice only"));
+			tap("Straight advice");
 			String sent = requests.stream().filter(q -> q.startsWith("POST /v1/reviews/ab12/result")).findFirst().orElse("");
-			assertTrue(sent, sent.contains("\"reachedDepth\":4") && sent.contains("\"salvageable\":true") && sent.contains("\"advice\":\"Use the scroll earlier\""));
+			assertTrue(sent, sent.contains("\"reachedDepth\":4") && sent.contains("\"salvageable\":true") && sent.contains("\"tone\":\"advice\"") && sent.contains("\"advice\":\"Use the scroll earlier\""));
 			assertTrue(has(last(), "Sent."));
+			assertNull(CommunityController.finishedReview);
+		} finally { CommunityController.finishedReview = null; }
+	}
+
+	@Test public void runReviews_toneThatDoesntMatchIsHeld_playerSeesWhyAndVoteCounts(){
+		store.age = "pass"; store.token = "tok";
+		signedInWorld(false);
+		ReviewClaim c = ReviewClaim.parse(new com.badlogic.gdx.utils.JsonReader().parse(
+				"{\"id\":\"ef56\",\"seed\":\"S\",\"deathDepth\":3,\"reviewType\":\"encouraging\",\"setup\":{\"challenges\":\"0\",\"customRules\":\"0\",\"difficulty\":\"3\",\"exotic\":\"0\",\"heroClass\":\"MAGE\"}}"));
+		assertEquals("encouraging", c.reviewType);
+		c.reached(3);
+		CommunityController.finishedReview = c;
+		try {
+			reply("POST /v1/reviews/ef56/result", 200, "{\"survived\":true,\"held\":true,\"done\":1,\"needed\":5}");
+			controller().start();
+			tap("Not salvageable");
+			assertTrue(has(last(), "This player asked for: encouraging"));
+			answers.add("Skill issue");
+			tap("Roast");
+			String sent = requests.stream().filter(q -> q.startsWith("POST /v1/reviews/ef56/result")).findFirst().orElse("");
+			assertTrue(sent, sent.contains("\"tone\":\"roasts\""));
+			assertTrue(has(last(), "a moderator will check it") && has(last(), "vote still counts"));
 			assertNull(CommunityController.finishedReview);
 		} finally { CommunityController.finishedReview = null; }
 	}
@@ -540,6 +566,7 @@ public class CommunityControllerTest {
 			assertTrue(has(last(), "You reached floor 2"));
 			answers.add("Fine");
 			tap("Salvageable");
+			tap("Straight advice");
 			assertTrue(has(last(), "already reviewed"));
 			assertNull(CommunityController.finishedReview);
 		} finally { CommunityController.finishedReview = null; }

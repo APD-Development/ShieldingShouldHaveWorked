@@ -830,24 +830,35 @@ route('POST', '/v1/reviews/([0-9a-f]+)/result', async (env, req, [id]) => {
   if (!Number.isInteger(reached) || reached < 0 || reached > 100) fail(400, 'missing_reachedDepth');
   if (typeof b.salvageable !== 'boolean') fail(400, 'missing_salvageable');
   const advice = filtered(b.advice, LIMITS.comment, 'advice');
+  // Chris, Nov 19: the reviewer tags their own comment's tone; a tone that doesn't match what the player asked for
+  // is held for a moderator (the vote still counts, the words aren't shown until a moderator restores them).
+  // Build 925 (already sent to Play) has no tone picker: a missing tone is accepted untagged and shown as before.
+  if (b.tone != null && !REVIEW_TYPES.includes(b.tone)) fail(400, 'bad_tone');
+  const tone = b.tone == null ? null : b.tone;
+  const held = tone != null && tone !== r.review_type;
   const survived = reached >= r.death_depth ? 1 : 0;
   const res = await env.DB.prepare(
-    `UPDATE reviews SET finished_at = ?, reached_depth = ?, survived = ?, salvageable = ?, advice = ?
+    `UPDATE reviews SET finished_at = ?, reached_depth = ?, survived = ?, salvageable = ?, advice = ?, tone = ?, status = ?
       WHERE request_id = ? AND reviewer_id = ? AND finished_at IS NULL
         AND (SELECT COUNT(*) FROM reviews v WHERE v.request_id = ? AND v.finished_at IS NOT NULL) < ?`)
-    .bind(now(env), reached, survived, b.salvageable ? 1 : 0, advice, id, a.id, id, REVIEWS_NEEDED).run();
+    .bind(now(env), reached, survived, b.salvageable ? 1 : 0, advice, tone, held ? 'held' : 'visible', id, a.id, id, REVIEWS_NEEDED).run();
   if (!res.meta.changes) fail(409, 'review_closed');
+  if (held) {
+    await env.DB.prepare(
+      'INSERT OR IGNORE INTO reports (id, reporter_id, target_kind, target_id, reason, created_at) VALUES (?, ?, ?, ?, ?, ?)')
+      .bind(newId(), a.id, 'review', mine.id, `Held automatically: tagged ${tone}, player asked for ${r.review_type}`, now(env)).run();
+  }
   const c = await reviewCounts(env, id);
   if (c.done >= REVIEWS_NEEDED) {
     await env.DB.prepare("UPDATE review_requests SET status = 'closed', closed_at = ? WHERE id = ? AND status = 'open'").bind(now(env), id).run();
   }
-  return json(200, { survived: !!survived, ending: JSON.parse(r.ending), done: c.done, needed: REVIEWS_NEEDED });
+  return json(200, { survived: !!survived, held, ending: JSON.parse(r.ending), done: c.done, needed: REVIEWS_NEEDED });
 });
 
 function verdicts(rows, blocked) {
   return rows.map((v) => {
     const gone = v.status !== 'visible' || v.banned || (blocked && blocked.has(v.reviewer_id));
-    return { id: v.id, survived: !!v.survived, reachedDepth: v.reached_depth, salvageable: !!v.salvageable,
+    return { id: v.id, survived: !!v.survived, reachedDepth: v.reached_depth, salvageable: !!v.salvageable, tone: v.tone,
       advice: gone ? null : v.advice, reviewer: gone ? null : { id: v.reviewer_id, displayName: v.display_name } };
   });
 }
