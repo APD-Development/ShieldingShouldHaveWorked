@@ -273,6 +273,43 @@ public class CommunityControllerTest {
 		assertTrue(has(last(), "Season started."));
 	}
 
+	@Test public void adminActsOnReports_hideBanAndFailuresStayOnModeration(){
+		store.age = "pass"; store.token = "tok";
+		signedInWorld(true);
+		reply("GET /v1/admin/reports", 200, "{\"reports\":["
+				+ "{\"target_kind\":\"comment\",\"target_id\":\"c9\",\"author_id\":\"ee05\",\"preview\":\"mean words\",\"reports\":3,\"reasons\":\"rude | spam\"},"
+				+ "{\"target_kind\":\"account\",\"target_id\":\"ee06\",\"author_id\":\"ee06\",\"preview\":\"BadName\",\"reports\":1,\"reasons\":\"name\"}]}");
+		reply("POST /v1/admin/hide", 200, "{\"ok\":true}");
+		reply("POST /v1/admin/ban", 200, "{\"ok\":true}");
+		reply("POST /v1/admin/remove", 403, "{\"error\":\"not_admin\"}");
+		controller().start();
+		tap("Moderation");
+		assertTrue(has(last(), "3x comment: mean words"));
+		assertTrue(has(last(), "rude | spam"));
+
+		tap("3x comment");
+		assertEquals("Moderate comment", last().title);
+		tap("Hide");
+		assertTrue(requests.stream().anyMatch(r -> r.equals("POST /v1/admin/hide {\"kind\":\"comment\",\"id\":\"c9\"}")));
+		assertEquals("back on the reports list", "Moderation", last().title);
+
+		tap("3x comment");
+		tap("Ban the author");
+		assertTrue(requests.stream().anyMatch(r -> r.equals("POST /v1/admin/ban {\"accountId\":\"ee05\"}")));
+		assertEquals("Moderation", last().title);
+
+		tap("3x comment");
+		tap("Remove");
+		assertTrue("server refusal shown in plain words", has(last(), "Only moderators can do that."));
+		tap("OK");
+		assertEquals("Moderation", last().title);
+
+		tap("1x account");
+		assertFalse("an account can't be hidden", has(last(), "Hide"));
+		assertFalse(has(last(), "Remove"));
+		assertTrue(has(last(), "Ban the author"));
+	}
+
 	@Test public void adminFindsAndUnbansAPlayer(){
 		store.age = "pass"; store.token = "tok";
 		signedInWorld(true);
