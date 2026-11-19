@@ -14,6 +14,9 @@ Every scheduled run starts fresh. This file is the memory: read it, work, then a
 - Chris is the designer: never invent mechanics or features. Brainstorms are not approvals.
 - Say exactly what was verified (which CI run passed) vs assumed.
 
+## NEVER STAND DOWN (Chris, Nov 19 10:38 AM): scheduled runs ALWAYS code, even if a live session pushed recently.
+A recent push is not a clash: `git pull --rebase` before every push and resolve conflicts. Skipping a run is not allowed.
+
 ## CURRENT STATE, Nov 18 21:35 (overrides anything older below)
 - Closed test LIVE on Play since Nov 18, 12+ testers opted in (14-day clock running; earliest production apply ~Dec 2).
   Builds: 921 approved; 922, 923 superseded; 924 (Community text + Google sign-in crash fixes) uploaded by Chris.
