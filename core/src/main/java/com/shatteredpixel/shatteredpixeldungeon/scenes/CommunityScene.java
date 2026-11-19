@@ -75,7 +75,18 @@ public class CommunityScene extends PixelScene {
     }
 
     private final class SceneUi implements CommunityController.Ui {
+        // Android rebuilds this scene when the game resumes (e.g. after the Google account picker). An answer that
+        // arrives for the old, destroyed scene must not draw on it (crash, Nov 18): reload the live one instead, which
+        // picks up the saved sign-in.
+        private boolean reloaded;
+        private boolean stale() {
+            if (Game.scene() == CommunityScene.this) return false;
+            if (!reloaded && Game.scene() instanceof CommunityScene) { reloaded = true; ShatteredPixelDungeon.switchNoFade(CommunityScene.class); }
+            return true;
+        }
+
         @Override public void show(CommunityController.Screen screen) {
+            if (stale()) return;
             if (shown != null) { shown.hide(); shown = null; }
             List<WndUimsdList.Entry> entries = new ArrayList<>();
             final List<CommunityController.Row> items = screen.items();
@@ -105,6 +116,7 @@ public class CommunityScene extends PixelScene {
         }
 
         @Override public void ask(String title, String body, String initial, int maxLength, boolean multiLine, Consumer<String> answer) {
+            if (stale()) return;
             if (shown != null) { shown.hide(); shown = null; }
             addToFront(new WndTextInput(title, body, initial, maxLength, multiLine, "OK", "Cancel") {
                 @Override public void onSelect(boolean positive, String text) { answer.accept(positive ? text : null); }
@@ -112,6 +124,7 @@ public class CommunityScene extends PixelScene {
         }
 
         @Override public void busy(String message) {
+            if (stale()) return;
             // A short wait: the next screen replaces this as soon as the server answers.
             if (shown != null) { shown.hide(); shown = null; }
             List<WndUimsdList.Entry> entries = new ArrayList<>();
