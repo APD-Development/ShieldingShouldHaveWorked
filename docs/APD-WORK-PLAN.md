@@ -115,6 +115,11 @@ default-on settings (SPDSettings.keepOldDefaultsForExistingPlayers). Next: Googl
 (Credential Manager), server URL default once deployed, run reviews. HttpGateway contract routes, deployment workflow, Android Community screens wired to it, Play Age Signals.
 
 ## Run log
+- 2026-11-19 5 AM (scheduled): Run reviews exact setup: rankings "Send for review" now sends class, challenges, difficulty,
+  exotic and a custom-rules flag (was class + challenges only); runs with unknown difficulty or custom dungeon rules aren't
+  offered (my call, revertable: custom rules aren't transmitted yet). New ReviewSetup strict parser for the reviewer side
+  (refuses missing/out-of-range, never defaults) + reached-death-floor rule. +4 tests; full CI 44502634469 green. Not
+  device-verified. Next: in-game review playthrough using ReviewSetup. Open for Chris: luck-drop + 3 questions.
 - 2026-11-19 4 AM (scheduled): Run reviews "Send for review" button on a LOST, non-daily run's rankings screen (only when a
   Community server is set; shares the row with Copy Seed). Opens Community; after age gate + sign-in a one-time screen
   shows setup + death floor (no seed) with Send roasts on / off / Don't send. +2 controller tests; full CI 44494232053
