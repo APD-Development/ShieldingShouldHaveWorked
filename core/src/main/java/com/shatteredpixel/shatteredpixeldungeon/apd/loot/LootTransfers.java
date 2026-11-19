@@ -64,27 +64,21 @@ public final class LootTransfers {
     }
 
     /**
-     * Chris, Nov 19: loot does not transfer if it sits on a trap (hidden or revealed), in a room behind a
-     * still-locked door (locked, skeleton-key-locked or crystal), or in a room the hero hasn't discovered yet.
+     * Chris, Nov 19: loot only transfers if the player has actually seen that pile (it was in the hero's view),
+     * and never if it sits on a trap (hidden or revealed) or in a room behind a still-locked door
+     * (locked, skeleton-key-locked or crystal).
      */
     public static boolean cellAllowed(Level level, int cell) {
+        com.shatteredpixel.shatteredpixeldungeon.items.Heap heap = level.heaps.get(cell);
+        if (heap == null || !heap.seen) return false;
         if (level.traps != null && level.traps.get(cell) != null) return false;
         if (level instanceof com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel
                 && ((com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel) level).apdHasRooms()) {
             com.shatteredpixel.shatteredpixeldungeon.levels.rooms.Room room =
                     ((com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel) level).room(cell);
-            if (room != null) return roomDiscovered(level, room) && !roomLocked(level, room);
+            if (room != null && roomLocked(level, room)) return false;
         }
-        return level.visited != null && level.visited[cell];
-    }
-    static boolean roomDiscovered(Level level, com.shatteredpixel.shatteredpixeldungeon.levels.rooms.Room room) {
-        if (level.visited == null) return false;
-        // Interior only: seeing a room's door or wall from the corridor is not discovering the room.
-        for (int y = room.top + 1; y < room.bottom; y++) for (int x = room.left + 1; x < room.right; x++) {
-            if (x < 0 || y < 0 || x >= level.width() || y >= level.height()) continue;
-            if (level.visited[x + y * level.width()]) return true;
-        }
-        return false;
+        return true;
     }
     static boolean roomLocked(Level level, com.shatteredpixel.shatteredpixeldungeon.levels.rooms.Room room) {
         for (com.shatteredpixel.shatteredpixeldungeon.levels.rooms.Room.Door door : room.connected.values()) {

@@ -17,7 +17,7 @@ public class ScrollOfGathering extends Scroll {
     @Override public String name() { return "Scroll of Gathering"; }
     @Override public String desc() {
         return "Gathers loose ground items on this floor into one pile beside the downstairs. "
-                + "Leaves loot on traps, in locked rooms and in rooms you haven't discovered. "
+                + "Only moves loot you have seen. Leaves loot on traps and in locked rooms. "
                 + "Leaves unopened containers, shop stock, keys, quest items and lost backpacks untouched. "
                 + "If there is no safe destination, the scroll is not consumed.";
     }

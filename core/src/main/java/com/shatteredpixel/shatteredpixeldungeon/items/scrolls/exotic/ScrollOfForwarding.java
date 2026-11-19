@@ -19,7 +19,7 @@ public class ScrollOfForwarding extends ExoticScroll {
         return "Sends loose ground items to a pile outside the next region's shop. "
                 + "On Floor 20 or later, uses the Imp's Floor-20 shop. Nothing is sold. "
                 + "If the shop is closed or blocked, the items wait for a safe delivery spot. "
-                + "Leaves loot on traps, in locked rooms and in rooms you haven't discovered. "
+                + "Only moves loot you have seen. Leaves loot on traps and in locked rooms. "
                 + "Leaves unopened containers, shop stock, carried items, keys, quest items and Lost Backpacks in place. "
                 + "An armed bomb among the loot prevents casting without consuming the scroll.";
     }
