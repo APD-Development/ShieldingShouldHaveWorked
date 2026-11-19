@@ -115,6 +115,10 @@ default-on settings (SPDSettings.keepOldDefaultsForExistingPlayers). Next: Googl
 (Credential Manager), server URL default once deployed, run reviews. HttpGateway contract routes, deployment workflow, Android Community screens wired to it, Play Age Signals.
 
 ## Run log
+- 2026-11-19 12 AM (scheduled): Tonight #3 admin-tools tests: +1 server test (hide/remove/ban clear only their own
+  reports, bad kind/unknown id/no token change nothing, banned Google players refused, unban doesn't revive old
+  sessions, removed posts stay removed until restore, audit log exact). Server CI 44462925340 green (35 tests).
+  Next: app-side admin tool tests; app review screens. Still open for Chris: luck-drop + 3 review questions.
 - 2026-11-18 11 PM (scheduled): Tonight #3 speed part done: Community hub/submissions/results/selected-content show
   the last good answer instantly and refresh in background (redraw only if changed and still on screen; errors keep it;
   sign-out clears). +2 controller tests; full CI 44456108772 green. Next: real tests of admin tools; app review screens.
