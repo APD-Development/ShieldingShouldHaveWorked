@@ -128,6 +128,7 @@ default-on settings (SPDSettings.keepOldDefaultsForExistingPlayers). Next: Googl
 (Credential Manager), server URL default once deployed, run reviews. HttpGateway contract routes, deployment workflow, Android Community screens wired to it, Play Age Signals.
 
 ## Run log
+- 2026-11-19 7:06 AM (scheduled): no code; Chris's live session pushed to this branch at 6:51 AM (7 AM entry above), so this run stood down to avoid clashing.
 - 2026-11-19 7:00 AM (scheduled + Chris live): (1) Custom-rule runs now reviewable: full rule settings sent, survive restart,
   locked for reviewer (old flag-only setups refused). Core CI 44517197514 green. (2) CHRIS: "Block the community until an
   update is downloaded and installed": server answers 426 update_required to /v1 calls from versionCode < MIN_APP_VERSION
