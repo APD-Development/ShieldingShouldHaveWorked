@@ -120,7 +120,7 @@ default-on settings (SPDSettings.keepOldDefaultsForExistingPlayers). Next: Googl
   page, admin Set status / notes). Server tests CI 44448975431 green. Run reviews SERVER done (migration 0006,
   /v1/reviews submit/open/claim/result/mine, admin review-access; seed only sent on claim, ending revealed after own
   result, 5 incl. failed close it, verdicts hidden until closed; loot untouched). NOT done: in-game seed playthrough
-  + review screens in the app. Deploy to deploy/community-server was refused by the sandbox's permission check: a
+  + review screens in the app. Full CI 44448974120 (selected content) and 44449289708 (reviews), server CI 44449290883 all green. Deploy to deploy/community-server was refused by the sandbox's permission check: a
   live session must push it. QUESTIONS for Chris: (1) "luck drop" meaning (still open); (2) does a failed reviewer
   also vote salvageable + advice? (built: yes, every finished review votes); (3) "a peer decides" review access: how?
   (built: moderator only); (4) what do roasts on/off change for reviewers? (built: a flag shown to reviewers only).
