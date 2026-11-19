@@ -21,13 +21,17 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.apd.community;
 
+import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
+import com.badlogic.gdx.utils.JsonWriter;
 import com.shatteredpixel.shatteredpixeldungeon.apd.age.CommunityAgeGate;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -105,7 +109,7 @@ public final class CommunityController {
 	private JsonValue season;
 
 	public CommunityController(CommunityApi api, Ui ui, Runner runner, Storage storage, int[] today){
-		this.api = api; this.ui = ui; this.runner = runner; this.storage = storage; this.today = today;
+		this.api = api; this.ui = counting(ui); this.runner = runner; this.storage = storage; this.today = today;
 		if (api != null && storage.token() != null) api.token(storage.token());
 	}
 
@@ -259,12 +263,12 @@ public final class CommunityController {
 	}
 
 	private void remember(){ storage.token(api.token()); }
-	private void forget(){ api.token(null); storage.token(null); me = null; }
+	private void forget(){ api.token(null); storage.token(null); me = null; CACHE.clear(); }
 
 	// ---- hub ----
 
 	private void hub(){
-		call(api::season, r -> {
+		cached("season", api::season, r -> {
 			season = r.ok() ? r.body.get("season") : null;
 			if (season != null && season.isNull()) season = null;
 			Screen s = new Screen("Community", "Signed in as " + me.getString("displayName", "?") + ".");
@@ -297,7 +301,7 @@ public final class CommunityController {
 	// ---- submissions ----
 
 	private void submissions(){
-		call(api::submissions, r -> {
+		cached("submissions", api::submissions, r -> {
 			Screen s = new Screen("Submissions", null);
 			s.back = this::hub;
 			if (!r.ok()){ s.warning(message(r)); s.item("Back", null, this::hub); ui.show(s); return; }
@@ -437,7 +441,7 @@ public final class CommunityController {
 
 
 	private void results(){
-		call(api::results, this::showResults);
+		cached("results", api::results, this::showResults);
 	}
 
 	private CommunityApi.Result lastResults;
@@ -542,7 +546,7 @@ public final class CommunityController {
 	}
 
 	private void champions(){
-		call(api::champions, r -> {
+		cached("champions", api::champions, r -> {
 			Screen s = new Screen("Selected content", "Each season's champion, newest first, and where its development is.");
 			s.back = this::hub;
 			if (!r.ok()) s.warning(message(r));
@@ -732,6 +736,49 @@ public final class CommunityController {
 	private void after(CommunityApi.Result r){ if (r.ok()) moderation(); else problem(r, this::moderation); }
 
 	// ---- helpers ----
+
+	// Speed (Chris, Nov 18: "cache the last Community screen, refresh in background"). The last good answer for each
+	// list screen is kept for this app session (cleared on sign-out), shown at once, then refreshed quietly; the screen
+	// is redrawn only if the answer changed and the player hasn't moved on. Errors never replace a cached screen.
+	static final Map<String, String> CACHE = new HashMap<>();
+	private int uiChanges;
+
+	private Ui counting(Ui inner){
+		return new Ui(){
+			public void show(Screen s){ uiChanges++; inner.show(s); }
+			public void ask(String t, String b, String i, int m, boolean ml, Consumer<String> a){ uiChanges++; inner.ask(t, b, i, m, ml, a); }
+			public void busy(String m){ uiChanges++; inner.busy(m); }
+			public void leave(){ uiChanges++; inner.leave(); }
+			public void planned(){ uiChanges++; inner.planned(); }
+		};
+	}
+
+	private String cacheKey(String key){ return (api.token() == null ? "" : api.token()) + "|" + key; }
+
+	private void cached(String key, Supplier<CommunityApi.Result> call, Consumer<CommunityApi.Result> then){
+		final String k = cacheKey(key);
+		final String old;
+		synchronized (CACHE){ old = CACHE.get(k); }
+		if (old == null){
+			call(call, r -> { store(k, r); then.accept(r); });
+			return;
+		}
+		then.accept(new CommunityApi.Result(200, new JsonReader().parse(old), null));
+		final int shownAt = uiChanges;
+		runner.run(call, r -> {
+			if (r.status == 401 && me != null){ forget(); ui.show(signedOut("You were signed out. Please sign in again.")); return; }
+			if (!r.ok()) return; // keep showing the cached screen
+			String fresh = store(k, r);
+			if (!fresh.equals(old) && uiChanges == shownAt) then.accept(r);
+		});
+	}
+
+	private static String store(String k, CommunityApi.Result r){
+		if (!r.ok() || r.body == null) return "";
+		String json = r.body.toJson(JsonWriter.OutputType.json);
+		synchronized (CACHE){ CACHE.put(k, json); }
+		return json;
+	}
 
 	private void call(Supplier<CommunityApi.Result> call, Consumer<CommunityApi.Result> then){
 		ui.busy("Talking to the Community server...");

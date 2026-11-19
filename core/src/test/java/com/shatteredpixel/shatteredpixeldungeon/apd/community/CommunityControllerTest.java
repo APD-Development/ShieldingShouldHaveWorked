@@ -52,6 +52,7 @@ public class CommunityControllerTest {
 	private final Store store = new Store();
 
 	@Before public void start() throws Exception {
+		CommunityController.CACHE.clear();
 		CommunityAgeGate.play = null; // no Google Play in tests: the birth month/year question is used
 		CommunityController.google = null;
 		CommunityController.emailSignIn = true; //most tests sign up through the (dormant) email path
@@ -116,6 +117,49 @@ public class CommunityControllerTest {
 		assertTrue(has(hub, "Month 2: voting"));
 		assertFalse("not an admin", has(hub, "Moderation"));
 		assertTrue(requests.get(0).startsWith("POST /v1/auth/register {\"email\":\"me@x.com\",\"password\":\"longpassword\",\"displayName\":\"Chris\"}"));
+	}
+
+	@Test public void listScreensShowTheCachedAnswerAtOnce_thenRedrawOnlyWhenItChanged(){
+		store.age = "pass"; store.token = "tok";
+		signedInWorld(false);
+		reply("GET /v1/submissions", 200, "{\"submissions\":[{\"id\":\"x1\",\"title\":\"Old idea\",\"author\":{\"displayName\":\"A\"},\"comments\":0}]}");
+		CommunityController c = controller();
+		c.start();
+		tap("Submissions");
+		assertTrue(has(last(), "Old idea"));
+		tap("Back");
+		// Same answer again: the cached screen is drawn once and not redrawn.
+		int before = screens.size();
+		tap("Submissions");
+		assertEquals(before + 1, screens.size());
+		assertTrue(has(last(), "Old idea"));
+		tap("Back");
+		// The server changed: cached screen first, then the fresh one.
+		reply("GET /v1/submissions", 200, "{\"submissions\":[{\"id\":\"x2\",\"title\":\"New idea\",\"author\":{\"displayName\":\"B\"},\"comments\":1}]}");
+		before = screens.size();
+		tap("Submissions");
+		assertEquals(before + 2, screens.size());
+		assertTrue(has(screens.get(before), "Old idea"));
+		assertTrue(has(last(), "New idea"));
+		tap("Back");
+		// The server is down: the cached screen stays, no error replaces it.
+		reply("GET /v1/submissions", 500, "{\"error\":\"server\"}");
+		before = screens.size();
+		tap("Submissions");
+		assertEquals(before + 1, screens.size());
+		assertTrue(has(last(), "New idea"));
+	}
+
+	@Test public void signingOutForgetsTheCache(){
+		store.age = "pass"; store.token = "tok";
+		signedInWorld(false);
+		controller().start();
+		assertFalse(CommunityController.CACHE.isEmpty());
+		reply("GET /v1/season", 401, "{\"error\":\"unauthorized\"}");
+		tap("Submissions"); // any call; reply 404 then back to hub cached+refresh 401
+		tap("Back");
+		assertTrue(CommunityController.CACHE.isEmpty());
+		assertNull(store.token);
 	}
 
 	@Test public void savedSessionGoesStraightToTheHub_andAdminsSeeModeration(){

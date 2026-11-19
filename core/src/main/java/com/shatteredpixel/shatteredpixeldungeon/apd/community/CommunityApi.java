@@ -42,7 +42,7 @@ public final class CommunityApi {
 		public final JsonValue body;      // parsed JSON, or null
 		public final String error;        // the server's error code, "offline", or null on success
 
-		Result(int status, JsonValue body, String error){
+		public Result(int status, JsonValue body, String error){
 			this.status = status; this.body = body; this.error = error;
 		}
 
