@@ -115,6 +115,11 @@ default-on settings (SPDSettings.keepOldDefaultsForExistingPlayers). Next: Googl
 (Credential Manager), server URL default once deployed, run reviews. HttpGateway contract routes, deployment workflow, Android Community screens wired to it, Play Age Signals.
 
 ## Run log
+- 2026-11-19 4 AM (scheduled): Run reviews "Send for review" button on a LOST, non-daily run's rankings screen (only when a
+  Community server is set; shares the row with Copy Seed). Opens Community; after age gate + sign-in a one-time screen
+  shows setup + death floor (no seed) with Send roasts on / off / Don't send. +2 controller tests; full CI 44494232053
+  green (first try 44493659704 failed only the message-inventory count from a new key, so the label is English text like
+  other Community screens). Not device-verified. Next: in-game review playthrough. Open for Chris: luck-drop + 3 questions.
 - 2026-11-19 3 AM (scheduled): Run reviews app API: CommunityApi.reviewSubmit sends a finished run (seed, death depth,
   setup, ending, roasts) to POST /v1/reviews; refuses empty seed / depth outside 1-100 before any request. +1 API test;
   full CI 44484990072 green. Next: "Send this run for review" button on the death/rankings screen + in-game review
