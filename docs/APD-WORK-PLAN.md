@@ -128,6 +128,12 @@ default-on settings (SPDSettings.keepOldDefaultsForExistingPlayers). Next: Googl
 (Credential Manager), server URL default once deployed, run reviews. HttpGateway contract routes, deployment workflow, Android Community screens wired to it, Play Age Signals.
 
 ## Run log
+- 2026-11-19 7:00 AM (scheduled + Chris live): (1) Custom-rule runs now reviewable: full rule settings sent, survive restart,
+  locked for reviewer (old flag-only setups refused). Core CI 44517197514 green. (2) CHRIS: "Block the community until an
+  update is downloaded and installed": server answers 426 update_required to /v1 calls from versionCode < MIN_APP_VERSION
+  (925, wrangler.toml) or no X-APD-Version header; app sends the header and shows only an "Update required" screen;
+  versionCode bumped 924 -> 925. Server CI 44517427249, core CI 44517427308, Play bundle 44517427142 green; server deployed,
+  so Community is blocked for 924 and older NOW until Chris signs/uploads the 925 bundle (handoff/unsigned-aab).
 - 2026-11-19 6:40 AM (scheduled): Run reviews REVIEW TYPE replaces roasts on/off (server migration 0007 review_type
   roasts/advice/encouraging, old roasts flag maps over; open/claim/mine return it; app send screen has 3 choices, reviewers
   see "This player asked for: ..."). Server CI 44516548221 + full core CI 44516549185 green; deployed to deploy/community-server.
