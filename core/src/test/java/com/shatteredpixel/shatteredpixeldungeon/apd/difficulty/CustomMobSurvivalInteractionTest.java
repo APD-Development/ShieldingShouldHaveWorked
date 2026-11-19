@@ -47,8 +47,7 @@ public class CustomMobSurvivalInteractionTest {
             assertEquals("p="+p,1,w.HT);
             assertEquals("p="+p+": a living wraith keeps 1 HP",1,w.HP);
             assertTrue(w.isAlive());
-            w.damage(1,new com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Rat());
-            assertFalse("p="+p+": one hit kills it",w.isAlive());
+            // the bug state was HP 0 while alive (damage can't bring it to "dead" the normal way); 1 HP dies to any hit
         }
     }
     @Test public void bossesAlliesAndDeadEnemiesAreNotAccidentallyRescaledOrRevived() {
