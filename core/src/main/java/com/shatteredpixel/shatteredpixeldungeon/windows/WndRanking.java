@@ -267,8 +267,35 @@ public class WndRanking extends WndTabbed {
 
 			int buttontop = HEIGHT - 16;
 
-			if (Dungeon.hero != null && Dungeon.seed != -1 && !Dungeon.daily &&
-					(DeviceCompat.isDebug() || Badges.isUnlocked(Badges.Badge.VICTORY))){
+			// Run reviews (Chris's design, Nov 18): a lost, non-daily run can be sent for 5 other players to replay.
+			// Shown only when a Community server is set. The seed itself is never shown to reviewers' screens publicly.
+			boolean canReview = Dungeon.hero != null && Dungeon.seed != -1 && !Dungeon.daily && !record.win
+					&& Statistics.highestAscent == 0 && record.depth >= 1
+					&& !SPDSettings.communityServer().isEmpty();
+			boolean canCopy = Dungeon.hero != null && Dungeon.seed != -1 && !Dungeon.daily &&
+					(DeviceCompat.isDebug() || Badges.isUnlocked(Badges.Badge.VICTORY));
+			if (canReview){
+				RedButton btnReview = new RedButton(Messages.get(this, "send_review")){
+					@Override
+					protected void onClick() {
+						super.onClick();
+						String seed = Dungeon.customSeedText.isEmpty() ? DungeonSeed.convertToCode(Dungeon.seed) : Dungeon.customSeedText;
+						java.util.Map<String, String> setup = new java.util.HashMap<>();
+						setup.put("heroClass", record.heroClass.name());
+						setup.put("challenges", Integer.toString(Dungeon.challenges));
+						java.util.Map<String, String> ending = new java.util.HashMap<>();
+						if (record.cause != null) ending.put("cause", record.cause.getSimpleName());
+						com.shatteredpixel.shatteredpixeldungeon.apd.community.CommunityController.pendingReview =
+								new com.shatteredpixel.shatteredpixeldungeon.apd.community.CommunityController.ReviewRun(seed, record.depth, setup, ending);
+						com.shatteredpixel.shatteredpixeldungeon.scenes.CommunityScene.open();
+					}
+				};
+				if (canCopy) btnReview.setRect(58, buttontop, 57, 16);
+				else btnReview.setRect(0, buttontop, 115, 16);
+				add(btnReview);
+			}
+
+			if (canCopy){
 				final Image icon = Icons.get(Icons.SEED);
 				RedButton btnSeed = new RedButton(Messages.get(this, "copy_seed")){
 					@Override
@@ -296,7 +323,7 @@ public class WndRanking extends WndTabbed {
 					icon.hardlight(1f, 1.5f, 0.67f);
 				}
 				btnSeed.icon(icon);
-				btnSeed.setRect(0, buttontop, 115, 16);
+				btnSeed.setRect(0, buttontop, canReview ? 57 : 115, 16);
 				add(btnSeed);
 			}
 

@@ -441,6 +441,43 @@ public class CommunityControllerTest {
 		assertTrue(has(v, "[removed]: not salvageable (died earlier, on floor 3)"));
 	}
 
+	@Test public void runReviews_sendFromRankings_showsOnceAfterSignIn_roastsChoiceSent(){
+		store.age = "pass"; store.token = "tok";
+		signedInWorld(false);
+		reply("POST /v1/reviews", 200, "{\"id\":\"r5\"}");
+		java.util.Map<String, String> setup = new java.util.HashMap<>();
+		setup.put("heroClass", "HUNTRESS"); setup.put("challenges", "1");
+		java.util.Map<String, String> ending = new java.util.HashMap<>();
+		ending.put("cause", "Gnoll");
+		CommunityController.pendingReview = new CommunityController.ReviewRun("ABC-DEF-GHI", 4, setup, ending);
+		try {
+			controller().start();
+			CommunityController.Screen s = last();
+			assertEquals("Send this run for review", s.title);
+			assertTrue(has(s, "Huntress · 1 challenge · died on floor 4"));
+			assertFalse("the seed is never shown", has(s, "ABC-DEF-GHI"));
+			assertNull("shown once", CommunityController.pendingReview);
+			tap("Send with roasts off");
+			String sent = requests.stream().filter(q -> q.startsWith("POST /v1/reviews")).findFirst().orElse("");
+			assertTrue(sent, sent.contains("\"seed\":\"ABC-DEF-GHI\"") && sent.contains("\"deathDepth\":4") && sent.contains("\"roasts\":false"));
+			assertTrue(has(last(), "Sent."));
+			tap("Back");
+			assertEquals("Community", last().title);
+		} finally { CommunityController.pendingReview = null; }
+	}
+
+	@Test public void runReviews_dontSend_sendsNothing(){
+		store.age = "pass"; store.token = "tok";
+		signedInWorld(false);
+		CommunityController.pendingReview = new CommunityController.ReviewRun("S", 2, null, null);
+		try {
+			controller().start();
+			tap("Don't send");
+			assertEquals("Community", last().title);
+			assertFalse(requests.stream().anyMatch(q -> q.startsWith("POST /v1/reviews")));
+		} finally { CommunityController.pendingReview = null; }
+	}
+
 	private static List<String> itemLabels(CommunityController.Screen s){ List<String> l = new ArrayList<>(); for (CommunityController.Row r : s.items()) l.add(r.label); return l; }
 
 	// Every error code the server can send has plain words in the app (except a few that only a broken client causes).

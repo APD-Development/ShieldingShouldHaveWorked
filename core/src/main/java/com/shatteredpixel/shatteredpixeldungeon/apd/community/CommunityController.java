@@ -268,6 +268,8 @@ public final class CommunityController {
 	// ---- hub ----
 
 	private void hub(){
+		ReviewRun pending = pendingReview;
+		if (pending != null){ pendingReview = null; sendForReview(pending); return; }
 		cached("season", api::season, r -> {
 			season = r.ok() ? r.body.get("season") : null;
 			if (season != null && season.isNull()) season = null;
@@ -590,6 +592,51 @@ public final class CommunityController {
 			s.item("Back", null, this::hub);
 			ui.show(s);
 		}));
+	}
+
+	/** A finished (lost) run the player chose to send for review from the rankings screen. Set before opening
+	 *  Community; the hub shows the send screen once, after age gate and sign-in. */
+	public static final class ReviewRun {
+		public final String seed; public final int deathDepth;
+		public final java.util.Map<String, String> setup, ending;
+		public ReviewRun(String seed, int deathDepth, java.util.Map<String, String> setup, java.util.Map<String, String> ending){
+			this.seed = seed; this.deathDepth = deathDepth; this.setup = setup; this.ending = ending;
+		}
+	}
+	public static volatile ReviewRun pendingReview = null;
+
+	private void sendForReview(ReviewRun run){
+		Screen s = new Screen("Send this run for review", "5 other players will replay it from the same start. "
+				+ "They never see the seed's code or how you died until they've played. You see their verdicts once all 5 are done.");
+		s.back = this::hub;
+		s.heading(setupText(setupJson(run.setup)) + (run.deathDepth > 0 ? " · died on floor " + run.deathDepth : ""));
+		s.note("Roasts on lets reviewers be blunt and funny about your run. Bullying can still be reported.");
+		s.item("Send with roasts on", null, () -> submitReview(run, true));
+		s.item("Send with roasts off", null, () -> submitReview(run, false));
+		s.item("Don't send", null, this::hub);
+		ui.show(s);
+	}
+
+	private void submitReview(ReviewRun run, boolean roasts){
+		ui.busy("Sending your run...");
+		call(() -> api.reviewSubmit(run.seed, run.deathDepth, run.setup, run.ending, roasts), r -> {
+			Screen s = new Screen("Run reviews", r.ok() ? "Sent. Check Run reviews to see how many players have reviewed it." : message(r));
+			s.back = this::hub;
+			if (r.ok()) s.item("Run reviews", null, this::reviews);
+			s.item("Back", null, this::hub);
+			ui.show(s);
+		});
+	}
+
+	private static JsonValue setupJson(java.util.Map<String, String> m){
+		JsonValue o = new JsonValue(JsonValue.ValueType.object);
+		if (m != null) for (java.util.Map.Entry<String, String> e : m.entrySet()){
+			if ("challenges".equals(e.getKey())){
+				try { o.addChild(e.getKey(), new JsonValue(Long.parseLong(e.getValue()))); continue; } catch (NumberFormatException ignored) {}
+			}
+			o.addChild(e.getKey(), new JsonValue(e.getValue()));
+		}
+		return o;
 	}
 
 	private void openRun(JsonValue run){
