@@ -1059,6 +1059,7 @@ public final class CommunityController {
 			case "already_reviewed": return "You've already reviewed this run. There are no retries.";
 			case "not_claimed": return "Take this run to review first.";
 			case "review_closed": return "This run already has its 5 reviews.";
+			case "bad_tone": return "Pick the tone of your comment before sending.";
 			case "too_many_reviewRequests": return "You've sent a lot of runs for review today. Try again tomorrow.";
 			default:
 				if (e.startsWith("too_long_")) return "That's too long.";
