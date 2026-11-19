@@ -299,7 +299,8 @@ public class Hero extends Char {
 	public void updateHT( boolean boostHP ){
 		int curHT = HT;
 		
-		HT = 20 + 5*(lvl-1) + HTBoost;
+		// APD hero mods: a mod hero's starting max HP replaces the base 20 (growth per level unchanged)
+		HT = com.shatteredpixel.shatteredpixeldungeon.apd.mods.HeroModRun.baseHT(20) + 5*(lvl-1) + HTBoost;
 		float multiplier = RingOfMight.HTMultiplier(this);
 		HT = Math.round(multiplier * HT);
 		
@@ -355,6 +356,7 @@ public class Hero extends Char {
         else bundle.remove("apd_custom_healing_fraction");
 
 		bundle.put( CLASS, heroClass );
+		com.shatteredpixel.shatteredpixeldungeon.apd.mods.HeroModRun.store( bundle );
 		bundle.put( SUBCLASS, subClass );
 		bundle.put( ABILITY, armorAbility );
 		Talent.storeTalentsInBundle( bundle, this );
@@ -390,6 +392,7 @@ public class Hero extends Char {
             throw new IllegalArgumentException("Invalid custom healing fraction; preserve the save for recovery");
 
 		heroClass = bundle.getEnum( CLASS, HeroClass.class );
+		com.shatteredpixel.shatteredpixeldungeon.apd.mods.HeroModRun.restore( bundle );
 		subClass = bundle.getEnum( SUBCLASS, HeroSubClass.class );
 		armorAbility = (ArmorAbility)bundle.get( ABILITY );
 		Talent.restoreTalentsFromBundle( bundle, this );

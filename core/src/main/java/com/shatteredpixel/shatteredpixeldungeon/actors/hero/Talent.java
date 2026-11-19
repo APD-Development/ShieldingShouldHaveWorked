@@ -963,6 +963,8 @@ public enum Talent {
 	public static final int MAX_TALENT_TIERS = 4;
 
 	public static void initClassTalents( Hero hero ){
+		// APD hero mods (Chris, Nov 19): a mod run uses the mod's tier 1-3 talents instead of the class lists
+		if (com.shatteredpixel.shatteredpixeldungeon.apd.mods.HeroModRun.fillTalents( hero.talents )) return;
 		initClassTalents( hero.heroClass, hero.talents, hero.metamorphedTalents );
 	}
 
