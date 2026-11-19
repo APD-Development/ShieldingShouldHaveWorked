@@ -136,6 +136,19 @@ public final class CommunityApi {
 		return call("DELETE", "/v1/admin/champions/" + id(seasonId) + "/notes/" + id(noteId), null);
 	}
 
+	// ---- run reviews (server side done; the in-game seed playthrough is not wired yet) ----
+
+	public Result reviewsOpen(){ return call("GET", "/v1/reviews/open", null); }
+	public Result reviewsMine(){ return call("GET", "/v1/reviews/mine", null); }
+	public Result reviewClaim(String requestId){ return call("POST", "/v1/reviews/" + id(requestId) + "/claim", null); }
+	public Result reviewResult(String requestId, int reachedDepth, boolean salvageable, String advice){
+		return call("POST", "/v1/reviews/" + id(requestId) + "/result",
+				"{\"reachedDepth\":" + reachedDepth + ",\"salvageable\":" + salvageable + ",\"advice\":" + quote(advice) + "}");
+	}
+	public Result adminReviewAccess(String accountId, boolean allowed){
+		return call("POST", "/v1/admin/review-access", "{\"accountId\":" + quote(accountId) + ",\"allowed\":" + allowed + "}");
+	}
+
 	// ---- reports and blocks ----
 
 	public Result report(String kind, String targetId, String reason){

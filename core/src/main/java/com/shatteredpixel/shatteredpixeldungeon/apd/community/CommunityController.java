@@ -777,6 +777,7 @@ public final class CommunityController {
 			case "own_submission": return "You can't vote for your own idea.";
 			case "too_many_submissions": return "You've posted a lot of ideas today. Try again tomorrow.";
 			case "too_many_comments": return "Slow down a little: too many comments in a short time.";
+			case "too_many_championComments": return "Slow down a little: too many comments in a short time.";
 			case "too_many_reports": return "You've sent a lot of reports today.";
 			case "not_found": return "That isn't there any more.";
 			case "no_season": return "No season is running right now.";
@@ -794,6 +795,12 @@ public final class CommunityController {
 			case "season_overlaps": return "A season is already running in that time. Wait for it to finish first.";
 			case "no_matchups_open": return "That vote isn't open right now.";
 			case "bad_status": return "That isn't one of the four statuses.";
+			case "review_access_removed": return "A moderator has taken away your review access.";
+			case "own_run": return "You can't review your own run.";
+			case "already_reviewed": return "You've already reviewed this run. There are no retries.";
+			case "not_claimed": return "Take this run to review first.";
+			case "review_closed": return "This run already has its 5 reviews.";
+			case "too_many_reviewRequests": return "You've sent a lot of runs for review today. Try again tomorrow.";
 			default:
 				if (e.startsWith("too_long_")) return "That's too long.";
 				if (e.startsWith("missing_")) return "Something was left empty.";

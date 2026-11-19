@@ -475,3 +475,68 @@ test('selected content: a finished season\'s champion gets a page with admin sta
   page = (await call('GET', `/v1/champions/${s1}`)).body;
   assert.deepEqual([page.title, page.author, page.body], ['S1 Ana idea', null, '']);
 });
+
+test('run reviews: secret seed, 5 reviews to close (failed reviews count), hidden verdicts, no retries, review access', async () => {
+  const { call, member } = setup();
+  const chris = await member('chris@example.com', 'Chris');
+  const pat = await member('pat@x.com', 'Pat');
+  const rev = [];
+  for (let i = 0; i < 6; i++) rev.push(await member(`rev${i}@x.com`, `R${i}`));
+  const setupJson = { heroClass: 'WARRIOR', challenges: 3, difficulty: 'normal' };
+  const ending = { cause: 'Goo', depth: 5, loot: ['ring of haste'] };
+  assert.equal((await call('POST', '/v1/reviews', { seed: 'ABC-DEF', setup: setupJson, deathDepth: 0, ending }, pat.token)).body.error, 'missing_deathDepth');
+  const id = (await call('POST', '/v1/reviews', { seed: 'ABC-DEF', setup: setupJson, deathDepth: 5, ending, roasts: false }, pat.token)).body.id;
+  // The open list never carries the seed or the ending, and my own run isn't in it
+  const open = (await call('GET', '/v1/reviews/open', null, rev[0].token)).body.runs;
+  assert.equal(open.length, 1);
+  assert.deepEqual([open[0].setup, open[0].done, open[0].needed, open[0].roasts], [setupJson, 0, 5, false]);
+  assert.ok(!JSON.stringify(open).includes('ABC-DEF') && !JSON.stringify(open).includes('Goo'));
+  assert.equal((await call('GET', '/v1/reviews/open', null, pat.token)).body.runs.length, 0);
+  assert.equal((await call('POST', `/v1/reviews/${id}/claim`, null, pat.token)).body.error, 'own_run');
+  assert.equal((await call('POST', `/v1/reviews/${id}/result`, { reachedDepth: 5, salvageable: true, advice: 'x' }, rev[0].token)).body.error, 'not_claimed');
+  // Claiming hands over the seed, still not the ending
+  const claim = (await call('POST', `/v1/reviews/${id}/claim`, null, rev[0].token)).body;
+  assert.deepEqual([claim.seed, claim.deathDepth], ['ABC-DEF', 5]);
+  assert.ok(!('ending' in claim));
+  // Reaching the death depth = survived; then the ending is revealed. No second result.
+  let r = (await call('POST', `/v1/reviews/${id}/result`, { reachedDepth: 5, salvageable: true, advice: 'Drink the potion earlier' }, rev[0].token)).body;
+  assert.deepEqual([r.survived, r.ending.cause, r.done], [true, 'Goo', 1]);
+  assert.equal((await call('POST', `/v1/reviews/${id}/result`, { reachedDepth: 9, salvageable: true, advice: 'again' }, rev[0].token)).body.error, 'already_reviewed');
+  assert.equal((await call('POST', `/v1/reviews/${id}/claim`, null, rev[0].token)).body.error, 'already_reviewed');
+  // A failed review (died earlier) still counts
+  await call('POST', `/v1/reviews/${id}/claim`, null, rev[1].token);
+  r = (await call('POST', `/v1/reviews/${id}/result`, { reachedDepth: 2, salvageable: false, advice: 'Too hard' }, rev[1].token)).body;
+  assert.deepEqual([r.survived, r.done], [false, 2]);
+  // The player sees 2/5 and no verdicts yet
+  let mine = (await call('GET', '/v1/reviews/mine', null, pat.token)).body.runs[0];
+  assert.deepEqual([mine.status, mine.done, mine.needed, mine.reviews], ['open', 2, 5, undefined]);
+  // A reported reviewer loses review access (moderator)
+  assert.equal((await call('POST', '/v1/admin/review-access', { accountId: rev[2].id, allowed: false }, pat.token)).status, 403);
+  await call('POST', `/v1/reviews/${id}/claim`, null, rev[2].token);
+  assert.equal((await call('POST', '/v1/admin/review-access', { accountId: rev[2].id, allowed: false }, chris.token)).status, 200);
+  assert.equal((await call('POST', `/v1/reviews/${id}/result`, { reachedDepth: 5, salvageable: true, advice: 'x' }, rev[2].token)).body.error, 'review_access_removed');
+  assert.equal((await call('GET', '/v1/reviews/open', null, rev[2].token)).body.error, 'review_access_removed');
+  // Three more close it; a sixth claimant who was still playing is too late
+  await call('POST', `/v1/reviews/${id}/claim`, null, rev[5].token);
+  for (const k of [3, 4, 0].slice(0, 2)) {
+    await call('POST', `/v1/reviews/${id}/claim`, null, rev[k].token);
+    await call('POST', `/v1/reviews/${id}/result`, { reachedDepth: 6, salvageable: true, advice: `ok ${k}` }, rev[k].token);
+  }
+  await call('POST', '/v1/admin/review-access', { accountId: rev[2].id, allowed: true }, chris.token);
+  r = (await call('POST', `/v1/reviews/${id}/result`, { reachedDepth: 1, salvageable: false, advice: 'You were bad' }, rev[2].token)).body;
+  assert.equal(r.done, 5);
+  assert.equal((await call('POST', `/v1/reviews/${id}/result`, { reachedDepth: 5, salvageable: true, advice: 'late' }, rev[5].token)).body.error, 'review_closed');
+  assert.equal((await call('GET', '/v1/reviews/open', null, rev[5].token)).body.runs.length, 0);
+  mine = (await call('GET', '/v1/reviews/mine', null, pat.token)).body.runs[0];
+  assert.deepEqual([mine.status, mine.done, mine.reviews.length], ['closed', 5, 5]);
+  assert.deepEqual(mine.reviews.map((v) => v.survived).sort(), [false, false, true, true, true]);
+  // The reviewed player reports a bullying review; the moderator hides it
+  const bad = mine.reviews.find((v) => v.advice === 'You were bad');
+  assert.equal((await call('POST', '/v1/reports', { kind: 'review', id: bad.id, reason: 'bullying' }, pat.token)).status, 201);
+  const rep = (await call('GET', '/v1/admin/reports', null, chris.token)).body.reports[0];
+  assert.deepEqual([rep.target_kind, rep.author_id, rep.preview], ['review', rev[2].id, 'You were bad']);
+  await call('POST', '/v1/admin/hide', { kind: 'review', id: bad.id }, chris.token);
+  mine = (await call('GET', '/v1/reviews/mine', null, pat.token)).body.runs[0];
+  const hidden = mine.reviews.find((v) => v.id === bad.id);
+  assert.deepEqual([hidden.advice, hidden.reviewer, mine.done], [null, null, 5]);
+});

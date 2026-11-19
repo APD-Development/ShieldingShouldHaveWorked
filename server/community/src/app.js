@@ -21,6 +21,7 @@ const RATE = {
   submissions: { table: 'submissions', col: 'author_id', max: 5, ms: 24 * 3600 * 1000 },
   comments: { table: 'comments', col: 'author_id', max: 10, ms: 10 * 60 * 1000 },
   championComments: { table: 'champion_comments', col: 'author_id', max: 10, ms: 10 * 60 * 1000 },
+  reviewRequests: { table: 'review_requests', col: 'account_id', max: 3, ms: 24 * 3600 * 1000 },
   reports: { table: 'reports', col: 'reporter_id', max: 30, ms: 24 * 3600 * 1000 },
 };
 
@@ -738,9 +739,150 @@ route('DELETE', '/v1/admin/champions/([0-9a-z]+)/notes/([0-9a-f]+)', async (env,
   return json(200, { ok: true });
 });
 
+// ---- run reviews (Chris's design, Nov 18; do not add to it) ----
+// A player submits a finished run. Reviewers claim it, get its seed and setup (never shown publicly), play it once,
+// and send how far they got plus a verdict: salvageable or not, and what the player should have done. Reaching the
+// original death depth counts as surviving it; dying earlier is a failed review, which still counts. No retries.
+// It closes at 5 finished reviews; the player sees "2/5" and the verdicts only once it closes. A reviewer sees how the
+// original run ended only after sending their own result. Loot generation is unchanged ("luck drop" is Chris's open question).
+
+const REVIEWS_NEEDED = 5;
+
+async function needReviewer(env, req) {
+  const a = await needMember(env, req);
+  if (a.review_banned) fail(403, 'review_access_removed');
+  return a;
+}
+
+async function reviewCounts(env, requestId) {
+  return env.DB.prepare(
+    `SELECT COUNT(*) AS done, COALESCE(SUM(survived), 0) AS survived FROM reviews WHERE request_id = ? AND finished_at IS NOT NULL`)
+    .bind(requestId).first();
+}
+
+function jsonText(v, max, field) {
+  if (v == null || typeof v !== 'object') fail(400, `missing_${field}`);
+  const t = JSON.stringify(v);
+  if (t.length > max) fail(400, `too_long_${field}`);
+  return t;
+}
+
+route('POST', '/v1/reviews', async (env, req) => {
+  const a = await needMember(env, req);
+  const b = await body(req);
+  const seed = text(b.seed, 64, 'seed');
+  const depth = Number(b.deathDepth);
+  if (!Number.isInteger(depth) || depth < 1 || depth > 100) fail(400, 'missing_deathDepth');
+  await rateLimit(env, a, 'reviewRequests');
+  const id = newId();
+  await env.DB.prepare(
+    'INSERT INTO review_requests (id, account_id, seed, setup, death_depth, ending, roasts, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)')
+    .bind(id, a.id, seed, jsonText(b.setup, 4000, 'setup'), depth, jsonText(b.ending, 8000, 'ending'), b.roasts === true ? 1 : 0, now(env)).run();
+  return json(201, { id });
+});
+
+// Open runs I could review: not mine, not one I've already taken, from players I haven't blocked. No seed, no ending.
+route('GET', '/v1/reviews/open', async (env, req) => {
+  const a = await needReviewer(env, req);
+  const blocked = await blockedIds(env, a);
+  const { results } = await env.DB.prepare(
+    `SELECT r.id, r.account_id, r.setup, r.roasts, r.created_at, x.display_name,
+            (SELECT COUNT(*) FROM reviews v WHERE v.request_id = r.id AND v.finished_at IS NOT NULL) AS done
+       FROM review_requests r JOIN accounts x ON x.id = r.account_id
+      WHERE r.status = 'open' AND x.banned = 0 AND r.account_id != ?
+        AND NOT EXISTS (SELECT 1 FROM reviews v WHERE v.request_id = r.id AND v.reviewer_id = ?)
+      ORDER BY r.created_at LIMIT 100`).bind(a.id, a.id).all();
+  return json(200, { runs: results.filter((r) => !blocked.has(r.account_id)).map((r) => ({
+    id: r.id, player: r.display_name, setup: JSON.parse(r.setup), roasts: !!r.roasts, done: r.done, needed: REVIEWS_NEEDED })) });
+});
+
+// Take a run to review. Only now does the seed come down, so the game can start it; the app never displays it.
+route('POST', '/v1/reviews/([0-9a-f]+)/claim', async (env, req, [id]) => {
+  const a = await needReviewer(env, req);
+  const r = await env.DB.prepare("SELECT * FROM review_requests WHERE id = ? AND status = 'open'").bind(id).first();
+  if (!r) fail(404, 'not_found');
+  if (r.account_id === a.id) fail(403, 'own_run');
+  const prior = await env.DB.prepare('SELECT finished_at FROM reviews WHERE request_id = ? AND reviewer_id = ?').bind(id, a.id).first();
+  if (prior && prior.finished_at != null) fail(409, 'already_reviewed');
+  if (!prior) {
+    await env.DB.prepare('INSERT INTO reviews (request_id, reviewer_id, id, claimed_at) VALUES (?, ?, ?, ?)')
+      .bind(id, a.id, newId(), now(env)).run();
+  }
+  return json(200, { id, seed: r.seed, setup: JSON.parse(r.setup), deathDepth: r.death_depth, roasts: !!r.roasts });
+});
+
+// One result per reviewer, no retry. Then they may see how the original run ended.
+route('POST', '/v1/reviews/([0-9a-f]+)/result', async (env, req, [id]) => {
+  const a = await needReviewer(env, req);
+  const b = await body(req);
+  const r = await env.DB.prepare('SELECT * FROM review_requests WHERE id = ?').bind(id).first();
+  if (!r || r.status === 'removed') fail(404, 'not_found');
+  const mine = await env.DB.prepare('SELECT * FROM reviews WHERE request_id = ? AND reviewer_id = ?').bind(id, a.id).first();
+  if (!mine) fail(409, 'not_claimed');
+  if (mine.finished_at != null) fail(409, 'already_reviewed');
+  if (r.status !== 'open') fail(409, 'review_closed');
+  const reached = Number(b.reachedDepth);
+  if (!Number.isInteger(reached) || reached < 0 || reached > 100) fail(400, 'missing_reachedDepth');
+  if (typeof b.salvageable !== 'boolean') fail(400, 'missing_salvageable');
+  const advice = filtered(b.advice, LIMITS.comment, 'advice');
+  const survived = reached >= r.death_depth ? 1 : 0;
+  const res = await env.DB.prepare(
+    `UPDATE reviews SET finished_at = ?, reached_depth = ?, survived = ?, salvageable = ?, advice = ?
+      WHERE request_id = ? AND reviewer_id = ? AND finished_at IS NULL
+        AND (SELECT COUNT(*) FROM reviews v WHERE v.request_id = ? AND v.finished_at IS NOT NULL) < ?`)
+    .bind(now(env), reached, survived, b.salvageable ? 1 : 0, advice, id, a.id, id, REVIEWS_NEEDED).run();
+  if (!res.meta.changes) fail(409, 'review_closed');
+  const c = await reviewCounts(env, id);
+  if (c.done >= REVIEWS_NEEDED) {
+    await env.DB.prepare("UPDATE review_requests SET status = 'closed', closed_at = ? WHERE id = ? AND status = 'open'").bind(now(env), id).run();
+  }
+  return json(200, { survived: !!survived, ending: JSON.parse(r.ending), done: c.done, needed: REVIEWS_NEEDED });
+});
+
+function verdicts(rows, blocked) {
+  return rows.map((v) => {
+    const gone = v.status !== 'visible' || v.banned || (blocked && blocked.has(v.reviewer_id));
+    return { id: v.id, survived: !!v.survived, reachedDepth: v.reached_depth, salvageable: !!v.salvageable,
+      advice: gone ? null : v.advice, reviewer: gone ? null : { id: v.reviewer_id, displayName: v.display_name } };
+  });
+}
+
+// My own submitted runs: progress like 2/5 while open; the verdicts once closed.
+route('GET', '/v1/reviews/mine', async (env, req) => {
+  const a = await need(env, req);
+  const blocked = await blockedIds(env, a);
+  const { results } = await env.DB.prepare(
+    "SELECT * FROM review_requests WHERE account_id = ? AND status != 'removed' ORDER BY created_at DESC").bind(a.id).all();
+  const out = [];
+  for (const r of results) {
+    const c = await reviewCounts(env, r.id);
+    const item = { id: r.id, setup: JSON.parse(r.setup), roasts: !!r.roasts, status: r.status, done: c.done, needed: REVIEWS_NEEDED, createdAt: r.created_at };
+    if (r.status === 'closed') {
+      const { results: rows } = await env.DB.prepare(
+        `SELECT v.*, x.display_name, x.banned FROM reviews v JOIN accounts x ON x.id = v.reviewer_id
+          WHERE v.request_id = ? AND v.finished_at IS NOT NULL ORDER BY v.finished_at`).bind(r.id).all();
+      item.reviews = verdicts(rows, blocked);
+    }
+    out.push(item);
+  }
+  return json(200, { runs: out });
+});
+
+// A moderator takes review access away from (or gives it back to) a reviewer.
+route('POST', '/v1/admin/review-access', async (env, req) => {
+  const admin = await needAdmin(env, req);
+  const b = await body(req);
+  const id = String(b.accountId || '');
+  if (typeof b.allowed !== 'boolean') fail(400, 'missing_allowed');
+  const r = await env.DB.prepare('UPDATE accounts SET review_banned = ? WHERE id = ?').bind(b.allowed ? 0 : 1, id).run();
+  if (!r.meta.changes) fail(404, 'not_found');
+  await audit(env, admin, b.allowed ? 'review_access_on' : 'review_access_off', `account:${id}`);
+  return json(200, { ok: true });
+});
+
 // ---- reports and blocks ----
 
-const KINDS = { submission: 'submissions', comment: 'comments', account: 'accounts', championComment: 'champion_comments' };
+const KINDS = { submission: 'submissions', comment: 'comments', account: 'accounts', championComment: 'champion_comments', review: 'reviews' };
 
 route('POST', '/v1/reports', async (env, req) => {
   const a = await needMember(env, req);
@@ -790,10 +932,12 @@ route('GET', '/v1/admin/reports', async (env, req) => {
             CASE r.target_kind WHEN 'account' THEN r.target_id
               WHEN 'submission' THEN (SELECT author_id FROM submissions WHERE id = r.target_id)
               WHEN 'championComment' THEN (SELECT author_id FROM champion_comments WHERE id = r.target_id)
+              WHEN 'review' THEN (SELECT reviewer_id FROM reviews WHERE id = r.target_id)
               ELSE (SELECT author_id FROM comments WHERE id = r.target_id) END AS author_id,
             CASE r.target_kind WHEN 'account' THEN (SELECT display_name FROM accounts WHERE id = r.target_id)
               WHEN 'submission' THEN (SELECT title FROM submissions WHERE id = r.target_id)
               WHEN 'championComment' THEN (SELECT body FROM champion_comments WHERE id = r.target_id)
+              WHEN 'review' THEN (SELECT advice FROM reviews WHERE id = r.target_id)
               ELSE (SELECT body FROM comments WHERE id = r.target_id) END AS preview
        FROM reports r WHERE r.resolved = 0 GROUP BY r.target_kind, r.target_id ORDER BY reports DESC, first`).all();
   return json(200, { reports: results });
@@ -815,7 +959,7 @@ route('GET', '/v1/admin/accounts', async (env, req) => {
 async function setStatus(env, req, status) {
   const admin = await needAdmin(env, req);
   const b = await body(req);
-  if (b.kind !== 'submission' && b.kind !== 'comment' && b.kind !== 'championComment') fail(400, 'bad_kind');
+  if (b.kind !== 'submission' && b.kind !== 'comment' && b.kind !== 'championComment' && b.kind !== 'review') fail(400, 'bad_kind');
   const r = await env.DB.prepare(`UPDATE ${KINDS[b.kind]} SET status = ? WHERE id = ?`).bind(status, String(b.id || '')).run();
   if (!r.meta.changes) fail(404, 'not_found');
   await env.DB.prepare('UPDATE reports SET resolved = 1 WHERE target_kind = ? AND target_id = ?').bind(b.kind, b.id).run();

@@ -115,6 +115,15 @@ default-on settings (SPDSettings.keepOldDefaultsForExistingPlayers). Next: Googl
 (Credential Manager), server URL default once deployed, run reviews. HttpGateway contract routes, deployment workflow, Android Community screens wired to it, Play Age Signals.
 
 ## Run log
+- 2026-11-18 10 PM (scheduled): Selected content DONE (server: migration 0005, /v1/champions history + page, frozen
+  champion, admin status/notes, threaded reportable comments, deletion strips author; app: hub "Selected content",
+  page, admin Set status / notes). Server tests CI 44448975431 green. Run reviews SERVER done (migration 0006,
+  /v1/reviews submit/open/claim/result/mine, admin review-access; seed only sent on claim, ending revealed after own
+  result, 5 incl. failed close it, verdicts hidden until closed; loot untouched). NOT done: in-game seed playthrough
+  + review screens in the app. Deploy to deploy/community-server was refused by the sandbox's permission check: a
+  live session must push it. QUESTIONS for Chris: (1) "luck drop" meaning (still open); (2) does a failed reviewer
+  also vote salvageable + advice? (built: yes, every finished review votes); (3) "a peer decides" review access: how?
+  (built: moderator only); (4) what do roasts on/off change for reviewers? (built: a flag shown to reviewers only).
 - 2026-11-18 9 PM (scheduled): no code; a live session was still pushing to this branch (render-thread Community
   fix, last push 20:53, CI 44440298036/44440303409 running), so this run stood down to avoid clashing.
 - 2026-11-18 8 PM (scheduled): no code; a live session pushed to this branch at 19:52 (privacy policy at /privacy),
