@@ -415,3 +415,63 @@ test('privacy policy page is served for Google Play', async () => {
   assert.match(t, /ADHD Pixel Dungeon Privacy Policy/);
   assert.match(t, /\/delete/);
 });
+
+test('selected content: a finished season\'s champion gets a page with admin status, dev notes, comments and history', async () => {
+  const { env, call, member, tick } = setup();
+  env.DB.raw.prepare('DELETE FROM seasons').run();
+  const min = 60 * 1000;
+  const chris = await member('chris@example.com', 'Chris');
+  const ana = await member('ana@x.com', 'Ana');
+  const bo = await member('bo@x.com', 'Bo');
+  const fan = await member('fan@x.com', 'Fan');
+  const run = async (title) => {
+    const sid = (await call('POST', '/v1/admin/seasons', { title, submissionMs: 10 * min, votingMs: 10 * min, tournamentMs: 40 * min }, chris.token)).body.id;
+    const a = (await call('POST', '/v1/submissions', { title: `${title} Ana idea`, body: 'Ana body' }, ana.token)).body.id;
+    tick(1);
+    await call('POST', '/v1/submissions', { title: `${title} Bo idea`, body: 'Bo body' }, bo.token);
+    tick(10 * min);
+    await call('POST', `/v1/submissions/${a}/upvote`, null, fan.token);
+    return sid;
+  };
+  const s1 = await run('S1');
+  assert.deepEqual((await call('GET', '/v1/champions')).body.champions, []); // still voting: no champion yet
+  assert.equal((await call('GET', `/v1/champions/${s1}`)).status, 404);
+  tick(50 * min); // tournament done
+  let list = (await call('GET', '/v1/champions')).body.champions;
+  assert.equal(list.length, 1);
+  assert.deepEqual([list[0].seasonId, list[0].seasonTitle, list[0].title, list[0].status, list[0].author.displayName],
+    [s1, 'S1', 'S1 Ana idea', 'planned', 'Ana']);
+  // Frozen: banning the only upvoter afterwards doesn't move the champion
+  await call('POST', '/v1/admin/ban', { accountId: fan.id }, chris.token);
+  assert.equal((await call('GET', `/v1/champions/${s1}`)).body.title, 'S1 Ana idea');
+  // Admin controls: status (only the 4 values, admin only) and dev notes
+  assert.equal((await call('POST', `/v1/admin/champions/${s1}/status`, { status: 'testing' }, ana.token)).status, 403);
+  assert.equal((await call('POST', `/v1/admin/champions/${s1}/status`, { status: 'shipped' }, chris.token)).body.error, 'bad_status');
+  assert.equal((await call('POST', `/v1/admin/champions/${s1}/status`, { status: 'in_development' }, chris.token)).status, 200);
+  assert.equal((await call('POST', `/v1/admin/champions/${s1}/notes`, { body: 'Started the sprites.' }, ana.token)).status, 403);
+  const n1 = (await call('POST', `/v1/admin/champions/${s1}/notes`, { body: 'Started the sprites.' }, chris.token)).body.id;
+  tick(1);
+  const n2 = (await call('POST', `/v1/admin/champions/${s1}/notes`, { body: 'Typo note' }, chris.token)).body.id;
+  assert.equal((await call('DELETE', `/v1/admin/champions/${s1}/notes/${n2}`, null, chris.token)).status, 200);
+  // Players comment, threaded; a reported comment can be hidden by the admin
+  const c1 = (await call('POST', `/v1/champions/${s1}/comments`, { body: 'Cannot wait' }, bo.token)).body.id;
+  assert.equal((await call('POST', `/v1/champions/${s1}/comments`, { body: 'Same', parentId: c1 }, ana.token)).status, 201);
+  assert.equal((await call('POST', `/v1/champions/${s1}/comments`, { body: 'x', parentId: 'nope' }, ana.token)).body.error, 'bad_parent');
+  assert.equal((await call('POST', `/v1/champions/${s1}/comments`, { body: 'anon' })).status, 401);
+  assert.equal((await call('POST', '/v1/reports', { kind: 'championComment', id: c1, reason: 'spam' }, ana.token)).status, 201);
+  const reports = (await call('GET', '/v1/admin/reports', null, chris.token)).body.reports;
+  assert.deepEqual([reports[0].target_kind, reports[0].preview], ['championComment', 'Cannot wait']);
+  assert.equal((await call('POST', '/v1/admin/hide', { kind: 'championComment', id: c1 }, chris.token)).status, 200);
+  let page = (await call('GET', `/v1/champions/${s1}`)).body;
+  assert.deepEqual([page.status, page.body, page.notes.map((n) => n.id)], ['in_development', 'Ana body', [n1]]);
+  assert.deepEqual(page.comments.map((c) => c.body), [null, 'Same']);
+  // History: a second season adds a second champion, newest first
+  const s2 = await run('S2');
+  tick(50 * min);
+  list = (await call('GET', '/v1/champions')).body.champions;
+  assert.deepEqual(list.map((c) => [c.seasonId, c.status]), [[s2, 'planned'], [s1, 'in_development']]);
+  // The champion's author deletes their account: the page stays, without their name or text
+  await call('DELETE', '/v1/account', null, ana.token);
+  page = (await call('GET', `/v1/champions/${s1}`)).body;
+  assert.deepEqual([page.title, page.author, page.body], ['S1 Ana idea', null, '']);
+});

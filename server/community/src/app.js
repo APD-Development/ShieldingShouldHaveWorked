@@ -20,6 +20,7 @@ const MAX_CODE_ATTEMPTS = 5;
 const RATE = {
   submissions: { table: 'submissions', col: 'author_id', max: 5, ms: 24 * 3600 * 1000 },
   comments: { table: 'comments', col: 'author_id', max: 10, ms: 10 * 60 * 1000 },
+  championComments: { table: 'champion_comments', col: 'author_id', max: 10, ms: 10 * 60 * 1000 },
   reports: { table: 'reports', col: 'reporter_id', max: 30, ms: 24 * 3600 * 1000 },
 };
 
@@ -291,6 +292,12 @@ async function deleteAccount(env, a) {
     `UPDATE comments SET author_id = 'deleted', body = '', status = 'removed'
       WHERE author_id = ? AND id IN (SELECT parent_id FROM comments WHERE parent_id IS NOT NULL AND author_id != ?)`)
     .bind(a.id, a.id).run();
+  await env.DB.prepare(
+    `UPDATE champion_comments SET author_id = 'deleted', body = '', status = 'removed'
+      WHERE author_id = ? AND id IN (SELECT parent_id FROM champion_comments WHERE parent_id IS NOT NULL AND author_id != ?)`)
+    .bind(a.id, a.id).run();
+  // A champion page is the game's development record and stays, but my name and my text come off it.
+  await env.DB.prepare("UPDATE champions SET author_id = NULL, body = '' WHERE author_id = ?").bind(a.id).run();
   await env.DB.prepare('DELETE FROM accounts WHERE id = ?').bind(a.id).run();
 }
 
@@ -622,9 +629,118 @@ route('GET', '/v1/season/results', async (env, req) => {
   return json(200, out);
 });
 
+// ---- selected content: champions (Chris, Nov 18) ----
+// When a season's bracket finishes, its champion gets a page: a status Chris sets (Planned -> In development ->
+// Testing -> Released), his dev notes, and player comments. Every past champion stays in a browsable history.
+
+const CHAMPION_STATUSES = ['planned', 'in_development', 'testing', 'released'];
+
+// Record champions of finished seasons that don't have a page yet. Frozen once written.
+async function recordChampions(env) {
+  const { results } = await env.DB.prepare(
+    `SELECT s.* FROM seasons s WHERE s.ends_at <= ? AND NOT EXISTS (SELECT 1 FROM champions c WHERE c.season_id = s.id)`)
+    .bind(now(env)).all();
+  for (const season of results) {
+    const st = await seasonState(env, season);
+    if (!st.champion) continue; // fewer than 2 entries: no bracket, no champion
+    const e = await env.DB.prepare('SELECT id, author_id, title, body FROM submissions WHERE id = ?').bind(st.champion).first();
+    if (!e) continue;
+    await env.DB.prepare(
+      'INSERT OR IGNORE INTO champions (season_id, submission_id, author_id, title, body, status, won_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)')
+      .bind(season.id, e.id, e.author_id, e.title, e.body, 'planned', season.ends_at, now(env)).run();
+  }
+}
+
+function publicChampion(c) {
+  return { seasonId: c.season_id, seasonTitle: c.season_title, submissionId: c.submission_id, title: c.title,
+    status: c.status, wonAt: c.won_at, updatedAt: c.updated_at,
+    author: c.author_id ? { id: c.author_id, displayName: c.display_name } : null };
+}
+
+const CHAMPION_SELECT = `SELECT c.*, s.title AS season_title, a.display_name FROM champions c JOIN seasons s ON s.id = c.season_id
+  LEFT JOIN accounts a ON a.id = c.author_id`;
+
+route('GET', '/v1/champions', async (env) => {
+  await recordChampions(env);
+  const { results } = await env.DB.prepare(`${CHAMPION_SELECT} ORDER BY c.won_at DESC`).all();
+  return json(200, { champions: results.map(publicChampion) });
+});
+
+async function championOr404(env, seasonId) {
+  await recordChampions(env);
+  const c = await env.DB.prepare(`${CHAMPION_SELECT} WHERE c.season_id = ?`).bind(seasonId).first();
+  if (!c) fail(404, 'not_found');
+  return c;
+}
+
+route('GET', '/v1/champions/([0-9a-z]+)', async (env, req, [sid]) => {
+  const c = await championOr404(env, sid);
+  const viewer = await currentAccount(env, req);
+  const blocked = await blockedIds(env, viewer);
+  const { results: notes } = await env.DB.prepare(
+    'SELECT id, body, created_at FROM champion_notes WHERE season_id = ? ORDER BY created_at').bind(sid).all();
+  const { results } = await env.DB.prepare(
+    `SELECT k.id, k.parent_id, k.body, k.status, k.created_at, k.author_id, a.display_name, a.banned
+       FROM champion_comments k JOIN accounts a ON a.id = k.author_id WHERE k.season_id = ? ORDER BY k.created_at`).bind(sid).all();
+  const comments = results.map((k) => {
+    const gone = k.status !== 'visible' || k.banned || blocked.has(k.author_id);
+    return { id: k.id, parentId: k.parent_id, createdAt: k.created_at,
+      body: gone ? null : k.body, author: gone ? null : { id: k.author_id, displayName: k.display_name } };
+  });
+  return json(200, { ...publicChampion(c), body: c.body,
+    notes: notes.map((n) => ({ id: n.id, body: n.body, createdAt: n.created_at })), comments });
+});
+
+route('POST', '/v1/champions/([0-9a-z]+)/comments', async (env, req, [sid]) => {
+  const a = await needMember(env, req);
+  const b = await body(req);
+  await championOr404(env, sid);
+  await rateLimit(env, a, 'championComments');
+  let parent = null;
+  if (b.parentId != null) {
+    parent = await env.DB.prepare('SELECT id FROM champion_comments WHERE id = ? AND season_id = ?').bind(String(b.parentId), sid).first();
+    if (!parent) fail(400, 'bad_parent');
+  }
+  const id = newId();
+  await env.DB.prepare('INSERT INTO champion_comments (id, season_id, parent_id, author_id, body, created_at) VALUES (?, ?, ?, ?, ?, ?)')
+    .bind(id, sid, parent ? parent.id : null, a.id, filtered(b.body, LIMITS.comment, 'body'), now(env)).run();
+  return json(201, { id });
+});
+
+// Chris sets the status. Any order is allowed (a feature can go back to testing), but only the four known values.
+route('POST', '/v1/admin/champions/([0-9a-z]+)/status', async (env, req, [sid]) => {
+  const admin = await needAdmin(env, req);
+  const b = await body(req);
+  if (!CHAMPION_STATUSES.includes(b.status)) fail(400, 'bad_status');
+  await championOr404(env, sid);
+  await env.DB.prepare('UPDATE champions SET status = ?, updated_at = ? WHERE season_id = ?').bind(b.status, now(env), sid).run();
+  await audit(env, admin, `champion_status:${b.status}`, sid);
+  return json(200, { ok: true });
+});
+
+route('POST', '/v1/admin/champions/([0-9a-z]+)/notes', async (env, req, [sid]) => {
+  const admin = await needAdmin(env, req);
+  const b = await body(req);
+  await championOr404(env, sid);
+  const id = newId();
+  await env.DB.prepare('INSERT INTO champion_notes (id, season_id, body, created_at) VALUES (?, ?, ?, ?)')
+    .bind(id, sid, text(b.body, LIMITS.body, 'body'), now(env)).run();
+  await env.DB.prepare('UPDATE champions SET updated_at = ? WHERE season_id = ?').bind(now(env), sid).run();
+  await audit(env, admin, 'champion_note', `${sid}:${id}`);
+  return json(201, { id });
+});
+
+route('DELETE', '/v1/admin/champions/([0-9a-z]+)/notes/([0-9a-f]+)', async (env, req, [sid, nid]) => {
+  const admin = await needAdmin(env, req);
+  const r = await env.DB.prepare('DELETE FROM champion_notes WHERE id = ? AND season_id = ?').bind(nid, sid).run();
+  if (!r.meta.changes) fail(404, 'not_found');
+  await audit(env, admin, 'champion_note_delete', `${sid}:${nid}`);
+  return json(200, { ok: true });
+});
+
 // ---- reports and blocks ----
 
-const KINDS = { submission: 'submissions', comment: 'comments', account: 'accounts' };
+const KINDS = { submission: 'submissions', comment: 'comments', account: 'accounts', championComment: 'champion_comments' };
 
 route('POST', '/v1/reports', async (env, req) => {
   const a = await needMember(env, req);
@@ -673,9 +789,11 @@ route('GET', '/v1/admin/reports', async (env, req) => {
     `SELECT r.target_kind, r.target_id, COUNT(*) AS reports, GROUP_CONCAT(r.reason, ' | ') AS reasons, MIN(r.created_at) AS first,
             CASE r.target_kind WHEN 'account' THEN r.target_id
               WHEN 'submission' THEN (SELECT author_id FROM submissions WHERE id = r.target_id)
+              WHEN 'championComment' THEN (SELECT author_id FROM champion_comments WHERE id = r.target_id)
               ELSE (SELECT author_id FROM comments WHERE id = r.target_id) END AS author_id,
             CASE r.target_kind WHEN 'account' THEN (SELECT display_name FROM accounts WHERE id = r.target_id)
               WHEN 'submission' THEN (SELECT title FROM submissions WHERE id = r.target_id)
+              WHEN 'championComment' THEN (SELECT body FROM champion_comments WHERE id = r.target_id)
               ELSE (SELECT body FROM comments WHERE id = r.target_id) END AS preview
        FROM reports r WHERE r.resolved = 0 GROUP BY r.target_kind, r.target_id ORDER BY reports DESC, first`).all();
   return json(200, { reports: results });
@@ -697,7 +815,7 @@ route('GET', '/v1/admin/accounts', async (env, req) => {
 async function setStatus(env, req, status) {
   const admin = await needAdmin(env, req);
   const b = await body(req);
-  if (b.kind !== 'submission' && b.kind !== 'comment') fail(400, 'bad_kind');
+  if (b.kind !== 'submission' && b.kind !== 'comment' && b.kind !== 'championComment') fail(400, 'bad_kind');
   const r = await env.DB.prepare(`UPDATE ${KINDS[b.kind]} SET status = ? WHERE id = ?`).bind(status, String(b.id || '')).run();
   if (!r.meta.changes) fail(404, 'not_found');
   await env.DB.prepare('UPDATE reports SET resolved = 1 WHERE target_kind = ? AND target_id = ?').bind(b.kind, b.id).run();
