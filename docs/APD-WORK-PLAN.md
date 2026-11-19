@@ -63,7 +63,9 @@ A recent push is not a clash: `git pull --rebase` before every push and resolve 
      reviewer keeps review access. No appeals: peer review decides it.
    - LATER, not now: in-game tips for beginners on how they could have escaped.
 3. Ship-ready: speed (cache the last Community screen, refresh in background); real tests of admin tools.
-4. NOT designed yet, do NOT build or invent: mods and competitions, community events, development and testing.
+4. MODS (Chris, Nov 19, design IN PROGRESS, do NOT build yet): like Brotato's Steam Workshop. Data + art only (Play bans
+   downloaded code). Chris: mods "need to be able to add heroes they want". Still being asked one question at a time.
+   NOT designed yet, do NOT build or invent: competitions, community events, development and testing.
    Chris will be asked one question at a time.
 Every change: tests, CI (apd-extended-bug-report-ci.yml) green, push release/play-closed-test, and push the server to
 deploy/community-server only when server tests pass. Log what was verified.
