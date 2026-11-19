@@ -115,6 +115,10 @@ default-on settings (SPDSettings.keepOldDefaultsForExistingPlayers). Next: Googl
 (Credential Manager), server URL default once deployed, run reviews. HttpGateway contract routes, deployment workflow, Android Community screens wired to it, Play Age Signals.
 
 ## Run log
+- 2026-11-19 3 AM (scheduled): Run reviews app API: CommunityApi.reviewSubmit sends a finished run (seed, death depth,
+  setup, ending, roasts) to POST /v1/reviews; refuses empty seed / depth outside 1-100 before any request. +1 API test;
+  full CI 44484990072 green. Next: "Send this run for review" button on the death/rankings screen + in-game review
+  playthrough. Still open for Chris: luck-drop + 3 review questions.
 - 2026-11-19 2 AM (scheduled): Run reviews app screens: hub "Run reviews" shows my runs (open = "2/5 reviewers so far",
   closed = verdicts: salvageable count, each reviewer's verdict, how far they got, advice) and runs waiting for reviewers
   (setup, progress, roasts flag; no seed). No "Take this run" button yet: claiming spends the only attempt, and the in-game
