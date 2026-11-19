@@ -128,6 +128,7 @@ default-on settings (SPDSettings.keepOldDefaultsForExistingPlayers). Next: Googl
 (Credential Manager), server URL default once deployed, run reviews. HttpGateway contract routes, deployment workflow, Android Community screens wired to it, Play Age Signals.
 
 ## Run log
+- 2026-11-19 8 AM (scheduled): Run reviews verdict screen: once a review playthrough ends (CommunityController.finishedReview), Community opens on "Your review" (reached the death floor / died earlier but still counts), Salvageable / Not salvageable + required advice -> POST /result; kept if the server can't be reached or rejects words, cleared once it answers. +2 controller tests; full CI 44530565043 green. Not device-verified. Next: start the game from a ReviewClaim (seed hidden, setup locked) and set finishedReview on death/death floor. Still open for Chris: how a comment that doesn't match the review type is detected.
 - 2026-11-19 7:06 AM (scheduled): no code; Chris's live session pushed to this branch at 6:51 AM (7 AM entry above), so this run stood down to avoid clashing.
 - 2026-11-19 7:00 AM (scheduled + Chris live): (1) Custom-rule runs now reviewable: full rule settings sent, survive restart,
   locked for reviewer (old flag-only setups refused). Core CI 44517197514 green. (2) CHRIS: "Block the community until an
