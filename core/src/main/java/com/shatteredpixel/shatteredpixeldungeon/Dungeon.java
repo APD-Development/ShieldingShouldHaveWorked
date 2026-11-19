@@ -261,7 +261,11 @@ public class Dungeon {
 
 	//we initialize the seed separately so that things like interlevelscene can access it early
 	public static void initSeed(){
-		if (daily) {
+		//APD run reviews: the claimed seed, held without custom seed text so it is never displayed
+		if (!daily && com.shatteredpixel.shatteredpixeldungeon.apd.community.ReviewPlay.starting != null){
+			customSeedText = "";
+			seed = DungeonSeed.convertFromText(com.shatteredpixel.shatteredpixeldungeon.apd.community.ReviewPlay.starting.seed);
+		} else if (daily) {
 			//Ensures that daily seeds are not in the range of user-enterable seeds
 			seed = SPDSettings.lastDaily() + DungeonSeed.TOTAL_SEEDS;
 			DateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.ROOT);
@@ -292,6 +296,16 @@ public class Dungeon {
 		difficultyBalance = com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.Difficulty.balanceRevision(difficulty);
 		apdExotic = SPDSettings.apdExoticSetting();
 		apdExoticKnown = true;
+		//APD run reviews: the reviewer plays exactly the original setup, never their own settings (which stay untouched)
+		com.shatteredpixel.shatteredpixeldungeon.apd.community.ReviewClaim review = com.shatteredpixel.shatteredpixeldungeon.apd.community.ReviewPlay.beginRun();
+		if (review != null){
+			challenges = review.setup.challenges;
+			customRules = review.setup.rules;
+			customScoreSnapshot = com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomScoreSnapshot.forNewRun(customRules);
+			difficulty = review.setup.difficulty;
+			difficultyBalance = com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.Difficulty.balanceRevision(difficulty);
+			apdExotic = review.setup.exotic;
+		}
 		mobsToChampion = 1;
 
 		Actor.clear();
@@ -544,6 +558,7 @@ public class Dungeon {
 		
 		Dungeon.level = level;
 		hero.pos = pos;
+		com.shatteredpixel.shatteredpixeldungeon.apd.community.ReviewPlay.onFloor( depth );
 
 		if (hero.buff(AscensionChallenge.class) != null){
 			hero.buff(AscensionChallenge.class).onLevelSwitch();
@@ -714,6 +729,7 @@ public class Dungeon {
 		}
 		//APD: the exotic setting the run started with (a run saved without it stays "not recorded")
 		if (apdExoticKnown) bundle.put( APD_EXOTIC, apdExotic );
+		com.shatteredpixel.shatteredpixeldungeon.apd.community.ReviewPlay.store(bundle);
         com.shatteredpixel.shatteredpixeldungeon.apd.healing.HealingConversionUpgrade.store(bundle);
 		bundle.put( MOBS_TO_CHAMPION, mobsToChampion );
 		bundle.put( HERO, hero );
@@ -862,6 +878,7 @@ public class Dungeon {
 		com.shatteredpixel.shatteredpixeldungeon.apd.loot.LootTransfers.state = com.shatteredpixel.shatteredpixeldungeon.apd.loot.LootTransitState.restore(bundle);
         Dungeon.challenges = bundle.getInt( CHALLENGES );
 		apdRestoreDifficulty( bundle );
+		com.shatteredpixel.shatteredpixeldungeon.apd.community.ReviewPlay.restore( bundle );
         com.shatteredpixel.shatteredpixeldungeon.apd.healing.HealingConversionUpgrade.applyToLoadedRun(bundle);
 
 		Dungeon.mobsToChampion = bundle.getFloat( MOBS_TO_CHAMPION );
@@ -1041,6 +1058,7 @@ public class Dungeon {
 			ApdRecorder.onRunEnded( false, cause );
 			com.shatteredpixel.shatteredpixeldungeon.windows.UimsdGate.onRunEnded();
 			com.shatteredpixel.shatteredpixeldungeon.windows.GrudgeHooks.onRunEnded( false, cause );
+			com.shatteredpixel.shatteredpixeldungeon.apd.community.ReviewPlay.onDeath();
 		}
 	}
 	

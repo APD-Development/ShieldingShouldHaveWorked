@@ -376,8 +376,11 @@ public enum Rankings {
 
 		rec.gameData.put( GAME_VERSION, Dungeon.initialVersion );
 
-		rec.gameData.put( SEED, Dungeon.seed );
-		rec.gameData.put( CUSTOM_SEED, Dungeon.customSeedText );
+		//APD run reviews: a review run's ranking keeps no seed (the reviewer never sees it)
+		if (!com.shatteredpixel.shatteredpixeldungeon.apd.community.ReviewPlay.isReviewRun()){
+			rec.gameData.put( SEED, Dungeon.seed );
+			rec.gameData.put( CUSTOM_SEED, Dungeon.customSeedText );
+		}
 		rec.gameData.put( DAILY, Dungeon.daily );
 		rec.gameData.put( DAILY_REPLAY, Dungeon.dailyReplay );
 	}
