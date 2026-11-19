@@ -77,6 +77,8 @@ default-on settings (SPDSettings.keepOldDefaultsForExistingPlayers). Next: Googl
 (Credential Manager), server URL default once deployed, run reviews. HttpGateway contract routes, deployment workflow, Android Community screens wired to it, Play Age Signals.
 
 ## Run log
+- 2026-11-18 8 PM (scheduled): no code; a live session pushed to this branch at 19:52 (privacy policy at /privacy),
+  so this run stood down to avoid clashing.
 - 2026-11-18 7 PM (scheduled): no code; a live session was still pushing to this branch (16-seed reseeded
   bracket, Play build 923, last push 18:38), so this run stood down to avoid clashing.
 - 2026-11-18 6 PM (scheduled): no code; a live session was still pushing to this branch (Google-only Community,
