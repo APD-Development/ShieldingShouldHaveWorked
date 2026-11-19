@@ -1056,9 +1056,9 @@ public class Dungeon {
 			ApdRecorder.onBeforeRankingSubmit();
 			Rankings.INSTANCE.submit( false, cause );
 			ApdRecorder.onRunEnded( false, cause );
+			com.shatteredpixel.shatteredpixeldungeon.apd.community.ReviewPlay.onDeath();
 			com.shatteredpixel.shatteredpixeldungeon.windows.UimsdGate.onRunEnded();
 			com.shatteredpixel.shatteredpixeldungeon.windows.GrudgeHooks.onRunEnded( false, cause );
-			com.shatteredpixel.shatteredpixeldungeon.apd.community.ReviewPlay.onDeath();
 		}
 	}
 	
