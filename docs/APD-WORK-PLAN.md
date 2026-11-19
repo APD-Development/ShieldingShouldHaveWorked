@@ -150,6 +150,7 @@ default-on settings (SPDSettings.keepOldDefaultsForExistingPlayers). Next: Googl
 (Credential Manager), server URL default once deployed, run reviews. HttpGateway contract routes, deployment workflow, Android Community screens wired to it, Play Age Signals.
 
 ## Run log
+- 2026-11-19 6:05 PM (live): Play 927 uploaded to the closed test via the API (wraith 0-HP fix, ZIP-incomplete message, run review tone/reveal/report, hero mod groundwork). Last uploaded build = 927 at commit 96f6b6ae.
 - 2026-11-19 6 PM (scheduled): no code; a live session was pushing to this branch (wraith 1-HP fix, Play build 927, last push 18:00), so this run stood down to avoid clashing.
 - 2026-11-19 5:15 PM (live): Hero mods: HeroMod format+validator, ModLibrary folder scan, HeroModRun gameplay hooks; CI 44622805155 + 44623985199 green. Chris answered: mod runs count only on their own app; mod-only badges (set TBD by Chris). Next: gating, then hero select.
 - 2026-11-19 5 PM (scheduled): Hero mods (f): docs/MODDING.md written from the current validator/scanner (folder layout, size/sprite limits, every hero.json field and its rule, mod runs local-only + no normal badges, save keeps hero.json). Docs only, no code, so no CI run needed; class/talent/ability names checked against source. Live session was working on mods (d) at the same time, so this run avoided code files. Next: mods (c) hero select once the live session pauses. Plan said starting items replace the class kit; the 4:57 PM code adds them on top: confirm with Chris.
