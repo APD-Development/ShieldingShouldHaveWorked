@@ -138,10 +138,20 @@ public final class SupportDiagnostics {
     private static long lastFrameNanos, lastUsedBytes;
     private static final long HITCH_NANOS=100_000_000L, IGNORE_NANOS=5_000_000_000L;
     /** Called once per frame on the render thread. Logs frames slower than 100 ms with memory in use. */
+    // Every build (tester lag report, Nov 19): frame-time totals per 30 s window, reported with the memory sample.
+    // No allocation per frame: a few counters only.
+    private static long winFrames, winSlow, winVerySlow, winMaxNanos, winTotalNanos;
+    private static final long SLOW_NANOS=34_000_000L; // slower than ~30 fps
     public static void frame(Object scene){
-        if(!hitchProbe)return;
         long now=System.nanoTime(),gap=now-lastFrameNanos;
         lastFrameNanos=now;
+        if(gap>0&&gap<=IGNORE_NANOS){
+            winFrames++; winTotalNanos+=gap;
+            if(gap>winMaxNanos)winMaxNanos=gap;
+            if(gap>=SLOW_NANOS)winSlow++;
+            if(gap>=HITCH_NANOS)winVerySlow++;
+        }
+        if(!hitchProbe)return;
         if(gap<HITCH_NANOS||gap>IGNORE_NANOS)return; // a gap over 5 s is the app being paused, not a stutter
         try{
             Runtime runtime=Runtime.getRuntime();
@@ -198,7 +208,13 @@ public final class SupportDiagnostics {
         if (lastPeriodicMemoryNanos!=0 && now-lastPeriodicMemoryNanos>=0
                 && now-lastPeriodicMemoryNanos<MEMORY_INTERVAL_NANOS) return;
         lastPeriodicMemoryNanos=now;
-        memoryEvent("game.active");
+        String frames="";
+        if(winFrames>0){
+            frames=" frames="+winFrames+" avg_fps="+Math.round(1e9*winFrames/(double)Math.max(1,winTotalNanos))
+                    +" slow_frames="+winSlow+" frames_over_100ms="+winVerySlow+" worst_frame_ms="+(winMaxNanos/1000000L);
+        }
+        winFrames=winSlow=winVerySlow=winMaxNanos=winTotalNanos=0;
+        memoryEvent("game.active",frames);
     }
     public static void error(Throwable error){
         if(error==null)return;

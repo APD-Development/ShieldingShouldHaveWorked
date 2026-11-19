@@ -16,6 +16,9 @@ import java.util.concurrent.*;
  */
 public final class SupportActionJournal {
     private static final Object LOCK = new Object();
+    // File writing happens under IO only, so the render thread (record) never waits on disk (tester lag, Nov 19).
+    // Lock order: IO, then LOCK.
+    private static final Object IO = new Object();
     private static final int QUEUE_LIMIT = 4096;
     // APD: 8 MiB rolling window. When full, the oldest half is dropped so the newest
     // events (the ones a bug report needs) are always kept and the file stays small.
@@ -57,7 +60,7 @@ public final class SupportActionJournal {
      * Turning logging off also erases the retained chronology and pause marker.
      */
     public static void setEnabled(boolean consented) {
-        synchronized (LOCK) {
+        synchronized (IO) { synchronized (LOCK) {
             // A disabled preference must erase even if this is a fresh process.
             // It may have crashed after saving opt-out but before deleting the file.
             if (enabled == consented && consented) return;
@@ -71,7 +74,7 @@ public final class SupportActionJournal {
             } else {
                 record("journal.enabled", "explicit_player_opt_in=true");
             }
-        }
+        } }
     }
 
     private static File safe(File file) throws IOException {
@@ -81,7 +84,7 @@ public final class SupportActionJournal {
     }
 
     public static void configure(File folder) {
-        synchronized (LOCK) {
+        synchronized (IO) { synchronized (LOCK) {
             try {
                 File canonical = folder.getCanonicalFile();
                 if (canonical.equals(root)) return;
@@ -95,7 +98,7 @@ public final class SupportActionJournal {
                 root = null; logFile = null; pauseFile = null;
                 pending.clear(); lost = 0;
             }
-        }
+        } }
     }
 
     private static String clean(String value, int limit) {
@@ -109,43 +112,53 @@ public final class SupportActionJournal {
     static { STAMP.setTimeZone(TimeZone.getTimeZone("UTC")); }
 
     private static String line(Entry e) {
-        synchronized (LOCK) {
+        synchronized (STAMP) {
             return STAMP.format(new Date(e.time)) + " " + e.kind + " " + e.detail + "\n";
         }
     }
 
+    // Caller holds IO and LOCK.
     private static void flushLocked() throws IOException {
         if (!enabled || logFile == null || (pending.isEmpty() && lost == 0)) return;
+        ArrayDeque<Entry> batch = new ArrayDeque<>(pending);
+        pending.clear();
+        long l = lost; lost = 0;
+        writeBatch(batch, l);
+    }
+
+    // Caller holds IO (not necessarily LOCK).
+    private static void writeBatch(ArrayDeque<Entry> batch, long lostCount) throws IOException {
         safe(logFile);
         try (FileOutputStream out = new FileOutputStream(logFile, true)) {
-            if (lost > 0) {
+            long size = logFile.length();
+            if (lostCount > 0) {
                 byte[] warning = line(new Entry(System.currentTimeMillis(), "coverage.gap",
-                        "events_lost=" + lost + " reason=writer_backlog")).getBytes(StandardCharsets.UTF_8);
-                if (!full && logFile.length() + warning.length <= FILE_LIMIT) out.write(warning);
-                lost = 0;
+                        "events_lost=" + lostCount + " reason=writer_backlog")).getBytes(StandardCharsets.UTF_8);
+                if (!full && size + warning.length <= FILE_LIMIT) { out.write(warning); size += warning.length; }
             }
-            while (!pending.isEmpty()) {
-                Entry e = pending.removeFirst();
+            while (!batch.isEmpty()) {
+                Entry e = batch.removeFirst();
                 byte[] bytes = line(e).getBytes(StandardCharsets.UTF_8);
-                if (full || logFile.length() + bytes.length > FILE_LIMIT) {
+                if (full || size + bytes.length > FILE_LIMIT) {
                     if (System.currentTimeMillis() >= exportGuardUntil) {
                         out.close();
                         trimOldestLocked();
-                        pending.addFirst(e);
-                        flushLocked();
+                        batch.addFirst(e);
+                        writeBatch(batch, 0);
                         return;
                     }
                     if (!full) {
                         byte[] note = line(new Entry(System.currentTimeMillis(), "coverage.limit",
                                 "journal full while a report was exporting; events during the export are unavailable"))
                                 .getBytes(StandardCharsets.UTF_8);
-                        if (logFile.length() + note.length <= FILE_LIMIT) out.write(note);
+                        if (size + note.length <= FILE_LIMIT) out.write(note);
                     }
                     full = true;
-                    pending.clear();
+                    batch.clear();
                     break;
                 }
                 out.write(bytes);
+                size += bytes.length;
             }
         }
     }
@@ -170,10 +183,28 @@ public final class SupportActionJournal {
     }
 
     private static void drain() {
-        synchronized (LOCK) {
-            try { flushLocked(); }
-            catch (IOException | RuntimeException ignored) { lost += pending.size(); pending.clear(); }
-            finally { scheduled = false; LOCK.notifyAll(); }
+        synchronized (IO) {
+            ArrayDeque<Entry> batch; long l;
+            synchronized (LOCK) {
+                if (!enabled || logFile == null || (pending.isEmpty() && lost == 0)) {
+                    scheduled = false; LOCK.notifyAll(); return;
+                }
+                batch = new ArrayDeque<>(pending);
+                pending.clear();
+                l = lost; lost = 0;
+            }
+            int count = batch.size();
+            try { writeBatch(batch, l); }
+            catch (IOException | RuntimeException failed) { synchronized (LOCK) { lost += count; } }
+            synchronized (LOCK) {
+                scheduled = false;
+                if (!pending.isEmpty() || lost > 0) {
+                    scheduled = true;
+                    try { writer.execute(SupportActionJournal::drain); }
+                    catch (RuntimeException rejected) { scheduled = false; }
+                }
+                LOCK.notifyAll();
+            }
         }
     }
 
@@ -238,12 +269,12 @@ public final class SupportActionJournal {
 
     /** Flushes the pre-export stream, then identifies exactly which bytes belong to this report. */
     public static Checkpoint checkpoint() throws IOException {
-        synchronized (LOCK) {
+        synchronized (IO) { synchronized (LOCK) {
             if (!enabled || logFile == null) return new Checkpoint(null, 0);
             flushLocked();
             exportGuardUntil = System.currentTimeMillis() + 5 * 60 * 1000L;
             return new Checkpoint(logFile, logFile.length());
-        }
+        } }
     }
 
     public static void export(OutputStream out, Checkpoint checkpoint) throws IOException {
@@ -276,7 +307,7 @@ public final class SupportActionJournal {
 
     /** Discard only the bytes included in a successfully written report. */
     public static void acknowledge(Checkpoint checkpoint) throws IOException {
-        synchronized (LOCK) {
+        synchronized (IO) { synchronized (LOCK) {
             if (!enabled || logFile == null || checkpoint.file == null || !checkpoint.file.equals(logFile)) return;
             flushLocked();
             long size = logFile.length();
@@ -298,6 +329,6 @@ public final class SupportActionJournal {
             if (!temp.renameTo(logFile)) throw new IOException("Could not acknowledge action journal");
             full = false;
             exportGuardUntil = 0;
-        }
+        } }
     }
 }
