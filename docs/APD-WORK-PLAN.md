@@ -76,7 +76,8 @@ A recent push is not a clash: `git pull --rebase` before every push and resolve 
    clear message, never a crash). (e) Community workshop: upload (signed in, 16+), browse, subscribe/download,
    report -> moderator, size limits (json 16 KB, png 64 KB). (f) docs/MODDING.md for modders.
    OPEN QUESTIONS for Chris (ask one at a time; build the rest meanwhile, safe default in brackets):
-   - Do mod-hero runs count in normal rankings, badges, the tournament and run reviews? [no: kept separate, marked "Mod"]
+   - ANSWERED (Chris, Nov 19): mod-hero runs count "only on their app": local rankings/history on that phone only, marked Mod;
+     never sent to Community (no Community leaderboards, tournament, run reviews). Local badges: still to ask [default: no badges].
    - Can a mod hero's numbers (talent strengths etc.) be changed by modders? [not yet: needs per-talent code changes]
    NOT designed yet, do NOT build or invent: competitions, community events, development and testing.
    Chris will be asked one question at a time.
