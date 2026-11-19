@@ -275,7 +275,7 @@ public class WndRanking extends WndTabbed {
 			boolean canCopy = Dungeon.hero != null && Dungeon.seed != -1 && !Dungeon.daily &&
 					(DeviceCompat.isDebug() || Badges.isUnlocked(Badges.Badge.VICTORY));
 			if (canReview){
-				RedButton btnReview = new RedButton(Messages.get(this, "send_review")){
+				RedButton btnReview = new RedButton("Send for review"){ // Community text is English-only, like CommunityController
 					@Override
 					protected void onClick() {
 						super.onClick();
