@@ -50,7 +50,8 @@ public class HeroModTest {
 	}
 
 	@Test public void badFilesAreRefusedWithAReasonAModderCanFix(){
-		refused("not json {", "not valid JSON");
+		refused("not json {", "JSON"); // lenient reader: "not valid JSON" or "must be one JSON object"
+		refused("[1,2]", "must be one JSON object");
 		refused(hero(null).replace("\"format\":1", "\"format\":2"), "unsupported format");
 		refused(hero(null).replace("chris.battle-mage", "Bad ID!"), "id may only use");
 		refused(hero(null).replace("\"WARRIOR\"", "\"WIZARD\""), "baseClass must be one of");
