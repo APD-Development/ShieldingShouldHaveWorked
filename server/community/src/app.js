@@ -808,6 +808,9 @@ route('POST', '/v1/reviews/([0-9a-f]+)/claim', async (env, req, [id]) => {
   const r = await env.DB.prepare("SELECT * FROM review_requests WHERE id = ? AND status = 'open'").bind(id).first();
   if (!r) fail(404, 'not_found');
   if (r.account_id === a.id) fail(403, 'own_run');
+  // Same rule as the open list: a banned player's run, or one from a player I blocked, can't be taken by its id either.
+  const author = await env.DB.prepare('SELECT banned FROM accounts WHERE id = ?').bind(r.account_id).first();
+  if (!author || author.banned || (await blockedIds(env, a)).has(r.account_id)) fail(404, 'not_found');
   const prior = await env.DB.prepare('SELECT finished_at, claimed_at FROM reviews WHERE request_id = ? AND reviewer_id = ?').bind(id, a.id).first();
   if (prior && prior.finished_at != null) fail(409, 'already_reviewed');
   // One attempt, no retry: asking again only works shortly after the first claim (its reply may have been lost).

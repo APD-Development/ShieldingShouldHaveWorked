@@ -675,3 +675,23 @@ test('run reviews: a claim can be repeated only briefly (lost reply); later the 
   const r = (await call('POST', `/v1/reviews/${id}/result`, { reachedDepth: 1, salvageable: false, advice: 'Too hard', tone: 'advice' }, rev.token)).body;
   assert.equal(r.survived, false);
 });
+
+test('run reviews: a run hidden from my open list (blocked or banned player) cannot be claimed by its id', async () => {
+  const { call, member } = setup();
+  const chris = await member('chris@example.com', 'Chris');
+  const pat = await member('pat@x.com', 'Pat');
+  const rev = await member('rev@x.com', 'Rev');
+  const other = await member('other@x.com', 'Other');
+  const setupJson = { heroClass: 'WARRIOR', challenges: 0, difficulty: 'normal' };
+  const id = (await call('POST', '/v1/reviews', { seed: 'SEED-1', setup: setupJson, deathDepth: 3, ending: { cause: 'rat' } }, pat.token)).body.id;
+  await call('POST', '/v1/blocks', { accountId: pat.id }, rev.token);
+  assert.equal((await call('GET', '/v1/reviews/open', null, rev.token)).body.runs.length, 0);
+  const refused = await call('POST', `/v1/reviews/${id}/claim`, null, rev.token);
+  assert.equal(refused.body.error, 'not_found');
+  assert.ok(!JSON.stringify(refused.body).includes('SEED-1'));
+  await call('DELETE', `/v1/blocks/${pat.id}`, null, rev.token);
+  assert.equal((await call('POST', `/v1/reviews/${id}/claim`, null, rev.token)).body.seed, 'SEED-1');
+  // A banned player's run is refused too
+  await call('POST', '/v1/admin/ban', { accountId: pat.id }, chris.token);
+  assert.equal((await call('POST', `/v1/reviews/${id}/claim`, null, other.token)).body.error, 'not_found');
+});
