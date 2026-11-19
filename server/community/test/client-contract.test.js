@@ -67,6 +67,18 @@ test('every field the app reads exists in the server replies, through a whole se
   const m = done.rounds.flatMap((r) => r.matchups).find((x) => !x.bye); // two entries: byes, then the final
   for (const k of ['matchup', 'bye', 'winner', 'a.id', 'a.title', 'a.votes', 'b.id', 'b.title', 'b.votes']) has(m, k);
 
+  const champs = await call('GET', '/v1/champions', null, chris);
+  for (const k of ['seasonId', 'seasonTitle', 'title', 'status']) has(champs.champions[0], k);
+  const csid = champs.champions[0].seasonId;
+  await call('POST', `/v1/admin/champions/${csid}/notes`, { body: 'Note' }, chris);
+  const ccid = (await call('POST', `/v1/champions/${csid}/comments`, { body: 'Yay' }, bo)).id;
+  await call('POST', `/v1/champions/${csid}/comments`, { body: 'Re', parentId: ccid }, chris);
+  const champ = await call('GET', `/v1/champions/${csid}`, null, chris);
+  for (const k of ['title', 'seasonTitle', 'status', 'body', 'author', 'notes', 'comments']) has(champ, k);
+  for (const k of ['id', 'body']) has(champ.notes[0], k);
+  for (const k of ['id', 'parentId', 'body', 'author.id', 'author.displayName']) has(champ.comments[1], k);
+  assert.match(csid, /^[0-9a-f]+$/); // the app refuses non-hex ids in paths
+
   await call('POST', '/v1/reports', { kind: 'comment', id: cid, reason: 'test' }, bo);
   const reports = await call('GET', '/v1/admin/reports', null, chris);
   for (const k of ['target_kind', 'target_id', 'author_id', 'preview', 'reasons', 'reports']) has(reports.reports[0], k);

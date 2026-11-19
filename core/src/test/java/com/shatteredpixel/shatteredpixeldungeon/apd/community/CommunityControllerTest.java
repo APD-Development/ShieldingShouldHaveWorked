@@ -278,6 +278,62 @@ public class CommunityControllerTest {
 		assertTrue(has(last(), "Try again"));
 	}
 
+	@Test public void selectedContent_historyPageCommentsAndAdminControls(){
+		store.age = "pass"; store.token = "tok";
+		signedInWorld(true);
+		reply("GET /v1/champions", 200, "{\"champions\":[{\"seasonId\":\"5e02\",\"seasonTitle\":\"Season 2\",\"title\":\"Pet dragon\",\"status\":\"testing\"},"
+				+ "{\"seasonId\":\"5e01\",\"seasonTitle\":\"Season 1\",\"title\":\"Fishing\",\"status\":\"released\"}]}");
+		reply("GET /v1/champions/5e01", 200, "{\"seasonId\":\"5e01\",\"seasonTitle\":\"Season 1\",\"title\":\"Fishing\",\"status\":\"released\",\"body\":\"Fish in water\","
+				+ "\"author\":null,\"notes\":[{\"id\":\"ab01\",\"body\":\"Shipped in 930\"}],"
+				+ "\"comments\":[{\"id\":\"cc01\",\"parentId\":null,\"body\":\"Love it\",\"author\":{\"id\":\"bb01\",\"displayName\":\"Bo\"}},"
+				+ "{\"id\":\"cc02\",\"parentId\":\"cc01\",\"body\":\"Same\",\"author\":{\"id\":\"aa01\",\"displayName\":\"Chris\"}}]}");
+		reply("POST /v1/admin/champions/5e01/status", 200, "{\"ok\":true}");
+		reply("POST /v1/champions/5e01/comments", 201, "{\"id\":\"cc03\"}");
+		reply("POST /v1/reports", 201, "{\"ok\":true}");
+		controller().start();
+		tap("Selected content");
+		CommunityController.Screen list = last();
+		assertEquals(java.util.Arrays.asList("Pet dragon", "Fishing", "Back"), itemLabels(list));
+		assertTrue(has(list, "Season 2 - Testing"));
+		tap("Fishing");
+		CommunityController.Screen page = last();
+		assertTrue(has(page, "Champion of Season 1, by [deleted]"));
+		assertTrue(has(page, "Status: Released"));
+		assertTrue(has(page, "Shipped in 930"));
+		assertTrue(has(page, "  > Chris: Same"));
+		tap("Set status");
+		tap("Testing");
+		assertTrue(requests.stream().anyMatch(q -> q.equals("POST /v1/admin/champions/5e01/status {\"status\":\"testing\"}")));
+		answers.add("Nice");
+		tap("Comment");
+		assertTrue(requests.stream().anyMatch(q -> q.equals("POST /v1/champions/5e01/comments {\"body\":\"Nice\"}")));
+		tap("Bo: Love it");
+		answers.add("rude");
+		tap("Report this comment");
+		assertTrue(requests.stream().anyMatch(q -> q.startsWith("POST /v1/reports {\"kind\":\"championComment\",\"id\":\"cc01\"")));
+	}
+
+	@Test public void selectedContent_playersSeeNoAdminControls(){
+		store.age = "pass"; store.token = "tok";
+		signedInWorld(false);
+		reply("GET /v1/champions", 200, "{\"champions\":[]}");
+		controller().start();
+		tap("Selected content");
+		assertTrue(has(last(), "No season has finished yet"));
+		reply("GET /v1/champions/5e01", 200, "{\"seasonId\":\"5e01\",\"seasonTitle\":\"S\",\"title\":\"T\",\"status\":\"planned\",\"body\":\"\","
+				+ "\"author\":{\"id\":\"bb01\",\"displayName\":\"Bo\"},\"notes\":[{\"id\":\"ab01\",\"body\":\"Note\"}],\"comments\":[]}");
+		reply("GET /v1/champions", 200, "{\"champions\":[{\"seasonId\":\"5e01\",\"seasonTitle\":\"S\",\"title\":\"T\",\"status\":\"planned\"}]}");
+		tap("Back");
+		tap("Selected content");
+		tap("T");
+		assertTrue(has(last(), "Status: Planned"));
+		assertFalse(has(last(), "Set status"));
+		assertFalse(has(last(), "Add a development note"));
+		assertFalse("notes are plain text for players", itemLabels(last()).contains("Note"));
+	}
+
+	private static List<String> itemLabels(CommunityController.Screen s){ List<String> l = new ArrayList<>(); for (CommunityController.Row r : s.items()) l.add(r.label); return l; }
+
 	// Every error code the server can send has plain words in the app (except a few that only a broken client causes).
 	@Test public void everyServerErrorHasPlainWords() throws Exception {
 		java.io.File app = new java.io.File(System.getProperty("apd.game.src"), "../../../../../../../server/community/src/app.js");

@@ -272,6 +272,7 @@ public final class CommunityController {
 			else s.heading(season.getString("title", "Season")).note(phaseText(season.getString("phase", "")));
 			s.item("Submissions", "Ideas and their discussions", this::submissions);
 			s.item("Voting and results", "Upvotes, the top 16 and the tournament", this::results);
+			s.item("Selected content", "Every champion and how its development is going", this::champions);
 			s.item("Account", "Sign out or delete your account", this::account);
 			if (me.getBoolean("admin", false)) s.item("Moderation", "Reports, hide, remove, ban", this::moderation);
 			s.item("What's coming next", "Run reviews, mods, events and more", ui::planned);
@@ -526,6 +527,118 @@ public final class CommunityController {
 		});
 	}
 
+	// ---- selected content (Chris, Nov 18): champions, their status, dev notes and comments ----
+
+	static final String[] CHAMPION_STATUSES = {"planned", "in_development", "testing", "released"};
+
+	static String statusText(String status){
+		switch (status == null ? "" : status){
+			case "planned": return "Planned";
+			case "in_development": return "In development";
+			case "testing": return "Testing";
+			case "released": return "Released";
+			default: return "?";
+		}
+	}
+
+	private void champions(){
+		call(api::champions, r -> {
+			Screen s = new Screen("Selected content", "Each season's champion, newest first, and where its development is.");
+			s.back = this::hub;
+			if (!r.ok()) s.warning(message(r));
+			else {
+				JsonValue list = r.body.get("champions");
+				if (list == null || list.size == 0) s.note("No season has finished yet. The first champion will show up here.");
+				else for (JsonValue c = list.child; c != null; c = c.next){
+					final String sid = c.getString("seasonId");
+					s.item(c.getString("title", "?"), c.getString("seasonTitle", "") + " - " + statusText(c.getString("status", null)), () -> champion(sid));
+				}
+			}
+			s.item("Back", null, this::hub);
+			ui.show(s);
+		});
+	}
+
+	private void champion(String sid){
+		call(() -> api.champion(sid), r -> {
+			if (!r.ok()){ problem(r, this::champions); return; }
+			JsonValue b = r.body;
+			JsonValue author = b.get("author");
+			String by = author == null || author.isNull() ? "[deleted]" : author.getString("displayName", "?");
+			Screen s = new Screen(b.getString("title", ""), "Champion of " + b.getString("seasonTitle", "?") + ", by " + by);
+			s.back = this::champions;
+			s.heading("Status: " + statusText(b.getString("status", null)));
+			String body = b.getString("body", "");
+			if (!body.isEmpty()) s.note(body);
+			boolean admin = me != null && me.getBoolean("admin", false);
+			s.heading("Development notes");
+			JsonValue notes = b.get("notes");
+			if (notes == null || notes.size == 0) s.note("No notes yet.");
+			else for (JsonValue n = notes.child; n != null; n = n.next){
+				final String nid = n.getString("id");
+				if (admin) s.item(n.getString("body", ""), "Tap to delete this note", () ->
+						call(() -> api.adminDeleteChampionNote(sid, nid), x -> { if (x.ok()) champion(sid); else problem(x, () -> champion(sid)); }));
+				else s.note(n.getString("body", ""));
+			}
+			if (admin){
+				s.item("Set status", "Planned, In development, Testing, Released", () -> championStatus(sid, b.getString("status", null)));
+				s.item("Add a development note", null, () -> ui.ask("Development note", "Everyone can read this.", "", 4000, true, text -> {
+					if (text == null || text.trim().isEmpty()){ champion(sid); return; }
+					call(() -> api.adminChampionNote(sid, text), x -> { if (x.ok()) champion(sid); else problem(x, () -> champion(sid)); });
+				}));
+			}
+			s.item("Comment", null, () -> championComment(sid, null));
+			s.heading("Discussion");
+			JsonValue comments = b.get("comments");
+			if (comments == null || comments.size == 0) s.note("No comments yet.");
+			else {
+				List<Integer> depths = new ArrayList<>();
+				List<JsonValue> ordered = threadOrder(comments, depths);
+				for (int i = 0; i < ordered.size(); i++){
+					JsonValue c = ordered.get(i);
+					String indent = "";
+					for (int d = 0; d < depths.get(i); d++) indent += "  ";
+					if (depths.get(i) > 0) indent += "> ";
+					final String cid = c.getString("id");
+					JsonValue a = c.get("author");
+					if (a == null || a.isNull()){ s.item(indent + "[removed]", null, () -> championComment(sid, cid)); continue; }
+					final String aid = a.getString("id"), name = a.getString("displayName", "?");
+					s.item(indent + name + ": " + c.getString("body", ""), null, () -> championCommentOptions(sid, cid, aid, name));
+				}
+			}
+			s.item("Back", null, this::champions);
+			ui.show(s);
+		});
+	}
+
+	private void championStatus(String sid, String current){
+		Screen s = new Screen("Set status", "Everyone sees this on the champion's page.");
+		s.back = () -> champion(sid);
+		for (String st : CHAMPION_STATUSES) s.check(statusText(st), null, st.equals(current), () ->
+				call(() -> api.adminChampionStatus(sid, st), x -> { if (x.ok()) champion(sid); else problem(x, () -> champion(sid)); }));
+		s.item("Back", null, () -> champion(sid));
+		ui.show(s);
+	}
+
+	private void championCommentOptions(String sid, String commentId, String authorId, String name){
+		Screen s = new Screen("Comment", "by " + name);
+		s.back = () -> champion(sid);
+		s.item("Reply", null, () -> championComment(sid, commentId));
+		if (me == null || !authorId.equals(me.getString("id"))){
+			s.item("Report this comment", null, () -> report("championComment", commentId, () -> champion(sid)));
+			s.item("Block " + name, "Hide everything they post from you", () -> block(authorId, () -> champion(sid)));
+		}
+		s.item("Back", null, () -> champion(sid));
+		ui.show(s);
+	}
+
+	private void championComment(String sid, String parentId){
+		ui.ask(parentId == null ? "Comment" : "Reply", "Be kind.", "", 2000, true, body -> {
+			if (body == null || body.trim().isEmpty()){ champion(sid); return; }
+			call(() -> api.championComment(sid, parentId, body), r -> { if (r.ok()) champion(sid); else problem(r, () -> champion(sid)); });
+		});
+	}
+
 	// ---- moderation (Chris) ----
 
 	private void moderation(){
@@ -680,6 +793,7 @@ public final class CommunityController {
 			case "cannot_ban_self": return "You can't ban yourself.";
 			case "season_overlaps": return "A season is already running in that time. Wait for it to finish first.";
 			case "no_matchups_open": return "That vote isn't open right now.";
+			case "bad_status": return "That isn't one of the four statuses.";
 			default:
 				if (e.startsWith("too_long_")) return "That's too long.";
 				if (e.startsWith("missing_")) return "Something was left empty.";

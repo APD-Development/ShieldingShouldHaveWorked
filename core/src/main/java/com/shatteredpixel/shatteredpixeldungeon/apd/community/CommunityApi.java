@@ -118,6 +118,24 @@ public final class CommunityApi {
 		return call("POST", "/v1/tournament/vote", "{\"matchup\":" + matchup + ",\"submissionId\":" + quote(submissionId) + "}");
 	}
 
+	// ---- selected content: each finished season's champion ----
+
+	public Result champions(){ return call("GET", "/v1/champions", null); }
+	public Result champion(String seasonId){ return call("GET", "/v1/champions/" + id(seasonId), null); }
+	public Result championComment(String seasonId, String parentId, String body){
+		return call("POST", "/v1/champions/" + id(seasonId) + "/comments",
+				parentId == null ? obj("body", body) : obj("body", body, "parentId", parentId));
+	}
+	public Result adminChampionStatus(String seasonId, String status){
+		return call("POST", "/v1/admin/champions/" + id(seasonId) + "/status", obj("status", status));
+	}
+	public Result adminChampionNote(String seasonId, String body){
+		return call("POST", "/v1/admin/champions/" + id(seasonId) + "/notes", obj("body", body));
+	}
+	public Result adminDeleteChampionNote(String seasonId, String noteId){
+		return call("DELETE", "/v1/admin/champions/" + id(seasonId) + "/notes/" + id(noteId), null);
+	}
+
 	// ---- reports and blocks ----
 
 	public Result report(String kind, String targetId, String reason){
