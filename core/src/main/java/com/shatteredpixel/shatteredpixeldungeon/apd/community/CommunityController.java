@@ -147,7 +147,7 @@ public final class CommunityController {
 
 	private Screen askBirth(){
 		Screen s = new Screen("Community", "Community is for players 16 and older.");
-		s.note("Enter your birth month and year. Only whether you're old enough is kept on this phone, never the date, and you can only answer once.");
+		s.note("What month and year were you born? Your answer only checks if you're 16 or older. The date itself is never saved, and you only get one try.");
 		s.item("Enter birth month and year", null, this::askMonth);
 		s.item("Not now", null, ui::leave);
 		s.back = ui::leave;
@@ -155,10 +155,10 @@ public final class CommunityController {
 	}
 
 	private void askMonth(){
-		ui.ask("Birth month", "Month you were born, as a number (1-12).", "", 2, false, m -> {
+		ui.ask("Birth month", "What month were you born? Enter 1 to 12.", "", 2, false, m -> {
 			Integer month = number(m, 1, 12);
 			if (month == null){ if (m != null) ui.show(askBirth().warning("That isn't a month from 1 to 12.")); else ui.show(askBirth()); return; }
-			ui.ask("Birth year", "Year you were born (for example 2004).", "", 4, false, y -> {
+			ui.ask("Birth year", "What year were you born? For example, 1995.", "", 4, false, y -> {
 				Integer year = number(y, today[1] - 120, today[1]);
 				if (year == null){ if (y != null) ui.show(askBirth().warning("That isn't a real birth year.")); else ui.show(askBirth()); return; }
 				gateThen(CommunityAgeGate.answer(month, year, today[0], today[1], storage));
@@ -210,13 +210,13 @@ public final class CommunityController {
 
 	private void signInGoogle(){
 		ui.busy("Waiting for Google...");
-		google.request(idToken -> {
+		google.request(idToken -> CommunityAgeGate.deliver.accept(() -> {
 			if (idToken == null){ ui.show(signedOut(null)); return; }
 			call(() -> api.google(idToken), r -> {
 				if (r.ok()){ remember(); signedInOrOut(); }
 				else ui.show(signedOut(message(r)));
 			});
-		});
+		}));
 	}
 
 	private void askEmailThen(Consumer<String> next){

@@ -49,6 +49,7 @@ public class CommunityScene extends PixelScene {
 
     @Override public void create() {
         super.create();
+        com.shatteredpixel.shatteredpixeldungeon.apd.age.CommunityAgeGate.deliver = Game::runOnRenderThread;
         add(new TitleBackground(Camera.main.width, Camera.main.height));
         String server = SPDSettings.communityServer();
         if (server == null || server.trim().isEmpty()) { showPage(); return; }

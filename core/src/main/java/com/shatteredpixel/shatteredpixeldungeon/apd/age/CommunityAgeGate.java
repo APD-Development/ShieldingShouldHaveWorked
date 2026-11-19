@@ -60,10 +60,15 @@ public final class CommunityAgeGate {
 
 	public static volatile PlaySource play = null;
 
+	// Where answers from Play are handed back. The game sets this to its render thread: Play answers on an Android
+	// thread, and building windows (and their text glyphs) there left letters blank or black (Nov 18).
+	public static volatile java.util.function.Consumer<Runnable> deliver = Runnable::run;
+
 	public static void askPlay(java.util.function.Consumer<PlaySignal> done){
 		PlaySource p = play;
+		java.util.function.Consumer<PlaySignal> back = s -> deliver.accept(() -> done.accept(s));
 		if (p == null) { done.accept(PlaySignal.none()); return; }
-		try { p.request(done); } catch (RuntimeException e){ done.accept(PlaySignal.none()); }
+		try { p.request(back); } catch (RuntimeException e){ done.accept(PlaySignal.none()); }
 	}
 
 	private CommunityAgeGate(){}
