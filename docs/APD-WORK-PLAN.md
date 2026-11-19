@@ -63,8 +63,21 @@ A recent push is not a clash: `git pull --rebase` before every push and resolve 
      reviewer keeps review access. No appeals: peer review decides it.
    - LATER, not now: in-game tips for beginners on how they could have escaped.
 3. Ship-ready: speed (cache the last Community screen, refresh in background); real tests of admin tools.
-4. MODS (Chris, Nov 19, design IN PROGRESS, do NOT build yet): like Brotato's Steam Workshop. Data + art only (Play bans
-   downloaded code). Chris: mods "need to be able to add heroes they want". Still being asked one question at a time.
+4. HERO MODS (Chris, Nov 19, APPROVED: "code things into place to allow modders to do that"). Brotato-workshop style,
+   DATA + ART ONLY (Play bans downloaded code). A hero mod = hero.json + sprite.png built only from existing pieces:
+   name/author/description, baseClass (class engine + subclasses), starting HP + STR, starting items (+level, quantity),
+   talents for tiers 1-3 picked from ANY class's talents of that tier (same count as the base class), 1-3 existing
+   armor abilities. Anything needing new code: modder submits, Chris approves, it ships in an app update.
+   BUILD ORDER: (a) DONE 4:45 PM: apd/mods/HeroMod parser + validator + tests. (b) local mods folder: load
+   <files>/mods/<id>/hero.json + sprite.png (same layout as hero sprites), list valid ones, show refusal reasons.
+   (c) hero select: modded heroes appear after the normal classes (name, sprite, description, author).
+   (d) game: start a run as the mod: base class engine, mod HP/STR, mod starting items instead of the class kit,
+   mod talent tiers in place of the class lists, mod armor abilities; save/load keeps the mod id (missing mod on load =
+   clear message, never a crash). (e) Community workshop: upload (signed in, 16+), browse, subscribe/download,
+   report -> moderator, size limits (json 16 KB, png 64 KB). (f) docs/MODDING.md for modders.
+   OPEN QUESTIONS for Chris (ask one at a time; build the rest meanwhile, safe default in brackets):
+   - Do mod-hero runs count in normal rankings, badges, the tournament and run reviews? [no: kept separate, marked "Mod"]
+   - Can a mod hero's numbers (talent strengths etc.) be changed by modders? [not yet: needs per-talent code changes]
    NOT designed yet, do NOT build or invent: competitions, community events, development and testing.
    Chris will be asked one question at a time.
 Every change: tests, CI (apd-extended-bug-report-ci.yml) green, push release/play-closed-test, and push the server to
