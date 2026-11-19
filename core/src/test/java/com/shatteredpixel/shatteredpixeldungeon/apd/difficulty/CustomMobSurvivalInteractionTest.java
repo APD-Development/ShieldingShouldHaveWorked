@@ -38,6 +38,19 @@ public class CustomMobSurvivalInteractionTest {
             assertEquals(ht,loaded.HT);assertEquals(hp,loaded.HP);
         }
     }
+    @Test public void oneHpEnemiesLikeWraithsStayKillableAtLowEnemyHealth() {
+        for(int p=25;p<=75;p+=25) {
+            rules(CustomDungeonRules.defaults().with(CustomDungeonRules.Slider.ENEMY_HP,p));
+            com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Wraith w=new com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Wraith();
+            assertEquals(1,w.HT);
+            CustomMobHooks.applyHealth(w);
+            assertEquals("p="+p,1,w.HT);
+            assertEquals("p="+p+": a living wraith keeps 1 HP",1,w.HP);
+            assertTrue(w.isAlive());
+            w.damage(1,new com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Rat());
+            assertFalse("p="+p+": one hit kills it",w.isAlive());
+        }
+    }
     @Test public void bossesAlliesAndDeadEnemiesAreNotAccidentallyRescaledOrRevived() {
         rules(CustomDungeonRules.defaults().with(CustomDungeonRules.Slider.ENEMY_HP,500));
         Goo boss=new Goo();int ht=boss.HT;CustomMobHooks.applyHealth(boss);assertEquals(ht,boss.HT);

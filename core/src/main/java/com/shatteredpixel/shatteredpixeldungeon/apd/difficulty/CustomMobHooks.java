@@ -10,7 +10,10 @@ public final class CustomMobHooks {
             ? CustomDungeonRules.Slider.BOSS_HP : CustomDungeonRules.Slider.ENEMY_HP);
         if(p==100)return;
         mob.HT=(int)Math.max(1,Math.min(Integer.MAX_VALUE,Math.round((double)mob.HT*p/100.0)));
-        mob.HP=(int)Math.max(0,Math.min(mob.HT,Math.round((double)mob.HP*p/100.0)));
+        // A living enemy never drops to 0 HP from scaling: 1-HP enemies (wraiths) at low enemy health were left at 0 HP,
+        // which made them unkillable (reported by a tester, Nov 19). Dead enemies (HP 0) stay dead.
+        long hp=Math.round((double)mob.HP*p/100.0);
+        mob.HP=mob.HP<=0 ? mob.HP : (int)Math.max(1,Math.min(mob.HT,hp));
         mob.apdCustomHealthApplied=true;
     }
 }
