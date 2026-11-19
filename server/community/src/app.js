@@ -366,6 +366,64 @@ and run history stay on your phone and are not affected.</p>
 
 const html = (status, body) => new Response(body, { status, headers: { 'content-type': 'text/html; charset=utf-8' } });
 
+const PRIVACY = `<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ADHD Pixel Dungeon Privacy Policy | CharltonBorn Studios</title>
+<style>
+body{font-family:system-ui,sans-serif;max-width:44rem;margin:2rem auto;padding:0 1rem;line-height:1.6;color:#1b1b1b;background:#fff}
+h1{font-size:1.6rem;margin-bottom:.2rem}h2{font-size:1.15rem;margin-top:2rem}
+.updated{color:#666;margin-top:0}a{color:#d35400}
+</style>
+</head>
+<body>
+<h1>ADHD Pixel Dungeon Privacy Policy</h1>
+<p class="updated">CharltonBorn Studios. Last updated November 18, 2026.</p>
+
+<h2>The game</h2>
+<p>ADHD Pixel Dungeon shows no ads and does not sell your data. Your saves, settings, run history and progress stay on your device. Playing the game itself sends nothing about you anywhere.</p>
+
+<h2>Community (optional, 16+)</h2>
+<p>Community is an optional part of the game where players post ideas, comment and vote. If you choose to use it, we collect:</p>
+<ul>
+<li><b>Your Google account ID</b>, from Google sign-in. Sign-in is through Google only. We do not store your email address, and there is no password.</li>
+<li><b>The display name you choose.</b></li>
+<li><b>What you post:</b> ideas and comments, which other players can see under your display name.</li>
+<li><b>What you do:</b> upvotes, tournament votes, reports and blocks.</li>
+<li><b>Whether you passed the 16+ check</b>, as a single yes. Nothing else about your age is kept.</li>
+<li><b>Basic technical data</b> such as IP address and timestamps, used only to limit spam and abuse.</li>
+</ul>
+<p>Your email address is passed to us by Google during sign-in only to check whether your account is the developer's admin account. It is not saved.</p>
+
+<h2>Age check</h2>
+<p>Community is for players 16 and older. The game uses Google Play's age signals when available. Otherwise it asks for your birth month and year once, on your device. Only the pass or fail result is kept, never your birth date.</p>
+
+<h2>Who sees your data</h2>
+<p>Cloudflare hosts the Community server for us. Google handles Google sign-in. We do not sell your data or use it for advertising. Your posts, comments and display name are visible to other Community players.</p>
+
+<h2>Deleting your data</h2>
+<p>You can delete your Community account and everything you posted at any time:</p>
+<ul>
+<li>In the game: Community, then Account, then Delete my account.</li>
+<li>On the web, without the app: <a href="https://apd-community.charltonchris29.workers.dev/delete">apd-community.charltonchris29.workers.dev/delete</a>. Sign in with the same Google account and it is deleted.</li>
+</ul>
+<p>Deletion removes your account, ideas, comments, votes, reports and blocks right away. Comments that other players replied to are kept as empty "[deleted]" placeholders so their replies still make sense. Your game saves on your phone are not affected.</p>
+
+<h2>Children</h2>
+<p>Community is not available to anyone under 16, and we do not knowingly collect data from children. If you believe a child has used Community, contact us and we will delete the account.</p>
+
+<h2>Security and changes</h2>
+<p>All Community data is sent over encrypted connections. If this policy changes, the new version is posted here with an updated date.</p>
+
+<h2>Contact</h2>
+<p><a href="mailto:charltonchris29@gmail.com">charltonchris29@gmail.com</a></p>
+</body>
+</html>
+`;
+route('GET', '/privacy', async () => html(200, PRIVACY));
+
 route('GET', '/delete', async (env) => html(200, PAGE(env, '')));
 
 route('POST', '/delete', async (env, req) => {

@@ -406,3 +406,12 @@ test('admin can find players by part of their name or exact email, banned ones i
   assert.equal((await call('GET', '/v1/admin/accounts?q=t', null, chris.token)).body.error, 'search_too_short');
   assert.equal((await call('GET', '/v1/admin/accounts?q=troll', null, (await member('x@x.com')).token)).status, 403);
 });
+
+test('privacy policy page is served for Google Play', async () => {
+  const { env } = setup();
+  const r = await handle(new Request('https://x/privacy'), env);
+  assert.equal(r.status, 200);
+  const t = await r.text();
+  assert.match(t, /ADHD Pixel Dungeon Privacy Policy/);
+  assert.match(t, /\/delete/);
+});
