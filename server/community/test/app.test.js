@@ -540,3 +540,51 @@ test('run reviews: secret seed, 5 reviews to close (failed reviews count), hidde
   const hidden = mine.reviews.find((v) => v.id === bad.id);
   assert.deepEqual([hidden.advice, hidden.reviewer, mine.done], [null, null, 5]);
 });
+
+test('admin tools: acting on a post or account clears its reports, bad input is refused, banned Google players stay out, unban does not revive old sessions', async () => {
+  const { env, call, member } = setup();
+  const chris = await member('chris@example.com', 'Chris');
+  const ana = await member('ana@x.com', 'Ana');
+  const bad = await member('bad@x.com', 'Bad');
+  const s = (await call('POST', '/v1/submissions', { title: 'bait', body: 'bait' }, bad.token)).body.id;
+  const c = (await call('POST', `/v1/submissions/${s}/comments`, { body: 'rude' }, bad.token)).body.id;
+  await call('POST', '/v1/reports', { kind: 'submission', id: s, reason: 'spam' }, ana.token);
+  await call('POST', '/v1/reports', { kind: 'comment', id: c, reason: 'rude' }, ana.token);
+  await call('POST', '/v1/reports', { kind: 'account', id: bad.id, reason: 'troll' }, ana.token);
+  const queue = async () => (await call('GET', '/v1/admin/reports', null, chris.token)).body.reports.map((r) => r.target_kind).sort();
+  assert.deepEqual(await queue(), ['account', 'comment', 'submission']);
+  // Bad input never changes anything.
+  assert.equal((await call('POST', '/v1/admin/hide', { kind: 'account', id: bad.id }, chris.token)).body.error, 'bad_kind');
+  assert.equal((await call('POST', '/v1/admin/remove', { kind: 'comment', id: 'ffff' }, chris.token)).status, 404);
+  assert.equal((await call('POST', '/v1/admin/ban', { accountId: 'ffff' }, chris.token)).status, 404);
+  assert.equal((await call('POST', '/v1/admin/hide', { kind: 'submission', id: s })).status, 401);
+  assert.deepEqual(await queue(), ['account', 'comment', 'submission']);
+  // Removing the comment clears only its reports; the thread keeps an empty placeholder.
+  await call('POST', '/v1/admin/remove', { kind: 'comment', id: c }, chris.token);
+  assert.deepEqual(await queue(), ['account', 'submission']);
+  assert.equal((await call('GET', `/v1/submissions/${s}`)).body.comments[0].body, null);
+  // Removing the submission hides it everywhere, including its own page.
+  await call('POST', '/v1/admin/remove', { kind: 'submission', id: s }, chris.token);
+  assert.equal((await call('GET', `/v1/submissions/${s}`)).status, 404);
+  assert.deepEqual(await queue(), ['account']);
+  // Banning clears the account's reports and blocks Google sign-in too.
+  const g = (await call('POST', '/v1/auth/google', { idToken: 'good:gsub1', displayName: 'Gee' })).body.token;
+  const gid = (await call('GET', '/v1/me', null, g)).body.id;
+  await call('POST', '/v1/admin/ban', { accountId: bad.id }, chris.token);
+  await call('POST', '/v1/admin/ban', { accountId: gid }, chris.token);
+  assert.deepEqual(await queue(), []);
+  assert.equal((await call('GET', '/v1/me', null, g)).status, 401);
+  assert.equal((await call('POST', '/v1/auth/google', { idToken: 'good:gsub1' })).body.error, 'banned');
+  // Unbanning lets them sign in again, but the sessions from before the ban stay ended.
+  await call('POST', '/v1/admin/unban', { accountId: gid }, chris.token);
+  assert.equal((await call('GET', '/v1/me', null, g)).status, 401);
+  assert.equal((await call('POST', '/v1/auth/google', { idToken: 'good:gsub1' })).status, 200);
+  // A removed post stays removed after its author is unbanned; only restore brings it back.
+  await call('POST', '/v1/admin/unban', { accountId: bad.id }, chris.token);
+  assert.equal((await call('GET', `/v1/submissions/${s}`)).status, 404);
+  await call('POST', '/v1/admin/restore', { kind: 'submission', id: s }, chris.token);
+  assert.equal((await call('GET', `/v1/submissions/${s}`)).status, 200);
+  const log = env.DB.raw.prepare('SELECT action, target FROM audit ORDER BY id').all().map((r) => `${r.action} ${r.target}`);
+  assert.deepEqual(log, [`removed comment:${c}`, `removed submission:${s}`, `ban account:${bad.id}`, `ban account:${gid}`,
+    `unban account:${gid}`, `unban account:${bad.id}`, `visible submission:${s}`]);
+});
