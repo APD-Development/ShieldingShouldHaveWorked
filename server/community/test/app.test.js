@@ -656,3 +656,22 @@ test('run reviews: reviewer tags tone; a tone that does not match the review typ
   mine = (await call('GET', '/v1/reviews/mine', null, pat.token)).body.runs[0];
   assert.equal(mine.reviews.find((v) => v.id === heldOne.id).advice, 'Skill issue lol');
 });
+
+test('run reviews: a claim can be repeated only briefly (lost reply); later the seed is never handed out again', async () => {
+  const { call, member, tick } = setup();
+  await member('chris@example.com', 'Chris');
+  const pat = await member('pat@x.com', 'Pat');
+  const rev = await member('rev@x.com', 'Rev');
+  const s = { heroClass: 'MAGE', challenges: 0, difficulty: 'normal' };
+  const id = (await call('POST', '/v1/reviews', { seed: 'S9', setup: s, deathDepth: 3, ending: { cause: 'Rat', depth: 3 } }, pat.token)).body.id;
+  assert.equal((await call('POST', `/v1/reviews/${id}/claim`, null, rev.token)).body.seed, 'S9');
+  tick(60 * 1000);
+  assert.equal((await call('POST', `/v1/reviews/${id}/claim`, null, rev.token)).body.seed, 'S9');
+  tick(10 * 60 * 1000);
+  const again = await call('POST', `/v1/reviews/${id}/claim`, null, rev.token);
+  assert.equal(again.body.error, 'already_claimed');
+  assert.ok(!('seed' in again.body));
+  // The attempt is still theirs to report
+  const r = (await call('POST', `/v1/reviews/${id}/result`, { reachedDepth: 1, salvageable: false, advice: 'Too hard', tone: 'advice' }, rev.token)).body;
+  assert.equal(r.survived, false);
+});

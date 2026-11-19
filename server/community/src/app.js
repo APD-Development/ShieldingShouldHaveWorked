@@ -802,13 +802,17 @@ route('GET', '/v1/reviews/open', async (env, req) => {
 });
 
 // Take a run to review. Only now does the seed come down, so the game can start it; the app never displays it.
+const RECLAIM_WINDOW_MS = 10 * 60 * 1000;
 route('POST', '/v1/reviews/([0-9a-f]+)/claim', async (env, req, [id]) => {
   const a = await needReviewer(env, req);
   const r = await env.DB.prepare("SELECT * FROM review_requests WHERE id = ? AND status = 'open'").bind(id).first();
   if (!r) fail(404, 'not_found');
   if (r.account_id === a.id) fail(403, 'own_run');
-  const prior = await env.DB.prepare('SELECT finished_at FROM reviews WHERE request_id = ? AND reviewer_id = ?').bind(id, a.id).first();
+  const prior = await env.DB.prepare('SELECT finished_at, claimed_at FROM reviews WHERE request_id = ? AND reviewer_id = ?').bind(id, a.id).first();
   if (prior && prior.finished_at != null) fail(409, 'already_reviewed');
+  // One attempt, no retry: asking again only works shortly after the first claim (its reply may have been lost).
+  // Later the seed is not handed out again, so deleting the review save can't restart the run.
+  if (prior && now(env) - prior.claimed_at > RECLAIM_WINDOW_MS) fail(409, 'already_claimed');
   if (!prior) {
     await env.DB.prepare('INSERT INTO reviews (request_id, reviewer_id, id, claimed_at) VALUES (?, ?, ?, ?)')
       .bind(id, a.id, newId(), now(env)).run();

@@ -1097,6 +1097,7 @@ public final class CommunityController {
 			case "review_access_removed": return "A moderator has taken away your review access.";
 			case "own_run": return "You can't review your own run.";
 			case "already_reviewed": return "You've already reviewed this run. There are no retries.";
+			case "already_claimed": return "You already took this run. It can only be played once, so it can't be started again.";
 			case "not_claimed": return "Take this run to review first.";
 			case "review_closed": return "This run already has its 5 reviews.";
 			case "bad_tone": return "Pick the tone of your comment before sending.";
