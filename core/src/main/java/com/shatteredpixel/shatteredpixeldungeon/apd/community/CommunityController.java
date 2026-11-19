@@ -285,6 +285,8 @@ public final class CommunityController {
 	private void hub(){
 		ReviewRun pending = pendingReview;
 		if (pending != null){ pendingReview = null; sendForReview(pending); return; }
+		ReviewClaim done = finishedReview;
+		if (done != null){ reviewVerdict(done, null); return; }
 		cached("season", api::season, r -> {
 			season = r.ok() ? r.body.get("season") : null;
 			if (season != null && season.isNull()) season = null;
@@ -661,6 +663,49 @@ public final class CommunityController {
 			o.addChild(e.getKey(), new JsonValue(e.getValue()));
 		}
 		return o;
+	}
+
+	/** A review playthrough that has ended (reached the original death floor, or died first). Set by the game when the
+	 *  review run ends; the hub then asks for the verdict until it is sent. Kept while the server can't be reached, so
+	 *  the one attempt is never lost; cleared once the server answers (accepted, or refused for good). */
+	public static volatile ReviewClaim finishedReview = null;
+
+	private void reviewVerdict(ReviewClaim claim, String warning){
+		Screen s = new Screen("Your review", claim.reachedDeathFloor()
+				? "You reached floor " + claim.deathDepth + ", where this player died."
+				: "You died on floor " + claim.reachedDepth() + ", before the floor where this player died. Your review still counts.");
+		s.back = this::reviewVerdictLater;
+		if (warning != null) s.warning(warning);
+		s.note("Could this run have been saved? Then say what the player should have done. There are no retries.");
+		s.item("Salvageable", null, () -> reviewAdvice(claim, true));
+		s.item("Not salvageable", null, () -> reviewAdvice(claim, false));
+		s.item("Later", null, this::reviewVerdictLater);
+		ui.show(s);
+	}
+
+	/** Leaving without sending keeps the verdict waiting; Community opens on it next time. */
+	private void reviewVerdictLater(){
+		Screen s = new Screen("Your review", "Your verdict hasn't been sent. Community will ask for it again next time.");
+		s.item("Back", null, ui::leave);
+		ui.show(s);
+	}
+
+	private void reviewAdvice(ReviewClaim claim, boolean salvageable){
+		ui.ask("What should they have done?", "Your advice for this player (up to 2000 characters).", "", 2000, true, advice -> {
+			if (advice == null){ reviewVerdict(claim, null); return; }
+			if (advice.trim().isEmpty()){ reviewVerdict(claim, "Write some advice before sending."); return; }
+			ui.busy("Sending your review...");
+			call(() -> api.reviewResult(claim.requestId, claim.reachedDepth(), salvageable, advice.trim()), r -> {
+				if (r.status == 0 || r.status >= 500){ reviewVerdict(claim, message(r)); return; } // try again later: keep it
+				if (!r.ok() && "not_allowed_words".equals(r.error)){ reviewVerdict(claim, message(r)); return; }
+				if (finishedReview == claim) finishedReview = null;
+				Screen s = new Screen("Your review", r.ok() ? "Sent. Thanks for reviewing." : message(r));
+				s.back = this::hub;
+				s.item("Run reviews", null, this::reviews);
+				s.item("Back", null, this::hub);
+				ui.show(s);
+			});
+		});
 	}
 
 	private void openRun(JsonValue run){

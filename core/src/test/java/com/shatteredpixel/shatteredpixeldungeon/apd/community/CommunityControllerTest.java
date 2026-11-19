@@ -490,6 +490,61 @@ public class CommunityControllerTest {
 		} finally { CommunityController.pendingReview = null; }
 	}
 
+	@Test public void runReviews_finishedReview_asksVerdict_keepsItUntilServerAnswers(){
+		store.age = "pass"; store.token = "tok";
+		signedInWorld(false);
+		ReviewClaim c = ReviewClaim.parse(new com.badlogic.gdx.utils.JsonReader().parse(
+				"{\"id\":\"ab12\",\"seed\":\"XYZ-ABC-DEF\",\"deathDepth\":7,\"setup\":{\"challenges\":\"0\",\"customRules\":\"0\",\"difficulty\":\"3\",\"exotic\":\"0\",\"heroClass\":\"ROGUE\"}}"));
+		assertNotNull(c);
+		c.reached(4);
+		CommunityController.finishedReview = c;
+		try {
+			controller().start();
+			CommunityController.Screen s = last();
+			assertEquals("Your review", s.title);
+			assertTrue(has(s, "You died on floor 4") && has(s, "still counts"));
+			assertFalse("the seed is never shown", has(s, "XYZ-ABC-DEF"));
+			// empty advice is refused before any request
+			answers.add("   ");
+			tap("Not salvageable");
+			assertTrue(has(last(), "Write some advice"));
+			assertFalse(requests.stream().anyMatch(q -> q.contains("/result")));
+			// server down: the verdict is kept, nothing lost
+			reply("POST /v1/reviews/ab12/result", 503, "{\"error\":\"unavailable\"}");
+			answers.add("Use the scroll earlier");
+			tap("Not salvageable");
+			assertEquals("Your review", last().title);
+			assertSame(c, CommunityController.finishedReview);
+			// accepted: exact body sent, then cleared
+			reply("POST /v1/reviews/ab12/result", 200, "{\"ok\":true}");
+			requests.clear();
+			answers.add("Use the scroll earlier");
+			tap("Salvageable");
+			String sent = requests.stream().filter(q -> q.startsWith("POST /v1/reviews/ab12/result")).findFirst().orElse("");
+			assertTrue(sent, sent.contains("\"reachedDepth\":4") && sent.contains("\"salvageable\":true") && sent.contains("\"advice\":\"Use the scroll earlier\""));
+			assertTrue(has(last(), "Sent."));
+			assertNull(CommunityController.finishedReview);
+		} finally { CommunityController.finishedReview = null; }
+	}
+
+	@Test public void runReviews_finishedReview_alreadyReviewedClearsIt(){
+		store.age = "pass"; store.token = "tok";
+		signedInWorld(false);
+		ReviewClaim c = ReviewClaim.parse(new com.badlogic.gdx.utils.JsonReader().parse(
+				"{\"id\":\"cd34\",\"seed\":\"S\",\"deathDepth\":2,\"setup\":{\"challenges\":\"0\",\"customRules\":\"0\",\"difficulty\":\"3\",\"exotic\":\"0\",\"heroClass\":\"MAGE\"}}"));
+		c.reached(3);
+		CommunityController.finishedReview = c;
+		try {
+			reply("POST /v1/reviews/cd34/result", 409, "{\"error\":\"already_reviewed\"}");
+			controller().start();
+			assertTrue(has(last(), "You reached floor 2"));
+			answers.add("Fine");
+			tap("Salvageable");
+			assertTrue(has(last(), "already reviewed"));
+			assertNull(CommunityController.finishedReview);
+		} finally { CommunityController.finishedReview = null; }
+	}
+
 	private static List<String> itemLabels(CommunityController.Screen s){ List<String> l = new ArrayList<>(); for (CommunityController.Row r : s.items()) l.add(r.label); return l; }
 
 	// Every error code the server can send has plain words in the app (except a few that only a broken client causes).
