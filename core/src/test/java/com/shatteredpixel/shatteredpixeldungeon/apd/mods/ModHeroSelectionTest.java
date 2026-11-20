@@ -75,4 +75,17 @@ public class ModHeroSelectionTest {
 		assertFalse(ModHeroSelection.remove(root, m));           // already gone
 		assertFalse(ModHeroSelection.remove(root, null));
 	}
+
+	@Test public void removeDropsAPickFromAnEarlierScan() throws Exception {
+		ModLibrary.Installed m = installed();
+		File root = new File(tmp.getRoot(), "mods");
+		ModHeroSelection.pick(m);
+		ModLibrary.Installed rescanned = ModHeroSelection.scan(root).heroes.get(0);
+		assertNotSame(m, rescanned);
+		assertTrue(ModHeroSelection.remove(root, rescanned));
+		assertNull(ModHeroSelection.picked());
+		ModHeroSelection.confirmForStart(m.mod.baseClass);
+		HeroModRun.beginRun();
+		assertFalse(HeroModRun.isModRun());
+	}
 }

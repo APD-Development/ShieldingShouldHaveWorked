@@ -56,7 +56,9 @@ public final class ModHeroSelection {
 			if (parent == null || !parent.getCanonicalFile().equals(modsDir.getCanonicalFile())) return false;
 		} catch (java.io.IOException e){ return false; }
 		if (!ModInstaller.uninstallFolder(modsDir, folder.getName())) return false;
-		if (picked == i) clear();
+		// same mod even when the pick came from an earlier scan (a new Installed object for the same folder)
+		ModLibrary.Installed p = picked;
+		if (p != null && (p == i || p.mod.id.equals(i.mod.id))) clear();
 		return true;
 	}
 
