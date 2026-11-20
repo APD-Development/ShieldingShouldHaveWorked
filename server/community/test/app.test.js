@@ -695,3 +695,94 @@ test('run reviews: a run hidden from my open list (blocked or banned player) can
   await call('POST', '/v1/admin/ban', { accountId: pat.id }, chris.token);
   assert.equal((await call('POST', `/v1/reviews/${id}/claim`, null, other.token)).body.error, 'not_found');
 });
+
+// A 256x128 PNG header (the server only reads the header; the game decodes and re-checks).
+function pngB64(w = 256, h = 128, pad = 0) {
+  const b = Buffer.alloc(33 + pad);
+  Buffer.from([0x89, 0x50, 0x4e, 0x47, 13, 10, 26, 10]).copy(b, 0);
+  b.writeUInt32BE(13, 8); b.write('IHDR', 12, 'ascii'); b.writeUInt32BE(w, 16); b.writeUInt32BE(h, 20);
+  return b.toString('base64');
+}
+const heroJson = (id, name = 'Iron Monk', extra = {}) => JSON.stringify({ id, name, author: 'me', description: 'A test hero.', baseClass: 'WARRIOR', ...extra });
+
+test('hero mod workshop: members upload, everyone browses and downloads, re-upload replaces, id owned by its author', async () => {
+  const { call, member } = setup();
+  const ana = await member('ana@x.com'), bo = await member('bo@x.com');
+  const up = await call('POST', '/v1/mods', { json: heroJson('ana.monk'), sprite: pngB64() }, ana.token);
+  assert.equal(up.status, 201);
+  // Signed out / not a member can't upload.
+  assert.equal((await call('POST', '/v1/mods', { json: heroJson('x.y'), sprite: pngB64() })).status, 401);
+  const list = await call('GET', '/v1/mods');
+  assert.deepEqual(list.body.mods.map((m) => [m.modId, m.name, m.author.displayName, m.version, m.subscribers]), [['ana.monk', 'Iron Monk', 'ana', 1, 0]]);
+  assert.equal(list.body.mods[0].json, undefined); // the list never carries the files
+  const dl = await call('GET', `/v1/mods/${up.body.id}`);
+  assert.equal(dl.body.json, heroJson('ana.monk'));
+  assert.equal(dl.body.sprite, pngB64());
+  // Same author, same id: replaced, version goes up, same workshop id.
+  const again = await call('POST', '/v1/mods', { json: heroJson('ana.monk', 'Steel Monk'), sprite: pngB64() }, ana.token);
+  assert.deepEqual([again.status, again.body.id], [200, up.body.id]);
+  const v2 = await call('GET', `/v1/mods/${up.body.id}`);
+  assert.deepEqual([v2.body.name, v2.body.version], ['Steel Monk', 2]);
+  // Another author can't take the id.
+  assert.deepEqual([(await call('POST', '/v1/mods', { json: heroJson('ana.monk'), sprite: pngB64() }, bo.token)).body.error], ['mod_id_taken']);
+  // Only the author can delete it.
+  assert.equal((await call('DELETE', `/v1/mods/${up.body.id}`, null, bo.token)).status, 404);
+  assert.equal((await call('DELETE', `/v1/mods/${up.body.id}`, null, ana.token)).status, 200);
+  assert.equal((await call('GET', `/v1/mods/${up.body.id}`)).status, 404);
+});
+
+test('hero mod workshop: size, id, sprite and word rules are enforced before anything is stored', async () => {
+  const { env, call, member } = setup();
+  const a = await member('ana@x.com');
+  const err = async (b) => (await call('POST', '/v1/mods', b, a.token)).body.error;
+  assert.equal(await err({ json: heroJson('ok.id'), sprite: pngB64(128, 128) }), 'sprite_wrong_size');
+  assert.equal(await err({ json: heroJson('ok.id'), sprite: Buffer.from('GIF89a not a png at all......').toString('base64') }), 'bad_sprite');
+  assert.equal(await err({ json: heroJson('ok.id'), sprite: pngB64(256, 128, 64 * 1024) }), 'bad_sprite'); // over 64 KB
+  assert.equal(await err({ json: heroJson('ok.id'), sprite: 'not base64!' }), 'bad_sprite');
+  assert.equal(await err({ json: heroJson('ok.id', 'x', { pad: 'a'.repeat(16 * 1024) }), sprite: pngB64() }), 'json_too_large');
+  assert.equal(await err({ json: '{not json', sprite: pngB64() }), 'bad_json_mod');
+  assert.equal(await err({ json: heroJson('Bad/Id'), sprite: pngB64() }), 'bad_mod_id');
+  assert.equal(await err({ json: heroJson('ok.id', ''), sprite: pngB64() }), 'missing_name');
+  assert.equal(await err({ json: heroJson('ok.id', 'fuck'), sprite: pngB64() }), 'not_allowed_words');
+  assert.equal(env.DB.raw.prepare('SELECT COUNT(*) AS n FROM mods').get().n, 0);
+  // Daily upload cap (updates count too).
+  for (let i = 0; i < 5; i++) assert.ok([200, 201].includes((await call('POST', '/v1/mods', { json: heroJson('cap.id'), sprite: pngB64() }, a.token)).status));
+  assert.equal(await err({ json: heroJson('cap.two'), sprite: pngB64() }), 'too_many_mods');
+});
+
+test('hero mod workshop: subscribe, report to a moderator, admin hide, blocks, bans and account deletion', async () => {
+  const { env, call, member } = setup();
+  const ana = await member('ana@x.com'), bo = await member('bo@x.com'), chris = await member('chris@example.com');
+  const { body: { id } } = await call('POST', '/v1/mods', { json: heroJson('ana.monk'), sprite: pngB64() }, ana.token);
+  assert.equal((await call('POST', `/v1/mods/${id}/subscribe`, null, bo.token)).status, 200);
+  await call('POST', `/v1/mods/${id}/subscribe`, null, bo.token); // twice is still one
+  assert.equal((await call('GET', '/v1/mods')).body.mods[0].subscribers, 1);
+  assert.deepEqual((await call('GET', '/v1/mods/subscribed', null, bo.token)).body.mods.map((m) => m.modId), ['ana.monk']);
+  // Report -> moderator queue -> hide: gone from browse, download and subscriptions.
+  assert.equal((await call('POST', '/v1/reports', { kind: 'mod', id, reason: 'stolen art' }, bo.token)).status, 201);
+  const q = (await call('GET', '/v1/admin/reports', null, chris.token)).body.reports;
+  assert.deepEqual(q.map((r) => [r.target_kind, r.author_id, r.preview]), [['mod', ana.id, 'Iron Monk']]);
+  assert.equal((await call('POST', '/v1/admin/hide', { kind: 'mod', id }, chris.token)).status, 200);
+  assert.equal((await call('GET', '/v1/mods')).body.mods.length, 0);
+  assert.equal((await call('GET', `/v1/mods/${id}`)).status, 404);
+  assert.equal((await call('GET', '/v1/mods/subscribed', null, bo.token)).body.mods.length, 0);
+  assert.equal((await call('POST', `/v1/mods/${id}/subscribe`, null, bo.token)).status, 404);
+  await call('POST', '/v1/admin/restore', { kind: 'mod', id }, chris.token);
+  // A blocked author's mods disappear for the blocker only.
+  await call('POST', '/v1/blocks', { accountId: ana.id }, bo.token);
+  assert.equal((await call('GET', '/v1/mods', null, bo.token)).body.mods.length, 0);
+  assert.equal((await call('GET', '/v1/mods')).body.mods.length, 1);
+  // A removed mod can't be re-uploaded under the same id.
+  await call('POST', '/v1/admin/remove', { kind: 'mod', id }, chris.token);
+  assert.equal((await call('POST', '/v1/mods', { json: heroJson('ana.monk'), sprite: pngB64() }, ana.token)).body.error, 'mod_removed');
+  await call('POST', '/v1/admin/restore', { kind: 'mod', id }, chris.token);
+  // Banned author: hidden everywhere.
+  await call('POST', '/v1/admin/ban', { accountId: ana.id }, chris.token);
+  assert.equal((await call('GET', '/v1/mods')).body.mods.length, 0);
+  await call('POST', '/v1/admin/unban', { accountId: ana.id }, chris.token);
+  // Deleting the author's account deletes the mod and its subscriptions.
+  const anaAgain = await call('POST', '/v1/auth/login', { email: 'ana@x.com', password: 'hunter2hunter2' });
+  assert.equal((await call('DELETE', '/v1/account', null, anaAgain.body.token)).status, 200);
+  assert.equal(env.DB.raw.prepare('SELECT COUNT(*) AS n FROM mods').get().n, 0);
+  assert.equal(env.DB.raw.prepare('SELECT COUNT(*) AS n FROM mod_subscriptions').get().n, 0);
+});

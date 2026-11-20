@@ -903,9 +903,120 @@ route('POST', '/v1/admin/review-access', async (env, req) => {
   return json(200, { ok: true });
 });
 
+// ---- hero mod workshop (Chris, Nov 19: data + art only; plan step 4e) ----
+// The server checks sizes, the id, the PNG header and the shown words; the game re-validates every mod it downloads.
+
+const MOD_JSON_MAX = 16 * 1024;
+const MOD_SPRITE_MAX = 64 * 1024;
+const MOD_UPLOADS = { max: 5, ms: 24 * 3600 * 1000 }; // uploads + updates per account per day (Claude's call)
+
+function modSprite(b64) {
+  if (typeof b64 !== 'string' || !b64 || b64.length > Math.ceil(MOD_SPRITE_MAX / 3) * 4 + 4) fail(400, 'bad_sprite');
+  if (!/^[A-Za-z0-9+/]+={0,2}$/.test(b64)) fail(400, 'bad_sprite');
+  let bytes;
+  try { bytes = Uint8Array.from(atob(b64), (c) => c.charCodeAt(0)); } catch { fail(400, 'bad_sprite'); }
+  if (bytes.length > MOD_SPRITE_MAX) fail(400, 'sprite_too_large');
+  const sig = [0x89, 0x50, 0x4e, 0x47, 13, 10, 26, 10];
+  if (bytes.length < 24 || sig.some((v, i) => bytes[i] !== v) || String.fromCharCode(...bytes.slice(12, 16)) !== 'IHDR') fail(400, 'bad_sprite');
+  const dv = new DataView(bytes.buffer);
+  if (dv.getUint32(16) !== 256 || dv.getUint32(20) !== 128) fail(400, 'sprite_wrong_size');
+  return b64;
+}
+
+function modJson(t) {
+  if (typeof t !== 'string' || !t.trim()) fail(400, 'missing_json');
+  if (new TextEncoder().encode(t).length > MOD_JSON_MAX) fail(400, 'json_too_large');
+  let m;
+  try { m = JSON.parse(t); } catch { fail(400, 'bad_json_mod'); }
+  if (!m || typeof m !== 'object' || Array.isArray(m)) fail(400, 'bad_json_mod');
+  if (typeof m.id !== 'string' || m.id.length > 64 || !/^[a-z0-9][a-z0-9._-]*$/.test(m.id)) fail(400, 'bad_mod_id');
+  // The game shows hero.json's own words, which the server can't mask, so any word the filter would mask or refuse
+  // refuses the whole mod.
+  const shown = (v, max, field) => { const t = text(v, max, field); if (clean(t) !== t) fail(422, 'not_allowed_words'); return t; };
+  const name = shown(m.name, 40, 'name');
+  if (m.author !== undefined) shown(m.author, 40, 'author');
+  const description = typeof m.description === 'string' && m.description.trim() ? shown(m.description, 1000, 'description') : '';
+  return { modId: m.id, name, description };
+}
+
+function publicMod(m, extra = {}) {
+  return { id: m.id, modId: m.mod_id, name: m.name, description: m.description, version: m.version,
+    author: { id: m.author_id, displayName: m.display_name }, subscribers: m.subscribers ?? 0, updatedAt: m.updated_at, ...extra };
+}
+
+const MOD_SELECT = `SELECT m.*, a.display_name,
+  (SELECT COUNT(*) FROM mod_subscriptions s WHERE s.mod_id = m.id) AS subscribers
+  FROM mods m JOIN accounts a ON a.id = m.author_id WHERE m.status = 'visible' AND a.banned = 0`;
+
+route('POST', '/v1/mods', async (env, req) => {
+  const a = await needMember(env, req);
+  const b = await body(req);
+  const meta = modJson(b.json);
+  const sprite = modSprite(b.sprite);
+  const recent = await env.DB.prepare('SELECT COUNT(*) AS n FROM mod_uploads WHERE account_id = ? AND created_at > ?')
+    .bind(a.id, now(env) - MOD_UPLOADS.ms).first();
+  if (recent.n >= MOD_UPLOADS.max) fail(429, 'too_many_mods');
+  const old = await env.DB.prepare('SELECT id, author_id, status FROM mods WHERE mod_id = ?').bind(meta.modId).first();
+  if (old && old.author_id !== a.id) fail(409, 'mod_id_taken');
+  if (old && old.status === 'removed') fail(403, 'mod_removed');
+  await env.DB.prepare('INSERT INTO mod_uploads (account_id, created_at) VALUES (?, ?)').bind(a.id, now(env)).run();
+  if (old) {
+    await env.DB.prepare('UPDATE mods SET name = ?, description = ?, hero_json = ?, sprite = ?, version = version + 1, updated_at = ? WHERE id = ?')
+      .bind(meta.name, meta.description, b.json, sprite, now(env), old.id).run();
+    return json(200, { id: old.id, updated: true });
+  }
+  const id = newId();
+  await env.DB.prepare('INSERT INTO mods (id, author_id, mod_id, name, description, hero_json, sprite, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)')
+    .bind(id, a.id, meta.modId, meta.name, meta.description, b.json, sprite, now(env), now(env)).run();
+  return json(201, { id });
+});
+
+route('GET', '/v1/mods', async (env, req) => {
+  const blocked = await blockedIds(env, await currentAccount(env, req));
+  const { results } = await env.DB.prepare(`${MOD_SELECT} ORDER BY m.updated_at DESC LIMIT 500`).all();
+  return json(200, { mods: results.filter((m) => !blocked.has(m.author_id)).map((m) => publicMod(m)) });
+});
+
+route('GET', '/v1/mods/subscribed', async (env, req) => {
+  const a = await need(env, req);
+  const { results } = await env.DB.prepare(
+    `${MOD_SELECT} AND m.id IN (SELECT mod_id FROM mod_subscriptions WHERE account_id = ?) ORDER BY m.name`).bind(a.id).all();
+  return json(200, { mods: results.map((m) => publicMod(m)) });
+});
+
+// Download: the exact hero.json and sprite, for the game to check and install.
+route('GET', '/v1/mods/([0-9a-f]+)', async (env, req, [id]) => {
+  const blocked = await blockedIds(env, await currentAccount(env, req));
+  const m = await env.DB.prepare(`${MOD_SELECT} AND m.id = ?`).bind(id).first();
+  if (!m || blocked.has(m.author_id)) fail(404, 'not_found');
+  return json(200, publicMod(m, { json: m.hero_json, sprite: m.sprite }));
+});
+
+route('POST', '/v1/mods/([0-9a-f]+)/subscribe', async (env, req, [id]) => {
+  const a = await needMember(env, req);
+  const m = await env.DB.prepare(`${MOD_SELECT} AND m.id = ?`).bind(id).first();
+  if (!m || (await blockedIds(env, a)).has(m.author_id)) fail(404, 'not_found');
+  await env.DB.prepare('INSERT OR IGNORE INTO mod_subscriptions (mod_id, account_id, created_at) VALUES (?, ?, ?)').bind(id, a.id, now(env)).run();
+  return json(200, { subscribed: true });
+});
+
+route('DELETE', '/v1/mods/([0-9a-f]+)/subscribe', async (env, req, [id]) => {
+  const a = await need(env, req);
+  await env.DB.prepare('DELETE FROM mod_subscriptions WHERE mod_id = ? AND account_id = ?').bind(id, a.id).run();
+  return json(200, { subscribed: false });
+});
+
+// An author can take their own mod down (it goes for everyone, subscriptions too).
+route('DELETE', '/v1/mods/([0-9a-f]+)', async (env, req, [id]) => {
+  const a = await need(env, req);
+  const r = await env.DB.prepare('DELETE FROM mods WHERE id = ? AND author_id = ?').bind(id, a.id).run();
+  if (!r.meta.changes) fail(404, 'not_found');
+  return json(200, { deleted: true });
+});
+
 // ---- reports and blocks ----
 
-const KINDS = { submission: 'submissions', comment: 'comments', account: 'accounts', championComment: 'champion_comments', review: 'reviews' };
+const KINDS = { submission: 'submissions', comment: 'comments', account: 'accounts', championComment: 'champion_comments', review: 'reviews', mod: 'mods' };
 
 route('POST', '/v1/reports', async (env, req) => {
   const a = await needMember(env, req);
@@ -956,11 +1067,13 @@ route('GET', '/v1/admin/reports', async (env, req) => {
               WHEN 'submission' THEN (SELECT author_id FROM submissions WHERE id = r.target_id)
               WHEN 'championComment' THEN (SELECT author_id FROM champion_comments WHERE id = r.target_id)
               WHEN 'review' THEN (SELECT reviewer_id FROM reviews WHERE id = r.target_id)
+              WHEN 'mod' THEN (SELECT author_id FROM mods WHERE id = r.target_id)
               ELSE (SELECT author_id FROM comments WHERE id = r.target_id) END AS author_id,
             CASE r.target_kind WHEN 'account' THEN (SELECT display_name FROM accounts WHERE id = r.target_id)
               WHEN 'submission' THEN (SELECT title FROM submissions WHERE id = r.target_id)
               WHEN 'championComment' THEN (SELECT body FROM champion_comments WHERE id = r.target_id)
               WHEN 'review' THEN (SELECT advice FROM reviews WHERE id = r.target_id)
+              WHEN 'mod' THEN (SELECT name FROM mods WHERE id = r.target_id)
               ELSE (SELECT body FROM comments WHERE id = r.target_id) END AS preview
        FROM reports r WHERE r.resolved = 0 GROUP BY r.target_kind, r.target_id ORDER BY reports DESC, first`).all();
   return json(200, { reports: results });
@@ -982,7 +1095,7 @@ route('GET', '/v1/admin/accounts', async (env, req) => {
 async function setStatus(env, req, status) {
   const admin = await needAdmin(env, req);
   const b = await body(req);
-  if (b.kind !== 'submission' && b.kind !== 'comment' && b.kind !== 'championComment' && b.kind !== 'review') fail(400, 'bad_kind');
+  if (b.kind !== 'submission' && b.kind !== 'comment' && b.kind !== 'championComment' && b.kind !== 'review' && b.kind !== 'mod') fail(400, 'bad_kind');
   const r = await env.DB.prepare(`UPDATE ${KINDS[b.kind]} SET status = ? WHERE id = ?`).bind(status, String(b.id || '')).run();
   if (!r.meta.changes) fail(404, 'not_found');
   await env.DB.prepare('UPDATE reports SET resolved = 1 WHERE target_kind = ? AND target_id = ?').bind(b.kind, b.id).run();
