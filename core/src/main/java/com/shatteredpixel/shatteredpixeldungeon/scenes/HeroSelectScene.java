@@ -497,7 +497,9 @@ public class HeroSelectScene extends PixelScene {
 			@Override
 			protected void onSelect(int index){
 				final com.shatteredpixel.shatteredpixeldungeon.apd.mods.ModLibrary.Installed m = list.get(index);
-				ShatteredPixelDungeon.scene().addToFront(new WndOptions(m.mod.name, com.shatteredpixel.shatteredpixeldungeon.apd.mods.ModHeroSelection.details(m), "Play as " + m.mod.name, "Back"){
+				com.watabou.noosa.Image modIcon = com.shatteredpixel.shatteredpixeldungeon.apd.mods.ModSprites.avatar(m, 0);
+				if (modIcon == null) modIcon = com.shatteredpixel.shatteredpixeldungeon.sprites.HeroSprite.avatar(m.mod.baseClass, 0);
+				ShatteredPixelDungeon.scene().addToFront(new WndOptions(modIcon, m.mod.name, com.shatteredpixel.shatteredpixeldungeon.apd.mods.ModHeroSelection.details(m), "Play as " + m.mod.name, "Back"){
 					@Override
 					protected void onSelect(int choice){
 						if (choice != 0) return;
