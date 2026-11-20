@@ -74,6 +74,8 @@ public final class CommunityController {
 	public static volatile GoogleSource google = null;
 	// Launch is Google sign-in only (Chris, Nov 18). The email screens stay for a possible Steam build; off = hidden.
 	public static volatile boolean emailSignIn = false;
+	// Where downloaded hero mods go (<files>/mods, the folder hero select scans). Null = no workshop downloads/uploads.
+	public static volatile java.io.File modsDir = null;
 
 	public static final class Row {
 		public final String label, detail;
@@ -299,6 +301,7 @@ public final class CommunityController {
 			s.item("Voting and results", "Upvotes, the top 16 and the tournament", this::results);
 			s.item("Selected content", "Every champion and how its development is going", this::champions);
 			s.item("Run reviews", "Your runs' review progress, and runs waiting for reviewers", this::reviews);
+			s.item("Hero mods workshop", "Browse, download and share mod heroes", this::workshop);
 			s.item("Account", "Sign out or delete your account", this::account);
 			if (me.getBoolean("admin", false)) s.item("Moderation", "Reports, hide, remove, ban", this::moderation);
 			s.item("What's coming next", "Run reviews, mods, events and more", ui::planned);
@@ -893,6 +896,121 @@ public final class CommunityController {
 	}
 
 	// ---- moderation (Chris) ----
+
+	// ---- hero mod workshop (Chris, Nov 19: data + art only; downloads are re-checked by ModInstaller) ----
+
+	private void workshop(){ workshopList(false); }
+
+	private void workshopList(boolean subscribedOnly){
+		cached(subscribedOnly ? "mods-subscribed" : "mods", subscribedOnly ? api::modsSubscribed : api::mods, r -> {
+			Screen s = new Screen(subscribedOnly ? "Subscribed mods" : "Hero mods workshop",
+					"Mod heroes are local only: their runs never go to Community and never unlock normal badges.");
+			s.back = this::hub;
+			if (!r.ok()) s.warning(message(r));
+			else {
+				JsonValue list = r.body.get("mods");
+				if (list == null || list.size == 0) s.note(subscribedOnly ? "You haven't subscribed to any mods." : "No mods have been shared yet.");
+				else for (JsonValue m = list.child; m != null; m = m.next){
+					final String id = m.getString("id");
+					JsonValue a = m.get("author");
+					String by = a == null || a.isNull() ? "?" : a.getString("displayName", "?");
+					s.item(m.getString("name", "?"), "by " + by + " · v" + m.getInt("version", 1) + " · " + m.getInt("subscribers", 0) + " subscribers"
+							+ (installedIds().contains(m.getString("modId", "")) ? " · installed" : ""), () -> modDetail(id, subscribedOnly));
+				}
+			}
+			if (subscribedOnly) s.item("All mods", null, () -> workshopList(false));
+			else s.item("My subscriptions", null, () -> workshopList(true));
+			if (modsDir != null) s.item("Upload one of my installed mods", "Signed in, 16+; hero.json up to 16 KB, sprite.png up to 64 KB", this::modUploadPick);
+			s.item("Back", null, this::hub);
+			ui.show(s);
+		});
+	}
+
+	private java.util.Set<String> installedIds(){
+		java.util.Set<String> ids = new java.util.HashSet<>();
+		if (modsDir == null) return ids;
+		for (com.shatteredpixel.shatteredpixeldungeon.apd.mods.ModLibrary.Installed i
+				: com.shatteredpixel.shatteredpixeldungeon.apd.mods.ModLibrary.scan(modsDir).heroes) ids.add(i.mod.id);
+		return ids;
+	}
+
+	private void modDetail(String id, boolean fromSubscribed){
+		Runnable back = () -> workshopList(fromSubscribed);
+		call(api::modsSubscribed, subs -> call(() -> api.modDownload(id), r -> {
+			if (!r.ok()){ problem(r, back); return; }
+			JsonValue b = r.body;
+			boolean subscribed = false;
+			if (subs.ok() && subs.body.get("mods") != null)
+				for (JsonValue m = subs.body.get("mods").child; m != null; m = m.next) if (id.equals(m.getString("id", ""))) subscribed = true;
+			final boolean sub = subscribed;
+			JsonValue a = b.get("author");
+			final String authorId = a == null || a.isNull() ? "" : a.getString("id", "");
+			String by = a == null || a.isNull() ? "?" : a.getString("displayName", "?");
+			boolean installed = installedIds().contains(b.getString("modId", ""));
+			Screen s = new Screen(b.getString("name", "?"), "by " + by + " · version " + b.getInt("version", 1) + " · id " + b.getString("modId", "?"));
+			s.back = back;
+			String desc = b.getString("description", "");
+			if (!desc.isEmpty()) s.note(desc);
+			if (modsDir == null) s.warning("Downloads aren't available on this device.");
+			else s.item(installed ? "Reinstall (replace my copy)" : "Download and install", "Then pick it from Mods on hero select", () -> {
+				try {
+					com.shatteredpixel.shatteredpixeldungeon.apd.mods.ModInstaller.installDownload(modsDir, b.getString("json", null), b.getString("sprite", null));
+					done("Installed. Pick it from Mods on the hero select screen.", () -> modDetail(id, fromSubscribed));
+				} catch (com.shatteredpixel.shatteredpixeldungeon.apd.mods.ModInstaller.Refused e){
+					Screen x = new Screen("Community", null);
+					x.warning("This mod can't be installed: " + e.getMessage() + ". Your installed mods weren't changed.");
+					x.item("OK", null, () -> modDetail(id, fromSubscribed));
+					x.back = () -> modDetail(id, fromSubscribed);
+					ui.show(x);
+				}
+			});
+			s.check("Subscribed", "Keep it in My subscriptions", sub, () ->
+					call(() -> api.modSubscribe(id, !sub), x -> { if (x.ok()){ CACHE.remove(cacheKey("mods-subscribed")); modDetail(id, fromSubscribed); } else problem(x, () -> modDetail(id, fromSubscribed)); }));
+			if (me != null && authorId.equals(me.getString("id", "")))
+				s.item("Delete my mod from the workshop", "Copies already installed stay on players' devices", () ->
+						call(() -> api.modDelete(id), x -> {
+							if (x.ok()){ CACHE.remove(cacheKey("mods")); CACHE.remove(cacheKey("mods-subscribed")); done("Deleted from the workshop.", back); }
+							else problem(x, () -> modDetail(id, fromSubscribed));
+						}));
+			else s.item("Report", null, () -> report("mod", id, () -> modDetail(id, fromSubscribed)));
+			s.item("Back", null, back);
+			ui.show(s);
+		}));
+	}
+
+	private void modUploadPick(){
+		com.shatteredpixel.shatteredpixeldungeon.apd.mods.ModLibrary lib = com.shatteredpixel.shatteredpixeldungeon.apd.mods.ModLibrary.scan(modsDir);
+		Screen s = new Screen("Upload a mod", "Pick one of your installed mods. Uploading a mod id you uploaded before replaces it (new version).");
+		s.back = this::workshop;
+		if (lib.heroes.isEmpty()) s.note("No valid mods are installed. Put your mod in the mods folder (see the modding guide) first.");
+		for (com.shatteredpixel.shatteredpixeldungeon.apd.mods.ModLibrary.Installed i : lib.heroes)
+			s.item(i.mod.name, "id " + i.mod.id, () -> modUpload(i));
+		for (com.shatteredpixel.shatteredpixeldungeon.apd.mods.ModLibrary.Refused f : lib.refused)
+			s.warning(f.folder + ": " + f.reason);
+		s.item("Back", null, this::workshop);
+		ui.show(s);
+	}
+
+	private void modUpload(com.shatteredpixel.shatteredpixeldungeon.apd.mods.ModLibrary.Installed i){
+		final byte[] png;
+		try { png = java.nio.file.Files.readAllBytes(i.sprite.toPath()); }
+		catch (java.io.IOException | RuntimeException e){
+			Screen x = new Screen("Community", null);
+			x.warning("Couldn't read that mod's sprite.png.");
+			x.item("OK", null, this::modUploadPick);
+			x.back = this::modUploadPick;
+			ui.show(x);
+			return;
+		}
+		call(() -> {
+			try { return api.modUpload(i.json, png); }
+			catch (IllegalArgumentException e){ return new CommunityApi.Result(400, null, "sprite".equals(e.getMessage()) ? "sprite_too_large" : "json_too_large"); }
+		}, r -> {
+			if (!r.ok()){ problem(r, this::modUploadPick); return; }
+			CACHE.remove(cacheKey("mods"));
+			done(r.body != null && r.body.getBoolean("updated", false) ? "Updated: players see the new version." : "Uploaded. Other players can find it in the workshop now.", this::workshop);
+		});
+	}
 
 	private void moderation(){
 		call(api::adminReports, r -> {

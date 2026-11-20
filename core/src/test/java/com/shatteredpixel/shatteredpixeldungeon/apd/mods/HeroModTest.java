@@ -13,7 +13,7 @@ import static org.junit.Assert.*;
 // Chris, Nov 19: modders must be able to add heroes, built from pieces that already exist (data only, no code).
 public class HeroModTest {
 
-	static String hero(String over){
+	public static String hero(String over){
 		String base = "{\"format\":1,\"id\":\"chris.battle-mage\",\"name\":\"Battle Mage\",\"author\":\"Chris\","
 				+ "\"baseClass\":\"WARRIOR\",\"hp\":22,\"str\":11,"
 				+ "\"startingItems\":[{\"item\":\"weapon.melee.Sword\",\"level\":1}],"

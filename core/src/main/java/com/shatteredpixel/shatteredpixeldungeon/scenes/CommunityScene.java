@@ -55,6 +55,9 @@ public class CommunityScene extends PixelScene {
         if (server == null || server.trim().isEmpty()) { showPage(); return; }
         CommunityApi api;
         try { api = new CommunityApi(server, 15000); } catch (IllegalArgumentException e) { showPage(); return; }
+        try {
+            CommunityController.modsDir = com.watabou.utils.FileUtils.getFileHandle(com.shatteredpixel.shatteredpixeldungeon.apd.mods.ModHeroSelection.FOLDER).file();
+        } catch (RuntimeException e) { CommunityController.modsDir = null; }
         new CommunityController(api, new SceneUi(), CommunityScene::runAsync, new Prefs(), CommunityController.now()).start();
     }
 

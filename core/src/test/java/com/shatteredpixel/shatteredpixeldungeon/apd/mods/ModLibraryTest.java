@@ -15,7 +15,7 @@ import static org.junit.Assert.*;
 public class ModLibraryTest {
 	@Rule public TemporaryFolder tmp = new TemporaryFolder();
 
-	static byte[] pngHeader(int w, int h) throws Exception {
+	public static byte[] pngHeader(int w, int h) throws Exception {
 		ByteArrayOutputStream b = new ByteArrayOutputStream();
 		DataOutputStream d = new DataOutputStream(b);
 		d.write(new byte[]{(byte)0x89, 'P', 'N', 'G', 13, 10, 26, 10});

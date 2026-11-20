@@ -650,4 +650,63 @@ public class CommunityControllerTest {
 		assertTrue("found the server's errors", seen > 30);
 		assertTrue(unmapped.toString(), unmapped.isEmpty());
 	}
+
+	@Test public void workshop_browseInstallSubscribeReportAndUpload() throws Exception {
+		java.io.File mods = java.nio.file.Files.createTempDirectory("apdmods").toFile();
+		CommunityController.modsDir = mods;
+		try {
+			store.age = "pass"; store.token = "tok";
+			signedInWorld(false);
+			String json = com.shatteredpixel.shatteredpixeldungeon.apd.mods.HeroModTest.hero(null);
+			String png = java.util.Base64.getEncoder().encodeToString(com.shatteredpixel.shatteredpixeldungeon.apd.mods.ModLibraryTest.pngHeader(256, 128));
+			String quoted = new com.badlogic.gdx.utils.Json().toJson(json, String.class);
+			reply("GET /v1/mods", 200, "{\"mods\":[{\"id\":\"m1\",\"modId\":\"chris.battle-mage\",\"name\":\"Battle Mage\",\"version\":2,\"subscribers\":3,\"author\":{\"id\":\"bb02\",\"displayName\":\"Ann\"}}]}");
+			reply("GET /v1/mods/subscribed", 200, "{\"mods\":[]}");
+			reply("GET /v1/mods/m1", 200, "{\"id\":\"m1\",\"modId\":\"chris.battle-mage\",\"name\":\"Battle Mage\",\"version\":2,\"author\":{\"id\":\"bb02\",\"displayName\":\"Ann\"},\"json\":" + quoted + ",\"sprite\":\"" + png + "\"}");
+			reply("POST /v1/mods/m1/subscribe", 200, "{}");
+			reply("POST /v1/reports", 201, "{}");
+			controller().start();
+			tap("Hero mods workshop");
+			assertTrue(has(last(), "by Ann"));
+			assertFalse(has(last(), "installed"));
+			tap("Battle Mage");
+			assertFalse("not mine: no delete", has(last(), "Delete my mod"));
+			tap("Download and install");
+			assertTrue(has(last(), "Installed."));
+			assertEquals(json, new String(java.nio.file.Files.readAllBytes(new java.io.File(mods, "chris.battle-mage/hero.json").toPath()), StandardCharsets.UTF_8));
+			tap("OK");
+			assertTrue("now offered as reinstall", has(last(), "Reinstall"));
+			tap("Subscribed");
+			assertTrue(requests.stream().anyMatch(q -> q.startsWith("POST /v1/mods/m1/subscribe")));
+			answers.add("stolen art");
+			tap("Report");
+			assertTrue(requests.stream().anyMatch(q -> q.startsWith("POST /v1/reports") && q.contains("\"kind\":\"mod\"") && q.contains("\"id\":\"m1\"")));
+
+			// A damaged download is refused and the installed copy stays.
+			reply("GET /v1/mods/m1", 200, "{\"id\":\"m1\",\"modId\":\"chris.battle-mage\",\"name\":\"Battle Mage\",\"author\":{\"id\":\"bb02\"},\"json\":\"not json\",\"sprite\":\"" + png + "\"}");
+			controller().start();
+			tap("Hero mods workshop"); tap("Battle Mage"); tap("Reinstall");
+			assertTrue(has(last(), "can't be installed"));
+			assertEquals(json, new String(java.nio.file.Files.readAllBytes(new java.io.File(mods, "chris.battle-mage/hero.json").toPath()), StandardCharsets.UTF_8));
+
+			// Upload sends the exact installed hero.json and sprite; server refusals in plain words.
+			reply("POST /v1/mods", 409, "{\"error\":\"mod_id_taken\"}");
+			controller().start();
+			tap("Hero mods workshop"); tap("Upload one of my installed mods"); tap("Battle Mage");
+			assertTrue(has(last(), "Another player already uses that mod id"));
+			assertTrue(requests.stream().anyMatch(q -> q.startsWith("POST /v1/mods {") && q.contains(png)));
+			reply("POST /v1/mods", 200, "{\"id\":\"m1\",\"updated\":true}");
+			tap("OK"); tap("Battle Mage");
+			assertTrue(has(last(), "Updated"));
+
+			// My own mod: delete instead of report.
+			reply("GET /v1/mods/m1", 200, "{\"id\":\"m1\",\"modId\":\"chris.battle-mage\",\"name\":\"Battle Mage\",\"author\":{\"id\":\"aa01\",\"displayName\":\"Chris\"},\"json\":" + quoted + ",\"sprite\":\"" + png + "\"}");
+			reply("DELETE /v1/mods/m1", 200, "{}");
+			controller().start();
+			tap("Hero mods workshop"); tap("Battle Mage");
+			assertFalse(itemLabels(last()).contains("Report"));
+			tap("Delete my mod");
+			assertTrue(has(last(), "Deleted from the workshop."));
+		} finally { CommunityController.modsDir = null; }
+	}
 }
