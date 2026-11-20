@@ -47,7 +47,8 @@ public final class ModLibrary {
 	public static ModLibrary scan(File modsDir){
 		List<Installed> ok = new ArrayList<>();
 		List<Refused> bad = new ArrayList<>();
-		File[] dirs = modsDir == null ? null : modsDir.listFiles(File::isDirectory);
+		// Dot folders are the installer's staging/leftovers, never mods.
+		File[] dirs = modsDir == null ? null : modsDir.listFiles(f -> f.isDirectory() && !f.getName().startsWith("."));
 		if (dirs == null) return new ModLibrary(ok, bad);
 		Arrays.sort(dirs, (a, b) -> a.getName().compareTo(b.getName()));
 		List<String> ids = new ArrayList<>();
