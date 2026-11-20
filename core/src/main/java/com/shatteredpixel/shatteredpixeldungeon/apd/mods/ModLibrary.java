@@ -26,7 +26,9 @@ public final class ModLibrary {
 	public static final class Installed {
 		public final HeroMod mod;
 		public final File sprite;
-		Installed(HeroMod mod, File sprite){ this.mod = mod; this.sprite = sprite; }
+		/** The exact hero.json text, stored in the save when this hero is played. */
+		public final String json;
+		Installed(HeroMod mod, File sprite, String json){ this.mod = mod; this.sprite = sprite; this.json = json; }
 	}
 
 	public static final class Refused {
@@ -54,11 +56,12 @@ public final class ModLibrary {
 				File json = new File(d, "hero.json"), png = new File(d, "sprite.png");
 				if (!json.isFile()) throw new HeroMod.Invalid("hero.json is missing");
 				if (json.length() > MAX_JSON_BYTES) throw new HeroMod.Invalid("hero.json is larger than 16 KB");
-				HeroMod m = HeroMod.parse(new String(Files.readAllBytes(json.toPath()), StandardCharsets.UTF_8));
+				String text = new String(Files.readAllBytes(json.toPath()), StandardCharsets.UTF_8);
+				HeroMod m = HeroMod.parse(text);
 				checkSprite(png);
 				if (ids.contains(m.id)) throw new HeroMod.Invalid("another installed mod already uses the id " + m.id);
 				ids.add(m.id);
-				ok.add(new Installed(m, png));
+				ok.add(new Installed(m, png, text));
 			} catch (HeroMod.Invalid e){
 				bad.add(new Refused(d.getName(), e.getMessage()));
 			} catch (IOException | RuntimeException e){

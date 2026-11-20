@@ -105,6 +105,8 @@ public class HeroSelectScene extends PixelScene {
             }
             GamesInProgress.curSlot = free;
         }
+		//APD hero mods: the picked mod plays only if its base class is still the selected hero
+		com.shatteredpixel.shatteredpixeldungeon.apd.mods.ModHeroSelection.confirmForStart(GamesInProgress.selectedClass);
 		Dungeon.hero = null;
 		Dungeon.daily = Dungeon.dailyReplay = false;
 		Dungeon.initSeed();
@@ -399,6 +401,22 @@ public class HeroSelectScene extends PixelScene {
 		add( btnExit );
 		btnExit.visible = btnExit.active = true; //APD: always allow going back to the title menu
 
+		//APD hero mods (plan step c): installed mod heroes are listed after the normal classes
+		com.shatteredpixel.shatteredpixeldungeon.apd.mods.ModHeroSelection.clear();
+		final com.shatteredpixel.shatteredpixeldungeon.apd.mods.ModLibrary mods = scanMods();
+		if (mods != null && (!mods.heroes.isEmpty() || !mods.refused.isEmpty())){
+			StyledButton btnMods = new StyledButton(Chrome.Type.GREY_BUTTON_TR, "Mods"){
+				@Override
+				protected void onClick() {
+					super.onClick();
+					showMods(mods);
+				}
+			};
+			btnMods.setSize(32, 18);
+			btnMods.setPos(Camera.main.width - btnMods.width() - ofs, btnExit.bottom() + 2);
+			add(btnMods);
+		}
+
 		PointerArea fadeResetter = new PointerArea(0, 0, Camera.main.width, Camera.main.height){
 			@Override
 			public boolean onSignal(PointerEvent event) {
@@ -460,7 +478,41 @@ public class HeroSelectScene extends PixelScene {
 		}
 	}
 
+	private static com.shatteredpixel.shatteredpixeldungeon.apd.mods.ModLibrary scanMods(){
+		try {
+			return com.shatteredpixel.shatteredpixeldungeon.apd.mods.ModHeroSelection.scan(com.watabou.utils.FileUtils.getFileHandle(com.shatteredpixel.shatteredpixeldungeon.apd.mods.ModHeroSelection.FOLDER).file());
+		} catch (Exception e){
+			Game.reportException(e);
+			return null;
+		}
+	}
+
+	private void showMods(final com.shatteredpixel.shatteredpixeldungeon.apd.mods.ModLibrary mods){
+		final java.util.List<com.shatteredpixel.shatteredpixeldungeon.apd.mods.ModLibrary.Installed> list = mods.heroes;
+		String[] labels = new String[list.size()];
+		for (int i = 0; i < labels.length; i++) labels[i] = com.shatteredpixel.shatteredpixeldungeon.apd.mods.ModHeroSelection.label(list.get(i));
+		StringBuilder msg = new StringBuilder(list.isEmpty() ? "No mod heroes could be loaded." : "Mod heroes installed on this phone:");
+		for (com.shatteredpixel.shatteredpixeldungeon.apd.mods.ModLibrary.Refused r : mods.refused) msg.append("\n\nNot loaded: ").append(r.folder).append(": ").append(r.reason);
+		ShatteredPixelDungeon.scene().addToFront(new WndOptions("Mod heroes", msg.toString(), labels){
+			@Override
+			protected void onSelect(int index){
+				final com.shatteredpixel.shatteredpixeldungeon.apd.mods.ModLibrary.Installed m = list.get(index);
+				ShatteredPixelDungeon.scene().addToFront(new WndOptions(m.mod.name, com.shatteredpixel.shatteredpixeldungeon.apd.mods.ModHeroSelection.details(m), "Play as " + m.mod.name, "Back"){
+					@Override
+					protected void onSelect(int choice){
+						if (choice != 0) return;
+						String why = com.shatteredpixel.shatteredpixeldungeon.apd.mods.ModHeroSelection.blockedReason(m, m.mod.baseClass.isUnlocked());
+						if (why != null){ ShatteredPixelDungeon.scene().addToFront(new WndMessage("Can't play this mod: " + why + ".")); return; }
+						setSelectedHero(m.mod.baseClass);
+						com.shatteredpixel.shatteredpixeldungeon.apd.mods.ModHeroSelection.pick(m); //after setSelectedHero, which drops any earlier pick
+					}
+				});
+			}
+		});
+	}
+
 	private void setSelectedHero(HeroClass cl){
+		com.shatteredpixel.shatteredpixeldungeon.apd.mods.ModHeroSelection.clear();
 		GamesInProgress.selectedClass = cl;
 		GamesInProgress.randomizedClass = false;
 
@@ -816,6 +868,7 @@ public class HeroSelectScene extends PixelScene {
 									Dungeon.dailyReplay = true;
 								}
 
+								com.shatteredpixel.shatteredpixeldungeon.apd.mods.ModHeroSelection.clear(); //daily runs are always normal heroes
 								Dungeon.hero = null;
 								Dungeon.daily = true;
 								Dungeon.initSeed();
