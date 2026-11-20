@@ -306,6 +306,9 @@ public class LootRuntimeTest {
         Dungeon.level.setTrap(new com.shatteredpixel.shatteredpixeldungeon.levels.traps.AlarmTrap().hide(),trapCell);
         Pasty onTrap=new Pasty();onTrap.apdUid="on-trap";pile(trapCell,Heap.Type.HEAP,onTrap);
         assertFalse("seen pile on a hidden trap still blocked",LootTransfers.cellAllowed(Dungeon.level,trapCell));
+        Dungeon.level.traps.get(trapCell).active=false; // set off already (Chris, Nov 20)
+        assertTrue("a spent trap no longer holds the pile",LootTransfers.cellAllowed(Dungeon.level,trapCell));
+        Dungeon.level.traps.get(trapCell).active=true;
         Pasty free=new Pasty();free.apdUid="free";pile(away,Heap.Type.HEAP,free);
         readGathering();
         assertEquals(1,gatherCount("free"));assertEquals(0,gatherCount("on-trap"));

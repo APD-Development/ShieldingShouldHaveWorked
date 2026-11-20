@@ -71,7 +71,7 @@ public final class LootTransfers {
     public static boolean cellAllowed(Level level, int cell) {
         com.shatteredpixel.shatteredpixeldungeon.items.Heap heap = level.heaps.get(cell);
         if (heap == null || !heap.seen) return false;
-        if (level.traps != null && level.traps.get(cell) != null) return false;
+        if (level.traps != null && level.traps.get(cell) != null && level.traps.get(cell).active) return false; // a set-off trap is spent (Chris, Nov 20)
         if (level instanceof com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel
                 && ((com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel) level).apdHasRooms()) {
             com.shatteredpixel.shatteredpixeldungeon.levels.rooms.Room room =
