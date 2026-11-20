@@ -21,6 +21,8 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items;
 
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Bomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Blandfruit;
@@ -259,8 +261,9 @@ public abstract class Recipe {
 	public static boolean usableInRecipe(Item item){
 		//only upgradeable thrown weapons and wands allowed among equipment items
 		if (item instanceof com.shatteredpixel.shatteredpixeldungeon.items.rings.Ring){
-			//APD: rings go in the pot to become Gemstone Dust
-			return item.cursedKnown && !item.cursed;
+			//APD (Chris, Nov 20): any ring that isn't cursed goes in the pot to become Gemstone Dust, known or not, like potions
+			//(dissolving it identifies the ring type). Never a cursed ring, and never one being worn: take it off first.
+			return !item.cursed && !(Dungeon.hero != null && item.isEquipped(Dungeon.hero));
 		} else if (item instanceof EquipableItem){
 			return item.cursedKnown && !item.cursed &&
 					item instanceof MissileWeapon && item.isUpgradable();

@@ -110,8 +110,7 @@ public class RingDust extends Item {
 		public boolean testIngredients(ArrayList<Item> ingredients) {
 			return ingredients.size() == 1
 					&& ingredients.get(0) instanceof Ring
-					&& ingredients.get(0).cursedKnown
-					&& !ingredients.get(0).cursed;
+					&& com.shatteredpixel.shatteredpixeldungeon.items.Recipe.usableInRecipe(ingredients.get(0));
 		}
 
 		@Override public int cost(ArrayList<Item> ingredients) { return energyCost(); }
@@ -120,6 +119,8 @@ public class RingDust extends Item {
 		public Item brew(ArrayList<Item> ingredients) {
 			Ring r = (Ring) ingredients.get(0);
 			Item result = new RingDust().quantity(dustQuantity(r.level()));
+			// Like brewing a potion: dissolving a ring identifies its type (Chris, Nov 20)
+			if (!r.isKnown()) r.setKnown();
 			r.quantity(0);
 			return result;
 		}

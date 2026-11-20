@@ -100,11 +100,45 @@ public class RingDustTest {
 		//bug found Nov 18: rings are equipment, and equipment other than thrown weapons was refused by the pot
 		assertTrue(Recipe.usableInRecipe(ring(0, true, false)));
 		assertFalse("cursed rings stay out", Recipe.usableInRecipe(ring(0, true, true)));
-		assertFalse("curse status must be known", Recipe.usableInRecipe(ring(0, false, false)));
+		assertTrue("unknown rings go in like unknown potions (Chris, Nov 20)", Recipe.usableInRecipe(ring(0, false, false)));
+		assertFalse("an unknown ring that is actually cursed still stays out", Recipe.usableInRecipe(ring(0, false, true)));
 		java.util.ArrayList<Item> in = new java.util.ArrayList<>();
 		in.add(ring(1, true, false));
 		java.util.ArrayList<Recipe> found = Recipe.findRecipes(in);
 		assertEquals(1, found.size());
 		assertTrue(found.get(0) instanceof RingDust.Recipe);
+	}
+
+	@Test public void dissolvingAnUnknownRingIdentifiesItsTypeAndGivesItsRealDust(){ // Chris, Nov 20
+		Ring r = ring(2, false, false);
+		assertFalse(r.isKnown());
+		java.util.ArrayList<Item> in = new java.util.ArrayList<>(); in.add(r);
+		RingDust.Recipe recipe = new RingDust.Recipe();
+		assertTrue(recipe.testIngredients(in));
+		Item out = recipe.brew(in);
+		assertEquals("real level +2 gives 6", 6, out.quantity());
+		assertTrue("ring type is now known", r.isKnown());
+		assertTrue(new RingOfArcana().isKnown());
+	}
+
+	@Test public void aWornRingCannotGoInThePot(){ // bug, Chris Nov 20: a worn ring was dissolved but stayed equipped
+		Ring r = ring(0, true, false);
+		if (Dungeon.hero == null) Dungeon.hero = new com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero();
+		Dungeon.hero.belongings.ring = r;
+		try { assertFalse(Recipe.usableInRecipe(r));
+			java.util.ArrayList<Item> in = new java.util.ArrayList<>(); in.add(r);
+			assertFalse(new RingDust.Recipe().testIngredients(in));
+		} finally { Dungeon.hero.belongings.ring = null; }
+	}
+
+	@Test public void aUsedUpWornRingFromAnOlderSaveIsClearedOnLoad(){
+		Ring r = ring(0, true, false);
+		if (Dungeon.hero == null) Dungeon.hero = new com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero();
+		Dungeon.hero.belongings.ring = r; r.quantity(0);
+		com.watabou.utils.Bundle b = new com.watabou.utils.Bundle();
+		Dungeon.hero.belongings.storeInBundle(b);
+		Dungeon.hero.belongings.ring = null;
+		Dungeon.hero.belongings.restoreFromBundle(b);
+		assertNull(Dungeon.hero.belongings.ring);
 	}
 }

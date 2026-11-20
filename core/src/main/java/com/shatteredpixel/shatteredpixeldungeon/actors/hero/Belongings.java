@@ -202,9 +202,12 @@ public class Belongings implements Iterable<Item> {
 		if (artifact() != null)     artifact().activate(owner);
 
 		misc = (KindofMisc) bundle.get(MISC);
+		if (misc instanceof Ring && misc.quantity() <= 0) misc = null; //APD: see ring below
 		if (misc() != null)         misc().activate( owner );
 
 		ring = (Ring) bundle.get(RING);
+		//APD: older builds let the pot dissolve a WORN ring, leaving a used-up (quantity 0) ring in the slot; clear it
+		if (ring != null && ring.quantity() <= 0) ring = null;
 		if (ring() != null)         ring().activate( owner );
 
 		secondWep = (KindOfWeapon) bundle.get(SECOND_WEP);
