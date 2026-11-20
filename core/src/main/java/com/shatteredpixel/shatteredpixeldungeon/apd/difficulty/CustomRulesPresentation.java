@@ -31,7 +31,7 @@ public final class CustomRulesPresentation {
             case FOOD: return "Food Availability";
             case HUNGER: return "Hunger Depletion";
             case HEALING: return "Healing Effectiveness";
-            case EQUIPMENT: return "Equipment Availability";
+            case EQUIPMENT: return "Loot Availability";
             case UPGRADE_SCROLLS: return "Upgrade Scrolls";
             default: throw new IllegalArgumentException("Unknown slider");
         }

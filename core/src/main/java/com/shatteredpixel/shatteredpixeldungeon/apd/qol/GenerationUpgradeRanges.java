@@ -75,8 +75,7 @@ public final class GenerationUpgradeRanges {
         if (origin.source == GenerationEvents.C_FOR_SALE) { set(item, 0, 0); return; }
         if (BONUS_ROOMS.contains(origin.room)) { optionalBonus(item); return; }
         if (CURSED_BONUS_ROOMS.contains(origin.room) && (item instanceof Weapon || item instanceof Armor)) {
-            boolean extrasPossible = com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomCombatHooks.percentage(
-                    com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomDungeonRules.Slider.EQUIPMENT) > 100;
+            boolean extrasPossible = false; // Loot Availability no longer duplicates drops (Nov 20)
             set(item, ParchmentScrap.curseChanceMultiplier() == 0 && !extrasPossible ? 1 : 0, 3);
         }
     }
@@ -84,8 +83,7 @@ public final class GenerationUpgradeRanges {
         if (item == null || item.apdFoundOrigin != null) return;
         if (mob instanceof com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Slime
                 || mob instanceof com.shatteredpixel.shatteredpixeldungeon.actors.mobs.GnollTrickster) {
-            boolean extrasPossible = com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomCombatHooks.percentage(
-                    com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomDungeonRules.Slider.EQUIPMENT) > 100;
+            boolean extrasPossible = false; // Loot Availability no longer duplicates drops (Nov 20)
             set(item, 0, extrasPossible ? 2 : 0);
         }
     }

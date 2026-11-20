@@ -392,6 +392,8 @@ public abstract class RegularLevel extends Level {
 		}
 		//APD: difficulty scales how many ORDINARY random items this level gets (identity at difficulty 3); guaranteed items are added elsewhere
 		nItems = com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.DifficultyHooks.ordinaryItemCount(nItems);
+		//APD custom rules, Loot Availability (Chris, Nov 20): more or fewer separate random items on the floor, never duplicates
+		nItems = com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomEquipmentHooks.lootCount(nItems);
 		
 		for (int i=0; i < nItems; i++) {
 

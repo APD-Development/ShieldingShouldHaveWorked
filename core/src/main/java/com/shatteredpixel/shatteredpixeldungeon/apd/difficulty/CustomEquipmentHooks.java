@@ -58,12 +58,22 @@ public final class CustomEquipmentHooks {
         }
         return heaps;
     }
+    /** Loot Availability: scales the number of ordinary random items a regular floor places (spread over the floor, each its own
+     *  Generator draw). 100% = unchanged; otherwise round-half-up(count x percent), never below one. */
+    public static int lootCount(int count) {
+        int percent=CustomCombatHooks.percentage(CustomDungeonRules.Slider.EQUIPMENT);
+        if(percent==100 || count<=0)return count;
+        return Math.max(1,(count*percent+50)/100);
+    }
     public static Item extraLike(Item original) {
         if(original instanceof Artifact)return Generator.random(Generator.Category.ARTIFACT);
         return Generator.random(original.getClass());
     }
     public static List<Item> adjust(Item original, Factory extra) {
         if(original==null)return Collections.emptyList();
+        // Chris, Nov 20: the slider (now Loot Availability) never duplicates or deletes a drop; it changes how many
+        // ordinary random items each floor places instead (lootCount). Every drop passes through unchanged.
+        if(true)return Collections.singletonList(original);
         int percent=CustomCombatHooks.percentage(CustomDungeonRules.Slider.EQUIPMENT);
         if(percent==100 || !eligible(original))return Collections.singletonList(original);
         if(percent<100)return Random.Int(100)<percent?Collections.singletonList(original):Collections.<Item>emptyList();
