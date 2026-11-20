@@ -660,10 +660,10 @@ public class CommunityControllerTest {
 			String json = com.shatteredpixel.shatteredpixeldungeon.apd.mods.HeroModTest.hero(null);
 			String png = java.util.Base64.getEncoder().encodeToString(com.shatteredpixel.shatteredpixeldungeon.apd.mods.ModLibraryTest.pngHeader(256, 128));
 			String quoted = new com.badlogic.gdx.utils.Json().toJson(json, String.class);
-			reply("GET /v1/mods", 200, "{\"mods\":[{\"id\":\"m1\",\"modId\":\"chris.battle-mage\",\"name\":\"Battle Mage\",\"version\":2,\"subscribers\":3,\"author\":{\"id\":\"bb02\",\"displayName\":\"Ann\"}}]}");
+			reply("GET /v1/mods", 200, "{\"mods\":[{\"id\":\"a1\",\"modId\":\"chris.battle-mage\",\"name\":\"Battle Mage\",\"version\":2,\"subscribers\":3,\"author\":{\"id\":\"bb02\",\"displayName\":\"Ann\"}}]}");
 			reply("GET /v1/mods/subscribed", 200, "{\"mods\":[]}");
-			reply("GET /v1/mods/m1", 200, "{\"id\":\"m1\",\"modId\":\"chris.battle-mage\",\"name\":\"Battle Mage\",\"version\":2,\"author\":{\"id\":\"bb02\",\"displayName\":\"Ann\"},\"json\":" + quoted + ",\"sprite\":\"" + png + "\"}");
-			reply("POST /v1/mods/m1/subscribe", 200, "{}");
+			reply("GET /v1/mods/a1", 200, "{\"id\":\"a1\",\"modId\":\"chris.battle-mage\",\"name\":\"Battle Mage\",\"version\":2,\"author\":{\"id\":\"bb02\",\"displayName\":\"Ann\"},\"json\":" + quoted + ",\"sprite\":\"" + png + "\"}");
+			reply("POST /v1/mods/a1/subscribe", 200, "{}");
 			reply("POST /v1/reports", 201, "{}");
 			controller().start();
 			tap("Hero mods workshop");
@@ -677,13 +677,13 @@ public class CommunityControllerTest {
 			tap("OK");
 			assertTrue("now offered as reinstall", has(last(), "Reinstall"));
 			tap("Subscribed");
-			assertTrue(requests.stream().anyMatch(q -> q.startsWith("POST /v1/mods/m1/subscribe")));
+			assertTrue(requests.stream().anyMatch(q -> q.startsWith("POST /v1/mods/a1/subscribe")));
 			answers.add("stolen art");
 			tap("Report");
-			assertTrue(requests.stream().anyMatch(q -> q.startsWith("POST /v1/reports") && q.contains("\"kind\":\"mod\"") && q.contains("\"id\":\"m1\"")));
+			assertTrue(requests.stream().anyMatch(q -> q.startsWith("POST /v1/reports") && q.contains("\"kind\":\"mod\"") && q.contains("\"id\":\"a1\"")));
 
 			// A damaged download is refused and the installed copy stays.
-			reply("GET /v1/mods/m1", 200, "{\"id\":\"m1\",\"modId\":\"chris.battle-mage\",\"name\":\"Battle Mage\",\"author\":{\"id\":\"bb02\"},\"json\":\"not json\",\"sprite\":\"" + png + "\"}");
+			reply("GET /v1/mods/a1", 200, "{\"id\":\"a1\",\"modId\":\"chris.battle-mage\",\"name\":\"Battle Mage\",\"author\":{\"id\":\"bb02\"},\"json\":\"not json\",\"sprite\":\"" + png + "\"}");
 			controller().start();
 			tap("Hero mods workshop"); tap("Battle Mage"); tap("Reinstall");
 			assertTrue(has(last(), "can't be installed"));
@@ -695,13 +695,13 @@ public class CommunityControllerTest {
 			tap("Hero mods workshop"); tap("Upload one of my installed mods"); tap("Battle Mage");
 			assertTrue(has(last(), "Another player already uses that mod id"));
 			assertTrue(requests.stream().anyMatch(q -> q.startsWith("POST /v1/mods {") && q.contains(png)));
-			reply("POST /v1/mods", 200, "{\"id\":\"m1\",\"updated\":true}");
+			reply("POST /v1/mods", 200, "{\"id\":\"a1\",\"updated\":true}");
 			tap("OK"); tap("Battle Mage");
 			assertTrue(has(last(), "Updated"));
 
 			// My own mod: delete instead of report.
-			reply("GET /v1/mods/m1", 200, "{\"id\":\"m1\",\"modId\":\"chris.battle-mage\",\"name\":\"Battle Mage\",\"author\":{\"id\":\"aa01\",\"displayName\":\"Chris\"},\"json\":" + quoted + ",\"sprite\":\"" + png + "\"}");
-			reply("DELETE /v1/mods/m1", 200, "{}");
+			reply("GET /v1/mods/a1", 200, "{\"id\":\"a1\",\"modId\":\"chris.battle-mage\",\"name\":\"Battle Mage\",\"author\":{\"id\":\"aa01\",\"displayName\":\"Chris\"},\"json\":" + quoted + ",\"sprite\":\"" + png + "\"}");
+			reply("DELETE /v1/mods/a1", 200, "{}");
 			controller().start();
 			tap("Hero mods workshop"); tap("Battle Mage");
 			assertFalse(itemLabels(last()).contains("Report"));
