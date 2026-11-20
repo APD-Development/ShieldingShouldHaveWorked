@@ -91,6 +91,9 @@ public final class CommunityController {
 		public final String title, message;
 		public final List<Row> rows = new ArrayList<>();
 		public Runnable back;
+		/** Optional preview art (a mod hero's sprite.png bytes) and a cache key for it; null = no picture. */
+		public byte[] previewPng;
+		public String previewKey;
 		Screen(String title, String message){ this.title = title; this.message = message; }
 		Screen heading(String t){ rows.add(new Row(0, t, null, null, null)); return this; }
 		Screen note(String t){ rows.add(new Row(1, t, null, null, null)); return this; }
@@ -926,6 +929,15 @@ public final class CommunityController {
 		});
 	}
 
+	/** The download's base64 sprite as PNG bytes for the preview, or null if missing, unreadable or over the size limit. */
+	static byte[] decodeSprite(String b64){
+		if (b64 == null || b64.isEmpty()) return null;
+		try {
+			byte[] png = java.util.Base64.getDecoder().decode(b64);
+			return png.length == 0 || png.length > com.shatteredpixel.shatteredpixeldungeon.apd.mods.ModLibrary.MAX_SPRITE_BYTES ? null : png;
+		} catch (IllegalArgumentException e){ return null; }
+	}
+
 	private java.util.Set<String> installedIds(){
 		java.util.Set<String> ids = new java.util.HashSet<>();
 		if (modsDir == null) return ids;
@@ -949,6 +961,8 @@ public final class CommunityController {
 			boolean installed = installedIds().contains(b.getString("modId", ""));
 			Screen s = new Screen(b.getString("name", "?"), "by " + by + " · version " + b.getInt("version", 1) + " · id " + b.getString("modId", "?"));
 			s.back = back;
+			s.previewPng = decodeSprite(b.getString("sprite", null));
+			if (s.previewPng != null) s.previewKey = "workshop:" + b.getString("modId", "?") + ":" + b.getInt("version", 1) + ":" + s.previewPng.length;
 			String desc = b.getString("description", "");
 			if (!desc.isEmpty()) s.note(desc);
 			if (modsDir == null) s.warning("Downloads aren't available on this device.");

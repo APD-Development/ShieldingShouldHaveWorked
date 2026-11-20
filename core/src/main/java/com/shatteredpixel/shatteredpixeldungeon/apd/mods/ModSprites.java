@@ -35,22 +35,47 @@ public final class ModSprites {
 			String k = key(i.sprite);
 			SmartTexture tx = cache.get(k);
 			if (tx == null){
-				byte[] bytes = Files.readAllBytes(i.sprite.toPath());
-				if (bytes.length > ModLibrary.MAX_SPRITE_BYTES) return null;
-				Pixmap p = new Pixmap(bytes, 0, bytes.length);
-				if (p.getWidth() != ModLibrary.SPRITE_W || p.getHeight() != ModLibrary.SPRITE_H){ p.dispose(); return null; }
-				tx = new SmartTexture(p);
+				tx = texture(Files.readAllBytes(i.sprite.toPath()));
+				if (tx == null) return null;
 				cache.put(k, tx);
 			}
-			RectF patch = HeroSprite.tiers().get(armorTier);
-			Image avatar = new Image(tx);
-			RectF frame = avatar.texture.uvRect(1, 0, 12, 15);
-			frame.shift(patch.left, patch.top);
-			avatar.frame(frame);
-			return avatar;
+			return frame(tx, armorTier);
 		} catch (Throwable t){
 			Game.reportException(t);
 			return null;
 		}
+	}
+
+	/** Same preview from PNG bytes not on disk (a workshop download); cacheKey names those exact bytes. */
+	public static synchronized Image avatar(byte[] png, String cacheKey, int armorTier){
+		if (png == null || cacheKey == null) return null;
+		try {
+			SmartTexture tx = cache.get(cacheKey);
+			if (tx == null){
+				tx = texture(png);
+				if (tx == null) return null;
+				cache.put(cacheKey, tx);
+			}
+			return frame(tx, armorTier);
+		} catch (Throwable t){
+			Game.reportException(t);
+			return null;
+		}
+	}
+
+	private static SmartTexture texture(byte[] bytes){
+		if (bytes.length > ModLibrary.MAX_SPRITE_BYTES) return null;
+		Pixmap p = new Pixmap(bytes, 0, bytes.length);
+		if (p.getWidth() != ModLibrary.SPRITE_W || p.getHeight() != ModLibrary.SPRITE_H){ p.dispose(); return null; }
+		return new SmartTexture(p);
+	}
+
+	private static Image frame(SmartTexture tx, int armorTier){
+		RectF patch = HeroSprite.tiers().get(armorTier);
+		Image avatar = new Image(tx);
+		RectF frame = avatar.texture.uvRect(1, 0, 12, 15);
+		frame.shift(patch.left, patch.top);
+		avatar.frame(frame);
+		return avatar;
 	}
 }

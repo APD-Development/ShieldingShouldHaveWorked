@@ -160,6 +160,11 @@ public class WndUimsdList extends Window {
 	}
 
 	protected WndUimsdList( String title, String message, boolean switches, List<Entry> entries, Picker picker ){
+		this(title, message, switches, entries, picker, null);
+	}
+
+	//same, with an optional picture to the left of the title (null = none)
+	protected WndUimsdList( String title, String message, boolean switches, List<Entry> entries, Picker picker, com.watabou.noosa.Image icon ){
 		super();
 		this.picker = picker;
 		this.switches = switches;
@@ -170,10 +175,16 @@ public class WndUimsdList extends Window {
 		if (title != null && !title.isEmpty()){
 			RenderedTextBlock t = PixelScene.renderTextBlock(title, UimsdStyle.SIZE_TITLE);
 			t.hardlight(UimsdStyle.TITLE);
-			t.maxWidth(width - 2 * MARGIN);
-			t.setPos(MARGIN, pos);
+			float left = MARGIN;
+			if (icon != null){
+				icon.x = MARGIN; icon.y = pos;
+				add(icon);
+				left = icon.width() + 2 * MARGIN;
+			}
+			t.maxWidth(width - (int) left - MARGIN);
+			t.setPos(left, pos);
 			add(t);
-			pos = t.bottom() + MARGIN;
+			pos = Math.max(t.bottom(), icon == null ? 0 : icon.y + icon.height()) + MARGIN;
 		}
 		if (message != null && !message.isEmpty()){
 			if (message.length() > 100){

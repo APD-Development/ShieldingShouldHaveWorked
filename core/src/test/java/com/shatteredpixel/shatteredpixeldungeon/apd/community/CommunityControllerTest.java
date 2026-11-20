@@ -651,6 +651,15 @@ public class CommunityControllerTest {
 		assertTrue(unmapped.toString(), unmapped.isEmpty());
 	}
 
+	@Test public void workshopSpritePreview_refusesBadOrOversizedData(){
+		assertNull(CommunityController.decodeSprite(null));
+		assertNull(CommunityController.decodeSprite(""));
+		assertNull(CommunityController.decodeSprite("%%not base64%%"));
+		byte[] big = new byte[com.shatteredpixel.shatteredpixeldungeon.apd.mods.ModLibrary.MAX_SPRITE_BYTES + 1];
+		assertNull(CommunityController.decodeSprite(java.util.Base64.getEncoder().encodeToString(big)));
+		assertArrayEquals(new byte[]{1, 2, 3}, CommunityController.decodeSprite(java.util.Base64.getEncoder().encodeToString(new byte[]{1, 2, 3})));
+	}
+
 	@Test public void workshop_browseInstallSubscribeReportAndUpload() throws Exception {
 		java.io.File mods = java.nio.file.Files.createTempDirectory("apdmods").toFile();
 		CommunityController.modsDir = mods;
@@ -671,6 +680,8 @@ public class CommunityControllerTest {
 			assertFalse(has(last(), "· installed"));
 			tap("Battle Mage");
 			assertFalse("not mine: no delete", has(last(), "Delete my mod"));
+			assertArrayEquals("mod page carries the download's sprite for the preview", java.util.Base64.getDecoder().decode(png), last().previewPng);
+			assertEquals("workshop:chris.battle-mage:2:" + last().previewPng.length, last().previewKey);
 			tap("Download and install");
 			assertTrue(has(last(), "Installed."));
 			assertEquals(json, new String(java.nio.file.Files.readAllBytes(new java.io.File(mods, "chris.battle-mage/hero.json").toPath()), StandardCharsets.UTF_8));

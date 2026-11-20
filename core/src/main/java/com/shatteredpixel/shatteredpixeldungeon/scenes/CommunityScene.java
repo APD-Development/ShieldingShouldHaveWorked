@@ -105,10 +105,12 @@ public class CommunityScene extends PixelScene {
                 }
             }
             final Runnable back = screen.back;
+            com.watabou.noosa.Image preview = screen.previewPng == null ? null
+                    : com.shatteredpixel.shatteredpixeldungeon.apd.mods.ModSprites.avatar(screen.previewPng, screen.previewKey, 0);
             shown = new WndUimsdList(screen.title, screen.message == null ? "" : screen.message, false, entries, (index, checked) -> {
                 shown = null; // the list closes itself when a row is tapped
                 if (index >= 0 && index < items.size() && items.get(index).action != null) items.get(index).action.run();
-            }) {
+            }, preview) {
                 @Override public void onBackPressed() {
                     hide();
                     shown = null;
