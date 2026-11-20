@@ -102,7 +102,8 @@ public final class HeroModRun {
 	static List<Item> startingItems(HeroMod.StartingItem s){
 		List<Item> out = new ArrayList<>();
 		Item first = make(s);
-		if (first == null) return out;
+		// same rule as the class kit: an item the run's challenges block is not given (e.g. Dewdrop under No Herbalism)
+		if (first == null || com.shatteredpixel.shatteredpixeldungeon.Challenges.isItemBlocked(first)) return out;
 		out.add(first);
 		if (first.stackable) first.quantity(s.quantity);
 		else for (int i = 1; i < s.quantity; i++){ Item more = make(s); if (more != null) out.add(more); }

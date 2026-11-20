@@ -50,6 +50,18 @@ public class HeroModRunTest {
 		assertEquals(3, stack.get(0).quantity());
 	}
 
+	@Test public void startingItemsBlockedByTheRunsChallenges_areNotGiven(){
+		HeroMod.StartingItem dew = new HeroMod.StartingItem(
+				com.shatteredpixel.shatteredpixeldungeon.items.Dewdrop.class, 0, 5);
+		int old = com.shatteredpixel.shatteredpixeldungeon.Dungeon.challenges;
+		try {
+			com.shatteredpixel.shatteredpixeldungeon.Dungeon.challenges = 0;
+			assertEquals(1, HeroModRun.startingItems(dew).size());
+			com.shatteredpixel.shatteredpixeldungeon.Dungeon.challenges = com.shatteredpixel.shatteredpixeldungeon.Challenges.NO_HERBALISM;
+			assertTrue("No Herbalism blocks dew for mod heroes like for the class kit", HeroModRun.startingItems(dew).isEmpty());
+		} finally { com.shatteredpixel.shatteredpixeldungeon.Dungeon.challenges = old; }
+	}
+
 	@Test public void aNormalRunIsUntouched(){
 		HeroModRun.beginRun();
 		assertFalse(HeroModRun.isModRun());
