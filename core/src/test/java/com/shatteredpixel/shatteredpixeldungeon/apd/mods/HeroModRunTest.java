@@ -34,6 +34,26 @@ public class HeroModRunTest {
 		assertFalse("a new normal run clears it", HeroModRun.isModRun());
 	}
 
+	@Test public void snapshot_putsBackAModRunAndAPendingPick_afterBeginRun(){
+		Bundle save = new Bundle();
+		save.put("apd_mod_hero", "{ not valid json");
+		HeroModRun.restore(save);
+		HeroModRun.choose(null, "pending");
+		HeroModRun.Snapshot snap = new HeroModRun.Snapshot();
+		HeroModRun.cancelStarting();
+		HeroModRun.beginRun(); // what a Seed floors replay's initHero does
+		assertFalse(HeroModRun.isModRun());
+		snap.restore();
+		assertTrue("the live mod run is a mod run again", HeroModRun.isModRun());
+		Bundle again = new Bundle();
+		HeroModRun.store(again);
+		assertEquals("{ not valid json", again.getString("apd_mod_hero"));
+		HeroModRun.beginRun();
+		Bundle pending = new Bundle();
+		HeroModRun.store(pending);
+		assertEquals("the pending pick survived and is taken by the next real run", "pending", pending.getString("apd_mod_hero"));
+	}
+
 	@Test public void startingItemQuantity_isHonouredForStackableAndNonStackableItems() throws Exception {
 		HeroMod.StartingItem sword = new HeroMod.StartingItem(
 				com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sword.class, 2, 3);

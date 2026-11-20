@@ -199,6 +199,8 @@ public final class FloorReplay {
 
 		//The reference hero is the run's class with its starting kit (the kit decides which shop bags are offered). The kit is built while
 		//the hero counts as not alive: the game only records journal discoveries and badges for a living hero, and a replay must record none.
+		//the reference hero is always the normal class (a pending mod pick must not be consumed by a replay)
+		com.shatteredpixel.shatteredpixeldungeon.apd.mods.HeroModRun.cancelStarting();
 		Hero hero = new Hero();
 		hero.HP = 0;
 		Dungeon.hero = hero;
@@ -225,6 +227,7 @@ public final class FloorReplay {
 	//What a replay puts back.
 	private static final class Saved {
 		final Hero hero = Dungeon.hero;
+		final com.shatteredpixel.shatteredpixeldungeon.apd.mods.HeroModRun.Snapshot mod = new com.shatteredpixel.shatteredpixeldungeon.apd.mods.HeroModRun.Snapshot();
 		final Level level = Dungeon.level;
 		final int depth = Dungeon.depth, branch = Dungeon.branch, gold = Dungeon.gold, energy = Dungeon.energy;
 		final long seed = Dungeon.seed;
@@ -281,6 +284,7 @@ public final class FloorReplay {
 		}
 
 		void restore(){
+			mod.restore();
 			Dungeon.hero = hero;
 			Dungeon.level = level;
 			Dungeon.depth = depth;

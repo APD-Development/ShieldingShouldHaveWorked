@@ -170,5 +170,21 @@ public final class HeroModRun {
 		return m == null ? className : m.name;
 	}
 
+	/**
+	 * Everything this class holds (pending pick, the run's mod, damaged flag). A Seed floors replay builds a throwaway
+	 * hero through HeroClass.initHero, which calls beginRun(): without putting this back the replay consumed a pending
+	 * mod pick and turned a live mod run into a "normal" one (Community and normal badges no longer gated).
+	 */
+	public static final class Snapshot {
+		private final HeroMod starting = HeroModRun.starting, active = HeroModRun.active;
+		private final String startingJson = HeroModRun.startingJson, activeJson = HeroModRun.activeJson;
+		private final boolean damaged = HeroModRun.damaged;
+		public void restore(){
+			HeroModRun.starting = starting; HeroModRun.startingJson = startingJson;
+			HeroModRun.active = active; HeroModRun.activeJson = activeJson;
+			HeroModRun.damaged = damaged;
+		}
+	}
+
 	static List<String> debugIds(){ List<String> l = new ArrayList<>(); if (active != null) l.add(active.id); return l; }
 }
