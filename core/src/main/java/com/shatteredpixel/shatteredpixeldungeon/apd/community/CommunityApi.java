@@ -174,6 +174,24 @@ public final class CommunityApi {
 		return call("POST", "/v1/admin/review-access", "{\"accountId\":" + quote(accountId) + ",\"allowed\":" + allowed + "}");
 	}
 
+	// ---- hero mod workshop (data + art only; the game re-validates every download with HeroMod/ModLibrary) ----
+
+	public Result mods(){ return call("GET", "/v1/mods", null); }
+	public Result modsSubscribed(){ return call("GET", "/v1/mods/subscribed", null); }
+	/** Download: the exact hero.json text ("json") and the sprite as base64 ("sprite"). */
+	public Result modDownload(String id){ return call("GET", "/v1/mods/" + id(id), null); }
+	/** Same size limits as the server and the mods folder, refused before any request. */
+	public Result modUpload(String heroJson, byte[] spritePng){
+		if (heroJson == null || heroJson.trim().isEmpty()
+				|| heroJson.getBytes(java.nio.charset.StandardCharsets.UTF_8).length > com.shatteredpixel.shatteredpixeldungeon.apd.mods.ModLibrary.MAX_JSON_BYTES)
+			throw new IllegalArgumentException("json");
+		if (spritePng == null || spritePng.length == 0 || spritePng.length > com.shatteredpixel.shatteredpixeldungeon.apd.mods.ModLibrary.MAX_SPRITE_BYTES)
+			throw new IllegalArgumentException("sprite");
+		return call("POST", "/v1/mods", obj("json", heroJson, "sprite", java.util.Base64.getEncoder().encodeToString(spritePng)));
+	}
+	public Result modSubscribe(String id, boolean on){ return call(on ? "POST" : "DELETE", "/v1/mods/" + id(id) + "/subscribe", null); }
+	public Result modDelete(String id){ return call("DELETE", "/v1/mods/" + id(id), null); }
+
 	// ---- reports and blocks ----
 
 	public Result report(String kind, String targetId, String reason){

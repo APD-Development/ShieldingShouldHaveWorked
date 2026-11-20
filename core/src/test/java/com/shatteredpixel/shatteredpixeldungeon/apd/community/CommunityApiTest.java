@@ -147,6 +147,30 @@ public class CommunityApiTest {
 		assertEquals(2, seen.size());
 	}
 
+	@Test public void heroModWorkshopCallsAndLimitsBeforeAnyRequest(){
+		CommunityApi api = api();
+		api.token("t");
+		api.mods();
+		api.modDownload("ab12");
+		api.modUpload("{\"id\":\"a.b\"}", new byte[]{1, 2, 3});
+		api.modSubscribe("ab12", true);
+		api.modSubscribe("ab12", false);
+		api.modDelete("ab12");
+		assertEquals("GET /v1/mods  Bearer t", seen.get(0));
+		assertEquals("GET /v1/mods/ab12  Bearer t", seen.get(1));
+		assertEquals("POST /v1/mods {\"json\":\"{\\\"id\\\":\\\"a.b\\\"}\",\"sprite\":\"AQID\"} Bearer t", seen.get(2));
+		assertEquals("POST /v1/mods/ab12/subscribe  Bearer t", seen.get(3));
+		assertEquals("DELETE /v1/mods/ab12/subscribe  Bearer t", seen.get(4));
+		assertEquals("DELETE /v1/mods/ab12  Bearer t", seen.get(5));
+		StringBuilder big = new StringBuilder("{");
+		while (big.length() <= 16 * 1024) big.append(' ');
+		try { api.modUpload(big.toString(), new byte[]{1}); fail(); } catch (IllegalArgumentException expected) {}
+		try { api.modUpload("{}", new byte[64 * 1024 + 1]); fail(); } catch (IllegalArgumentException expected) {}
+		try { api.modUpload(" ", new byte[]{1}); fail(); } catch (IllegalArgumentException expected) {}
+		try { api.modDownload("../x"); fail(); } catch (IllegalArgumentException expected) {}
+		assertEquals(6, seen.size());
+	}
+
 	@Test public void refusesUnsafeAddressesAndIds(){
 		try { new CommunityApi("http://example.com", 1000); fail(); } catch (IllegalArgumentException expected) {}
 		try { api().submission("../admin"); fail(); } catch (IllegalArgumentException expected) {}
