@@ -30,6 +30,11 @@ A recent push is not a clash: `git pull --rebase` before every push and resolve 
   including at 16th, goes to the earlier submission. Week-1 picks are gone.
 - Public GPL source: github.com/APD-Development/adhd-pixel-dungeon (export with tools/export-public-source.sh).
 
+## HERO MOD ANSWERS (Chris, Nov 20 ~5:30 PM)
+- Mod sprite IS shown in the dungeon (build it).
+- Metamorphosis in a mod run: offer what it normally offers (keep the current other-class rule; no change).
+- Starting items on top of vs instead of the class kit: still OPEN (Chris was unclear; keep kit + mod items until he answers).
+
 ## LOOT AVAILABILITY (Chris, Nov 20 2:30 PM) — done, live session
 - Custom rule "Equipment Availability" is now "Loot Availability" (enum key EQUIPMENT kept for saves). It scales ONLY the number of ordinary random items each floor places (RegularLevel.createItems, gold piles included), round half up, min 1. Range stays 25-200%.
 - NEVER two of the same item on one tile; no duplicate or deleted drops anywhere (enemy drops, rooms, shops untouched). No extra Upgrade Scrolls, Strength potions or enemy loot. Food keeps its own slider.
