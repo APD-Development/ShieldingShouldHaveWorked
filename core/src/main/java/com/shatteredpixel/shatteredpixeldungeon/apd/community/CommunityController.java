@@ -1097,6 +1097,15 @@ public final class CommunityController {
 			case "review_access_removed": return "A moderator has taken away your review access.";
 			case "own_run": return "You can't review your own run.";
 			case "already_reviewed": return "You've already reviewed this run. There are no retries.";
+			case "bad_sprite": return "That mod's sprite.png isn't a readable PNG.";
+			case "sprite_too_large": return "That mod's sprite.png is larger than 64 KB.";
+			case "sprite_wrong_size": return "That mod's sprite.png must be 256x128, the same layout as the built-in hero sprites.";
+			case "json_too_large": return "That mod's hero.json is larger than 16 KB.";
+			case "bad_json_mod": return "That mod's hero.json can't be read.";
+			case "bad_mod_id": return "That mod's id may only use a-z, 0-9, '.', '_' and '-' (up to 64 characters).";
+			case "too_many_mods": return "You've uploaded 5 mods or mod updates today. Try again tomorrow.";
+			case "mod_id_taken": return "Another player already uses that mod id. Change the id in hero.json.";
+			case "mod_removed": return "A moderator removed that mod, so it can't be uploaded again.";
 			case "already_claimed": return "You already took this run. It can only be played once, so it can't be started again.";
 			case "not_claimed": return "Take this run to review first.";
 			case "review_closed": return "This run already has its 5 reviews.";
