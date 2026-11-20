@@ -81,4 +81,13 @@ public class HeroModTest {
 		Talent.initClassTalents(hc, t);
 		return t.get(tier - 1).keySet().iterator().next().name();
 	}
+
+	@Test public void levelsOnlyOnUpgradableItems() throws Exception {
+		String food = hero(null).replace("{\"item\":\"weapon.melee.Sword\",\"level\":1}", "{\"item\":\"food.Food\",\"level\":3}");
+		try { HeroMod.parse(food); fail("a +3 Ration must be refused"); }
+		catch (HeroMod.Invalid e){ assertTrue(e.getMessage(), e.getMessage().contains("can't be upgraded")); }
+		String food0 = hero(null).replace("{\"item\":\"weapon.melee.Sword\",\"level\":1}", "{\"item\":\"food.Food\",\"level\":0,\"quantity\":2}");
+		assertEquals(2, HeroMod.parse(food0).startingItems.get(0).quantity);
+		assertEquals(1, HeroMod.parse(hero(null)).startingItems.get(0).level); // upgradable weapon keeps its level
+	}
 }

@@ -156,6 +156,13 @@ public final class HeroMod {
 		int level = e.has("level") ? number(e, "level", 0, 20) : 0;
 		int qty = e.has("quantity") ? number(e, "quantity", 1, 99) : 1;
 		@SuppressWarnings("unchecked") Class<? extends Item> ic = (Class<? extends Item>) c;
+		// The run start makes these with Reflection.newInstance, which gave null (item silently dropped) for items
+		// without a plain constructor, and upgrade() happily made a "+3 Ration". Refuse both with a reason instead.
+		Item sample;
+		try { sample = com.watabou.utils.Reflection.newInstance(ic); }
+		catch (RuntimeException | LinkageError x){ sample = null; }
+		if (sample == null) throw new Invalid(path + " is not an item that can be given");
+		if (level > 0 && !sample.isUpgradable()) throw new Invalid(path + " can't be upgraded, so its level must be 0");
 		return new StartingItem(ic, level, qty);
 	}
 
