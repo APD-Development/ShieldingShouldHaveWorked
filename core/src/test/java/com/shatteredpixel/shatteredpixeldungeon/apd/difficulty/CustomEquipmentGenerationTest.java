@@ -22,21 +22,7 @@ public class CustomEquipmentGenerationTest {
         SPDSettings.challenges(challenges);SPDSettings.intro(intro);SPDSettings.apdRecording(recording);Dungeon.apdRestoreCustomRules(new com.watabou.utils.Bundle());}
     private void init(int percent,HeroClass type,long seed){SPDSettings.apdCustomRules(CustomDungeonRules.defaults().with(CustomDungeonRules.Slider.EQUIPMENT,percent));
         GamesInProgress.selectedClass=type;Dungeon.customSeedText="";Dungeon.seed=seed;Dungeon.daily=false;Dungeon.dailyReplay=false;Dungeon.init();}
-    @Test public void expandedShopStockPreservesProgressionAndUsesDistinctEquipment(){
-        for(HeroClass type:HeroClass.values())for(int depth:new int[]{6,11,16,21}){
-            init(200,type,9123+depth);Dungeon.depth=depth;
-            ArrayList<Item> stock=Shop.stock();Set<Item> distinct=Collections.newSetFromMap(new IdentityHashMap<Item,Boolean>());
-            int equipment=0,bags=0;
-            for(Item item:stock){assertNotNull(item);assertTrue("Stock repeats the same object",distinct.add(item));
-                if(CustomEquipmentHooks.eligible(item))equipment++;
-                if(item instanceof Bag)bags++;
-                if(item instanceof Weapon || item instanceof Armor)assertEquals(0,item.level());
-            }
-            assertTrue(equipment>=8);assertEquals(1,bags);
-            Shop shop=new Shop();shop.stock(stock);
-            assertTrue(shop.minWidth()>=7);assertTrue(shop.minHeight()>=7);
-        }
-    }
+    
     @Test public void floorGenerationAtBothEquipmentBoundariesWorksForAllClasses(){
         for(HeroClass type:HeroClass.values())for(int percent:new int[]{25,200}){
             init(percent,type,1873+type.ordinal());
@@ -50,18 +36,7 @@ public class CustomEquipmentGenerationTest {
     static class Empty extends com.shatteredpixel.shatteredpixeldungeon.levels.Level {
         protected boolean build(){return true;}protected void createMobs(){}protected void createItems(){}
     }
-    @Test(timeout=3000) public void multipleGeneratedItemsArePlacedBeforeSealingAnIsolatedCrystalChest(){
-        init(200,HeroClass.WARRIOR,7123L);
-        com.shatteredpixel.shatteredpixeldungeon.levels.Level previous=Dungeon.level;
-        Empty room=new Empty();room.setSize(7,7);room.heaps=new com.watabou.utils.SparseArray<>();java.util.Arrays.fill(room.map,com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.WALL);
-        room.map[24]=com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.EMPTY;Dungeon.level=null; // Match room-paint generation, before the level becomes active.
-        try {
-            java.util.List<Heap> placed=CustomEquipmentHooks.dropGenerated(room,new com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Dagger(),24,Heap.Type.CRYSTAL_CHEST,false);
-            assertEquals(2,placed.size());assertSame(placed.get(0),placed.get(1));
-            assertEquals(Heap.Type.CRYSTAL_CHEST,room.heaps.get(24).type);assertEquals(2,room.heaps.get(24).items.size());
-            assertEquals(1,room.heaps.valueList().size());
-        }finally{Dungeon.level=previous;}
-    }
+    
     @Test public void legacyTwelveScrollPoolNeutralSnapshotsStillMatchVerifiedTest121Source() throws Exception {
         // Keep the complete historical baseline. The separately approved thirteenth
         // scroll changes the current loot pool; isolate ONLY that addition here.

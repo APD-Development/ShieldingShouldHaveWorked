@@ -32,11 +32,7 @@ public class CustomEquipmentLootTest {
     private Drops init(int percent){SPDSettings.apdCustomRules(CustomDungeonRules.defaults().with(CustomDungeonRules.Slider.EQUIPMENT,percent));
         GamesInProgress.selectedClass=HeroClass.WARRIOR;Dungeon.seed=8123;Dungeon.customSeedText="";Dungeon.daily=false;Dungeon.dailyReplay=false;Dungeon.init();
         Dungeon.depth=1;Drops level=new Drops();level.setSize(7,7);Dungeon.level=level;return level;}
-    @Test public void actualOrdinaryMonsterDropPathExpandsOnlyFreshGeneratedEquipment(){
-        Drops level=init(200);Ordinary mob=new Ordinary();mob.pos=24;mob.rollToDropLoot();
-        assertEquals(2,level.dropped.size());assertNotSame(level.dropped.get(0),level.dropped.get(1));
-        assertTrue(level.dropped.get(0) instanceof Dagger);assertTrue(level.dropped.get(1) instanceof Dagger);
-    }
+    
     @Test public void existingLootAndThiefStolenPlayerItemsAreNeverRemovedOrMultiplied(){
         for(int percent:new int[]{25,200}){
             Drops level=init(percent);Dagger owned=new Dagger();Ordinary mob=new Ordinary();mob.pos=24;mob.existing(owned);mob.rollToDropLoot();

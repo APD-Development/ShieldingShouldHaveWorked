@@ -17,6 +17,24 @@ public class CustomEquipmentBoundaryTest {
     @Before public void start(){HeadlessTestSupport.start();}
     @After public void clear(){Dungeon.apdRestoreCustomRules(new Bundle());}
     private void rules(int percent){Bundle b=new Bundle(),r=new Bundle();CustomDungeonRules.defaults().with(CustomDungeonRules.Slider.EQUIPMENT,percent).store(r);b.put("apd_custom_rules",r);Dungeon.apdRestoreCustomRules(b);}
+    // Chris, Nov 20: Loot Availability never duplicates or deletes a drop (enemy drops, rooms, shops included); it scales only how many
+    // ordinary random items lie on each floor. Strength potions, Upgrade Scrolls and enemy loot are untouched.
+    @Test public void lootAvailabilityNeverDuplicatesOrDeletesAnyDrop(){
+        Item original=new Dagger();
+        for(int percent=25;percent<=200;percent+=25){
+            rules(percent);
+            for(int i=0;i<200;i++){java.util.List<Item> items=CustomEquipmentHooks.adjust(original,()->new Dagger());
+                assertEquals(1,items.size());assertSame(original,items.get(0));}
+        }
+    }
+    @Test public void lootAvailabilityScalesTheNumberOfOrdinaryFloorItems(){
+        rules(100);assertEquals(3,CustomEquipmentHooks.lootCount(3));assertEquals(5,CustomEquipmentHooks.lootCount(5));
+        rules(200);assertEquals(6,CustomEquipmentHooks.lootCount(3));assertEquals(10,CustomEquipmentHooks.lootCount(5));
+        rules(150);assertEquals("4.5 rounds up",5,CustomEquipmentHooks.lootCount(3));
+        rules(25);assertEquals("never below one",1,CustomEquipmentHooks.lootCount(3));assertEquals(1,CustomEquipmentHooks.lootCount(5));
+        rules(50);assertEquals(2,CustomEquipmentHooks.lootCount(3));
+        assertEquals("a floor with no items stays empty",0,CustomEquipmentHooks.lootCount(0));
+    }
     @Test public void neutralPreservesOriginalObjectsAndRngWithoutCallingExtraFactory(){
         rules(100);
         for(Item original:new Item[]{new Dagger(),new LeatherArmor(),new RingOfAccuracy(),new ChaliceOfBlood()}){
@@ -27,18 +45,7 @@ public class CustomEquipmentBoundaryTest {
             }finally{Random.popGenerator();}
         }
     }
-    @Test public void allEightSettingsChangeEquipmentCountsAndMaximumUsesFreshItems(){
-        Item original=new Dagger();
-        for(int percent=25;percent<=200;percent+=25){
-            rules(percent);int total=0;Random.pushGenerator(123L);
-            try{for(int i=0;i<10000;i++){
-                java.util.List<Item> items=CustomEquipmentHooks.adjust(original,()->new Dagger());total+=items.size();
-                for(Item item:items)if(item!=original)assertEquals(Dagger.class,item.getClass());
-            }}finally{Random.popGenerator();}
-            assertTrue(percent+"% total "+total,Math.abs(total-10000*percent/100)<350);
-            if(percent==200)assertEquals(20000,total);
-        }
-    }
+    
     @Test public void nonEquipmentAndProgressionItemsNeverUseTheAvailabilityRoll(){
         rules(25);Random.pushGenerator(901L);long expected;try{expected=Random.Long();}finally{Random.popGenerator();}
         Random.pushGenerator(901L);try{

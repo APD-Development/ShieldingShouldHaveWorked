@@ -82,7 +82,7 @@ public class GenerationUpgradeRangesTest {
     @Test public void ordinaryAndSpecialPrizeSourcesDiffer() { Sword ordinary=found(new Sword());GenerationUpgradeRanges.baseline(ordinary);Sword special=found(new Sword());GenerationUpgradeRanges.optionalBonus(special);assertFalse(GenerationUpgradeRanges.describe(ordinary).equals(GenerationUpgradeRanges.describe(special))); }
     @Test public void curseStateCannotNarrowCryptSupport() { Sword a=found(new Sword()),b=found(new Sword());a.cursed=true;b.cursed=false;GenerationUpgradeRanges.curseConditionalBonus(a);GenerationUpgradeRanges.curseConditionalBonus(b);range(a,0,3);assertEquals(a.apdGenerationRange,b.apdGenerationRange); }
     @Test public void independentParchmentConditionCanGuaranteeAnExtraUpgradeWithoutReadingPrize() { ParchmentScrap parchment=new ParchmentScrap();parchment.level(3);Dungeon.hero.belongings.backpack.items.add(parchment);Sword s=found(new NoSecretAccessSword());GenerationUpgradeRanges.curseConditionalBonus(s);range(s,1,3); }
-    @Test public void equipmentExtrasAreIncludedInWholeRoomUnion() { ParchmentScrap parchment=new ParchmentScrap();parchment.level(3);Dungeon.hero.belongings.backpack.items.add(parchment);Sword s=new NoSecretAccessSword();ItemOrigins.Origin origin=new ItemOrigins.Origin(8,0,GenerationEvents.C_TOMB,"CryptRoom");rules(100);GenerationUpgradeRanges.finalRoomSupport(s,origin);range(s,1,3);rules(200);GenerationUpgradeRanges.finalRoomSupport(s,origin);range(s,0,3); }
+    
     @Test public void historicalMissingConditionsUseUnionAndNeverCurrentTrinketLevel() { ParchmentScrap p=new ParchmentScrap();p.level(3);Dungeon.hero.belongings.backpack.items.add(p);Sword s=found(new Sword());GenerationUpgradeRanges.recover(s,origin("room_bonus_unknown_context"));range(s,0,3); }
     @Test public void historicalQuestRulesAreDistinct() { Sword ghost=found(new Sword());GenerationUpgradeRanges.recover(ghost,origin("ghost"));range(ghost,0,3);WandOfMagicMissile wand=found(new WandOfMagicMissile());GenerationUpgradeRanges.recover(wand,origin("wandmaker"));range(wand,1,3);Sword shop=found(new Sword());GenerationUpgradeRanges.recover(shop,origin("shop"));range(shop,0,0); }
     @Test public void impRewardUsesPublicBaseTierAndNotHiddenLevel() { Longsword four=found(new Longsword());Greatsword five=found(new Greatsword());four.level(0);five.level(99);GenerationUpgradeRanges.impReward(four);GenerationUpgradeRanges.impReward(five);range(four,3,5);range(five,2,4); }
@@ -118,9 +118,6 @@ public class GenerationUpgradeRangesTest {
         String code=java.nio.file.Files.readString(source);
         for(String forbidden:new String[]{".level(",".trueLevel(",".buffedLvl(",".cursed", ".enchantment"})assertFalse(forbidden,code.contains(forbidden));
     }
-    @Test public void zeroDropSourceIncludesCustomEquipmentExtrasWithoutLookingAtTheActualDrop() {
-        Sword s=new NoSecretAccessSword();Slime mob=new Slime();rules(100);GenerationUpgradeRanges.finalMobSupport(s,mob);range(s,0,0);
-        rules(200);GenerationUpgradeRanges.finalMobSupport(s,mob);range(s,0,2);
-    }
+    
     @Test public void remainsAndUnspecifiedCraftingCannotBorrowOrdinaryGeneratorSupport() { GenerationEvents.ItemGenerated source=new GenerationEvents.ItemGenerated();source.container=GenerationEvents.C_REMAINS;source.drawKind=GenerationEvents.DRAW_CATEGORY;assertEquals("",GenerationUpgradeRanges.historicalRule(source));Sword s=found(new Sword());GenerationUpgradeRanges.recover(s,origin("unrecognised"));assertNull(s.apdGenerationRange); }
 }
