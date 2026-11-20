@@ -135,7 +135,9 @@ public class ScrollOfMetamorphosis extends ExoticScroll {
 			top = text.bottom() + 2;
 
 			ArrayList<LinkedHashMap<Talent, Integer>> talents = new ArrayList<>();
-			Talent.initClassTalents(Dungeon.hero.heroClass, talents, Dungeon.hero.metamorphedTalents);
+			// a mod run's own tier 1-3 talents, not the base class lists (which the mod hero doesn't have)
+			if (!com.shatteredpixel.shatteredpixeldungeon.apd.mods.HeroModRun.fillTalents(talents, Dungeon.hero.metamorphedTalents))
+				Talent.initClassTalents(Dungeon.hero.heroClass, talents, Dungeon.hero.metamorphedTalents);
 
 			for (LinkedHashMap<Talent, Integer> tier : talents){
 				for (Talent talent : tier.keySet()){

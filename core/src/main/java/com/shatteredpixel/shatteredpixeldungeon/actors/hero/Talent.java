@@ -964,7 +964,7 @@ public enum Talent {
 
 	public static void initClassTalents( Hero hero ){
 		// APD hero mods (Chris, Nov 19): a mod run uses the mod's tier 1-3 talents instead of the class lists
-		if (com.shatteredpixel.shatteredpixeldungeon.apd.mods.HeroModRun.fillTalents( hero.talents )) return;
+		if (com.shatteredpixel.shatteredpixeldungeon.apd.mods.HeroModRun.fillTalents( hero.talents, hero.metamorphedTalents )) return;
 		initClassTalents( hero.heroClass, hero.talents, hero.metamorphedTalents );
 	}
 

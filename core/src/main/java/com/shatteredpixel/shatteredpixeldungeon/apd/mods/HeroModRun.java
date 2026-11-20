@@ -55,12 +55,23 @@ public final class HeroModRun {
 
 	/** Talent tiers 1-3 for this hero: the mod's picks for a mod run, otherwise null (use the class lists). */
 	public static boolean fillTalents(ArrayList<LinkedHashMap<Talent, Integer>> talents){
+		return fillTalents(talents, null);
+	}
+
+	/**
+	 * Same, applying the hero's Metamorphosis replacements (original -> new) like the class lists do. Without them a
+	 * mod run that used a Scroll of Metamorphosis lost the new talent and its points on save/load.
+	 */
+	public static boolean fillTalents(ArrayList<LinkedHashMap<Talent, Integer>> talents, java.util.Map<Talent, Talent> replacements){
 		HeroMod m = active;
 		if (m == null) return false;
 		while (talents.size() < Talent.MAX_TALENT_TIERS) talents.add(new LinkedHashMap<>());
 		for (int i = 0; i < m.talentTiers.size(); i++){
 			LinkedHashMap<Talent, Integer> tier = talents.get(i);
-			for (Talent t : m.talentTiers.get(i)) if (!tier.containsKey(t)) tier.put(t, 0);
+			for (Talent t : m.talentTiers.get(i)){
+				if (replacements != null && replacements.containsKey(t)) t = replacements.get(t);
+				if (t != null && !tier.containsKey(t)) tier.put(t, 0);
+			}
 		}
 		return true;
 	}

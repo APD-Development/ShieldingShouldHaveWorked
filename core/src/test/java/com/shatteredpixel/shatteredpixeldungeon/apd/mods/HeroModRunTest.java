@@ -62,6 +62,22 @@ public class HeroModRunTest {
 		} finally { com.shatteredpixel.shatteredpixeldungeon.Dungeon.challenges = old; }
 	}
 
+	@Test public void metamorphosedModTalentsSurviveRebuildingTheTalentList() throws Exception {
+		String json = HeroModTest.hero(null);
+		HeroModRun.choose(HeroMod.parse(json), json);
+		HeroModRun.beginRun();
+		LinkedHashMap<Talent, Talent> meta = new LinkedHashMap<>();
+		meta.put(Talent.SCHOLARS_INTUITION, Talent.THIEFS_INTUITION);
+		ArrayList<LinkedHashMap<Talent, Integer>> tiers = new ArrayList<>();
+		assertTrue(HeroModRun.fillTalents(tiers, meta));
+		assertTrue("the metamorphosed talent is kept on load", tiers.get(0).containsKey(Talent.THIEFS_INTUITION));
+		assertFalse(tiers.get(0).containsKey(Talent.SCHOLARS_INTUITION));
+		assertEquals("same row size", 4, tiers.get(0).size());
+		ArrayList<LinkedHashMap<Talent, Integer>> plain = new ArrayList<>();
+		assertTrue(HeroModRun.fillTalents(plain, null));
+		assertTrue(plain.get(0).containsKey(Talent.SCHOLARS_INTUITION));
+	}
+
 	@Test public void aNormalRunIsUntouched(){
 		HeroModRun.beginRun();
 		assertFalse(HeroModRun.isModRun());
