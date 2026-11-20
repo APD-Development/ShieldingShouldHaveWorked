@@ -562,10 +562,12 @@ public class ItemSpriteSheet {
 	public static final int SCROLL_GATHERING= SCROLLS+12;
 
 	public static final int ARCANE_RESIN    = SCROLLS+13;
+	public static final int GEMSTONE_DUST   = SCROLLS+14; //APD (Chris, Nov 20): its own icon, no longer Arcane Resin's
 	static {
 		for (int i = SCROLLS; i < SCROLLS+16; i++)
 			assignItemRect(i, 15, 14);
 		assignItemRect(ARCANE_RESIN   , 12, 11);
+		assignItemRect(GEMSTONE_DUST  , 12, 10);
 	}
 	
 	private static final int EXOTIC_SCROLLS =                               xy(1, 21);  //16 slots

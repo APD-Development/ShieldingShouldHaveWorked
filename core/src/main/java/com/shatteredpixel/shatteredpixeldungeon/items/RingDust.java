@@ -23,7 +23,7 @@ import java.util.ArrayList;
 public class RingDust extends Item {
 
 	{
-		image = ItemSpriteSheet.ARCANE_RESIN;
+		image = ItemSpriteSheet.GEMSTONE_DUST;
 		stackable = true;
 		defaultAction = AC_APPLY;
 		bones = true;
