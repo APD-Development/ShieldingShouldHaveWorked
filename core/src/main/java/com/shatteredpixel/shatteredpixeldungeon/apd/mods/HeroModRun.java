@@ -100,10 +100,25 @@ public final class HeroModRun {
 		hero.STR = m.str;
 		for (HeroMod.StartingItem s : m.startingItems){
 			for (Item it : startingItems(s)){
+				if (giveCurrency(it)) continue;
 				// a full pack still never loses a starting item: it goes straight into the backpack
 				if (!it.collect()) hero.belongings.backpack.items.add(it);
 			}
 		}
+	}
+
+	/**
+	 * Starting gold / energy crystals go to the run's gold and energy, like picking them up does; collect() put them
+	 * in the pack as a dead "Gold" item instead. Not counted as gold collected (it's a starting amount, not loot).
+	 */
+	static boolean giveCurrency(Item it){
+		if (it instanceof com.shatteredpixel.shatteredpixeldungeon.items.Gold){
+			com.shatteredpixel.shatteredpixeldungeon.Dungeon.gold += it.quantity(); return true;
+		}
+		if (it instanceof com.shatteredpixel.shatteredpixeldungeon.items.EnergyCrystal){
+			com.shatteredpixel.shatteredpixeldungeon.Dungeon.energy += it.quantity(); return true;
+		}
+		return false;
 	}
 
 	/**

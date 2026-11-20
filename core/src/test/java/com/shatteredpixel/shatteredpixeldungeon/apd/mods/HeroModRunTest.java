@@ -50,6 +50,21 @@ public class HeroModRunTest {
 		assertEquals(3, stack.get(0).quantity());
 	}
 
+	@Test public void startingGoldAndEnergy_goToTheRunsGoldAndEnergy_notIntoThePack(){
+		int gold = com.shatteredpixel.shatteredpixeldungeon.Dungeon.gold, energy = com.shatteredpixel.shatteredpixeldungeon.Dungeon.energy;
+		try {
+			com.shatteredpixel.shatteredpixeldungeon.Dungeon.gold = 5; com.shatteredpixel.shatteredpixeldungeon.Dungeon.energy = 2;
+			assertTrue(HeroModRun.giveCurrency(new com.shatteredpixel.shatteredpixeldungeon.items.Gold(50)));
+			assertTrue(HeroModRun.giveCurrency(new com.shatteredpixel.shatteredpixeldungeon.items.EnergyCrystal(7)));
+			assertEquals(55, com.shatteredpixel.shatteredpixeldungeon.Dungeon.gold);
+			assertEquals(9, com.shatteredpixel.shatteredpixeldungeon.Dungeon.energy);
+			assertFalse(HeroModRun.giveCurrency(new com.shatteredpixel.shatteredpixeldungeon.items.food.Food()));
+			assertEquals(55, com.shatteredpixel.shatteredpixeldungeon.Dungeon.gold);
+		} finally {
+			com.shatteredpixel.shatteredpixeldungeon.Dungeon.gold = gold; com.shatteredpixel.shatteredpixeldungeon.Dungeon.energy = energy;
+		}
+	}
+
 	@Test public void startingItemsBlockedByTheRunsChallenges_areNotGiven(){
 		HeroMod.StartingItem dew = new HeroMod.StartingItem(
 				com.shatteredpixel.shatteredpixeldungeon.items.Dewdrop.class, 0, 5);
