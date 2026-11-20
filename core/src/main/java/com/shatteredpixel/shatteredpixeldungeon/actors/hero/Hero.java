@@ -272,7 +272,20 @@ public class Hero extends Char {
         if(heap==null || heap.type!=Heap.Type.HEAP || heap.hidden || heap.isEmpty()) return;
         if(grassDewPickup.hasPending()) return; // the dew pickup already handles this step
         if(curAction instanceof HeroAction.PickUp || (curAction!=null && curAction.dst==cell)) return;
+        if(!apdRoomFor(heap.peek())) return; // Chris, Nov 20: full backpack = no walk-over pickup (no "can't carry" spam)
         curAction=new HeroAction.PickUp(cell);
+    }
+    /** Whether walking over this item could actually pick it up: gold, energy, dew and keys never need a slot;
+     *  anything else needs room in a pouch that takes it or in the backpack (stacking onto a carried stack counts). */
+    boolean apdRoomFor(com.shatteredpixel.shatteredpixeldungeon.items.Item item){
+        if(item==null) return false;
+        if(item instanceof com.shatteredpixel.shatteredpixeldungeon.items.Gold
+                || item instanceof com.shatteredpixel.shatteredpixeldungeon.items.EnergyCrystal
+                || item instanceof com.shatteredpixel.shatteredpixeldungeon.items.Dewdrop
+                || item instanceof com.shatteredpixel.shatteredpixeldungeon.items.keys.Key) return true;
+        for(com.shatteredpixel.shatteredpixeldungeon.items.Item i:belongings.backpack.items)
+            if(i instanceof com.shatteredpixel.shatteredpixeldungeon.items.bags.Bag && ((com.shatteredpixel.shatteredpixeldungeon.items.bags.Bag)i).canHold(item)) return true;
+        return belongings.backpack.canHold(item);
     }
     private void apdBeginLootStep(){grassDewPickup.clear();apdAutomaticLootStep=true;}
     private void apdFinishLootStep(Level steppedLevel,int requestedCell,boolean eligible){

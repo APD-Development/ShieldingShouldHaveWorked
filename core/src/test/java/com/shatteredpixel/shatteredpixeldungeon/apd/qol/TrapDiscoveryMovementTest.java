@@ -179,4 +179,21 @@ public class TrapDiscoveryMovementTest {
         level.heaps.clear();hero.pos=start;a=travel();pile(start+1,com.shatteredpixel.shatteredpixeldungeon.items.Heap.Type.HEAP);
         assertTrue(move());assertSame("setting off",a,hero.curAction);
     }
+    @Test public void fullBackpackSkipsWalkOverPickupButGoldStillGetsPickedUp()throws Exception{ // Chris, Nov 20
+        java.util.ArrayList<com.shatteredpixel.shatteredpixeldungeon.items.Item> saved=new java.util.ArrayList<>(hero.belongings.backpack.items);
+        try{
+            hero.belongings.backpack.items.clear();
+            while(hero.belongings.backpack.items.size()<hero.belongings.backpack.capacity())
+                hero.belongings.backpack.items.add(new com.shatteredpixel.shatteredpixeldungeon.items.armor.LeatherArmor());
+            level.heaps.clear();hero.pos=start;HeroAction.Move a=travel();
+            com.shatteredpixel.shatteredpixeldungeon.items.Heap h=pile(start+1,com.shatteredpixel.shatteredpixeldungeon.items.Heap.Type.HEAP);
+            h.items.clear();h.items.add(new com.shatteredpixel.shatteredpixeldungeon.items.armor.ScaleArmor());
+            assertTrue(move());assertEquals(start+1,hero.pos);
+            assertSame("full pack: keeps walking, no pickup",a,hero.curAction);
+            level.heaps.clear();hero.pos=start;travel();
+            h=pile(start+1,com.shatteredpixel.shatteredpixeldungeon.items.Heap.Type.HEAP);
+            h.items.clear();h.items.add(new com.shatteredpixel.shatteredpixeldungeon.items.Gold(10));
+            assertTrue(move());assertTrue("gold needs no slot",hero.curAction instanceof HeroAction.PickUp);
+        }finally{hero.belongings.backpack.items.clear();hero.belongings.backpack.items.addAll(saved);}
+    }
 }
