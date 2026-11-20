@@ -42,6 +42,24 @@ public final class ModHeroSelection {
 
 	public static ModLibrary.Installed picked(){ return picked; }
 
+	/**
+	 * Remove an installed mod from this phone: deletes only the folder the library loaded it from, and only when
+	 * that folder sits directly in modsDir. Drops the pick if it was this mod. Saves keep their own copy of the
+	 * mod record, so runs already started are unaffected. Returns false if nothing was removed.
+	 */
+	public static boolean remove(File modsDir, ModLibrary.Installed i){
+		if (modsDir == null || i == null || i.sprite == null) return false;
+		File folder = i.sprite.getParentFile();
+		if (folder == null) return false;
+		try {
+			File parent = folder.getParentFile();
+			if (parent == null || !parent.getCanonicalFile().equals(modsDir.getCanonicalFile())) return false;
+		} catch (java.io.IOException e){ return false; }
+		if (!ModInstaller.uninstall(modsDir, folder.getName())) return false;
+		if (picked == i) clear();
+		return true;
+	}
+
 	/** The run is starting: the queued mod must still match the selected class, otherwise start a normal hero. */
 	public static void confirmForStart(HeroClass selected){
 		ModLibrary.Installed i = picked;

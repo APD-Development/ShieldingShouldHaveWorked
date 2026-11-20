@@ -499,9 +499,21 @@ public class HeroSelectScene extends PixelScene {
 				final com.shatteredpixel.shatteredpixeldungeon.apd.mods.ModLibrary.Installed m = list.get(index);
 				com.watabou.noosa.Image modIcon = com.shatteredpixel.shatteredpixeldungeon.apd.mods.ModSprites.avatar(m, 0);
 				if (modIcon == null) modIcon = com.shatteredpixel.shatteredpixeldungeon.sprites.HeroSprite.avatar(m.mod.baseClass, 0);
-				ShatteredPixelDungeon.scene().addToFront(new WndOptions(modIcon, m.mod.name, com.shatteredpixel.shatteredpixeldungeon.apd.mods.ModHeroSelection.details(m), "Play as " + m.mod.name, "Back"){
+				ShatteredPixelDungeon.scene().addToFront(new WndOptions(modIcon, m.mod.name, com.shatteredpixel.shatteredpixeldungeon.apd.mods.ModHeroSelection.details(m), "Play as " + m.mod.name, "Remove from this phone", "Back"){
 					@Override
 					protected void onSelect(int choice){
+						if (choice == 1){
+							ShatteredPixelDungeon.scene().addToFront(new WndOptions("Remove " + m.mod.name + "?", "This deletes the mod from this phone. Runs already started keep working. You can download it again from the Community workshop.", "Remove", "Keep"){
+								@Override
+								protected void onSelect(int confirm){
+									if (confirm != 0) return;
+									boolean ok = com.shatteredpixel.shatteredpixeldungeon.apd.mods.ModHeroSelection.remove(com.watabou.utils.FileUtils.getFileHandle(com.shatteredpixel.shatteredpixeldungeon.apd.mods.ModHeroSelection.FOLDER).file(), m);
+									if (ok) ShatteredPixelDungeon.switchNoFade(HeroSelectScene.class);
+									else ShatteredPixelDungeon.scene().addToFront(new WndMessage("Couldn't remove this mod."));
+								}
+							});
+							return;
+						}
 						if (choice != 0) return;
 						String why = com.shatteredpixel.shatteredpixeldungeon.apd.mods.ModHeroSelection.blockedReason(m, m.mod.baseClass.isUnlocked());
 						if (why != null){ ShatteredPixelDungeon.scene().addToFront(new WndMessage("Can't play this mod: " + why + ".")); return; }

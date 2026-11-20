@@ -57,4 +57,22 @@ public class ModHeroSelectionTest {
 		assertNotNull(ModHeroSelection.blockedReason(null, true));
 		assertNull(ModHeroSelection.blockedReason(installed(), true));
 	}
+
+	@Test public void removeDeletesOnlyItsOwnFolder_andDropsThePick() throws Exception {
+		ModLibrary.Installed m = installed();
+		File root = new File(tmp.getRoot(), "mods");
+		File other = tmp.newFolder("elsewhere");
+		assertFalse(ModHeroSelection.remove(other, m));          // not this mods folder: untouched
+		assertTrue(new File(root, "a/hero.json").exists());
+		ModHeroSelection.pick(m);
+		assertTrue(ModHeroSelection.remove(root, m));
+		assertFalse(new File(root, "a").exists());
+		assertNull(ModHeroSelection.picked());
+		ModHeroSelection.confirmForStart(HeroClass.WARRIOR);
+		HeroModRun.beginRun();
+		assertFalse(HeroModRun.isModRun());
+		assertEquals(0, ModHeroSelection.scan(root).heroes.size());
+		assertFalse(ModHeroSelection.remove(root, m));           // already gone
+		assertFalse(ModHeroSelection.remove(root, null));
+	}
 }
