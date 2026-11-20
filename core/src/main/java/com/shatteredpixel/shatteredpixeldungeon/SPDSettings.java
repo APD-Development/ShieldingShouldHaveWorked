@@ -818,6 +818,12 @@ public class SPDSettings extends GameSettings {
     // Chris, Nov 20: walking over a normal item pile picks it up (normal pickup time). ON by default (his explicit ask).
     public static boolean autoPickupWalkover(){return getBoolean("apd_auto_pickup_walkover",true);}
     public static void autoPickupWalkover(boolean enabled){put("apd_auto_pickup_walkover",enabled);}
+    /** Chris, Nov 20: walk-over pickup also tries items there's no room for (default off: a full pack is skipped). */
+    public static boolean autoPickupWhenFull(){return getBoolean("apd_auto_pickup_when_full",false);}
+    public static void autoPickupWhenFull(boolean enabled){put("apd_auto_pickup_when_full",enabled);}
+    /** Chris, Nov 20: a failed pickup opens the full-backpack swap window (default on, as before). */
+    public static boolean fullPackSwapPrompt(){return getBoolean("apd_full_pack_swap_prompt",true);}
+    public static void fullPackSwapPrompt(boolean enabled){put("apd_full_pack_swap_prompt",enabled);}
     public static boolean continueOnTrapDiscovery(){return getBoolean("apd_continue_trap_discovery",false);}
     public static void continueOnTrapDiscovery(boolean enabled){put("apd_continue_trap_discovery",enabled);}
     /** Chooser preference only: never performs a search or changes its range/cost. */

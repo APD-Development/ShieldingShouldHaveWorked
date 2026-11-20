@@ -79,6 +79,8 @@ public class APDSettingsPane extends Component {
     private CheckBox chkAdaptiveSearchChoice;
     private CheckBox chkContinueTrapDiscovery;
     private CheckBox chkAutoPickupWalkover;
+    private CheckBox chkAutoPickupWhenFull;
+    private CheckBox chkFullPackSwapPrompt;
     private RedButton btnPlaybackSpeed;
     private RedButton btnWaterskinSlot;
     private RedButton btnHealingConfirmation;
@@ -258,6 +260,14 @@ public class APDSettingsPane extends Component {
             @Override protected void onClick(){super.onClick();SPDSettings.autoPickupWalkover(checked());}
         };
         chkAutoPickupWalkover.checked(SPDSettings.autoPickupWalkover());add(chkAutoPickupWalkover);
+        chkAutoPickupWhenFull=new SettingCheckBox("Walk-over pickup with a full backpack"){
+            @Override protected void onClick(){super.onClick();SPDSettings.autoPickupWhenFull(checked());}
+        };
+        chkAutoPickupWhenFull.checked(SPDSettings.autoPickupWhenFull());add(chkAutoPickupWhenFull);
+        chkFullPackSwapPrompt=new SettingCheckBox("Open backpack when it's too full"){
+            @Override protected void onClick(){super.onClick();SPDSettings.fullPackSwapPrompt(checked());}
+        };
+        chkFullPackSwapPrompt.checked(SPDSettings.fullPackSwapPrompt());add(chkFullPackSwapPrompt);
 
 
         btnPlaybackSpeed = new SettingButton("Game speed: "
@@ -523,6 +533,8 @@ public class APDSettingsPane extends Component {
         row(ApdSettingsSection.GAMEPLAY,chkSingleTapSearch,"On: tap to search nearby; hold to examine a tile, enemy or item. Off: tap to examine; hold to search. A search costs the normal turns; examining is free.");
         row(ApdSettingsSection.VISIBILITY,chkAdaptiveSearchChoice,"On: choose ordinary Search first in an open room, and remembered Wall Search first when an eligible nearby wall needs checking. Off: always offer ordinary Search first. Both actions remain manually available. Does not search or spend turns automatically.");
         row(ApdSettingsSection.GAMEPLAY,chkAutoPickupWalkover,"On by default. Walking over a normal pile of items stops there and picks it up, taking the normal pickup time. Chests, shop items and hidden items are not picked up this way.");
+        row(ApdSettingsSection.GAMEPLAY,chkAutoPickupWhenFull,"Off by default. When off, walking over an item you have no room for doesn't stop you or try to pick it up. Gold, energy, dew and keys are always picked up.");
+        row(ApdSettingsSection.GAMEPLAY,chkFullPackSwapPrompt,"On by default. When a pickup fails because your backpack is full, opens the backpack so you can swap something out. Off: you just get the can't carry message.");
         row(ApdSettingsSection.GAMEPLAY,chkContinueTrapDiscovery,"Off by default. On: revealing a hidden trap while moving keeps your destination and held movement. Normal pathfinding still avoids discovered hazards where it normally would. Stepping onto a trap, trap confirmation, enemies, damage, blocked routes and manual cancellation keep their normal behavior. Off: trap discovery can stop movement. Manual Search and other secret discoveries keep their normal interruptions.");
         row(ApdSettingsSection.GAMEPLAY,btnPlaybackSpeed,"Immediate visual playback speed. Turn costs and combat rules stay unchanged.");
         row(ApdSettingsSection.GAMEPLAY,btnHealingConfirmation,"Immediate. Choose which healing actions ask first, including low-health thresholds.");

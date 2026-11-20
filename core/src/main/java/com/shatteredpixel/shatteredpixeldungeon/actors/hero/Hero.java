@@ -272,7 +272,7 @@ public class Hero extends Char {
         if(heap==null || heap.type!=Heap.Type.HEAP || heap.hidden || heap.isEmpty()) return;
         if(grassDewPickup.hasPending()) return; // the dew pickup already handles this step
         if(curAction instanceof HeroAction.PickUp || (curAction!=null && curAction.dst==cell)) return;
-        if(!apdRoomFor(heap.peek())) return; // Chris, Nov 20: full backpack = no walk-over pickup (no "can't carry" spam)
+        if(!SPDSettings.autoPickupWhenFull() && !apdRoomFor(heap.peek())) return; // Chris, Nov 20: full backpack = no walk-over pickup (no "can't carry" spam)
         curAction=new HeroAction.PickUp(cell);
     }
     /** Whether walking over this item could actually pick it up: gold, energy, dew and keys never need a slot;

@@ -50,6 +50,7 @@ public final class FullPackSwap {
     }
 
     public static void offer(final Hero hero, final Heap heap, final Item item) {
+        if (!com.shatteredpixel.shatteredpixeldungeon.SPDSettings.fullPackSwapPrompt()) return; // setting (Chris, Nov 20)
         if (!applies(hero, heap, item)) return;
         //pickup runs on the game's actor thread; windows must be built on the render thread
         com.watabou.noosa.Game.runOnRenderThread(new com.watabou.utils.Callback() {

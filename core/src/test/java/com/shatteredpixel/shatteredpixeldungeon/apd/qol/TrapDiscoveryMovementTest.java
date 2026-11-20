@@ -190,6 +190,13 @@ public class TrapDiscoveryMovementTest {
             h.items.clear();h.items.add(new com.shatteredpixel.shatteredpixeldungeon.items.armor.ScaleArmor());
             assertTrue(move());assertEquals(start+1,hero.pos);
             assertSame("full pack: keeps walking, no pickup",a,hero.curAction);
+            assertFalse("off by default",SPDSettings.autoPickupWhenFull());
+            SPDSettings.autoPickupWhenFull(true);
+            try{level.heaps.clear();hero.pos=start;travel();
+                h=pile(start+1,com.shatteredpixel.shatteredpixeldungeon.items.Heap.Type.HEAP);
+                h.items.clear();h.items.add(new com.shatteredpixel.shatteredpixeldungeon.items.armor.ScaleArmor());
+                assertTrue(move());assertTrue("setting on: tries anyway",hero.curAction instanceof HeroAction.PickUp);
+            }finally{SPDSettings.autoPickupWhenFull(false);}
             level.heaps.clear();hero.pos=start;travel();
             h=pile(start+1,com.shatteredpixel.shatteredpixeldungeon.items.Heap.Type.HEAP);
             h.items.clear();h.items.add(new com.shatteredpixel.shatteredpixeldungeon.items.Gold(10));
