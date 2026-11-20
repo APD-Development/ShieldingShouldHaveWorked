@@ -241,6 +241,9 @@ public class WndRanking extends WndTabbed {
 				} else {
 					pos = statSlot(this, Messages.get(this, "ascent"), num.format(Statistics.highestAscent), pos);
 				}
+				if (record.modHero != null) {
+					pos = statSlot(this, "Mod hero", "_" + record.modHero + "_", pos); // local only, never sent to Community
+				}
 				if (Dungeon.seed != -1) {
 					if (Dungeon.daily) {
 						if (Dungeon.dailyReplay) {
@@ -270,6 +273,7 @@ public class WndRanking extends WndTabbed {
 			// Run reviews (Chris's design, Nov 18): a lost, non-daily run can be sent for 5 other players to replay.
 			// Shown only when a Community server is set. The seed itself is never shown to reviewers' screens publicly.
 			boolean canReview = Dungeon.hero != null && Dungeon.seed != -1 && !Dungeon.daily && !record.win
+					&& record.modHero == null // mod-hero runs stay on the player's own app (Chris, Nov 19)
 					&& Statistics.highestAscent == 0 && record.depth >= 1
 					&& !SPDSettings.communityServer().isEmpty()
 					&& com.shatteredpixel.shatteredpixeldungeon.apd.community.ReviewSetup.reviewable(Dungeon.difficultyKnown);

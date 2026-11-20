@@ -52,6 +52,8 @@ public final class ReviewPlay {
 	public static ReviewClaim beginRun(){
 		ReviewClaim c = starting;
 		starting = null;
+		// Mod runs stay out of Community (Chris, Nov 19): a review always replays the original normal hero.
+		if (c != null) com.shatteredpixel.shatteredpixeldungeon.apd.mods.HeroModRun.cancelStarting();
 		active = c;
 		return c;
 	}

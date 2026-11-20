@@ -144,6 +144,7 @@ public enum Rankings {
 		rec.score       = calculateScore();
 		rec.customSeed  = Dungeon.customSeedText;
 		rec.daily       = Dungeon.daily;
+		rec.modHero     = com.shatteredpixel.shatteredpixeldungeon.apd.mods.HeroModRun.modName();
 
 		Badges.validateHighScore( rec.score );
 		
@@ -582,6 +583,7 @@ public enum Rankings {
 		private static final String ID      = "gameID";
 		private static final String SEED    = "custom_seed";
 		private static final String DAILY   = "daily";
+		private static final String MOD_HERO = "apd_mod_hero_name";
 
 		private static final String DATE    = "date";
 		private static final String VERSION = "version";
@@ -603,6 +605,8 @@ public enum Rankings {
 
 		public String customSeed;
 		public boolean daily;
+		/** Mod hero name for a mod run (local rankings only, never sent to Community), otherwise null. */
+		public String modHero;
 
 		public String date;
 		public String version;
@@ -644,6 +648,7 @@ public enum Rankings {
 			score	    = bundle.getInt( SCORE );
 			customSeed  = bundle.getString( SEED );
 			daily       = bundle.getBoolean( DAILY );
+			modHero     = bundle.contains( MOD_HERO ) ? bundle.getString( MOD_HERO ) : null;
 
 			heroClass	= bundle.getEnum( CLASS, HeroClass.class );
 			armorTier	= bundle.getInt( TIER );
@@ -674,6 +679,7 @@ public enum Rankings {
 			bundle.put( SCORE, score );
 			bundle.put( SEED, customSeed );
 			bundle.put( DAILY, daily );
+			if (modHero != null) bundle.put( MOD_HERO, modHero );
 
 			bundle.put( CLASS, heroClass );
 			bundle.put( TIER, armorTier );

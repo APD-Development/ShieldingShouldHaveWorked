@@ -1173,6 +1173,8 @@ public class Badges {
 	
 	private static void displayBadge( Badge badge ) {
 
+		// Mod-hero runs never unlock or announce normal badges (Chris, Nov 19: mods get their own badge set later).
+		if (com.shatteredpixel.shatteredpixeldungeon.apd.mods.HeroModRun.isModRun()) return;
 		if (badge == null || (badge.type != BadgeType.JOURNAL && !Dungeon.customSeedText.isEmpty())) {
 			return;
 		}
@@ -1228,6 +1230,7 @@ public class Badges {
 	}
 	
 	public static void unlock( Badge badge ){
+		if (com.shatteredpixel.shatteredpixeldungeon.apd.mods.HeroModRun.isModRun()) return;
 		if (!isUnlocked(badge) && (badge.type == BadgeType.JOURNAL || Dungeon.customSeedText.isEmpty())){
 			global.add( badge );
 			saveNeeded = true;

@@ -30,6 +30,12 @@ public final class HeroModRun {
 
 	public static boolean isModRun(){ return active != null; }
 
+	/** The mod hero's name for a mod run (marks its local rankings entry), otherwise null. */
+	public static String modName(){ HeroMod m = active; return m == null ? null : m.name; }
+
+	/** A run that must be a normal hero (a Community review replays the original setup): drop any pending mod. */
+	public static void cancelStarting(){ starting = null; startingJson = null; }
+
 	/** New run: take the pending mod (if any). A normal new run clears any old mod state. */
 	public static void beginRun(){
 		active = starting;

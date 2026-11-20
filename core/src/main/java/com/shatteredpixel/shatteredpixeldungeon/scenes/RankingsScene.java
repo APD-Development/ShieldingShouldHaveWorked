@@ -228,7 +228,7 @@ public class RankingsScene extends PixelScene {
 				position.text(" ");
 			position.measure();
 			
-			desc.text( Messages.titleCase(rec.desc()) );
+			desc.text( (rec.modHero != null ? "Mod: " : "") + Messages.titleCase(rec.desc()) );
 
 			int odd = pos % 2;
 			
