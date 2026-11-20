@@ -54,7 +54,7 @@ Two installed mods may not share the same `id`.
 | `baseClass` | One of the game's hero classes (e.g. `WARRIOR`, `MAGE`, `ROGUE`, `HUNTRESS`, ...). Your hero runs on that class's engine and subclasses. |
 | `hp` | Whole number 1-999: starting max HP. Normal per-level HP growth still applies. |
 | `str` | Whole number 1-99: starting strength. |
-| `startingItems` | Optional list, at most 12. `item` is the item's class path under `items` (e.g. `weapon.melee.Sword`, `potions.PotionOfHealing`); `level` 0-20 (default 0); `quantity` 1-99 (default 1). Given on top of the base class's normal starting kit. |
+| `startingItems` | Optional list, at most 12. `item` is the item's class path under `items` (e.g. `weapon.melee.Sword`, `potions.PotionOfHealing`); `level` 0-20 (default 0); `quantity` 1-99 (default 1; a non-stackable item such as a weapon gives that many separate copies). Given on top of the base class's normal starting kit. |
 | `talents` | `tier1`, `tier2`, `tier3` lists of talent names (the game's internal names, upper case). Each tier may use talents from ANY class, but only talents of that same tier, no duplicates, and exactly as many as the base class has in that tier. |
 | `armorAbilities` | 1 to 3 existing armor ability names (e.g. `HeroicLeap`), no duplicates. |
 

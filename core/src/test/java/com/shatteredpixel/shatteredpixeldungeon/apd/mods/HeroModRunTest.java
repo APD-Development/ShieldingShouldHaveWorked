@@ -34,6 +34,22 @@ public class HeroModRunTest {
 		assertFalse("a new normal run clears it", HeroModRun.isModRun());
 	}
 
+	@Test public void startingItemQuantity_isHonouredForStackableAndNonStackableItems() throws Exception {
+		HeroMod.StartingItem sword = new HeroMod.StartingItem(
+				com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sword.class, 2, 3);
+		java.util.List<com.shatteredpixel.shatteredpixeldungeon.items.Item> swords = HeroModRun.startingItems(sword);
+		assertEquals("quantity 3 of a non-stackable item = 3 separate items", 3, swords.size());
+		for (com.shatteredpixel.shatteredpixeldungeon.items.Item i : swords){
+			assertEquals(1, i.quantity());
+			assertEquals(2, i.level());
+		}
+		HeroMod.StartingItem potions = new HeroMod.StartingItem(
+				com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing.class, 0, 3);
+		java.util.List<com.shatteredpixel.shatteredpixeldungeon.items.Item> stack = HeroModRun.startingItems(potions);
+		assertEquals("stackable = one stack", 1, stack.size());
+		assertEquals(3, stack.get(0).quantity());
+	}
+
 	@Test public void aNormalRunIsUntouched(){
 		HeroModRun.beginRun();
 		assertFalse(HeroModRun.isModRun());

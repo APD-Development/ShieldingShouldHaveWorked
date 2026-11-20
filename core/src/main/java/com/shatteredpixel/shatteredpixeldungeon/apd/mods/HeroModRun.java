@@ -88,13 +88,33 @@ public final class HeroModRun {
 		hero.HP = hero.HT;
 		hero.STR = m.str;
 		for (HeroMod.StartingItem s : m.startingItems){
-			Item it = Reflection.newInstance(s.type);
-			if (it == null) continue;
-			if (s.level > 0) it.upgrade(s.level);
-			if (it.stackable) it.quantity(s.quantity);
-			it.identify();
-			if (!it.collect()) it.collect(); // a full pack still never loses the starting item silently
+			for (Item it : startingItems(s)){
+				// a full pack still never loses a starting item: it goes straight into the backpack
+				if (!it.collect()) hero.belongings.backpack.items.add(it);
+			}
 		}
+	}
+
+	/**
+	 * The items one starting-item entry gives: one stack for stackable items, otherwise "quantity" separate copies
+	 * (a non-stackable item with quantity 3 used to silently give just one).
+	 */
+	static List<Item> startingItems(HeroMod.StartingItem s){
+		List<Item> out = new ArrayList<>();
+		Item first = make(s);
+		if (first == null) return out;
+		out.add(first);
+		if (first.stackable) first.quantity(s.quantity);
+		else for (int i = 1; i < s.quantity; i++){ Item more = make(s); if (more != null) out.add(more); }
+		return out;
+	}
+
+	private static Item make(HeroMod.StartingItem s){
+		Item it = Reflection.newInstance(s.type);
+		if (it == null) return null;
+		if (s.level > 0) it.upgrade(s.level);
+		it.identify();
+		return it;
 	}
 
 	public static void store(Bundle bundle){
