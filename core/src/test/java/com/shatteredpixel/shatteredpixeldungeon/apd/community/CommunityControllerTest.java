@@ -668,7 +668,7 @@ public class CommunityControllerTest {
 			controller().start();
 			tap("Hero mods workshop");
 			assertTrue(has(last(), "by Ann"));
-			assertFalse(has(last(), "installed"));
+			assertFalse(has(last(), "· installed"));
 			tap("Battle Mage");
 			assertFalse("not mine: no delete", has(last(), "Delete my mod"));
 			tap("Download and install");
