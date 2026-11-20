@@ -1036,6 +1036,15 @@ public class MechanicsExplanationTest {
  @Test public void passiveBlockDescriptionDoesNotLeakUnknownWeaponOrMightUpgrades(){
   com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Greatshield shield=new com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Greatshield();shield.levelKnown=false;String unknown=WeaponExplanation.blockDetails(shield,hero);shield.level(9);assertEquals(unknown,WeaponExplanation.blockDetails(shield,hero));shield.levelKnown=true;RingOfMight might=new RingOfMight();might.levelKnown=false;hero.belongings.ring=might;might.activate(hero);String hiddenRing=WeaponExplanation.blockDetails(shield,hero);might.level(9);assertEquals(hiddenRing,WeaponExplanation.blockDetails(shield,hero));assertTrue(hiddenRing.contains("Personal penalties are withheld"));
  }
+ @Test public void identifiedShieldShowsItsBlockNumberEvenWithAnUnknownRingOfMight(){ // Chris, Nov 20
+  com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Targe targe=new com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Targe();
+  targe.levelKnown=targe.cursedKnown=true;targe.level(2);hero.belongings.weapon=targe;
+  RingOfMight might=new RingOfMight();might.levelKnown=false;hero.belongings.ring=might;might.activate(hero);
+  String s=WeaponExplanation.blockSummary(targe,hero);
+  assertTrue(s,s.contains("0–"+targe.defenseFactor(hero)+" damage"));
+  assertTrue(s,s.contains("less if you lack the strength"));
+  might.level(9);assertEquals("an unknown ring's level still doesn't leak",s,WeaponExplanation.blockSummary(targe,hero));
+ }
  @Test public void scrollEmpowerDetailsMatchActualUseCleanupAndMagicChargePriority()throws Exception{
   java.lang.reflect.Field current=com.shatteredpixel.shatteredpixeldungeon.items.Item.class.getDeclaredField("curUser");current.setAccessible(true);Object previous=current.get(null);try{
    DescriptionMonkHero target=new DescriptionMonkHero();target.heroClass=HeroClass.WARRIOR;Talent.initClassTalents(target);target.HP=target.HT=20;Dungeon.hero=target;current.set(null,target);ScrollEmpower empower=Buff.affect(target,ScrollEmpower.class);empower.reset(3);empower.reset(1);assertEquals(3,empower.remainingUses());

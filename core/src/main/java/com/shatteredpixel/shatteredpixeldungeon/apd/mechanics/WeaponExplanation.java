@@ -69,7 +69,9 @@ public final class WeaponExplanation {
                 ||weapon instanceof com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.KiteShield?" Upgrades improve this protection.":"";
         if(!weapon.levelKnown)return "Can block incoming attack damage while wielded normally."+upgrades;
         Integer strength=ArmorExplanation.knownStrength(hero);
-        if(strength==null)return "Can block incoming attack damage while wielded normally."+upgrades;
+        // Chris, Nov 20: always show the number once the item's level is known. If an unidentified ring could change
+        // your strength, show the item's own maximum and say missing strength lowers it.
+        if(strength==null)return "Blocks _0–"+Math.max(0,weapon.defenseFactor(hero))+" damage_ while wielded normally (less if you lack the strength for it)."+upgrades;
         int maximum=weapon.defenseFactor(hero),missing=Math.max(0,weapon.STRReq()-strength);
         return "Blocks _0–"+Math.max(0,maximum-2*missing)+" damage_ while wielded normally."+upgrades;
     }
