@@ -18,7 +18,21 @@ import static org.junit.Assert.*;
 
 public class HeroModRunTest {
 
-	@After public void clear(){ HeroModRun.starting = null; HeroModRun.active = null; }
+	@After public void clear(){ HeroModRun.starting = null; HeroModRun.restore(null); }
+
+	@Test public void aDamagedModRecordStaysAModRun_andIsKeptInTheSave(){
+		Bundle save = new Bundle();
+		save.put("apd_mod_hero", "{ not valid json");
+		HeroModRun.restore(save);
+		assertTrue("an unreadable mod record must never turn into a normal run", HeroModRun.isModRun());
+		assertTrue(HeroModRun.isDamaged());
+		assertEquals("Unreadable mod", HeroModRun.modName());
+		Bundle again = new Bundle();
+		HeroModRun.store(again);
+		assertEquals("raw record written back unchanged", "{ not valid json", again.getString("apd_mod_hero"));
+		HeroModRun.beginRun();
+		assertFalse("a new normal run clears it", HeroModRun.isModRun());
+	}
 
 	@Test public void aNormalRunIsUntouched(){
 		HeroModRun.beginRun();

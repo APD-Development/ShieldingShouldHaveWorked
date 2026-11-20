@@ -28,16 +28,23 @@ public final class HeroModRun {
 
 	private static final String NODE = "apd_mod_hero";
 
-	public static boolean isModRun(){ return active != null; }
+	/** Save held a mod record that no longer parses: still a mod run (stays out of badges/Community), raw record kept. */
+	private static volatile boolean damaged;
+
+	public static boolean isModRun(){ return active != null || damaged; }
+
+	/** True when this run's saved mod record could not be read. */
+	public static boolean isDamaged(){ return damaged; }
 
 	/** The mod hero's name for a mod run (marks its local rankings entry), otherwise null. */
-	public static String modName(){ HeroMod m = active; return m == null ? null : m.name; }
+	public static String modName(){ HeroMod m = active; if (m == null) return damaged ? "Unreadable mod" : null; return m.name; }
 
 	/** A run that must be a normal hero (a Community review replays the original setup): drop any pending mod. */
 	public static void cancelStarting(){ starting = null; startingJson = null; }
 
 	/** New run: take the pending mod (if any). A normal new run clears any old mod state. */
 	public static void beginRun(){
+		damaged = false;
 		active = starting;
 		activeJson = startingJson;
 		starting = null; startingJson = null;
@@ -96,11 +103,11 @@ public final class HeroModRun {
 
 	/** Loading a hero: restores the mod from the save itself; a damaged record is reported, never guessed. */
 	public static void restore(Bundle bundle){
-		active = null; activeJson = null;
+		active = null; activeJson = null; damaged = false;
 		if (bundle == null || !bundle.contains(NODE)) return;
 		String json = bundle.getString(NODE);
 		try { active = HeroMod.parse(json); activeJson = json; }
-		catch (HeroMod.Invalid e){ active = null; activeJson = null; }
+		catch (HeroMod.Invalid e){ active = null; activeJson = json; damaged = true; }
 	}
 
 	/** The name shown for this run's hero (mod name for a mod run). */
