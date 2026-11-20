@@ -77,6 +77,8 @@ public final class GrassDewPickup {
     }
 
     /** Called after movement/enemy turns and refreshed FOV; collect at most one stack per action. */
+    public boolean hasPending(){ return !items.isEmpty(); }
+
     public boolean collectIfSafe(Hero hero) {
         if(items.isEmpty()){clear();return false;}
         if(hero==null || hero!=Dungeon.hero || level!=Dungeon.level || !hero.isAlive()

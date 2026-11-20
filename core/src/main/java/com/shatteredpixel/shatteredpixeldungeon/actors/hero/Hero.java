@@ -264,6 +264,16 @@ public class Hero extends Char {
     public void queueGrassDew(Level level, int cell, Heap heap) {
         if(apdAutomaticLootStep)grassDewPickup.offer(this, level, cell, heap);
     }
+    // Chris, Nov 20: walking over a normal item pile picks it up. The step ends the walk and the pickup
+    // takes its normal turn next. Chests, shop items, hidden piles and the walk's own target keep normal rules.
+    private void apdQueueWalkoverPickup(Level steppedLevel,int cell){
+        if(!SPDSettings.autoPickupWalkover() || Dungeon.level!=steppedLevel || pos!=cell || steppedLevel.heaps==null) return;
+        Heap heap=steppedLevel.heaps.get(cell);
+        if(heap==null || heap.type!=Heap.Type.HEAP || heap.hidden || heap.isEmpty()) return;
+        if(grassDewPickup.hasPending()) return; // the dew pickup already handles this step
+        if(curAction instanceof HeroAction.PickUp || (curAction!=null && curAction.dst==cell)) return;
+        curAction=new HeroAction.PickUp(cell);
+    }
     private void apdBeginLootStep(){grassDewPickup.clear();apdAutomaticLootStep=true;}
     private void apdFinishLootStep(Level steppedLevel,int requestedCell,boolean eligible){
         if(eligible && Dungeon.level==steppedLevel && steppedLevel.heaps!=null && pos==requestedCell)
@@ -2120,6 +2130,7 @@ public class Hero extends Char {
             try{move(step);apdEligible=apdAutomaticLootStep;}
             finally{apdAutomaticLootStep=false;}
             apdFinishLootStep(apdStepLevel,step,apdEligible);
+            apdQueueWalkoverPickup(apdStepLevel,step);
 
 			spend( delay / speed() );
 			

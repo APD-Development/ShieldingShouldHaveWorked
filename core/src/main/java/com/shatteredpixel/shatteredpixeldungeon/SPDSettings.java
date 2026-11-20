@@ -815,6 +815,9 @@ public class SPDSettings extends GameSettings {
     public static void autoEatWhileWaiting(boolean value){put("apd_wait_auto_eat",value);}
     public static boolean autoEatWhenHungry(){return getBoolean("apd_wait_eat_hungry",false);}
     public static void autoEatWhenHungry(boolean value){put("apd_wait_eat_hungry",value);}
+    // Chris, Nov 20: walking over a normal item pile picks it up (normal pickup time). ON by default (his explicit ask).
+    public static boolean autoPickupWalkover(){return getBoolean("apd_auto_pickup_walkover",true);}
+    public static void autoPickupWalkover(boolean enabled){put("apd_auto_pickup_walkover",enabled);}
     public static boolean continueOnTrapDiscovery(){return getBoolean("apd_continue_trap_discovery",false);}
     public static void continueOnTrapDiscovery(boolean enabled){put("apd_continue_trap_discovery",enabled);}
     /** Chooser preference only: never performs a search or changes its range/cost. */

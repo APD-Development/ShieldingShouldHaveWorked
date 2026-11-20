@@ -153,4 +153,30 @@ public class TrapDiscoveryMovementTest {
     @Test public void discoveryProbabilityAndRandomConsumptionAreUnchanged(){
         Buff.detach(hero,Foresight.class);for(int seed=0;seed<40;seed++){boolean[] found=new boolean[2];long[] next=new long[2];for(int mode=0;mode<2;mode++){SPDSettings.continueOnTrapDiscovery(mode==1);hero.curAction=new HeroAction.Move(target);CountingTrap trap=hidden(start+1);Random.pushGenerator(seed);try{found[mode]=hero.search(false);next[mode]=Random.Long();assertEquals(found[mode],trap.visible);}finally{Random.popGenerator();}}assertEquals(found[0],found[1]);assertEquals(next[0],next[1]);}
     }
+
+    // Chris, Nov 20: walking over an item pile picks it up (normal pickup turn next); chests/shops/hidden/off are untouched.
+    private com.shatteredpixel.shatteredpixeldungeon.items.Heap pile(int cell, com.shatteredpixel.shatteredpixeldungeon.items.Heap.Type type){
+        com.shatteredpixel.shatteredpixeldungeon.items.Heap h=new com.shatteredpixel.shatteredpixeldungeon.items.Heap();
+        h.pos=cell;h.type=type;h.items.add(new com.shatteredpixel.shatteredpixeldungeon.items.food.Food());level.heaps.put(cell,h);return h;
+    }
+    @Test public void walkingOverAnItemPileStopsAndQueuesItsPickup()throws Exception{
+        assertTrue("on by default",SPDSettings.autoPickupWalkover());
+        travel();pile(start+1,com.shatteredpixel.shatteredpixeldungeon.items.Heap.Type.HEAP);
+        assertTrue(move());
+        assertEquals(start+1,hero.pos);
+        assertTrue(hero.curAction instanceof HeroAction.PickUp);
+        assertEquals(start+1,hero.curAction.dst);
+    }
+    @Test public void walkOverPickupLeavesChestsShopsHiddenPilesAndTheOffSettingAlone()throws Exception{
+        for(com.shatteredpixel.shatteredpixeldungeon.items.Heap.Type t:new com.shatteredpixel.shatteredpixeldungeon.items.Heap.Type[]{
+                com.shatteredpixel.shatteredpixeldungeon.items.Heap.Type.CHEST,com.shatteredpixel.shatteredpixeldungeon.items.Heap.Type.FOR_SALE}){
+            level.heaps.clear();hero.pos=start;HeroAction.Move a=travel();pile(start+1,t);assertTrue(move());
+            assertSame(t+" keeps walking",a,hero.curAction);
+        }
+        level.heaps.clear();hero.pos=start;HeroAction.Move a=travel();pile(start+1,com.shatteredpixel.shatteredpixeldungeon.items.Heap.Type.HEAP).hidden=true;
+        assertTrue(move());assertSame("hidden pile ignored",a,hero.curAction);
+        SPDSettings.autoPickupWalkover(false);
+        level.heaps.clear();hero.pos=start;a=travel();pile(start+1,com.shatteredpixel.shatteredpixeldungeon.items.Heap.Type.HEAP);
+        assertTrue(move());assertSame("setting off",a,hero.curAction);
+    }
 }
