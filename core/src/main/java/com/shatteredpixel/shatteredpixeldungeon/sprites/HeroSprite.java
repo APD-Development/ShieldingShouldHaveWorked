@@ -52,7 +52,9 @@ public class HeroSprite extends CharSprite {
 	public HeroSprite() {
 		super();
 		
-		texture( Dungeon.hero.heroClass.spritesheet() );
+		com.watabou.gltextures.SmartTexture modSheet = com.shatteredpixel.shatteredpixeldungeon.apd.mods.ModSprites.dungeonSheet();
+		if (modSheet != null) texture( modSheet );
+		else texture( Dungeon.hero.heroClass.spritesheet() );
 		updateArmor();
 		
 		link( Dungeon.hero );
@@ -201,6 +203,15 @@ public class HeroSprite extends CharSprite {
 		if (hero.buff(HeroDisguise.class) != null){
 			return avatar(hero.buff(HeroDisguise.class).getDisguise(), hero.tier());
 		} else {
+			com.watabou.gltextures.SmartTexture modSheet = com.shatteredpixel.shatteredpixeldungeon.apd.mods.ModSprites.dungeonSheet();
+			if (modSheet != null){
+				RectF patch = tiers().get( hero.tier() );
+				Image a = new Image( modSheet );
+				RectF frame = a.texture.uvRect( 1, 0, FRAME_WIDTH, FRAME_HEIGHT );
+				frame.shift( patch.left, patch.top );
+				a.frame( frame );
+				return a;
+			}
 			return avatar(hero.heroClass, hero.tier());
 		}
 	}

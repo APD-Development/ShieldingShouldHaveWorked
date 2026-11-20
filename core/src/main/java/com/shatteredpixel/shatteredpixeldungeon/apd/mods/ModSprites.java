@@ -63,6 +63,39 @@ public final class ModSprites {
 		}
 	}
 
+	/**
+	 * The installed sprite.png for this run's mod (matched by mod id in modsDir), or null when the mod is gone,
+	 * damaged or there is no mod. Chris, Nov 20: the mod sprite IS shown in the dungeon.
+	 */
+	static File spriteFile(File modsDir, HeroMod mod){
+		if (modsDir == null || mod == null) return null;
+		try {
+			ModLibrary.Installed i = ModLibrary.scan(modsDir).find(mod.id);
+			return i == null || i.sprite == null || !i.sprite.isFile() ? null : i.sprite;
+		} catch (Throwable t){ return null; }
+	}
+
+	/** Full sheet for the dungeon hero sprite of the active mod run; null = use the base class sheet. */
+	public static synchronized SmartTexture dungeonSheet(){
+		HeroMod m = HeroModRun.active;
+		if (m == null) return null;
+		try {
+			File png = spriteFile(com.watabou.utils.FileUtils.getFileHandle(ModHeroSelection.FOLDER).file(), m);
+			if (png == null) return null;
+			String k = key(png);
+			SmartTexture tx = cache.get(k);
+			if (tx == null){
+				tx = texture(Files.readAllBytes(png.toPath()));
+				if (tx == null) return null;
+				cache.put(k, tx);
+			}
+			return tx;
+		} catch (Throwable t){
+			Game.reportException(t);
+			return null;
+		}
+	}
+
 	private static SmartTexture texture(byte[] bytes){
 		if (bytes.length > ModLibrary.MAX_SPRITE_BYTES) return null;
 		Pixmap p = new Pixmap(bytes, 0, bytes.length);

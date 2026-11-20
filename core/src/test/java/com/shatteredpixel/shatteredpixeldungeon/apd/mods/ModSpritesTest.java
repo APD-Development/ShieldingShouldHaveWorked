@@ -23,4 +23,19 @@ public class ModSpritesTest {
 		assertNull(ModSprites.key(null));
 		assertNull(ModSprites.avatar(null, 0));
 	}
+
+	@Test
+	public void dungeonSpriteIsTheInstalledModsOwnSheet_missingModFallsBack() throws Exception {
+		File root = Files.createTempDirectory("modsheet").toFile();
+		String json = HeroModTest.hero(null);
+		File d = new File(root, "folder-x"); d.mkdirs();
+		Files.write(new File(d, "hero.json").toPath(), json.getBytes("UTF-8"));
+		Files.write(new File(d, "sprite.png").toPath(), ModLibraryTest.pngHeader(256, 128));
+		HeroMod m = HeroMod.parse(json);
+		assertEquals(new File(d, "sprite.png").getCanonicalFile(), ModSprites.spriteFile(root, m).getCanonicalFile());
+		assertNull(ModSprites.spriteFile(root, null));
+		assertNull(ModSprites.spriteFile(null, m));
+		new File(d, "sprite.png").delete();
+		assertNull("uninstalled/broken mod: base class sheet", ModSprites.spriteFile(root, m));
+	}
 }
