@@ -110,15 +110,22 @@ public class RingDustTest {
 	}
 
 	@Test public void dissolvingAnUnknownRingIdentifiesItsTypeAndGivesItsRealDust(){ // Chris, Nov 20
-		Ring r = ring(2, false, false);
-		assertFalse(r.isKnown());
-		java.util.ArrayList<Item> in = new java.util.ArrayList<>(); in.add(r);
-		RingDust.Recipe recipe = new RingDust.Recipe();
-		assertTrue(recipe.testIngredients(in));
-		Item out = recipe.brew(in);
-		assertEquals("real level +2 gives 6", 6, out.quantity());
-		assertTrue("ring type is now known", r.isKnown());
-		assertTrue(new RingOfArcana().isKnown());
+		HeadlessTestSupport.start();
+		Object oldHandler = Ring.apdHandler();
+		com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero prev = Dungeon.hero;
+		try {
+			Ring.initGems(); //a fresh run: no ring type known
+			Dungeon.hero = new com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero();
+			RingOfArcana r = new RingOfArcana(); //real, not anonymized
+			r.level(2); r.levelKnown = false; r.cursedKnown = false; r.cursed = false;
+			assertFalse(r.isKnown());
+			java.util.ArrayList<Item> in = new java.util.ArrayList<>(); in.add(r);
+			RingDust.Recipe recipe = new RingDust.Recipe();
+			assertTrue(recipe.testIngredients(in));
+			Item out = recipe.brew(in);
+			assertEquals("real level +2 gives 6", 6, out.quantity());
+			assertTrue("ring type is now known", new RingOfArcana().isKnown());
+		} finally { Ring.apdHandler(oldHandler); Dungeon.hero = prev; }
 	}
 
 	@Test public void aWornRingCannotGoInThePot(){ // bug, Chris Nov 20: a worn ring was dissolved but stayed equipped
