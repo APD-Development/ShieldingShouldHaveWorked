@@ -110,6 +110,13 @@ public final class HeroModRun {
 		catch (HeroMod.Invalid e){ active = null; activeJson = json; damaged = true; }
 	}
 
+	/** Shown once when a saved game is continued: a clear message for an unreadable mod record, otherwise null. */
+	public static String loadMessage(){
+		if (!damaged) return null;
+		return "This save's hero mod could not be read. The run continues with its base class, stays a Mod run"
+				+ " (local only, no normal badges) and the saved mod record is kept unchanged.";
+	}
+
 	/** The name shown for this run's hero (mod name for a mod run). */
 	public static String heroName(String className){
 		HeroMod m = active;

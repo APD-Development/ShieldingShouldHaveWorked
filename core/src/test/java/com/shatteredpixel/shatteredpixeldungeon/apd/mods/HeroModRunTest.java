@@ -100,4 +100,16 @@ public class HeroModRunTest {
 		assertTrue(modded.talents.get(0).containsKey(Talent.SCHOLARS_INTUITION));
 		assertFalse(modded.talents.get(0).containsKey(Talent.VETERANS_INTUITION));
 	}
+
+	@Test public void continuingADamagedModSaveGivesAClearMessage_normalSavesGiveNone(){
+		Bundle b = new Bundle();
+		HeroModRun.restore(b);
+		assertNull(HeroModRun.loadMessage());
+		b.put("apd_mod_hero", "{not json");
+		HeroModRun.restore(b);
+		assertNotNull(HeroModRun.loadMessage());
+		assertTrue(HeroModRun.loadMessage().contains("could not be read"));
+		HeroModRun.restore(new Bundle());
+		assertNull(HeroModRun.loadMessage());
+	}
 }

@@ -686,6 +686,10 @@ public class GameScene extends PixelScene {
 			} else {
 				GLog.h(Messages.get(this, "return"), Dungeon.depth);
 			}
+			if (InterlevelScene.mode == InterlevelScene.Mode.CONTINUE){
+				String modMsg = com.shatteredpixel.shatteredpixeldungeon.apd.mods.HeroModRun.loadMessage();
+				if (modMsg != null) GLog.w(modMsg);
+			}
 
 			if (Dungeon.hero.hasTalent(Talent.ROGUES_FORESIGHT)
 					&& Dungeon.level instanceof RegularLevel && Dungeon.branch == 0){
