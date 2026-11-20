@@ -285,7 +285,7 @@ public final class CommunityController {
 	}
 
 	private void remember(){ storage.token(api.token()); }
-	private void forget(){ api.token(null); storage.token(null); me = null; CACHE.clear(); }
+	private void forget(){ api.token(null); storage.token(null); me = null; synchronized (CACHE){ CACHE.clear(); } }
 
 	// ---- hub ----
 
@@ -979,11 +979,11 @@ public final class CommunityController {
 				}
 			});
 			s.check("Subscribed", "Keep it in My subscriptions", sub, () ->
-					call(() -> api.modSubscribe(id, !sub), x -> { if (x.ok()){ CACHE.remove(cacheKey("mods-subscribed")); modDetail(id, fromSubscribed); } else problem(x, () -> modDetail(id, fromSubscribed)); }));
+					call(() -> api.modSubscribe(id, !sub), x -> { if (x.ok()){ uncache("mods", "mods-subscribed"); modDetail(id, fromSubscribed); } else problem(x, () -> modDetail(id, fromSubscribed)); }));
 			if (me != null && authorId.equals(me.getString("id", "")))
 				s.item("Delete my mod from the workshop", "Copies already installed stay on players' devices", () ->
 						call(() -> api.modDelete(id), x -> {
-							if (x.ok()){ CACHE.remove(cacheKey("mods")); CACHE.remove(cacheKey("mods-subscribed")); done("Deleted from the workshop.", back); }
+							if (x.ok()){ uncache("mods", "mods-subscribed"); done("Deleted from the workshop.", back); }
 							else problem(x, () -> modDetail(id, fromSubscribed));
 						}));
 			else s.item("Report", null, () -> report("mod", id, () -> modDetail(id, fromSubscribed)));
@@ -1021,7 +1021,7 @@ public final class CommunityController {
 			catch (IllegalArgumentException e){ return new CommunityApi.Result(400, null, "sprite".equals(e.getMessage()) ? "sprite_too_large" : "json_too_large"); }
 		}, r -> {
 			if (!r.ok()){ problem(r, this::modUploadPick); return; }
-			CACHE.remove(cacheKey("mods"));
+			uncache("mods", "mods-subscribed");
 			done(r.body != null && r.body.getBoolean("updated", false) ? "Updated: players see the new version." : "Uploaded. Other players can find it in the workshop now.", this::workshop);
 		});
 	}
@@ -1136,6 +1136,12 @@ public final class CommunityController {
 	}
 
 	private String cacheKey(String key){ return (api.token() == null ? "" : api.token()) + "|" + key; }
+
+	// Drops cached list screens after a change the player made (the subscriber count / version shown would be stale).
+	// Locked: background refreshes write the same map from another thread.
+	private void uncache(String... keys){
+		synchronized (CACHE){ for (String k : keys) CACHE.remove(cacheKey(k)); }
+	}
 
 	private void cached(String key, Supplier<CommunityApi.Result> call, Consumer<CommunityApi.Result> then){
 		final String k = cacheKey(key);

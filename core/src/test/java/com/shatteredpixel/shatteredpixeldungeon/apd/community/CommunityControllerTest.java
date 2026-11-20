@@ -689,6 +689,8 @@ public class CommunityControllerTest {
 			assertTrue("now offered as reinstall", has(last(), "Reinstall"));
 			tap("Subscribed");
 			assertTrue(requests.stream().anyMatch(q -> q.startsWith("POST /v1/mods/a1/subscribe")));
+			assertFalse("subscribing drops the cached lists (subscriber count changed)",
+					CommunityController.CACHE.keySet().stream().anyMatch(k -> k.endsWith("|mods") || k.endsWith("|mods-subscribed")));
 			answers.add("stolen art");
 			tap("Report");
 			assertTrue(requests.stream().anyMatch(q -> q.startsWith("POST /v1/reports") && q.contains("\"kind\":\"mod\"") && q.contains("\"id\":\"a1\"")));
