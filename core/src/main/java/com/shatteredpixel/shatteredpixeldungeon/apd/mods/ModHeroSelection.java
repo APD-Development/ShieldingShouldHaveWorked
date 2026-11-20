@@ -55,7 +55,7 @@ public final class ModHeroSelection {
 			File parent = folder.getParentFile();
 			if (parent == null || !parent.getCanonicalFile().equals(modsDir.getCanonicalFile())) return false;
 		} catch (java.io.IOException e){ return false; }
-		if (!ModInstaller.uninstall(modsDir, folder.getName())) return false;
+		if (!ModInstaller.uninstallFolder(modsDir, folder.getName())) return false;
 		if (picked == i) clear();
 		return true;
 	}

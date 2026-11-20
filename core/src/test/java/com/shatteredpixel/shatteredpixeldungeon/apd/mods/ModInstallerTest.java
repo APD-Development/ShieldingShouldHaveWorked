@@ -97,4 +97,21 @@ public class ModInstallerTest {
 		assertEquals(0, outside.list().length);
 		assertFalse(ModInstaller.uninstall(mods, "chris.battle-mage"));
 	}
+
+	@Test public void handPlacedFolderWithAnyNameCanBeRemovedFromHeroSelect() throws Exception {
+		File mods = tmp.newFolder("mods");
+		File hand = new File(mods, "My Hero"); hand.mkdirs();
+		Files.write(new File(hand, "hero.json").toPath(), HeroModTest.hero(null).getBytes(StandardCharsets.UTF_8));
+		Files.write(new File(hand, "sprite.png").toPath(), ModLibraryTest.pngHeader(256, 128));
+		File keep = new File(mods, "keep"); keep.mkdirs();
+		ModLibrary lib = ModLibrary.scan(mods);
+		assertEquals(1, lib.heroes.size());
+		assertTrue(ModHeroSelection.remove(mods, lib.heroes.get(0)));
+		assertFalse(hand.exists());
+		assertTrue(keep.isDirectory());
+		assertFalse(ModInstaller.uninstallFolder(mods, ".."));
+		assertFalse(ModInstaller.uninstallFolder(mods, "keep/../keep"));
+		assertFalse(ModInstaller.uninstallFolder(mods, ".install-x"));
+		assertTrue(keep.isDirectory());
+	}
 }

@@ -85,7 +85,20 @@ public final class ModInstaller {
 	/** Remove an installed mod's folder (named by id). Returns false if there was nothing to remove. */
 	public static boolean uninstall(File modsDir, String id){
 		if (modsDir == null || id == null || !id.matches("[a-z0-9][a-z0-9._-]*") || id.length() > 64) return false;
-		File target = new File(modsDir, id);
+		return removeFolder(modsDir, id);
+	}
+
+	/** Remove a hand-placed mod folder by its folder name ("any folder name", docs/MODDING.md): a single plain name
+	 *  directly in modsDir, never a path, never a dot folder (installer staging), never a link. */
+	public static boolean uninstallFolder(File modsDir, String folder){
+		if (modsDir == null || folder == null || folder.isEmpty() || folder.startsWith(".")
+				|| folder.contains("/") || folder.contains("\\") || folder.indexOf('\0') >= 0) return false;
+		if (!new File(folder).getName().equals(folder)) return false;
+		return removeFolder(modsDir, folder);
+	}
+
+	private static boolean removeFolder(File modsDir, String name){
+		File target = new File(modsDir, name);
 		if (Files.isSymbolicLink(target.toPath()) || !Files.isDirectory(target.toPath(), LinkOption.NOFOLLOW_LINKS)) return false;
 		File gone = new File(modsDir, ".old-" + java.util.UUID.randomUUID());
 		try { Files.move(target.toPath(), gone.toPath(), StandardCopyOption.ATOMIC_MOVE); }
