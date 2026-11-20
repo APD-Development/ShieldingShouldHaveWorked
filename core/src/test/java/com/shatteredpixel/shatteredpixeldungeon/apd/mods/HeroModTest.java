@@ -68,6 +68,14 @@ public class HeroModTest {
 		refused(hero(null).replace("\"armorAbilities\":[\"HeroicLeap\",\"WarpBeacon\"]", "\"armorAbilities\":[]"), "at least one ability");
 	}
 
+	@Test public void wrongKindsAndHugeNumbersAreRefusedNotCrashedOrWrapped(){
+		// 4294967318 wraps to 22 through asInt; must be refused, not accepted as hp 22
+		refused(hero(null).replace("\"hp\":22", "\"hp\":4294967318"), "hp must be between");
+		// an object where an ability name belongs used to throw IllegalStateException past the installer and save restore
+		refused(hero(null).replace("\"WarpBeacon\"", "{\"x\":1}"), "wrong kind");
+		refused(hero(null).replace("\"HEARTY_MEAL\"", "[1]"), "");
+	}
+
 	static String firstOf(HeroClass hc, int tier){
 		java.util.ArrayList<java.util.LinkedHashMap<Talent, Integer>> t = new java.util.ArrayList<>();
 		Talent.initClassTalents(hc, t);

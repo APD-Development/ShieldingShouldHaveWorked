@@ -63,7 +63,13 @@ public final class HeroMod {
 		this.armorAbilities = Collections.unmodifiableList(abilities);
 	}
 
+	/** Never throws anything but Invalid: callers (installer, save restore) only catch Invalid. */
 	public static HeroMod parse(String json) throws Invalid {
+		try { return parseChecked(json); }
+		catch (RuntimeException | LinkageError e){ throw new Invalid("hero.json has a value of the wrong kind"); }
+	}
+
+	private static HeroMod parseChecked(String json) throws Invalid {
 		JsonValue v;
 		try { v = new JsonReader().parse(json); } catch (RuntimeException e){ throw new Invalid("hero.json is not valid JSON"); }
 		if (v == null || !v.isObject()) throw new Invalid("hero.json must be one JSON object");
@@ -131,6 +137,8 @@ public final class HeroMod {
 	private static int number(JsonValue v, String key, int min, int max) throws Invalid {
 		JsonValue f = v.get(key);
 		if (f == null || !f.isNumber() || f.asDouble() != Math.rint(f.asDouble())) throw new Invalid(key + " must be a whole number");
+		double d = f.asDouble();
+		if (d < min || d > max) throw new Invalid(key + " must be between " + min + " and " + max); // before asInt: huge values wrap
 		int n = f.asInt();
 		if (n < min || n > max) throw new Invalid(key + " must be between " + min + " and " + max);
 		return n;
