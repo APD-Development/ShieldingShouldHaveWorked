@@ -30,6 +30,11 @@ A recent push is not a clash: `git pull --rebase` before every push and resolve 
   including at 16th, goes to the earlier submission. Week-1 picks are gone.
 - Public GPL source: github.com/APD-Development/adhd-pixel-dungeon (export with tools/export-public-source.sh).
 
+## LOOT AVAILABILITY (Chris, Nov 20 2:30 PM) — done, live session
+- Custom rule "Equipment Availability" is now "Loot Availability" (enum key EQUIPMENT kept for saves). It scales ONLY the number of ordinary random items each floor places (RegularLevel.createItems, gold piles included), round half up, min 1. Range stays 25-200%.
+- NEVER two of the same item on one tile; no duplicate or deleted drops anywhere (enemy drops, rooms, shops untouched). No extra Upgrade Scrolls, Strength potions or enemy loot. Food keeps its own slider.
+- OPEN: the score multiplier for this slider (ProvisionalScoreLookup EQUIPMENT row) was set for the old duplicate behavior and is wrong now. Chris doesn't know the right values yet; do NOT change it without him.
+
 ## RUN REVIEW ANSWERS (Chris, Nov 19 6:30 AM) — these override earlier defaults/questions. Build them next.
 - Luck drop: reviewers play the same seed; drops vary naturally like for any player (more/fewer potions is part of the
   test). No luck bonus or adjustment. Reviewers can say in their advice that a verdict depends on luck.
