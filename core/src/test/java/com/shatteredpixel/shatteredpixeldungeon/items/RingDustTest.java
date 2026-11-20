@@ -123,22 +123,26 @@ public class RingDustTest {
 
 	@Test public void aWornRingCannotGoInThePot(){ // bug, Chris Nov 20: a worn ring was dissolved but stayed equipped
 		Ring r = ring(0, true, false);
-		if (Dungeon.hero == null) Dungeon.hero = new com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero();
+		com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero prev = Dungeon.hero;
+		Dungeon.hero = new com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero();
 		Dungeon.hero.belongings.ring = r;
 		try { assertFalse(Recipe.usableInRecipe(r));
 			java.util.ArrayList<Item> in = new java.util.ArrayList<>(); in.add(r);
 			assertFalse(new RingDust.Recipe().testIngredients(in));
-		} finally { Dungeon.hero.belongings.ring = null; }
+		} finally { Dungeon.hero = prev; }
 	}
 
 	@Test public void aUsedUpWornRingFromAnOlderSaveIsClearedOnLoad(){
 		Ring r = ring(0, true, false);
-		if (Dungeon.hero == null) Dungeon.hero = new com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero();
+		com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero prev = Dungeon.hero;
+		Dungeon.hero = new com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero();
+		try {
 		Dungeon.hero.belongings.ring = r; r.quantity(0);
 		com.watabou.utils.Bundle b = new com.watabou.utils.Bundle();
 		Dungeon.hero.belongings.storeInBundle(b);
 		Dungeon.hero.belongings.ring = null;
 		Dungeon.hero.belongings.restoreFromBundle(b);
 		assertNull(Dungeon.hero.belongings.ring);
+		} finally { Dungeon.hero = prev; }
 	}
 }
