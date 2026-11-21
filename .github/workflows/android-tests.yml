@@ -6,6 +6,11 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
+    inputs:
+      only_class:
+        description: 'Run only this instrumented test class (fully qualified); empty = all'
+        required: false
+        default: ''
 
 permissions:
   contents: read
@@ -36,6 +41,8 @@ jobs:
       - uses: gradle/actions/setup-gradle@v4
       - name: Run instrumented tests on API ${{ matrix.api-level }}
         uses: reactivecircus/android-emulator-runner@v2
+        env:
+          ONLY_CLASS: ${{ github.event.inputs.only_class }}
         with:
           api-level: ${{ matrix.api-level }}
           arch: x86_64
