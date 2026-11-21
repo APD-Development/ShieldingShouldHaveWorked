@@ -507,6 +507,7 @@ public class HeroSelectScene extends PixelScene {
 
 	private static com.shatteredpixel.shatteredpixeldungeon.apd.mods.script.ScriptModLibrary scanScriptMods(){
 		try {
+			com.shatteredpixel.shatteredpixeldungeon.apd.mods.script.ScriptModRun.installBundledSamples();
 			return com.shatteredpixel.shatteredpixeldungeon.apd.mods.script.ScriptModLibrary.scan(com.shatteredpixel.shatteredpixeldungeon.apd.mods.script.ScriptModRun.dir());
 		} catch (Exception e){
 			Game.reportException(e);

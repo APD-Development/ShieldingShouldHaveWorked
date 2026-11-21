@@ -39,6 +39,29 @@ public final class ScriptModRun {
 	 */
 	public static boolean pickerEnabled(){ return com.shatteredpixel.shatteredpixeldungeon.apd.ApdFeatures.testBuild(); }
 
+	/** Bundled sample mods (test builds only; the asset exists only there), by folder name. */
+	public static final String[] SAMPLES = {"sample.items"};
+
+	/** Test builds: copies each bundled sample into the script mods folder once (never overwrites a folder). */
+	public static void installBundledSamples(){
+		if (!pickerEnabled()) return;
+		File root = dir();
+		if (root == null) return;
+		for (String s : SAMPLES){
+			try {
+				com.badlogic.gdx.files.FileHandle json = com.badlogic.gdx.Gdx.files.internal("apd/scriptmods/" + s + "/mod.json");
+				com.badlogic.gdx.files.FileHandle js = com.badlogic.gdx.Gdx.files.internal("apd/scriptmods/" + s + "/main.js");
+				File target = new File(root, s);
+				if (!json.exists() || !js.exists() || target.exists()) continue;
+				if (!target.mkdirs()) continue;
+				java.nio.file.Files.write(new File(target, "mod.json").toPath(), json.readBytes());
+				java.nio.file.Files.write(new File(target, "main.js").toPath(), js.readBytes());
+			} catch (Exception e){
+				com.watabou.noosa.Game.reportException(e);
+			}
+		}
+	}
+
 	/** Hero select's toggled mods; kept across hero changes, handed to {@link #choose} only when a normal run starts. */
 	private static final List<String> picked = new ArrayList<>();
 	public static synchronized boolean isPicked(String id){ return picked.contains(id); }

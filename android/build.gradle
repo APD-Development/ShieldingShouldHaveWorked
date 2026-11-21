@@ -22,6 +22,8 @@ android {
         apdFeaturesFile.parentFile.mkdirs()
         apdFeaturesFile.text = "testBuild\ngrudge\ndemoUnlock\nclericPlayable\n"
         sourceSets.main.assets.srcDir(apdFeaturesDir)
+        //APD script mods (feature/script-mods): the sample mod ships in test (dev) builds only, never in Play builds
+        sourceSets.main.assets.srcDir('apdSampleMods')
     } else if ((project.findProperty('apdBuild') ?: '').toString().startsWith('P')) {
         // Owner-approved Alpha Testers playback and hidden Grudge, without Developer switches.
         def apdPlaybackDir = project.layout.buildDirectory.dir('apdAlphaPlaybackAssets').get().asFile
@@ -30,6 +32,9 @@ android {
         apdPlaybackFile.text = "extendedPlayback\ngrudge\n"
         sourceSets.main.assets.srcDir(apdPlaybackDir)
     }
+
+    //the device test reads the sample script mod from the test APK's own assets
+    sourceSets.androidTest.assets.srcDir('apdSampleMods')
 
     androidResources {
         localeFilters += ['en', 'zh-rCN', 'ko', 'ru', 'es', 'pt', 'fr', 'de', 'zh-rTW', 'ja', 'pl',
