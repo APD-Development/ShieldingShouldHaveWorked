@@ -172,6 +172,17 @@ public final class HeroModRun {
 		catch (HeroMod.Invalid e){ active = null; activeJson = json; damaged = true; }
 	}
 
+	/**
+	 * The mod hero name for a saved-game preview (the run list and the saved-run window showed only the base class,
+	 * so a mod run looked like a normal one). Reads the save's own record; never touches this run's state.
+	 * Null for a normal hero, "Unreadable mod" for a record that no longer parses.
+	 */
+	public static String previewName(Bundle heroBundle){
+		if (heroBundle == null || !heroBundle.contains(NODE)) return null;
+		try { return HeroMod.parse(heroBundle.getString(NODE)).name; }
+		catch (HeroMod.Invalid e){ return "Unreadable mod"; }
+	}
+
 	/** Shown once when a saved game is continued: a clear message for an unreadable mod record, otherwise null. */
 	public static String loadMessage(){
 		if (!damaged) return null;

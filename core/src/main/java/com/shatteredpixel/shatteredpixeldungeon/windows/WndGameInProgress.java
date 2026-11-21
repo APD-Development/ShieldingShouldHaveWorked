@@ -59,6 +59,7 @@ public class WndGameInProgress extends Window {
 		} else {
 			className = info.heroClass.title();
 		}
+		if (info.modHero != null) className = info.modHero + " (" + className + ")"; //APD hero mods: a mod run names its mod
 		
 		IconTitle title = new IconTitle();
 		title.icon( HeroSprite.avatar(info.heroClass, info.armorTier) );

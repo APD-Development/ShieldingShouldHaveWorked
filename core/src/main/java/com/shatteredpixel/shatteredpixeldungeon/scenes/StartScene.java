@@ -140,7 +140,7 @@ public class StartScene extends PixelScene {
                 int challenges = Integer.bitCount(game.challenges);
                 long days = Math.max(0L, (Game.realTime - game.lastPlayed) / 86400000L);
                 String age = game.lastPlayed <= 0 ? "last played ?" : days == 0 ? "played today" : "played " + days + "d ago";
-                rows.add(WndUimsdList.Entry.item(prefix + "Floor " + game.depth + "  Lv " + game.level,
+                rows.add(WndUimsdList.Entry.item(prefix + (game.modHero != null ? "Mod: " + game.modHero + "  " : "") + "Floor " + game.depth + "  Lv " + game.level,
                         "Difficulty " + diff + " | " + challenges + " challenges | " + rules + " | " + age));
             }
         }

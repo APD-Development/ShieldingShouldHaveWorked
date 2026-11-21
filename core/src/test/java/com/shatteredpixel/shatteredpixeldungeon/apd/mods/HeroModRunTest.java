@@ -34,6 +34,18 @@ public class HeroModRunTest {
 		assertFalse("a new normal run clears it", HeroModRun.isModRun());
 	}
 
+	@Test public void previewName_namesTheSavesModWithoutTouchingThisRun(){
+		assertNull("normal save", HeroModRun.previewName(new Bundle()));
+		assertNull(HeroModRun.previewName(null));
+		Bundle mod = new Bundle();
+		mod.put("apd_mod_hero", HeroModTest.hero(null));
+		assertEquals("Battle Mage", HeroModRun.previewName(mod));
+		Bundle bad = new Bundle();
+		bad.put("apd_mod_hero", "{ not valid json");
+		assertEquals("Unreadable mod", HeroModRun.previewName(bad));
+		assertFalse("previewing a save never makes the current state a mod run", HeroModRun.isModRun());
+	}
+
 	@Test public void snapshot_putsBackAModRunAndAPendingPick_afterBeginRun(){
 		Bundle save = new Bundle();
 		save.put("apd_mod_hero", "{ not valid json");

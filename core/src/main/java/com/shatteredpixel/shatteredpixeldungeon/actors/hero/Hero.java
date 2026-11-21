@@ -437,6 +437,7 @@ public class Hero extends Char {
 		info.shld = bundle.getInt( Char.TAG_SHLD );
 		info.heroClass = bundle.getEnum( CLASS, HeroClass.class );
 		info.subClass = bundle.getEnum( SUBCLASS, HeroSubClass.class );
+		info.modHero = com.shatteredpixel.shatteredpixeldungeon.apd.mods.HeroModRun.previewName( bundle );
 		Belongings.preview( info, bundle );
 	}
 

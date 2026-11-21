@@ -261,6 +261,8 @@ public class GamesInProgress {
 		public int shld;
 		public HeroClass heroClass;
 		public HeroSubClass subClass;
+		/** Hero mods: the mod hero's name for a mod run, otherwise null. */
+		public String modHero;
 		public int armorTier;
 		
 		public int goldCollected;
