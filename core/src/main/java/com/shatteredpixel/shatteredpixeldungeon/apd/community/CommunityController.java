@@ -304,7 +304,7 @@ public final class CommunityController {
 			s.item("Voting and results", "Upvotes, the top 16 and the tournament", this::results);
 			s.item("Selected content", "Every champion and how its development is going", this::champions);
 			s.item("Run reviews", "Your runs' review progress, and runs waiting for reviewers", this::reviews);
-			s.item("Hero mods workshop", "Browse, download and share mod heroes", this::workshop);
+			if (com.shatteredpixel.shatteredpixeldungeon.apd.mods.ModHeroSelection.ENABLED) s.item("Hero mods workshop", "Browse, download and share mod heroes", this::workshop);
 			s.item("Account", "Sign out or delete your account", this::account);
 			if (me.getBoolean("admin", false)) s.item("Moderation", "Reports, hide, remove, ban", this::moderation);
 			s.item("What's coming next", "Run reviews, mods, events and more", ui::planned);

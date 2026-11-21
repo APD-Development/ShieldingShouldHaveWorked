@@ -404,7 +404,7 @@ public class HeroSelectScene extends PixelScene {
 		//APD hero mods (plan step c): installed mod heroes are listed after the normal classes
 		com.shatteredpixel.shatteredpixeldungeon.apd.mods.ModHeroSelection.clear();
 		final com.shatteredpixel.shatteredpixeldungeon.apd.mods.ModLibrary mods = scanMods();
-		if (mods != null && (!mods.heroes.isEmpty() || !mods.refused.isEmpty())){
+		if (com.shatteredpixel.shatteredpixeldungeon.apd.mods.ModHeroSelection.ENABLED && mods != null && (!mods.heroes.isEmpty() || !mods.refused.isEmpty())){
 			StyledButton btnMods = new StyledButton(Chrome.Type.GREY_BUTTON_TR, "Mods"){
 				@Override
 				protected void onClick() {
@@ -479,6 +479,7 @@ public class HeroSelectScene extends PixelScene {
 	}
 
 	private static com.shatteredpixel.shatteredpixeldungeon.apd.mods.ModLibrary scanMods(){
+		if (!com.shatteredpixel.shatteredpixeldungeon.apd.mods.ModHeroSelection.ENABLED) return null;
 		try {
 			return com.shatteredpixel.shatteredpixeldungeon.apd.mods.ModHeroSelection.scan(com.watabou.utils.FileUtils.getFileHandle(com.shatteredpixel.shatteredpixeldungeon.apd.mods.ModHeroSelection.FOLDER).file());
 		} catch (Exception e){
