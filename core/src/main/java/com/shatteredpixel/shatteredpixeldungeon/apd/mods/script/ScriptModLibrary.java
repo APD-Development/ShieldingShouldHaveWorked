@@ -86,7 +86,8 @@ public final class ScriptModLibrary {
 		JsonValue v;
 		try { v = new JsonReader().parse(json); } catch (RuntimeException e){ throw new Bad("mod.json is not valid JSON"); }
 		if (v == null || !v.isObject()) throw new Bad("mod.json must be one JSON object");
-		if (v.getInt("format", -1) != FORMAT) throw new Bad("unsupported format (this version reads format " + FORMAT + ")");
+		JsonValue fmt = v.get("format");
+		if (fmt == null || !fmt.isNumber() || fmt.asDouble() != FORMAT) throw new Bad("unsupported format (this version reads format " + FORMAT + ")");
 		String id = text(v, "id", 64);
 		if (!id.matches("[a-z0-9][a-z0-9._-]*")) throw new Bad("id may only use a-z, 0-9, '.', '_' and '-'");
 		String name = text(v, "name", 32), author = text(v, "author", 32);

@@ -73,6 +73,12 @@ public class ScriptModLibraryTest {
 		assertTrue(refusal(JSON.replace("\"format\":1", "\"format\":2"), "x").startsWith("unsupported format"));
 	}
 
+	@Test public void nonIntegerOrTextFormatIsRefused() throws Exception {
+		assertTrue(refusal(JSON.replace("\"format\":1", "\"format\":1.5"), "x").startsWith("unsupported format"));
+		assertTrue(refusal(JSON.replace("\"format\":1", "\"format\":\"1\""), "x").startsWith("unsupported format"));
+		assertTrue(refusal(JSON.replace("\"format\":1", "\"format\":\"one\""), "x").startsWith("unsupported format"));
+	}
+
 	@Test public void badIdIsRefused() throws Exception {
 		assertTrue(refusal(JSON.replace("test.mod", "Bad Id"), "x").startsWith("id may only use"));
 	}
