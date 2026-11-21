@@ -124,6 +124,7 @@ public final class ScriptSandbox {
 	public Object call(String function, Object... args) throws ScriptFailure {
 		check();
 		if (scope == null) fail("is not loaded");
+		for (Object a : args) requirePlain(a);
 		try (Context cx = enter()){
 			Object f = ScriptableObject.getProperty(scope, function);
 			if (!(f instanceof Function)) return null;
@@ -138,6 +139,14 @@ public final class ScriptSandbox {
 		}
 	}
 
+	/** Only plain values go into a script: a Java object would be wrapped by Rhino and expose its methods, which is
+	 *  exactly the Java access rule 3 forbids. This is an APD programming error, not the mod's fault, so it throws
+	 *  without disabling the mod. */
+	private static void requirePlain(Object a){
+		if (a == null || a instanceof String || a instanceof Number || a instanceof Boolean || a instanceof Character) return;
+		throw new IllegalArgumentException("script mods only receive plain values, not " + a.getClass().getName());
+	}
+
 	public boolean defines(String function){
 		if (scope == null || disabled != null) return false;
 		try (Context cx = enter()){
@@ -149,6 +158,7 @@ public final class ScriptSandbox {
 		if (r == null || r instanceof org.mozilla.javascript.Undefined) return null;
 		if (r instanceof CharSequence) return r.toString();
 		if (r instanceof Number) return ((Number) r).doubleValue();
+		if (r instanceof Character) return r.toString();
 		if (r instanceof Boolean) return r;
 		if (r instanceof Scriptable) return null; // objects never leave the sandbox
 		return null;

@@ -127,4 +127,17 @@ public class ScriptSandboxTest {
 		failure(bad, "spin");
 		assertEquals("fine", good.call("ok"));
 	}
+
+	@Test public void gameObjectsCanNeverBePassedIntoAScript() throws Exception {
+		ScriptSandbox s = loaded("function echo(x){ return typeof x; }");
+		assertEquals("number", s.call("echo", 3));
+		assertEquals("string", s.call("echo", "a"));
+		assertEquals("boolean", s.call("echo", true));
+		try { s.call("echo", new java.io.File("/")); fail("a Java object must be refused"); }
+		catch (IllegalArgumentException expected){ }
+		try { s.call("echo", "ok", new StringBuilder("x")); fail("every argument is checked"); }
+		catch (IllegalArgumentException expected){ }
+		assertFalse("APD's mistake never disables the mod", s.isDisabled());
+		assertEquals("number", s.call("echo", 1));
+	}
 }
