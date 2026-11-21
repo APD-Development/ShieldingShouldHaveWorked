@@ -89,4 +89,23 @@ public class ModLibraryTest {
 		assertTrue(lib.heroes.isEmpty() && lib.refused.isEmpty());
 		assertTrue(ModLibrary.scan(null).heroes.isEmpty());
 	}
+
+	@Test public void readBounded_neverLoadsOverTheLimitOrThroughLinks() throws Exception {
+		File dir = tmp.newFolder("bounded");
+		File ok = new File(dir, "hero.json");
+		Files.write(ok.toPath(), "{}".getBytes(java.nio.charset.StandardCharsets.UTF_8));
+		org.junit.Assert.assertArrayEquals("{}".getBytes(java.nio.charset.StandardCharsets.UTF_8), ModLibrary.readBounded(ok, ModLibrary.MAX_JSON_BYTES));
+		File edge = new File(dir, "edge.json");
+		Files.write(edge.toPath(), new byte[ModLibrary.MAX_JSON_BYTES]);
+		assertEquals(ModLibrary.MAX_JSON_BYTES, ModLibrary.readBounded(edge, ModLibrary.MAX_JSON_BYTES).length);
+		File big = new File(dir, "big.json");
+		Files.write(big.toPath(), new byte[ModLibrary.MAX_JSON_BYTES + 1]);
+		org.junit.Assert.assertNull(ModLibrary.readBounded(big, ModLibrary.MAX_JSON_BYTES));
+		File link = new File(dir, "link.json");
+		try { Files.createSymbolicLink(link.toPath(), ok.toPath()); } catch (Exception e){ link = null; }
+		if (link != null) org.junit.Assert.assertNull(ModLibrary.readBounded(link, ModLibrary.MAX_JSON_BYTES));
+		org.junit.Assert.assertNull(ModLibrary.readBounded(dir, ModLibrary.MAX_JSON_BYTES));
+		org.junit.Assert.assertNull(ModLibrary.readBounded(new File(dir, "missing"), 10));
+		org.junit.Assert.assertNull(ModLibrary.readBounded(null, 10));
+	}
 }

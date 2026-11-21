@@ -61,7 +61,10 @@ public final class ModLibrary {
 				if (Files.isSymbolicLink(png.toPath())) throw new HeroMod.Invalid("sprite.png is a link");
 				if (!json.isFile()) throw new HeroMod.Invalid("hero.json is missing");
 				if (json.length() > MAX_JSON_BYTES) throw new HeroMod.Invalid("hero.json is larger than 16 KB");
-				String text = new String(Files.readAllBytes(json.toPath()), StandardCharsets.UTF_8);
+				// bounded, no-follow read: the file can change after the checks above (readAllBytes loaded it whole)
+				byte[] raw = readBounded(json, MAX_JSON_BYTES);
+				if (raw == null) throw new HeroMod.Invalid("hero.json changed while it was read or is larger than 16 KB");
+				String text = new String(raw, StandardCharsets.UTF_8);
 				HeroMod m = HeroMod.parse(text);
 				checkSprite(png);
 				if (ids.contains(m.id)) throw new HeroMod.Invalid("another installed mod already uses the id " + m.id);
@@ -74,6 +77,23 @@ public final class ModLibrary {
 			}
 		}
 		return new ModLibrary(ok, bad);
+	}
+
+	/**
+	 * A mod file's bytes, or null when it is not a plain file, is a link, or is (or grows) over max bytes.
+	 * Never loads more than max + 1 bytes into memory, never follows a link.
+	 */
+	public static byte[] readBounded(File f, int max){
+		try {
+			if (f == null || !f.isFile() || Files.isSymbolicLink(f.toPath()) || f.length() > max) return null;
+			try (InputStream in = Files.newInputStream(f.toPath(), java.nio.file.LinkOption.NOFOLLOW_LINKS)){
+				byte[] buf = new byte[max + 1];
+				int n = 0, r;
+				while (n < buf.length && (r = in.read(buf, n, buf.length - n)) > 0) n += r;
+				if (n > max) return null;
+				return Arrays.copyOf(buf, n);
+			}
+		} catch (Throwable t){ return null; }
 	}
 
 	public Installed find(String id){

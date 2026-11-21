@@ -1006,9 +1006,10 @@ public final class CommunityController {
 	}
 
 	private void modUpload(com.shatteredpixel.shatteredpixeldungeon.apd.mods.ModLibrary.Installed i){
-		final byte[] png;
-		try { png = java.nio.file.Files.readAllBytes(i.sprite.toPath()); }
-		catch (java.io.IOException | RuntimeException e){
+		// bounded no-follow read (readAllBytes loaded a swapped/grown or linked file whole before any size check)
+		final byte[] png = com.shatteredpixel.shatteredpixeldungeon.apd.mods.ModLibrary.readBounded(i.sprite,
+				com.shatteredpixel.shatteredpixeldungeon.apd.mods.ModLibrary.MAX_SPRITE_BYTES);
+		if (png == null){
 			Screen x = new Screen("Community", null);
 			x.warning("Couldn't read that mod's sprite.png.");
 			x.item("OK", null, this::modUploadPick);

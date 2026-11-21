@@ -103,17 +103,7 @@ public final class ModSprites {
 	 * The scan checked these, but the file can change between scan and read; never load an oversized file into memory.
 	 */
 	static byte[] readSprite(File png){
-		try {
-			if (png == null || !png.isFile() || Files.isSymbolicLink(png.toPath())) return null;
-			if (png.length() > ModLibrary.MAX_SPRITE_BYTES) return null;
-			try (java.io.InputStream in = Files.newInputStream(png.toPath(), java.nio.file.LinkOption.NOFOLLOW_LINKS)){
-				byte[] buf = new byte[ModLibrary.MAX_SPRITE_BYTES + 1];
-				int n = 0, r;
-				while (n < buf.length && (r = in.read(buf, n, buf.length - n)) > 0) n += r;
-				if (n > ModLibrary.MAX_SPRITE_BYTES) return null;
-				return java.util.Arrays.copyOf(buf, n);
-			}
-		} catch (Throwable t){ return null; }
+		return ModLibrary.readBounded(png, ModLibrary.MAX_SPRITE_BYTES);
 	}
 
 	private static SmartTexture texture(byte[] bytes){
