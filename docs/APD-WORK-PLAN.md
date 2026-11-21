@@ -73,8 +73,23 @@ A recent push is not a clash: `git pull --rebase` before every push and resolve 
      reviewer keeps review access. No appeals: peer review decides it.
    - LATER, not now: in-game tips for beginners on how they could have escaped.
 3. Ship-ready: speed (cache the last Community screen, refresh in background); real tests of admin tools.
-4. HERO MODS (Chris, Nov 19, APPROVED: "code things into place to allow modders to do that"). Brotato-workshop style,
-   DATA + ART ONLY (Play bans downloaded code). A hero mod = hero.json + sprite.png built only from existing pieces:
+4. SCRIPTED MODS, BROTATO STYLE (Chris, Nov 21 7:55 AM: "I want the way brotato mods work in APD. Otherwise mods in APD
+   should not exist."). THIS REPLACES THE DATA-ONLY RULE BELOW.
+   - Play policy (checked Nov 21, Device and Network Abuse): Play bans downloading EXECUTABLE code from outside Play,
+     i.e. dex, JAR and .so files (Java bytecode as well as native). Code run by an interpreter that only reaches Android
+     indirectly (JavaScript, Python, Lua...) IS allowed, as long as the scripts can't be used to break Play policy.
+     So mods = Lua scripts run by an interpreter bundled in the APK, sandboxed: no file, network, OS or Java access,
+     only a game API APD exposes. Never load mod dex/JAR/.so.
+   - STATUS: the old data-only hero mods are switched OFF (ModHeroSelection.ENABLED=false, 4d615219/14ee18c0, CI
+     44906689119): no hero-select list, no workshop menu, no new mod runs; old mod-run saves still load. Keep that code;
+     it becomes part of the Lua mod system (a Lua mod can still ship hero.json + sprite.png).
+   - NEXT (design first, then build; ask Chris before scope calls): pick the interpreter (LuaJ pure-Java is the likely
+     choice; confirm license + Android support + sandboxing), define the game API (items, potions/scrolls with custom
+     effects, buffs, hooks: on zap / thrown hit / melee hit / damage taken / kill / turn), save compatibility, limits
+     (instruction budget per hook, memory), and workshop review. Example target: a mod's "Potion of Echoes" (10 turns,
+     wand zaps and thrown hits repeat once at 35% power, no extra charges/ammo) must be writable as a Lua mod.
+   OLD DATA-ONLY PLAN (Nov 19, superseded; kept for history): Brotato-workshop style,
+   DATA + ART ONLY. A hero mod = hero.json + sprite.png built only from existing pieces:
    name/author/description, baseClass (class engine + subclasses), starting HP + STR, starting items (+level, quantity),
    talents for tiers 1-3 picked from ANY class's talents of that tier (same count as the base class), 1-3 existing
    armor abilities. Anything needing new code: modder submits, Chris approves, it ships in an app update.

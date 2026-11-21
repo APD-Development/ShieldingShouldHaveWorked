@@ -5,7 +5,9 @@ Hero select does not offer mods yet, and there is no Community workshop upload y
 describes what the current code accepts (`apd/mods/HeroMod.java`, `apd/mods/ModLibrary.java`).
 
 ## What a mod can and can't do
-Mods are DATA and ART only. Google Play does not allow apps to run downloaded code, so a hero mod is
+NOTE (Nov 21): hero mods are switched off while scripted (Lua) mods are built; this page describes the old data-only format.
+
+Mods are DATA and ART only. (Google Play bans downloaded dex, JAR and native code, but allows sandboxed interpreted scripts such as Lua; scripted mods are coming.) So a hero mod is
 built entirely from pieces that already exist in APD: an existing class engine, existing talents,
 existing armor abilities and existing items. If your idea needs new code (a new talent, ability,
 item or rule), submit it to the developer; if approved it ships in an app update.
