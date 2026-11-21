@@ -16,7 +16,17 @@ import static org.junit.Assert.*;
 public class ModHeroSelectionTest {
 	@Rule public TemporaryFolder tmp = new TemporaryFolder();
 
-	@After public void reset(){ ModHeroSelection.clear(); HeroModRun.active = null; }
+	@org.junit.Before public void on(){ ModHeroSelection.ENABLED = true; } // mods are off in builds (Chris, Nov 21); code still tested
+	@After public void reset(){ ModHeroSelection.clear(); HeroModRun.active = null; ModHeroSelection.ENABLED = false; }
+	@Test public void switchedOffModsNeverStartAModRun() throws Exception {
+		ModLibrary.Installed m = installed();
+		ModHeroSelection.pick(m);
+		ModHeroSelection.ENABLED = false; // as in every build since Nov 21
+		ModHeroSelection.confirmForStart(HeroClass.WARRIOR);
+		HeroModRun.beginRun();
+		assertFalse(HeroModRun.isModRun());
+		assertNull(ModHeroSelection.picked());
+	}
 
 	ModLibrary.Installed installed() throws Exception {
 		File root = tmp.newFolder("mods");

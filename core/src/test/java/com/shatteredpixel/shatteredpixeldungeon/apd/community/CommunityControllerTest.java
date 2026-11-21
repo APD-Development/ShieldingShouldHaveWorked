@@ -54,6 +54,7 @@ public class CommunityControllerTest {
 	private final Store store = new Store();
 
 	@Before public void start() throws Exception {
+		com.shatteredpixel.shatteredpixeldungeon.apd.mods.ModHeroSelection.ENABLED = true;
 		CommunityController.CACHE.clear();
 		CommunityAgeGate.play = null; // no Google Play in tests: the birth month/year question is used
 		CommunityController.google = null;
@@ -70,7 +71,7 @@ public class CommunityControllerTest {
 		server.start();
 	}
 
-	@After public void stop(){ server.stop(0); }
+	@After public void stop(){ server.stop(0); com.shatteredpixel.shatteredpixeldungeon.apd.mods.ModHeroSelection.ENABLED = false; }
 
 	private CommunityController controller(){
 		CommunityApi api = new CommunityApi("http://127.0.0.1:" + server.getAddress().getPort(), 3000);

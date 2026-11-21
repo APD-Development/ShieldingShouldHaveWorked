@@ -66,7 +66,7 @@ public final class ModHeroSelection {
 	/** Chris, Nov 21: "I want the way Brotato mods work in APD. Otherwise mods in APD should not exist."
 	 *  The data-only hero mods are switched off (no hero-select list, no workshop, no new mod runs) until
 	 *  scripted (Lua) mods replace them. Existing mod-run saves still load. */
-	public static final boolean ENABLED = false;
+	public static boolean ENABLED = false; // tests switch it on to keep the code covered
 
 	public static void confirmForStart(HeroClass selected){
 		if (!ENABLED){ clear(); return; }
