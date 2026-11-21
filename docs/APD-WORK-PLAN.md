@@ -125,7 +125,10 @@ A recent push is not a clash: `git pull --rebase` before every push and resolve 
            NEVER upload a bundle built from feature/script-mods; the 8-hour Play build always rebuilds from this branch.
            Phone test still to come, but Chris said Nov 21 1:10 PM: get to work on "the heroes and shit" -> build
            the next hooks now (still feature/script-mods only, never a Play build).
-     MONSTERS HOOK (next, rule 4 order): APD.monster({ id, name, description, sprite: an existing mob sprite name
+     MONSTERS HOOK: CORE DONE Nov 21 1:40 PM on feature/script-mods (aec5ca05, CI 44934273954, ScriptMonstersTest 5/5;
+        ScriptMob, MonsterApi, ScriptMobSprites, ScriptModRuntime.maybeSpawn hooked into Level.createMob; sample mod
+        has a Sample Crab). STILL TO DO: a device test for a mod monster spawning + saving on Android; then the
+        HEROES HOOK below. Spec as written: APD.monster({ id, name, description, sprite: an existing mob sprite name
         (e.g. "RatSprite"), hp, attack:[min,max], accuracy, defense, evasion, armor:[min,max] or number, speed
         (0.5-2), xp, spawn:{ floors:[from,to], weight } and/or none, loot (a mod item id or none),
         triggers onSpawn / onTurn / onAttack(m, target) / onHurt(m, damage) / onDeath(m) }) with a bounded monster
