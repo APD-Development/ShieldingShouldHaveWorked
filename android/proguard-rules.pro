@@ -30,3 +30,12 @@
 -keepclassmembers class com.badlogic.gdx.backends.android.AndroidInput* {
     <init>(com.badlogic.gdx.Application, android.content.Context, java.lang.Object, com.badlogic.gdx.backends.android.AndroidApplicationConfiguration);
 }
+# APD script mods (Rhino, interpreted mode only). Rhino refers to desktop-only Java classes (java.beans, javax.script,
+# javax.lang.model...) in code paths Android never uses; and it looks up some of its own classes by name, so keep it whole.
+-dontwarn java.beans.**
+-dontwarn javax.script.**
+-dontwarn javax.lang.model.**
+-dontwarn jdk.dynalink.**
+-dontwarn org.mozilla.javascript.tools.**
+-keep class org.mozilla.javascript.** { *; }
+-keep class org.mozilla.classfile.** { *; }
