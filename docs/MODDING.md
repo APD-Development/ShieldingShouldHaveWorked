@@ -50,7 +50,7 @@ Two installed mods may not share the same `id`.
 |---|---|
 | `format` | Must be `1`. |
 | `id` | Required, up to 64 characters, only `a-z`, `0-9`, `.`, `_`, `-`, starting with a letter or digit. |
-| `name`, `author` | Required, up to 32 characters each. |
+| `name`, `author` | Required, up to 32 characters each, on one line (no line breaks, tabs or control characters). `description` may use plain line breaks but no other control characters. |
 | `description` | Optional, up to 600 characters. |
 | `baseClass` | One of the game's hero classes (e.g. `WARRIOR`, `MAGE`, `ROGUE`, `HUNTRESS`, ...). Your hero runs on that class's engine and subclasses. |
 | `hp` | Whole number 1-999: starting max HP. Normal per-level HP growth still applies. |

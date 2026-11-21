@@ -79,6 +79,9 @@ public final class HeroMod {
 		if (!id.matches("[a-z0-9][a-z0-9._-]*")) throw new Invalid("id may only use a-z, 0-9, '.', '_' and '-'");
 		String name = text(v, "name", 32), author = text(v, "author", 32);
 		String description = v.has("description") ? text(v, "description", 600) : "";
+		// names are shown on one line (hero select, hero window title, rankings "Mod:" rows): a newline, tab or other
+		// control character there broke the line; the description may use plain line breaks (my call, revertable)
+		noControl("name", name, false); noControl("author", author, false); noControl("description", description, true);
 
 		HeroClass base;
 		try { base = HeroClass.valueOf(text(v, "baseClass", 16)); }
@@ -132,6 +135,15 @@ public final class HeroMod {
 		String s = f.asString().trim();
 		if (s.length() > max) throw new Invalid(key + " is longer than " + max + " characters");
 		return s;
+	}
+
+	private static void noControl(String key, String s, boolean newlinesOk) throws Invalid {
+		for (int i = 0; i < s.length(); i++){
+			char c = s.charAt(i);
+			if (newlinesOk && c == '\n') continue;
+			if (Character.isISOControl(c) || c == '\u2028' || c == '\u2029')
+				throw new Invalid(key + " can't contain " + (newlinesOk ? "control characters (only plain line breaks)" : "line breaks, tabs or control characters"));
+		}
 	}
 
 	private static int number(JsonValue v, String key, int min, int max) throws Invalid {

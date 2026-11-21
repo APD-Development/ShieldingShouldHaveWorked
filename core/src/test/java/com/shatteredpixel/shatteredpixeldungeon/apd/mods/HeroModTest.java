@@ -114,4 +114,12 @@ public class HeroModTest {
 		assertEquals(com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing.class, HeroMod.parse(
 				hero(null).replace("weapon.melee.Sword\",\"level\":1", "potions.PotionOfHealing\"")).startingItems.get(0).type);
 	}
+
+	@Test public void controlCharactersAreRefusedInOneLineFields() throws Exception {
+		refused(hero(null).replace("Battle Mage", "Battle\\nMage"), "name can't contain line breaks");
+		refused(hero(null).replace("\"Chris\",", "\"Ch\\tris\","), "author can't contain");
+		refused(hero(null).replace("\"author\"", "\"description\":\"a\\u0007b\",\"author\""), "description can't contain control");
+		HeroMod m = HeroMod.parse(hero(null).replace("\"author\"", "\"description\":\"line one\\nline two\",\"author\""));
+		assertEquals("line one\nline two", m.description);
+	}
 }
