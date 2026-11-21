@@ -54,6 +54,23 @@ public class ModSpritesTest {
 		org.junit.Assert.assertTrue(wnd.contains("HeroModRun.heroName(shownName)"));
 	}
 
+	@Test
+	public void spriteReadRefusesOversizedOrLinkedFilesReplacedAfterTheScan() throws Exception {
+		File dir = Files.createTempDirectory("modspriteread").toFile();
+		File ok = new File(dir, "sprite.png");
+		byte[] png = ModLibraryTest.pngHeader(256, 128);
+		Files.write(ok.toPath(), png);
+		assertArrayEquals(png, ModSprites.readSprite(ok));
+		File big = new File(dir, "big.png");
+		Files.write(big.toPath(), new byte[ModLibrary.MAX_SPRITE_BYTES + 1]);
+		assertNull("over the limit: never read into memory", ModSprites.readSprite(big));
+		File link = new File(dir, "link.png");
+		try { Files.createSymbolicLink(link.toPath(), ok.toPath()); } catch (Exception e){ link = null; }
+		if (link != null) assertNull("links refused", ModSprites.readSprite(link));
+		assertNull(ModSprites.readSprite(new File(dir, "missing.png")));
+		assertNull(ModSprites.readSprite(null));
+	}
+
 	private static File src(String rel){
 		File f = new File(System.getProperty("apd.game.src"), rel);
 		if (!f.isFile()) f = new File("src/main/java/com/shatteredpixel/shatteredpixeldungeon/" + rel);
