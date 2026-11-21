@@ -48,6 +48,9 @@ public class ScriptEffect extends Buff {
 		ScriptDefs.EffectDef d = def();
 		if (d == null || !d.has(name) || !(target instanceof Hero)) return null;
 		Hero hero = (Hero) target;
+		// A dead hero's effects never run: a script healing in onDamageTaken after a killing blow would otherwise
+		// give HP back to a hero whose game is already over.
+		if (!hero.isAlive()) return null;
 		ScriptApi.ApiObject h = ScriptModRuntime.build(modId, (cx, scope) -> HeroApi.make(scope, hero, modId));
 		if (h == null) return null;
 		Object[] args = new Object[1 + extra.length];

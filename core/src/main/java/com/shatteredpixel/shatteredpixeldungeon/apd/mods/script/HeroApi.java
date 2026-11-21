@@ -53,7 +53,7 @@ final class HeroApi {
 				com.shatteredpixel.shatteredpixeldungeon.Dungeon.depth);
 		h.fn("heal", a -> {
 			int n = ScriptApi.intIn(a, 0, 0, 0, MAX_AMOUNT);
-			int healed = Math.min(n, hero.HT - hero.HP);
+			int healed = hero.isAlive() ? Math.min(n, hero.HT - hero.HP) : 0; // never revives a dead hero
 			if (healed > 0){
 				hero.HP += healed;
 				if (hero.sprite != null) hero.sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(healed), FloatingText.HEALING);
@@ -67,7 +67,7 @@ final class HeroApi {
 		});
 		h.fn("shield", a -> {
 			int n = ScriptApi.intIn(a, 0, 0, 0, MAX_AMOUNT);
-			if (n > 0){
+			if (n > 0 && hero.isAlive()){
 				Buff.affect(hero, Barrier.class).incShield(n);
 				if (hero.sprite != null) hero.sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(n), FloatingText.SHIELDING);
 			}
@@ -78,7 +78,7 @@ final class HeroApi {
 			Class<? extends FlavourBuff> c = BUFFS.get(name);
 			if (c == null) throw new ScriptDefs.BadDef("asked for buff \"" + name + "\"; allowed: " + String.join(", ", BUFFS.keySet()));
 			int turns = ScriptApi.intIn(a, 1, 10, 1, MAX_BUFF_TURNS);
-			Buff.prolong(hero, c, turns);
+			if (hero.isAlive()) Buff.prolong(hero, c, turns);
 			return null;
 		});
 		h.fn("addEffect", a -> {
@@ -86,7 +86,7 @@ final class HeroApi {
 			ScriptDefs.EffectDef d = ScriptModRuntime.effect(modId, id);
 			if (d == null) throw new ScriptDefs.BadDef("asked for effect \"" + id + "\", which it never declared");
 			int turns = ScriptApi.intIn(a, 1, d.turns, 1, ScriptDefs.MAX_TURNS);
-			ScriptEffect.give(hero, d, turns);
+			if (hero.isAlive()) ScriptEffect.give(hero, d, turns);
 			return null;
 		});
 		h.fn("message", a -> {

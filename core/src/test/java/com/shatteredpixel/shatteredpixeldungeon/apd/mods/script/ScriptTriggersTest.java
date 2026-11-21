@@ -80,6 +80,22 @@ public class ScriptTriggersTest {
 		assertEquals(11, hero.HP);
 	}
 
+	@Test public void deadHeroIsNeverHealedOrShielded(){
+		ScriptModRuntime.LoadedMod m = ScriptModRuntime.load("test.dead",
+				"APD.effect({ id: 'fx', name: 'Dead', turns: 5, onDamageTaken(h){ h.heal(20); h.shield(5); },\n" +
+				"  onTurn(h){ h.heal(30); h.shield(5); h.addBuff('haste', 5); } });");
+		assertFalse(m.disabledReason(), m.disabled());
+		ScriptEffect fx = ScriptEffect.give(hero, ScriptModRuntime.effect("test.dead", "fx"), 5);
+		hero.HP = 0; // killed by the hit that fires onDamageTaken
+		ScriptEffect.fire(hero, "onDamageTaken", 10.0, "Rat");
+		assertEquals(0, hero.HP);
+		assertEquals(0, hero.shielding());
+		fx.trigger("onTurn", 5.0);
+		assertEquals(0, hero.HP);
+		assertEquals(0, hero.shielding());
+		assertNull(hero.buff(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Haste.class));
+	}
+
 	@Test public void namesArePlainStrings(){
 		assertEquals("", ScriptEffect.nameOf(null));
 		assertEquals("String", ScriptEffect.nameOf(String.class));
