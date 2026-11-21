@@ -135,6 +135,11 @@ A recent push is not a clash: `git pull --rebase` before every push and resolve 
         when none can spawn. Saves keep mod id + monster id; a missing/broken mod's monster is removed on load
         without a crash. Mod monsters only in mod runs. Sample: add one monster to the bundled sample mod. Tests:
         JVM (defs, clamps, spawn share/cap, save/load, broken mod) + device test.
+     SCOPE (Chris, Nov 21 1:10 PM: "Hell, if someone wants 100 dungeon floors, then they get it"): script mods must
+        be able to change the game at that scale. The rooms/level-gen and rule-changes hooks must let a mod set the
+        dungeon's length (e.g. 100 floors), which floors use which region/level type, where bosses go and what the
+        final floor is, plus other run-wide rules. Design those hooks for that, not just small tweaks. (Still only in
+        mod runs; normal runs untouched.)
      HEROES HOOK (after monsters): APD.hero({ id, name, description, sprite (existing hero sprite or mod art later),
         baseClass, hp, str, startingItems (existing or mod item ids), talents (existing talent names per tier, like
         the old data mods), armorAbilities, triggers onStart / onLevelUp / onTurn / onKill }) reusing the old
