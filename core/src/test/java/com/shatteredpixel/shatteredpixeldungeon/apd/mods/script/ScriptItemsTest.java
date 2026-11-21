@@ -36,40 +36,40 @@ public class ScriptItemsTest {
 		Dungeon.hero = oldHero;
 	}
 
-	static final String ECHOES =
-			"APD.effect({ id: 'echoes', name: 'Echoes', description: 'Repeats things.', turns: 3,\n" +
+	static final String TEST_MOD =
+			"APD.effect({ id: 'testfx', name: 'Test Effect', description: 'A test effect.', turns: 3,\n" +
 			"  onStart(h){ h.heal(1); }, onTurn(h, left){ h.heal(2); }, onEnd(h){ h.heal(5); } });\n" +
-			"APD.item({ id: 'echoes', kind: 'potion', name: 'Potion of Echoes', sprite: 'POTION_AMBER',\n" +
-			"  description: 'For a few turns, echoes.', dropWeight: 2, startCount: 1,\n" +
-			"  onUse(h){ h.addEffect('echoes'); } });\n" +
-			"APD.item({ id: 'mend', kind: 'scroll', name: 'Scroll of Mending', startCount: 0, dropWeight: 1,\n" +
-			"  onUse(h){ h.heal(10); h.addBuff('haste', 5); h.message('mended'); } });\n";
+			"APD.item({ id: 'testfx', kind: 'potion', name: 'Test Potion', sprite: 'POTION_AMBER',\n" +
+			"  description: 'A test potion.', dropWeight: 2, startCount: 1,\n" +
+			"  onUse(h){ h.addEffect('testfx'); } });\n" +
+			"APD.item({ id: 'testscroll', kind: 'scroll', name: 'Test Scroll', startCount: 0, dropWeight: 1,\n" +
+			"  onUse(h){ h.heal(10); h.addBuff('haste', 5); h.message('test message'); } });\n";
 
-	private ScriptModRuntime.LoadedMod echoes(){
-		ScriptModRuntime.LoadedMod m = ScriptModRuntime.load("chris.echoes", ECHOES);
+	private ScriptModRuntime.LoadedMod testMod(){
+		ScriptModRuntime.LoadedMod m = ScriptModRuntime.load("test.items", TEST_MOD);
 		assertFalse(m.disabledReason(), m.disabled());
 		return m;
 	}
 
 	@Test public void declaresItemsAndEffects(){
-		ScriptModRuntime.LoadedMod m = echoes();
+		ScriptModRuntime.LoadedMod m = testMod();
 		assertEquals(2, m.items().size());
 		assertEquals(1, m.effects().size());
-		ScriptDefs.ItemDef p = ScriptModRuntime.item("chris.echoes", "echoes");
+		ScriptDefs.ItemDef p = ScriptModRuntime.item("test.items", "testfx");
 		assertEquals(ScriptDefs.Kind.POTION, p.kind);
-		assertEquals("Potion of Echoes", p.name);
+		assertEquals("Test Potion", p.name);
 		assertEquals(2.0, p.dropWeight, 0);
 		assertEquals(1, p.startCount);
-		ScriptDefs.EffectDef e = ScriptModRuntime.effect("chris.echoes", "echoes");
+		ScriptDefs.EffectDef e = ScriptModRuntime.effect("test.items", "testfx");
 		assertEquals(3, e.turns);
 		assertTrue(e.has("onTurn"));
 		assertFalse(e.has("onKill"));
 	}
 
 	@Test public void usingAnItemRunsTheModWithBoundedHeroActions(){
-		echoes();
-		ScriptItem scroll = new ScriptItem(ScriptModRuntime.item("chris.echoes", "mend"));
-		assertEquals("Scroll of Mending", scroll.name());
+		testMod();
+		ScriptItem scroll = new ScriptItem(ScriptModRuntime.item("test.items", "testscroll"));
+		assertEquals("Test Scroll", scroll.name());
 		ScriptItem.use(hero, scroll.def());
 		assertEquals(30, hero.HP);
 		assertNotNull(hero.buff(Haste.class));
@@ -80,8 +80,8 @@ public class ScriptItemsTest {
 	}
 
 	@Test public void effectsRunStartTurnAndEndThenGoAway(){
-		echoes();
-		ScriptItem.use(hero, ScriptModRuntime.item("chris.echoes", "echoes"));
+		testMod();
+		ScriptItem.use(hero, ScriptModRuntime.item("test.items", "testfx"));
 		assertEquals("onStart heals 1", 21, hero.HP);
 		ScriptEffect e = hero.buff(ScriptEffect.class);
 		assertNotNull(e);
@@ -115,7 +115,7 @@ public class ScriptItemsTest {
 	}
 
 	@Test public void aBrokenOnUseTurnsOnlyThatModOffAndNeverThrows(){
-		echoes();
+		testMod();
 		ScriptModRuntime.load("bad.loop", "APD.item({ id: 'spin', kind: 'stone', name: 'Spin', onUse(h){ while(true){} } });"
 				+ "APD.item({ id: 'buff', kind: 'stone', name: 'B', onUse(h){ h.addBuff('godmode', 5); } });");
 		ScriptItem.use(hero, ScriptModRuntime.item("bad.loop", "spin"));
@@ -127,7 +127,7 @@ public class ScriptItemsTest {
 		assertTrue("a turned-off mod's items stay but can't be used", spin.desc().contains("turned off"));
 		assertFalse(spin.actions(hero).contains("USE"));
 		// the other mod still works
-		ScriptItem.use(hero, ScriptModRuntime.item("chris.echoes", "mend"));
+		ScriptItem.use(hero, ScriptModRuntime.item("test.items", "testscroll"));
 		assertEquals(30, hero.HP);
 
 		ScriptModRuntime.load("bad.buff", "APD.item({ id: 'b', kind: 'stone', name: 'B', onUse(h){ h.addBuff('godmode', 5); } });");
@@ -146,13 +146,13 @@ public class ScriptItemsTest {
 	}
 
 	@Test public void savedModItemsSurviveAndAMissingModNeverBreaksTheSave(){
-		echoes();
-		ScriptItem p = (ScriptItem) new ScriptItem(ScriptModRuntime.item("chris.echoes", "echoes")).quantity(3);
+		testMod();
+		ScriptItem p = (ScriptItem) new ScriptItem(ScriptModRuntime.item("test.items", "testfx")).quantity(3);
 		Bundle b = new Bundle();
 		p.storeInBundle(b);
 		ScriptItem back = new ScriptItem();
 		back.restoreFromBundle(b);
-		assertEquals("Potion of Echoes", back.name());
+		assertEquals("Test Potion", back.name());
 		assertEquals(3, back.quantity());
 		assertTrue(back.isSimilar(p));
 		assertTrue(back.actions(hero).contains("DRINK"));
@@ -160,16 +160,16 @@ public class ScriptItemsTest {
 		ScriptModRuntime.clear(); // mod no longer installed
 		ScriptItem orphan = new ScriptItem();
 		orphan.restoreFromBundle(b);
-		assertEquals("mod item (echoes)", orphan.name());
+		assertEquals("mod item (testfx)", orphan.name());
 		assertFalse(orphan.actions(hero).contains("DRINK"));
 		assertTrue(orphan.desc().contains("isn't active in this run"));
 	}
 
 	@Test public void startingKitUsesStartCount(){
-		echoes();
+		testMod();
 		List<Item> kit = ScriptModRuntime.startingItems();
 		assertEquals(1, kit.size());
-		assertEquals("Potion of Echoes", kit.get(0).name());
+		assertEquals("Test Potion", kit.get(0).name());
 		assertEquals(1, kit.get(0).quantity());
 	}
 
@@ -189,7 +189,7 @@ public class ScriptItemsTest {
 	}
 
 	@Test public void dropWeightIsCappedSoModsCantFloodTheLootPool(){
-		echoes(); // potion weight 2 against the potion category's 15
+		testMod(); // potion weight 2 against the potion category's 15
 		double share = ScriptModRuntime.modShare(Generator.Category.POTION);
 		assertEquals(2.0 / 17.0, share, 1e-9);
 		// ten max-weight potions would be 30 vs 15; capped at 25%
@@ -209,14 +209,14 @@ public class ScriptItemsTest {
 
 	@Test public void generatorRollsCanBecomeModItemsOnlyInTheirCategory(){
 		Generator.fullReset();
-		echoes();
+		testMod();
 		Random.pushGenerator(7);
 		try {
 			int modPotions = 0, n = 600;
 			for (int i = 0; i < n; i++){
 				Item it = Generator.random(Generator.Category.POTION);
 				if (it instanceof ScriptItem){
-					assertEquals("echoes", ((ScriptItem) it).itemId());
+					assertEquals("testfx", ((ScriptItem) it).itemId());
 					modPotions++;
 				}
 			}
@@ -233,8 +233,8 @@ public class ScriptItemsTest {
 		assertTrue("stopped, not looped forever", (System.nanoTime() - t0) < 5_000_000_000L);
 		assertTrue(ScriptModRuntime.mod("nest.mod").disabled());
 		// the engine is clean afterwards: a new mod loads and runs normally
-		echoes();
-		ScriptItem.use(hero, ScriptModRuntime.item("chris.echoes", "echoes"));
+		testMod();
+		ScriptItem.use(hero, ScriptModRuntime.item("test.items", "testfx"));
 		assertNotNull(hero.buff(ScriptEffect.class));
 	}
 }
