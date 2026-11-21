@@ -131,7 +131,7 @@ public class RingDust extends Item {
 			return r.levelKnown ? new RingDust().quantity(dustQuantity(r.level())) : new RingDust();
 		}
 
-		/** Same yield rule as arcane resin: 2 x (level + 1), at least 2. */
-		public static int dustQuantity(int ringLevel) { return 2 * Math.max(1, ringLevel + 1); }
+		/** Chris, Nov 21: half the old yield. level + 1, at least 1 (was 2 x (level + 1), at least 2). */
+		public static int dustQuantity(int ringLevel) { return Math.max(1, ringLevel + 1); }
 	}
 }
