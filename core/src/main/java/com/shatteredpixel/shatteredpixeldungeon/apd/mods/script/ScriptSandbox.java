@@ -132,8 +132,6 @@ public final class ScriptSandbox {
 			for (int i = 0; i < args.length; i++) jsArgs[i] = Context.javaToJS(args[i], scope);
 			Object r = ((Callable) f).call(cx, scope, scope, jsArgs);
 			return plain(r);
-		} catch (ScriptFailure f){
-			throw f;
 		} catch (Throwable t){
 			fail(describe(t));
 			return null;
