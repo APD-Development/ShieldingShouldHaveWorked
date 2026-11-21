@@ -267,7 +267,7 @@ public class RingOfWealth extends Ring {
 		}
 	}
 
-	private static Item genEquipmentDrop( int level ){
+	static Item genEquipmentDrop( int level ){
 		Item result;
 		//each upgrade increases depth used for calculating drops by 1
 		int floorset = (Dungeon.depth + level)/5;
@@ -297,6 +297,9 @@ public class RingOfWealth extends Ring {
 			if (result.level() < minLevel){
 				result.level(minLevel);
 			}
+			//APD (Chris, Nov 21): the item info's "Possible upgrade level" shows what the ring could actually make
+			//(normal roll +0 to +2, raised to the ring's minimum), not the ordinary monster-drop +0 to +2
+			com.shatteredpixel.shatteredpixeldungeon.apd.qol.GenerationUpgradeRanges.set(result, Math.max(minLevel, 0), Math.max(minLevel, 2));
 		}
 		result.cursed = false;
 		result.cursedKnown = true;
