@@ -98,7 +98,12 @@ public final class ScriptSandbox {
 	}
 
 	/** Runs the mod's script once to set it up (it registers its hooks). Disables the mod on any failure. */
-	public void load(String source) throws ScriptFailure {
+	/** APD-side setup run inside the sandbox after hardening and before the mod's own code (installs the APD API). */
+	public interface Setup { void install(Context cx, Scriptable scope); }
+
+	public void load(String source) throws ScriptFailure { load(source, null); }
+
+	public void load(String source, Setup setup) throws ScriptFailure {
 		check();
 		if (source == null) fail("has no script");
 		if (source.length() > MAX_SOURCE_CHARS) fail("script is larger than " + (MAX_SOURCE_CHARS / 1024) + " KB");
@@ -112,6 +117,7 @@ public final class ScriptSandbox {
 			}
 			Script hardening = cx.compileString(HARDEN, "apd-sandbox", 1, null);
 			hardening.exec(cx, scope);
+			if (setup != null) setup.install(cx, scope);
 			Script s = cx.compileString(source, modId, 1, null);
 			s.exec(cx, scope);
 		} catch (Throwable t){
@@ -147,6 +153,33 @@ public final class ScriptSandbox {
 		throw new IllegalArgumentException("script mods only receive plain values, not " + a.getClass().getName());
 	}
 
+	/** Calls a function the mod handed to APD (an item's onUse, an effect trigger...). Arguments may be plain values or
+	 *  objects APD itself built for the script ({@link ScriptApi}); never arbitrary Java objects. */
+	public Object invoke(Function f, Object... args) throws ScriptFailure {
+		check();
+		if (scope == null) fail("is not loaded");
+		for (Object a : args) if (!(a instanceof ScriptApi.ApiObject)) requirePlain(a);
+		try (Context cx = enter()){
+			arm();
+			Object[] jsArgs = new Object[args.length];
+			for (int i = 0; i < args.length; i++)
+				jsArgs[i] = args[i] instanceof ScriptApi.ApiObject ? args[i] : Context.javaToJS(args[i], scope);
+			return plain(f.call(cx, scope, scope, jsArgs));
+		} catch (Throwable t){
+			fail(describe(t));
+			return null;
+		}
+	}
+
+	/** Builds APD API objects with this mod's scope as their parent. */
+	public <T> T build(java.util.function.BiFunction<Context, Scriptable, T> maker) throws ScriptFailure {
+		check();
+		if (scope == null) fail("is not loaded");
+		try (Context cx = enter()){
+			return maker.apply(cx, scope);
+		}
+	}
+
 	public boolean defines(String function){
 		if (scope == null || disabled != null) return false;
 		try (Context cx = enter()){
@@ -175,6 +208,8 @@ public final class ScriptSandbox {
 	}
 
 	private static String describe(Throwable t){
+		if (t instanceof org.mozilla.javascript.WrappedException && t.getCause() != null) t = t.getCause();
+		if (t instanceof ScriptDefs.BadDef) return "has a mistake: it " + t.getMessage();
 		if (t instanceof Limited) return t.getMessage();
 		if (t instanceof StackOverflowError) return "recursed too deeply";
 		if (t instanceof OutOfMemoryError) return "used too much memory";

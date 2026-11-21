@@ -761,6 +761,9 @@ public class Generator {
 				//do not use decks for that ring, as the # of artifacts genned can vary by gameplay
 				return item != null ? item : randomUsingDefaults(Category.RING);
 			default:
+				//APD script mods (Chris, Nov 21): a mod item may take this roll; no random numbers are used unless one can
+				Item apdModDrop = com.shatteredpixel.shatteredpixeldungeon.apd.mods.script.ScriptModRuntime.maybeDrop(cat);
+				if (apdModDrop != null) return apdModDrop;
 				if (cat.defaultProbs != null && cat.seed != null){
 					Random.pushGenerator(cat.seed);
 					for (int i = 0; i < cat.dropped; i++) Random.Long();
