@@ -83,7 +83,20 @@ A recent push is not a clash: `git pull --rebase` before every push and resolve 
    - STATUS: the old data-only hero mods are switched OFF (ModHeroSelection.ENABLED=false, 4d615219/14ee18c0, CI
      44906689119): no hero-select list, no workshop menu, no new mod runs; old mod-run saves still load. Keep that code;
      it becomes part of the Lua mod system (a Lua mod can still ship hero.json + sprite.png).
-   - NEXT (design first, then build; ask Chris before scope calls): pick the interpreter (LuaJ pure-Java is the likely
+   - CHRIS'S RULES (Nov 21 8:08 AM, binding):
+     1. ENGINE: recommendation sent to Chris Nov 21 (Rhino 1.9.x, JavaScript). DO NOT BUILD ON ANY ENGINE UNTIL CHRIS SAYS YES.
+     2. Play: mods = text scripts + art, run inside the engine. Never download/load dex, jar or .so. Anything a
+        script can't do goes through submit -> Chris approves -> ships in an app update.
+     3. Sandbox: no file, network, OS or reflection access; only the hooks APD exposes. Time AND memory limit per
+        script. A broken mod shows an error and gets disabled; never crashes the game or corrupts a save.
+     4. Hooks in this order: items, monsters, heroes, talents, rooms + level gen, then rule changes. Each hook ships
+        with a sample mod + tests before the next one starts.
+     5. Mod runs stay out of normal rankings, badges, tournament and run reviews unless Chris says otherwise.
+     6. Workshop: existing Community workshop hosts script mods, same size limits, reporting, moderation; scripts
+        scanned for banned API use on upload.
+     7. NOTHING mod-related goes into a Play build until engine + sandbox + items hook pass tests AND Chris has tried a
+        sample mod on his phone (deliver it in a dev APK only). Keep ModHeroSelection.ENABLED=false in Play builds.
+   - (older note) NEXT (design first, then build; ask Chris before scope calls): pick the interpreter (LuaJ pure-Java is the likely
      choice; confirm license + Android support + sandboxing), define the game API (items, potions/scrolls with custom
      effects, buffs, hooks: on zap / thrown hit / melee hit / damage taken / kill / turn), save compatibility, limits
      (instruction budget per hook, memory), and workshop review. Example target: a mod's "Potion of Echoes" (10 turns,
