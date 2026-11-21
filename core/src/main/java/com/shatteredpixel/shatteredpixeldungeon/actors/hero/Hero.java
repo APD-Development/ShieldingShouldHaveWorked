@@ -305,8 +305,9 @@ public class Hero extends Char {
                 : top instanceof com.shatteredpixel.shatteredpixeldungeon.items.EnergyCrystal ? "energy"
                 : top instanceof com.shatteredpixel.shatteredpixeldungeon.items.Dewdrop ? "dew"
                 : top instanceof com.shatteredpixel.shatteredpixeldungeon.items.keys.Key ? "key" : "item";
-        boolean gold=false; for(com.shatteredpixel.shatteredpixeldungeon.items.Item i:heap.items) if(i instanceof com.shatteredpixel.shatteredpixeldungeon.items.Gold) gold=true;
-        return kind+(gold && !"gold".equals(kind)?"+gold_below":"");
+        // Only the top item's kind, which the player already sees: the report file lives on the phone, so it must never
+        // reveal what is hidden under a pile (Chris, Nov 21: no exploitable information in bug reports).
+        return kind;
     }
     /** After a walk-over pickup: keep going while the pile has more and the next item fits (or the full-pack setting is on). */
     public boolean apdContinueWalkover(Heap heap){

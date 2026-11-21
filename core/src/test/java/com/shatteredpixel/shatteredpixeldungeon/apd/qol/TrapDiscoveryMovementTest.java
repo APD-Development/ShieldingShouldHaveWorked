@@ -260,7 +260,7 @@ public class TrapDiscoveryMovementTest {
         SPDSettings.autoPickupWalkover(false);assertEquals("skip_setting_off",hero.apdWalkoverDecision(level,start+1));SPDSettings.autoPickupWalkover(true);
         assertEquals("gold",Hero.apdPileKind(h));
         h.items.addFirst(new com.shatteredpixel.shatteredpixeldungeon.items.food.Food());
-        assertEquals("item+gold_below",Hero.apdPileKind(h));
+        assertEquals("only the visible top item, never what is under it","item",Hero.apdPileKind(h));
         hero.pos=start+2;assertEquals("skip_no_pile",hero.apdWalkoverDecision(level,start+2));
         assertEquals("skip_not_on_cell",hero.apdWalkoverDecision(level,start+1));
     }
