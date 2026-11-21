@@ -6,6 +6,9 @@ java.sourceCompatibility = java.targetCompatibility = appJavaCompatibility
 dependencies {
     api project(':SPD-classes')
     implementation project(':services')
+    //APD script mods (Chris, Nov 21: Rhino approved). Interpreted mode only (no class generation), sandboxed in
+    //apd/mods/script/ScriptSandbox. Lives on feature/script-mods; must not reach a Play build before Chris's phone test.
+    implementation 'org.mozilla:rhino:1.9.1'
 }
 
 dependencies {
