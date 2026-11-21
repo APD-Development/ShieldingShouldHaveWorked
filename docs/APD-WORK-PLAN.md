@@ -84,7 +84,12 @@ A recent push is not a clash: `git pull --rebase` before every push and resolve 
      44906689119): no hero-select list, no workshop menu, no new mod runs; old mod-run saves still load. Keep that code;
      it becomes part of the Lua mod system (a Lua mod can still ship hero.json + sprite.png).
    - CHRIS'S RULES (Nov 21 8:08 AM, binding):
-     1. ENGINE: recommendation sent to Chris Nov 21 (Rhino 1.9.x, JavaScript). DO NOT BUILD ON ANY ENGINE UNTIL CHRIS SAYS YES.
+     1. ENGINE: Rhino 1.9.1 (JavaScript), APPROVED by Chris Nov 21 8:23 AM ("Okay continue").
+        ALL script-mod work happens on branch feature/script-mods (never on release/play-closed-test) so nothing
+        mod-related reaches a Play build (rule 7). Merge into the Play branch only after Chris's phone test.
+        DONE on feature/script-mods: ScriptSandbox (apd/mods/script) + 11 JVM tests (CI 44909036298) + device test
+        ScriptSandboxDeviceTest passing on Android 8.0 (API 26) and 14 (API 34) emulators (run 44909459894;
+        android-tests.yml only_class input). NEXT: items hook API (propose to Chris before building).
      2. Play: mods = text scripts + art, run inside the engine. Never download/load dex, jar or .so. Anything a
         script can't do goes through submit -> Chris approves -> ships in an app update.
      3. Sandbox: no file, network, OS or reflection access; only the hooks APD exposes. Time AND memory limit per
