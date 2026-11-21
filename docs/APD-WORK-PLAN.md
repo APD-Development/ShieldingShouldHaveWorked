@@ -101,14 +101,16 @@ A recent push is not a clash: `git pull --rebase` before every push and resolve 
         engine context and never refresh a mod's own budget.
         STILL TO DO, in this order, each with tests (CI on feature/script-mods; never merge to the Play branch):
         a) wire the other effect triggers into the game: onMeleeHit, onThrownHit, onWandZap, onDamageTaken, onKill,
-           with a hit/zap object offering repeat(fraction 0-1): deal that fraction of the hit's/zap's damage again to
-           the same target, free (no charge, no ammo); zaps that deal no damage don't repeat (say so in MODDING.md).
+           passing plain facts (damage, target name, wand/weapon name). Anything a script can do in response stays
+           within the bounded hero API; no Echoes-style "repeat" feature unless Chris asks for it.
         b) load mods from files: <files>/scriptmods/<folder>/mod.json {format, id, name, author, description} +
            main.js (64 KB max); list them with reasons when refused.
         c) run activation: pick script mods before a run (hero select, like the old mod list); active mod ids saved
            in the run; on load re-read the scripts; give starting kits at run start; ScriptModRuntime.active() makes
            HeroModRun.isModRun() true (rule 5).
-        d) sample mod "Potion of Echoes" (Chris's example) bundled in a DEV APK only, plus a device test.
+        d) a small sample mod bundled in a DEV APK only, plus a device test. (Chris, Nov 21 9:39: "Potion of Echoes"
+           was only a placeholder to explain what he wants; it is NOT a required item. The sample just has to
+           exercise the items hook: one potion + one scroll + one timed effect, using existing buffs/heal/shield.)
         e) then: deliver the dev APK from feature/script-mods to Chris for his phone test (rule 7). Don't start the
            monsters hook until he has tried it.
      2. Play: mods = text scripts + art, run inside the engine. Never download/load dex, jar or .so. Anything a
