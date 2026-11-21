@@ -102,15 +102,15 @@ A recent push is not a clash: `git pull --rebase` before every push and resolve 
         STILL TO DO, in this order, each with tests (CI on feature/script-mods; never merge to the Play branch):
         a) wire the other effect triggers into the game: onMeleeHit, onThrownHit, onWandZap, onDamageTaken, onKill,
            passing plain facts (damage, target name, wand/weapon name). Anything a script can do in response stays
-           within the bounded hero API; no Echoes-style "repeat" feature unless Chris asks for it.
+           within the bounded hero API; no "repeat the hit/zap" feature unless Chris asks for it.
         b) load mods from files: <files>/scriptmods/<folder>/mod.json {format, id, name, author, description} +
            main.js (64 KB max); list them with reasons when refused.
         c) run activation: pick script mods before a run (hero select, like the old mod list); active mod ids saved
            in the run; on load re-read the scripts; give starting kits at run start; ScriptModRuntime.active() makes
            HeroModRun.isModRun() true (rule 5).
-        d) a small sample mod bundled in a DEV APK only, plus a device test. (Chris, Nov 21 9:39: "Potion of Echoes"
-           was only a placeholder to explain what he wants; it is NOT a required item. The sample just has to
-           exercise the items hook: one potion + one scroll + one timed effect, using existing buffs/heal/shield.)
+        d) a small sample mod bundled in a DEV APK only, plus a device test: one potion + one scroll + one timed
+           effect, using existing buffs/heal/shield. (Chris, Nov 21: the example item he used to explain script mods
+           was an AI suggestion; he doesn't use AI suggestions. Never build it or use it as sample/test data.)
         e) then: deliver the dev APK from feature/script-mods to Chris for his phone test (rule 7). Don't start the
            monsters hook until he has tried it.
      2. Play: mods = text scripts + art, run inside the engine. Never download/load dex, jar or .so. Anything a
@@ -127,8 +127,7 @@ A recent push is not a clash: `git pull --rebase` before every push and resolve 
    - (older note) NEXT (design first, then build; ask Chris before scope calls): pick the interpreter (LuaJ pure-Java is the likely
      choice; confirm license + Android support + sandboxing), define the game API (items, potions/scrolls with custom
      effects, buffs, hooks: on zap / thrown hit / melee hit / damage taken / kill / turn), save compatibility, limits
-     (instruction budget per hook, memory), and workshop review. Example target: a mod's "Potion of Echoes" (10 turns,
-     wand zaps and thrown hits repeat once at 35% power, no extra charges/ammo) must be writable as a Lua mod.
+     (instruction budget per hook, memory), and workshop review. 
    OLD DATA-ONLY PLAN (Nov 19, superseded; kept for history): Brotato-workshop style,
    DATA + ART ONLY. A hero mod = hero.json + sprite.png built only from existing pieces:
    name/author/description, baseClass (class engine + subclasses), starting HP + STR, starting items (+level, quantity),
