@@ -1,7 +1,6 @@
 package com.shatteredpixel.shatteredpixeldungeon.apd.mods.script;
 
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
-import com.shatteredpixel.shatteredpixeldungeon.apd.community.CommunityController;
 import com.watabou.utils.Bundle;
 
 import java.io.File;
@@ -30,8 +29,27 @@ public final class ScriptModRun {
 
 	public static File dir(){
 		if (dirOverride != null) return dirOverride;
-		File mods = CommunityController.modsDir;
-		return mods == null || mods.getParentFile() == null ? null : new File(mods.getParentFile(), ScriptModLibrary.DIR);
+		try { return com.watabou.utils.FileUtils.getFileHandle(ScriptModLibrary.DIR).file(); }
+		catch (RuntimeException e){ return null; }
+	}
+
+	/**
+	 * Hero-select picker: test (dev) builds only, and this whole system lives on feature/script-mods (rule 7);
+	 * never in a Play build until Chris has tried it on his phone.
+	 */
+	public static boolean pickerEnabled(){ return com.shatteredpixel.shatteredpixeldungeon.apd.ApdFeatures.testBuild(); }
+
+	/** Hero select's toggled mods; kept across hero changes, handed to {@link #choose} only when a normal run starts. */
+	private static final List<String> picked = new ArrayList<>();
+	public static synchronized boolean isPicked(String id){ return picked.contains(id); }
+	public static synchronized void togglePick(String id){ if (!picked.remove(id)) picked.add(id); }
+	public static synchronized List<String> picks(){ return new ArrayList<>(picked); }
+	/** A normal new run is starting from hero select: queue the toggled mods (dropping any no longer installed). */
+	public static synchronized void confirmForStart(ScriptModLibrary lib){
+		List<String> ids = new ArrayList<>();
+		for (String id : picked) if (lib == null || lib.find(id) != null) ids.add(id);
+		picked.retainAll(ids);
+		choose(ids);
 	}
 
 	/** Mods for the next new run (hero select). */
@@ -84,5 +102,5 @@ public final class ScriptModRun {
 	}
 
 	/** Tests only. */
-	public static void reset(){ starting = Collections.emptyList(); active = Collections.emptyList(); missing = Collections.emptyList(); ScriptModRuntime.clear(); }
+	public static void reset(){ synchronized (ScriptModRun.class){ picked.clear(); } starting = Collections.emptyList(); active = Collections.emptyList(); missing = Collections.emptyList(); ScriptModRuntime.clear(); }
 }

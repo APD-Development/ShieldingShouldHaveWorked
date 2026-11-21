@@ -113,4 +113,22 @@ public class ScriptModRunTest {
 		ScriptModRun.beginRun();
 		assertFalse(ScriptModRun.isScriptRun());
 	}
+
+	@Test public void heroSelectTogglesSurviveHeroChangesAndQueueOnlyInstalledMods(){
+		ScriptModRun.togglePick("test.kit");
+		ScriptModRun.togglePick("gone.mod");
+		HeroModRun.cancelStarting(); // what picking another hero does: toggles are kept
+		assertTrue(ScriptModRun.isPicked("test.kit"));
+		ScriptModRun.confirmForStart(ScriptModLibrary.scan(ScriptModRun.dirOverride));
+		assertEquals(Collections.singletonList("test.kit"), ScriptModRun.picks());
+		ScriptModRun.beginRun();
+		assertEquals(Collections.singletonList("test.kit"), ScriptModRun.activeIds());
+		ScriptModRun.togglePick("test.kit");
+		assertFalse(ScriptModRun.isPicked("test.kit"));
+	}
+
+	@Test public void pickerIsOffOutsideTestBuilds(){
+		// core unit tests run without the test-build feature asset
+		assertFalse(ScriptModRun.pickerEnabled());
+	}
 }

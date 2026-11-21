@@ -107,6 +107,8 @@ public class HeroSelectScene extends PixelScene {
         }
 		//APD hero mods: the picked mod plays only if its base class is still the selected hero
 		com.shatteredpixel.shatteredpixeldungeon.apd.mods.ModHeroSelection.confirmForStart(GamesInProgress.selectedClass);
+		//APD script mods (feature/script-mods, test builds only): the toggled mods play in this new run
+		if (com.shatteredpixel.shatteredpixeldungeon.apd.mods.script.ScriptModRun.pickerEnabled()) com.shatteredpixel.shatteredpixeldungeon.apd.mods.script.ScriptModRun.confirmForStart(scanScriptMods());
 		Dungeon.hero = null;
 		Dungeon.daily = Dungeon.dailyReplay = false;
 		Dungeon.initSeed();
@@ -417,6 +419,21 @@ public class HeroSelectScene extends PixelScene {
 			add(btnMods);
 		}
 
+		//APD script mods (feature/script-mods, test builds only): toggle installed script mods for the next run
+		final com.shatteredpixel.shatteredpixeldungeon.apd.mods.script.ScriptModLibrary scripts = com.shatteredpixel.shatteredpixeldungeon.apd.mods.script.ScriptModRun.pickerEnabled() ? scanScriptMods() : null;
+		if (scripts != null && (!scripts.mods.isEmpty() || !scripts.refused.isEmpty())){
+			StyledButton btnScripts = new StyledButton(Chrome.Type.GREY_BUTTON_TR, "Scripts"){
+				@Override
+				protected void onClick() {
+					super.onClick();
+					showScriptMods(scripts);
+				}
+			};
+			btnScripts.setSize(32, 18);
+			btnScripts.setPos(Camera.main.width - btnScripts.width() - ofs, btnExit.bottom() + 22);
+			add(btnScripts);
+		}
+
 		PointerArea fadeResetter = new PointerArea(0, 0, Camera.main.width, Camera.main.height){
 			@Override
 			public boolean onSignal(PointerEvent event) {
@@ -486,6 +503,34 @@ public class HeroSelectScene extends PixelScene {
 			Game.reportException(e);
 			return null;
 		}
+	}
+
+	private static com.shatteredpixel.shatteredpixeldungeon.apd.mods.script.ScriptModLibrary scanScriptMods(){
+		try {
+			return com.shatteredpixel.shatteredpixeldungeon.apd.mods.script.ScriptModLibrary.scan(com.shatteredpixel.shatteredpixeldungeon.apd.mods.script.ScriptModRun.dir());
+		} catch (Exception e){
+			Game.reportException(e);
+			return null;
+		}
+	}
+
+	private void showScriptMods(final com.shatteredpixel.shatteredpixeldungeon.apd.mods.script.ScriptModLibrary lib){
+		final java.util.List<com.shatteredpixel.shatteredpixeldungeon.apd.mods.script.ScriptModLibrary.Installed> list = lib.mods;
+		String[] labels = new String[list.size()];
+		for (int i = 0; i < labels.length; i++){
+			com.shatteredpixel.shatteredpixeldungeon.apd.mods.script.ScriptModLibrary.Installed m = list.get(i);
+			labels[i] = (com.shatteredpixel.shatteredpixeldungeon.apd.mods.script.ScriptModRun.isPicked(m.id) ? "[ON] " : "[off] ") + m.name;
+		}
+		StringBuilder msg = new StringBuilder(list.isEmpty() ? "No script mods could be loaded."
+				: "Tap a mod to turn it on or off for your next new run. Mod runs stay out of rankings, badges, tournaments and run reviews.");
+		for (com.shatteredpixel.shatteredpixeldungeon.apd.mods.script.ScriptModLibrary.Refused r : lib.refused) msg.append("\n\nNot loaded: ").append(r.folder).append(": ").append(r.reason);
+		ShatteredPixelDungeon.scene().addToFront(new WndOptions("Script mods", msg.toString(), labels){
+			@Override
+			protected void onSelect(int index){
+				com.shatteredpixel.shatteredpixeldungeon.apd.mods.script.ScriptModRun.togglePick(list.get(index).id);
+				showScriptMods(lib);
+			}
+		});
 	}
 
 	private void showMods(final com.shatteredpixel.shatteredpixeldungeon.apd.mods.ModLibrary mods){
