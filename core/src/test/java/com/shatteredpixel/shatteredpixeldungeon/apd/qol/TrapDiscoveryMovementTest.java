@@ -246,4 +246,21 @@ public class TrapDiscoveryMovementTest {
         hero.interrupt();
         assertNull(hero.curAction);
     }
+    @Test public void everyWalkOverDecisionHasAReasonForTheBugReport()throws Exception{ // Chris, Nov 21
+        com.shatteredpixel.shatteredpixeldungeon.items.Heap h=pile(start+1,com.shatteredpixel.shatteredpixeldungeon.items.Heap.Type.HEAP);
+        h.items.clear();h.items.add(new com.shatteredpixel.shatteredpixeldungeon.items.Gold(10));
+        hero.pos=start+1;hero.curAction=new HeroAction.Move(target);
+        assertEquals("queued",hero.apdWalkoverDecision(level,start+1));
+        hero.curAction=new HeroAction.Move(start+1);
+        assertEquals("skip_walk_target",hero.apdWalkoverDecision(level,start+1));
+        hero.curAction=null;
+        h.hidden=true;assertEquals("skip_hidden",hero.apdWalkoverDecision(level,start+1));h.hidden=false;
+        h.type=com.shatteredpixel.shatteredpixeldungeon.items.Heap.Type.CHEST;assertEquals("skip_container_or_shop",hero.apdWalkoverDecision(level,start+1));
+        h.type=com.shatteredpixel.shatteredpixeldungeon.items.Heap.Type.HEAP;
+        SPDSettings.autoPickupWalkover(false);assertEquals("skip_setting_off",hero.apdWalkoverDecision(level,start+1));SPDSettings.autoPickupWalkover(true);
+        assertEquals("gold",Hero.apdPileKind(h));
+        h.items.addFirst(new com.shatteredpixel.shatteredpixeldungeon.items.food.Food());
+        assertEquals("item+gold_below",Hero.apdPileKind(h));
+        assertEquals("skip_no_pile",hero.apdWalkoverDecision(level,start+2));
+    }
 }
