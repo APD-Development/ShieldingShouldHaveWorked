@@ -48,6 +48,12 @@ public class ModSpritesTest {
 		assertTrue("mirror images copy the hero's own look", mirror.contains("HeroSprite.ownSheet()"));
 	}
 
+	@Test
+	public void heroWindowTitleShowsTheModHerosName() throws Exception {
+		String wnd = new String(Files.readAllBytes(src("windows/WndHero.java").toPath()), "UTF-8");
+		org.junit.Assert.assertTrue(wnd.contains("HeroModRun.heroName(shownName)"));
+	}
+
 	private static File src(String rel){
 		File f = new File(System.getProperty("apd.game.src"), rel);
 		if (!f.isFile()) f = new File("src/main/java/com/shatteredpixel/shatteredpixeldungeon/" + rel);

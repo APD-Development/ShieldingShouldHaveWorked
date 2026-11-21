@@ -156,10 +156,14 @@ public class WndHero extends WndTabbed {
 
 			IconTitle title = new IconTitle();
 			title.icon( HeroSprite.avatar(hero) );
-			if (hero.name().equals(hero.className()))
+			// a mod run shows the mod hero's name above the class line (a disguise still shows the disguise)
+			String shownName = hero.name();
+			if (shownName.equals(hero.className()))
+				shownName = com.shatteredpixel.shatteredpixeldungeon.apd.mods.HeroModRun.heroName(shownName);
+			if (shownName.equals(hero.className()))
 				title.label( Messages.get(this, "title", hero.lvl, hero.className() ).toUpperCase( Locale.ENGLISH ) );
 			else
-				title.label((hero.name() + "\n" + Messages.get(this, "title", hero.lvl, hero.className())).toUpperCase(Locale.ENGLISH));
+				title.label((shownName + "\n" + Messages.get(this, "title", hero.lvl, hero.className())).toUpperCase(Locale.ENGLISH));
 			title.color(Window.TITLE_COLOR);
 			title.setRect( 0, 0, WIDTH-16, 0 );
 			add(title);
