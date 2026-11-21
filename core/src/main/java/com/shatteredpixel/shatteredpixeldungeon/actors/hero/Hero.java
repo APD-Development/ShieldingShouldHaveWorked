@@ -271,10 +271,11 @@ public class Hero extends Char {
         String why=apdWalkoverDecision(steppedLevel,cell);
         // Chris, Nov 21: the extended bug report records every step onto a pile and what walk-over pickup decided
         // (kind of item only, never its name), so a missed pickup can be explained instead of guessed.
-        if(seen!=null || pos!=cell) com.watabou.utils.SupportActionJournal.record("loot.walkover",
+        // Only what the player can already see: a hidden pile is logged as no pile, and never its size or contents
+        // (the report file lives on the phone; Chris, Nov 21: nothing exploitable in bug reports).
+        if(seen!=null && !seen.hidden) com.watabou.utils.SupportActionJournal.record("loot.walkover",
                 "floor="+Dungeon.depth+" cell="+cell+" at="+pos+" pile="+apdPileKind(seen)
-                +" count="+(seen==null?0:seen.items.size())+" pile_type="+(seen==null?"none":seen.type.name())
-                +" hidden="+(seen!=null&&seen.hidden)+" decision="+why
+                +" pile_type="+seen.type.name()+" decision="+("skip_hidden".equals(why)?"skip_no_pile":why)
                 +" walking_to="+(curAction==null?"none":curAction.getClass().getSimpleName()+"@"+curAction.dst));
         if(!"queued".equals(why)) return;
         // Chris, Nov 21: gold on a grass tile with dew was left behind, because the grass pickup took over the tile.
