@@ -91,6 +91,11 @@ public class HeroModTest {
 		assertEquals(1, HeroMod.parse(hero(null)).startingItems.get(0).level); // upgradable weapon keeps its level
 	}
 
+	@Test public void pickupOnlyItemsAreRefused() throws Exception {
+		for (String p : new String[]{"Dewdrop", "TengusMask", "LostBackpack", "keys.IronKey", "journal.GuidePage", "quest.CorpseDust"})
+			refused(hero(null).replace("weapon.melee.Sword\",\"level\":1", p + "\""), "only works when picked up");
+	}
+
 	@Test public void topLevelItemsLikeGoldCanBeGiven_butNotTheAmulet() throws Exception {
 		HeroMod m = HeroMod.parse(hero(null).replace("{\"item\":\"weapon.melee.Sword\",\"level\":1}",
 				"{\"item\":\"Gold\",\"quantity\":50},{\"item\":\"EnergyCrystal\",\"quantity\":5},{\"item\":\"Ankh\"}"));

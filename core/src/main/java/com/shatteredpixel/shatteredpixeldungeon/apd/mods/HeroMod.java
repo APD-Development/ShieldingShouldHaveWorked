@@ -148,6 +148,9 @@ public final class HeroMod {
 			"Item", "potions.Potion", "potions.exotic.ExoticPotion", "rings.Ring", "weapon.melee.MeleeWeapon",
 			"bags.Bag", "artifacts.Artifact"));
 
+	static final java.util.Set<String> PICKUP_ONLY = new java.util.HashSet<>(java.util.Arrays.asList(
+			"Dewdrop", "LostBackpack", "TengusMask", "quest.CorpseDust", "quest.DwarfToken", "quest.CeremonialCandle"));
+
 	private static StartingItem item(JsonValue e) throws Invalid {
 		if (!e.isObject()) throw new Invalid("each starting item must be an object");
 		String path = text(e, "item", 80);
@@ -156,6 +159,11 @@ public final class HeroMod {
 		if (!path.matches("([a-z]+\\.)*[A-Z][A-Za-z0-9]*")) throw new Invalid("bad item name: " + path);
 		// the Amulet of Yendor would let a mod hero "win" by walking up the first stairs (my call, revertable)
 		if (path.equals("Amulet")) throw new Invalid("Amulet can't be a starting item");
+		// items whose pickup does the real work (keys go to the journal, Dewdrop heals, Tengu's Mask picks a subclass,
+		// quest items start their quest); the run start only puts them in the pack, so they'd be dead items
+		// (my call, revertable)
+		if (PICKUP_ONLY.contains(path) || path.startsWith("keys.") || path.startsWith("journal."))
+			throw new Invalid(path + " only works when picked up in the dungeon, so it can't be a starting item");
 		Class<?> c;
 		try { c = Class.forName("com.shatteredpixel.shatteredpixeldungeon.items." + path); }
 		catch (ClassNotFoundException x){ throw new Invalid("no such item: " + path); }
