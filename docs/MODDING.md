@@ -22,6 +22,7 @@ mods/
     sprite.png        at most 64 KB, a real PNG, exactly 256x128 (same layout as the built-in hero sprites)
 ```
 A broken mod is listed with the reason it was refused; it never stops other mods from loading.
+The folder and both files must be real files, not links (shortcuts); linked ones are refused.
 Two installed mods may not share the same `id`.
 
 ## hero.json (format 1)

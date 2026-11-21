@@ -55,6 +55,10 @@ public final class ModLibrary {
 		for (File d : dirs){
 			try {
 				File json = new File(d, "hero.json"), png = new File(d, "sprite.png");
+				// Never read through links: a linked folder or file could point anywhere on the phone (ModInstaller refuses them too).
+				if (Files.isSymbolicLink(d.toPath())) throw new HeroMod.Invalid("the mod folder is a link");
+				if (Files.isSymbolicLink(json.toPath())) throw new HeroMod.Invalid("hero.json is a link");
+				if (Files.isSymbolicLink(png.toPath())) throw new HeroMod.Invalid("sprite.png is a link");
 				if (!json.isFile()) throw new HeroMod.Invalid("hero.json is missing");
 				if (json.length() > MAX_JSON_BYTES) throw new HeroMod.Invalid("hero.json is larger than 16 KB");
 				String text = new String(Files.readAllBytes(json.toPath()), StandardCharsets.UTF_8);

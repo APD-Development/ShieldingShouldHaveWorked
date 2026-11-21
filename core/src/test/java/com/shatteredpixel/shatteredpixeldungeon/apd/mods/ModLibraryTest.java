@@ -61,6 +61,29 @@ public class ModLibraryTest {
 		assertTrue(all, all.contains("h-huge: sprite.png is larger than 64 KB"));
 	}
 
+	@Test public void linkedModFoldersAndFilesAreRefused_neverRead() throws Exception {
+		File root = tmp.newFolder("mods");
+		File outside = tmp.newFolder("outside");
+		String good = HeroModTest.hero(null);
+		File real = mod(outside, "elsewhere", good, pngHeader(256, 128));
+		Files.createSymbolicLink(new File(root, "a-linked-folder").toPath(), real.toPath());
+		File b = new File(root, "b-linked-json"); b.mkdirs();
+		Files.createSymbolicLink(new File(b, "hero.json").toPath(), new File(real, "hero.json").toPath());
+		Files.write(new File(b, "sprite.png").toPath(), pngHeader(256, 128));
+		File c = mod(root, "c-linked-png", good.replace("chris.battle-mage", "x.png"), null);
+		Files.createSymbolicLink(new File(c, "sprite.png").toPath(), new File(real, "sprite.png").toPath());
+		mod(root, "d-plain", good.replace("chris.battle-mage", "x.plain"), pngHeader(256, 128));
+
+		ModLibrary lib = ModLibrary.scan(root);
+		assertEquals(1, lib.heroes.size());
+		assertEquals("x.plain", lib.heroes.get(0).mod.id);
+		String all = "";
+		for (ModLibrary.Refused r : lib.refused) all += r.folder + ": " + r.reason + "\n";
+		assertTrue(all, all.contains("a-linked-folder: the mod folder is a link"));
+		assertTrue(all, all.contains("b-linked-json: hero.json is a link"));
+		assertTrue(all, all.contains("c-linked-png: sprite.png is a link"));
+	}
+
 	@Test public void noModsFolderIsJustEmpty(){
 		ModLibrary lib = ModLibrary.scan(new File(tmp.getRoot(), "missing"));
 		assertTrue(lib.heroes.isEmpty() && lib.refused.isEmpty());
