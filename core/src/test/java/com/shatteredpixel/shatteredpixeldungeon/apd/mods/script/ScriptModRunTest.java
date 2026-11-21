@@ -131,4 +131,21 @@ public class ScriptModRunTest {
 		// core unit tests run without the test-build feature asset
 		assertFalse(ScriptModRun.pickerEnabled());
 	}
+
+	@Test public void sampleInstallIsAllOrNothingAndNeverOverwrites() throws Exception {
+		File root = java.nio.file.Files.createTempDirectory("apd-sample-install").toFile();
+		byte[] json = "{\"format\":1,\"id\":\"s.x\",\"name\":\"S\",\"author\":\"A\"}".getBytes("UTF-8");
+		byte[] js = "var x = 1;".getBytes("UTF-8");
+		// a leftover staging folder from an interrupted install is cleaned up and the install completes
+		File stale = new File(root, ".s.installing"); assertTrue(stale.mkdir());
+		assertTrue(new File(stale, "mod.json").createNewFile());
+		assertTrue(ScriptModRun.installSample(root, "s", json, js));
+		assertFalse(stale.exists());
+		assertEquals(1, ScriptModLibrary.scan(root).mods.size());
+		assertEquals(0, ScriptModLibrary.scan(root).refused.size());
+		// an existing folder is never overwritten
+		java.nio.file.Files.write(new File(root, "s/main.js").toPath(), "var mine = 2;".getBytes("UTF-8"));
+		assertFalse(ScriptModRun.installSample(root, "s", json, js));
+		assertEquals("var mine = 2;", new String(java.nio.file.Files.readAllBytes(new File(root, "s/main.js").toPath()), "UTF-8"));
+	}
 }

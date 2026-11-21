@@ -51,15 +51,41 @@ public final class ScriptModRun {
 			try {
 				com.badlogic.gdx.files.FileHandle json = com.badlogic.gdx.Gdx.files.internal("apd/scriptmods/" + s + "/mod.json");
 				com.badlogic.gdx.files.FileHandle js = com.badlogic.gdx.Gdx.files.internal("apd/scriptmods/" + s + "/main.js");
-				File target = new File(root, s);
-				if (!json.exists() || !js.exists() || target.exists()) continue;
-				if (!target.mkdirs()) continue;
-				java.nio.file.Files.write(new File(target, "mod.json").toPath(), json.readBytes());
-				java.nio.file.Files.write(new File(target, "main.js").toPath(), js.readBytes());
+				if (!json.exists() || !js.exists()) continue;
+				installSample(root, s, json.readBytes(), js.readBytes());
 			} catch (Exception e){
 				com.watabou.noosa.Game.reportException(e);
 			}
 		}
+	}
+
+	/**
+	 * Writes one sample into {@code root/name} through a hidden staging folder renamed into place, so a write that
+	 * fails halfway never leaves a half-installed folder (which would be refused forever and never re-copied).
+	 * An existing folder is never overwritten. Returns true when the sample was installed.
+	 */
+	static boolean installSample(File root, String name, byte[] json, byte[] js) throws java.io.IOException {
+		File target = new File(root, name);
+		if (target.exists() || java.nio.file.Files.isSymbolicLink(target.toPath())) return false;
+		if (!root.isDirectory() && !root.mkdirs()) return false;
+		File stage = new File(root, "." + name + ".installing");
+		deleteStage(stage);
+		if (!stage.mkdir()) return false;
+		try {
+			java.nio.file.Files.write(new File(stage, "mod.json").toPath(), json);
+			java.nio.file.Files.write(new File(stage, "main.js").toPath(), js);
+			java.nio.file.Files.move(stage.toPath(), target.toPath());
+			return true;
+		} finally {
+			deleteStage(stage);
+		}
+	}
+
+	private static void deleteStage(File stage){
+		if (java.nio.file.Files.isSymbolicLink(stage.toPath())){ stage.delete(); return; }
+		File[] fs = stage.listFiles();
+		if (fs != null) for (File f : fs) f.delete();
+		stage.delete();
 	}
 
 	/** Hero select's toggled mods; kept across hero changes, handed to {@link #choose} only when a normal run starts. */
