@@ -270,10 +270,18 @@ public class Hero extends Char {
         if(!SPDSettings.autoPickupWalkover() || Dungeon.level!=steppedLevel || pos!=cell || steppedLevel.heaps==null) return;
         Heap heap=steppedLevel.heaps.get(cell);
         if(heap==null || heap.type!=Heap.Type.HEAP || heap.hidden || heap.isEmpty()) return;
-        if(grassDewPickup.hasPending()) return; // the dew pickup already handles this step
         if(curAction instanceof HeroAction.PickUp || (curAction!=null && curAction.dst==cell)) return;
         if(!SPDSettings.autoPickupWhenFull() && !apdRoomFor(heap.peek())) return; // Chris, Nov 20: full backpack = no walk-over pickup (no "can't carry" spam)
-        curAction=new HeroAction.PickUp(cell);
+        // Chris, Nov 21: gold on a grass tile with dew was left behind, because the grass pickup took over the tile.
+        // Walk-over pickup now takes the whole pile (dew included), one item per pickup.
+        grassDewPickup.clear();
+        curAction=new HeroAction.WalkoverPickUp(cell);
+    }
+    /** After a walk-over pickup: keep going while the pile has more and the next item fits (or the full-pack setting is on). */
+    public boolean apdContinueWalkover(Heap heap){
+        if(heap==null || heap.isEmpty() || heap.pos!=pos || heap.type!=Heap.Type.HEAP || heap.hidden) return false;
+        if(!SPDSettings.autoPickupWalkover()) return false;
+        return SPDSettings.autoPickupWhenFull() || apdRoomFor(heap.peek());
     }
     /** Whether walking over this item could actually pick it up: gold, energy, dew and keys never need a slot;
      *  anything else needs room in a pouch that takes it or in the backpack (stacking onto a carried stack counts). */
@@ -1336,6 +1344,9 @@ public class Hero extends Char {
 					}
 					
 					curAction = null;
+					if (action instanceof HeroAction.WalkoverPickUp && apdContinueWalkover(Dungeon.level.heaps.get(pos))) {
+						curAction = new HeroAction.WalkoverPickUp(pos);
+					}
 				} else {
 
 					if (waitOrPickup) {

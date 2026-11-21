@@ -203,4 +203,23 @@ public class TrapDiscoveryMovementTest {
             assertTrue(move());assertTrue("gold needs no slot",hero.curAction instanceof HeroAction.PickUp);
         }finally{hero.belongings.backpack.items.clear();hero.belongings.backpack.items.addAll(saved);}
     }
+    @Test public void walkOverTakesTheWholePileEvenWhenTheGrassPickupWantsItsDew()throws Exception{ // Chris, Nov 21: gold left behind on grass
+        com.shatteredpixel.shatteredpixeldungeon.items.Heap h=pile(start+1,com.shatteredpixel.shatteredpixeldungeon.items.Heap.Type.HEAP);
+        h.items.clear();
+        h.items.add(new com.shatteredpixel.shatteredpixeldungeon.items.Dewdrop());
+        h.items.add(new com.shatteredpixel.shatteredpixeldungeon.items.Gold(25));
+        travel();
+        assertTrue(move());
+        assertEquals(start+1,hero.pos);
+        assertTrue("walk-over pickup takes over the tile",hero.curAction instanceof HeroAction.WalkoverPickUp);
+        // after the top item is taken the gold is still there, so walk-over keeps going
+        h.items.removeFirst();
+        assertTrue(hero.apdContinueWalkover(h));
+        h.items.clear();
+        assertFalse("pile empty: stop",hero.apdContinueWalkover(h));
+        SPDSettings.autoPickupWalkover(false);
+        h.items.add(new com.shatteredpixel.shatteredpixeldungeon.items.Gold(5));
+        assertFalse("setting turned off: stop",hero.apdContinueWalkover(h));
+        SPDSettings.autoPickupWalkover(true);
+    }
 }

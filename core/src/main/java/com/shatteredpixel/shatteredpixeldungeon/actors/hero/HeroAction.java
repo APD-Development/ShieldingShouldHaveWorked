@@ -63,6 +63,13 @@ public class HeroAction {
 			this.dst = dst;
 		}
 	}
+
+	/** APD walk-over pickup (Chris, Nov 21): keeps picking up the pile you stepped on, one item per pickup. */
+	public static class WalkoverPickUp extends PickUp {
+		public WalkoverPickUp( int dst ) {
+			super( dst );
+		}
+	}
 	
 	public static class OpenChest extends HeroAction {
 		public OpenChest( int dst ) {
