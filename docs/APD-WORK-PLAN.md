@@ -99,6 +99,14 @@ A recent push is not a clash: `git pull --rebase` before every push and resolve 
         heal, damage, shield, addBuff (whitelist), addEffect, message, hp/maxHp/level/depth; effects with onStart /
         onTurn / onEnd; saves keep mod id + item id, a missing/broken mod's items stay inert; nested calls share one
         engine context and never refresh a mod's own budget.
+        DONE Nov 21 10 AM run (feature/script-mods; core CI 44917525402, 44917986363, 44918462693, 44918820359,
+        44919586179; device test ScriptSampleModDeviceTest passed API 26+34 in 44919279513): steps a-d below.
+        a) triggers fire from Hero.attackProc (melee/thrown), Wand.wandUsed, Hero.damage, Mob.die (enemy killed by
+           hero/wand/thrown); plain facts only, return ignored, non-re-entrant. b) ScriptModLibrary. c) ScriptModRun
+           (saved as apd_script_mods ids, re-read on load, missing mods inert, isModRun) + hero select "Scripts" button,
+           test builds only (ApdFeatures.testBuild). d) sample mod android/apdSampleMods (test-build assets only).
+        NEXT: e) build a Developer (test) APK from feature/script-mods and give it to Chris (live session; scheduled
+        runs don't build APKs). Not device-verified yet: the Scripts button UI and an actual run with the sample mod.
         STILL TO DO, in this order, each with tests (CI on feature/script-mods; never merge to the Play branch):
         a) wire the other effect triggers into the game: onMeleeHit, onThrownHit, onWandZap, onDamageTaken, onKill,
            passing plain facts (damage, target name, wand/weapon name). Anything a script can do in response stays
@@ -215,6 +223,7 @@ default-on settings (SPDSettings.keepOldDefaultsForExistingPlayers). Next: Googl
 (Credential Manager), server URL default once deployed, run reviews. HttpGateway contract routes, deployment workflow, Android Community screens wired to it, Play Age Signals.
 
 ## Run log
+- 2026-11-21 10 AM (scheduled): script mods steps a-d on feature/script-mods (triggers wired, mod files loader, run activation + test-build Scripts picker, dev-only sample mod); all core CI green (last 44919586179), device test 44919279513 green. Next: step e dev APK for Chris's phone test.
 - 2026-11-21 9 AM ET (scheduled): Script mods (feature/script-mods only): ScriptSandbox.call accepted any Java object as an argument, which Rhino would wrap and expose its methods to the script (breaks rule 3, no Java access); now only plain values (string/number/boolean/null) go in, anything else is refused without disabling the mod. +1 test; full CI 44911948358 green. Not device-verified. Still waiting on Chris: items hook API proposal before building; mod starting items on top of vs instead of the class kit; Loot Availability score multiplier.
 - 2026-11-21 8 AM ET (8-hour Play build, ran 8:05): Play **934** at 1ceeac2f uploaded to closed test (alpha). CI 44907063664 green on 73a7e47e. New: data-only hero mods switched off (Lua mods coming), overnight mod hardening. Last uploaded build: 934.
 - 2026-11-21 7 AM ET (scheduled): Hero mods bug: installing a workshop mod whose id matched a hand-placed folder holding a DIFFERENT mod silently replaced (deleted) that mod; now refused with a reason, folder untouched. +1 test; full CI 44902279007 green. Not device-verified. Still OPEN for Chris: mod starting items on top of vs instead of the class kit; Loot Availability score multiplier.
