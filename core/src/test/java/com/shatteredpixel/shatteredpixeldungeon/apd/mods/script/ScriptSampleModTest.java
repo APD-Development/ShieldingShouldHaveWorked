@@ -34,9 +34,15 @@ public class ScriptSampleModTest {
 	}
 
 	static File samples(){
-		File f = new File("../android/apdSampleMods/apd/scriptmods");
-		if (!f.isDirectory()) f = new File("android/apdSampleMods/apd/scriptmods");
-		return f;
+		// core tests run in core/src/main/assets; walk up to the repo root
+		File dir = new File("").getAbsoluteFile();
+		while (dir != null){
+			File f = new File(dir, "android/apdSampleMods/apd/scriptmods");
+			if (f.isDirectory()) return f;
+			dir = dir.getParentFile();
+		}
+		fail("sample mod folder android/apdSampleMods not found");
+		return null;
 	}
 
 	@Test public void sampleModLoadsAndItsItemsWork(){
