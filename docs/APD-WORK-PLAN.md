@@ -123,7 +123,22 @@ A recent push is not a clash: `git pull --rebase` before every push and resolve 
            rules for Rhino added) and sent to Chris; device tests ScriptSandboxDeviceTest + ScriptSampleModDeviceTest
            passed on API 26 + 34 (run 44932118010). That run also wrote a feature-branch AAB to handoff/unsigned-aab:
            NEVER upload a bundle built from feature/script-mods; the 8-hour Play build always rebuilds from this branch.
-           WAITING on Chris's phone test. Don't start the monsters hook until he has tried it.
+           Phone test still to come, but Chris said Nov 21 1:10 PM: get to work on "the heroes and shit" -> build
+           the next hooks now (still feature/script-mods only, never a Play build).
+     MONSTERS HOOK (next, rule 4 order): APD.monster({ id, name, description, sprite: an existing mob sprite name
+        (e.g. "RatSprite"), hp, attack:[min,max], accuracy, defense, evasion, armor:[min,max] or number, speed
+        (0.5-2), xp, spawn:{ floors:[from,to], weight } and/or none, loot (a mod item id or none),
+        triggers onSpawn / onTurn / onAttack(m, target) / onHurt(m, damage) / onDeath(m) }) with a bounded monster
+        API (hp/maxHp/pos facts, heal, damage, addBuff from a whitelist, message). Numbers clamped to sane ranges.
+        Spawning: mod monsters join the floor's spawn rotation by weight, capped like items: per-monster weight
+        0-3, all mod monsters together <= 25% of spawns (same "sane cap" rule Chris set for loot); no RNG used
+        when none can spawn. Saves keep mod id + monster id; a missing/broken mod's monster is removed on load
+        without a crash. Mod monsters only in mod runs. Sample: add one monster to the bundled sample mod. Tests:
+        JVM (defs, clamps, spawn share/cap, save/load, broken mod) + device test.
+     HEROES HOOK (after monsters): APD.hero({ id, name, description, sprite (existing hero sprite or mod art later),
+        baseClass, hp, str, startingItems (existing or mod item ids), talents (existing talent names per tier, like
+        the old data mods), armorAbilities, triggers onStart / onLevelUp / onTurn / onKill }) reusing the old
+        HeroModRun hooks where they fit; picked in hero select's Scripts list. Same caps/tests/sample rules.
      2. Play: mods = text scripts + art, run inside the engine. Never download/load dex, jar or .so. Anything a
         script can't do goes through submit -> Chris approves -> ships in an app update.
      3. Sandbox: no file, network, OS or reflection access; only the hooks APD exposes. Time AND memory limit per
