@@ -1102,6 +1102,17 @@ public class Hero extends Char {
 	}
 	
 	public void interrupt() {
+        // Chris, Nov 21: gold he walked over wasn't picked up with no enemy around. A non-danger interruption on that
+        // step (hunger notice, something spotted by passive search...) threw the queued walk-over pickup away.
+        // It now survives unless an enemy is in view; everything else interrupt() does still happens.
+        HeroAction.WalkoverPickUp apdKeep = (curAction instanceof HeroAction.WalkoverPickUp && curAction.dst == pos
+                && ((HeroAction.WalkoverPickUp)curAction).level == Dungeon.level && isAlive() && paralysed <= 0
+                && visibleEnemies() == 0) ? (HeroAction.WalkoverPickUp)curAction : null;
+        apdInterruptCore();
+        if (apdKeep != null) curAction = apdKeep;
+	}
+
+	private void apdInterruptCore() {
         apdWaitCancellationEpoch++;
         if(curAction instanceof com.shatteredpixel.shatteredpixeldungeon.apd.qol.RatKingQuickSearch.Action){ratSearch=null;curAction=null;lastAction=null;}
         if(curAction instanceof com.shatteredpixel.shatteredpixeldungeon.apd.qol.WallSearchSession.Walk){curAction=null;lastAction=null;}
@@ -1304,6 +1315,10 @@ public class Hero extends Char {
 	}
 
 	private boolean actPickUp( HeroAction.PickUp action ) {
+		if (action instanceof HeroAction.WalkoverPickUp && ((HeroAction.WalkoverPickUp)action).level != Dungeon.level){
+			curAction = null; // queued on another floor
+			return false;
+		}
 		int dst = action.dst;
 		if (pos == dst) {
 			

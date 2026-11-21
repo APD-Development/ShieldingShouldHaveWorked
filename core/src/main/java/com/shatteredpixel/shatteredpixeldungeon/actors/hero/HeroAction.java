@@ -66,8 +66,11 @@ public class HeroAction {
 
 	/** APD walk-over pickup (Chris, Nov 21): keeps picking up the pile you stepped on, one item per pickup. */
 	public static class WalkoverPickUp extends PickUp {
+		/** The floor it was queued on; it never runs anywhere else. */
+		public final com.shatteredpixel.shatteredpixeldungeon.levels.Level level;
 		public WalkoverPickUp( int dst ) {
 			super( dst );
+			level = com.shatteredpixel.shatteredpixeldungeon.Dungeon.level;
 		}
 	}
 	

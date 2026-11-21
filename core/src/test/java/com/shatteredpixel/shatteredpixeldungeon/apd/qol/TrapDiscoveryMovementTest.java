@@ -222,4 +222,28 @@ public class TrapDiscoveryMovementTest {
         assertFalse("setting turned off: stop",hero.apdContinueWalkover(h));
         SPDSettings.autoPickupWalkover(true);
     }
+    @Test public void aWalkOverPickupSurvivesANonDangerInterruption()throws Exception{ // Chris, Nov 21: gold skipped with no enemies
+        com.shatteredpixel.shatteredpixeldungeon.items.Heap h=pile(start+1,com.shatteredpixel.shatteredpixeldungeon.items.Heap.Type.HEAP);
+        h.items.clear();h.items.add(new com.shatteredpixel.shatteredpixeldungeon.items.Gold(30));
+        travel();
+        assertTrue(move());
+        HeroAction queued=hero.curAction;
+        assertTrue(queued instanceof HeroAction.WalkoverPickUp);
+        hero.interrupt(); // e.g. a hunger notice or passive search on that step
+        assertSame("pickup kept",queued,hero.curAction);
+        assertFalse(hero.resting);
+        // a pickup queued on another floor never runs here
+        HeroAction.WalkoverPickUp elsewhere=new HeroAction.WalkoverPickUp(hero.pos);
+        java.lang.reflect.Field lf=HeroAction.WalkoverPickUp.class.getField("level");
+        com.shatteredpixel.shatteredpixeldungeon.levels.Level real=Dungeon.level;
+        Dungeon.level=null;HeroAction.WalkoverPickUp stale=new HeroAction.WalkoverPickUp(hero.pos);Dungeon.level=real;
+        hero.curAction=stale;
+        hero.interrupt();
+        assertNull("other floor's pickup is dropped",hero.curAction);
+        assertNotNull(elsewhere.level);
+        // an ordinary pickup is still cancelled as before
+        hero.curAction=new HeroAction.PickUp(hero.pos);
+        hero.interrupt();
+        assertNull(hero.curAction);
+    }
 }
