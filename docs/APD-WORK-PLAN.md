@@ -119,8 +119,11 @@ A recent push is not a clash: `git pull --rebase` before every push and resolve 
         d) a small sample mod bundled in a DEV APK only, plus a device test: one potion + one scroll + one timed
            effect, using existing buffs/heal/shield. (Chris, Nov 21: the example item he used to explain script mods
            was an AI suggestion; he doesn't use AI suggestions. Never build it or use it as sample/test data.)
-        e) then: deliver the dev APK from feature/script-mods to Chris for his phone test (rule 7). Don't start the
-           monsters hook until he has tried it.
+        e) DONE Nov 21 1:05 PM: dev APK built from feature/script-mods (5dfc1bb2, run 44932639319; R8 keep/dontwarn
+           rules for Rhino added) and sent to Chris; device tests ScriptSandboxDeviceTest + ScriptSampleModDeviceTest
+           passed on API 26 + 34 (run 44932118010). That run also wrote a feature-branch AAB to handoff/unsigned-aab:
+           NEVER upload a bundle built from feature/script-mods; the 8-hour Play build always rebuilds from this branch.
+           WAITING on Chris's phone test. Don't start the monsters hook until he has tried it.
      2. Play: mods = text scripts + art, run inside the engine. Never download/load dex, jar or .so. Anything a
         script can't do goes through submit -> Chris approves -> ships in an app update.
      3. Sandbox: no file, network, OS or reflection access; only the hooks APD exposes. Time AND memory limit per
