@@ -51,6 +51,9 @@ public final class ModInstaller {
 		for (ModLibrary.Installed i : lib.heroes){
 			if (i.mod.id.equals(mod.id) && !i.sprite.getParentFile().getName().equals(mod.id))
 				throw new Refused("the mod " + mod.id + " is already installed in the folder " + i.sprite.getParentFile().getName());
+			// A hand-placed folder named like this id but holding a DIFFERENT mod would be silently replaced (deleted).
+			if (!i.mod.id.equals(mod.id) && i.sprite.getParentFile().getName().equals(mod.id))
+				throw new Refused("the folder " + mod.id + " already holds a different mod (" + i.mod.id + ")");
 		}
 
 		File stage = new File(modsDir, ".install-" + java.util.UUID.randomUUID());

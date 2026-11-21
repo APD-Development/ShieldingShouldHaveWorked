@@ -114,4 +114,19 @@ public class ModInstallerTest {
 		assertFalse(ModInstaller.uninstallFolder(mods, ".install-x"));
 		assertTrue(keep.isDirectory());
 	}
+
+	@Test public void folderNamedLikeTheIdButHoldingAnotherModIsNeverReplaced() throws Exception {
+		File mods = new File(tmp.getRoot(), "mods");
+		String json = HeroModTest.hero(null);
+		String other = json.replace("chris.battle-mage", "someone.other");
+		File hand = new File(mods, "chris.battle-mage");
+		assertTrue(hand.mkdirs());
+		Files.write(new File(hand, "hero.json").toPath(), other.getBytes(StandardCharsets.UTF_8));
+		Files.write(new File(hand, "sprite.png").toPath(), ModLibraryTest.pngHeader(256, 128));
+		assertEquals("someone.other", ModLibrary.scan(mods).heroes.get(0).mod.id);
+		try { ModInstaller.install(mods, json, ModLibraryTest.pngHeader(256, 128)); fail(); }
+		catch (ModInstaller.Refused e){ assertTrue(e.getMessage(), e.getMessage().contains("different mod")); }
+		assertEquals(other, read(new File(hand, "hero.json")));
+		assertArrayEquals(new String[]{"chris.battle-mage"}, mods.list());
+	}
 }
