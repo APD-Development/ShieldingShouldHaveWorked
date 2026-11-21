@@ -76,6 +76,21 @@ public final class HeroModRun {
 		return true;
 	}
 
+	/**
+	 * Talent tiers the hero info window shows. Opened from inside a mod run (WndHero's info button) it showed the base
+	 * class's lists instead of the mod's; hero select (thisRun false) always shows the class, never a stale mod.
+	 */
+	public static ArrayList<LinkedHashMap<Talent, Integer>> infoTalents(HeroClass cls, boolean thisRun){
+		ArrayList<LinkedHashMap<Talent, Integer>> talents = new ArrayList<>();
+		if (!thisRun || !fillTalents(talents)) Talent.initClassTalents(cls, talents);
+		return talents;
+	}
+
+	/** Armor abilities the hero info window shows (same rule as infoTalents). */
+	public static ArmorAbility[] infoArmorAbilities(HeroClass cls, boolean thisRun){
+		return thisRun ? armorAbilities(cls) : cls.armorAbilities();
+	}
+
 	/** Armor abilities offered to this hero. */
 	public static ArmorAbility[] armorAbilities(HeroClass cls){
 		HeroMod m = active;

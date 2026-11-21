@@ -156,6 +156,21 @@ public class HeroModRunTest {
 		assertFalse(normal.contains("apd_mod_hero"));
 	}
 
+	@Test public void heroInfoWindow_showsTheModsPiecesInsideTheRun_andTheClassInHeroSelect() throws Exception {
+		assertTrue(HeroModRun.infoTalents(HeroClass.WARRIOR, true).get(0).containsKey(Talent.VETERANS_INTUITION));
+		String json = HeroModTest.hero(null);
+		HeroModRun.choose(HeroMod.parse(json), json);
+		HeroModRun.beginRun();
+		ArrayList<LinkedHashMap<Talent, Integer>> run = HeroModRun.infoTalents(HeroClass.WARRIOR, true);
+		assertTrue(run.get(0).containsKey(Talent.SCHOLARS_INTUITION));
+		assertFalse(run.get(0).containsKey(Talent.VETERANS_INTUITION));
+		ArmorAbility[] abil = HeroModRun.infoArmorAbilities(HeroClass.WARRIOR, true);
+		assertTrue(abil.length == 2 && abil[0] instanceof HeroicLeap && abil[1] instanceof WarpBeacon);
+		// hero select never shows a leftover mod for a plain class
+		assertTrue(HeroModRun.infoTalents(HeroClass.WARRIOR, false).get(0).containsKey(Talent.VETERANS_INTUITION));
+		assertEquals(HeroClass.WARRIOR.armorAbilities().length, HeroModRun.infoArmorAbilities(HeroClass.WARRIOR, false).length);
+	}
+
 	@Test public void aNewNormalRunAfterAModRunIsNormalAgain() throws Exception {
 		String json = HeroModTest.hero(null);
 		HeroModRun.choose(HeroMod.parse(json), json);

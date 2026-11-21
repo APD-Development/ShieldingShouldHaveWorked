@@ -55,6 +55,11 @@ public class WndHeroInfo extends WndTabbed {
 	private static int MARGIN = 2;
 
 	public WndHeroInfo( HeroClass cl ){
+		this( cl, false );
+	}
+
+	/** thisRun: opened from the current run's hero window, so a mod run shows the mod's talents and abilities. */
+	public WndHeroInfo( HeroClass cl, boolean thisRun ){
 
 		Image tabIcon;
 		switch (cl){
@@ -93,7 +98,7 @@ public class WndHeroInfo extends WndTabbed {
 			}
 		});
 
-		talentInfo = new TalentInfoTab(cl);
+		talentInfo = new TalentInfoTab(cl, thisRun);
 		add(talentInfo);
 		talentInfo.setSize(WIDTH, MIN_HEIGHT);
 		finalHeight = (int)Math.max(finalHeight, talentInfo.height());
@@ -122,7 +127,7 @@ public class WndHeroInfo extends WndTabbed {
 		}
 
 		if (Badges.isUnlocked(Badges.Badge.BOSS_SLAIN_4) || DeviceCompat.isDebug()) {
-			abilityInfo = new ArmorAbilityInfoTab(cl);
+			abilityInfo = new ArmorAbilityInfoTab(cl, thisRun);
 			add(abilityInfo);
 			abilityInfo.setSize(WIDTH, MIN_HEIGHT);
 			finalHeight = (int)Math.max(finalHeight, abilityInfo.height());
@@ -244,7 +249,7 @@ public class WndHeroInfo extends WndTabbed {
 		private RenderedTextBlock message;
 		private TalentsPane talentPane;
 
-		public TalentInfoTab( HeroClass cls ){
+		public TalentInfoTab( HeroClass cls, boolean thisRun ){
 			super();
 			title = PixelScene.renderTextBlock(Messages.titleCase(Messages.get(WndHeroInfo.class, "talents")), 9);
 			title.hardlight(TITLE_COLOR);
@@ -253,8 +258,8 @@ public class WndHeroInfo extends WndTabbed {
 			message = PixelScene.renderTextBlock(Messages.get(WndHeroInfo.class, "talents_msg"), 6);
 			add(message);
 
-			ArrayList<LinkedHashMap<Talent, Integer>> talents = new ArrayList<>();
-			Talent.initClassTalents(cls, talents);
+			ArrayList<LinkedHashMap<Talent, Integer>> talents =
+					com.shatteredpixel.shatteredpixeldungeon.apd.mods.HeroModRun.infoTalents(cls, thisRun);
 			talents.get(2).clear(); //we show T3 talents with subclasses
 
 			talentPane = new TalentsPane(TalentButton.Mode.INFO, talents);
@@ -342,7 +347,7 @@ public class WndHeroInfo extends WndTabbed {
 		private RenderedTextBlock[] abilityDescs;
 		private IconButton[] abilityInfos;
 
-		public ArmorAbilityInfoTab(HeroClass cls){
+		public ArmorAbilityInfoTab(HeroClass cls, boolean thisRun){
 			super();
 			title = PixelScene.renderTextBlock(Messages.titleCase(Messages.get(WndHeroInfo.class, "abilities")), 9);
 			title.hardlight(TITLE_COLOR);
@@ -351,7 +356,7 @@ public class WndHeroInfo extends WndTabbed {
 			message = PixelScene.renderTextBlock(Messages.get(WndHeroInfo.class, "abilities_msg"), 6);
 			add(message);
 
-			ArmorAbility[] abilities = cls.armorAbilities();
+			ArmorAbility[] abilities = com.shatteredpixel.shatteredpixeldungeon.apd.mods.HeroModRun.infoArmorAbilities(cls, thisRun);
 
 			abilityDescs = new RenderedTextBlock[abilities.length];
 			abilityInfos = new IconButton[abilities.length];
