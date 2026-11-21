@@ -31,7 +31,7 @@ public final class HeroModRun {
 	/** Save held a mod record that no longer parses: still a mod run (stays out of badges/Community), raw record kept. */
 	private static volatile boolean damaged;
 
-	public static boolean isModRun(){ return active != null || damaged; }
+	public static boolean isModRun(){ return active != null || damaged || com.shatteredpixel.shatteredpixeldungeon.apd.mods.script.ScriptModRun.isScriptRun(); }
 
 	/** True when this run's saved mod record could not be read. */
 	public static boolean isDamaged(){ return damaged; }
@@ -40,7 +40,7 @@ public final class HeroModRun {
 	public static String modName(){ HeroMod m = active; if (m == null) return damaged ? "Unreadable mod" : null; return m.name; }
 
 	/** A run that must be a normal hero (a Community review replays the original setup): drop any pending mod. */
-	public static void cancelStarting(){ starting = null; startingJson = null; }
+	public static void cancelStarting(){ starting = null; startingJson = null; com.shatteredpixel.shatteredpixeldungeon.apd.mods.script.ScriptModRun.cancelStarting(); }
 
 	/** New run: take the pending mod (if any). A normal new run clears any old mod state. */
 	public static void beginRun(){

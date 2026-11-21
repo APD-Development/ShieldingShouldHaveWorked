@@ -380,6 +380,7 @@ public class Hero extends Char {
 
 		bundle.put( CLASS, heroClass );
 		com.shatteredpixel.shatteredpixeldungeon.apd.mods.HeroModRun.store( bundle );
+		com.shatteredpixel.shatteredpixeldungeon.apd.mods.script.ScriptModRun.store( bundle );
 		bundle.put( SUBCLASS, subClass );
 		bundle.put( ABILITY, armorAbility );
 		Talent.storeTalentsInBundle( bundle, this );
@@ -416,6 +417,7 @@ public class Hero extends Char {
 
 		heroClass = bundle.getEnum( CLASS, HeroClass.class );
 		com.shatteredpixel.shatteredpixeldungeon.apd.mods.HeroModRun.restore( bundle );
+		com.shatteredpixel.shatteredpixeldungeon.apd.mods.script.ScriptModRun.restore( bundle );
 		subClass = bundle.getEnum( SUBCLASS, HeroSubClass.class );
 		armorAbility = (ArmorAbility)bundle.get( ABILITY );
 		Talent.restoreTalentsFromBundle( bundle, this );

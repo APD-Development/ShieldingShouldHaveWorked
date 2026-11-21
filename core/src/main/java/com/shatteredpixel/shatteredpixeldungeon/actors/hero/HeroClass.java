@@ -101,6 +101,7 @@ public enum HeroClass {
 
 		hero.heroClass = this;
 		com.shatteredpixel.shatteredpixeldungeon.apd.mods.HeroModRun.beginRun();
+		com.shatteredpixel.shatteredpixeldungeon.apd.mods.script.ScriptModRun.beginRun();
 		Talent.initClassTalents(hero);
 
 		Item i = new ClothArmor().identify();
@@ -151,6 +152,7 @@ public enum HeroClass {
 
 		// APD hero mods: the mod's HP, strength and extra starting items, on top of the base class kit
 		com.shatteredpixel.shatteredpixeldungeon.apd.mods.HeroModRun.applyStart( hero );
+		com.shatteredpixel.shatteredpixeldungeon.apd.mods.script.ScriptModRun.applyStart( hero );
 	}
 
 	public Badges.Badge masteryBadge() {
