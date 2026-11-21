@@ -90,4 +90,16 @@ public class HeroModTest {
 		assertEquals(2, HeroMod.parse(food0).startingItems.get(0).quantity);
 		assertEquals(1, HeroMod.parse(hero(null)).startingItems.get(0).level); // upgradable weapon keeps its level
 	}
+
+	@Test public void topLevelItemsLikeGoldCanBeGiven_butNotTheAmulet() throws Exception {
+		HeroMod m = HeroMod.parse(hero(null).replace("{\"item\":\"weapon.melee.Sword\",\"level\":1}",
+				"{\"item\":\"Gold\",\"quantity\":50},{\"item\":\"EnergyCrystal\",\"quantity\":5},{\"item\":\"Ankh\"}"));
+		assertEquals(com.shatteredpixel.shatteredpixeldungeon.items.Gold.class, m.startingItems.get(0).type);
+		assertEquals(50, m.startingItems.get(0).quantity);
+		assertEquals(com.shatteredpixel.shatteredpixeldungeon.items.EnergyCrystal.class, m.startingItems.get(1).type);
+		assertEquals(com.shatteredpixel.shatteredpixeldungeon.items.Ankh.class, m.startingItems.get(2).type);
+		refused(hero(null).replace("weapon.melee.Sword\",\"level\":1", "Amulet\""), "Amulet can't be a starting item");
+		refused(hero(null).replace("weapon.melee.Sword", "weapon..Sword"), "bad item name");
+		refused(hero(null).replace("weapon.melee.Sword", "gold"), "bad item name");
+	}
 }

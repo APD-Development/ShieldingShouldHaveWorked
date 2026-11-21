@@ -147,7 +147,11 @@ public final class HeroMod {
 	private static StartingItem item(JsonValue e) throws Invalid {
 		if (!e.isObject()) throw new Invalid("each starting item must be an object");
 		String path = text(e, "item", 80);
-		if (!path.matches("[a-z]+(\\.[a-z]+)*\\.[A-Z][A-Za-z0-9]*")) throw new Invalid("bad item name: " + path);
+		// top-level items (Gold, EnergyCrystal, Ankh, Torch...) have no package part; the old pattern refused them all,
+		// so the documented Gold/EnergyCrystal starting amounts could never be used
+		if (!path.matches("([a-z]+\\.)*[A-Z][A-Za-z0-9]*")) throw new Invalid("bad item name: " + path);
+		// the Amulet of Yendor would let a mod hero "win" by walking up the first stairs (my call, revertable)
+		if (path.equals("Amulet")) throw new Invalid("Amulet can't be a starting item");
 		Class<?> c;
 		try { c = Class.forName("com.shatteredpixel.shatteredpixeldungeon.items." + path); }
 		catch (ClassNotFoundException x){ throw new Invalid("no such item: " + path); }
