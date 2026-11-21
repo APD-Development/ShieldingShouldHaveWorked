@@ -166,6 +166,23 @@ public class MeleeWeapon extends Weapon {
 		return dst; //weapon abilities do not use projectile logic, no autoaim
 	}
 
+	/** APD: whether this weapon's ability can reach that enemy from where the hero stands (used by the Duelist
+	 *  lock-on, apd/qol/DuelistLockOn). Mirrors each ability's own range check. */
+	public boolean abilityReaches(Hero hero, com.shatteredpixel.shatteredpixeldungeon.actors.Char enemy){
+		if (enemy == null) return false;
+		int d = com.shatteredpixel.shatteredpixeldungeon.Dungeon.level.distance(hero.pos, enemy.pos);
+		if (this instanceof Rapier || this instanceof Katana || this instanceof Tachi || this instanceof Nodachi
+				|| this instanceof Tanto || this instanceof Wakizashi){
+			// lunge: Rapier.lungeAbility needs a gap of at least one tile and no more than the weapon's reach
+			return !hero.rooted && d >= 2 && d - 1 <= reachFactor(hero);
+		}
+		if (this instanceof Spear || this instanceof Glaive){
+			// spike: Spear.spikeAbility needs reach but not an adjacent enemy
+			return hero.canAttack(enemy) && !com.shatteredpixel.shatteredpixeldungeon.Dungeon.level.adjacent(hero.pos, enemy.pos);
+		}
+		return hero.canAttack(enemy);
+	}
+
 	protected void duelistAbility( Hero hero, Integer target ){
 		//do nothing by default
 	}
