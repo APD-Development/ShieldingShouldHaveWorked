@@ -224,4 +224,17 @@ public class ScriptItemsTest {
 			for (int i = 0; i < 200; i++) assertFalse(Generator.random(Generator.Category.WEAPON) instanceof ScriptItem);
 		} finally { Random.popGenerator(); }
 	}
+
+	@Test public void callingBackIntoTheSameModNeverResetsItsBudgetOrLeaksTheEngine(){
+		ScriptModRuntime.load("nest.mod", "APD.effect({ id: 'e', name: 'E', turns: 2, onStart(h){ } });"
+				+ "APD.item({ id: 'i', kind: 'potion', name: 'I', onUse(h){ while(true){ h.addEffect('e'); } } });");
+		long t0 = System.nanoTime();
+		ScriptItem.use(hero, ScriptModRuntime.item("nest.mod", "i"));
+		assertTrue("stopped, not looped forever", (System.nanoTime() - t0) < 5_000_000_000L);
+		assertTrue(ScriptModRuntime.mod("nest.mod").disabled());
+		// the engine is clean afterwards: a new mod loads and runs normally
+		echoes();
+		ScriptItem.use(hero, ScriptModRuntime.item("chris.echoes", "echoes"));
+		assertNotNull(hero.buff(ScriptEffect.class));
+	}
 }

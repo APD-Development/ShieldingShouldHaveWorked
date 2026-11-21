@@ -44,21 +44,42 @@ public final class ScriptSandbox {
 
 	private static final int OBSERVE_EVERY = 10_000;
 
-	private final class Factory extends ContextFactory {
+	/** One engine setup shared by all mods. Script calls can nest (a mod's item starts its effect, which runs the
+	 *  effect's onStart; later one mod's hook can trigger another's). The limits always apply to the sandbox
+	 *  that is running right now, and a mod calling back into itself never gets a fresh budget. */
+	private static final class Factory extends ContextFactory {
 		@Override protected boolean hasFeature(Context cx, int featureIndex){
 			if (featureIndex == Context.FEATURE_ENABLE_JAVA_MAP_ACCESS) return false;
 			return super.hasFeature(cx, featureIndex);
 		}
 		@Override protected void observeInstructionCount(Context cx, int instructionCount){
-			used += instructionCount;
-			if (used > instructionBudget) throw new Limited("used too much processing time (instruction limit)");
-			if (System.nanoTime() > deadline) throw new Limited("ran too long (time limit)");
-			Runtime rt = Runtime.getRuntime();
-			if (rt.totalMemory() - rt.freeMemory() - heapAtStart > heapBudget) throw new Limited("used too much memory");
+			ScriptSandbox top = RUNNING.get().peek();
+			if (top != null) top.observe(instructionCount);
 		}
 	}
 
-	private final Factory factory = new Factory();
+	private static final Factory FACTORY = new Factory();
+	private static final ThreadLocal<java.util.ArrayDeque<ScriptSandbox>> RUNNING = ThreadLocal.withInitial(java.util.ArrayDeque::new);
+	private static final Object CONFIGURED = new Object();
+
+	private void observe(int instructionCount){
+		used += instructionCount;
+		if (used > instructionBudget) throw new Limited("used too much processing time (instruction limit)");
+		if (System.nanoTime() > deadline) throw new Limited("ran too long (time limit)");
+		Runtime rt = Runtime.getRuntime();
+		if (rt.totalMemory() - rt.freeMemory() - heapAtStart > heapBudget) throw new Limited("used too much memory");
+	}
+
+	/** Marks this sandbox as running (arming its limits unless it is already running further up). Pair with {@link #finish}. */
+	private void start(){
+		if (!RUNNING.get().contains(this)) arm();
+		RUNNING.get().push(this);
+	}
+
+	private void finish(){
+		RUNNING.get().remove(this);
+	}
+
 	private final String modId;
 	private final long instructionBudget, millisBudget, heapBudget;
 	private ScriptableObject scope;
@@ -79,14 +100,22 @@ public final class ScriptSandbox {
 	public boolean isDisabled(){ return disabled != null; }
 	public String disabledReason(){ return disabled; }
 
-	private Context enter(){
-		Context cx = factory.enterContext();
-		cx.setInterpretedMode(true); // Android can't load generated classes; interpreted mode also enables the observer
-		cx.setLanguageVersion(Context.VERSION_ES6);
-		cx.setInstructionObserverThreshold(OBSERVE_EVERY);
-		cx.setMaximumInterpreterStackDepth(MAX_STACK_DEPTH);
-		cx.setClassShutter(className -> false);
-		cx.setGeneratingDebug(false);
+	private static Context enter(){
+		Context cx = FACTORY.enterContext();
+		if (cx.getThreadLocal(CONFIGURED) == null){ // a nested enter reuses the already configured context
+			try {
+				cx.setInterpretedMode(true); // Android can't load generated classes; interpreted mode also enables the observer
+				cx.setLanguageVersion(Context.VERSION_ES6);
+				cx.setInstructionObserverThreshold(OBSERVE_EVERY);
+				cx.setMaximumInterpreterStackDepth(MAX_STACK_DEPTH);
+				cx.setClassShutter(className -> false);
+				cx.setGeneratingDebug(false);
+				cx.putThreadLocal(CONFIGURED, Boolean.TRUE);
+			} catch (RuntimeException e){
+				Context.exit();
+				throw e;
+			}
+		}
 		return cx;
 	}
 
@@ -107,8 +136,9 @@ public final class ScriptSandbox {
 		check();
 		if (source == null) fail("has no script");
 		if (source.length() > MAX_SOURCE_CHARS) fail("script is larger than " + (MAX_SOURCE_CHARS / 1024) + " KB");
+		boolean started = false;
 		try (Context cx = enter()){
-			arm();
+			start(); started = true;
 			scope = cx.initSafeStandardObjects(null, false);
 			for (String gone : new String[]{"Packages", "java", "javax", "org", "com", "edu", "net", "getClass",
 					"JavaAdapter", "JavaImporter", "importClass", "importPackage", "Continuation", "XML", "XMLList",
@@ -122,6 +152,8 @@ public final class ScriptSandbox {
 			s.exec(cx, scope);
 		} catch (Throwable t){
 			fail(describe(t));
+		} finally {
+			if (started) finish();
 		}
 	}
 
@@ -131,10 +163,11 @@ public final class ScriptSandbox {
 		check();
 		if (scope == null) fail("is not loaded");
 		for (Object a : args) requirePlain(a);
+		boolean started = false;
 		try (Context cx = enter()){
 			Object f = ScriptableObject.getProperty(scope, function);
 			if (!(f instanceof Function)) return null;
-			arm();
+			start(); started = true;
 			Object[] jsArgs = new Object[args.length];
 			for (int i = 0; i < args.length; i++) jsArgs[i] = Context.javaToJS(args[i], scope);
 			Object r = ((Callable) f).call(cx, scope, scope, jsArgs);
@@ -142,6 +175,8 @@ public final class ScriptSandbox {
 		} catch (Throwable t){
 			fail(describe(t));
 			return null;
+		} finally {
+			if (started) finish();
 		}
 	}
 
@@ -159,8 +194,9 @@ public final class ScriptSandbox {
 		check();
 		if (scope == null) fail("is not loaded");
 		for (Object a : args) if (!(a instanceof ScriptApi.ApiObject)) requirePlain(a);
+		boolean started = false;
 		try (Context cx = enter()){
-			arm();
+			start(); started = true;
 			Object[] jsArgs = new Object[args.length];
 			for (int i = 0; i < args.length; i++)
 				jsArgs[i] = args[i] instanceof ScriptApi.ApiObject ? args[i] : Context.javaToJS(args[i], scope);
@@ -168,6 +204,8 @@ public final class ScriptSandbox {
 		} catch (Throwable t){
 			fail(describe(t));
 			return null;
+		} finally {
+			if (started) finish();
 		}
 	}
 
@@ -202,13 +240,17 @@ public final class ScriptSandbox {
 	}
 
 	private void fail(String why) throws ScriptFailure {
-		disabled = "Mod " + modId + " was turned off: it " + why + ".";
+		if (disabled == null) disabled = "Mod " + modId + " was turned off: it " + why + "."; // keep the first reason
 		scope = null;
 		throw new ScriptFailure(disabled);
 	}
 
 	private static String describe(Throwable t){
 		if (t instanceof org.mozilla.javascript.WrappedException && t.getCause() != null) t = t.getCause();
+		if (t instanceof ScriptFailure){ // a nested call already turned a mod off; say which
+			String m = t.getMessage();
+			return "stopped because " + (m.endsWith(".") ? m.substring(0, m.length() - 1) : m);
+		}
 		if (t instanceof ScriptDefs.BadDef) return "has a mistake: it " + t.getMessage();
 		if (t instanceof Limited) return t.getMessage();
 		if (t instanceof StackOverflowError) return "recursed too deeply";
