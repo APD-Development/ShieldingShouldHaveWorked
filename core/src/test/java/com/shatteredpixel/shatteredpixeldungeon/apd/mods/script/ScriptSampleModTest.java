@@ -54,6 +54,10 @@ public class ScriptSampleModTest {
 		ScriptModRuntime.LoadedMod m = ScriptModRuntime.load(i.id, i.script);
 		assertFalse(m.disabledReason(), m.disabled());
 		assertEquals(2, m.items().size());
+		assertEquals("the sample also shows the monsters hook", 1, m.monsters().size());
+		ScriptMob crab = new ScriptMob(ScriptModRuntime.monster("sample.items", "sample_crab"));
+		assertEquals("Sample Crab", crab.name());
+		assertTrue(crab.createLoot() instanceof ScriptItem);
 		assertEquals(1, m.effects().size());
 		assertEquals(2, ScriptModRuntime.startingItems().size());
 
