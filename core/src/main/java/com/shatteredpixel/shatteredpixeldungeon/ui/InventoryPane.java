@@ -409,6 +409,15 @@ public class InventoryPane extends Component {
 	}
 
 	public static void useTargeting(){
+		//APD (Chris, Nov 21): Duelist weapon abilities lock onto an enemy the ability can actually reach
+		if (targetingSlot != null && targetingSlot.item() instanceof com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon
+				&& Dungeon.hero != null && Dungeon.hero.heroClass == com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass.DUELIST
+				&& ((com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon) targetingSlot.item()).useTargeting()
+				&& Dungeon.level != null){
+			Char pick = com.shatteredpixel.shatteredpixeldungeon.apd.qol.DuelistLockOn.pick(Dungeon.hero,
+					(com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon) targetingSlot.item(), lastTarget);
+			if (pick != null) com.shatteredpixel.shatteredpixeldungeon.ui.QuickSlotButton.target(pick);
+		}
 		if (instance != null &&
 				instance.visible &&
 				lastTarget != null &&

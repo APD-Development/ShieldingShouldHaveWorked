@@ -18,10 +18,10 @@ public class RingDustTest {
 	}
 
 	@Test public void yieldIsTwoPerLevelPlusOneAndNeverZero(){
-		assertEquals(2, RingDust.Recipe.dustQuantity(0));
-		assertEquals(4, RingDust.Recipe.dustQuantity(1));
-		assertEquals(8, RingDust.Recipe.dustQuantity(3));
-		assertEquals(2, RingDust.Recipe.dustQuantity(-2));
+		assertEquals(1, RingDust.Recipe.dustQuantity(0));
+		assertEquals(2, RingDust.Recipe.dustQuantity(1));
+		assertEquals(4, RingDust.Recipe.dustQuantity(3));
+		assertEquals(1, RingDust.Recipe.dustQuantity(-2));
 		assertEquals(5, RingDust.Recipe.energyCost());
 	}
 
@@ -90,7 +90,7 @@ public class RingDustTest {
 		assertTrue(recipe.testIngredients(in));
 		Item out = recipe.brew(in);
 		assertTrue(out instanceof RingDust);
-		assertEquals(4, out.quantity());
+		assertEquals("+1 ring gives 2 (halved, Chris Nov 21)", 2, out.quantity());
 		assertEquals("ring consumed", 0, r.quantity());
 		in.clear(); in.add(ring(0, true, true));
 		assertFalse("cursed rings are refused", recipe.testIngredients(in));
@@ -123,7 +123,7 @@ public class RingDustTest {
 			RingDust.Recipe recipe = new RingDust.Recipe();
 			assertTrue(recipe.testIngredients(in));
 			Item out = recipe.brew(in);
-			assertEquals("real level +2 gives 6", 6, out.quantity());
+			assertEquals("real level +2 gives 3", 3, out.quantity());
 			assertTrue("ring type is now known", new RingOfArcana().isKnown());
 		} finally { Ring.apdHandler(oldHandler); Dungeon.hero = prev; }
 	}

@@ -361,6 +361,17 @@ public class QuickSlotButton extends Button {
 
 	private void useTargeting() {
 
+		//APD (Chris, Nov 21): Duelist weapon abilities lock onto an enemy the ability can actually reach
+		Item apdItem = select(slotNum);
+		if (apdItem instanceof com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon
+				&& Dungeon.hero != null && Dungeon.hero.heroClass == com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass.DUELIST
+				&& ((com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon) apdItem).useTargeting()
+				&& Dungeon.level != null){
+			Char pick = com.shatteredpixel.shatteredpixeldungeon.apd.qol.DuelistLockOn.pick(Dungeon.hero,
+					(com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon) apdItem, lastTarget);
+			if (pick != null) target(pick);
+		}
+
 		if (lastTarget != null &&
 				Actor.chars().contains( lastTarget ) &&
 				lastTarget.isAlive() &&

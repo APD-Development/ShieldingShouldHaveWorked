@@ -84,4 +84,21 @@ public class AllItemClassesHaveTextTest {
 		}
 		assertTrue(missing.toString(), missing.isEmpty());
 	}
+
+	/** Chris, Nov 21: the Unstable Spellbook listed a requested Scroll of Gathering as "!!!NO TEXT FOUND!!!" because it
+	 *  looks names up by class (Messages.get(cls, "name")), which skips an overridden name(). Every scroll and potion
+	 *  the generator can make, and each one's exotic, must have that text. */
+	@Test public void everyGeneratedScrollAndPotionHasItsNameByClass(){
+		List<String> missing = new ArrayList<>();
+		for (Generator.Category cat : new Generator.Category[]{Generator.Category.SCROLL, Generator.Category.POTION}){
+			for (Class<?> c : cat.classes){
+				if (bad(Messages.get(c, "name"))) missing.add(c.getSimpleName());
+				Class<?> exo = c.getSuperclass() == com.shatteredpixel.shatteredpixeldungeon.items.scrolls.Scroll.class
+						? com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ExoticScroll.regToExo.get(c)
+						: com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.ExoticPotion.regToExo.get(c);
+				if (exo != null && bad(Messages.get(exo, "name"))) missing.add(exo.getSimpleName());
+			}
+		}
+		assertTrue("no name text for: " + missing, missing.isEmpty());
+	}
 }

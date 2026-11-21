@@ -203,4 +203,65 @@ public class TrapDiscoveryMovementTest {
             assertTrue(move());assertTrue("gold needs no slot",hero.curAction instanceof HeroAction.PickUp);
         }finally{hero.belongings.backpack.items.clear();hero.belongings.backpack.items.addAll(saved);}
     }
+    @Test public void walkOverTakesTheWholePileEvenWhenTheGrassPickupWantsItsDew()throws Exception{ // Chris, Nov 21: gold left behind on grass
+        com.shatteredpixel.shatteredpixeldungeon.items.Heap h=pile(start+1,com.shatteredpixel.shatteredpixeldungeon.items.Heap.Type.HEAP);
+        h.items.clear();
+        h.items.add(new com.shatteredpixel.shatteredpixeldungeon.items.Dewdrop());
+        h.items.add(new com.shatteredpixel.shatteredpixeldungeon.items.Gold(25));
+        travel();
+        assertTrue(move());
+        assertEquals(start+1,hero.pos);
+        assertTrue("walk-over pickup takes over the tile",hero.curAction instanceof HeroAction.WalkoverPickUp);
+        // after the top item is taken the gold is still there, so walk-over keeps going
+        h.items.removeFirst();
+        assertTrue(hero.apdContinueWalkover(h));
+        h.items.clear();
+        assertFalse("pile empty: stop",hero.apdContinueWalkover(h));
+        SPDSettings.autoPickupWalkover(false);
+        h.items.add(new com.shatteredpixel.shatteredpixeldungeon.items.Gold(5));
+        assertFalse("setting turned off: stop",hero.apdContinueWalkover(h));
+        SPDSettings.autoPickupWalkover(true);
+    }
+    @Test public void aWalkOverPickupSurvivesANonDangerInterruption()throws Exception{ // Chris, Nov 21: gold skipped with no enemies
+        com.shatteredpixel.shatteredpixeldungeon.items.Heap h=pile(start+1,com.shatteredpixel.shatteredpixeldungeon.items.Heap.Type.HEAP);
+        h.items.clear();h.items.add(new com.shatteredpixel.shatteredpixeldungeon.items.Gold(30));
+        travel();
+        assertTrue(move());
+        HeroAction queued=hero.curAction;
+        assertTrue(queued instanceof HeroAction.WalkoverPickUp);
+        hero.interrupt(); // e.g. a hunger notice or passive search on that step
+        assertSame("pickup kept",queued,hero.curAction);
+        assertFalse(hero.resting);
+        // a pickup queued on another floor never runs here
+        HeroAction.WalkoverPickUp elsewhere=new HeroAction.WalkoverPickUp(hero.pos);
+        java.lang.reflect.Field lf=HeroAction.WalkoverPickUp.class.getField("level");
+        com.shatteredpixel.shatteredpixeldungeon.levels.Level real=Dungeon.level;
+        Dungeon.level=null;HeroAction.WalkoverPickUp stale=new HeroAction.WalkoverPickUp(hero.pos);Dungeon.level=real;
+        hero.curAction=stale;
+        hero.interrupt();
+        assertNull("other floor's pickup is dropped",hero.curAction);
+        assertNotNull(elsewhere.level);
+        // an ordinary pickup is still cancelled as before
+        hero.curAction=new HeroAction.PickUp(hero.pos);
+        hero.interrupt();
+        assertNull(hero.curAction);
+    }
+    @Test public void everyWalkOverDecisionHasAReasonForTheBugReport()throws Exception{ // Chris, Nov 21
+        com.shatteredpixel.shatteredpixeldungeon.items.Heap h=pile(start+1,com.shatteredpixel.shatteredpixeldungeon.items.Heap.Type.HEAP);
+        h.items.clear();h.items.add(new com.shatteredpixel.shatteredpixeldungeon.items.Gold(10));
+        hero.pos=start+1;hero.curAction=new HeroAction.Move(target);
+        assertEquals("queued",hero.apdWalkoverDecision(level,start+1));
+        hero.curAction=new HeroAction.Move(start+1);
+        assertEquals("skip_walk_target",hero.apdWalkoverDecision(level,start+1));
+        hero.curAction=null;
+        h.hidden=true;assertEquals("skip_hidden",hero.apdWalkoverDecision(level,start+1));h.hidden=false;
+        h.type=com.shatteredpixel.shatteredpixeldungeon.items.Heap.Type.CHEST;assertEquals("skip_container_or_shop",hero.apdWalkoverDecision(level,start+1));
+        h.type=com.shatteredpixel.shatteredpixeldungeon.items.Heap.Type.HEAP;
+        SPDSettings.autoPickupWalkover(false);assertEquals("skip_setting_off",hero.apdWalkoverDecision(level,start+1));SPDSettings.autoPickupWalkover(true);
+        assertEquals("gold",Hero.apdPileKind(h));
+        h.items.addFirst(new com.shatteredpixel.shatteredpixeldungeon.items.food.Food());
+        assertEquals("only the visible top item, never what is under it","item",Hero.apdPileKind(h));
+        hero.pos=start+2;assertEquals("skip_no_pile",hero.apdWalkoverDecision(level,start+2));
+        assertEquals("skip_not_on_cell",hero.apdWalkoverDecision(level,start+1));
+    }
 }

@@ -89,7 +89,38 @@ A recent push is not a clash: `git pull --rebase` before every push and resolve 
         mod-related reaches a Play build (rule 7). Merge into the Play branch only after Chris's phone test.
         DONE on feature/script-mods: ScriptSandbox (apd/mods/script) + 11 JVM tests (CI 44909036298) + device test
         ScriptSandboxDeviceTest passing on Android 8.0 (API 26) and 14 (API 34) emulators (run 44909459894;
-        android-tests.yml only_class input). NEXT: items hook API (propose to Chris before building).
+        android-tests.yml only_class input).
+     ITEMS HOOK (Chris, Nov 21 9:19 AM: "3. Both, the mod chooses per item. Natural drops use a mod-set drop weight
+        with a sane cap so one mod can't flood the loot pool."):
+        DONE (feature/script-mods, CI 44914359230, 24 mod tests): APD.item / APD.effect (apd/mods/script: ScriptDefs,
+        ScriptModRuntime, ScriptItem, ScriptEffect, HeroApi, ScriptApi, ScriptSprites). Kinds potion/scroll/stone;
+        dropWeight 0-3 per item (3 = as common as Healing), all mod items together <= 25% of a category
+        (MAX_MOD_SHARE); startCount 0-5; no RNG used when no mod item can drop (normal seeds identical); hero API:
+        heal, damage, shield, addBuff (whitelist), addEffect, message, hp/maxHp/level/depth; effects with onStart /
+        onTurn / onEnd; saves keep mod id + item id, a missing/broken mod's items stay inert; nested calls share one
+        engine context and never refresh a mod's own budget.
+        DONE Nov 21 10 AM run (feature/script-mods; core CI 44917525402, 44917986363, 44918462693, 44918820359,
+        44919586179; device test ScriptSampleModDeviceTest passed API 26+34 in 44919279513): steps a-d below.
+        a) triggers fire from Hero.attackProc (melee/thrown), Wand.wandUsed, Hero.damage, Mob.die (enemy killed by
+           hero/wand/thrown); plain facts only, return ignored, non-re-entrant. b) ScriptModLibrary. c) ScriptModRun
+           (saved as apd_script_mods ids, re-read on load, missing mods inert, isModRun) + hero select "Scripts" button,
+           test builds only (ApdFeatures.testBuild). d) sample mod android/apdSampleMods (test-build assets only).
+        NEXT: e) build a Developer (test) APK from feature/script-mods and give it to Chris (live session; scheduled
+        runs don't build APKs). Not device-verified yet: the Scripts button UI and an actual run with the sample mod.
+        STILL TO DO, in this order, each with tests (CI on feature/script-mods; never merge to the Play branch):
+        a) wire the other effect triggers into the game: onMeleeHit, onThrownHit, onWandZap, onDamageTaken, onKill,
+           passing plain facts (damage, target name, wand/weapon name). Anything a script can do in response stays
+           within the bounded hero API; no "repeat the hit/zap" feature unless Chris asks for it.
+        b) load mods from files: <files>/scriptmods/<folder>/mod.json {format, id, name, author, description} +
+           main.js (64 KB max); list them with reasons when refused.
+        c) run activation: pick script mods before a run (hero select, like the old mod list); active mod ids saved
+           in the run; on load re-read the scripts; give starting kits at run start; ScriptModRuntime.active() makes
+           HeroModRun.isModRun() true (rule 5).
+        d) a small sample mod bundled in a DEV APK only, plus a device test: one potion + one scroll + one timed
+           effect, using existing buffs/heal/shield. (Chris, Nov 21: the example item he used to explain script mods
+           was an AI suggestion; he doesn't use AI suggestions. Never build it or use it as sample/test data.)
+        e) then: deliver the dev APK from feature/script-mods to Chris for his phone test (rule 7). Don't start the
+           monsters hook until he has tried it.
      2. Play: mods = text scripts + art, run inside the engine. Never download/load dex, jar or .so. Anything a
         script can't do goes through submit -> Chris approves -> ships in an app update.
      3. Sandbox: no file, network, OS or reflection access; only the hooks APD exposes. Time AND memory limit per
@@ -104,8 +135,7 @@ A recent push is not a clash: `git pull --rebase` before every push and resolve 
    - (older note) NEXT (design first, then build; ask Chris before scope calls): pick the interpreter (LuaJ pure-Java is the likely
      choice; confirm license + Android support + sandboxing), define the game API (items, potions/scrolls with custom
      effects, buffs, hooks: on zap / thrown hit / melee hit / damage taken / kill / turn), save compatibility, limits
-     (instruction budget per hook, memory), and workshop review. Example target: a mod's "Potion of Echoes" (10 turns,
-     wand zaps and thrown hits repeat once at 35% power, no extra charges/ammo) must be writable as a Lua mod.
+     (instruction budget per hook, memory), and workshop review. 
    OLD DATA-ONLY PLAN (Nov 19, superseded; kept for history): Brotato-workshop style,
    DATA + ART ONLY. A hero mod = hero.json + sprite.png built only from existing pieces:
    name/author/description, baseClass (class engine + subclasses), starting HP + STR, starting items (+level, quantity),
@@ -193,6 +223,10 @@ default-on settings (SPDSettings.keepOldDefaultsForExistingPlayers). Next: Googl
 (Credential Manager), server URL default once deployed, run reviews. HttpGateway contract routes, deployment workflow, Android Community screens wired to it, Play Age Signals.
 
 ## Run log
+- 2026-11-21 12 PM (scheduled): Script mods (feature/script-mods): installBundledSamples wrote mod.json then main.js straight into the final folder, so a failed write left a half folder that was refused ("main.js is missing") and never re-copied; now staged in a hidden folder and renamed into place, leftovers cleaned. +1 test; full CI 44928410863 green. Not device-verified. Next still: step e dev APK for Chris (live session). Still OPEN for Chris: mod starting items on top of vs instead of the class kit; Loot Availability score multiplier.
+- 2026-11-21 11 AM (scheduled): Script mods (feature/script-mods): mod.json "format" accepted 1.5 or "1" as format 1, and "one" was refused only as "could not be read"; now must be the number 1, refused with the format reason. +1 test; full CI 44923185305 green (first run 44922763612 failed on a test-fixture folder clash, fixed). Next still: step e dev APK for Chris (live session). Still OPEN for Chris: mod starting items on top of vs instead of the class kit; Loot Availability score multiplier.
+- 2026-11-21 10 AM (scheduled): script mods steps a-d on feature/script-mods (triggers wired, mod files loader, run activation + test-build Scripts picker, dev-only sample mod); all core CI green (last 44919586179), device test 44919279513 green. Next: step e dev APK for Chris's phone test.
+- 2026-11-21 9 AM ET (scheduled): Script mods (feature/script-mods only): ScriptSandbox.call accepted any Java object as an argument, which Rhino would wrap and expose its methods to the script (breaks rule 3, no Java access); now only plain values (string/number/boolean/null) go in, anything else is refused without disabling the mod. +1 test; full CI 44911948358 green. Not device-verified. Still waiting on Chris: items hook API proposal before building; mod starting items on top of vs instead of the class kit; Loot Availability score multiplier.
 - 2026-11-21 8 AM ET (8-hour Play build, ran 8:05): Play **934** at 1ceeac2f uploaded to closed test (alpha). CI 44907063664 green on 73a7e47e. New: data-only hero mods switched off (Lua mods coming), overnight mod hardening. Last uploaded build: 934.
 - 2026-11-21 7 AM ET (scheduled): Hero mods bug: installing a workshop mod whose id matched a hand-placed folder holding a DIFFERENT mod silently replaced (deleted) that mod; now refused with a reason, folder untouched. +1 test; full CI 44902279007 green. Not device-verified. Still OPEN for Chris: mod starting items on top of vs instead of the class kit; Loot Availability score multiplier.
 - 2026-11-21 6 AM ET (scheduled): Hero mods safety: ModLibrary.scan read hero.json and the workshop upload read sprite.png with readAllBytes (whole file, after the size check; upload also followed links); new shared bounded no-follow ModLibrary.readBounded (ModSprites.readSprite now uses it). +1 test; full CI 44897599221 green. Not device-verified. Still OPEN for Chris: mod starting items on top of vs instead of the class kit; Loot Availability score multiplier.

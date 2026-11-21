@@ -267,13 +267,54 @@ public class Hero extends Char {
     // Chris, Nov 20: walking over a normal item pile picks it up. The step ends the walk and the pickup
     // takes its normal turn next. Chests, shop items, hidden piles and the walk's own target keep normal rules.
     private void apdQueueWalkoverPickup(Level steppedLevel,int cell){
-        if(!SPDSettings.autoPickupWalkover() || Dungeon.level!=steppedLevel || pos!=cell || steppedLevel.heaps==null) return;
+        Heap seen=steppedLevel!=null && steppedLevel.heaps!=null ? steppedLevel.heaps.get(cell) : null;
+        String why=apdWalkoverDecision(steppedLevel,cell);
+        // Chris, Nov 21: the extended bug report records every step onto a pile and what walk-over pickup decided
+        // (kind of item only, never its name), so a missed pickup can be explained instead of guessed.
+        // Only what the player can already see: a hidden pile is logged as no pile, and never its size or contents
+        // (the report file lives on the phone; Chris, Nov 21: nothing exploitable in bug reports).
+        if(seen!=null && !seen.hidden) com.watabou.utils.SupportActionJournal.record("loot.walkover",
+                "floor="+Dungeon.depth+" cell="+cell+" at="+pos+" pile="+apdPileKind(seen)
+                +" pile_type="+seen.type.name()+" decision="+("skip_hidden".equals(why)?"skip_no_pile":why)
+                +" walking_to="+(curAction==null?"none":curAction.getClass().getSimpleName()+"@"+curAction.dst));
+        if(!"queued".equals(why)) return;
+        // Chris, Nov 21: gold on a grass tile with dew was left behind, because the grass pickup took over the tile.
+        // Walk-over pickup now takes the whole pile (dew included), one item per pickup.
+        grassDewPickup.clear();
+        curAction=new HeroAction.WalkoverPickUp(cell);
+    }
+    /** Why walk-over pickup does or doesn't act on this step ("queued" when it does). */
+    public String apdWalkoverDecision(Level steppedLevel,int cell){
+        if(!SPDSettings.autoPickupWalkover()) return "skip_setting_off";
+        if(Dungeon.level!=steppedLevel) return "skip_floor_changed";
+        if(pos!=cell) return "skip_not_on_cell";
+        if(steppedLevel.heaps==null) return "skip_no_piles";
         Heap heap=steppedLevel.heaps.get(cell);
-        if(heap==null || heap.type!=Heap.Type.HEAP || heap.hidden || heap.isEmpty()) return;
-        if(grassDewPickup.hasPending()) return; // the dew pickup already handles this step
-        if(curAction instanceof HeroAction.PickUp || (curAction!=null && curAction.dst==cell)) return;
-        if(!SPDSettings.autoPickupWhenFull() && !apdRoomFor(heap.peek())) return; // Chris, Nov 20: full backpack = no walk-over pickup (no "can't carry" spam)
-        curAction=new HeroAction.PickUp(cell);
+        if(heap==null) return "skip_no_pile";
+        if(heap.type!=Heap.Type.HEAP) return "skip_container_or_shop";
+        if(heap.hidden) return "skip_hidden";
+        if(heap.isEmpty()) return "skip_empty";
+        if(curAction instanceof HeroAction.PickUp) return "skip_already_picking_up";
+        if(curAction!=null && curAction.dst==cell) return "skip_walk_target";
+        if(!SPDSettings.autoPickupWhenFull() && !apdRoomFor(heap.peek())) return "skip_no_room"; // Chris, Nov 20: full backpack = no walk-over pickup (no "can't carry" spam)
+        return "queued";
+    }
+    public static String apdPileKind(Heap heap){
+        if(heap==null || heap.isEmpty()) return "none";
+        com.shatteredpixel.shatteredpixeldungeon.items.Item top=heap.peek();
+        String kind = top instanceof com.shatteredpixel.shatteredpixeldungeon.items.Gold ? "gold"
+                : top instanceof com.shatteredpixel.shatteredpixeldungeon.items.EnergyCrystal ? "energy"
+                : top instanceof com.shatteredpixel.shatteredpixeldungeon.items.Dewdrop ? "dew"
+                : top instanceof com.shatteredpixel.shatteredpixeldungeon.items.keys.Key ? "key" : "item";
+        // Only the top item's kind, which the player already sees: the report file lives on the phone, so it must never
+        // reveal what is hidden under a pile (Chris, Nov 21: no exploitable information in bug reports).
+        return kind;
+    }
+    /** After a walk-over pickup: keep going while the pile has more and the next item fits (or the full-pack setting is on). */
+    public boolean apdContinueWalkover(Heap heap){
+        if(heap==null || heap.isEmpty() || heap.pos!=pos || heap.type!=Heap.Type.HEAP || heap.hidden) return false;
+        if(!SPDSettings.autoPickupWalkover()) return false;
+        return SPDSettings.autoPickupWhenFull() || apdRoomFor(heap.peek());
     }
     /** Whether walking over this item could actually pick it up: gold, energy, dew and keys never need a slot;
      *  anything else needs room in a pouch that takes it or in the backpack (stacking onto a carried stack counts). */
@@ -1096,6 +1137,20 @@ public class Hero extends Char {
 	}
 	
 	public void interrupt() {
+        // Chris, Nov 21: gold he walked over wasn't picked up with no enemy around. A non-danger interruption on that
+        // step (hunger notice, something spotted by passive search...) threw the queued walk-over pickup away.
+        // It now survives unless an enemy is in view; everything else interrupt() does still happens.
+        HeroAction.WalkoverPickUp apdKeep = (curAction instanceof HeroAction.WalkoverPickUp && curAction.dst == pos
+                && ((HeroAction.WalkoverPickUp)curAction).level == Dungeon.level && isAlive() && paralysed <= 0
+                && visibleEnemies() == 0) ? (HeroAction.WalkoverPickUp)curAction : null;
+        if (curAction instanceof HeroAction.PickUp)
+            com.watabou.utils.SupportActionJournal.record("loot.interrupt", "floor="+Dungeon.depth+" cell="+curAction.dst
+                    +" action="+curAction.getClass().getSimpleName()+" kept="+(apdKeep!=null)+" enemies="+visibleEnemies());
+        apdInterruptCore();
+        if (apdKeep != null) curAction = apdKeep;
+	}
+
+	private void apdInterruptCore() {
         apdWaitCancellationEpoch++;
         if(curAction instanceof com.shatteredpixel.shatteredpixeldungeon.apd.qol.RatKingQuickSearch.Action){ratSearch=null;curAction=null;lastAction=null;}
         if(curAction instanceof com.shatteredpixel.shatteredpixeldungeon.apd.qol.WallSearchSession.Walk){curAction=null;lastAction=null;}
@@ -1298,6 +1353,10 @@ public class Hero extends Char {
 	}
 
 	private boolean actPickUp( HeroAction.PickUp action ) {
+		if (action instanceof HeroAction.WalkoverPickUp && ((HeroAction.WalkoverPickUp)action).level != Dungeon.level){
+			curAction = null; // queued on another floor
+			return false;
+		}
 		int dst = action.dst;
 		if (pos == dst) {
 			
@@ -1305,7 +1364,11 @@ public class Hero extends Char {
 			if (heap != null) {
 				Item item = heap.peek();
 				ApdItems.noteAcquireContext( ItemEvents.ACQ_PICKUP );
-				if (item.doPickUp( this )) {
+				String apdKind = action instanceof HeroAction.WalkoverPickUp ? apdPileKind(heap) : null;
+				boolean apdPicked = item.doPickUp( this );
+				if (apdKind != null) com.watabou.utils.SupportActionJournal.record("loot.walkover_pickup",
+						"floor="+Dungeon.depth+" cell="+pos+" pile="+apdKind+" picked="+apdPicked);
+				if (apdPicked) {
 					heap.pickUp();
 
 					//TODO this statement is getting silly, might be better to handle this as a propery of items
@@ -1338,6 +1401,9 @@ public class Hero extends Char {
 					}
 					
 					curAction = null;
+					if (action instanceof HeroAction.WalkoverPickUp && apdContinueWalkover(Dungeon.level.heaps.get(pos))) {
+						curAction = new HeroAction.WalkoverPickUp(pos);
+					}
 				} else {
 
 					if (waitOrPickup) {
