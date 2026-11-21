@@ -89,7 +89,28 @@ A recent push is not a clash: `git pull --rebase` before every push and resolve 
         mod-related reaches a Play build (rule 7). Merge into the Play branch only after Chris's phone test.
         DONE on feature/script-mods: ScriptSandbox (apd/mods/script) + 11 JVM tests (CI 44909036298) + device test
         ScriptSandboxDeviceTest passing on Android 8.0 (API 26) and 14 (API 34) emulators (run 44909459894;
-        android-tests.yml only_class input). NEXT: items hook API (propose to Chris before building).
+        android-tests.yml only_class input).
+     ITEMS HOOK (Chris, Nov 21 9:19 AM: "3. Both, the mod chooses per item. Natural drops use a mod-set drop weight
+        with a sane cap so one mod can't flood the loot pool."):
+        DONE (feature/script-mods, CI 44914359230, 24 mod tests): APD.item / APD.effect (apd/mods/script: ScriptDefs,
+        ScriptModRuntime, ScriptItem, ScriptEffect, HeroApi, ScriptApi, ScriptSprites). Kinds potion/scroll/stone;
+        dropWeight 0-3 per item (3 = as common as Healing), all mod items together <= 25% of a category
+        (MAX_MOD_SHARE); startCount 0-5; no RNG used when no mod item can drop (normal seeds identical); hero API:
+        heal, damage, shield, addBuff (whitelist), addEffect, message, hp/maxHp/level/depth; effects with onStart /
+        onTurn / onEnd; saves keep mod id + item id, a missing/broken mod's items stay inert; nested calls share one
+        engine context and never refresh a mod's own budget.
+        STILL TO DO, in this order, each with tests (CI on feature/script-mods; never merge to the Play branch):
+        a) wire the other effect triggers into the game: onMeleeHit, onThrownHit, onWandZap, onDamageTaken, onKill,
+           with a hit/zap object offering repeat(fraction 0-1): deal that fraction of the hit's/zap's damage again to
+           the same target, free (no charge, no ammo); zaps that deal no damage don't repeat (say so in MODDING.md).
+        b) load mods from files: <files>/scriptmods/<folder>/mod.json {format, id, name, author, description} +
+           main.js (64 KB max); list them with reasons when refused.
+        c) run activation: pick script mods before a run (hero select, like the old mod list); active mod ids saved
+           in the run; on load re-read the scripts; give starting kits at run start; ScriptModRuntime.active() makes
+           HeroModRun.isModRun() true (rule 5).
+        d) sample mod "Potion of Echoes" (Chris's example) bundled in a DEV APK only, plus a device test.
+        e) then: deliver the dev APK from feature/script-mods to Chris for his phone test (rule 7). Don't start the
+           monsters hook until he has tried it.
      2. Play: mods = text scripts + art, run inside the engine. Never download/load dex, jar or .so. Anything a
         script can't do goes through submit -> Chris approves -> ships in an app update.
      3. Sandbox: no file, network, OS or reflection access; only the hooks APD exposes. Time AND memory limit per
