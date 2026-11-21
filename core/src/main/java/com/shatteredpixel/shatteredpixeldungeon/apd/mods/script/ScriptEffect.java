@@ -56,10 +56,31 @@ public class ScriptEffect extends Buff {
 		return ScriptModRuntime.run(modId, d.triggers.get(name), args);
 	}
 
-	/** Fires a trigger on every active mod effect the character has. */
+	private static boolean firing = false;
+
+	/**
+	 * Fires a game trigger (onMeleeHit, onThrownHit, onWandZap, onDamageTaken, onKill) on every active mod effect the
+	 * character has. Only plain facts are passed; the return value is ignored, so a script can react only through the
+	 * bounded hero API and can never change the hit, zap or damage itself. Not re-entrant: a trigger fired while
+	 * another one runs (e.g. a script's h.damage() inside onDamageTaken) is skipped, so scripts can't loop.
+	 */
 	public static void fire(Char ch, String trigger, Object... extra){
-		if (ch == null || !ScriptModRuntime.active()) return;
-		for (ScriptEffect e : ch.buffs(ScriptEffect.class)) e.trigger(trigger, extra);
+		if (ch == null || firing || !ScriptModRuntime.active()) return;
+		firing = true;
+		try {
+			for (ScriptEffect e : ch.buffs(ScriptEffect.class)) e.trigger(trigger, extra);
+		} finally {
+			firing = false;
+		}
+	}
+
+	/** A plain display name for a trigger argument (never the Java object itself). */
+	public static String nameOf(Object o){
+		if (o instanceof Char) return ((Char) o).name();
+		if (o instanceof com.shatteredpixel.shatteredpixeldungeon.items.Item)
+			return ((com.shatteredpixel.shatteredpixeldungeon.items.Item) o).name();
+		if (o instanceof Class) return ((Class<?>) o).getSimpleName();
+		return o == null ? "" : o.getClass().getSimpleName();
 	}
 
 	@Override public boolean act(){

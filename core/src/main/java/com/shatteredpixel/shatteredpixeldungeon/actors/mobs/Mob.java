@@ -997,6 +997,13 @@ public abstract class Mob extends Char {
 	@Override
 	public void die( Object cause ) {
 
+		if (Dungeon.hero != null && alignment == Alignment.ENEMY && (cause == Dungeon.hero
+				|| cause instanceof com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand
+				|| cause instanceof com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon)){
+			com.shatteredpixel.shatteredpixeldungeon.apd.mods.script.ScriptEffect.fire(Dungeon.hero, "onKill",
+					com.shatteredpixel.shatteredpixeldungeon.apd.mods.script.ScriptEffect.nameOf(this));
+		}
+
 		if (cause == Chasm.class){
 			//50% chance to round up, 50% to round down
 			if (EXP % 2 == 1) EXP += Random.Int(2);

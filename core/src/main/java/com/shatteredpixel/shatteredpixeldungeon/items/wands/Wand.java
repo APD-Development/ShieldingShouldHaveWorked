@@ -520,6 +520,7 @@ public abstract class Wand extends Item {
 	}
 
 	public void wandUsed() {
+		com.shatteredpixel.shatteredpixeldungeon.apd.mods.script.ScriptEffect.fire(Dungeon.hero, "onWandZap", name());
 		if (!isIdentified()) {
 			float uses = Math.min( availableUsesToID, Talent.itemIDSpeedFactor(Dungeon.hero, this) );
 			availableUsesToID -= uses;

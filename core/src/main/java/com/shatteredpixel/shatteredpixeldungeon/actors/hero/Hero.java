@@ -1771,6 +1771,10 @@ public class Hero extends Char {
 		default:
 		}
 		
+		if (damage > 0) com.shatteredpixel.shatteredpixeldungeon.apd.mods.script.ScriptEffect.fire(this,
+				wep instanceof com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon ? "onThrownHit" : "onMeleeHit",
+				(double) damage, com.shatteredpixel.shatteredpixeldungeon.apd.mods.script.ScriptEffect.nameOf(enemy),
+				wep == null ? "" : com.shatteredpixel.shatteredpixeldungeon.apd.mods.script.ScriptEffect.nameOf(wep));
 		return damage;
 	}
 	
@@ -1873,6 +1877,8 @@ public class Hero extends Char {
 		int effectiveDamage = preHP - postHP;
 
 		if (effectiveDamage <= 0) return;
+		com.shatteredpixel.shatteredpixeldungeon.apd.mods.script.ScriptEffect.fire(this, "onDamageTaken",
+				(double) effectiveDamage, com.shatteredpixel.shatteredpixeldungeon.apd.mods.script.ScriptEffect.nameOf(src));
         if(resting&&com.shatteredpixel.shatteredpixeldungeon.apd.qol.WaitingPolicy.critical(this))interrupt();
 
         // A real hit still stops stair autopilot. Ordinary travel retains the game's
