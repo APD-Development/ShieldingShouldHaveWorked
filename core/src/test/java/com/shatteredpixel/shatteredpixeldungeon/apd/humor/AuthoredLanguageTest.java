@@ -86,7 +86,8 @@ public class AuthoredLanguageTest {
   // Plus six neutral Hold Fast descriptions for known, single, penalty, unknown, moved and unavailable states.
   // Plus eight neutral seed-history labels for available records, unknown provenance and depth coverage.
   // Plus Greater Metamorphosis, the scaling Katana guard and seven new katana-family/shield weapons.
-  assertEquals("Reviewed English message inventory",5427,values);
+  // Plus name and description for Scroll of Gathering and Scroll of Forwarding (the Unstable Spellbook looks names up by class).
+  assertEquals("Reviewed English message inventory",5431,values);
  }
  @Test public void localizedAlternativesDoNotDamageInnocentWordsOrOtherLanguages(){
   for(String innocent:new String[]{"Hell","slut","kesialan","Verdammte Charaktere","dictionary","classic","Scunthorpe","Prick","Fan of Blades"})assertEquals(innocent,AuthoredLanguage.select(innocent,false));
