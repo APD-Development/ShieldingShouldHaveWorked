@@ -64,6 +64,93 @@ public final class ScriptDefs {
 		public String key(){ return modId + ":" + id; }
 	}
 
+	// ---- monsters hook ----
+	public static final int MAX_MONSTERS = 32;
+	public static final String[] MONSTER_TRIGGERS = {"onSpawn", "onTurn", "onAttack", "onHurt", "onDeath"};
+	/** Spawn weight cap per monster; all mod monsters together are capped too (ScriptModRuntime.MAX_MOD_SHARE). */
+	public static final double MAX_SPAWN_WEIGHT = 3;
+
+	public static final class MonsterDef {
+		public final String modId, id, name, description, sprite, loot;
+		public final int hp, attackMin, attackMax, accuracy, evasion, armor, xp, floorFrom, floorTo;
+		public final double speed, spawnWeight, lootChance;
+		final Map<String, Function> triggers;
+		MonsterDef(String modId, String id, String name, String description, String sprite, int hp, int attackMin,
+		           int attackMax, int accuracy, int evasion, int armor, double speed, int xp, int floorFrom, int floorTo,
+		           double spawnWeight, String loot, double lootChance, Map<String, Function> triggers){
+			this.modId = modId; this.id = id; this.name = name; this.description = description; this.sprite = sprite;
+			this.hp = hp; this.attackMin = attackMin; this.attackMax = attackMax; this.accuracy = accuracy;
+			this.evasion = evasion; this.armor = armor; this.speed = speed; this.xp = xp; this.floorFrom = floorFrom;
+			this.floorTo = floorTo; this.spawnWeight = spawnWeight; this.loot = loot; this.lootChance = lootChance;
+			this.triggers = Collections.unmodifiableMap(triggers);
+		}
+		public boolean has(String t){ return triggers.containsKey(t); }
+		public boolean spawnsOn(int depth){ return spawnWeight > 0 && depth >= floorFrom && depth <= floorTo; }
+		public String key(){ return modId + ":" + id; }
+	}
+
+	static int whole(Scriptable o, String name, int fallback, int min, int max){
+		double d = number(o, name, fallback, min, max);
+		if (d != Math.rint(d)) throw new BadDef("\"" + name + "\" must be a whole number");
+		return (int) d;
+	}
+
+	static MonsterDef monster(String modId, Object arg){
+		if (!(arg instanceof Scriptable) || arg instanceof Function) throw new BadDef("APD.monster needs an object { id, name, sprite, hp, ... }");
+		Scriptable o = (Scriptable) arg;
+		String id = id(o);
+		try {
+			String name = text(o, "name", true, MAX_NAME);
+			String desc = text(o, "description", false, MAX_DESC);
+			String sprite = text(o, "sprite", true, 40);
+			if (!ScriptMobSprites.allowed(sprite)) throw new BadDef("sprite \"" + sprite + "\" isn't an existing monster sprite (e.g. RatSprite)");
+			int hp = whole(o, "hp", 10, 1, 2000);
+			int[] atk = pair(o, "attack", 1, 4, 0, 500);
+			int acc = whole(o, "accuracy", 10, 0, 500);
+			int eva = whole(o, "evasion", 2, 0, 500);
+			int armor = whole(o, "armor", 0, 0, 200);
+			double speed = number(o, "speed", 1, 0.5, 2);
+			int xp = whole(o, "xp", 1, 0, 100);
+			int from = 1, to = 0;
+			double weight = 0;
+			Object sp = get(o, "spawn");
+			if (sp != null){
+				if (!(sp instanceof Scriptable) || sp instanceof Function) throw new BadDef("\"spawn\" must be { floors: [from, to], weight }");
+				Scriptable spawn = (Scriptable) sp;
+				int[] floors = pair(spawn, "floors", 1, 1, 1, 999);
+				from = floors[0]; to = floors[1];
+				weight = number(spawn, "weight", 1, 0, MAX_SPAWN_WEIGHT);
+			}
+			String loot = text(o, "loot", false, 32);
+			double lootChance = number(o, "lootChance", loot == null ? 0 : 0.25, 0, 1);
+			Map<String, Function> triggers = new LinkedHashMap<>();
+			for (String t : MONSTER_TRIGGERS){ Function f = function(o, t, false); if (f != null) triggers.put(t, f); }
+			for (Object k : o.getIds()){
+				String key = String.valueOf(k);
+				if (key.startsWith("on") && !triggers.containsKey(key)) throw new BadDef("unknown trigger \"" + key + "\"");
+			}
+			return new MonsterDef(modId, id, name, desc == null ? "" : desc, sprite, hp, atk[0], atk[1], acc, eva, armor,
+					speed, xp, from, to, weight, loot, lootChance, triggers);
+		} catch (BadDef b){ throw new BadDef("monster " + id + ": " + b.getMessage()); }
+	}
+
+	/** [min, max] from a 2-number array, or one number for both. */
+	static int[] pair(Scriptable o, String name, int dMin, int dMax, int lo, int hi){
+		Object v = get(o, name);
+		if (v == null) return new int[]{dMin, dMax};
+		if (v instanceof Number){ int n = (int) whole(o, name, dMin, lo, hi); return new int[]{n, n}; }
+		if (v instanceof org.mozilla.javascript.NativeArray){
+			org.mozilla.javascript.NativeArray a = (org.mozilla.javascript.NativeArray) v;
+			if (a.getLength() == 2 && a.get(0) instanceof Number && a.get(1) instanceof Number){
+				double x = Context.toNumber(a.get(0)), y = Context.toNumber(a.get(1));
+				if (x != Math.rint(x) || y != Math.rint(y) || x < lo || y > hi || x > y)
+					throw new BadDef("\"" + name + "\" must be [min, max] whole numbers between " + lo + " and " + hi);
+				return new int[]{(int) x, (int) y};
+			}
+		}
+		throw new BadDef("\"" + name + "\" must be [min, max]");
+	}
+
 	/** A definition the mod got wrong. The message is shown to the player; the mod is turned off. */
 	public static final class BadDef extends RuntimeException {
 		BadDef(String m){ super(m, null, false, false); }

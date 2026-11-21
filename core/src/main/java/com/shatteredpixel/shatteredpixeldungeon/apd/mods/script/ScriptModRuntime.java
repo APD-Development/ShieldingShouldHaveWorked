@@ -34,6 +34,8 @@ public final class ScriptModRuntime {
 		final ScriptSandbox sandbox;
 		final Map<String, ScriptDefs.ItemDef> items = new LinkedHashMap<>();
 		final Map<String, ScriptDefs.EffectDef> effects = new LinkedHashMap<>();
+		final Map<String, ScriptDefs.MonsterDef> monsters = new LinkedHashMap<>();
+		public List<ScriptDefs.MonsterDef> monsters(){ return new ArrayList<>(monsters.values()); }
 		LoadedMod(String id, ScriptSandbox sandbox){ this.id = id; this.sandbox = sandbox; }
 		public boolean disabled(){ return sandbox.isDisabled(); }
 		public String disabledReason(){ return sandbox.disabledReason(); }
@@ -63,6 +65,13 @@ public final class ScriptModRuntime {
 					m.items.put(d.id, d);
 					return null;
 				});
+				apd.fn("monster", args -> {
+					if (m.monsters.size() >= ScriptDefs.MAX_MONSTERS) throw new ScriptDefs.BadDef("declares more than " + ScriptDefs.MAX_MONSTERS + " monsters");
+					ScriptDefs.MonsterDef d = ScriptDefs.monster(modId, args.length > 0 ? args[0] : null);
+					if (m.monsters.containsKey(d.id)) throw new ScriptDefs.BadDef("declares monster " + d.id + " twice");
+					m.monsters.put(d.id, d);
+					return null;
+				});
 				apd.fn("effect", args -> {
 					if (m.effects.size() >= ScriptDefs.MAX_EFFECTS) throw new ScriptDefs.BadDef("declares more than " + ScriptDefs.MAX_EFFECTS + " effects");
 					ScriptDefs.EffectDef d = ScriptDefs.effect(modId, args.length > 0 ? args[0] : null);
@@ -82,6 +91,40 @@ public final class ScriptModRuntime {
 	public static ScriptDefs.ItemDef item(String modId, String itemId){
 		LoadedMod m = mods.get(modId);
 		return m == null ? null : m.items.get(itemId);
+	}
+
+	public static ScriptDefs.MonsterDef monster(String modId, String monsterId){
+		LoadedMod m = mods.get(modId);
+		return m == null ? null : m.monsters.get(monsterId);
+	}
+
+	/** Mod monsters, chance per spawn: each eligible monster's weight against a normal floor's rotation (10 equal
+	 *  slots), all together capped at MAX_MOD_SHARE. 0 when none can spawn on this floor. */
+	public static final double ROTATION_WEIGHT = 10;
+
+	public static double monsterShare(int depth){
+		if (mods.isEmpty()) return 0;
+		double w = 0;
+		for (LoadedMod m : mods.values()) if (!m.disabled())
+			for (ScriptDefs.MonsterDef d : m.monsters.values()) if (d.spawnsOn(depth)) w += d.spawnWeight;
+		if (w <= 0) return 0;
+		return Math.min(MAX_MOD_SHARE, w / (w + ROTATION_WEIGHT));
+	}
+
+	/** Called when a floor creates a monster. Returns a mod monster instead, or null for the normal one.
+	 *  Uses no random numbers unless a mod monster can spawn on this floor (normal seeds stay identical). */
+	public static ScriptMob maybeSpawn(int depth){
+		double share = monsterShare(depth);
+		if (share <= 0) return null;
+		if (Random.Float() >= share) return null;
+		List<ScriptDefs.MonsterDef> defs = new ArrayList<>();
+		List<Float> weights = new ArrayList<>();
+		for (LoadedMod m : mods.values()) if (!m.disabled())
+			for (ScriptDefs.MonsterDef d : m.monsters.values()) if (d.spawnsOn(depth)){ defs.add(d); weights.add((float) d.spawnWeight); }
+		float[] w = new float[weights.size()];
+		for (int i = 0; i < w.length; i++) w[i] = weights.get(i);
+		int pick = Random.chances(w);
+		return pick < 0 ? null : new ScriptMob(defs.get(pick));
 	}
 
 	public static ScriptDefs.EffectDef effect(String modId, String effectId){

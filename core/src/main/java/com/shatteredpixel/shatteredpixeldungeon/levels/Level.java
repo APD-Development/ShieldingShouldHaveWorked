@@ -566,7 +566,10 @@ public abstract class Level implements Bundlable {
 			mobsToSpawn = MobSpawner.getMobRotation(Dungeon.depth);
 		}
 
-		Mob m = Reflection.newInstance(mobsToSpawn.remove(0));
+		Class<? extends Mob> apdNext = mobsToSpawn.remove(0);
+		//APD script mods: a mod monster may take this spawn (no random numbers used unless one can spawn here)
+		Mob apdMod = com.shatteredpixel.shatteredpixeldungeon.apd.mods.script.ScriptModRuntime.maybeSpawn(Dungeon.depth);
+		Mob m = apdMod != null ? apdMod : Reflection.newInstance(apdNext);
 		ChampionEnemy.rollForChampion(m);
 		com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.DifficultyHooks.onMobCreated(m);
 		com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomMobHooks.applyHealth(m);
