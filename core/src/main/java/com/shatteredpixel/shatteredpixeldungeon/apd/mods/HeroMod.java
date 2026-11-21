@@ -144,6 +144,10 @@ public final class HeroMod {
 		return n;
 	}
 
+	static final java.util.Set<String> GENERIC_BASES = new java.util.HashSet<>(java.util.Arrays.asList(
+			"Item", "potions.Potion", "potions.exotic.ExoticPotion", "rings.Ring", "weapon.melee.MeleeWeapon",
+			"bags.Bag", "artifacts.Artifact"));
+
 	private static StartingItem item(JsonValue e) throws Invalid {
 		if (!e.isObject()) throw new Invalid("each starting item must be an object");
 		String path = text(e, "item", 80);
@@ -157,6 +161,9 @@ public final class HeroMod {
 		catch (ClassNotFoundException x){ throw new Invalid("no such item: " + path); }
 		if (!Item.class.isAssignableFrom(c) || java.lang.reflect.Modifier.isAbstract(c.getModifiers()))
 			throw new Invalid(path + " is not an item that can be given");
+		// generic base types (a raw "Potion" or "Ring" has no kind, picture or effect; potions/rings without a known
+		// kind can crash the identify tables). Only real items can be given (my call, revertable).
+		if (GENERIC_BASES.contains(path)) throw new Invalid(path + " is a general item type, name a specific item");
 		int level = e.has("level") ? number(e, "level", 0, 20) : 0;
 		int qty = e.has("quantity") ? number(e, "quantity", 1, 99) : 1;
 		@SuppressWarnings("unchecked") Class<? extends Item> ic = (Class<? extends Item>) c;

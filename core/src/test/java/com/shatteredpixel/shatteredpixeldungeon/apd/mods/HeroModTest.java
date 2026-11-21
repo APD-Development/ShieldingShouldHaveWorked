@@ -102,4 +102,11 @@ public class HeroModTest {
 		refused(hero(null).replace("weapon.melee.Sword", "weapon..Sword"), "bad item name");
 		refused(hero(null).replace("weapon.melee.Sword", "gold"), "bad item name");
 	}
+
+	@Test public void generalItemTypesAreRefused() throws Exception {
+		for (String g : HeroMod.GENERIC_BASES)
+			refused(hero(null).replace("weapon.melee.Sword\",\"level\":1", g + "\""), "is a general item type");
+		assertEquals(com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing.class, HeroMod.parse(
+				hero(null).replace("weapon.melee.Sword\",\"level\":1", "potions.PotionOfHealing\"")).startingItems.get(0).type);
+	}
 }
