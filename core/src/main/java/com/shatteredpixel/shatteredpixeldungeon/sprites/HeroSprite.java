@@ -52,9 +52,7 @@ public class HeroSprite extends CharSprite {
 	public HeroSprite() {
 		super();
 		
-		com.watabou.gltextures.SmartTexture modSheet = com.shatteredpixel.shatteredpixeldungeon.apd.mods.ModSprites.dungeonSheet();
-		if (modSheet != null) texture( modSheet );
-		else texture( Dungeon.hero.heroClass.spritesheet() );
+		texture( ownSheet() );
 		updateArmor();
 		
 		link( Dungeon.hero );
@@ -65,8 +63,15 @@ public class HeroSprite extends CharSprite {
 			die();
 	}
 
+	/** The hero's own look: the active mod's sheet in a mod run, else the class sheet. */
+	public static Object ownSheet(){
+		com.watabou.gltextures.SmartTexture modSheet = com.shatteredpixel.shatteredpixeldungeon.apd.mods.ModSprites.dungeonSheet();
+		return modSheet != null ? modSheet : Dungeon.hero.heroClass.spritesheet();
+	}
+
 	public void disguise(HeroClass cls){
-		texture( cls.spritesheet() );
+		//disguise ending (back to the hero's own class) restores the mod sprite in a mod run
+		texture( cls == Dungeon.hero.heroClass ? ownSheet() : cls.spritesheet() );
 		updateArmor();
 	}
 	

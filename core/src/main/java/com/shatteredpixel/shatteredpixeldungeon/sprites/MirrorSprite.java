@@ -36,7 +36,7 @@ public class MirrorSprite extends MobSprite {
 	public MirrorSprite() {
 		super();
 		
-		texture( Dungeon.hero != null ? Dungeon.hero.heroClass.spritesheet() : HeroClass.WARRIOR.spritesheet() );
+		texture( Dungeon.hero != null ? HeroSprite.ownSheet() : HeroClass.WARRIOR.spritesheet() ); //mirror images copy the mod sprite in a mod run
 		updateArmor( 0 );
 		idle();
 	}

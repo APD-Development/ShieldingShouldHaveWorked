@@ -38,4 +38,13 @@ public class ModSpritesTest {
 		new File(d, "sprite.png").delete();
 		assertNull("uninstalled/broken mod: base class sheet", ModSprites.spriteFile(root, m));
 	}
+
+	@Test
+	public void disguiseEndingAndMirrorImagesKeepTheModSprite() throws Exception {
+		String hero = new String(Files.readAllBytes(new File("src/main/java/com/shatteredpixel/shatteredpixeldungeon/sprites/HeroSprite.java").toPath()), "UTF-8");
+		String mirror = new String(Files.readAllBytes(new File("src/main/java/com/shatteredpixel/shatteredpixeldungeon/sprites/MirrorSprite.java").toPath()), "UTF-8");
+		assertTrue("disguise back to own class uses the mod sheet", hero.contains("cls == Dungeon.hero.heroClass ? ownSheet() : cls.spritesheet()"));
+		assertTrue("ownSheet prefers the mod sheet", hero.contains("ModSprites.dungeonSheet()"));
+		assertTrue("mirror images copy the hero's own look", mirror.contains("HeroSprite.ownSheet()"));
+	}
 }
