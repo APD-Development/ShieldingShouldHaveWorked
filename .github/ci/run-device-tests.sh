@@ -8,10 +8,14 @@ LOGCAT_PID=$!
 # the migration test's own step markers (and its watchdog's thread dump) and the timing numbers go straight into this step's log, live
 adb logcat -v time APDMIG:V APDPERF:V APDUI:V '*:S' &
 MARKS_PID=$!
-timeout --signal=TERM --kill-after=30 840 ./gradlew :android:connectedDebugAndroidTest
+ONLY=""
+if [ -n "${ONLY_CLASS:-}" ]; then ONLY="-Pandroid.testInstrumentationRunnerArguments.class=${ONLY_CLASS}"; fi
+timeout --signal=TERM --kill-after=30 840 ./gradlew :android:connectedDebugAndroidTest $ONLY
 STATUS=$?
 if [ "$STATUS" = "124" ]; then echo "DEVICE TESTS DID NOT FINISH IN 14 MINUTES (see logcat artifact)"; fi
 sleep 2
+mkdir -p shots
+adb pull /sdcard/Android/data/com.charltonchris29.adhdpixeldungeon.indev/files/apd-shots shots/ >/dev/null 2>&1 || true
 adb logcat -d -v time > logcat-final.txt || true
 echo "=== last lines of the APDMIG markers ==="
 grep -a "APDMIG\|APDPERF\|APDUI" logcat-final.txt | tail -60

@@ -97,6 +97,7 @@ public class CustomRulesNoticeDeviceTest {
                     render(()->{try {
                         if(narrow){PixelScene.uiCamera.width=102;PixelScene.uiCamera.height=160;}
                         window[0]=new WndCustomDungeonRules();Game.scene().addToFront(window[0]);
+                        window[0].showTab(WndCustomDungeonRules.TAB_SCORING);
                         draft[0]=field(window[0],"draft");
                         RedButton button=null;for(RedButton candidate:find(window[0],RedButton.class))if(candidate.text().equals(CustomRulesPresentation.SCORING_INFO_BUTTON))button=candidate;
                         assertNotNull(button);
@@ -143,10 +144,13 @@ public class CustomRulesNoticeDeviceTest {
                         RenderedTextBlock notice=(RenderedTextBlock)field(windows[0],"scoringNotice");
                         ScrollPane scroll=(ScrollPane)field(windows[0],"scroll");
                         assertEquals(CustomRulesPresentation.noticeText(),notice.text());
-                        assertTrue(notice.visible);assertEquals(0,notice.top(),0);
+                        //UI polish (Chris, Nov 22): the full notice lives on the Scoring tab, the sliders on the Rules tab (default)
+                        assertEquals(WndCustomDungeonRules.TAB_RULES,windows[0].tab());assertFalse(notice.isVisible());
+                        windows[0].showTab(WndCustomDungeonRules.TAB_SCORING);assertTrue(notice.isVisible());assertEquals(0,notice.top(),0);
+                        windows[0].showTab(WndCustomDungeonRules.TAB_RULES);
                         List<OptionSlider> sliders=find(windows[0],OptionSlider.class);assertEquals(18,sliders.size());
-                        for(OptionSlider slider:sliders)assertTrue("Every next-run control is implemented",slider.active);
-                        OptionSlider first=sliders.get(0);assertTrue(notice.bottom()<first.top());
+                        for(OptionSlider slider:sliders)assertTrue("Every next-run control is implemented",slider.active&&slider.isActive());
+                        OptionSlider first=sliders.get(0);
                         scroll.scrollTo(0,Math.max(0,first.top()-20));
                         touch.set(first.camera().cameraToScreen(first.right()-3,first.bottom()-7));
                     }catch(Exception e){throw new RuntimeException(e);}
@@ -157,7 +161,7 @@ public class CustomRulesNoticeDeviceTest {
                     assertTrue("Draft changes do not persist without saving",SPDSettings.apdCustomRules().isNeutral());
                     ScrollPane scroll=(ScrollPane)field(windows[0],"scroll");
                     OptionSlider last=find(windows[0],OptionSlider.class).get(17);scroll.scrollTo(0,Math.max(0,last.top()-20));
-                    assertTrue(((RenderedTextBlock)field(windows[0],"scoringNotice")).bottom()<last.top());
+                    assertTrue(last.isVisible());
                     scroll.scrollTo(0,0);
                 }catch(Exception e){throw new RuntimeException(e);}});
                 Thread.sleep(750);screenshot("custom-rules-notice.png");
@@ -168,6 +172,7 @@ public class CustomRulesNoticeDeviceTest {
                     assertEquals(originalScore[0],com.shatteredpixel.shatteredpixeldungeon.Statistics.totalScore);
                     PixelScene.uiCamera.width=102;PixelScene.uiCamera.height=160;
                     windows[0]=new WndCustomDungeonRules(true);Game.scene().addToFront(windows[0]);
+                    windows[0].showTab(WndCustomDungeonRules.TAB_SCORING);
                     try {
                         RenderedTextBlock notice=(RenderedTextBlock)field(windows[0],"scoringNotice");
                         ScrollPane scroll=(ScrollPane)field(windows[0],"scroll");
