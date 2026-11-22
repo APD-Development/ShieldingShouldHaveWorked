@@ -461,10 +461,13 @@ route('GET', '/v1/submissions', async (env, req) => {
   const blocked = await blockedIds(env, viewer);
   const { results } = await env.DB.prepare(
     `SELECT s.id, s.title, s.created_at, s.author_id, a.display_name,
-            (SELECT COUNT(*) FROM comments c WHERE c.submission_id = s.id AND c.status = 'visible') AS comments
+            (SELECT COUNT(*) FROM comments c JOIN accounts ca ON ca.id = c.author_id
+              WHERE c.submission_id = s.id AND c.status = 'visible' AND ca.banned = 0
+                AND c.author_id NOT IN (SELECT blocked_id FROM blocks WHERE blocker_id = ?)) AS comments
        FROM submissions s JOIN accounts a ON a.id = s.author_id
       WHERE s.status = 'visible' AND a.banned = 0 AND s.season_id = ? ORDER BY s.created_at DESC LIMIT 500`)
-    .bind(((await currentSeason(env)) || {}).id ?? '').all();
+    // The count matches what the idea page shows readable: no banned players' or blocked players' comments.
+    .bind(viewer ? viewer.id : '', ((await currentSeason(env)) || {}).id ?? '').all();
   return json(200, { submissions: results.filter((s) => !blocked.has(s.author_id)).map((s) => ({
     id: s.id, title: s.title, author: { id: s.author_id, displayName: s.display_name }, createdAt: s.created_at, comments: s.comments,
   })) });

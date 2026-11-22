@@ -326,6 +326,19 @@ test('deleting an account keeps other players\' replies; the deleted comment bec
   assert.deepEqual([view.comments[1].body, view.comments[1].parentId], ['good point', parent]);
 });
 
+test('idea list comment count leaves out comments by players I blocked', async () => {
+  const { call, member } = setup();
+  const a = await member('author@x.com', 'Author');
+  const b = await member('noisy@x.com', 'Noisy');
+  const s = (await call('POST', '/v1/submissions', { title: 't', body: 'b' }, a.token)).body.id;
+  await call('POST', `/v1/submissions/${s}/comments`, { body: 'mine' }, a.token);
+  await call('POST', `/v1/submissions/${s}/comments`, { body: 'noise' }, b.token);
+  assert.equal((await call('GET', '/v1/submissions', null, a.token)).body.submissions[0].comments, 2);
+  await call('POST', '/v1/blocks', { accountId: b.id }, a.token);
+  assert.equal((await call('GET', '/v1/submissions', null, a.token)).body.submissions[0].comments, 1);
+  assert.equal((await call('GET', '/v1/submissions')).body.submissions[0].comments, 2);
+});
+
 test('deleting an account keeps another player\'s reply nested under two of my own comments', async () => {
   const { call, member } = setup();
   const a = await member('chain@x.com', 'Leaving');
