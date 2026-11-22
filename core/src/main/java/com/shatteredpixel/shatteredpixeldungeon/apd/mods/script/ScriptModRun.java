@@ -103,26 +103,78 @@ public final class ScriptModRun {
 
 	/** Mods for the next new run (hero select). */
 	public static void choose(List<String> ids){ starting = ids == null ? Collections.emptyList() : new ArrayList<>(ids); }
-	public static void cancelStarting(){ starting = Collections.emptyList(); }
+	public static void cancelStarting(){ starting = Collections.emptyList(); startingHero = null; }
 
 	public static boolean isScriptRun(){ return !active.isEmpty(); }
 	public static List<String> activeIds(){ return Collections.unmodifiableList(active); }
 	public static List<String> missingIds(){ return Collections.unmodifiableList(missing); }
 
-	/** New run: take the picked mods (a normal new run clears any old script-mod state). */
-	public static void beginRun(){
-		List<String> ids = starting;
-		starting = Collections.emptyList();
-		activate(ids);
+	private static final String HERO_NODE = "apd_script_hero";
+	private static volatile String startingHero; // "modId:heroId"
+	private static volatile String activeHero;
+
+	/** Hero select: play this script mod's hero (its mod must also be among the picked mods). Null = a normal hero. */
+	public static void chooseHero(String modId, String heroId){
+		startingHero = modId == null || heroId == null ? null : modId + ":" + heroId;
 	}
 
-	/** After the class kit (and any hero mod's items): every loaded mod's starting items. */
+	/** This run's script hero, or null. */
+	public static ScriptDefs.HeroDef activeHero(){
+		String k = activeHero;
+		if (k == null) return null;
+		int c = k.indexOf(':');
+		return c <= 0 ? null : ScriptModRuntime.hero(k.substring(0, c), k.substring(c + 1));
+	}
+
+	/** New run: take the picked mods (a normal new run clears any old script-mod state). */
+	public static void beginRun(){ beginRun(null); }
+
+	/** New run as {@code cls}: also makes a picked script hero this run's hero when its mod loaded and its base class
+	 *  is the class starting (hero select starts the base class); otherwise the run is a normal hero. */
+	public static void beginRun(com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass cls){
+		List<String> ids = starting;
+		String hero = startingHero;
+		starting = Collections.emptyList();
+		startingHero = null;
+		activate(ids);
+		activeHero = null;
+		if (hero == null) return;
+		int c = hero.indexOf(':');
+		if (c <= 0 || !active.contains(hero.substring(0, c))) return;
+		ScriptDefs.HeroDef d = ScriptModRuntime.hero(hero.substring(0, c), hero.substring(c + 1));
+		if (d == null || (cls != null && d.mod.baseClass != cls)) return;
+		if (com.shatteredpixel.shatteredpixeldungeon.apd.mods.HeroModRun.activateScriptHero(d.mod, d.json)) activeHero = hero;
+	}
+
+	/** After the class kit (and any hero mod's items): every loaded mod's starting items, the script hero's own mod
+	 *  items, then the script hero's onStart. */
 	public static void applyStart(Hero hero){
-		if (isScriptRun()) ScriptModRuntime.giveStartingItems(hero);
+		if (!isScriptRun()) return;
+		ScriptModRuntime.giveStartingItems(hero);
+		ScriptDefs.HeroDef d = activeHero();
+		if (d == null) return;
+		for (java.util.Map.Entry<String, Integer> e : d.modItems.entrySet()){
+			ScriptDefs.ItemDef item = ScriptModRuntime.item(d.modId, e.getKey());
+			if (item != null) new ScriptItem(item).quantity(e.getValue()).collect(hero.belongings.backpack);
+		}
+		heroTrigger(hero, "onStart");
+	}
+
+	/** Calls one of the script hero's triggers with the bounded hero object plus plain facts. */
+	public static void heroTrigger(Hero hero, String name, Object... extra){
+		ScriptDefs.HeroDef d = activeHero();
+		if (d == null || hero == null || !hero.isAlive() || !d.has(name)) return;
+		ScriptApi.ApiObject h = ScriptModRuntime.build(d.modId, (cx, scope) -> HeroApi.make(scope, hero, d.modId));
+		if (h == null) return;
+		Object[] args = new Object[1 + extra.length];
+		args[0] = h;
+		System.arraycopy(extra, 0, args, 1, extra.length);
+		ScriptModRuntime.run(d.modId, d.triggers.get(name), args);
 	}
 
 	public static void store(Bundle bundle){
 		if (isScriptRun()) bundle.put(NODE, active.toArray(new String[0]));
+		if (isScriptRun() && activeHero != null) bundle.put(HERO_NODE, activeHero);
 	}
 
 	/** Loading a hero: re-reads the saved mods' scripts from the installed files. */
@@ -131,6 +183,8 @@ public final class ScriptModRun {
 		List<String> list = new ArrayList<>();
 		if (ids != null) for (String s : ids) if (s != null && !s.isEmpty() && !list.contains(s)) list.add(s);
 		activate(list);
+		// the hero itself (stats, talents, kit record) comes back through HeroModRun's own saved record
+		activeHero = bundle != null && bundle.contains(HERO_NODE) && !list.isEmpty() ? bundle.getString(HERO_NODE) : null;
 	}
 
 	private static void activate(List<String> ids){
@@ -151,5 +205,5 @@ public final class ScriptModRun {
 	}
 
 	/** Tests only. */
-	public static void reset(){ synchronized (ScriptModRun.class){ picked.clear(); } starting = Collections.emptyList(); active = Collections.emptyList(); missing = Collections.emptyList(); ScriptModRuntime.clear(); }
+	public static void reset(){ synchronized (ScriptModRun.class){ picked.clear(); } starting = Collections.emptyList(); startingHero = null; activeHero = null; active = Collections.emptyList(); missing = Collections.emptyList(); ScriptModRuntime.clear(); }
 }

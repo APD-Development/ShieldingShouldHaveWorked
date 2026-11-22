@@ -53,6 +53,14 @@ public final class HeroModRun {
 
 	public static void choose(HeroMod mod, String json){ starting = mod; startingJson = json; }
 
+	/** A script mod's hero becomes this run's hero (called at run start, after the scripts loaded). Same hooks and
+	 *  save record as a data-mod hero; ignored when a data-mod hero is already active. */
+	public static boolean activateScriptHero(HeroMod mod, String json){
+		if (active != null || mod == null || json == null) return false;
+		active = mod; activeJson = json; damaged = false;
+		return true;
+	}
+
 	/** Talent tiers 1-3 for this hero: the mod's picks for a mod run, otherwise null (use the class lists). */
 	public static boolean fillTalents(ArrayList<LinkedHashMap<Talent, Integer>> talents){
 		return fillTalents(talents, null);

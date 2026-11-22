@@ -101,7 +101,7 @@ public enum HeroClass {
 
 		hero.heroClass = this;
 		com.shatteredpixel.shatteredpixeldungeon.apd.mods.HeroModRun.beginRun();
-		com.shatteredpixel.shatteredpixeldungeon.apd.mods.script.ScriptModRun.beginRun();
+		com.shatteredpixel.shatteredpixeldungeon.apd.mods.script.ScriptModRun.beginRun(this);
 		Talent.initClassTalents(hero);
 
 		Item i = new ClothArmor().identify();
