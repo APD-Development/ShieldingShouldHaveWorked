@@ -64,6 +64,15 @@ public class HeroAction {
 		}
 	}
 
+	/** APD (Chris, Nov 22): pick up one chosen item from the pile the hero stands on, from the "Items on tile" list. */
+	public static class PickUpItem extends PickUp {
+		public final com.shatteredpixel.shatteredpixeldungeon.items.Item item;
+		public PickUpItem( int dst, com.shatteredpixel.shatteredpixeldungeon.items.Item item ) {
+			super( dst );
+			this.item = item;
+		}
+	}
+
 	/** APD walk-over pickup (Chris, Nov 21): keeps picking up the pile you stepped on, one item per pickup. */
 	public static class WalkoverPickUp extends PickUp {
 		/** The floor it was queued on; it never runs anywhere else. */

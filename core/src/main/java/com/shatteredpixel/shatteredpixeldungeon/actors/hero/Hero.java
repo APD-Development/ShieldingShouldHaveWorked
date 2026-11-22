@@ -1353,6 +1353,20 @@ public class Hero extends Char {
 		return Messages.capitalize(Messages.get(this, reason, item.name()));
 	}
 
+	/** APD (Chris, Nov 22): the item a "pick up this one" action wants, only if it is still in an open pile (not a shop or container). */
+	public static Item apdChosenPickup( Heap heap, HeroAction.PickUp action ){
+		if (!(action instanceof HeroAction.PickUpItem) || heap == null || heap.type != Heap.Type.HEAP) return null;
+		Item chosen = ((HeroAction.PickUpItem) action).item;
+		for (Item i : heap.items) if (i == chosen) return chosen;
+		return null;
+	}
+
+	/** Removes exactly the picked item (not the top one) from its pile. */
+	public static void apdRemovePicked( Heap heap, Item item ){
+		if (heap.peek() == item) heap.pickUp();
+		else heap.remove(item);
+	}
+
 	private boolean actPickUp( HeroAction.PickUp action ) {
 		if (action instanceof HeroAction.WalkoverPickUp && ((HeroAction.WalkoverPickUp)action).level != Dungeon.level){
 			curAction = null; // queued on another floor
@@ -1362,15 +1376,21 @@ public class Hero extends Char {
 		if (pos == dst) {
 			
 			Heap heap = Dungeon.level.heaps.get( pos );
+			if (heap != null && action instanceof HeroAction.PickUpItem && apdChosenPickup(heap, action) == null) {
+				curAction = null; // the chosen item is no longer in this pile
+				ready();
+				return false;
+			}
 			if (heap != null) {
-				Item item = heap.peek();
+				Item item = action instanceof HeroAction.PickUpItem ? apdChosenPickup(heap, action) : heap.peek();
 				ApdItems.noteAcquireContext( ItemEvents.ACQ_PICKUP );
 				String apdKind = action instanceof HeroAction.WalkoverPickUp ? apdPileKind(heap) : null;
 				boolean apdPicked = item.doPickUp( this );
 				if (apdKind != null) com.watabou.utils.SupportActionJournal.record("loot.walkover_pickup",
 						"floor="+Dungeon.depth+" cell="+pos+" pile="+apdKind+" picked="+apdPicked);
 				if (apdPicked) {
-					heap.pickUp();
+					if (action instanceof HeroAction.PickUpItem) apdRemovePicked(heap, item);
+					else heap.pickUp();
 
 					//TODO this statement is getting silly, might be better to handle this as a propery of items
 					if (item instanceof Dewdrop
