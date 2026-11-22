@@ -572,8 +572,11 @@ route('POST', '/v1/submissions/([0-9a-f]+)/upvote', async (env, req, [id]) => {
   const a = await needMember(env, req);
   const season = liveSeason(env, await currentSeason(env));
   if (phaseOf(season, now(env)) !== 'voting') fail(409, 'voting_closed');
-  const s = await env.DB.prepare("SELECT author_id FROM submissions WHERE id = ? AND season_id = ? AND status = 'visible'").bind(id, season.id).first();
-  if (!s) fail(404, 'not_found');
+  // Same rule as reading it: a banned player's idea, or one from a player I blocked, can't be upvoted by its id.
+  const s = await env.DB.prepare(
+    `SELECT s.author_id FROM submissions s JOIN accounts x ON x.id = s.author_id
+      WHERE s.id = ? AND s.season_id = ? AND s.status = 'visible' AND x.banned = 0`).bind(id, season.id).first();
+  if (!s || (await blockedIds(env, a)).has(s.author_id)) fail(404, 'not_found');
   if (s.author_id === a.id) fail(403, 'own_submission');
   await env.DB.prepare('INSERT OR IGNORE INTO upvotes (account_id, submission_id, created_at) VALUES (?, ?, ?)').bind(a.id, id, now(env)).run();
   return json(200, { upvoted: true });

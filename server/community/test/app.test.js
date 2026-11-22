@@ -244,6 +244,10 @@ test('full season on a fast clock: upvotes to qualify, a 16-seed bracket from we
   for (let i = 0; i < 4; i++) for (let k = 9; k >= 9 - i; k--) await call('POST', `/v1/submissions/${subs[k]}/upvote`, null, voters[i].token);
   await call('POST', `/v1/submissions/${subs[0]}/upvote`, null, voters[0].token);
   await call('DELETE', `/v1/submissions/${subs[0]}/upvote`, null, voters[0].token);
+  // Same rule as reading it: an idea from a player I blocked can't be upvoted by its id
+  await call('POST', '/v1/blocks', { accountId: authors[1].id }, voters[0].token);
+  assert.equal((await call('POST', `/v1/submissions/${subs[1]}/upvote`, null, voters[0].token)).status, 404);
+  await call('DELETE', `/v1/blocks/${authors[1].id}`, null, voters[0].token);
   let r = (await call('GET', '/v1/season/results', null, voters[0].token)).body;
   assert.equal(r.standings[0].title, 'Idea 9');
   assert.equal(r.standings[0].upvotes, 4);
