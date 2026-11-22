@@ -448,7 +448,7 @@ public final class CommunityController {
 	private void comment(String submissionId, String parentId){
 		ui.ask(parentId == null ? "Comment" : "Reply", "Be kind. Comments never count as votes.", "", 2000, true, body -> {
 			if (body == null || body.trim().isEmpty()){ detail(submissionId); return; }
-			call(() -> api.comment(submissionId, parentId, body), r -> { if (r.ok()) detail(submissionId); else problem(r, () -> detail(submissionId)); });
+			call(() -> api.comment(submissionId, parentId, body), r -> { if (r.ok()){ uncache("submissions"); detail(submissionId); } else problem(r, () -> detail(submissionId)); });
 		});
 	}
 

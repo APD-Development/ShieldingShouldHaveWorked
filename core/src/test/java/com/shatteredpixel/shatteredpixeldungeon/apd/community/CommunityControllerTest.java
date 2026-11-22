@@ -359,6 +359,23 @@ public class CommunityControllerTest {
 				CommunityController.CACHE.keySet().stream().anyMatch(k -> k.endsWith("|submissions") || k.endsWith("|results")));
 	}
 
+	@Test public void commentingDropsTheCachedSubmissionsList(){
+		store.age = "pass"; store.token = "tok";
+		signedInWorld(false);
+		reply("GET /v1/submissions", 200, "{\"submissions\":[{\"id\":\"5501\",\"title\":\"Idea A\",\"author\":{\"id\":\"bb02\",\"displayName\":\"Bo\"},\"comments\":0}]}");
+		reply("GET /v1/submissions/5501", 200, "{\"id\":\"5501\",\"title\":\"Idea A\",\"body\":\"b\",\"author\":{\"id\":\"bb02\",\"displayName\":\"Bo\"},\"comments\":[]}");
+		reply("POST /v1/submissions/5501/comments", 201, "{\"id\":\"cc09\"}");
+		controller().start();
+		tap("Submissions");
+		assertTrue(CommunityController.CACHE.keySet().stream().anyMatch(k -> k.endsWith("|submissions")));
+		tap("Idea A");
+		answers.add("Nice");
+		tap("Comment");
+		assertTrue(requests.stream().anyMatch(r -> r.startsWith("POST /v1/submissions/5501/comments")));
+		assertFalse("a comment drops the cached submissions list (its comment count changed)",
+				CommunityController.CACHE.keySet().stream().anyMatch(k -> k.endsWith("|submissions")));
+	}
+
 	@Test public void theHubLinksToWhatsComingNext(){
 		store.age = "pass"; store.token = "tok";
 		signedInWorld(false);
