@@ -62,7 +62,7 @@ public class ScriptMob extends Mob {
 
 	@Override public int damageRoll(){ ScriptDefs.MonsterDef d = def(); return d == null ? 0 : Random.NormalIntRange(d.attackMin, d.attackMax); }
 	@Override public int attackSkill(Char target){ ScriptDefs.MonsterDef d = def(); return d == null ? 0 : d.accuracy; }
-	@Override public int drRoll(){ ScriptDefs.MonsterDef d = def(); return super.drRoll() + (d == null ? 0 : Random.NormalIntRange(0, d.armor)); }
+	@Override public int drRoll(){ ScriptDefs.MonsterDef d = def(); return super.drRoll() + (d == null ? 0 : Random.NormalIntRange(d.armorMin, d.armor)); }
 
 	@Override public Item createLoot(){
 		ScriptDefs.MonsterDef d = def();

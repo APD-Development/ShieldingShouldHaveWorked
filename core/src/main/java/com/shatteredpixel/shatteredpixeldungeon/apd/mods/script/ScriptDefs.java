@@ -72,15 +72,15 @@ public final class ScriptDefs {
 
 	public static final class MonsterDef {
 		public final String modId, id, name, description, sprite, loot;
-		public final int hp, attackMin, attackMax, accuracy, evasion, armor, xp, floorFrom, floorTo;
+		public final int hp, attackMin, attackMax, accuracy, evasion, armorMin, armor, xp, floorFrom, floorTo;
 		public final double speed, spawnWeight, lootChance;
 		final Map<String, Function> triggers;
 		MonsterDef(String modId, String id, String name, String description, String sprite, int hp, int attackMin,
-		           int attackMax, int accuracy, int evasion, int armor, double speed, int xp, int floorFrom, int floorTo,
+		           int attackMax, int accuracy, int evasion, int armorMin, int armor, double speed, int xp, int floorFrom, int floorTo,
 		           double spawnWeight, String loot, double lootChance, Map<String, Function> triggers){
 			this.modId = modId; this.id = id; this.name = name; this.description = description; this.sprite = sprite;
 			this.hp = hp; this.attackMin = attackMin; this.attackMax = attackMax; this.accuracy = accuracy;
-			this.evasion = evasion; this.armor = armor; this.speed = speed; this.xp = xp; this.floorFrom = floorFrom;
+			this.evasion = evasion; this.armorMin = armorMin; this.armor = armor; this.speed = speed; this.xp = xp; this.floorFrom = floorFrom;
 			this.floorTo = floorTo; this.spawnWeight = spawnWeight; this.loot = loot; this.lootChance = lootChance;
 			this.triggers = Collections.unmodifiableMap(triggers);
 		}
@@ -108,7 +108,8 @@ public final class ScriptDefs {
 			int[] atk = pair(o, "attack", 1, 4, 0, 500);
 			int acc = whole(o, "accuracy", 10, 0, 500);
 			int eva = whole(o, "evasion", 2, 0, 500);
-			int armor = whole(o, "armor", 0, 0, 200);
+			// "armor": a number n rolls 0..n each hit; [min, max] rolls min..max (spec: "armor:[min,max] or number").
+			int[] arm = get(o, "armor") instanceof Number ? new int[]{0, whole(o, "armor", 0, 0, 200)} : pair(o, "armor", 0, 0, 0, 200);
 			double speed = number(o, "speed", 1, 0.5, 2);
 			int xp = whole(o, "xp", 1, 0, 100);
 			int from = 1, to = 0;
@@ -129,7 +130,7 @@ public final class ScriptDefs {
 				String key = String.valueOf(k);
 				if (key.startsWith("on") && !triggers.containsKey(key)) throw new BadDef("unknown trigger \"" + key + "\"");
 			}
-			return new MonsterDef(modId, id, name, desc == null ? "" : desc, sprite, hp, atk[0], atk[1], acc, eva, armor,
+			return new MonsterDef(modId, id, name, desc == null ? "" : desc, sprite, hp, atk[0], atk[1], acc, eva, arm[0], arm[1],
 					speed, xp, from, to, weight, loot, lootChance, triggers);
 		} catch (BadDef b){ throw new BadDef("monster " + id + ": " + b.getMessage()); }
 	}

@@ -46,6 +46,19 @@ public class ScriptMonstersTest {
 		assertTrue(mob.createLoot() instanceof ScriptItem);
 	}
 
+	@Test public void armorTakesANumberOrMinMax(){
+		ScriptModRuntime.LoadedMod m = ScriptModRuntime.load("test.armor",
+				"APD.monster({ id: 'a', name: 'A', sprite: 'RatSprite', armor: [2, 5] });\n" +
+				"APD.monster({ id: 'b', name: 'B', sprite: 'RatSprite', armor: 4 });");
+		assertFalse(m.disabledReason(), m.disabled());
+		ScriptDefs.MonsterDef a = ScriptModRuntime.monster("test.armor", "a"), b = ScriptModRuntime.monster("test.armor", "b");
+		assertEquals(2, a.armorMin); assertEquals(5, a.armor);
+		assertEquals(0, b.armorMin); assertEquals(4, b.armor);
+		ScriptModRuntime.clear();
+		m = ScriptModRuntime.load("bad.armor", "APD.monster({ id: 'x', name: 'X', sprite: 'RatSprite', armor: [6, 1] });");
+		assertTrue(m.disabled()); assertTrue(m.disabledReason(), m.disabledReason().contains("\"armor\" must be [min, max]"));
+	}
+
 	@Test public void mistakesTurnTheModOff(){
 		String[][] bad = {
 				{"APD.monster({ id: 'x', name: 'X', sprite: 'NotASprite' });", "isn't an existing monster sprite"},
