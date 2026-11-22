@@ -249,6 +249,7 @@ default-on settings (SPDSettings.keepOldDefaultsForExistingPlayers). Next: Googl
 (Credential Manager), server URL default once deployed, run reviews. HttpGateway contract routes, deployment workflow, Android Community screens wired to it, Play Age Signals.
 
 ## Run log
+- 2026-11-22 12 AM ET (8-hour Play build): Play **936** at 599ea65a uploaded to closed test (alpha). CI 44987554929 green on 86703508. New: three-way walk-over pickup setting. No script mods. Last uploaded build: 936.
 - 2026-11-21 11 PM (scheduled): Script mods (feature/script-mods): new ScriptMonsterDeviceTest: sample mod's Sample Crab spawns on its floors only, keeps name/sprite/HP through a real Bundle write/read, missing mod leaves it inert. Passed API 26 + 34 (run 44983636500). Test only, no game code. Next: heroes hook. Still OPEN for Chris: mod starting items on top of vs instead of the class kit; Loot Availability score multiplier.
 - 2026-11-21 4 PM ET build (fired late, ran 10 PM): Play **935** at 6dd2222a uploaded to closed test (alpha). CI 44978653680 green on 051875eb. New: Duelist lock-on, walk-over whole pile + survives harmless interrupts, Wealth gear range, Gemstone Dust halved, spellbook scroll names, bug report pickup logging. No script mods (verified: no Rhino, no scriptmods in the bundle). Last uploaded build: 935.
 - 2026-11-21 10 PM (scheduled): no code; a live session pushed to this branch at 22:05 (Play build 935), so this run
