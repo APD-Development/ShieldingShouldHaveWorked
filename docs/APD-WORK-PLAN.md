@@ -249,6 +249,7 @@ default-on settings (SPDSettings.keepOldDefaultsForExistingPlayers). Next: Googl
 (Credential Manager), server URL default once deployed, run reviews. HttpGateway contract routes, deployment workflow, Android Community screens wired to it, Play Age Signals.
 
 ## Run log
+- 2026-11-21 4 PM ET build (fired late, ran 10 PM): Play **935** at 6dd2222a uploaded to closed test (alpha). CI 44978653680 green on 051875eb. New: Duelist lock-on, walk-over whole pile + survives harmless interrupts, Wealth gear range, Gemstone Dust halved, spellbook scroll names, bug report pickup logging. No script mods (verified: no Rhino, no scriptmods in the bundle). Last uploaded build: 935.
 - 2026-11-21 10 PM (scheduled): no code; a live session pushed to this branch at 22:05 (Play build 935), so this run
   stood down to avoid clashing.
 - 2026-11-21 1 PM (scheduled): Script mods (feature/script-mods): a mod effect's onDamageTaken still ran after the killing blow, so a script heal gave HP back to a dead hero whose game was over; dead hero's effects now never run and heal/shield/addBuff/addEffect do nothing on a dead hero. +1 test; full CI 44933784503 green. Not device-verified. Still WAITING on Chris's phone test of the dev APK before the monsters hook. Still OPEN for Chris: mod starting items on top of vs instead of the class kit; Loot Availability score multiplier.
