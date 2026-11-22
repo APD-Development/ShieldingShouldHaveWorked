@@ -182,7 +182,7 @@ public class CommunityScene extends PixelScene {
     static com.shatteredpixel.shatteredpixeldungeon.ui.Icons communityIcon(String label){
         String l = label == null ? "" : label.toLowerCase(java.util.Locale.ROOT);
         if (l.equals("back") || l.startsWith("back ")) return com.shatteredpixel.shatteredpixeldungeon.ui.Icons.LEFTARROW;
-        if (l.startsWith("submission") || l.contains("idea")) return com.shatteredpixel.shatteredpixeldungeon.ui.Icons.NEWS;
+        if (l.startsWith("submission")) return com.shatteredpixel.shatteredpixeldungeon.ui.Icons.NEWS;
         if (l.startsWith("voting") || l.contains("result") || l.contains("tournament")) return com.shatteredpixel.shatteredpixeldungeon.ui.Icons.RANKINGS;
         if (l.startsWith("selected") || l.contains("champion")) return com.shatteredpixel.shatteredpixeldungeon.ui.Icons.BADGES;
         if (l.contains("review")) return com.shatteredpixel.shatteredpixeldungeon.ui.Icons.MAGNIFY;
