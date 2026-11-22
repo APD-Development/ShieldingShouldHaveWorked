@@ -17,3 +17,12 @@ APD.monster({ id: 'sample_crab', name: 'Sample Crab', sprite: 'CrabSprite',
   hp: 18, attack: [2, 5], accuracy: 10, evasion: 4, armor: 2, xp: 3,
   spawn: { floors: [1, 10], weight: 2 }, loot: 'sample_potion', lootChance: 0.3,
   onHurt(m, dmg){ m.heal(1); } });
+
+APD.hero({ id: 'sample_hero', name: 'Sample Hero', baseClass: 'warrior', hp: 22, str: 10,
+  description: 'Sample mod hero: the Warrior with 2 extra HP, two Sample Potions, and 2 shielding each level up.',
+  startingItems: [ { modItem: 'sample_potion', quantity: 2 } ],
+  talents: { tier1: ['HEARTY_MEAL', 'VETERANS_INTUITION', 'PROVOKED_ANGER', 'IRON_WILL'],
+    tier2: ['IRON_STOMACH', 'LIQUID_WILLPOWER', 'RUNIC_TRANSFERENCE', 'LETHAL_MOMENTUM', 'IMPROVISED_PROJECTILES'],
+    tier3: ['HOLD_FAST', 'STRONGMAN'] },
+  armorAbilities: ['HeroicLeap', 'Shockwave', 'Endure'],
+  onLevelUp(h, level){ h.shield(2); } });

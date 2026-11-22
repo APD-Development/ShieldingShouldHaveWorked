@@ -55,6 +55,13 @@ public class ScriptSampleModTest {
 		assertFalse(m.disabledReason(), m.disabled());
 		assertEquals(2, m.items().size());
 		assertEquals("the sample also shows the monsters hook", 1, m.monsters().size());
+		assertEquals("the sample also shows the heroes hook", 1, m.heroes().size());
+		ScriptDefs.HeroDef sh = ScriptModRuntime.hero("sample.items", "sample_hero");
+		assertEquals("Sample Hero", sh.mod.name);
+		assertEquals(com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass.WARRIOR, sh.mod.baseClass);
+		assertEquals(22, sh.mod.hp);
+		assertEquals(Integer.valueOf(2), sh.modItems.get("sample_potion"));
+		assertTrue(sh.has("onLevelUp"));
 		ScriptMob crab = new ScriptMob(ScriptModRuntime.monster("sample.items", "sample_crab"));
 		assertEquals("Sample Crab", crab.name());
 		assertTrue(crab.createLoot() instanceof ScriptItem);
