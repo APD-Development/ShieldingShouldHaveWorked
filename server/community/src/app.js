@@ -513,8 +513,9 @@ route('POST', '/v1/submissions/([0-9a-f]+)/comments', async (env, req, [id]) => 
   await rateLimit(env, a, 'comments');
   let parent = null;
   if (b.parentId != null) {
-    parent = await env.DB.prepare("SELECT id FROM comments WHERE id = ? AND submission_id = ?").bind(String(b.parentId), id).first();
-    if (!parent) fail(400, 'bad_parent');
+    parent = await env.DB.prepare("SELECT id, author_id FROM comments WHERE id = ? AND submission_id = ?").bind(String(b.parentId), id).first();
+    // A reply can't be aimed at a player I blocked (I only see their comment as a placeholder).
+    if (!parent || (await blockedIds(env, a)).has(parent.author_id)) fail(400, 'bad_parent');
   }
   const cid = newId();
   await env.DB.prepare('INSERT INTO comments (id, submission_id, parent_id, author_id, body, created_at) VALUES (?, ?, ?, ?, ?, ?)')
@@ -708,8 +709,8 @@ route('POST', '/v1/champions/([0-9a-z]+)/comments', async (env, req, [sid]) => {
   await rateLimit(env, a, 'championComments');
   let parent = null;
   if (b.parentId != null) {
-    parent = await env.DB.prepare('SELECT id FROM champion_comments WHERE id = ? AND season_id = ?').bind(String(b.parentId), sid).first();
-    if (!parent) fail(400, 'bad_parent');
+    parent = await env.DB.prepare('SELECT id, author_id FROM champion_comments WHERE id = ? AND season_id = ?').bind(String(b.parentId), sid).first();
+    if (!parent || (await blockedIds(env, a)).has(parent.author_id)) fail(400, 'bad_parent');
   }
   const id = newId();
   await env.DB.prepare('INSERT INTO champion_comments (id, season_id, parent_id, author_id, body, created_at) VALUES (?, ?, ?, ?, ?, ?)')
