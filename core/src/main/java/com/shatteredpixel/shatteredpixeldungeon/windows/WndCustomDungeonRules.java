@@ -41,6 +41,7 @@ public class WndCustomDungeonRules extends Window {
         frozenScoring=currentRun ? Dungeon.customScoring() : null;
         draft=currentRun ? Dungeon.customRules() : SPDSettings.apdCustomRules();
         final int width=WindowGeometry.width(PixelScene.landscape(),PixelScene.uiCamera.width);
+        final int captionWidth=width-6;
         RenderedTextBlock title=PixelScene.renderTextBlock("Custom Dungeon Rules",9);
         title.maxWidth(width);title.hardlight(TITLE_COLOR);title.setPos(0,0);add(title);
         RenderedTextBlock mode=PixelScene.renderTextBlock(draft==null?"":(currentRun?"This run (locked)":"Next run"),6);
@@ -131,7 +132,7 @@ public class WndCustomDungeonRules extends Window {
                         CustomRulesPresentation.valueText(rule,rule.max),0,CustomRulesPresentation.positions(rule)) {
                     @Override protected void onChange() {
                         draft=draft.with(rule,CustomRulesPresentation.value(rule,getSelectedValue()));
-                        caption.text(caption(rule));caption.maxWidth(width-6);updateCombined();
+                        caption.text(caption(rule));caption.maxWidth(captionWidth);updateCombined();
                     }
                 };
                 slider.scrollVerticallyWith(scroll);slider.liveChanges(true);slider.hideBackground();

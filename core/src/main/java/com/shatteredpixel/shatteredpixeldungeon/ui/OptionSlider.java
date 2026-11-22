@@ -195,12 +195,12 @@ public abstract class OptionSlider extends Component {
 
 	}
 
-	@Override
 	//APD UI polish: a slider drawn inside its own card skips the red half-alpha box
 	public void hideBackground(){
 		BG.visible = false;
 	}
 
+	@Override
 	protected void layout() {
 
 		if (title.width() > 0.6f*width){
