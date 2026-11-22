@@ -18,7 +18,7 @@ final class MonsterApi {
 		ScriptApi.ApiObject o = new ScriptApi.ApiObject(scope, "Monster");
 		o.value("hp", m.HP).value("maxHp", m.HT).value("pos", m.pos).value("id", m.monsterId());
 		o.fn("heal", a -> {
-			int n = Math.min(ScriptApi.intIn(a, 0, 0, 0, HeroApi.MAX_AMOUNT), m.HT - m.HP);
+			int n = m.isAlive() ? Math.min(ScriptApi.intIn(a, 0, 0, 0, HeroApi.MAX_AMOUNT), m.HT - m.HP) : 0; // never revives a dead monster
 			if (n > 0){ m.HP += n; if (m.sprite != null) m.sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(n), FloatingText.HEALING); }
 			return (double) Math.max(0, n);
 		});

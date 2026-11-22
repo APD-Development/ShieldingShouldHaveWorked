@@ -144,4 +144,14 @@ public class ScriptMonstersTest {
 		assertFalse("killed by onSpawn: onTurn must not run on a dead monster", f.turnTriggers());
 		assertFalse(f.isAlive());
 	}
+
+	@Test public void healAfterASelfKillInTheSameScriptDoesNotReviveTheMonster(){
+		ScriptModRuntime.LoadedMod m = ScriptModRuntime.load("test.revive",
+				"APD.monster({ id: 'r', name: 'R', sprite: 'RatSprite', hp: 5, onTurn(m){ m.damage(999); m.heal(5); } });");
+		assertFalse(m.disabledReason(), m.disabled());
+		ScriptMob r = new ScriptMob(ScriptModRuntime.monster("test.revive", "r"));
+		assertFalse("dead monster must stay dead", r.turnTriggers());
+		assertFalse(r.isAlive());
+		ScriptModRuntime.clear();
+	}
 }
