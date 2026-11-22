@@ -63,6 +63,13 @@ public class WndUimsdList extends Window {
 		public Boolean checked;
 		private boolean action;
 		private int noteSize;
+		//APD UI polish (Chris, Nov 22): an optional icon drawn on the left of an item card
+		public com.shatteredpixel.shatteredpixeldungeon.ui.Icons icon;
+
+		public Entry icon( com.shatteredpixel.shatteredpixeldungeon.ui.Icons i ){
+			this.icon = i;
+			return this;
+		}
 
 		private Entry( int kind, String label, String detail ){
 			this.kind = kind;
@@ -128,6 +135,8 @@ public class WndUimsdList extends Window {
 	}
 
 	private static final int MARGIN = 2;
+	//space between item cards, and room for an item's icon (UI polish, Chris Nov 22: "it just looks horrible")
+	private static final int CARD_GAP = 3, ICON_ROOM = 20;
 
 	private final Picker picker;
 	private final boolean switches;
@@ -227,6 +236,7 @@ public class WndUimsdList extends Window {
 				heights[i] = label.height() + 4;
 			} else {
 				label = PixelScene.renderTextBlock(itemText(e), UimsdStyle.SIZE_TEXT);
+				if (e.icon != null) label.maxWidth(textWidth - ICON_ROOM);
 				float h = label.height();
 				if (!e.detail.isEmpty()){
 					detail = PixelScene.renderTextBlock(e.detail, UimsdStyle.SIZE_META);
@@ -234,12 +244,13 @@ public class WndUimsdList extends Window {
 				}
 				heights[i] = WindowGeometry.rowHeight(h);
 			}
-			label.maxWidth(textWidth);
-			if (detail != null) detail.maxWidth(textWidth);
+			int rowText = (e != null && e.kind == Entry.ITEM && e.icon != null) ? textWidth - ICON_ROOM : textWidth;
+			label.maxWidth(rowText);
+			if (detail != null) detail.maxWidth(rowText);
 			//a text block lays itself out when its width is set, so the heights are taken again after it
 			if (e != null && e.kind == Entry.ITEM){
 				float h = label.height() + (detail == null ? 0 : 1 + detail.height());
-				heights[i] = e.action ? WindowGeometry.actionHeight(h) : WindowGeometry.rowHeight(h);
+				heights[i] = (e.action ? WindowGeometry.actionHeight(h) : WindowGeometry.rowHeight(h)) + CARD_GAP;
 			} else if (e == null){
 				heights[i] = WindowGeometry.rowHeight(label.height());
 			} else if (e.kind == Entry.HEADING){
@@ -281,18 +292,28 @@ public class WndUimsdList extends Window {
 				continue;
 			}
 			NinePatch bg = Chrome.get(Chrome.Type.GREY_BUTTON_TR);
-			bg.size(width, heights[i] - 1);
+			float gap = (e != null && e.kind == Entry.ITEM) ? CARD_GAP : 0;
+			bg.size(width, heights[i] - 1 - gap);
 			bg.y = tops[i];
 			if (e != null && (e.current || Boolean.TRUE.equals(e.checked))) bg.hardlight(0xAADD99);
 			content.add(bg);
 			float textH = label.height() + (detail == null ? 0 : 1 + detail.height());
-			float ty = tops[i] + (heights[i] - 1 - textH) / 2f;
+			float ty = tops[i] + (heights[i] - 1 - gap - textH) / 2f;
+			float tx = WindowGeometry.ROW_PAD + 1;
+			if (e != null && e.icon != null){
+				com.watabou.noosa.Image ic = com.shatteredpixel.shatteredpixeldungeon.ui.Icons.get(e.icon);
+				ic.x = WindowGeometry.ROW_PAD + 1 + (16 - ic.width()) / 2f;
+				ic.y = tops[i] + (heights[i] - 1 - gap - ic.height()) / 2f;
+				PixelScene.align(ic);
+				content.add(ic);
+				tx += ICON_ROOM;
+			}
 			label.hardlight(e == null ? UimsdStyle.TITLE : colorFor(e));
-			label.setPos(WindowGeometry.ROW_PAD + 1, ty);
+			label.setPos(tx, ty);
 			content.add(label);
 			if (detail != null){
 				detail.hardlight(UimsdStyle.MUTED);
-				detail.setPos(WindowGeometry.ROW_PAD + 1, ty + label.height() + 1);
+				detail.setPos(tx, ty + label.height() + 1);
 				content.add(detail);
 			}
 			labelTexts.add(label);

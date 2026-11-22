@@ -101,6 +101,7 @@ public class CommunityScene extends PixelScene {
                     default:
                         WndUimsdList.Entry e = r.detail.isEmpty() ? WndUimsdList.Entry.item(r.label) : WndUimsdList.Entry.item(r.label, r.detail);
                         if (r.checked != null) e.current(r.checked);
+                        e.icon(communityIcon(r.label));
                         entries.add(e);
                 }
             }
@@ -176,6 +177,22 @@ public class CommunityScene extends PixelScene {
     private boolean fromLive;
 
     // ---- offline preview (no server address yet) ----
+
+    /** UI polish (Chris, Nov 22): a small icon on each Community card, picked by what the item is. */
+    static com.shatteredpixel.shatteredpixeldungeon.ui.Icons communityIcon(String label){
+        String l = label == null ? "" : label.toLowerCase(java.util.Locale.ROOT);
+        if (l.equals("back") || l.startsWith("back ")) return com.shatteredpixel.shatteredpixeldungeon.ui.Icons.LEFTARROW;
+        if (l.startsWith("submission") || l.contains("idea")) return com.shatteredpixel.shatteredpixeldungeon.ui.Icons.NEWS;
+        if (l.startsWith("voting") || l.contains("result") || l.contains("tournament")) return com.shatteredpixel.shatteredpixeldungeon.ui.Icons.RANKINGS;
+        if (l.startsWith("selected") || l.contains("champion")) return com.shatteredpixel.shatteredpixeldungeon.ui.Icons.BADGES;
+        if (l.contains("review")) return com.shatteredpixel.shatteredpixeldungeon.ui.Icons.MAGNIFY;
+        if (l.startsWith("account") || l.contains("sign out") || l.contains("delete")) return com.shatteredpixel.shatteredpixeldungeon.ui.Icons.PREFS;
+        if (l.startsWith("moderation") || l.contains("report")) return com.shatteredpixel.shatteredpixeldungeon.ui.Icons.WARNING;
+        if (l.contains("coming next")) return com.shatteredpixel.shatteredpixeldungeon.ui.Icons.CALENDAR;
+        if (l.contains("sign in") || l.contains("create an account") || l.contains("verification")) return com.shatteredpixel.shatteredpixeldungeon.ui.Icons.ENTER;
+        if (l.contains("try again")) return com.shatteredpixel.shatteredpixeldungeon.ui.Icons.REPEAT;
+        return null;
+    }
 
     private void showPage() {
 
