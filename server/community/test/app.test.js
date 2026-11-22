@@ -314,6 +314,20 @@ test('deleting an account keeps other players\' replies; the deleted comment bec
   assert.deepEqual([view.comments[1].body, view.comments[1].parentId], ['good point', parent]);
 });
 
+test('deleting an account keeps another player\'s reply nested under two of my own comments', async () => {
+  const { call, member } = setup();
+  const a = await member('chain@x.com', 'Leaving');
+  const b = await member('stay2@x.com', 'Staying');
+  const s = (await call('POST', '/v1/submissions', { title: 't', body: 'b' }, b.token)).body.id;
+  const top = (await call('POST', `/v1/submissions/${s}/comments`, { body: 'mine' }, a.token)).body.id;
+  const mid = (await call('POST', `/v1/submissions/${s}/comments`, { body: 'also mine', parentId: top }, a.token)).body.id;
+  await call('POST', `/v1/submissions/${s}/comments`, { body: 'theirs', parentId: mid }, b.token);
+  await call('DELETE', '/v1/account', null, a.token);
+  const view = (await call('GET', `/v1/submissions/${s}`)).body;
+  assert.deepEqual(view.comments.map((c) => [c.id === top ? 'top' : c.id === mid ? 'mid' : 'reply', c.body]),
+    [['top', null], ['mid', null], ['reply', 'theirs']]);
+});
+
 test('guessing limits: 10 wrong passwords per email in 15 minutes, 5 sign-ups per address per hour', async () => {
   const { call, member, tick } = setup();
   await member('target@x.com');

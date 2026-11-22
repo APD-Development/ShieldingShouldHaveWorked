@@ -288,15 +288,18 @@ route('POST', '/v1/account/age', async (env, req) => {
 // Deletes the account and everything it posted, voted or reported. Replies by others under deleted comments go too.
 async function deleteAccount(env, a) {
   // My comments that others replied to stay as empty placeholders owned by [deleted], so their replies aren't lost.
+  // Repeated until nothing changes: a placeholder counts as "someone else's", so a chain of my own comments above
+  // another player's reply all stay (one pass would delete the top one and cascade the reply away).
   // Everything else I wrote, voted, reported or blocked goes with the account.
-  await env.DB.prepare(
-    `UPDATE comments SET author_id = 'deleted', body = '', status = 'removed'
-      WHERE author_id = ? AND id IN (SELECT parent_id FROM comments WHERE parent_id IS NOT NULL AND author_id != ?)`)
-    .bind(a.id, a.id).run();
-  await env.DB.prepare(
-    `UPDATE champion_comments SET author_id = 'deleted', body = '', status = 'removed'
-      WHERE author_id = ? AND id IN (SELECT parent_id FROM champion_comments WHERE parent_id IS NOT NULL AND author_id != ?)`)
-    .bind(a.id, a.id).run();
+  for (const table of ['comments', 'champion_comments']) {
+    for (;;) {
+      const r = await env.DB.prepare(
+        `UPDATE ${table} SET author_id = 'deleted', body = '', status = 'removed'
+          WHERE author_id = ? AND id IN (SELECT parent_id FROM ${table} WHERE parent_id IS NOT NULL AND author_id != ?)`)
+        .bind(a.id, a.id).run();
+      if (!r.meta || !r.meta.changes) break;
+    }
+  }
   // A champion page is the game's development record and stays, but my name and my text come off it.
   await env.DB.prepare("UPDATE champions SET author_id = NULL, body = '' WHERE author_id = ?").bind(a.id).run();
   await env.DB.prepare('DELETE FROM accounts WHERE id = ?').bind(a.id).run();
