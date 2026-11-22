@@ -286,6 +286,7 @@ public class Hero extends Char {
     /** Why walk-over pickup does or doesn't act on this step ("queued" when it does). */
     public String apdWalkoverDecision(Level steppedLevel,int cell){
         if(!SPDSettings.autoPickupWalkover()) return "skip_setting_off";
+        if(SPDSettings.autoPickupWalkoverMode()==SPDSettings.WALKOVER_NO_ENEMIES && visibleEnemies()>0) return "skip_enemies_in_view";
         if(Dungeon.level!=steppedLevel) return "skip_floor_changed";
         if(pos!=cell) return "skip_not_on_cell";
         if(steppedLevel.heaps==null) return "skip_no_piles";
@@ -314,6 +315,7 @@ public class Hero extends Char {
     public boolean apdContinueWalkover(Heap heap){
         if(heap==null || heap.isEmpty() || heap.pos!=pos || heap.type!=Heap.Type.HEAP || heap.hidden) return false;
         if(!SPDSettings.autoPickupWalkover()) return false;
+        if(SPDSettings.autoPickupWalkoverMode()==SPDSettings.WALKOVER_NO_ENEMIES && visibleEnemies()>0) return false;
         return SPDSettings.autoPickupWhenFull() || apdRoomFor(heap.peek());
     }
     /** Whether walking over this item could actually pick it up: gold, energy, dew and keys never need a slot;
@@ -1140,7 +1142,8 @@ public class Hero extends Char {
         // It now survives unless an enemy is in view; everything else interrupt() does still happens.
         HeroAction.WalkoverPickUp apdKeep = (curAction instanceof HeroAction.WalkoverPickUp && curAction.dst == pos
                 && ((HeroAction.WalkoverPickUp)curAction).level == Dungeon.level && isAlive() && paralysed <= 0
-                && visibleEnemies() == 0) ? (HeroAction.WalkoverPickUp)curAction : null;
+                && (visibleEnemies() == 0 || SPDSettings.autoPickupWalkoverMode() == SPDSettings.WALKOVER_ALWAYS))
+                ? (HeroAction.WalkoverPickUp)curAction : null;
         if (curAction instanceof HeroAction.PickUp)
             com.watabou.utils.SupportActionJournal.record("loot.interrupt", "floor="+Dungeon.depth+" cell="+curAction.dst
                     +" action="+curAction.getClass().getSimpleName()+" kept="+(apdKeep!=null)+" enemies="+visibleEnemies());

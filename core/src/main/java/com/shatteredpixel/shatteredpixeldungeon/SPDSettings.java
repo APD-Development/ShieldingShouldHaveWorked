@@ -816,8 +816,16 @@ public class SPDSettings extends GameSettings {
     public static boolean autoEatWhenHungry(){return getBoolean("apd_wait_eat_hungry",false);}
     public static void autoEatWhenHungry(boolean value){put("apd_wait_eat_hungry",value);}
     // Chris, Nov 20: walking over a normal item pile picks it up (normal pickup time). ON by default (his explicit ask).
-    public static boolean autoPickupWalkover(){return getBoolean("apd_auto_pickup_walkover",true);}
-    public static void autoPickupWalkover(boolean enabled){put("apd_auto_pickup_walkover",enabled);}
+    /** Walk-over pickup (Chris, Nov 21): 0 off, 1 on only with no enemies in view (default), 2 on even with enemies nearby.
+     *  Older saves had an on/off switch; off stays off. */
+    public static final int WALKOVER_OFF=0, WALKOVER_NO_ENEMIES=1, WALKOVER_ALWAYS=2;
+    public static int autoPickupWalkoverMode(){
+        if(contains("apd_auto_pickup_walkover_mode")) return Math.max(0,Math.min(2,getInt("apd_auto_pickup_walkover_mode",WALKOVER_NO_ENEMIES)));
+        return getBoolean("apd_auto_pickup_walkover",true) ? WALKOVER_NO_ENEMIES : WALKOVER_OFF;
+    }
+    public static void autoPickupWalkoverMode(int mode){put("apd_auto_pickup_walkover_mode",Math.max(0,Math.min(2,mode)));}
+    public static boolean autoPickupWalkover(){return autoPickupWalkoverMode()!=WALKOVER_OFF;}
+    public static void autoPickupWalkover(boolean enabled){autoPickupWalkoverMode(enabled?WALKOVER_NO_ENEMIES:WALKOVER_OFF);}
     /** Chris, Nov 20: walk-over pickup also tries items there's no room for (default off: a full pack is skipped). */
     public static boolean autoPickupWhenFull(){return getBoolean("apd_auto_pickup_when_full",false);}
     public static void autoPickupWhenFull(boolean enabled){put("apd_auto_pickup_when_full",enabled);}

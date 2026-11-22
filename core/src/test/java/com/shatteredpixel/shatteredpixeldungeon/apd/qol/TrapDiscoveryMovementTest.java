@@ -264,4 +264,21 @@ public class TrapDiscoveryMovementTest {
         hero.pos=start+2;assertEquals("skip_no_pile",hero.apdWalkoverDecision(level,start+2));
         assertEquals("skip_not_on_cell",hero.apdWalkoverDecision(level,start+1));
     }
+    @Test public void walkOverPickupHasThreeSettings(){ // Chris, Nov 21: off / yes even with enemies / yes with no enemies
+        com.shatteredpixel.shatteredpixeldungeon.items.Heap h=pile(start+1,com.shatteredpixel.shatteredpixeldungeon.items.Heap.Type.HEAP);
+        h.items.clear();h.items.add(new com.shatteredpixel.shatteredpixeldungeon.items.Gold(10));
+        hero.pos=start+1;hero.curAction=new HeroAction.Move(target);
+        try{
+            SPDSettings.autoPickupWalkoverMode(SPDSettings.WALKOVER_OFF);
+            assertEquals("skip_setting_off",hero.apdWalkoverDecision(level,start+1));
+            SPDSettings.autoPickupWalkoverMode(SPDSettings.WALKOVER_NO_ENEMIES);
+            assertEquals("no enemies in view: picks up","queued",hero.apdWalkoverDecision(level,start+1));
+            SPDSettings.autoPickupWalkoverMode(SPDSettings.WALKOVER_ALWAYS);
+            assertEquals("queued",hero.apdWalkoverDecision(level,start+1));
+            SPDSettings.autoPickupWalkoverMode(9);
+            assertEquals("out of range is clamped",SPDSettings.WALKOVER_ALWAYS,SPDSettings.autoPickupWalkoverMode());
+            SPDSettings.autoPickupWalkover(false);
+            assertEquals(SPDSettings.WALKOVER_OFF,SPDSettings.autoPickupWalkoverMode());
+        }finally{SPDSettings.autoPickupWalkoverMode(SPDSettings.WALKOVER_NO_ENEMIES);}
+    }
 }

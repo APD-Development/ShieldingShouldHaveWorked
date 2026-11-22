@@ -78,7 +78,14 @@ public class APDSettingsPane extends Component {
     private CheckBox chkSingleTapSearch;
     private CheckBox chkAdaptiveSearchChoice;
     private CheckBox chkContinueTrapDiscovery;
-    private CheckBox chkAutoPickupWalkover;
+    private RedButton btnAutoPickupWalkover;
+    private static String walkoverLabel(){
+        switch(SPDSettings.autoPickupWalkoverMode()){
+            case SPDSettings.WALKOVER_OFF: return "Pick up items you walk over: Off";
+            case SPDSettings.WALKOVER_ALWAYS: return "Pick up items you walk over: Yes, even with enemies nearby";
+            default: return "Pick up items you walk over: Yes, only with no enemies";
+        }
+    }
     private CheckBox chkAutoPickupWhenFull;
     private CheckBox chkFullPackSwapPrompt;
     private RedButton btnPlaybackSpeed;
@@ -256,10 +263,13 @@ public class APDSettingsPane extends Component {
             @Override protected void onClick(){super.onClick();SPDSettings.continueOnTrapDiscovery(checked());}
         };
         chkContinueTrapDiscovery.checked(SPDSettings.continueOnTrapDiscovery());add(chkContinueTrapDiscovery);
-        chkAutoPickupWalkover=new SettingCheckBox("Pick up items you walk over"){
-            @Override protected void onClick(){super.onClick();SPDSettings.autoPickupWalkover(checked());}
+        btnAutoPickupWalkover=new SettingButton(walkoverLabel()){
+            @Override protected void onClick(){
+                SPDSettings.autoPickupWalkoverMode((SPDSettings.autoPickupWalkoverMode()+1)%3);
+                text(walkoverLabel());
+            }
         };
-        chkAutoPickupWalkover.checked(SPDSettings.autoPickupWalkover());add(chkAutoPickupWalkover);
+        add(btnAutoPickupWalkover);
         chkAutoPickupWhenFull=new SettingCheckBox("Walk-over pickup with a full backpack"){
             @Override protected void onClick(){super.onClick();SPDSettings.autoPickupWhenFull(checked());}
         };
@@ -532,7 +542,7 @@ public class APDSettingsPane extends Component {
         row(ApdSettingsSection.GAMEPLAY,btnAutoEatTrigger,"Saved independently of Auto-Eat and interruption choices. Special, raw and unknown food is never automatically consumed.");
         row(ApdSettingsSection.GAMEPLAY,chkSingleTapSearch,"On: tap to search nearby; hold to examine a tile, enemy or item. Off: tap to examine; hold to search. A search costs the normal turns; examining is free.");
         row(ApdSettingsSection.VISIBILITY,chkAdaptiveSearchChoice,"On: choose ordinary Search first in an open room, and remembered Wall Search first when an eligible nearby wall needs checking. Off: always offer ordinary Search first. Both actions remain manually available. Does not search or spend turns automatically.");
-        row(ApdSettingsSection.GAMEPLAY,chkAutoPickupWalkover,"On by default. Walking over a normal pile of items stops there and picks it up, taking the normal pickup time. Chests, shop items and hidden items are not picked up this way.");
+        row(ApdSettingsSection.GAMEPLAY,btnAutoPickupWalkover,"Tap to switch. Walking over a normal pile stops there and picks the whole pile up, one item per pickup turn. Only with no enemies (default): not while an enemy is in view. Even with enemies nearby: always. Chests, shop items and hidden items are never picked up this way.");
         row(ApdSettingsSection.GAMEPLAY,chkAutoPickupWhenFull,"Off by default. When off, walking over an item you have no room for doesn't stop you or try to pick it up. Gold, energy, dew and keys are always picked up.");
         row(ApdSettingsSection.GAMEPLAY,chkFullPackSwapPrompt,"On by default. When a pickup fails because your backpack is full, opens the backpack so you can swap something out. Off: you just get the can't carry message.");
         row(ApdSettingsSection.GAMEPLAY,chkContinueTrapDiscovery,"Off by default. On: revealing a hidden trap while moving keeps your destination and held movement. Normal pathfinding still avoids discovered hazards where it normally would. Stepping onto a trap, trap confirmation, enemies, damage, blocked routes and manual cancellation keep their normal behavior. Off: trap discovery can stop movement. Manual Search and other secret discoveries keep their normal interruptions.");
