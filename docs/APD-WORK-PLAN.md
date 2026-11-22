@@ -40,6 +40,18 @@ A recent push is not a clash: `git pull --rebase` before every push and resolve 
 - NEVER two of the same item on one tile; no duplicate or deleted drops anywhere (enemy drops, rooms, shops untouched). No extra Upgrade Scrolls, Strength potions or enemy loot. Food keeps its own slider.
 - OPEN: the score multiplier for this slider (ProvisionalScoreLookup EQUIPMENT row) was set for the old duplicate behavior and is wrong now. Chris doesn't know the right values yet; do NOT change it without him.
 
+## UI POLISH (Chris, Nov 22 8:31 AM: "All of the above. It just looks horrible") — Play branch, top priority
+Screens: Community menu, Custom Dungeon Rules (+ its sliders/presets), and the script-mods "Scripts" screen
+(feature/script-mods only). Apply ALL FOUR directions Chris picked:
+ 1. Cleaner layout, same style: tighter spacing, smaller buttons, section headers, short one-line descriptions
+    under each option instead of text walls; no huge uniform blocks.
+ 2. Tabs: Custom Rules split into tabs (Rules / Presets / Scoring); Community grouped where it helps.
+ 3. Cards: compact cards with an icon, a title and a one-line summary; tap for details.
+ 4. Collapsible: long explanations (experimental scoring etc.) fold behind a small "More"/"?" link; controls first.
+Rename "Scripts" to something that says what it does ("Mods for this run"). Keep every existing function and value;
+this is presentation only (no mechanic/balance changes). Each screen: screenshot-free JVM layout tests where
+possible (no overlaps, nothing off-screen at 390px-wide phone scale), then a dev APK for Chris to look at.
+
 ## RUN REVIEW ANSWERS (Chris, Nov 19 6:30 AM) — these override earlier defaults/questions. Build them next.
 - Luck drop: reviewers play the same seed; drops vary naturally like for any player (more/fewer potions is part of the
   test). No luck bonus or adjustment. Reviewers can say in their advice that a verdict depends on luck.
