@@ -134,6 +134,125 @@ public final class ScriptDefs {
 		} catch (BadDef b){ throw new BadDef("monster " + id + ": " + b.getMessage()); }
 	}
 
+	// ---- heroes hook ----
+	public static final int MAX_HEROES = 8;
+	public static final String[] HERO_TRIGGERS = {"onStart", "onLevelUp", "onTurn", "onKill"};
+
+	/** A script hero: the checked HeroMod (same rules as the old data mods: existing base class, talents of the right
+	 *  tier, existing armor abilities, existing starting items) plus mod items for its kit and its triggers. */
+	public static final class HeroDef {
+		public final String modId, id;
+		public final com.shatteredpixel.shatteredpixeldungeon.apd.mods.HeroMod mod;
+		/** The hero.json-style text stored in the save, so a reload rebuilds the same hero. */
+		public final String json;
+		/** Mod item ids (this mod's own) and how many the hero starts with. */
+		public final Map<String, Integer> modItems;
+		final Map<String, Function> triggers;
+		HeroDef(String modId, String id, com.shatteredpixel.shatteredpixeldungeon.apd.mods.HeroMod mod, String json,
+		        Map<String, Integer> modItems, Map<String, Function> triggers){
+			this.modId = modId; this.id = id; this.mod = mod; this.json = json;
+			this.modItems = Collections.unmodifiableMap(modItems); this.triggers = Collections.unmodifiableMap(triggers);
+		}
+		public boolean has(String t){ return triggers.containsKey(t); }
+		public String key(){ return modId + ":" + id; }
+	}
+
+	static HeroDef hero(String modId, Object arg){
+		if (!(arg instanceof Scriptable) || arg instanceof Function) throw new BadDef("APD.hero needs an object { id, name, baseClass, ... }");
+		Scriptable o = (Scriptable) arg;
+		String id = id(o);
+		try {
+			StringBuilder j = new StringBuilder("{\"format\":1");
+			jp(j, "id", modId + "." + id);
+			jp(j, "name", text(o, "name", true, MAX_NAME));
+			String author = text(o, "author", false, 32);
+			jp(j, "author", author == null || author.isEmpty() ? modId : author);
+			String desc = text(o, "description", false, MAX_DESC);
+			if (desc != null && !desc.isEmpty()) jp(j, "description", desc);
+			jp(j, "baseClass", text(o, "baseClass", true, 16).toUpperCase(java.util.Locale.ROOT));
+			j.append(",\"hp\":").append(whole(o, "hp", 20, 1, 999));
+			j.append(",\"str\":").append(whole(o, "str", 10, 1, 99));
+			Map<String, Integer> modItems = new LinkedHashMap<>();
+			j.append(",\"startingItems\":[");
+			Object si = get(o, "startingItems");
+			if (si != null){
+				if (!(si instanceof org.mozilla.javascript.NativeArray)) throw new BadDef("\"startingItems\" must be a list");
+				org.mozilla.javascript.NativeArray a = (org.mozilla.javascript.NativeArray) si;
+				if (a.getLength() > com.shatteredpixel.shatteredpixeldungeon.apd.mods.HeroMod.MAX_ITEMS) throw new BadDef("at most " + com.shatteredpixel.shatteredpixeldungeon.apd.mods.HeroMod.MAX_ITEMS + " starting items");
+				boolean first = true;
+				for (int i = 0; i < a.getLength(); i++){
+					Object e = a.get(i);
+					if (!(e instanceof Scriptable) || e instanceof Function) throw new BadDef("each starting item must be { item } or { modItem }");
+					Scriptable it = (Scriptable) e;
+					String mi = text(it, "modItem", false, 32), gi = text(it, "item", false, 80);
+					if ((mi == null) == (gi == null)) throw new BadDef("each starting item needs exactly one of \"item\" or \"modItem\"");
+					int qty = whole(it, "quantity", 1, 1, 99);
+					if (mi != null){
+						if (modItems.containsKey(mi)) throw new BadDef("modItem " + mi + " is listed twice");
+						modItems.put(mi, qty);
+						continue;
+					}
+					if (!first) j.append(','); first = false;
+					j.append("{"); jv(j, "item", gi); j.append(",\"level\":").append(whole(it, "level", 0, 0, 20));
+					j.append(",\"quantity\":").append(qty).append('}');
+				}
+			}
+			j.append(']');
+			Object t = get(o, "talents");
+			if (!(t instanceof Scriptable) || t instanceof Function) throw new BadDef("\"talents\" must be { tier1: [...], tier2: [...], tier3: [...] }");
+			j.append(",\"talents\":{");
+			for (int tier = 1; tier <= 3; tier++){
+				if (tier > 1) j.append(',');
+				j.append("\"tier").append(tier).append("\":");
+				names(j, (Scriptable) t, "tier" + tier);
+			}
+			j.append('}');
+			j.append(",\"armorAbilities\":");
+			names(j, o, "armorAbilities");
+			j.append('}');
+			Map<String, Function> triggers = new LinkedHashMap<>();
+			for (String tr : HERO_TRIGGERS){ Function f = function(o, tr, false); if (f != null) triggers.put(tr, f); }
+			for (Object k : o.getIds()){
+				String key = String.valueOf(k);
+				if (key.startsWith("on") && !triggers.containsKey(key)) throw new BadDef("unknown trigger \"" + key + "\"");
+			}
+			String json = j.toString();
+			com.shatteredpixel.shatteredpixeldungeon.apd.mods.HeroMod mod;
+			try { mod = com.shatteredpixel.shatteredpixeldungeon.apd.mods.HeroMod.parse(json); }
+			catch (com.shatteredpixel.shatteredpixeldungeon.apd.mods.HeroMod.Invalid x){ throw new BadDef(x.getMessage()); }
+			return new HeroDef(modId, id, mod, json, modItems, triggers);
+		} catch (BadDef b){ throw new BadDef("hero " + id + ": " + b.getMessage()); }
+	}
+
+	/** A list of names (talents, armor abilities) as a JSON array; HeroMod checks the names themselves. */
+	private static void names(StringBuilder j, Scriptable o, String name){
+		Object v = get(o, name);
+		if (!(v instanceof org.mozilla.javascript.NativeArray)) throw new BadDef("\"" + name + "\" must be a list of names");
+		org.mozilla.javascript.NativeArray a = (org.mozilla.javascript.NativeArray) v;
+		if (a.getLength() > 16) throw new BadDef("\"" + name + "\" is too long");
+		j.append('[');
+		for (int i = 0; i < a.getLength(); i++){
+			Object e = a.get(i);
+			if (!(e instanceof CharSequence)) throw new BadDef("\"" + name + "\" must only hold names");
+			if (i > 0) j.append(',');
+			quote(j, e.toString().trim());
+		}
+		j.append(']');
+	}
+
+	private static void jp(StringBuilder j, String key, String value){ j.append(','); jv(j, key, value); }
+	private static void jv(StringBuilder j, String key, String value){ quote(j, key); j.append(':'); quote(j, value); }
+	private static void quote(StringBuilder j, String s){
+		j.append('"');
+		for (int i = 0; i < s.length(); i++){
+			char c = s.charAt(i);
+			if (c == '"' || c == '\\') j.append('\\').append(c);
+			else if (c < 0x20 || c == '\u2028' || c == '\u2029') j.append(String.format("\\u%04x", (int) c));
+			else j.append(c);
+		}
+		j.append('"');
+	}
+
 	/** [min, max] from a 2-number array, or one number for both. */
 	static int[] pair(Scriptable o, String name, int dMin, int dMax, int lo, int hi){
 		Object v = get(o, name);

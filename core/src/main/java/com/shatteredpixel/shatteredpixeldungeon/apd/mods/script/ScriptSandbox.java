@@ -235,6 +235,12 @@ public final class ScriptSandbox {
 		return null;
 	}
 
+	/** Turns the mod off with a reason found by APD after its script ran (e.g. a hero naming a missing mod item). */
+	void refuse(String why){
+		if (disabled == null) disabled = "Mod " + modId + " was turned off: it " + why + ".";
+		scope = null;
+	}
+
 	private void check() throws ScriptFailure {
 		if (disabled != null) throw new ScriptFailure(disabled);
 	}

@@ -35,6 +35,8 @@ public final class ScriptModRuntime {
 		final Map<String, ScriptDefs.ItemDef> items = new LinkedHashMap<>();
 		final Map<String, ScriptDefs.EffectDef> effects = new LinkedHashMap<>();
 		final Map<String, ScriptDefs.MonsterDef> monsters = new LinkedHashMap<>();
+		final Map<String, ScriptDefs.HeroDef> heroes = new LinkedHashMap<>();
+		public List<ScriptDefs.HeroDef> heroes(){ return new ArrayList<>(heroes.values()); }
 		public List<ScriptDefs.MonsterDef> monsters(){ return new ArrayList<>(monsters.values()); }
 		LoadedMod(String id, ScriptSandbox sandbox){ this.id = id; this.sandbox = sandbox; }
 		public boolean disabled(){ return sandbox.isDisabled(); }
@@ -72,6 +74,13 @@ public final class ScriptModRuntime {
 					m.monsters.put(d.id, d);
 					return null;
 				});
+				apd.fn("hero", args -> {
+					if (m.heroes.size() >= ScriptDefs.MAX_HEROES) throw new ScriptDefs.BadDef("declares more than " + ScriptDefs.MAX_HEROES + " heroes");
+					ScriptDefs.HeroDef d = ScriptDefs.hero(modId, args.length > 0 ? args[0] : null);
+					if (m.heroes.containsKey(d.id)) throw new ScriptDefs.BadDef("declares hero " + d.id + " twice");
+					m.heroes.put(d.id, d);
+					return null;
+				});
 				apd.fn("effect", args -> {
 					if (m.effects.size() >= ScriptDefs.MAX_EFFECTS) throw new ScriptDefs.BadDef("declares more than " + ScriptDefs.MAX_EFFECTS + " effects");
 					ScriptDefs.EffectDef d = ScriptDefs.effect(modId, args.length > 0 ? args[0] : null);
@@ -85,12 +94,20 @@ public final class ScriptModRuntime {
 		} catch (ScriptSandbox.ScriptFailure f){
 			// the sandbox recorded the reason and turned itself off
 		}
+		// a hero's kit may name the mod's own items, declared anywhere in the script: check once it has run
+		if (!m.disabled()) for (ScriptDefs.HeroDef h : m.heroes.values()) for (String item : h.modItems.keySet())
+			if (!m.items.containsKey(item)){ sb.refuse("has hero " + h.id + " starting with modItem " + item + ", which it never declares"); break; }
 		return m;
 	}
 
 	public static ScriptDefs.ItemDef item(String modId, String itemId){
 		LoadedMod m = mods.get(modId);
 		return m == null ? null : m.items.get(itemId);
+	}
+
+	public static ScriptDefs.HeroDef hero(String modId, String heroId){
+		LoadedMod m = mods.get(modId);
+		return m == null || m.disabled() ? null : m.heroes.get(heroId);
 	}
 
 	public static ScriptDefs.MonsterDef monster(String modId, String monsterId){
