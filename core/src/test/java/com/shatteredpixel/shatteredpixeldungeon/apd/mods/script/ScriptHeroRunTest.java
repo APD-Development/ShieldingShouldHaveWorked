@@ -36,7 +36,7 @@ public class ScriptHeroRunTest {
 		Files.write(new File(d, "mod.json").toPath(),
 				"{\"format\":1,\"id\":\"test.heroes\",\"name\":\"Heroes\",\"author\":\"Tester\"}".getBytes(StandardCharsets.UTF_8));
 		// onStart gives a shield, so the test can see it ran
-		String script = ScriptHeroesTest.hero("").replace("onStart(h){ h.message('hi'); }", "onStart(h){ h.shield(7); }, onLevelUp(h, lvl){ h.shield(100 * lvl); }, onTurn(h){ h.shield(1); }, onKill(h, name){ h.shield(1000); }");
+		String script = ScriptHeroesTest.hero("").replace("onStart(h){ h.message('hi'); }", "onStart(h){ h.shield(7); }, onLevelUp(h, lvl){ h.shield(100 * lvl); }, onTurn(h){ h.shield(1); }, onKill(h, name){ h.shield(500); }");
 		Files.write(new File(d, "main.js").toPath(), script.getBytes(StandardCharsets.UTF_8));
 		ScriptModRun.dirOverride = root;
 		oldHero = Dungeon.hero;
@@ -119,12 +119,12 @@ public class ScriptHeroRunTest {
 		assertEquals(2, hero.lvl);
 		assertEquals(208, hero.shielding());
 		ScriptModRun.heroTrigger(hero, "onKill", "Rat");
-		assertEquals(1208, hero.shielding());
+		assertEquals(708, hero.shielding());
 		// a normal hero: nothing runs
 		ScriptModRun.reset();
 		HeroModRun.beginRun();
 		ScriptModRun.heroTrigger(hero, "onKill", "Rat");
 		turns.act();
-		assertEquals(1208, hero.shielding());
+		assertEquals(708, hero.shielding());
 	}
 }
