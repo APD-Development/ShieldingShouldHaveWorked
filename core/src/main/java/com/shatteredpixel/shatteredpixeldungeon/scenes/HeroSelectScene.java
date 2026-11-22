@@ -422,7 +422,7 @@ public class HeroSelectScene extends PixelScene {
 		//APD script mods (feature/script-mods, test builds only): toggle installed script mods for the next run
 		final com.shatteredpixel.shatteredpixeldungeon.apd.mods.script.ScriptModLibrary scripts = com.shatteredpixel.shatteredpixeldungeon.apd.mods.script.ScriptModRun.pickerEnabled() ? scanScriptMods() : null;
 		if (scripts != null && (!scripts.mods.isEmpty() || !scripts.refused.isEmpty())){
-			StyledButton btnScripts = new StyledButton(Chrome.Type.GREY_BUTTON_TR, "Scripts"){
+			StyledButton btnScripts = new StyledButton(Chrome.Type.GREY_BUTTON_TR, "Mods"){
 				@Override
 				protected void onClick() {
 					super.onClick();
@@ -531,10 +531,10 @@ public class HeroSelectScene extends PixelScene {
 			labels[list.size() + i] = (com.shatteredpixel.shatteredpixeldungeon.apd.mods.script.ScriptModRun.isPickedHero(h.modId, h.id) ? "[PLAYING] " : "Play as ")
 					+ h.mod.name + " (" + h.mod.baseClass.title() + ")";
 		}
-		StringBuilder msg = new StringBuilder(list.isEmpty() ? "No script mods could be loaded."
-				: "Tap a mod to turn it on or off for your next new run. Mod runs stay out of rankings, badges, tournaments and run reviews.");
+		StringBuilder msg = new StringBuilder(list.isEmpty() ? "No mods could be loaded."
+				: "Tap a mod to turn it on or off. Mod runs skip rankings, badges, tournaments and reviews.");
 		for (com.shatteredpixel.shatteredpixeldungeon.apd.mods.script.ScriptModLibrary.Refused r : lib.refused) msg.append("\n\nNot loaded: ").append(r.folder).append(": ").append(r.reason);
-		ShatteredPixelDungeon.scene().addToFront(new WndOptions("Script mods", msg.toString(), labels){
+		ShatteredPixelDungeon.scene().addToFront(new WndOptions("Mods for this run", msg.toString(), labels){
 			@Override
 			protected void onSelect(int index){
 				if (index >= list.size()){
