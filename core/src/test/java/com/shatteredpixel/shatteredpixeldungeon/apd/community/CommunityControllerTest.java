@@ -355,6 +355,8 @@ public class CommunityControllerTest {
 		assertTrue(has(last(), "3 upvotes"));
 		tap("Take back my upvote");
 		assertTrue(requests.stream().anyMatch(r -> r.startsWith("DELETE /v1/submissions/5501/upvote")));
+		assertFalse("an upvote drops the cached submissions/results lists (counts changed)",
+				CommunityController.CACHE.keySet().stream().anyMatch(k -> k.endsWith("|submissions") || k.endsWith("|results")));
 	}
 
 	@Test public void theHubLinksToWhatsComingNext(){

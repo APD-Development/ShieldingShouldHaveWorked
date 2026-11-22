@@ -350,7 +350,7 @@ public final class CommunityController {
 			if (title == null){ submissions(); return; }
 			ui.ask("Your idea", "Describe it. Others can comment and ask you questions.", "", 4000, true, body -> {
 				if (body == null){ submissions(); return; }
-				call(() -> api.submit(title, body), r -> { if (r.ok()) detail(r.string("id")); else problem(r, this::submissions); });
+				call(() -> api.submit(title, body), r -> { if (r.ok()){ uncache("submissions"); detail(r.string("id")); } else problem(r, this::submissions); });
 			});
 		});
 	}
@@ -381,7 +381,7 @@ public final class CommunityController {
 			if ("voting".equals(phase()) && !mine){
 				String count = upvotes < 0 ? null : upvotes + (upvotes == 1 ? " upvote" : " upvotes");
 				s.item(upvoted ? "Take back my upvote" : "Upvote this idea", count, () ->
-						call(() -> api.upvote(id, !upvoted), x -> { if (x.ok()) detail(id); else problem(x, () -> detail(id)); }));
+						call(() -> api.upvote(id, !upvoted), x -> { if (x.ok()){ uncache("submissions", "results"); detail(id); } else problem(x, () -> detail(id)); }));
 			} else if ("voting".equals(phase()) && upvotes >= 0) s.note(upvotes + (upvotes == 1 ? " upvote" : " upvotes") + " (you can't upvote your own idea)");
 			s.item("Comment", null, () -> comment(id, null));
 			if (!mine){
@@ -462,7 +462,7 @@ public final class CommunityController {
 	}
 
 	private void block(String accountId, Runnable after){
-		call(() -> api.block(accountId), r -> { if (r.ok()) done("Blocked. You won't see their posts or comments.", after); else problem(r, after); });
+		call(() -> api.block(accountId), r -> { if (r.ok()){ uncacheLists(); done("Blocked. You won't see their posts or comments.", after); } else problem(r, after); });
 	}
 
 	// ---- voting and the tournament ----
@@ -519,7 +519,7 @@ public final class CommunityController {
 				final String id = side.getString("id");
 				String label = side.getString("title", "") + (id.equals(winner) ? "  (won)" : "");
 				String detail = side.getInt("votes", 0) + " votes";
-				if (open) s.item("Vote: " + label, detail, () -> call(() -> api.vote(idx, id), r -> { if (r.ok()) results(); else problem(r, this::results); }));
+				if (open) s.item("Vote: " + label, detail, () -> call(() -> api.vote(idx, id), r -> { if (r.ok()){ uncache("results"); results(); } else problem(r, this::results); }));
 				else s.item(label, detail, () -> detail(id));
 			}
 		}
@@ -551,7 +551,7 @@ public final class CommunityController {
 			else for (JsonValue v = list.child; v != null; v = v.next){
 				final String id = v.getString("id"), name = v.getString("displayName", "?");
 				s.item(name, "Tap to unblock", () -> call(() -> api.unblock(id), x -> {
-					if (x.ok()) done(name + " is unblocked.", this::blockedList); else problem(x, this::blockedList);
+					if (x.ok()){ uncacheLists(); done(name + " is unblocked.", this::blockedList); } else problem(x, this::blockedList);
 				}));
 			}
 			s.item("Back", null, this::account);
@@ -836,14 +836,14 @@ public final class CommunityController {
 			else for (JsonValue n = notes.child; n != null; n = n.next){
 				final String nid = n.getString("id");
 				if (admin) s.item(n.getString("body", ""), "Tap to delete this note", () ->
-						call(() -> api.adminDeleteChampionNote(sid, nid), x -> { if (x.ok()) champion(sid); else problem(x, () -> champion(sid)); }));
+						call(() -> api.adminDeleteChampionNote(sid, nid), x -> { if (x.ok()){ uncache("champions"); champion(sid); } else problem(x, () -> champion(sid)); }));
 				else s.note(n.getString("body", ""));
 			}
 			if (admin){
 				s.item("Set status", "Planned, In development, Testing, Released", () -> championStatus(sid, b.getString("status", null)));
 				s.item("Add a development note", null, () -> ui.ask("Development note", "Everyone can read this.", "", 4000, true, text -> {
 					if (text == null || text.trim().isEmpty()){ champion(sid); return; }
-					call(() -> api.adminChampionNote(sid, text), x -> { if (x.ok()) champion(sid); else problem(x, () -> champion(sid)); });
+					call(() -> api.adminChampionNote(sid, text), x -> { if (x.ok()){ uncache("champions"); champion(sid); } else problem(x, () -> champion(sid)); });
 				}));
 			}
 			s.item("Comment", null, () -> championComment(sid, null));
@@ -874,7 +874,7 @@ public final class CommunityController {
 		Screen s = new Screen("Set status", "Everyone sees this on the champion's page.");
 		s.back = () -> champion(sid);
 		for (String st : CHAMPION_STATUSES) s.check(statusText(st), null, st.equals(current), () ->
-				call(() -> api.adminChampionStatus(sid, st), x -> { if (x.ok()) champion(sid); else problem(x, () -> champion(sid)); }));
+				call(() -> api.adminChampionStatus(sid, st), x -> { if (x.ok()){ uncache("champions"); champion(sid); } else problem(x, () -> champion(sid)); }));
 		s.item("Back", null, () -> champion(sid));
 		ui.show(s);
 	}
@@ -1077,7 +1077,7 @@ public final class CommunityController {
 					String email = v.getString("email", null);
 					s.item(name + (banned ? "  (banned)" : ""), (email == null ? "Google account" : email) + " · tap to " + (banned ? "unban" : "ban"),
 							() -> call(() -> api.adminBan(id, !banned), x -> {
-								if (x.ok()) done(name + (banned ? " is unbanned." : " is banned and signed out."), this::moderation);
+								if (x.ok()){ uncacheLists(); done(name + (banned ? " is unbanned." : " is banned and signed out."), this::moderation); }
 								else problem(x, this::moderation);
 							}));
 				}
@@ -1102,7 +1102,7 @@ public final class CommunityController {
 						if (tour == null){ moderation(); return; }
 						Screen s = new Screen("Start " + title.trim() + "?", "Submissions " + sub + " days, voting " + vote + " days, tournament " + tour + " days. Starts now.");
 						s.item("Start it", null, () -> call(() -> api.adminStartSeason(title.trim(), sub, vote, tour), r -> {
-							if (r.ok()) done("Season started. Submissions are open.", this::hub);
+							if (r.ok()){ uncacheLists(); done("Season started. Submissions are open.", this::hub); }
 							else if ("season_overlaps".equals(r.error)) problem(r, this::moderation);
 							else problem(r, this::moderation);
 						}));
@@ -1115,7 +1115,7 @@ public final class CommunityController {
 		});
 	}
 
-	private void after(CommunityApi.Result r){ if (r.ok()) moderation(); else problem(r, this::moderation); }
+	private void after(CommunityApi.Result r){ if (r.ok()){ uncacheLists(); moderation(); } else problem(r, this::moderation); }
 
 	// ---- helpers ----
 
@@ -1142,6 +1142,11 @@ public final class CommunityController {
 	// Locked: background refreshes write the same map from another thread.
 	private void uncache(String... keys){
 		synchronized (CACHE){ for (String k : keys) CACHE.remove(cacheKey(k)); }
+	}
+
+	// After blocking someone or a moderator action, every list could show posts that are now hidden: drop them all.
+	private void uncacheLists(){
+		uncache("season", "submissions", "results", "champions", "mods", "mods-subscribed");
 	}
 
 	private void cached(String key, Supplier<CommunityApi.Result> call, Consumer<CommunityApi.Result> then){
