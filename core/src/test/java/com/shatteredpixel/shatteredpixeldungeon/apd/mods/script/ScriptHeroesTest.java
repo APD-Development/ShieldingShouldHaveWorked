@@ -59,6 +59,31 @@ public class ScriptHeroesTest {
 		try { assertEquals(d.mod.name, HeroMod.parse(d.json).name); } catch (HeroMod.Invalid e){ fail(e.getMessage()); }
 	}
 
+	@Test public void spriteUsesAnExistingHeroLookAndSurvivesTheSave(){
+		ScriptModRuntime.LoadedMod m = ScriptModRuntime.load("test.heroes", hero("").replace("baseClass: 'warrior',", "baseClass: 'warrior', sprite: 'mage',"));
+		assertFalse(m.disabledReason(), m.disabled());
+		ScriptDefs.HeroDef d = ScriptModRuntime.hero("test.heroes", "knight");
+		assertEquals(HeroClass.WARRIOR, d.mod.baseClass);
+		assertEquals(HeroClass.MAGE, d.mod.look);
+		try { assertEquals(HeroClass.MAGE, HeroMod.parse(d.json).look); } catch (HeroMod.Invalid e){ fail(e.getMessage()); }
+		// no sprite: the base class look, as before
+		ScriptModRuntime.clear();
+		ScriptModRuntime.load("test.heroes", hero(""));
+		assertNull(ScriptModRuntime.hero("test.heroes", "knight").mod.look);
+		// not an existing hero: the mod is turned off with a plain reason
+		ScriptModRuntime.clear();
+		ScriptModRuntime.LoadedMod bad = ScriptModRuntime.load("test.heroes", hero("").replace("baseClass: 'warrior',", "baseClass: 'warrior', sprite: 'RatSprite',"));
+		assertTrue(bad.disabled());
+		assertTrue(bad.disabledReason(), bad.disabledReason().contains("isn't an existing hero"));
+		// the dungeon/avatar sprite follows the look only while that hero's run is active
+		try {
+			com.shatteredpixel.shatteredpixeldungeon.apd.mods.HeroModRun.active = d.mod;
+			assertEquals(HeroClass.MAGE, com.shatteredpixel.shatteredpixeldungeon.sprites.HeroSprite.lookClass(HeroClass.WARRIOR));
+			com.shatteredpixel.shatteredpixeldungeon.apd.mods.HeroModRun.active = null;
+			assertEquals(HeroClass.WARRIOR, com.shatteredpixel.shatteredpixeldungeon.sprites.HeroSprite.lookClass(HeroClass.WARRIOR));
+		} finally { com.shatteredpixel.shatteredpixeldungeon.apd.mods.HeroModRun.active = null; }
+	}
+
 	@Test public void mistakesTurnTheModOff(){
 		String[][] bad = {
 				{hero("").replace("'warrior'", "'wizard'"), "baseClass must be one of"},

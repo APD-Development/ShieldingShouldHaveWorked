@@ -170,6 +170,8 @@ public final class ScriptDefs {
 			String desc = text(o, "description", false, MAX_DESC);
 			if (desc != null && !desc.isEmpty()) jp(j, "description", desc);
 			jp(j, "baseClass", text(o, "baseClass", true, 16).toUpperCase(java.util.Locale.ROOT));
+			String look = text(o, "sprite", false, 16);
+			if (look != null && !look.isEmpty()) jp(j, "look", look.toUpperCase(java.util.Locale.ROOT));
 			j.append(",\"hp\":").append(whole(o, "hp", 20, 1, 999));
 			j.append(",\"str\":").append(whole(o, "str", 10, 1, 99));
 			Map<String, Integer> modItems = new LinkedHashMap<>();
@@ -219,7 +221,11 @@ public final class ScriptDefs {
 			String json = j.toString();
 			com.shatteredpixel.shatteredpixeldungeon.apd.mods.HeroMod mod;
 			try { mod = com.shatteredpixel.shatteredpixeldungeon.apd.mods.HeroMod.parse(json); }
-			catch (com.shatteredpixel.shatteredpixeldungeon.apd.mods.HeroMod.Invalid x){ throw new BadDef(x.getMessage()); }
+			catch (com.shatteredpixel.shatteredpixeldungeon.apd.mods.HeroMod.Invalid x){
+				String m = x.getMessage();
+				if (m != null && m.startsWith("look ")) m = "sprite \"" + look + "\" isn't an existing hero (" + java.util.Arrays.toString(com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass.values()) + ")";
+				throw new BadDef(m);
+			}
 			return new HeroDef(modId, id, mod, json, modItems, triggers);
 		} catch (BadDef b){ throw new BadDef("hero " + id + ": " + b.getMessage()); }
 	}

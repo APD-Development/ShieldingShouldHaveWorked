@@ -38,6 +38,8 @@ public final class HeroMod {
 
 	public final String id, name, author, description;
 	public final HeroClass baseClass;
+	/** Optional: an existing hero class whose sprite sheet this hero uses (a script hero's "sprite"); null = base class look. */
+	public final HeroClass look;
 	public final int hp, str;
 	public final List<StartingItem> startingItems;
 	public final List<List<Talent>> talentTiers; // index 0 = tier 1
@@ -54,10 +56,10 @@ public final class HeroMod {
 		public Invalid(String why){ super(why); }
 	}
 
-	private HeroMod(String id, String name, String author, String description, HeroClass baseClass, int hp, int str,
+	private HeroMod(String id, String name, String author, String description, HeroClass baseClass, HeroClass look, int hp, int str,
 	                List<StartingItem> items, List<List<Talent>> tiers, List<Class<? extends ArmorAbility>> abilities){
 		this.id = id; this.name = name; this.author = author; this.description = description;
-		this.baseClass = baseClass; this.hp = hp; this.str = str;
+		this.baseClass = baseClass; this.hp = hp; this.str = str; this.look = look;
 		this.startingItems = Collections.unmodifiableList(items);
 		this.talentTiers = Collections.unmodifiableList(tiers);
 		this.armorAbilities = Collections.unmodifiableList(abilities);
@@ -86,6 +88,12 @@ public final class HeroMod {
 		HeroClass base;
 		try { base = HeroClass.valueOf(text(v, "baseClass", 16)); }
 		catch (IllegalArgumentException e){ throw new Invalid("baseClass must be one of " + java.util.Arrays.toString(HeroClass.values())); }
+
+		HeroClass look = null;
+		if (v.has("look")){
+			try { look = HeroClass.valueOf(text(v, "look", 16)); }
+			catch (IllegalArgumentException e){ throw new Invalid("look must be one of " + java.util.Arrays.toString(HeroClass.values())); }
+		}
 
 		int hp = number(v, "hp", 1, 999), str = number(v, "str", 1, 99); // sanity bounds only; balance is the modder's call
 
@@ -126,7 +134,7 @@ public final class HeroMod {
 		}
 		if (abilities.size() > 3) throw new Invalid("at most 3 armor abilities");
 
-		return new HeroMod(id, name, author, description, base, hp, str, items, tiers, abilities);
+		return new HeroMod(id, name, author, description, base, look, hp, str, items, tiers, abilities);
 	}
 
 	private static String text(JsonValue v, String key, int max) throws Invalid {

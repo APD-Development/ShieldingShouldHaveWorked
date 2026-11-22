@@ -66,7 +66,13 @@ public class HeroSprite extends CharSprite {
 	/** The hero's own look: the active mod's sheet in a mod run, else the class sheet. */
 	public static Object ownSheet(){
 		com.watabou.gltextures.SmartTexture modSheet = com.shatteredpixel.shatteredpixeldungeon.apd.mods.ModSprites.dungeonSheet();
-		return modSheet != null ? modSheet : Dungeon.hero.heroClass.spritesheet();
+		return modSheet != null ? modSheet : lookClass(Dungeon.hero.heroClass).spritesheet();
+	}
+
+	/** A script hero with a "sprite" uses that existing hero's sheet; everyone else their own class. */
+	public static HeroClass lookClass(HeroClass own){
+		com.shatteredpixel.shatteredpixeldungeon.apd.mods.HeroMod m = com.shatteredpixel.shatteredpixeldungeon.apd.mods.HeroModRun.active;
+		return m != null && m.look != null ? m.look : own;
 	}
 
 	public void disguise(HeroClass cls){
@@ -217,7 +223,7 @@ public class HeroSprite extends CharSprite {
 				a.frame( frame );
 				return a;
 			}
-			return avatar(hero.heroClass, hero.tier());
+			return avatar(lookClass(hero.heroClass), hero.tier());
 		}
 	}
 	
