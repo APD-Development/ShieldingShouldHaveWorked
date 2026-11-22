@@ -70,6 +70,7 @@ public class CustomRulesNoticeDeviceTest {
         Thread.sleep(500);
     }
     private static void screenshot(String name)throws Exception {
+        if(android.os.Build.VERSION.SDK_INT<29)return; //MediaStore RELATIVE_PATH needs Android 10; older emulators skip the picture only
         android.content.Context context=InstrumentationRegistry.getInstrumentation().getTargetContext();
         Bitmap bitmap=InstrumentationRegistry.getInstrumentation().getUiAutomation().takeScreenshot();assertNotNull(bitmap);
         android.content.ContentValues values=new android.content.ContentValues();

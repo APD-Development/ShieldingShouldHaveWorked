@@ -15,7 +15,8 @@ STATUS=$?
 if [ "$STATUS" = "124" ]; then echo "DEVICE TESTS DID NOT FINISH IN 14 MINUTES (see logcat artifact)"; fi
 sleep 2
 mkdir -p shots
-adb pull /sdcard/Android/data/com.charltonchris29.adhdpixeldungeon.indev/files/apd-shots shots/ >/dev/null 2>&1 || true
+adb exec-out run-as com.charltonchris29.adhdpixeldungeon.indev sh -c 'cd files/apd-shots 2>/dev/null && tar c .' 2>/dev/null | tar x -C shots 2>/dev/null || true
+ls shots || true
 adb logcat -d -v time > logcat-final.txt || true
 echo "=== last lines of the APDMIG markers ==="
 grep -a "APDMIG\|APDPERF\|APDUI" logcat-final.txt | tail -60

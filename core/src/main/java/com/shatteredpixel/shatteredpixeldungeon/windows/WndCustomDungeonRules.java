@@ -46,7 +46,7 @@ public class WndCustomDungeonRules extends Window {
         title.maxWidth(width);title.hardlight(TITLE_COLOR);title.setPos(0,0);add(title);
         RenderedTextBlock mode=PixelScene.renderTextBlock(draft==null?"":(currentRun?"This run (locked)":"Next run"),6);
         mode.hardlight(0x999999);mode.setPos(width-mode.width(),title.top()+(title.height()-mode.height())/2f);add(mode);
-        combined=PixelScene.renderTextBlock("",6);combined.maxWidth(width);
+        combined=PixelScene.renderTextBlock("",6);combined.maxWidth(width);combined.hardlight(TITLE_COLOR);
         combined.setPos(0,title.bottom()+3);add(combined);updateCombined();
         float ty=combined.bottom()+4;
         float tw=(width-4)/3f;
@@ -265,7 +265,7 @@ public class WndCustomDungeonRules extends Window {
                 currentRun && frozenScoring!=null && frozenScoring.status==CustomScoreSnapshot.Status.EXPERIMENTAL
                     ? com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomRuleMultipliers.format(new java.math.BigDecimal(frozenScoring.multiplierExact))
                     : com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomRuleMultipliers.format(com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomRuleMultipliers.combined(draft));
-        combined.text("Score multiplier: _"+factor+"_");
+        combined.text("Score multiplier: "+factor);
     }
     private String caption(CustomDungeonRules.Slider rule) {
         String factor=currentRun && frozenScoring!=null && frozenScoring.status==CustomScoreSnapshot.Status.EXPERIMENTAL

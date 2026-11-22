@@ -29,7 +29,7 @@ public class UiPolishScreenshotDeviceTest {
 	private static void shot(String name) throws Exception {
 		Thread.sleep(900);
 		Bitmap b = InstrumentationRegistry.getInstrumentation().getUiAutomation().takeScreenshot(); assertNotNull(b);
-		File dir = new File(InstrumentationRegistry.getInstrumentation().getTargetContext().getExternalFilesDir(null), "apd-shots");
+		File dir = new File(InstrumentationRegistry.getInstrumentation().getTargetContext().getFilesDir(), "apd-shots");
 		assertTrue(dir.isDirectory() || dir.mkdirs());
 		try (FileOutputStream out = new FileOutputStream(new File(dir, name))) { assertTrue(b.compress(Bitmap.CompressFormat.PNG, 100, out)); }
 		finally { b.recycle(); }
