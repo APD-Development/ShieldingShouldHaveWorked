@@ -127,7 +127,7 @@ A recent push is not a clash: `git pull --rebase` before every push and resolve 
            the next hooks now (still feature/script-mods only, never a Play build).
      MONSTERS HOOK: CORE DONE Nov 21 1:40 PM on feature/script-mods (aec5ca05, CI 44934273954, ScriptMonstersTest 5/5;
         ScriptMob, MonsterApi, ScriptMobSprites, ScriptModRuntime.maybeSpawn hooked into Level.createMob; sample mod
-        has a Sample Crab). STILL TO DO: a device test for a mod monster spawning + saving on Android; then the
+        has a Sample Crab). DEVICE TEST DONE Nov 21 11 PM (ScriptMonsterDeviceTest, run 44983636500, API 26+34). NEXT: the
         HEROES HOOK below. Spec as written: APD.monster({ id, name, description, sprite: an existing mob sprite name
         (e.g. "RatSprite"), hp, attack:[min,max], accuracy, defense, evasion, armor:[min,max] or number, speed
         (0.5-2), xp, spawn:{ floors:[from,to], weight } and/or none, loot (a mod item id or none),
@@ -249,6 +249,7 @@ default-on settings (SPDSettings.keepOldDefaultsForExistingPlayers). Next: Googl
 (Credential Manager), server URL default once deployed, run reviews. HttpGateway contract routes, deployment workflow, Android Community screens wired to it, Play Age Signals.
 
 ## Run log
+- 2026-11-21 11 PM (scheduled): Script mods (feature/script-mods): new ScriptMonsterDeviceTest: sample mod's Sample Crab spawns on its floors only, keeps name/sprite/HP through a real Bundle write/read, missing mod leaves it inert. Passed API 26 + 34 (run 44983636500). Test only, no game code. Next: heroes hook. Still OPEN for Chris: mod starting items on top of vs instead of the class kit; Loot Availability score multiplier.
 - 2026-11-21 4 PM ET build (fired late, ran 10 PM): Play **935** at 6dd2222a uploaded to closed test (alpha). CI 44978653680 green on 051875eb. New: Duelist lock-on, walk-over whole pile + survives harmless interrupts, Wealth gear range, Gemstone Dust halved, spellbook scroll names, bug report pickup logging. No script mods (verified: no Rhino, no scriptmods in the bundle). Last uploaded build: 935.
 - 2026-11-21 10 PM (scheduled): no code; a live session pushed to this branch at 22:05 (Play build 935), so this run
   stood down to avoid clashing.
