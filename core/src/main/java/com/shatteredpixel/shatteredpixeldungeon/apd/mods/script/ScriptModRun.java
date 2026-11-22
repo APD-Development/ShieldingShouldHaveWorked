@@ -91,14 +91,40 @@ public final class ScriptModRun {
 	/** Hero select's toggled mods; kept across hero changes, handed to {@link #choose} only when a normal run starts. */
 	private static final List<String> picked = new ArrayList<>();
 	public static synchronized boolean isPicked(String id){ return picked.contains(id); }
-	public static synchronized void togglePick(String id){ if (!picked.remove(id)) picked.add(id); }
+	public static synchronized void togglePick(String id){
+		if (!picked.remove(id)) picked.add(id);
+		else if (pickedHero != null && pickedHero.startsWith(id + ":")) pickedHero = null; // mod off: its hero too
+	}
 	public static synchronized List<String> picks(){ return new ArrayList<>(picked); }
+	/** Hero select's picked script hero ("modId:heroId"), or null for a normal hero. */
+	private static String pickedHero;
+	/** Hero select: play this script hero (turns its mod on too). Call after selecting its base class. */
+	public static synchronized void pickHero(String modId, String heroId){
+		if (!picked.contains(modId)) picked.add(modId);
+		pickedHero = modId + ":" + heroId;
+	}
+	public static synchronized boolean isPickedHero(String modId, String heroId){ return (modId + ":" + heroId).equals(pickedHero); }
+	/** A normal hero (or another class) was selected: no script hero for the next run. */
+	public static synchronized void clearHeroPick(){ pickedHero = null; }
+
+	/** The heroes a mod declares, read by running its script outside any run (empty if it doesn't load). */
+	public static List<ScriptDefs.HeroDef> heroesOf(ScriptModLibrary.Installed i){
+		if (i == null) return Collections.emptyList();
+		ScriptModRuntime.LoadedMod m = ScriptModRuntime.preview(i.id, i.script);
+		return m.disabled() ? Collections.<ScriptDefs.HeroDef>emptyList() : m.heroes();
+	}
+
 	/** A normal new run is starting from hero select: queue the toggled mods (dropping any no longer installed). */
 	public static synchronized void confirmForStart(ScriptModLibrary lib){
 		List<String> ids = new ArrayList<>();
 		for (String id : picked) if (lib == null || lib.find(id) != null) ids.add(id);
 		picked.retainAll(ids);
 		choose(ids);
+		// the hero plays only if its mod is still on; beginRun also checks the base class is the one starting
+		String h = pickedHero;
+		int c = h == null ? -1 : h.indexOf(':');
+		if (c > 0 && ids.contains(h.substring(0, c))) chooseHero(h.substring(0, c), h.substring(c + 1));
+		else chooseHero(null, null);
 	}
 
 	/** Mods for the next new run (hero select). */
@@ -227,5 +253,5 @@ public final class ScriptModRun {
 	}
 
 	/** Tests only. */
-	public static void reset(){ synchronized (ScriptModRun.class){ picked.clear(); } starting = Collections.emptyList(); startingHero = null; activeHero = null; active = Collections.emptyList(); missing = Collections.emptyList(); ScriptModRuntime.clear(); }
+	public static void reset(){ synchronized (ScriptModRun.class){ picked.clear(); pickedHero = null; } starting = Collections.emptyList(); startingHero = null; activeHero = null; active = Collections.emptyList(); missing = Collections.emptyList(); ScriptModRuntime.clear(); }
 }

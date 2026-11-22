@@ -517,10 +517,19 @@ public class HeroSelectScene extends PixelScene {
 
 	private void showScriptMods(final com.shatteredpixel.shatteredpixeldungeon.apd.mods.script.ScriptModLibrary lib){
 		final java.util.List<com.shatteredpixel.shatteredpixeldungeon.apd.mods.script.ScriptModLibrary.Installed> list = lib.mods;
-		String[] labels = new String[list.size()];
-		for (int i = 0; i < labels.length; i++){
+		// the heroes of mods that are ON, listed after the mods (heroes hook)
+		final java.util.List<com.shatteredpixel.shatteredpixeldungeon.apd.mods.script.ScriptDefs.HeroDef> heroes = new java.util.ArrayList<>();
+		for (com.shatteredpixel.shatteredpixeldungeon.apd.mods.script.ScriptModLibrary.Installed m : list)
+			if (com.shatteredpixel.shatteredpixeldungeon.apd.mods.script.ScriptModRun.isPicked(m.id)) heroes.addAll(com.shatteredpixel.shatteredpixeldungeon.apd.mods.script.ScriptModRun.heroesOf(m));
+		String[] labels = new String[list.size() + heroes.size()];
+		for (int i = 0; i < list.size(); i++){
 			com.shatteredpixel.shatteredpixeldungeon.apd.mods.script.ScriptModLibrary.Installed m = list.get(i);
 			labels[i] = (com.shatteredpixel.shatteredpixeldungeon.apd.mods.script.ScriptModRun.isPicked(m.id) ? "[ON] " : "[off] ") + m.name;
+		}
+		for (int i = 0; i < heroes.size(); i++){
+			com.shatteredpixel.shatteredpixeldungeon.apd.mods.script.ScriptDefs.HeroDef h = heroes.get(i);
+			labels[list.size() + i] = (com.shatteredpixel.shatteredpixeldungeon.apd.mods.script.ScriptModRun.isPickedHero(h.modId, h.id) ? "[PLAYING] " : "Play as ")
+					+ h.mod.name + " (" + h.mod.baseClass.title() + ")";
 		}
 		StringBuilder msg = new StringBuilder(list.isEmpty() ? "No script mods could be loaded."
 				: "Tap a mod to turn it on or off for your next new run. Mod runs stay out of rankings, badges, tournaments and run reviews.");
@@ -528,6 +537,20 @@ public class HeroSelectScene extends PixelScene {
 		ShatteredPixelDungeon.scene().addToFront(new WndOptions("Script mods", msg.toString(), labels){
 			@Override
 			protected void onSelect(int index){
+				if (index >= list.size()){
+					com.shatteredpixel.shatteredpixeldungeon.apd.mods.script.ScriptDefs.HeroDef h = heroes.get(index - list.size());
+					if (com.shatteredpixel.shatteredpixeldungeon.apd.mods.script.ScriptModRun.isPickedHero(h.modId, h.id)){
+						com.shatteredpixel.shatteredpixeldungeon.apd.mods.script.ScriptModRun.clearHeroPick();
+					} else if (!h.mod.baseClass.isUnlocked()){
+						ShatteredPixelDungeon.scene().addToFront(new WndMessage("Can't play this hero: " + h.mod.baseClass.title() + " isn't unlocked yet."));
+						return;
+					} else {
+						setSelectedHero(h.mod.baseClass);
+						com.shatteredpixel.shatteredpixeldungeon.apd.mods.script.ScriptModRun.pickHero(h.modId, h.id); //after setSelectedHero, which drops any earlier pick
+					}
+					showScriptMods(lib);
+					return;
+				}
 				com.shatteredpixel.shatteredpixeldungeon.apd.mods.script.ScriptModRun.togglePick(list.get(index).id);
 				showScriptMods(lib);
 			}
@@ -574,6 +597,7 @@ public class HeroSelectScene extends PixelScene {
 
 	private void setSelectedHero(HeroClass cl){
 		com.shatteredpixel.shatteredpixeldungeon.apd.mods.ModHeroSelection.clear();
+		com.shatteredpixel.shatteredpixeldungeon.apd.mods.script.ScriptModRun.clearHeroPick();
 		GamesInProgress.selectedClass = cl;
 		GamesInProgress.randomizedClass = false;
 

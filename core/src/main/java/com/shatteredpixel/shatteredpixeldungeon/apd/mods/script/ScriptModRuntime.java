@@ -53,10 +53,15 @@ public final class ScriptModRuntime {
 	public static void clear(){ mods.clear(); }
 
 	/** Loads one mod's script. On any problem the mod is listed as turned off with the reason; never throws. */
-	public static LoadedMod load(String modId, String source){
+	public static LoadedMod load(String modId, String source){ return load(modId, source, true); }
+
+	/** Runs a mod's script only to see what it declares (hero select lists its heroes); not added to the run. */
+	public static LoadedMod preview(String modId, String source){ return load(modId, source, false); }
+
+	private static LoadedMod load(String modId, String source, boolean register){
 		ScriptSandbox sb = new ScriptSandbox(modId);
 		LoadedMod m = new LoadedMod(modId, sb);
-		mods.put(modId, m);
+		if (register) mods.put(modId, m);
 		try {
 			sb.load(source, (cx, scope) -> {
 				ScriptApi.ApiObject apd = new ScriptApi.ApiObject(scope, "APD");

@@ -127,4 +127,31 @@ public class ScriptHeroRunTest {
 		turns.act();
 		assertEquals(708, hero.shielding());
 	}
+
+	@Test public void heroSelectPickFlow(){
+		ScriptModLibrary lib = ScriptModLibrary.scan(ScriptModRun.dir());
+		ScriptModLibrary.Installed inst = lib.find("test.heroes");
+		assertNotNull(inst);
+		// listing a mod's heroes runs its script outside any run
+		assertEquals(1, ScriptModRun.heroesOf(inst).size());
+		assertEquals("knight", ScriptModRun.heroesOf(inst).get(0).id);
+		assertFalse(ScriptModRuntime.active());
+
+		ScriptModRun.pickHero("test.heroes", "knight");
+		assertTrue(ScriptModRun.isPicked("test.heroes")); // picking the hero turns its mod on
+		assertTrue(ScriptModRun.isPickedHero("test.heroes", "knight"));
+		ScriptModRun.confirmForStart(lib);
+		ScriptModRun.beginRun(HeroClass.WARRIOR);
+		assertNotNull(ScriptModRun.activeHero());
+
+		// turning the mod off drops its hero
+		HeroModRun.beginRun();
+		ScriptModRun.togglePick("test.heroes");
+		assertFalse(ScriptModRun.isPickedHero("test.heroes", "knight"));
+		ScriptModRun.togglePick("test.heroes");
+		ScriptModRun.confirmForStart(lib);
+		ScriptModRun.beginRun(HeroClass.WARRIOR);
+		assertTrue(ScriptModRun.isScriptRun());
+		assertNull(ScriptModRun.activeHero());
+	}
 }
