@@ -118,6 +118,7 @@ public final class ScriptDefs {
 			if (sp != null){
 				if (!(sp instanceof Scriptable) || sp instanceof Function) throw new BadDef("\"spawn\" must be { floors: [from, to], weight }");
 				Scriptable spawn = (Scriptable) sp;
+				if (get(spawn, "floors") == null) throw new BadDef("\"spawn\" needs floors: [from, to]");
 				int[] floors = pair(spawn, "floors", 1, 1, 1, 999);
 				from = floors[0]; to = floors[1];
 				weight = number(spawn, "weight", 1, 0, MAX_SPAWN_WEIGHT);
