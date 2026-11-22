@@ -128,4 +128,17 @@ public class ScriptMonstersTest {
 		assertEquals("mod monster", orphan.name());
 		assertNull(orphan.def());
 	}
+
+	@Test public void aMonsterKilledByItsOwnTurnScriptDoesNotActAfterwards(){
+		ScriptModRuntime.LoadedMod m = ScriptModRuntime.load("test.selfkill",
+				"APD.monster({ id: 'k', name: 'K', sprite: 'RatSprite', hp: 5, onTurn(m){ m.damage(999); } });\n" +
+				"APD.monster({ id: 'f', name: 'F', sprite: 'RatSprite', hp: 5, onSpawn(m){ m.damage(999); }, onTurn(m){ m.heal(5); } });");
+		assertFalse(m.disabledReason(), m.disabled());
+		ScriptMob k = new ScriptMob(ScriptModRuntime.monster("test.selfkill", "k"));
+		assertFalse("killed by onTurn: must stop", k.turnTriggers());
+		assertFalse(k.isAlive());
+		ScriptMob f = new ScriptMob(ScriptModRuntime.monster("test.selfkill", "f"));
+		assertFalse("killed by onSpawn: onTurn must not run on a dead monster", f.turnTriggers());
+		assertFalse(f.isAlive());
+	}
 }

@@ -95,9 +95,16 @@ public class ScriptMob extends Mob {
 			if (sprite != null) sprite.killAndErase();
 			return true;
 		}
-		if (!spawned){ spawned = true; trigger("onSpawn"); }
-		trigger("onTurn");
+		if (!turnTriggers()) return true;
 		return super.act();
+	}
+
+	/** Runs onSpawn (first turn) and onTurn; false when a script killed this monster, so it must not act afterwards. */
+	boolean turnTriggers(){
+		if (!spawned){ spawned = true; trigger("onSpawn"); }
+		if (!isAlive()) return false;
+		trigger("onTurn");
+		return isAlive();
 	}
 
 	@Override public int attackProc(Char enemy, int damage){
