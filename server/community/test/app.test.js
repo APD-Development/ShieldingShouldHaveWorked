@@ -118,6 +118,8 @@ test('threaded comments: replies point at their parent; a removed comment stays 
   view = (await call('GET', `/v1/submissions/${s}`)).body;
   assert.equal(view.comments[0].body, null);
   assert.equal(view.comments[1].body, 'Thanks');
+  // ...but a new reply can't be aimed at the placeholder
+  assert.equal((await call('POST', `/v1/submissions/${s}/comments`, { body: 'x', parentId: top }, bo.token)).body.error, 'bad_parent');
   const list = (await call('GET', '/v1/submissions')).body.submissions;
   assert.deepEqual([list[0].title, list[0].comments], ['Shield rework', 1]);
 });
