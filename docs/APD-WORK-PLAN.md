@@ -143,7 +143,13 @@ A recent push is not a clash: `git pull --rebase` before every push and resolve 
         dungeon's length (e.g. 100 floors), which floors use which region/level type, where bosses go and what the
         final floor is, plus other run-wide rules. Design those hooks for that, not just small tweaks. (Still only in
         mod runs; normal runs untouched.)
-     HEROES HOOK (after monsters): APD.hero({ id, name, description, sprite (existing hero sprite or mod art later),
+     HEROES HOOK: CORE DONE Nov 22 1 AM on feature/script-mods (CI 44992368431, 44992723057, 44993400093, 44993695111,
+        44994002452; device test ScriptHeroDeviceTest passed API 26+34 in 44994361546). APD.hero is checked by the
+        old HeroMod rules and runs through HeroModRun (stats, talents, abilities, save record); startingItems may add
+        { modItem, quantity } of the mod's own items; onStart/onLevelUp/onTurn/onKill wired; hero select Scripts list
+        shows "Play as <hero> (<class>)" for mods that are ON; sample mod has a Sample Hero. sprite: not built (base
+        class look). NOT device-verified: the Scripts-list hero UI and a real run. NEXT: TALENTS hook (rule 4 order).
+     HEROES HOOK (spec, after monsters): APD.hero({ id, name, description, sprite (existing hero sprite or mod art later),
         baseClass, hp, str, startingItems (existing or mod item ids), talents (existing talent names per tier, like
         the old data mods), armorAbilities, triggers onStart / onLevelUp / onTurn / onKill }) reusing the old
         HeroModRun hooks where they fit; picked in hero select's Scripts list. Same caps/tests/sample rules.
@@ -249,6 +255,7 @@ default-on settings (SPDSettings.keepOldDefaultsForExistingPlayers). Next: Googl
 (Credential Manager), server URL default once deployed, run reviews. HttpGateway contract routes, deployment workflow, Android Community screens wired to it, Play Age Signals.
 
 ## Run log
+- 2026-11-22 1 AM (scheduled): Script mods (feature/script-mods): HEROES HOOK core done: APD.hero (data-mod rules + mod items in the kit, max 8), run start/save via HeroModRun, onStart/onLevelUp/onTurn/onKill, hero-select 'Play as' rows, Sample Hero. +9 JVM tests (last full CI 44994002452 green) + ScriptHeroDeviceTest API 26+34 (44994361546). Not phone-tested. Next: talents hook. Still OPEN for Chris: mod starting items on top of vs instead of the class kit (script heroes also keep kit + items); Loot Availability score multiplier.
 - 2026-11-22 12 AM ET (8-hour Play build): Play **936** at 599ea65a uploaded to closed test (alpha). CI 44987554929 green on 86703508. New: three-way walk-over pickup setting. No script mods. Last uploaded build: 936.
 - 2026-11-21 11 PM (scheduled): Script mods (feature/script-mods): new ScriptMonsterDeviceTest: sample mod's Sample Crab spawns on its floors only, keeps name/sprite/HP through a real Bundle write/read, missing mod leaves it inert. Passed API 26 + 34 (run 44983636500). Test only, no game code. Next: heroes hook. Still OPEN for Chris: mod starting items on top of vs instead of the class kit; Loot Availability score multiplier.
 - 2026-11-21 4 PM ET build (fired late, ran 10 PM): Play **935** at 6dd2222a uploaded to closed test (alpha). CI 44978653680 green on 051875eb. New: Duelist lock-on, walk-over whole pile + survives harmless interrupts, Wealth gear range, Gemstone Dust halved, spellbook scroll names, bug report pickup logging. No script mods (verified: no Rhino, no scriptmods in the bundle). Last uploaded build: 935.
