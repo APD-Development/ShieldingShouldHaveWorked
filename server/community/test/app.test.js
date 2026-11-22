@@ -146,6 +146,7 @@ test('report and block: blocking hides that player from me; reports reach the ad
   await call('POST', '/v1/blocks', { accountId: troll.id }, ana.token);
   assert.equal((await call('GET', '/v1/submissions', null, ana.token)).body.submissions.length, 0);
   assert.equal((await call('GET', `/v1/submissions/${s}`, null, ana.token)).status, 404);
+  assert.equal((await call('POST', `/v1/submissions/${s}/comments`, { body: 'x' }, ana.token)).status, 404); // nor comment on it by id
   assert.equal((await call('GET', '/v1/submissions', null, chris.token)).body.submissions.length, 1);
   await call('DELETE', `/v1/blocks/${troll.id}`, null, ana.token);
   assert.equal((await call('GET', '/v1/submissions', null, ana.token)).body.submissions.length, 1);
@@ -165,6 +166,7 @@ test('admin: hide, remove and restore posts, ban and unban accounts; banned play
   assert.equal((await call('GET', '/v1/me', null, bad.token)).status, 401);
   assert.equal((await call('POST', '/v1/auth/login', { email: 'bad@x.com', password: 'hunter2hunter2' })).body.error, 'banned');
   assert.equal((await call('GET', '/v1/submissions')).body.submissions.length, 0);
+  assert.equal((await call('POST', `/v1/submissions/${s}/comments`, { body: 'x' }, chris.token)).status, 404); // a banned player's idea
   assert.equal((await call('POST', '/v1/admin/ban', { accountId: chris.id }, chris.token)).body.error, 'cannot_ban_self');
   await call('POST', '/v1/admin/unban', { accountId: bad.id }, chris.token);
   assert.equal((await call('GET', '/v1/submissions')).body.submissions.length, 1);

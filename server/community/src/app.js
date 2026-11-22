@@ -505,8 +505,11 @@ route('GET', '/v1/submissions/([0-9a-f]+)', async (env, req, [id]) => {
 route('POST', '/v1/submissions/([0-9a-f]+)/comments', async (env, req, [id]) => {
   const a = await needMember(env, req);
   const b = await body(req);
-  const s = await env.DB.prepare("SELECT id FROM submissions WHERE id = ? AND status = 'visible'").bind(id).first();
-  if (!s) fail(404, 'not_found');
+  // Same rule as reading it: a banned player's idea, or one from a player I blocked, can't be commented on by its id.
+  const s = await env.DB.prepare(
+    `SELECT s.id, s.author_id FROM submissions s JOIN accounts x ON x.id = s.author_id
+      WHERE s.id = ? AND s.status = 'visible' AND x.banned = 0`).bind(id).first();
+  if (!s || (await blockedIds(env, a)).has(s.author_id)) fail(404, 'not_found');
   await rateLimit(env, a, 'comments');
   let parent = null;
   if (b.parentId != null) {
