@@ -1002,6 +1002,8 @@ public abstract class Mob extends Char {
 				|| cause instanceof com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon)){
 			com.shatteredpixel.shatteredpixeldungeon.apd.mods.script.ScriptEffect.fire(Dungeon.hero, "onKill",
 					com.shatteredpixel.shatteredpixeldungeon.apd.mods.script.ScriptEffect.nameOf(this));
+			com.shatteredpixel.shatteredpixeldungeon.apd.mods.script.ScriptModRun.heroTrigger(Dungeon.hero, "onKill",
+					com.shatteredpixel.shatteredpixeldungeon.apd.mods.script.ScriptEffect.nameOf(this));
 		}
 
 		if (cause == Chasm.class){

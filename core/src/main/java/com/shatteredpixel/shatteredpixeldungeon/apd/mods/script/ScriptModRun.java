@@ -157,19 +157,41 @@ public final class ScriptModRun {
 			ScriptDefs.ItemDef item = ScriptModRuntime.item(d.modId, e.getKey());
 			if (item != null) new ScriptItem(item).quantity(e.getValue()).collect(hero.belongings.backpack);
 		}
+		if (d.has("onTurn")) com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff.affect(hero, HeroTurns.class);
 		heroTrigger(hero, "onStart");
 	}
 
-	/** Calls one of the script hero's triggers with the bounded hero object plus plain facts. */
+	private static boolean heroFiring = false;
+
+	/** Calls one of the script hero's triggers with the bounded hero object plus plain facts. The return value is
+	 *  ignored and it is not re-entrant (a trigger set off by another one's hero calls is skipped), so scripts can't
+	 *  loop. A dead hero's triggers never run. */
 	public static void heroTrigger(Hero hero, String name, Object... extra){
+		if (heroFiring || activeHero == null) return;
 		ScriptDefs.HeroDef d = activeHero();
 		if (d == null || hero == null || !hero.isAlive() || !d.has(name)) return;
-		ScriptApi.ApiObject h = ScriptModRuntime.build(d.modId, (cx, scope) -> HeroApi.make(scope, hero, d.modId));
-		if (h == null) return;
-		Object[] args = new Object[1 + extra.length];
-		args[0] = h;
-		System.arraycopy(extra, 0, args, 1, extra.length);
-		ScriptModRuntime.run(d.modId, d.triggers.get(name), args);
+		heroFiring = true;
+		try {
+			ScriptApi.ApiObject h = ScriptModRuntime.build(d.modId, (cx, scope) -> HeroApi.make(scope, hero, d.modId));
+			if (h == null) return;
+			Object[] args = new Object[1 + extra.length];
+			args[0] = h;
+			System.arraycopy(extra, 0, args, 1, extra.length);
+			ScriptModRuntime.run(d.modId, d.triggers.get(name), args);
+		} finally {
+			heroFiring = false;
+		}
+	}
+
+	/** Once per hero turn while a script hero with onTurn is active (a buff, so it ticks with game time and not
+	 *  with each time the game waits for the player's input). Saved with the hero; inert without its mod. */
+	public static class HeroTurns extends com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff {
+		{ revivePersists = true; }
+		@Override public boolean act(){
+			if (target instanceof Hero) heroTrigger((Hero) target, "onTurn");
+			spend(TICK);
+			return true;
+		}
 	}
 
 	public static void store(Bundle bundle){

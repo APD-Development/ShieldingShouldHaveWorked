@@ -2410,6 +2410,9 @@ public class Hero extends Char {
 		}
 		
 		if (levelUp) {
+
+			// APD script mods: the script hero's onLevelUp(h, level); bounded hero API only
+			com.shatteredpixel.shatteredpixeldungeon.apd.mods.script.ScriptModRun.heroTrigger(this, "onLevelUp", (double) lvl);
 			
 			if (sprite != null) {
 				GLog.newLine();
