@@ -68,6 +68,7 @@ public class ScriptMonstersTest {
 				{"APD.monster({ id: 'x', name: 'X', sprite: 'RatSprite', spawn: { floors: [1, 5], weight: 99 } });", "\"weight\" must be between 0 and 3"},
 				{"APD.monster({ id: 'x', name: 'X', sprite: 'RatSprite', onExplode(m){} });", "unknown trigger"},
 				{"APD.monster({ id: 'x', name: 'X', sprite: 'HeroSprite' });", "isn't an existing monster sprite"},
+				{"APD.monster({ id: 'x', name: 'X', sprite: 'RatSprite', loot: 'nothing' });", "dropping loot nothing, which it never declares"},
 		};
 		for (String[] b : bad){
 			ScriptModRuntime.clear();

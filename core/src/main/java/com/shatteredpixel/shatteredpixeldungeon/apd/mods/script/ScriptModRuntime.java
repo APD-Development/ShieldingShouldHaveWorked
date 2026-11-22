@@ -102,6 +102,9 @@ public final class ScriptModRuntime {
 		// a hero's kit may name the mod's own items, declared anywhere in the script: check once it has run
 		if (!m.disabled()) for (ScriptDefs.HeroDef h : m.heroes.values()) for (String item : h.modItems.keySet())
 			if (!m.items.containsKey(item)){ sb.refuse("has hero " + h.id + " starting with modItem " + item + ", which it never declares"); break; }
+		// a monster's loot must be one of the mod's own items too, or it would silently never drop
+		if (!m.disabled()) for (ScriptDefs.MonsterDef d : m.monsters.values())
+			if (d.loot != null && !m.items.containsKey(d.loot)){ sb.refuse("has monster " + d.id + " dropping loot " + d.loot + ", which it never declares"); break; }
 		return m;
 	}
 
