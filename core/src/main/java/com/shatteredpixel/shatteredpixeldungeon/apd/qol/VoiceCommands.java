@@ -119,17 +119,16 @@ public final class VoiceCommands {
 		return null;
 	}
 
-	/** Called by the platform with the recognizer's guesses, best first. Returns what was done, for the log. */
-	public static String heard(List<String> alternatives){
-		if (alternatives == null) return "nothing";
-		for (String a : alternatives){
-			Match m = parse(a);
-			if (m == null) continue;
-			if (m.stop){ setListening(false); com.shatteredpixel.shatteredpixeldungeon.SPDSettings.apdVoiceControls(false); return "stop"; }
-			press(m.action);
-			return m.action.name();
-		}
-		return "unrecognised";
+	/** Called by the platform (any thread) with the recognizer's guesses, best first. The understanding runs on the game thread. */
+	public static void heard(final List<String> alternatives){
+		if (alternatives == null || alternatives.isEmpty()) return;
+		final List<String> copy = new ArrayList<>(alternatives);
+		com.watabou.noosa.Game.runOnRenderThread(() -> VoiceBrain.understand(copy));
+	}
+
+	static void stopFromVoice(){
+		setListening(false);
+		com.shatteredpixel.shatteredpixeldungeon.SPDSettings.apdVoiceControls(false);
 	}
 
 	/** Queue a press and release, exactly like tapping that key; safe to call from any thread. */

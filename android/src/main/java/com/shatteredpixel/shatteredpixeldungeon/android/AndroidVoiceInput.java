@@ -43,8 +43,9 @@ final class AndroidVoiceInput implements VoiceCommands.Platform {
 				activity.requestPermissions(new String[]{Manifest.permission.RECORD_AUDIO}, PERMISSION_REQUEST);
 				return;
 			}
-			if (!SpeechRecognizer.isRecognitionAvailable(activity)){
-				com.watabou.utils.SupportDiagnostics.event("voice.unavailable", "no recognizer on this phone");
+			if (!onDevice()){
+				com.watabou.utils.SupportDiagnostics.event("voice.unavailable", "no on-device recognizer on this phone");
+				com.watabou.noosa.Game.runOnRenderThread(() -> com.shatteredpixel.shatteredpixeldungeon.utils.GLog.w("Voice: this phone has no on-device speech recognizer, so voice controls can't run."));
 				return;
 			}
 			listen();
@@ -57,6 +58,11 @@ final class AndroidVoiceInput implements VoiceCommands.Platform {
 			main.removeCallbacksAndMessages(null);
 			if (recognizer != null){ recognizer.cancel(); recognizer.destroy(); recognizer = null; }
 		});
+	}
+
+	/** Chris, Nov 23: everything runs on the phone itself. Android 12+ on-device recognizer only, never the network. */
+	private boolean onDevice(){
+		return Build.VERSION.SDK_INT >= 31 && SpeechRecognizer.isOnDeviceRecognitionAvailable(activity);
 	}
 
 	/** Called by the launcher when the microphone permission answer comes back. */
@@ -72,12 +78,11 @@ final class AndroidVoiceInput implements VoiceCommands.Platform {
 	private void listen(){
 		if (!wanted) return;
 		if (recognizer == null){
-			recognizer = SpeechRecognizer.createSpeechRecognizer(activity);
+			recognizer = SpeechRecognizer.createOnDeviceSpeechRecognizer(activity);
 			recognizer.setRecognitionListener(new RecognitionListener() {
 				@Override public void onResults(Bundle results){
 					ArrayList<String> heard = results.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
-					String did = VoiceCommands.heard(heard);
-					com.watabou.utils.SupportDiagnostics.event("voice.heard", did);
+					VoiceCommands.heard(heard);
 					again(150);
 				}
 				@Override public void onError(int error){
@@ -97,6 +102,7 @@ final class AndroidVoiceInput implements VoiceCommands.Platform {
 		intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
 		intent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 5);
 		intent.putExtra(RecognizerIntent.EXTRA_PREFER_OFFLINE, true);
+		intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, java.util.Locale.getDefault().toLanguageTag());
 		intent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE, activity.getPackageName());
 		try { recognizer.startListening(intent); }
 		catch (RuntimeException e){ again(1000); }

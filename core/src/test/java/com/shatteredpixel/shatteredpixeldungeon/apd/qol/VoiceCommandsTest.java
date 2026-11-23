@@ -35,15 +35,12 @@ public class VoiceCommandsTest {
 		assertNull(act("weather"));
 		assertNull(act(""));
 	}
-	@Test public void heardPressesTheBoundKeyAndPicksTheFirstUsableGuess(){
+	@Test public void voiceKeysAreBoundOnlyOnceAPlatformExists(){
 		VoiceCommands.setPlatform(new VoiceCommands.Platform(){ public void start(){} public void stop(){} });
 		try {
-			KeyEvent.discardPendingEvents();
-			assertEquals("n", VoiceCommands.heard(java.util.Arrays.asList("norse", "north")));
 			int code = VoiceCommands.BASE_CODE; // N is first
 			assertEquals(SPDAction.N, KeyBindings.getActionForKey(new KeyEvent(code, true)));
 			assertTrue(KeyBindings.isKeyBound(code));
-			assertEquals("unrecognised", VoiceCommands.heard(java.util.Arrays.asList("banana")));
 		} finally {
 			KeyEvent.discardPendingEvents();
 			VoiceCommands.setPlatform(null);
