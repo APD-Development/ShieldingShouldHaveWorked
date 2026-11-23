@@ -34,7 +34,7 @@ Judgment rules in the postmortem (item 2, "you probably should have...") still n
 5. Old server menu in Options > Privacy: DONE Nov 23 (now: what stays on the device + Community link).
 6. Public item source: DONE Nov 23. item.foundSource / item.foundFloor (same rules as recorder.ItemOriginHistory) and
    item.acquiredHow (ACQ_* context). For a run still going only picked up / shop (hidden events are redacted on export).
-7. Plain-sentence verdicts on Research lab results.  8. In-run history popups from item/enemy windows (light index).
+7. Plain-sentence verdicts on Research lab results: comparisons DONE Nov 23 (research/Verdict); luck lab + Discoveries next.  8. In-run history popups from item/enemy windows (light index).
 9. Native PDF export (Android PdfDocument).  10. Run replay (floor map once per floor, new fact kind; finished runs only).
 11. Achievement for a never-made-before search; absurd-query line via Question.complexity.  12. Mod-run marker when script mods ship.
 
@@ -288,6 +288,7 @@ default-on settings (SPDSettings.keepOldDefaultsForExistingPlayers). Next: Googl
 (Credential Manager), server URL default once deployed, run reviews. HttpGateway contract routes, deployment workflow, Android Community screens wired to it, Play Age Signals.
 
 ## Run log
+- 2026-11-23 5 PM ET (scheduled): UIMSD item 7 started: Research lab comparisons (investigation lab, saved experiments, personal progress) now open with one plain "In short:" sentence (which side is higher, by how much, whether it's beyond chance or too few runs; never a cause or advice). New VerdictTest (5); full CI 45276586657 green. Not device-verified. Luck lab/Discoveries verdicts next. Still OPEN for Chris: `defense` vs `evasion` in the monsters spec; talents hook spec; mod starting items on top of vs instead of the class kit; Loot Availability score multiplier.
 - 2026-11-23 4 PM ET (scheduled): Play 939 uploaded to closed test (CI 45265668122 green on aa826916; bundle run 45268560070;
   versionCode 939, sword icon pixel-identical, label ADHD Pixel Dungeon, no Rhino in the dex). New since 938: voice word fixes,
   UIMSD memory wall, What happened postmortem, item Found in / How you got it. Dev APK C490D sent. Not device-verified.
