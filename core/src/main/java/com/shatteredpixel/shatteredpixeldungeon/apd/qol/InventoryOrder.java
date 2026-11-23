@@ -53,11 +53,13 @@ public final class InventoryOrder {
     private static boolean sortableKnowledge(Item item){
         return gear(item) ? item.levelKnown : item.isIdentified();
     }
-    /** Chris, Nov 22: within a category, identified first, then unidentified, then known-cursed last.
-     *  Only a curse the player already knows about counts; a hidden curse is never read. */
+    /** Chris, Nov 22-23: within a category: identified, then unidentified but known not cursed (blue),
+     *  then unidentified with curse unknown (purple), then known-cursed (red) last.
+     *  Only what the player already knows counts; a hidden curse is never read. */
     private static int knowledgeGroup(Item item){
-        if (item.cursedKnown && item.cursed) return 2;
-        return sortableKnowledge(item) ? 0 : 1;
+        if (item.cursedKnown && item.cursed) return 3;
+        if (sortableKnowledge(item)) return 0;
+        return gear(item) && item.cursedKnown ? 1 : 2;
     }
     private static int knowledge(Item a,Item b){
         return Integer.compare(knowledgeGroup(a),knowledgeGroup(b));
@@ -85,7 +87,7 @@ public final class InventoryOrder {
         int order=knowledge(a,b);
         if(order!=0)return order;
         // Unidentified non-gear (potions, scrolls...) keep pickup order; gear sorts on what is visible.
-        if(knowledgeGroup(a)==1 && !gear(a) && !gear(b))return 0;
+        if(knowledgeGroup(a)==2 && !gear(a) && !gear(b))return 0;
         return visible(a,b);
     }
     public static int compareInBag(Bag bag,Item a,Item b){

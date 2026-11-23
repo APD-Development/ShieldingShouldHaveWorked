@@ -209,4 +209,16 @@ public class AutomaticInventoryOrderTest {
         assertSame(wandKnown,v.get(3));
         assertEquals("unknown wands grouped by their visible type",v.get(4).name().compareTo(v.get(5).name())<=0,true);
     }
+    //Chris, Nov 23: unidentified gear known to be uncursed sits before unidentified gear whose curse is unknown
+    @Test public void knownUncursedUnidentifiedComesBeforeUnknownCurse(){
+        Bag holster=new com.shatteredpixel.shatteredpixeldungeon.items.bags.MagicalHolster();
+        Item known=known(new WandOfFrost(),2);
+        Item unknownA=new WandOfMagicMissile();
+        Item safe=new WandOfFrost();safe.cursedKnown=true;
+        Item cursed=new WandOfMagicMissile();cursed.cursed=true;cursed.cursedKnown=true;
+        Item safeT5=new com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Trident().quantity(3);safeT5.cursedKnown=true;
+        Item unknownT1=new com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingKnife().quantity(3);
+        populate(holster,cursed,unknownA,unknownT1,safe,known,safeT5);
+        expect(holster,safeT5,unknownT1,known,safe,unknownA,cursed);
+    }
 }
