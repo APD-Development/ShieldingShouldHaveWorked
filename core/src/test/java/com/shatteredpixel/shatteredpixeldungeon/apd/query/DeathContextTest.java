@@ -164,4 +164,21 @@ public class DeathContextTest {
         assertTrue(context.summary().contains("Turn 19: Equipment taken off: Item Mail"));
         assertTrue(context.summary().contains("Turn 20: Death: killed by Gnoll brute"));
     }
+
+    //Nov 23 deep dive: a known but empty value (the hero has no name as a damage target) printed "Target ," with nothing after it
+    @Test
+    public void emptyKnownValuesAreLeftOutOfTheLines() {
+        Fixture f = fixture("blank", 20L, 0L, 1L);
+        DatasetDef damage = EventDatasets.damage();
+        Row hit = new Row("hit", null, "blank", damage.size());
+        hit.setNum(damage.indexOf("damage.turn"), 19, Fact.PROV_RECORDED);
+        hit.setText(damage.indexOf("damage.target"), "", Fact.PROV_RECORDED);
+        hit.setText(damage.indexOf("damage.source"), "rat", Fact.PROV_RECORDED);
+        f.catalog.add(new Dataset(damage, Arrays.asList(hit), new ArrayList<Dataset.RunInfo>()));
+        DeathContext context = new DeathContext(f.catalog, f.death, 3);
+        String line = context.entries().get(0).text;
+        assertTrue(line, line.contains("Caused by rat"));
+        assertFalse(line, line.contains("Target ,"));
+        assertFalse(line, line.endsWith("Target "));
+    }
 }

@@ -36,7 +36,15 @@ public final class WndUimsdSort {
 	private WndUimsdSort(){}
 
 	private static String labelOf( ResultTable t, String id ){
-		for (ResultTable.Header h : t.headers) if (h.id.equals(id)) return h.label;
+		return labelOf(t, null, id);
+	}
+
+	//A sort key can be a column the table is not showing (the default order sorts on several): its name comes from the dataset,
+	//never the raw column id (Nov 23: the Sort menu showed "run.id" and "run.ascended").
+	static String labelOf( ResultTable t, com.shatteredpixel.shatteredpixeldungeon.apd.query.DatasetDef def, String id ){
+		if (t != null) for (ResultTable.Header h : t.headers) if (h.id.equals(id)) return h.label;
+		com.shatteredpixel.shatteredpixeldungeon.apd.query.ColumnDef c = def == null ? null : def.column(id);
+		if (c != null && c.label != null && !c.label.isEmpty()) return c.label;
 		return id;
 	}
 
@@ -66,7 +74,7 @@ public final class WndUimsdSort {
 		} else {
 			entries.add(WndUimsdList.Entry.heading("Sorted by"));
 			for (int i = 0; i < sorts.size(); i++){
-				entries.add(WndUimsdList.Entry.item((i + 1) + ". " + labelOf(table, sorts.get(i).column) + ", " + way(sorts.get(i).descending),
+				entries.add(WndUimsdList.Entry.item((i + 1) + ". " + labelOf(table, m.dataset() == null ? null : m.dataset().def, sorts.get(i).column) + ", " + way(sorts.get(i).descending),
 						i == 0 ? "tap to reverse or remove it" : "used when the keys above are equal; tap to reverse or remove it"));
 				n++;
 			}

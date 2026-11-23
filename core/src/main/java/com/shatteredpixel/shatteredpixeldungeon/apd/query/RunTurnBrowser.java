@@ -103,8 +103,9 @@ public final class RunTurnBrowser {
                 for (ColumnDef c : ds.def.columns()) {
                     if (c.isInternal() || !c.defaultVisible || c.index()==ti || !r.isKnown(c.index())) continue;
                     if (c.id.endsWith(".runClass") || c.id.endsWith(".runDifficulty")) continue;
-                    line.append(count++==0 ? ": " : ", ").append(c.label).append(" ")
-                        .append(CellFormatter.cellOpen(r,c).text);
+                    String text = CellFormatter.cellOpen(r,c).text;
+                    if (text == null || text.trim().isEmpty()) continue; //a known but empty value (the hero has no name): "Target ," said nothing
+                    line.append(count++==0 ? ": " : ", ").append(c.label).append(" ").append(text);
                     if(count>=5)break;
                 }
                 List<String> at = timeline.get(t);
@@ -169,8 +170,9 @@ public final class RunTurnBrowser {
         for (String id : columns) {
             ColumnDef column = column(ds.def,id);
             if (column == null || !row.isKnown(column.index())) continue;
-            line.append(count++ == 0 ? ": " : ", ").append(column.label).append(" ")
-                    .append(CellFormatter.cellOpen(row,column).text);
+            String text = CellFormatter.cellOpen(row,column).text;
+            if (text == null || text.trim().isEmpty()) continue;
+            line.append(count++ == 0 ? ": " : ", ").append(column.label).append(" ").append(text);
         }
         return line.toString();
     }
