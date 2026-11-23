@@ -123,8 +123,21 @@ public final class VoiceCommands {
 	/** Called by the platform (any thread) with the recognizer's guesses, best first. The understanding runs on the game thread. */
 	public static void heard(final List<String> alternatives){
 		if (alternatives == null || alternatives.isEmpty()) return;
-		final List<String> copy = new ArrayList<>(alternatives);
+		final List<String> copy = wake(alternatives, com.shatteredpixel.shatteredpixeldungeon.SPDSettings.apdVoiceWakeWord());
+		if (copy.isEmpty()) return;
 		com.watabou.noosa.Game.runOnRenderThread(() -> VoiceBrain.understand(copy));
+	}
+
+	/** With the wake word on, keep only guesses that start with "dungeon" and drop that word. */
+	static List<String> wake(List<String> guesses, boolean needed){
+		List<String> out = new ArrayList<>();
+		for (String g : guesses){
+			if (!needed){ out.add(g); continue; }
+			String n = normalize(g);
+			if (n.startsWith("dungeon ")) out.add(n.substring(8));
+			else if (n.startsWith("dungeons ")) out.add(n.substring(9));
+		}
+		return out;
 	}
 
 	static void stopFromVoice(){

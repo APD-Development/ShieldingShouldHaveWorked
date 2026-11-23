@@ -51,5 +51,24 @@ public class VoiceBrainTest {
 		assertTrue(VoiceBrain.plan("stop listening").stop);
 		assertNull(VoiceBrain.plan("banana pancakes"));
 		assertNull("needs a run to know where the stairs are", VoiceBrain.plan("go downstairs"));
+		assertNull(VoiceBrain.plan("kill the rat"));
+		assertNull(VoiceBrain.plan("ability"));
+	}
+	@Test public void enemyDirectionCones(){
+		assertTrue(VoiceBrain.inDirection(0, -3, new int[]{0,-1}));
+		assertTrue("slightly off straight north still counts as north", VoiceBrain.inDirection(1, -3, new int[]{0,-1}));
+		assertFalse(VoiceBrain.inDirection(3, -1, new int[]{0,-1}));
+		assertTrue(VoiceBrain.inDirection(2, -1, new int[]{1,-1}));
+		assertFalse(VoiceBrain.inDirection(-2, -1, new int[]{1,-1}));
+		assertTrue(VoiceBrain.inDirection(-4, 1, new int[]{-1,0}));
+	}
+	@Test public void qualifierWordsAreNotTreatedAsNames(){
+		assertEquals(Arrays.asList("rat"), VoiceBrain.keywords("the far rat to the north"));
+		assertTrue(VoiceBrain.keywords("the other one on the left").isEmpty());
+	}
+	@Test public void wakeWordFiltersAndStrips(){
+		assertEquals(Arrays.asList("north"), VoiceCommands.wake(Arrays.asList("turn north", "Dungeon, north"), true));
+		assertTrue(VoiceCommands.wake(Arrays.asList("north"), true).isEmpty());
+		assertEquals(Arrays.asList("north"), VoiceCommands.wake(Arrays.asList("north"), false));
 	}
 }

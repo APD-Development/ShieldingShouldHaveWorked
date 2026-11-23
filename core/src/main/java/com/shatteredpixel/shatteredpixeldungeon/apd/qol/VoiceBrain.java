@@ -23,6 +23,16 @@ import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.Scroll;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
+import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
+import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
+import com.shatteredpixel.shatteredpixeldungeon.ui.ActionIndicator;
+import com.shatteredpixel.shatteredpixeldungeon.ui.QuickSlotButton;
+import com.shatteredpixel.shatteredpixeldungeon.ui.StyledButton;
+import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
+import com.watabou.noosa.Game;
+import com.watabou.noosa.Gizmo;
+import com.watabou.noosa.Group;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.input.GameAction;
 
@@ -73,14 +83,56 @@ public final class VoiceBrain {
 			item.execute(Dungeon.hero, action); return true;
 		}
 	}
-	/** Picks the target for a zap/throw that is waiting for one. */
+	/** Picks the target for a zap/throw/ability that is waiting for one. A null mob means "use the lock-on rule". */
 	static final class TargetStep extends Step {
-		final Mob mob; TargetStep(Mob m){ mob = m; }
+		final Mob mob; final int[] dir;
+		TargetStep(Mob m){ mob = m; dir = null; }
+		TargetStep(int[] d){ mob = null; dir = d; }
 		boolean run(){
-			if (!GameScene.apdTargeting()) return false;
-			if (mob == null || !mob.isAlive() || !Dungeon.level.heroFOV[mob.pos]){ GameScene.cancelCellSelector(); return false; }
-			GameScene.handleCell(mob.pos); return true;
+			if (!GameScene.apdTargeting()) return true;
+			Hero h = Dungeon.hero;
+			if (dir != null){
+				int w = Dungeon.level.width(), x = h.pos % w + dir[0], y = h.pos / w + dir[1];
+				if (x < 0 || y < 0 || x >= w || y >= Dungeon.level.height()){ GameScene.cancelCellSelector(); return false; }
+				GameScene.handleCell(x + y * w); return true;
+			}
+			Char t = mob != null ? mob : lockOn();
+			if (t == null || !t.isAlive() || !Dungeon.level.heroFOV[t.pos]){
+				GameScene.cancelCellSelector(); GLog.w("Voice: no target in view."); return false;
+			}
+			QuickSlotButton.lastTarget = t;
+			GameScene.handleCell(t.pos); return true;
 		}
+	}
+	/** Attack an enemy once, or keep attacking until it dies ("kill"). */
+	static final class AttackStep extends Step {
+		final Mob mob; final boolean untilDead; int swings;
+		AttackStep(Mob m, boolean u){ mob = m; untilDead = u; }
+		boolean run(){
+			if (mob == null || !mob.isAlive() || !Dungeon.level.heroFOV[mob.pos]) return true;
+			QuickSlotButton.lastTarget = mob;
+			GameScene.handleCell(mob.pos);
+			if (untilDead && ++swings < 40) queue.addFirst(this);
+			return true;
+		}
+	}
+	/** The action button: Duelist weapon ability or whatever else is showing there. */
+	static final class AbilityStep extends Step {
+		boolean run(){
+			if (ActionIndicator.action == null){ GLog.w("Voice: no ability is ready."); return false; }
+			VoiceCommands.press(SPDAction.TAG_ACTION); return true;
+		}
+	}
+	static final class SearchStep extends Step {
+		boolean run(){ GameScene.cancelCellSelector(); Dungeon.hero.search(true); return true; }
+	}
+
+	/** Chris's lock-on rule (Nov 21): last target if still in reach, else closest in reach, else closest visible. */
+	static Char lockOn(){
+		Hero h = Dungeon.hero;
+		if (h.belongings.weapon instanceof MeleeWeapon)
+			return DuelistLockOn.pick(h, (MeleeWeapon) h.belongings.weapon, QuickSlotButton.lastTarget);
+		return pickEnemy("");
 	}
 
 	// ---------- executor ----------
@@ -89,62 +141,137 @@ public final class VoiceBrain {
 	private static long waitingSince;
 	private static boolean justIssued;
 
+	private static int hpAtStart;
+	private static boolean fighting, multi;
+	private static List<String> lastGuesses;
+
 	/** Called every frame from GameScene.update (render thread). */
 	public static void tick(){
 		if (queue.isEmpty() || Dungeon.hero == null || Dungeon.level == null) return;
 		if (justIssued){ justIssued = false; return; } // let the issued action start first
-		if (queue.size() > 0 && visibleEnemies().size() > enemiesAtStart){
-			queue.clear(); GLog.w("Voice: stopped, an enemy came into view."); return;
-		}
+		Hero h = Dungeon.hero;
+		if (!h.isAlive()){ queue.clear(); return; }
+		if (visibleEnemies().size() > enemiesAtStart){ halt("an enemy came into view"); return; }
+		if (fighting ? h.HP * 3 < h.HT : (multi && h.HP < hpAtStart)){ halt(fighting ? "your health is low" : "you got hurt"); return; }
 		Step next = queue.peek();
-		boolean targeting = next instanceof TargetStep;
-		if (!Dungeon.hero.ready || (!targeting && GameScene.interfaceBlockingHero()) || (targeting && !GameScene.apdTargeting())){
-			if (System.currentTimeMillis() - waitingSince > 8000){ queue.clear(); }
+		long now = System.currentTimeMillis();
+		if (next instanceof TargetStep){
+			if (!h.ready){ if (now - waitingSince > 8000) queue.clear(); return; }
+			if (!GameScene.apdTargeting()){ if (now - waitingSince > 1200){ queue.poll(); waitingSince = now; } return; }
+		} else if (!h.ready || GameScene.interfaceBlockingHero()){
+			if (now - waitingSince > 8000) queue.clear();
 			return;
 		}
 		queue.poll();
-		waitingSince = System.currentTimeMillis();
+		waitingSince = now;
 		justIssued = true;
 		if (!next.run()) queue.clear();
 	}
 
-	static void start(List<Step> plan){
+	private static void halt(String why){
 		queue.clear();
-		queue.addAll(plan);
+		if (Dungeon.hero != null) Dungeon.hero.interrupt();
+		GLog.w("Voice: stopped, " + why + ".");
+	}
+
+	static void start(Plan plan){
+		queue.clear();
+		queue.addAll(plan.steps);
 		enemiesAtStart = visibleEnemies().size();
+		hpAtStart = Dungeon.hero.HP;
+		fighting = plan.fighting;
+		multi = plan.steps.size() > 1;
 		waitingSince = System.currentTimeMillis();
 		justIssued = false;
+	}
+
+	static boolean inRun(){
+		return scene() instanceof GameScene && Dungeon.hero != null && Dungeon.level != null;
+	}
+
+	private static com.watabou.noosa.Scene scene(){
+		return Game.instance == null ? null : Game.scene();
+	}
+
+	/** Buttons the player can see right now: the top pop-up's, or the whole screen's when there is no pop-up. */
+	static void buttons(Group g, List<StyledButton> out){
+		for (Gizmo m : g.snapshot()){
+			if (m == null || !m.isVisible() || !m.isActive()) continue;
+			if (m instanceof StyledButton){ String t = ((StyledButton) m).text(); if (t != null && !t.trim().isEmpty()) out.add((StyledButton) m); }
+			if (m instanceof Group) buttons((Group) m, out);
+		}
+	}
+
+	/** Say the words on a button to press it. Returns true if one was pressed. */
+	static boolean pressButton(String heard, boolean exactOnly){
+		if (scene() == null) return false;
+		Group root = scene();
+		for (Gizmo m : scene().snapshot()) if (m instanceof Window && m.isVisible()) root = (Group) m;
+		List<StyledButton> all = new ArrayList<>();
+		buttons(root, all);
+		String said = VoiceCommands.normalize(heard);
+		if (said.isEmpty()) return false;
+		List<String> words = keywords(said);
+		StyledButton best = null; int bestScore = 0;
+		for (StyledButton b : all){
+			String label = VoiceCommands.normalize(b.text());
+			int score = label.equals(said) ? 1000 : (exactOnly || words.isEmpty() ? 0 : nameScore(words, label) * 10 - label.split(" ").length);
+			if (score > bestScore){ best = b; bestScore = score; }
+		}
+		if (best == null) return false;
+		GLog.i("Voice: " + VoiceCommands.normalize(best.text()));
+		best.apdVoiceClick();
+		return true;
 	}
 
 	/** Render thread: understand the recognizer's guesses (best first) and run the first one that makes sense. */
 	public static void understand(List<String> guesses){
 		if (guesses == null || guesses.isEmpty()) return;
+		String first = " " + clean(guesses.get(0)) + " ";
+		if (first.matches(" (again|repeat|repeat that|do that again|same again|one more time) ")){
+			if (lastGuesses != null) understand(lastGuesses);
+			return;
+		}
+		if (first.matches(" (stop|halt|hold on|never mind|nevermind|abort) ")){
+			queue.clear();
+			if (inRun()){ GameScene.cancelCellSelector(); Dungeon.hero.interrupt(); }
+			GLog.i("Voice: stopped.");
+			return;
+		}
+		boolean run = inRun();
+		boolean popup = run && GameScene.showingWindow();
+		// a pop-up or a menu: the words on a button press it
+		if (!run || popup){
+			for (String g : guesses) if (pressButton(g, false)) return;
+		}
 		for (String g : guesses){
 			Plan p = plan(g);
 			if (p == null) continue;
 			if (p.stop){ VoiceCommands.stopFromVoice(); GLog.i("Voice: stopped listening."); return; }
-			if (Dungeon.hero == null){
-				// outside a run only simple keys make sense
+			lastGuesses = new ArrayList<>(guesses);
+			if (!run || popup){
+				// outside a run, or with a pop-up open, only simple keys (back, inventory...) make sense
 				for (Step s : p.steps) if (s instanceof KeyStep) s.run();
 				return;
 			}
-			start(p.steps);
-			GLog.i("Voice: " + p.said);
+			start(p);
+			if (p.said.length() > 0) GLog.i("Voice: " + p.said);
 			return;
 		}
-		GLog.w("Voice: didn't understand \"" + guesses.get(0) + "\"");
+		if (run) GLog.w("Voice: didn't understand \"" + guesses.get(0) + "\"");
 	}
 
 	// ---------- understanding ----------
 	static final class Plan {
-		final List<Step> steps = new ArrayList<>(); final StringBuilder said = new StringBuilder(); boolean stop;
+		final List<Step> steps = new ArrayList<>(); final StringBuilder said = new StringBuilder(); boolean stop, fighting;
 		void add(Step s, String what){ steps.add(s); if (what != null){ if (said.length() > 0) said.append(", "); said.append(what); } }
 	}
 
 	static final String[] VOCAB = {"north","south","east","west","northeast","northwest","southeast","southwest",
 			"attack","fight","kill","drink","quaff","read","eat","zap","throw","wear","wield","equip","potion","scroll",
 			"wand","rest","wait","pick","continue","resume","inventory","journal","downstairs","upstairs","descend","ascend",
-			"stairs","slot","times","examine","cancel","listening","healing","identify","upgrade","teleport"};
+			"stairs","slot","times","examine","cancel","listening","healing","identify","upgrade","teleport",
+			"ability","special","search","again","repeat","door","farthest","furthest","closest","nearest","other","second","chest","item","loot"};
 
 	private static final String[][] NUMBERS = {{"one","1"},{"once","1"},{"two","2"},{"twice","2"},{"three","3"},{"thrice","3"},
 			{"four","4"},{"five","5"},{"six","6"},{"seven","7"},{"eight","8"},{"nine","9"},{"ten","10"}};
@@ -216,7 +343,9 @@ public final class VoiceBrain {
 	}
 
 	private static final Set<String> FILLER = new HashSet<>(Arrays.asList("a","an","the","my","of","at","on","to","some",
-			"please","go","use","that","this","it","with","one","potion","scroll","wand","nearest","closest"));
+			"please","go","use","that","this","it","with","one","potion","scroll","wand","nearest","closest","near","nearer",
+			"far","farthest","furthest","other","second","next","different","enemy","monster","thing","guy","him","her","them",
+			"north","south","east","west","northeast","northwest","southeast","southwest","up","down","left","right","side","above","below"));
 
 	/** Words left after the verb, minus filler; used to match item and enemy names. */
 	static List<String> keywords(String text){
@@ -250,14 +379,55 @@ public final class VoiceBrain {
 		return out;
 	}
 
-	static Mob enemy(List<String> words){
-		Mob best = null; int bestScore = 0; float bestDist = Float.MAX_VALUE;
+	/** Does the enemy lie in that direction from the hero? Straight directions take the wider cone. */
+	static boolean inDirection(int dx, int dy, int[] dir){
+		if (dir[0] != 0 && dir[1] != 0) return Integer.signum(dx) == dir[0] && Integer.signum(dy) == dir[1];
+		if (dir[0] != 0) return Integer.signum(dx) == dir[0] && Math.abs(dx) >= Math.abs(dy);
+		return Integer.signum(dy) == dir[1] && Math.abs(dy) >= Math.abs(dx);
+	}
+
+	/**
+	 * Which enemy the words mean. Name words narrow by name ("rat"), direction words by where it stands
+	 * ("the north rat", "rat on the left"), "far"/"farthest" takes the farthest, "other"/"second"/"next" the
+	 * next-closest (or anything but the last target). With no words at all: the last target if it is still
+	 * in view, else the closest. Returns null when nothing in view fits; it never swaps in a different enemy.
+	 */
+	static Mob pickEnemy(String text){
+		String t = " " + text + " ";
+		List<String> words = keywords(text);
+		int[] dir = direction(text);
+		boolean far = t.matches(".* (far|farthest|furthest) .*");
+		boolean other = t.matches(".* (other|second|next|different) .*");
+		final Hero h = Dungeon.hero; final int w = Dungeon.level.width();
+		ArrayList<Mob> fit = new ArrayList<>();
 		for (Mob m : visibleEnemies()){
-			int s = nameScore(words, m.name());
-			float d = Dungeon.level.trueDistance(Dungeon.hero.pos, m.pos);
-			if (s > bestScore || (s == bestScore && s > 0 && d < bestDist)){ best = m; bestScore = s; bestDist = d; }
+			if (nameScore(words, m.name()) == 0) continue;
+			if (dir != null && !inDirection(m.pos % w - h.pos % w, m.pos / w - h.pos / w, dir)) continue;
+			fit.add(m);
 		}
-		return bestScore > 0 ? best : null;
+		if (fit.isEmpty()) return null;
+		java.util.Collections.sort(fit, (a, b) -> Float.compare(Dungeon.level.trueDistance(h.pos, a.pos), Dungeon.level.trueDistance(h.pos, b.pos)));
+		if (far) return fit.get(fit.size() - 1);
+		Char last = QuickSlotButton.lastTarget;
+		if (other){
+			for (Mob m : fit) if (m != last && (last != null || m != fit.get(0))) return m;
+			return fit.size() > 1 ? fit.get(1) : null;
+		}
+		if (words.isEmpty() && dir == null && last instanceof Mob && fit.contains(last)) return (Mob) last;
+		if (last instanceof Mob && fit.contains(last)
+				&& Dungeon.level.trueDistance(h.pos, last.pos) <= Dungeon.level.trueDistance(h.pos, fit.get(0).pos)) return (Mob) last;
+		return fit.get(0);
+	}
+
+	/** Nearest cell the player knows about that passes the test (doors, visible item piles). */
+	static int nearest(java.util.function.IntPredicate test){
+		int best = -1; float bestD = Float.MAX_VALUE;
+		for (int c = 0; c < Dungeon.level.length(); c++){
+			if (c == Dungeon.hero.pos || !(Dungeon.level.heroFOV[c] || known(c)) || !test.test(c)) continue;
+			float d = Dungeon.level.trueDistance(Dungeon.hero.pos, c);
+			if (d < bestD){ best = c; bestD = d; }
+		}
+		return best;
 	}
 
 	static Item item(List<String> words, Class<? extends Item> kind){
@@ -295,31 +465,85 @@ public final class VoiceBrain {
 	}
 
 	private static boolean planClause(String clause, Plan plan){
-		boolean inRun = Dungeon.hero != null && Dungeon.level != null;
+		boolean inRun = inRun();
 		String rest;
 
-		// stairs
-		if (clause.matches(".*\\b(downstairs|descend|next floor|go down the stairs|stairs down|take the stairs)\\b.*")){
+		// stairs (plain "stairs" means the way down)
+		if (clause.matches(".*\\b(upstairs|ascend|previous floor|go up the stairs|stairs up|up the stairs)\\b.*")){
+			if (!inRun) return false;
+			int entrance = Dungeon.level.entrance();
+			if (!known(entrance)){ GLog.w("Voice: you haven't found the way up yet."); return true; }
+			plan.add(new CellStep(entrance), "to the stairs up"); return true;
+		}
+		if (clause.matches(".*\\b(downstairs|descend|next floor|stairs|exit)\\b.*")){
 			if (!inRun) return false;
 			int exit = Dungeon.level.exit();
 			if (!known(exit)){ GLog.w("Voice: you haven't found the way down yet."); return true; }
 			plan.add(new CellStep(exit), "to the stairs down"); return true;
 		}
-		if (clause.matches(".*\\b(upstairs|ascend|previous floor|go up the stairs|stairs up)\\b.*")){
+
+		// the action button / Duelist weapon ability, optionally with a target
+		String abilityName = inRun && ActionIndicator.action != null ? VoiceCommands.normalize(ActionIndicator.action.actionName()) : "";
+		if ((rest = after(clause, "ability", "special", "use ability", "weapon ability")) != null
+				|| (!abilityName.isEmpty() && (rest = after(clause, abilityName)) != null)){
 			if (!inRun) return false;
-			int entrance = Dungeon.level.entrance();
-			if (!known(entrance)) return false;
-			plan.add(new CellStep(entrance), "to the stairs up"); return true;
+			plan.add(new AbilityStep(), "ability");
+			rest = rest.replaceAll("^(on|at|to) ", "");
+			List<String> words = keywords(rest);
+			int[] dir = direction(rest);
+			if (!words.isEmpty() || rest.matches(".*\\b(far|farthest|furthest|other|second|next)\\b.*")){
+				Mob m = pickEnemy(rest);
+				if (m == null){ GLog.w("Voice: no " + rest + " in view."); plan.steps.clear(); return true; }
+				plan.add(new TargetStep(m), "on " + m.name());
+			} else if (dir != null){
+				Mob m = pickEnemy(rest);
+				if (m != null) plan.add(new TargetStep(m), "on " + m.name()); else plan.add(new TargetStep(dir), rest);
+			} else {
+				plan.add(new TargetStep((Mob) null), null);
+			}
+			return true;
 		}
 
-		// attack a named or the nearest enemy
-		if ((rest = after(clause, "attack", "fight", "kill", "hit")) != null){
+		// attack: named, by direction, far/other, or the last target / closest
+		if ((rest = after(clause, "attack", "fight", "kill", "hit", "slay")) != null){
 			if (!inRun) return false;
-			List<String> words = keywords(rest);
-			Mob m = enemy(words);
-			if (m == null && !words.isEmpty()) m = enemy(new ArrayList<>());
-			if (m == null){ plan.add(new KeyStep(SPDAction.TAG_ATTACK), "attack"); return true; }
-			plan.add(new CellStep(m.pos), "attack " + m.name()); return true;
+			boolean untilDead = clause.matches(".*\\b(kill|fight|slay)\\b.*") || rest.matches(".*\\b(until|till) .*");
+			rest = rest.replaceAll("\\b(until|till) .*", "").trim();
+			Mob m = pickEnemy(rest);
+			if (m == null){
+				int[] dir = direction(rest);
+				if (dir != null && keywords(rest).isEmpty()){ plan.add(new MoveStep(dir[0], dir[1]), "attack " + rest); return true; }
+				GLog.w(visibleEnemies().isEmpty() ? "Voice: no enemy in view." : "Voice: no " + (rest.isEmpty() ? "enemy" : rest) + " in view.");
+				plan.steps.clear(); return true;
+			}
+			plan.fighting = untilDead;
+			plan.add(new AttackStep(m, untilDead), (untilDead ? "kill " : "attack ") + m.name()); return true;
+		}
+
+		// search
+		if (clause.matches("(search|search here|search around|look for secrets|look around)")){
+			if (!inRun) return false;
+			plan.add(new SearchStep(), "search"); return true;
+		}
+
+		// walk to a door or to an item on the floor
+		if (clause.matches(".*\\bdoor\\b.*")){
+			if (!inRun) return false;
+			int c = nearest(cell -> Dungeon.level.map[cell] == Terrain.DOOR || Dungeon.level.map[cell] == Terrain.OPEN_DOOR);
+			if (c < 0){ GLog.w("Voice: no door in sight."); return true; }
+			plan.add(new CellStep(c), "to the door"); return true;
+		}
+		if ((rest = after(clause, "go to", "get", "grab", "walk to", "pick up", "open", "loot")) != null
+				&& rest.matches(".*\\b(item|items|loot|chest|pile|gold|key|it)\\b.*|.+")
+				&& !(rest.isEmpty()) && inRun){
+			final List<String> words = keywords(rest.replaceAll("\\b(item|items|loot|pile|stuff)\\b", ""));
+			int c = nearest(cell -> {
+				Heap heap = Dungeon.level.heaps.get(cell);
+				return heap != null && heap.seen && heap.peek() != null
+						&& (words.isEmpty() || nameScore(words, heap.type == Heap.Type.HEAP ? heap.peek().name() : heap.title()) > 0);
+			});
+			if (c >= 0){ plan.add(new CellStep(c), "to the " + rest); return true; }
+			if (VoiceCommands.parse(clause) == null){ GLog.w("Voice: no " + rest + " in sight."); return true; }
 		}
 
 		// items
@@ -341,9 +565,12 @@ public final class VoiceBrain {
 			if (it == null){ GLog.w("Voice: no matching item for \"" + clause + "\""); return true; }
 			plan.add(new ItemStep(it, (String) v[2]), v[3] + " " + it.name());
 			if (v[2].equals(Wand.AC_ZAP) || v[2].equals(Item.AC_THROW)){
-				Mob m = target == null ? null : enemy(keywords(target));
-				if (m == null) m = enemy(new ArrayList<>());
-				if (m != null) plan.add(new TargetStep(m), "at " + m.name());
+				if (target == null) plan.add(new TargetStep((Mob) null), null);
+				else {
+					Mob m = pickEnemy(target);
+					if (m == null){ GLog.w("Voice: no " + target + " in view."); plan.steps.clear(); return true; }
+					plan.add(new TargetStep(m), "at " + m.name());
+				}
 			}
 			return true;
 		}
@@ -354,6 +581,17 @@ public final class VoiceBrain {
 			if (!inRun) { VoiceCommands.Match m = VoiceCommands.parse(clause); if (m != null && m.action != null){ plan.add(new KeyStep(m.action), null); return true; } return false; }
 			int n = count(clause);
 			for (int i = 0; i < n; i++) plan.add(new MoveStep(d[0], d[1]), i == 0 ? clause.replaceAll("\\b(go|move|walk|step)\\b ?", "") : null);
+			return true;
+		}
+
+		// "slot 2 at the rat": use the quickslot, then aim it
+		if (inRun && clause.matches("slot \\d (at|on) .+")){
+			VoiceCommands.Match sm = VoiceCommands.parse(clause.substring(0, 6));
+			Mob m = pickEnemy(clause.substring(clause.indexOf(' ', 7) + 1));
+			if (sm == null || sm.action == null) return false;
+			if (m == null){ GLog.w("Voice: no such enemy in view."); return true; }
+			plan.add(new KeyStep(sm.action), clause.substring(0, 6));
+			plan.add(new TargetStep(m), "at " + m.name());
 			return true;
 		}
 
