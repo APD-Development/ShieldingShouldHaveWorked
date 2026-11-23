@@ -999,7 +999,9 @@ route('GET', '/v1/mods/subscribed', async (env, req) => {
   const a = await need(env, req);
   const { results } = await env.DB.prepare(
     `${MOD_SELECT} AND m.id IN (SELECT mod_id FROM mod_subscriptions WHERE account_id = ?) ORDER BY m.name`).bind(a.id).all();
-  return json(200, { mods: results.map((m) => publicMod(m)) });
+  // Same rule as browse and download: a blocked author's mods don't show (download would 404 anyway).
+  const blocked = await blockedIds(env, a);
+  return json(200, { mods: results.filter((m) => !blocked.has(m.author_id)).map((m) => publicMod(m)) });
 });
 
 // Download: the exact hero.json and sprite, for the game to check and install.

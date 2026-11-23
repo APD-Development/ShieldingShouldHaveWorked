@@ -814,6 +814,7 @@ test('hero mod workshop: subscribe, report to a moderator, admin hide, blocks, b
   await call('POST', '/v1/blocks', { accountId: ana.id }, bo.token);
   assert.equal((await call('GET', '/v1/mods', null, bo.token)).body.mods.length, 0);
   assert.equal((await call('GET', '/v1/mods')).body.mods.length, 1);
+  assert.equal((await call('GET', '/v1/mods/subscribed', null, bo.token)).body.mods.length, 0);
   // A removed mod can't be re-uploaded under the same id.
   await call('POST', '/v1/admin/remove', { kind: 'mod', id }, chris.token);
   assert.equal((await call('POST', '/v1/mods', { json: heroJson('ana.monk'), sprite: pngB64() }, ana.token)).body.error, 'mod_removed');
