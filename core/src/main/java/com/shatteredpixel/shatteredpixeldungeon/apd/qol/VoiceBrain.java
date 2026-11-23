@@ -301,6 +301,8 @@ public final class VoiceBrain {
 				String best = w; int bestD = w.length() >= 7 ? 2 : 1;
 				for (String v : VOCAB){
 					if (v.equals(w)){ best = w; bestD = -1; break; }
+					// a real word that is a game word with one letter in front (meat/eat, bread/read) is kept
+					if (w.length() == v.length() + 1 && w.endsWith(v)) continue;
 					int d = distance(w, v);
 					if (d <= bestD && d < (best == w ? Integer.MAX_VALUE : distance(w, best))) best = v;
 				}

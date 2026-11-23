@@ -16,6 +16,8 @@ public class VoiceBrainTest {
 		assertEquals("north 2 times", VoiceBrain.clean("north to times"));
 		assertEquals("downstairs", VoiceBrain.clean("down stairs"));
 		assertEquals("slot 4", VoiceBrain.clean("quick slot for"));
+		assertEquals("eat the meat", VoiceBrain.clean("eat the meat"));   // item names are not snapped to verbs
+		assertEquals("read bread", VoiceBrain.clean("read bread"));
 	}
 	@Test public void splitsMultiStepPhrases(){
 		assertEquals(Arrays.asList("east", "north"), VoiceBrain.clauses(VoiceBrain.clean("go east then north")));
