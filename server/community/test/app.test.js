@@ -881,3 +881,15 @@ test('idea and mod lists: 500 newer posts by a player I blocked do not hide an o
   // Not signed in: nothing is blocked, the newest 500 show.
   assert.equal((await call('GET', '/v1/mods')).body.mods.length, 500);
 });
+
+test('reports refuse a kind that is not one of the listed kinds (inherited names, arrays)', async () => {
+  const { call, member } = setup();
+  const a = await member('reporter@x.com', 'Reporter');
+  const s = (await call('POST', '/v1/submissions', { title: 't', body: 'b' }, a.token)).body.id;
+  for (const kind of ['constructor', 'toString', '__proto__', ['submission']]) {
+    const r = await call('POST', '/v1/reports', { kind, id: s, reason: 'x' }, a.token);
+    assert.equal(r.status, 400, `kind ${JSON.stringify(kind)}`);
+    assert.equal(r.body.error, 'bad_kind');
+  }
+  assert.equal((await call('POST', '/v1/reports', { kind: 'submission', id: s, reason: 'x' }, a.token)).status, 201);
+});

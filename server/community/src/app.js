@@ -1050,7 +1050,8 @@ const KINDS = { submission: 'submissions', comment: 'comments', account: 'accoun
 route('POST', '/v1/reports', async (env, req) => {
   const a = await needMember(env, req);
   const b = await body(req);
-  const table = KINDS[b.kind];
+  // Own keys only: 'constructor'/'toString' would otherwise reach the SQL as a table name, and ['submission'] would match.
+  const table = typeof b.kind === 'string' && Object.hasOwn(KINDS, b.kind) ? KINDS[b.kind] : null;
   if (!table) fail(400, 'bad_kind');
   await rateLimit(env, a, 'reports');
   const target = await env.DB.prepare(`SELECT id FROM ${table} WHERE id = ?`).bind(String(b.id || '')).first();
