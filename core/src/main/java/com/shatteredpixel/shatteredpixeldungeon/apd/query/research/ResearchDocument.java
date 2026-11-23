@@ -65,13 +65,14 @@ public final class ResearchDocument {
         return d;
     }
     public static ResearchDocument study(QueryResult ar,QueryResult br,PopulationStudy.Comparison c){
-        ResearchDocument d=new ResearchDocument("Statistical investigation lab");d.notes.add(c.note);
+        ResearchDocument d=new ResearchDocument("Statistical investigation lab");
         d.notes.add("Population A: "+ar.def.title+", "+ar.rows.size()+" matching rows. Population B: "+br.def.title+", "+br.rows.size()+" matching rows. Grouping and display paging are not population filters. Original filters, rules and hidden-information choices are retained.");
         String label=PopulationStudy.WIN_RATE.equals(c.a.column) ? "Win rate (%)":ar.def.column(c.a.column).label;
         double divisor=1;
         if(!PopulationStudy.WIN_RATE.equals(c.a.column)){
             ColumnDef.Format format=ar.def.column(c.a.column).format;if(format==ColumnDef.Format.HUNDREDTHS)divisor=100;if(format==ColumnDef.Format.THOUSANDTHS)divisor=1000;
         }
+        d.notes.add(0,Verdict.compare(c,label.toLowerCase(java.util.Locale.ROOT),"A","B",divisor));d.notes.add(1,c.note);
         d.cards.add(new Card(label+": A minus B",ResearchData.value(c.difference/divisor),Double.isFinite(c.difference) ? CellText.EXACT:CellText.UNKNOWN,
                 "A: n="+c.a.n+", mean="+ResearchData.value(c.a.mean/divisor)+", median="+ResearchData.value(c.a.median/divisor)+", SD="+ResearchData.value(c.a.sd/divisor)+", excluded="+c.a.excluded+".\nB: n="+c.b.n+", mean="+ResearchData.value(c.b.mean/divisor)+", median="+ResearchData.value(c.b.median/divisor)+", SD="+ResearchData.value(c.b.sd/divisor)+", excluded="+c.b.excluded+".\nOverlapping runs="+c.overlappingRuns+". Approximate 95% difference interval="+(c.intervalKnown ? ResearchData.value(c.low/divisor)+" to "+ResearchData.value(c.high/divisor):"? (requirements not met)")+". "+c.note,
                 new Evidence("Population A contributors",ar,c.a.contributors),new Evidence("Population B contributors",br,c.b.contributors)));
@@ -87,6 +88,7 @@ public final class ResearchDocument {
         PopulationStudy.Comparison c=result.comparison;ColumnDef metric=recentRows.def.column(c.a.column);
         String label=PopulationStudy.WIN_RATE.equals(c.a.column) ? "Win rate (%)":metric.label;
         double divisor=1;if(!PopulationStudy.WIN_RATE.equals(c.a.column)){if(metric.format==ColumnDef.Format.HUNDREDTHS)divisor=100;if(metric.format==ColumnDef.Format.THOUSANDTHS)divisor=1000;}
+        d.notes.add(1,Verdict.compare(c,label.toLowerCase(java.util.Locale.ROOT),"your recent runs","your earlier runs",divisor));
         String dates="Earlier: "+CellFormatter.date(result.earlierFirstMillis)+" through "+CellFormatter.date(result.earlierLastMillis)
                 +"; recent: "+CellFormatter.date(result.recentFirstMillis)+" through "+CellFormatter.date(result.recentLastMillis)+".";
         String interval=c.intervalKnown ? ResearchData.value(c.low/divisor)+" to "+ResearchData.value(c.high/divisor):"? (requirements not met)";
