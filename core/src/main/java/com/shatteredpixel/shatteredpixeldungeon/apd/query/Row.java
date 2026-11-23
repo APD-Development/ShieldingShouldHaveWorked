@@ -122,6 +122,37 @@ public final class Row {
 		return k == K_NUM ? Long.toString(nums[col]) : k == K_TEXT ? text(col) : "";
 	}
 
+	//the stored cell as it is, for the compact store (ColumnarRows) to keep and give back exactly
+	byte rawMeta( int col ){
+		return meta[col];
+	}
+
+	String rawText( int col ){
+		return texts[col];
+	}
+
+	void setRaw( int col, byte cellMeta, long value, String text ){
+		meta[col] = cellMeta;
+		nums[col] = value;
+		texts[col] = text;
+	}
+
+	//A row is the same row when it has the same id in the same run. The compact store (ColumnarRows) hands out a fresh Row object
+	//each time one is read, so "is this row in that list" must not depend on which read it came from. Rows are not changed once
+	//a catalog has been assembled.
+	@Override
+	public boolean equals( Object o ){
+		if (this == o) return true;
+		if (!(o instanceof Row)) return false;
+		Row r = (Row) o;
+		return meta.length == r.meta.length && java.util.Objects.equals(id, r.id) && runId.equals(r.runId);
+	}
+
+	@Override
+	public int hashCode(){
+		return java.util.Objects.hashCode(id) * 31 + runId.hashCode();
+	}
+
 	public Row copy(){
 		Row r = new Row(id, mergeKey, runId, meta.length);
 		System.arraycopy(nums, 0, r.nums, 0, nums.length);

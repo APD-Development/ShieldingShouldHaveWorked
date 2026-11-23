@@ -216,205 +216,26 @@ public final class WndUimsdOptions {
 		}.restoreWith(() -> deleteDemoData(realRoot)));
 	}
 
+	//The old server menu (sending switch, server address, accounts, evidence requests, votes) lived here. It never worked in Play builds
+	//(queuing a run is a debug-only action) and Community has replaced it, so this is only what stays on the device and a way there.
 	private static void privacy( final UimsdModel m ){
 		final List<Entry> entries = new ArrayList<>();
-		entries.add(Entry.item("What stays on this device", "What APD holds, and what is queued."));
-		entries.add(Entry.item("Sending to a server: " + (SPDSettings.apdSending() ? "on" : "off"), BackendClient.status(SPDSettings.apdSending(), SPDSettings.apdServer())));
-		entries.add(Entry.item("Server address...", "Where queued runs go when you press Send. Must start with https://."));
-		entries.add(Entry.item("Send queued runs now", "Sends only what you queued, only when you press this."));
-		final SessionStore.Session session = new SessionStore(m.root()).current(System.currentTimeMillis());
-		EvidenceInbox.prune(m.root(), System.currentTimeMillis());
-		final int asked = EvidenceInbox.pending(m.root());
-		entries.add(Entry.item("Evidence requests (" + asked + ")", asked == 0 ? "Nothing is waiting for your answer." : "A server asked to see the full log of a run you submitted. Nothing is sent unless you agree."));
-		entries.add(Entry.item("Share what is queued and sent", "A readable copy of everything APD holds for sending: each queued item exactly as it would be sent, what was sent, and any requests. Makes no connection."));
-		entries.add(Entry.item(session == null ? "Account: signed out" : "Account: signed in", session == null ? "There is no sign-in method in this version, so nothing can be sent to an account yet."
-				: "Tap to sign out. Signing out never touches your history or saves."));
-		entries.add(Entry.item("Ask for a copy of my account data", session == null ? "Needs an account; none can be made in this version." : "Queues a request. It is sent the next time you press Send."));
-		entries.add(Entry.item("Delete my account", session == null ? "Needs an account; none can be made in this version." : "Queues a request to delete your account on the server. Your history and saves here are not touched."));
-		final int open = VoteActions.offers(m.root()).size();
-		entries.add(Entry.item("Community votes (" + open + ")", open == 0 ? "No vote is open. Votes the server opens appear here after you press Send." : "Votes the server has opened. Needs an account to cast."));
+		entries.add(Entry.item("What stays on this device", "What APD holds. UIMSD never sends anything anywhere."));
+		entries.add(Entry.item("Community", "Sharing runs, seeds and script mods is in Community, on the title screen. Nothing is shared unless you choose it there."));
 		ShatteredPixelDungeon.scene().addToFront(WndUimsdList.menu("Privacy", "", entries, new WndUimsdList.Picker(){
 			@Override
 			public void onPick( int i, boolean checked ){
-				if (i == 0){
-					privacySummary(m);
-				} else if (i == 1){
-					SPDSettings.apdSending(!SPDSettings.apdSending());
-					say("Sending is now " + (SPDSettings.apdSending() ? "on. Nothing is sent until you press \"Send queued runs now\"." : "off. Nothing leaves this device."));
-				} else if (i == 2){
-					serverAddress();
-				} else if (i == 4){
-					evidenceRequests(m);
-				} else if (i == 5){
-					WndUimsdReport.show(m, "A readable copy of everything APD holds for sending.", new WndUimsdReport.Source(){
-						@Override
-						public com.shatteredpixel.shatteredpixeldungeon.apd.report.Report build(){
-							return PrivacyReport.build(m.root(), SPDSettings.apdSending(), System.currentTimeMillis(), Game.version);
-						}
-					});
-				} else if (i == 9){
-					communityVotes(m);
-				} else if (i == 7 || i == 8){
-					accountRequest(m, i == 7 ? com.shatteredpixel.shatteredpixeldungeon.apd.backend.AccountRequests.Kind.EXPORT : com.shatteredpixel.shatteredpixeldungeon.apd.backend.AccountRequests.Kind.DELETE);
-				} else if (i == 6){
-					if (session == null){
-						say("There is no sign-in method in this version, so you cannot sign in yet.");
-					} else {
-						new SessionStore(m.root()).signOut();
-						say("Signed out. Your history and saves were not touched.");
-					}
-				} else {
-					BackendClient.sendNow(m.root(), SPDSettings.apdSending(), SPDSettings.apdServer(), new BackendClient.Done(){
-						@Override
-						public void finished( final String message ){
-							Game.runOnRenderThread(new com.watabou.utils.Callback(){
-								@Override
-								public void call(){
-									say(message);
-								}
-							});
-						}
-					});
-				}
+				if (i == 0) privacySummary(m);
+				else if (com.watabou.noosa.Game.scene() instanceof com.shatteredpixel.shatteredpixeldungeon.scenes.UimsdScene)
+					com.shatteredpixel.shatteredpixeldungeon.scenes.CommunityScene.open();
+				else say("Community is on the title screen. Open it from there once this run is saved.");
 			}
 		}).restoreWith(() -> privacy(m)));
 	}
 
-	private static void evidenceRequests( final UimsdModel m ){
-		evidenceRequests(m, new ArrayList<>(EvidenceInbox.list(m.root())));
-	}
-
-	private static void evidenceRequests( final UimsdModel m, final List<EvidenceInbox.Entry> list ){
-		if (list.isEmpty()){
-			say("Nothing is waiting for your answer.");
-			return;
-		}
-		List<Entry> entries = new ArrayList<>();
-		for (EvidenceInbox.Entry e : list) entries.add(Entry.item("Run " + e.asked.runId, "Asked for: " + (e.asked.request.kind == com.shatteredpixel.shatteredpixeldungeon.apd.backend.Evidence.Kind.FULL_RUN_LOG ? "the full run log" : "other data (not supported)")));
-		ShatteredPixelDungeon.scene().addToFront(WndUimsdList.menu("Evidence requests", "Tap one to decide.", entries, new WndUimsdList.Picker(){
-			@Override
-			public void onPick( int i, boolean checked ){
-				answerRequest(m, list.get(i));
-			}
-		}).restoreWith(() -> evidenceRequests(m, list)));
-	}
-
-	private static void answerRequest( final UimsdModel m, final EvidenceInbox.Entry entry ){
-		ShatteredPixelDungeon.scene().addToFront(new WndUimsdChoices("Share this run's full log?",
-				"A server asked to check the run you submitted (" + entry.asked.runId + "). Agreeing queues its complete recorded log for sending the next time you press Send. Declining sends nothing.",
-				"Agree", "Decline", "Decide later"){
-			@Override
-			protected void onSelect( int index ){
-				if (index == 2) return;
-				EvidenceFlow.Result r = EvidenceFlow.answer(m.root(), entry.asked, index == 0, System.currentTimeMillis());
-				String msg;
-				switch (r){
-					case QUEUED: msg = "Queued. It is sent the next time you press \"Send queued runs now\"."; break;
-					case DECLINED: msg = "Declined. Nothing will be sent."; break;
-					case EXPIRED: msg = "That request has expired."; break;
-					case LOG_CHANGED: msg = "The log on this device no longer matches what was submitted, so it was not sent."; break;
-					case NOT_SUBMITTED: msg = "This device did not submit that run, so there is nothing to send."; break;
-					case UNSUPPORTED: msg = "That kind of data is not supported. Nothing was sent."; break;
-					case TOO_LARGE: msg = "The log is too large to send. Nothing was sent."; break;
-					default: msg = "It could not be answered. Try again.";
-				}
-				say(msg);
-			}
-		}.restoreWith(() -> answerRequest(m, entry)));
-	}
-
-	private static void communityVotes( final UimsdModel m ){
-		communityVotes(m, new ArrayList<>(VoteActions.offers(m.root())));
-	}
-
-	private static void communityVotes( final UimsdModel m,
-			final List<com.shatteredpixel.shatteredpixeldungeon.apd.backend.VoteMessages.Offer> offers ){
-		if (offers.isEmpty()){
-			say("No vote is open. Votes the server opens appear here after you press Send.");
-			return;
-		}
-		List<Entry> entries = new ArrayList<>();
-		for (com.shatteredpixel.shatteredpixeldungeon.apd.backend.VoteMessages.Offer o : offers){
-			entries.add(Entry.item(o.title.isEmpty() ? "Vote " + o.round.id.value : o.title, "Pick up to " + o.round.maxChoices + " of " + o.round.options.size() + "."));
-		}
-		ShatteredPixelDungeon.scene().addToFront(WndUimsdList.menu("Community votes", "Tap a vote to choose.", entries, new WndUimsdList.Picker(){
-			@Override
-			public void onPick( int i, boolean checked ){
-				castVote(m, offers.get(i));
-			}
-		}).restoreWith(() -> communityVotes(m, offers)));
-	}
-
-	private static void castVote( final UimsdModel m, final com.shatteredpixel.shatteredpixeldungeon.apd.backend.VoteMessages.Offer offer ){
-		castVote(m, offer, new java.util.TreeSet<>());
-	}
-
-	private static void castVote( final UimsdModel m,
-			final com.shatteredpixel.shatteredpixeldungeon.apd.backend.VoteMessages.Offer offer,
-			final java.util.Set<String> chosen ){
-		final List<String> options = new ArrayList<>(offer.round.options);
-		List<Entry> entries = new ArrayList<>();
-		for (String o : options) entries.add(Entry.item(o).checked(chosen.contains(o)));
-		ShatteredPixelDungeon.scene().addToFront(new WndUimsdList(offer.title.isEmpty() ? "Vote" : offer.title,
-				"Tick up to " + offer.round.maxChoices + ", then tap Done. Nothing is sent until you press Send. Back leaves without voting.", true, entries, new WndUimsdList.Picker(){
-			@Override
-			public void onPick( int i, boolean checked ){
-				if (checked) chosen.add(options.get(i)); else chosen.remove(options.get(i));
-			}
-		}){
-			@Override
-			protected void onDone(){
-				super.onDone();
-				String msg;
-				switch (VoteActions.cast(m.root(), offer.round.id, chosen, System.currentTimeMillis())){
-					case QUEUED: msg = "Your choice is queued. Nothing has been sent yet."; break;
-					case NOT_SIGNED_IN: msg = "You are not signed in, so you cannot vote yet."; break;
-					case NOT_OPEN: msg = "This vote has not opened yet."; break;
-					case CLOSED: msg = "This vote has closed."; break;
-					case TOO_MANY_CHOICES: msg = "You picked too many. Pick up to " + offer.round.maxChoices + "."; break;
-					case EMPTY: msg = "You did not pick anything."; break;
-					default: msg = "Your choice could not be queued.";
-				}
-				say(msg);
-			}
-		}.restoreWith(() -> castVote(m, offer, new java.util.TreeSet<>(chosen))));
-	}
-
-	private static void accountRequest( final UimsdModel m, final com.shatteredpixel.shatteredpixeldungeon.apd.backend.AccountRequests.Kind kind ){
-		final boolean delete = kind == com.shatteredpixel.shatteredpixeldungeon.apd.backend.AccountRequests.Kind.DELETE;
-		ShatteredPixelDungeon.scene().addToFront(new WndUimsdChoices(delete ? "Delete your account?" : "Ask for a copy of your account data?",
-				delete ? "This queues a request to delete your account and what the server holds about it. It is sent the next time you press Send. Your history and saves on this device stay as they are."
-						: "This queues a request for a copy of what the server holds about your account. It is sent the next time you press Send.",
-				delete ? "Queue the deletion" : "Queue the request", "Cancel"){
-			@Override
-			protected void onSelect( int index ){
-				if (index != 0) return;
-				switch (AccountActions.request(m.root(), kind, System.currentTimeMillis())){
-					case QUEUED: say("Queued. Nothing has been sent yet."); break;
-					case ALREADY_QUEUED: say("That request is already queued."); break;
-					case NOT_SIGNED_IN: say("You are not signed in, so there is no account to ask about."); break;
-					default: say("The request could not be queued.");
-				}
-			}
-		}.restoreWith(() -> accountRequest(m, kind)));
-	}
-
-	private static void serverAddress(){
-		ShatteredPixelDungeon.scene().addToFront(new WndUimsdTextInput("Server address", "An address starting with https://. Leave empty to clear it.", SPDSettings.apdServer(), 200, false, "Save", "Cancel", (positive, text) -> {
-				if (!positive) return;
-				String t = text == null ? "" : text.trim();
-				if (!t.isEmpty() && Gateways.cleanBaseUrl(t) == null){
-					say("That is not a usable address. It must start with https://.");
-					return;
-				}
-				SPDSettings.apdServer(t);
-				say(t.isEmpty() ? "Address cleared." : "Saved.");
-			}));
-	}
-
 	private static void privacySummary( UimsdModel m ){
 		StringBuilder sb = new StringBuilder();
-		for (String line : PrivacySummary.of(m.root()).lines(SPDSettings.apdSending())) sb.append(line).append("\n\n");
+		for (String line : PrivacySummary.of(m.root()).lines(false)) sb.append(line).append("\n\n");
 		ShatteredPixelDungeon.scene().addToFront(new WndUimsdText("UIMSD", sb.toString().trim(), false));
 	}
 

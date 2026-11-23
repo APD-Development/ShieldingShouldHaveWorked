@@ -17,6 +17,21 @@ Every scheduled run starts fresh. This file is the memory: read it, work, then a
 ## NEVER STAND DOWN (Chris, Nov 19 10:38 AM): scheduled runs ALWAYS code, even if a live session pushed recently.
 A recent push is not a clash: `git pull --rebase` before every push and resolve conflicts. Skipping a run is not allowed.
 
+## UIMSD improvement plan (Chris, Nov 23: "Okay, you have full authority to do all of them")
+All 12 items from UIMSD-Deep-Dive-2026-11-23.pdf are approved. Order: 1, 2, 3+4, 5+6, 7, 8, 9, 10, 11, 12; 1 to 6 before Jan 1.
+Judgment rules in the postmortem (item 2, "you probably should have...") still need Chris's sign-off before they ship.
+1. Memory wall: DONE Nov 23. Heavy datasets (events, fact:*) load lazily (LazyRows) into ColumnarRows (19 bytes a row vs 340).
+   Gate UimsdMemoryGateTest: 50 long runs (1.85M rows, 5.8 MB logs) open + Home in under 1 MB, all 750k step rows in 19 MB.
+   Prewarm ratio fixed (logs up to the whole 64 MB budget). Rows read from LazyRows are fresh objects: never mutate them.
+2. Facts-first postmortem (death screen + UIMSD): killer/turn, HP last 50 turns, damage by source, effects, hunger, unused items.
+3. Search for normal questions (synonyms, shapes, names as filters, typos, "did you mean"), gated by a 100-question test list.
+4. Front door by intent: How am I doing / What kills me / What works for me / Was I unlucky / Am I getting better.
+5. Old server menu in Options > Privacy: DONE Nov 23 (now: what stays on the device + Community link).
+6. Public item source column matching ItemOrigins, plus how the item was acquired.
+7. Plain-sentence verdicts on Research lab results.  8. In-run history popups from item/enemy windows (light index).
+9. Native PDF export (Android PdfDocument).  10. Run replay (floor map once per floor, new fact kind; finished runs only).
+11. Achievement for a never-made-before search; absurd-query line via Question.complexity.  12. Mod-run marker when script mods ship.
+
 ## CURRENT STATE, Nov 18 21:35 (overrides anything older below)
 - Closed test LIVE on Play since Nov 18, 12+ testers opted in (14-day clock running; earliest production apply ~Dec 2).
   Builds: 921 approved; 922, 923 superseded; 924 (Community text + Google sign-in crash fixes) uploaded by Chris.

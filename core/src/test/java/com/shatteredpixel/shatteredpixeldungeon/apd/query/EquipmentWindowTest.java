@@ -21,7 +21,8 @@ public class EquipmentWindowTest {
         s.clock=20;s.damageFromHero("rat","Rat",200);s.clock=21;s.damageToHero("rat","Rat",9);
         s.clock=30;s.end(LifecycleEvents.OUTCOME_DIED,"rat",1,1,10).close(true);
         log("a").equip("armor","Leather armor",ItemEvents.CAT_ARMOR).damageToHero("rat","Rat",99).end(LifecycleEvents.OUTCOME_ABANDONED,"",1,1,10).close(true);
-        return new DatasetStore(tmp.getRoot()).load();
+        //these tests change loaded rows in place to stand for uncertain recordings, so they need rows that stay changed
+        return new DatasetStore(tmp.getRoot()).buildEverythingAtOnce().load();
     }
     private QueryResult anchors(Catalog c){return ResearchData.select(c,Query.of(EventDatasets.EQUIPMENT).withScope(all()).addFilter(Filter.text("equip.run",Op.GROUP_TEXT,"A")),RULES);}
     private ResearchDocument answer(Catalog c,int turns){QueryResult a=anchors(c);return EquipmentWindow.answer(c,a,a.rows.get(0),turns,RULES);}

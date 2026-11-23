@@ -27,7 +27,9 @@ import java.nio.file.Files;
 
 /** Reuse is immediate only for a complete, unchanged model. */
 public class UimsdWarmCacheTest {
-    @Test public void lowHeapPhonesDoNotPreloadLargeHistoriesBesideGameplay(){assertFalse(UimsdWarmCache.withinMemoryBudget(256L*1024*1024,100L*1024*1024,5000000));}
+    @Test public void lowHeapPhonesDoNotPreloadLargeHistoriesBesideGameplay(){assertFalse(UimsdWarmCache.withinMemoryBudget(256L*1024*1024,100L*1024*1024,65L*1024*1024));assertFalse(UimsdWarmCache.withinMemoryBudget(128L*1024*1024,10L*1024*1024,33L*1024*1024));}
+    // 50 long runs are 5.8 MB of logs and open in under 1 MB now that heavy datasets are read when asked for (UimsdMemoryGateTest).
+    @Test public void fiftyLongRunsArePreparedOnAPhoneHeap(){assertTrue(UimsdWarmCache.withinMemoryBudget(256L*1024*1024,100L*1024*1024,5944L*1024));}
     @Test public void smallHistoriesCanStillOpenWithPreparedHome(){assertTrue(UimsdWarmCache.withinMemoryBudget(256L*1024*1024,80L*1024*1024,100000));assertTrue("normal 72-run fixture remains eligible on a 192MiB heap",UimsdWarmCache.withinMemoryBudget(192L*1024*1024,64L*1024*1024,1470194));}
     @Test public void optionalPreparationStopsWhenTheHeapIsAlreadyBusy(){assertFalse(UimsdWarmCache.withinMemoryBudget(256L*1024*1024,200L*1024*1024,0));assertFalse(UimsdWarmCache.withinMemoryBudget(256L*1024*1024,0,Long.MAX_VALUE));}
     private static void deleteTree(File root){

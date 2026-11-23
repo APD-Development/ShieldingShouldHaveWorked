@@ -62,9 +62,30 @@ public final class DatasetStore {
 	public static final String DEMO_LOG_PREFIX = "demo-";
 
 	private final File root;
+	//Heavy datasets (play-by-play events and per-observation facts) are read from the row caches only when asked for (LazyRows).
+	//Tests turn this off to compare against building everything at once.
+	private boolean lazyHeavy = true;
 
 	public DatasetStore( File root ){
 		this.root = root;
+	}
+
+	DatasetStore buildEverythingAtOnce(){
+		lazyHeavy = false;
+		return this;
+	}
+
+	private static final RowCodec.Keep LIGHT = new RowCodec.Keep(){
+		@Override
+		public boolean keep( String datasetId ){
+			return light(datasetId);
+		}
+	};
+
+	//The datasets every UIMSD screen opens with. Everything else is heavy and read when asked for.
+	static boolean light( String datasetId ){
+		return Datasets.RUNS.equals(datasetId) || Datasets.ITEMS.equals(datasetId)
+				|| Datasets.ENEMIES.equals(datasetId) || Datasets.DEATHS.equals(datasetId);
 	}
 
 	public File rowsDir(){
@@ -157,8 +178,10 @@ public final class DatasetStore {
 			try {
 				byte[] stored = readAll(cache);
 				boolean compressed = isGzip(stored);
-				LogRows lr = RowCodec.decode(compressed ? gunzip(stored) : stored, length, defs, sourceFingerprint);
+				LogRows lr = RowCodec.decode(compressed ? gunzip(stored) : stored, length, defs, sourceFingerprint,
+						lazyHeavy ? LIGHT : null);
 				if (lr != null){
+					remember(lr, log, id, legacy, sourceFingerprint, length);
 					cat.logsCached++;
 					//APD: older uncompressed caches are rewritten compressed the first time they are used
 					if (!compressed) writeCache(cache, gzip(stored));
@@ -178,10 +201,26 @@ public final class DatasetStore {
 						&& Arrays.equals(sourceFingerprint, fingerprint(log, fingerprintBuffer)))
 					writeCache(cache, gzip(RowCodec.encode(lr, length, defs, sourceFingerprint)));
 			} catch (IOException ignored) { /* The cache is optional; retain the actual parsed rows. */ }
+			remember(lr, log, id, legacy, sourceFingerprint, length);
+			if (lazyHeavy){
+				for (java.util.Iterator<Map.Entry<String, List<Row>>> it = lr.rows.entrySet().iterator(); it.hasNext(); ){
+					Map.Entry<String, List<Row>> e = it.next();
+					lr.counts.put(e.getKey(), e.getValue().size());
+					if (!light(e.getKey())) it.remove();
+				}
+			}
 			return lr;
 		} catch (IOException | RuntimeException t){
 			return null;
 		}
+	}
+
+	private static void remember( LogRows lr, File log, String id, boolean legacy, byte[] fingerprint, long length ){
+		lr.source = log;
+		lr.fileId = id;
+		lr.legacy = legacy;
+		lr.fingerprint = fingerprint;
+		lr.length = length;
 	}
 
 	private static byte[] fingerprint(File file, byte[] buffer) throws IOException {
@@ -298,7 +337,7 @@ public final class DatasetStore {
 		}
 	}
 
-	private static void assemble( Catalog cat, Map<String, DatasetDef> defs, List<LogRows> recorded, List<LogRows> imported ){
+	private void assemble( Catalog cat, Map<String, DatasetDef> defs, List<LogRows> recorded, List<LogRows> imported ){
 		//segments of one run, in the order they were recorded
 		Map<String, RunGroup> groups = new LinkedHashMap<>();
 		for (LogRows lr : recorded){
@@ -353,7 +392,9 @@ public final class DatasetStore {
 		//imported ranking records (each once), and which of them are the same run as a recorded one
 		DatasetDef runsDef = defs.get(Datasets.RUNS);
 		List<Row> runRows = merged.get(Datasets.RUNS);
-		copyRunFacts(defs, merged, runsDef, runRows);
+		Map<String, Row> byRun = new HashMap<>();
+		for (Row r : runRows) byRun.put(r.runId, r);
+		copyRunFacts(defs, merged, runsDef, byRun);
 		List<Row> legacy = new ArrayList<>();
 		Set<String> seen = new HashSet<>();
 		for (LogRows lr : imported){
@@ -411,51 +452,154 @@ public final class DatasetStore {
 				runs.add(new Dataset.RunInfo(g.runId, g.finished, g.ruleset, covered, false));
 			}
 			for (Row r : legacy) runs.add(new Dataset.RunInfo(r.runId, true, null, e.getKey().equals(Datasets.RUNS), r.duplicate));
-			cat.add(new Dataset(def, e.getValue(), runs));
+			if (lazyHeavy && !light(def.id)){
+				int expected = 0;
+				for (RunGroup g : groups.values()) for (LogRows lr : g.logs) expected += lr.count(def.id);
+				HeavySource src = new HeavySource(def, defs, rowsDir(), new ArrayList<>(groups.values()),
+						RunFactCopier.forDataset(def, runsDef, byRun));
+				cat.add(new Dataset(def, new LazyRows(expected, src), runs));
+			} else cat.add(new Dataset(def, e.getValue(), runs));
+		}
+		//the catalog's rows are in their datasets now; what each log keeps is only what reading it again needs
+		for (RunGroup g : groups.values()) for (LogRows lr : g.logs) lr.rows.clear();
+	}
+
+	//Reads one heavy dataset's rows from the row caches, exactly as building everything at once would have assembled them:
+	//the same logs in the same order, the run's finished state and ruleset, merged, with the run's own facts copied in.
+	private static final class HeavySource implements LazyRows.Source {
+		private final DatasetDef def;
+		private final Map<String, DatasetDef> defs;
+		private final File rowsDir;
+		private final List<RunGroup> groups;
+		private final RunFactCopier copier;
+
+		HeavySource( DatasetDef def, Map<String, DatasetDef> defs, File rowsDir, List<RunGroup> groups, RunFactCopier copier ){
+			this.def = def;
+			this.defs = defs;
+			this.rowsDir = rowsDir;
+			this.groups = groups;
+			this.copier = copier;
+		}
+
+		@Override
+		public List<Row> load( String onlyRun ){
+			ColumnarRows.Builder compact = new ColumnarRows.Builder(def.size());
+			List<Row> plain = null;
+			for (RunGroup g : groups){
+				if (onlyRun != null && !onlyRun.equals(g.runId)) continue;
+				for (LogRows lr : g.logs){
+					if (lr.count(def.id) == 0) continue;
+					for (Row r : reread(lr)){
+						r.finished = g.finished;
+						r.ruleset = g.ruleset;
+						if (copier != null) copier.apply(r);
+						if (plain == null && (r.mergeKey != null || !compact.add(r))){
+							plain = new ArrayList<>(compact.build());
+							compact = null;
+						}
+						if (plain != null) plain.add(r);
+					}
+				}
+			}
+			if (plain == null) return compact.build();
+			//rows that merge across segments (or a cell the compact store can't keep): the plain path, as building at once does
+			plain = RowMerger.mergeAll(def, plain);
+			if (copier != null) for (Row r : plain) copier.apply(r);
+			ColumnarRows c = ColumnarRows.of(def.size(), plain);
+			return c == null ? plain : c;
+		}
+
+		private List<Row> reread( LogRows lr ){
+			if (lr.fingerprint != null){
+				File cache = new File(rowsDir, (lr.legacy ? "legacy-" : "runs-") + lr.fileId + ".apdr");
+				if (cache.isFile()){
+					try {
+						LogRows c = RowCodec.decode(plainCache(readAll(cache)), lr.length, defs, lr.fingerprint, new RowCodec.Keep(){
+							@Override
+							public boolean keep( String datasetId ){
+								return def.id.equals(datasetId);
+							}
+						});
+						if (c != null){
+							List<Row> l = c.rows.get(def.id);
+							return l == null ? new ArrayList<Row>() : l;
+						}
+					} catch (IOException | RuntimeException ignored){
+						//read from the raw log below
+					}
+				}
+			}
+			try {
+				ReadResult r = RunLogReader.read(lr.source);
+				LogRows built = lr.legacy ? RowBuilders.fromLegacyLog(r, lr.fileId) : RowBuilders.fromLog(r, lr.fileId);
+				List<Row> l = built.rows.get(def.id);
+				return l == null ? new ArrayList<Row>() : l;
+			} catch (IOException | RuntimeException unreadable){
+				return new ArrayList<>();
+			}
+		}
+	}
+
+	//The run facts a dataset's rows carry (see copyRunFacts), worked out once per dataset.
+	static final class RunFactCopier {
+		private final Map<String, Row> byRun;
+		private final int[] to, from;
+		private final boolean[] numOnly;
+
+		private RunFactCopier( Map<String, Row> byRun, int[] to, int[] from, boolean[] numOnly ){
+			this.byRun = byRun;
+			this.to = to;
+			this.from = from;
+			this.numOnly = numOnly;
+		}
+
+		static RunFactCopier forDataset( DatasetDef d, DatasetDef runsDef, Map<String, Row> byRun ){
+			if (d == null || d.id.equals(Datasets.RUNS)) return null;
+			String prefix = null;
+			for (ColumnDef c : d.columns()){
+				if (c.id.endsWith(".runClass")){
+					prefix = c.id.substring(0, c.id.length() - ".runClass".length());
+					break;
+				}
+			}
+			if (prefix == null) return null;
+			List<int[]> pairs = new ArrayList<>();
+			for (String[] fact : Datasets.RUN_FACTS){
+				int t = d.indexOf(prefix + "." + fact[0]);
+				int f = runsDef.indexOf(fact[1]);
+				if (t >= 0 && f >= 0) pairs.add(new int[]{ t, f, 0 });
+			}
+			int t = d.indexOf(prefix + ".runDifficulty");
+			int f = runsDef.indexOf(FactKeys.DIFFICULTY);
+			if (t >= 0 && f >= 0) pairs.add(new int[]{ t, f, 1 });
+			int[] to = new int[pairs.size()], from = new int[pairs.size()];
+			boolean[] numOnly = new boolean[pairs.size()];
+			for (int i = 0; i < pairs.size(); i++){
+				to[i] = pairs.get(i)[0];
+				from[i] = pairs.get(i)[1];
+				numOnly[i] = pairs.get(i)[2] == 1;
+			}
+			return new RunFactCopier(byRun, to, from, numOnly);
+		}
+
+		void apply( Row r ){
+			Row run = byRun.get(r.runId);
+			if (run == null) return;
+			for (int i = 0; i < to.length; i++){
+				if (!run.isKnown(from[i])) continue;
+				if (!numOnly[i] && run.kind(from[i]) == Row.K_TEXT) r.setText(to[i], run.text(from[i]), run.prov(from[i]));
+				else r.setNum(to[i], run.num(from[i]), run.prov(from[i]));
+			}
 		}
 	}
 
 	//Item and enemy rows carry a few facts of their run (how it ended, the class, the deepest floor, the challenges) so that the
 	//outcome of the runs they belong to can be asked of the rows themselves. They are the run's own values with the run's own
 	//provenance, and unknown wherever the run's are.
-	private static void copyRunFacts( Map<String, DatasetDef> defs, Map<String, List<Row>> merged, DatasetDef runsDef, List<Row> runRows ){
-		Map<String, Row> byRun = new HashMap<>();
-		for (Row r : runRows) byRun.put(r.runId, r);
-		//every dataset that has a "<prefix>.runClass" column carries the facts of its run
-		List<String[]> sets = new ArrayList<>();
-		for (String id : merged.keySet()){
-			DatasetDef dd = defs.get(id);
-			if (dd == null || id.equals(Datasets.RUNS)) continue;
-			for (ColumnDef c : dd.columns()){
-				if (c.id.endsWith(".runClass")){
-					sets.add(new String[]{ id, c.id.substring(0, c.id.length() - ".runClass".length()) });
-					break;
-				}
-			}
-		}
-		for (String[] set : sets){
-			DatasetDef d = defs.get(set[0]);
-			List<Row> rows = merged.get(set[0]);
-			if (d == null || rows == null) continue;
-			for (String[] fact : Datasets.RUN_FACTS){
-				int to = d.indexOf(set[1] + "." + fact[0]);
-				int from = runsDef.indexOf(fact[1]);
-				if (to < 0 || from < 0) continue;
-				for (Row r : rows){
-					Row run = byRun.get(r.runId);
-					if (run == null || !run.isKnown(from)) continue;
-					if (run.kind(from) == Row.K_TEXT) r.setText(to, run.text(from), run.prov(from));
-					else r.setNum(to, run.num(from), run.prov(from));
-				}
-			}
-			{
-				int to = d.indexOf(set[1] + ".runDifficulty");
-				int from = runsDef.indexOf(FactKeys.DIFFICULTY);
-				if (to >= 0 && from >= 0) for (Row r : rows){
-					Row run = byRun.get(r.runId);
-					if (run != null && run.isKnown(from)) r.setNum(to, run.num(from), run.prov(from));
-				}
-			}
+	private static void copyRunFacts( Map<String, DatasetDef> defs, Map<String, List<Row>> merged, DatasetDef runsDef, Map<String, Row> byRun ){
+		for (Map.Entry<String, List<Row>> e : merged.entrySet()){
+			RunFactCopier copier = RunFactCopier.forDataset(defs.get(e.getKey()), runsDef, byRun);
+			if (copier != null) for (Row r : e.getValue()) copier.apply(r);
 		}
 	}
 

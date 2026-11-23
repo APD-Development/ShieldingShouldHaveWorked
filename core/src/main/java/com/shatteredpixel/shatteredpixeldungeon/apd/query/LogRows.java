@@ -32,6 +32,22 @@ public final class LogRows {
 
 	public final LogMeta meta = new LogMeta();
 	public final Map<String, List<Row>> rows = new LinkedHashMap<>();
+	//how many rows each dataset has in this log, including datasets whose rows were not kept in memory (see DatasetStore)
+	public final Map<String, Integer> counts = new LinkedHashMap<>();
+
+	//where these rows came from, so a dataset read only when asked for can be read from the same snapshot later (DatasetStore)
+	java.io.File source;
+	String fileId;
+	boolean legacy;
+	byte[] fingerprint;
+	long length;
+
+	public int count( String dataset ){
+		Integer n = counts.get(dataset);
+		if (n != null) return n;
+		List<Row> l = rows.get(dataset);
+		return l == null ? 0 : l.size();
+	}
 
 	public List<Row> of( String dataset ){
 		List<Row> l = rows.get(dataset);

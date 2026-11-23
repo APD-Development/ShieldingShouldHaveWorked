@@ -202,7 +202,7 @@ public final class WndUimsdAsk {
 	private static void pickDataset( final Catalog cat, final String ruleset, final Host host, final Question q ){
 		final List<Dataset> sets = Questions.askable(cat);
 		List<Entry> entries = new ArrayList<>();
-		for (Dataset d : sets) entries.add(Entry.item(d.def.title, d.rows.size() + " " + d.def.countLabel.toLowerCase() + " recorded").current(d.def.id.equals(q.dataset)));
+		for (Dataset d : sets) entries.add(Entry.item(d.def.title, d.rowCount() + " " + d.def.countLabel.toLowerCase() + " recorded").current(d.def.id.equals(q.dataset)));
 		show(WndUimsdList.menu("About", "What do you want to know about?", entries, new WndUimsdList.Picker(){
 			@Override
 			public void onPick( int i, boolean checked ){

@@ -120,12 +120,25 @@ public final class RowCodec {
 	}
 
 	//null when the bytes are not a cache for this log and this builder
+	/** Which sections decode keeps (an interface of its own: the stats library keeps to APIs Android 5 has). */
+	public interface Keep { boolean keep( String datasetId ); }
+
+	//stands in for the rows of a section that is read through but not kept: map[] is all -1 there, so no cell is ever set on it
+	private static final Row SKIPPED = new Row("", null, "", 0);
+
 	public static LogRows decode( byte[] data, long logLength, Map<String, DatasetDef> defs ){
 		return decode(data, logLength, defs, null);
 	}
 
 	/** An old unbound cache cannot satisfy a source-bound read. */
 	public static LogRows decode( byte[] data, long logLength, Map<String, DatasetDef> defs, byte[] sourceFingerprint ){
+		return decode(data, logLength, defs, sourceFingerprint, null);
+	}
+
+	/** Like decode, but only the sections {@code keep} accepts get rows; every section's row count is still noted in
+	 * {@link LogRows#counts}. The skipped sections are read through (the checks are the same) without building a row. */
+	public static LogRows decode( byte[] data, long logLength, Map<String, DatasetDef> defs, byte[] sourceFingerprint,
+	                              Keep keep ){
 		if (sourceFingerprint != null && sourceFingerprint.length != 32) return null;
 		try {
 			if (data.length < 4) return null;
@@ -171,7 +184,9 @@ public final class RowCodec {
 			int sections = in.readUnsignedInt();
 			for (int s = 0; s < sections; s++){
 				String id = readText(in, textDecoder);
-				DatasetDef def = defs.get(id);
+				DatasetDef known = defs.get(id);
+				boolean build = known != null && (keep == null || keep.keep(id));
+				DatasetDef def = build ? known : null;
 				int cols = in.readUnsignedInt();
 				if (cols > in.remaining()) return null; // Each column has a table-index byte.
 				int[] map = new int[cols];
@@ -181,25 +196,30 @@ public final class RowCodec {
                 }
 				int rows = in.readUnsignedInt();
 				if (rows > in.remaining()) return null; // Even a zero-column row has metadata bytes.
-				List<Row> list = new ArrayList<>(rows);
+				List<Row> list = new ArrayList<>(build ? rows : 0);
 				for (int i = 0; i < rows; i++){
 					String rid = table[in.readUnsignedInt()];
 					int hasMergeKey = in.readByte();
 					if (hasMergeKey > 1) return null;
 					String mergeKey = hasMergeKey == 1 ? table[in.readUnsignedInt()] : null;
 					String runId = table[in.readUnsignedInt()];
-					Row r = new Row(rid, mergeKey, runId, def == null ? 0 : def.size());
+					Row r = build ? new Row(rid, mergeKey, runId, def.size()) : SKIPPED;
 					int f = in.readByte();
 					if ((f & ~15) != 0) return null;
-					r.finished = (f & 1) != 0;
-					r.publicRow = (f & 2) != 0;
-					r.imported = (f & 4) != 0;
-					r.duplicate = (f & 8) != 0;
+					if (build){
+						r.finished = (f & 1) != 0;
+						r.publicRow = (f & 2) != 0;
+						r.imported = (f & 4) != 0;
+						r.duplicate = (f & 8) != 0;
+					}
 					int rrk = in.readByte();
 					if (rrk > 2) return null;
 					String rrs = table[in.readUnsignedInt()];
-					r.ruleset = rrk == 0 ? null : rrk == 1 ? Row.RULESET_MIXED : rrs;
-					r.telemetry = table[in.readUnsignedInt()];
+					String rtel = table[in.readUnsignedInt()];
+					if (build){
+						r.ruleset = rrk == 0 ? null : rrk == 1 ? Row.RULESET_MIXED : rrs;
+						r.telemetry = rtel;
+					}
 					for (int c = 0; c < cols; c++){
 						int meta = in.readByte();
 						int k = meta & 3, prov = (meta >> 2) & 63;
@@ -213,9 +233,10 @@ public final class RowCodec {
 							if (col >= 0) r.setText(col, t, prov);
 						}
 					}
-					list.add(r);
+					if (build) list.add(r);
 				}
-				if (def != null) lr.rows.put(id, list);
+				if (known != null) lr.counts.put(id, rows);
+				if (build) lr.rows.put(id, list);
 			}
 			if (in.hasRemaining()) return null;
 			return lr;

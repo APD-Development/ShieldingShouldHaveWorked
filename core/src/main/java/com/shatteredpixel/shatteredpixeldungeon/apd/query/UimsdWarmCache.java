@@ -141,7 +141,10 @@ public final class UimsdWarmCache {
     // Optional preload must leave room for gameplay and foreground screens.
     static boolean withinMemoryBudget(long limit,long used,long sourceBytes){
         long budget=Math.min(64L*1024*1024,limit/4);
-        return limit>0&&sourceBytes>=0&&sourceBytes<=budget/32&&used<=limit-limit/4-budget;
+        // Opening no longer builds the heavy datasets (LazyRows), so what preparing costs no longer grows 32 times faster than the
+        // logs: 50 long runs, 5.8 MB of logs, open in under 1 MB (UimsdMemoryGateTest). The heap check below still holds it back
+        // when gameplay is already using the heap, and logs beyond the whole budget still wait for UIMSD to be opened.
+        return limit>0&&sourceBytes>=0&&sourceBytes<=budget&&used<=limit-limit/4-budget;
     }
     private static boolean canPrepare(File root){
         long bytes=0;

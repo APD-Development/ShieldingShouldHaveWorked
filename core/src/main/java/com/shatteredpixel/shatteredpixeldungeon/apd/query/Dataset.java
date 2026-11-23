@@ -56,4 +56,17 @@ public final class Dataset {
 		this.rows = rows;
 		this.runs = runs == null ? new ArrayList<RunInfo>() : runs;
 	}
+
+	/** How many rows this dataset has, without reading the rows of a dataset that is read only when asked for. */
+	public int rowCount(){
+		return rows instanceof LazyRows ? ((LazyRows) rows).expected() : rows.size();
+	}
+
+	/** The rows of one run, in order. For a dataset read only when asked for, this reads just that run's logs. */
+	public List<Row> rowsOf( String runId ){
+		if (rows instanceof LazyRows) return ((LazyRows) rows).forRun(runId == null ? "" : runId);
+		List<Row> out = new ArrayList<>();
+		for (Row r : rows) if (r.runId.equals(runId)) out.add(r);
+		return out;
+	}
 }

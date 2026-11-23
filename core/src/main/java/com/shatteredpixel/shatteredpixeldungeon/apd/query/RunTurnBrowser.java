@@ -88,7 +88,7 @@ public final class RunTurnBrowser {
             String clockName = FactDatasets.isFactDataset(id) ? FactDatasets.TURN : EventDatasets.prefixOf(id)+".turn";
             int ti = ds.def.indexOf(clockName);
             if (ti < 0) continue;
-            for (Row r : ds.rows) {
+            for (Row r : ds.rowsOf(runId)) { //only this run's logs are read, not every run's
                 if (!runId.equals(r.runId) || !r.publicRow || !r.isKnown(ti)) continue;
                 long t = r.num(ti);
                 if (t < 1) continue;
@@ -142,7 +142,7 @@ public final class RunTurnBrowser {
         long max = 1;
         int enter = ds.def.indexOf("floor.enterTurn");
         int exit = ds.def.indexOf("floor.exitTurn");
-        for (Row row : ds.rows) {
+        for (Row row : ds.rowsOf(runId)) {
             if (!runId.equals(row.runId) || !row.publicRow) continue;
             if (known(row,enter) && row.num(enter) >= 1) {
                 long turn = row.num(enter);

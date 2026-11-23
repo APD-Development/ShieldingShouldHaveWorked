@@ -27,7 +27,8 @@ public class DamageRecoveryWindowTest {
         SyntheticLog other=log("a");
         other.clock=10;other.damageToHero("rat","Rat",8);other.clock=11;other.heal(50,true,"other run");
         other.end(LifecycleEvents.OUTCOME_ABANDONED,"",1,1,10).close(true);
-        return new DatasetStore(tmp.getRoot()).load();
+        //these tests change loaded rows in place to stand for uncertain recordings, so they need rows that stay changed
+        return new DatasetStore(tmp.getRoot()).buildEverythingAtOnce().load();
     }
     private QueryResult anchors(Catalog c){
         return ResearchData.select(c,Query.of(EventDatasets.DAMAGE).withScope(all())
