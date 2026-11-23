@@ -19,6 +19,11 @@ public class VoiceBrainTest {
 		assertEquals("eat the meat", VoiceBrain.clean("eat the meat"));   // item names are not snapped to verbs
 		assertEquals("read bread", VoiceBrain.clean("read bread"));
 	}
+	@Test public void commandWordsAreNotSnappedToNeighbours(){
+		assertEquals("cast wand at rat", VoiceBrain.clean("cast wand at rat"));
+		assertNull("cast must not walk east", VoiceBrain.direction(VoiceBrain.clean("cast wand at rat")));
+		assertEquals("attack rat until dead", VoiceBrain.clean("attack rat until dead"));
+	}
 	@Test public void splitsMultiStepPhrases(){
 		assertEquals(Arrays.asList("east", "north"), VoiceBrain.clauses(VoiceBrain.clean("go east then north")));
 		assertEquals(Arrays.asList("drink healing", "attack"), VoiceBrain.clauses(VoiceBrain.clean("drink healing and then attack")));

@@ -320,7 +320,9 @@ public final class VoiceBrain {
 			"attack","fight","kill","drink","quaff","read","eat","zap","throw","wear","wield","equip","potion","scroll",
 			"wand","rest","wait","pick","continue","resume","inventory","journal","downstairs","upstairs","descend","ascend",
 			"stairs","slot","times","examine","cancel","listening","healing","identify","upgrade","teleport",
-			"ability","special","search","again","repeat","door","farthest","furthest","closest","nearest","other","second","chest","item","loot"};
+			"ability","special","search","again","repeat","door","farthest","furthest","closest","nearest","other","second","chest","item","loot",
+			// real command words that are one letter from another game word: kept as said (cast/east, dead/read, toss)
+			"cast","toss","dead"};
 
 	private static final String[][] NUMBERS = {{"one","1"},{"once","1"},{"two","2"},{"twice","2"},{"three","3"},{"thrice","3"},
 			{"four","4"},{"five","5"},{"six","6"},{"seven","7"},{"eight","8"},{"nine","9"},{"ten","10"}};
