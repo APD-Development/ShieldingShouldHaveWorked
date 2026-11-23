@@ -100,6 +100,28 @@ public final class UimsdHome {
 
 	//not a table: the link on the Ask card opens the question builder
 	public static final String ASK_LINK = "!ask";
+	//the front door by what people want to know (UIMSD deep dive item 4): each opens an ordinary question or research tool
+	public static final String INTENT_PREFIX = "!intent:";
+	public static final String[][] INTENTS = {
+			{ "doing", "How am I doing?", "How your runs ended: wins, deaths and runs left unfinished." },
+			{ "kills", "What kills me?", "Every recorded death, by what killed you." },
+			{ "works", "What works for me?", "Wins and losses for each class you play." },
+			{ "unlucky", "Was I unlucky?", "The luck laboratory: one run's loot and enemies against your other runs." },
+			{ "better", "Am I getting better?", "Compare your earlier runs with your recent ones." } };
+
+	static Card intents(){
+		Card c = new Card("intents", "What do you want to know?");
+		for (String[] i : INTENTS) c.link(i[1], INTENT_PREFIX + i[0]);
+		return c;
+	}
+
+	/** The question an intent opens, or null for the ones that open a research tool (unlucky, better). */
+	public static Question intentQuestion( String intent ){
+		if ("doing".equals(intent)) return Question.about(Datasets.RUNS).withGroupBy(java.util.Collections.singletonList("result.outcome"));
+		if ("kills".equals(intent)) return Question.about(Datasets.DEATHS).withGroupBy(java.util.Collections.singletonList("death.cause"));
+		if ("works".equals(intent)) return Question.about(Datasets.RUNS).withGroupBy(java.util.Arrays.asList("run.heroClass", "result.outcome"));
+		return null;
+	}
 
 	//true when the page covers runs played under more than one set of rules (only possible with all rules shown): its numbers are not comparable
 	public final boolean mixedRulesets;
@@ -154,6 +176,7 @@ public final class UimsdHome {
 		if (h.runs == 0) return h;
 
 		h.cards.add(overview(runsDs, rq, runs));
+		h.cards.add(intents());
 		Card navigation = new Card("navigate", "Explore statistics");
 		String[][] destinations = {{"runs", "Run history"}, {"characters", "Characters"}, {"items", "Equipment and items"}, {"enemies", "Enemies"}, {"bosses", "Bosses"}, {"challenges", "Challenges"}, {"difficulty", "Difficulty"}};
 		for (String[] destination : destinations) if (cat.view(destination[0]) != null) navigation.link(destination[1], destination[0]);

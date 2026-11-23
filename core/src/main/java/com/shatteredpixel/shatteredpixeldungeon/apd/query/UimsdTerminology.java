@@ -151,6 +151,7 @@ public final class UimsdTerminology {
         b.column("attacks","attack.weapon","weapon","arma","arme","waffe","оружие","武器","무기");
         b.column("equipment","equip.item","item","equipment","objeto","objet","gegenstand","предмет","物品","アイテム","아이템");
         b.column("floors","floor.depth","floor","piso","etage","étage","stockwerk","этаж","楼层","階層","층");
+        b.column("runs","result.heroLevel","hero level");
         return b;
     }
 

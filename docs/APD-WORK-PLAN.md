@@ -26,8 +26,11 @@ Judgment rules in the postmortem (item 2, "you probably should have...") still n
 2. Facts-first postmortem: DONE Nov 23 (apd/query/Postmortem). "What happened" button on the game-over screen and on UIMSD
    death/run rows: killer, turn, floor, HP over the last 50 turns, damage taken by source, effects on at death, hunger,
    consumables still held (new item.heldAtEnd column). No advice: judgment rules still need Chris's approval.
-3. Search for normal questions (synonyms, shapes, names as filters, typos, "did you mean"), gated by a 100-question test list.
-4. Front door by intent: How am I doing / What kills me / What works for me / Was I unlucky / Am I getting better.
+3. Everyday-question search: DONE Nov 23 (apd/query/NaturalQuestions, used by Search when the exact grammar fails).
+   Gate NaturalQuestionsTest: 100 questions pass (tuned on them), plus 15 asked afterwards (9 of 15 right before fixes).
+   Says what it read a typo as, and names it can't apply ("as a rogue" on deaths) instead of dropping them.
+4. Front door by intent: DONE Nov 23. Home card "What do you want to know?": How am I doing (runs by outcome), What kills me
+   (deaths by cause), What works for me (class x outcome), Was I unlucky (luck lab), Am I getting better (progress compare).
 5. Old server menu in Options > Privacy: DONE Nov 23 (now: what stays on the device + Community link).
 6. Public item source: DONE Nov 23. item.foundSource / item.foundFloor (same rules as recorder.ItemOriginHistory) and
    item.acquiredHow (ACQ_* context). For a run still going only picked up / shop (hidden events are redacted on export).
@@ -285,6 +288,9 @@ default-on settings (SPDSettings.keepOldDefaultsForExistingPlayers). Next: Googl
 (Credential Manager), server URL default once deployed, run reviews. HttpGateway contract routes, deployment workflow, Android Community screens wired to it, Play Age Signals.
 
 ## Run log
+- 2026-11-23 4 PM ET (scheduled): Play 939 uploaded to closed test (CI 45265668122 green on aa826916; bundle run 45268560070;
+  versionCode 939, sword icon pixel-identical, label ADHD Pixel Dungeon, no Rhino in the dex). New since 938: voice word fixes,
+  UIMSD memory wall, What happened postmortem, item Found in / How you got it. Dev APK C490D sent. Not device-verified.
 - 2026-11-23 3 PM ET (scheduled): Voice bug: "till" was snapped to "kill" (so "attack rat till dead" kept "kill dead" in the target name) and "time" to "times" (so "one more time" never repeated); both kept as said. +3 assertions; full CI 45255992426 green. Not device-verified. Daily alpha APK still PAUSED (not built). Still OPEN for Chris: `defense` vs `evasion` in the monsters spec; talents hook spec; mod starting items on top of vs instead of the class kit; Loot Availability score multiplier.
 - 2026-11-23 2 PM ET (scheduled): Voice bug: "right" was snapped to "fight" (one letter off), so "right" never moved east and "down right" walked south instead of south-east; "near" became "wear". Both now kept as said. +4 assertions; full CI 45245561261 green. Not device-verified. Still OPEN for Chris: `defense` vs `evasion` in the monsters spec; talents hook spec; mod starting items on top of vs instead of the class kit; Loot Availability score multiplier.
 - 2026-11-23 1 PM ET (scheduled): Voice bug: "look" was snapped to "loot" (one letter off), so "look around", "look for secrets" (search) and plain "look" (examine) never worked; look now kept as said. +3 assertions; full CI 45234957941 green. Not device-verified. Still OPEN for Chris: `defense` vs `evasion` in the monsters spec; talents hook spec; mod starting items on top of vs instead of the class kit; Loot Availability score multiplier.

@@ -557,17 +557,16 @@ public class UimsdScene extends PixelScene {
 					model.showQuery(com.shatteredpixel.shatteredpixeldungeon.apd.query.UimsdHomeNavigation.outcome(viewId, homeAllRules));
 					atHome=false;dirty=true;return;
 				}
+				if (viewId.startsWith(UimsdHome.INTENT_PREFIX)){
+					String intent = viewId.substring(UimsdHome.INTENT_PREFIX.length());
+					com.shatteredpixel.shatteredpixeldungeon.apd.query.Question q = UimsdHome.intentQuestion(intent);
+					if (q != null) WndUimsdAsk.answer(model.catalog(), model.currentRuleset(), askHost(), q);
+					else if ("unlucky".equals(intent)) com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdResearch.luckLab(model);
+					else if ("better".equals(intent)) com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdResearch.progress(model);
+					return;
+				}
 				if (UimsdHome.ASK_LINK.equals(viewId)){
-					WndUimsdAsk.open(model.catalog(), model.currentRuleset(), new WndUimsdAsk.Host(){
-						@Override
-						public void openAsTable( final Query q, final Runnable backToAnswer ){
-							model.showQuery(q);
-							returnTo = backToAnswer;
-							atHome = false;
-							//showQuery notifies the current scene's model listener.
-						}
-						@Override public File root(){ return model.root(); }
-					});
+					WndUimsdAsk.open(model.catalog(), model.currentRuleset(), askHost());
 					return;
 				}
 				openView(viewId);
@@ -589,6 +588,19 @@ public class UimsdScene extends PixelScene {
 	}
 
 	//What the Home page shows before there is anything to count: what UIMSD is, what will appear here, and the tour as the main thing to do.
+	private WndUimsdAsk.Host askHost(){
+		return new WndUimsdAsk.Host(){
+			@Override
+			public void openAsTable( final Query q, final Runnable backToAnswer ){
+				model.showQuery(q);
+				returnTo = backToAnswer;
+				atHome = false;
+				//showQuery notifies the current scene's model listener.
+			}
+			@Override public File root(){ return model.root(); }
+		};
+	}
+
 	private void buildFirstRun( UimsdHome home, float bottom ){
 		RenderedTextBlock welcome = text("Welcome to UIMSD", UimsdStyle.SIZE_TITLE, UimsdStyle.TITLE, contentW);
 		welcome.setPos(x0, y + 2);

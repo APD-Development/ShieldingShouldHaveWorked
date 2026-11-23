@@ -61,6 +61,9 @@ public final class WndUimsdResearch {
         add(entries,actions,"Healing after damage","Choose recorded damage to the hero and inspect exact HP healing in a following turn window.",()->damageRecoveryWindows(m));
         menu(m,"Research lab","These tools read recorded history. Unknowns stay unknown. Demo results are made up and are always identified as demo data.",entries,actions,()->show(m));
     }
+    //the Home front door's "Was I unlucky?" and "Am I getting better?"
+    public static void luckLab(UimsdModel m){if(m.catalog()==null){tell("Luck laboratory","History is not ready yet.");return;}runs(m,r->chooseRun(m,r,"Luck laboratory",row->presentLuck(m,r,row)));}
+    public static void progress(UimsdModel m){if(m.catalog()==null){tell(ComparableProgressEntry.TITLE,"History is not ready yet.");return;}progressMenu(m);}
     public static boolean canEquipmentWindow(QueryResult r){return r!=null && !r.isGrouped() && EventDatasets.EQUIPMENT.equals(r.def.id);}
     public static void equipmentWindows(UimsdModel m){
         if(!EventDatasets.EQUIPMENT.equals(m.query().dataset)){

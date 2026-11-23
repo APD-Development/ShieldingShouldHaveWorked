@@ -25,6 +25,7 @@ import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.apd.query.Catalog;
 import com.shatteredpixel.shatteredpixeldungeon.apd.query.ColumnDef;
 import com.shatteredpixel.shatteredpixeldungeon.apd.query.Dataset;
+import com.shatteredpixel.shatteredpixeldungeon.apd.query.NaturalQuestions;
 import com.shatteredpixel.shatteredpixeldungeon.apd.query.DatasetDef;
 import com.shatteredpixel.shatteredpixeldungeon.apd.query.Filter;
 import com.shatteredpixel.shatteredpixeldungeon.apd.query.PerUnit;
@@ -149,7 +150,7 @@ public final class WndUimsdAsk {
     // Narrow offline search of registered subjects and PUBLIC field names.
     // Results go through the existing query builder; this is not an AI or raw-history search.
     private static void searchTopics(final Catalog cat, final String ruleset, final Host host, final Question q) {
-        show(new WndUimsdTextInput("Search UIMSD", "Try 'how many runs by class' or search recorded topics. This never searches raw values.",
+        show(new WndUimsdTextInput("Search UIMSD", "Ask it the way you'd ask a friend: 'what kills me the most', 'best score as a mage', 'average score by class'. This never searches raw values.",
                 "", 100, false, "Search", "Cancel", (positive, words) -> {
                     if (positive) topicResults(cat, ruleset, host, q, words);
                 }));
@@ -158,17 +159,23 @@ public final class WndUimsdAsk {
     private static void topicResults(final Catalog cat, final String ruleset, final Host host,
                                      final Question q, final String words) {
         final List<UimsdTopicSearch.Hit> hits = UimsdTopicSearch.find(cat, words);
-        final Question interpreted = UimsdTopicSearch.interpret(cat, words, q);
+        Question exact = UimsdTopicSearch.interpret(cat, words, q);
+        //questions the way people ask them ("what kills me the most"), when the exact field-label grammar doesn't fit
+        final NaturalQuestions.Result natural = exact == null ? NaturalQuestions.interpret(cat, words, q) : null;
+        final Question interpreted = exact != null ? exact : natural == null ? null : natural.question;
         List<Entry> entries = new ArrayList<>();
         if (interpreted != null) {
             Dataset matched = cat.dataset(interpreted.dataset);
-            entries.add(Entry.item("Open this question", Questions.describe(interpreted, matched.def)));
+            String detail = Questions.describe(interpreted, matched.def);
+            if (natural != null && !natural.didYouMean().isEmpty()) detail += "\n" + natural.didYouMean();
+            if (natural != null && !natural.leftOutText().isEmpty()) detail += "\n" + natural.leftOutText();
+            entries.add(Entry.item("Open this question", detail));
         }
         if (hits.isEmpty() && interpreted == null)
             entries.add(Entry.note("No supported question or public topic matches. Try a name, or 'average score of runs by class'."));
         for (UimsdTopicSearch.Hit hit : hits) entries.add(Entry.item(hit.label, hit.detail));
         entries.add(Entry.item("Search again", "look for another topic"));
-        showKept(WndUimsdList.menu("Search UIMSD", "Search public topics or simple questions (how many, total, average, highest, lowest, median; optional 'by' a public field). Other phrases are not interpreted.",
+        showKept(WndUimsdList.menu("Search UIMSD", "Search public topics or ask a question in everyday words. What was understood is shown before anything opens.",
                 entries, new WndUimsdList.Picker() {
                     @Override public void onPick(int i, boolean checked) {
                         if (interpreted != null && i == 0) {

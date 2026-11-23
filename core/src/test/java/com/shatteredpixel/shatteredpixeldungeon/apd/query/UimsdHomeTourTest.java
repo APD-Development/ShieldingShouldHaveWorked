@@ -64,11 +64,19 @@ public class UimsdHomeTourTest {
 		UimsdHome h = UimsdHome.build(cat, RULES.id, true);
 		assertFalse(h.isEmpty());
 		assertTrue(h.runs > 0);
-		for (String id : new String[]{ "runs", "ask", "characters", "gear", "enemies", "recent", "records" }) assertNotNull(id, h.card(id));
+		for (String id : new String[]{ "runs", "intents", "ask", "characters", "gear", "enemies", "recent", "records" }) assertNotNull(id, h.card(id));
 		assertFalse(h.text().isEmpty());
 		//every link goes to a view that exists
 		for (UimsdHome.Card c : h.cards) for (UimsdHome.Link l : c.links){
 			if (UimsdHome.ASK_LINK.equals(l.viewId)) continue;   //opens the question builder, not a table
+			if (l.viewId.startsWith(UimsdHome.INTENT_PREFIX)){
+				//the front door by intent: a question that answers, or one of the two research tools
+				String intent = l.viewId.substring(UimsdHome.INTENT_PREFIX.length());
+				Question q = UimsdHome.intentQuestion(intent);
+				if (q == null) assertTrue(intent, intent.equals("unlucky") || intent.equals("better"));
+				else assertNotNull(intent, Questions.answer(cat, q, RULES.id));
+				continue;
+			}
 			assertNotNull(l.viewId, cat.view(l.viewId));
 		}
 	}
