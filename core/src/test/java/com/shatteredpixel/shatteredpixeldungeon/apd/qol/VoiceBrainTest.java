@@ -26,6 +26,7 @@ public class VoiceBrainTest {
 		assertEquals(3, VoiceBrain.count("north 3 times"));
 		assertEquals(4, VoiceBrain.count("4 north"));
 		assertEquals(1, VoiceBrain.count("north"));
+		assertEquals("documented \"north x3\" form", 3, VoiceBrain.count(VoiceBrain.clean("north x3")));
 		assertEquals(9, VoiceBrain.count("north 50 times"));
 	}
 	@Test public void directionsIncludingSynonymsAndDiagonals(){

@@ -197,7 +197,7 @@ public final class VoiceBrain {
 
 	/** "north 3 times", "3 north", "north x3", "north three" -> 3; otherwise 1. Capped at 9 for safety. */
 	static int count(String clause){
-		java.util.regex.Matcher m = java.util.regex.Pattern.compile("(?:^| )(\\d{1,2})(?: times| steps| spaces|$| )").matcher(clause);
+		java.util.regex.Matcher m = java.util.regex.Pattern.compile("(?:^| )x?(\\d{1,2})(?: times| steps| spaces|$| )").matcher(clause);
 		int n = 1;
 		if (m.find()) n = Integer.parseInt(m.group(1));
 		return Math.max(1, Math.min(9, n));
