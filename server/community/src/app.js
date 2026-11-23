@@ -66,7 +66,11 @@ function json(status, body) {
 }
 
 async function body(request) {
-  try { return await request.json(); } catch { fail(400, 'bad_json'); }
+  let v;
+  try { v = await request.json(); } catch { fail(400, 'bad_json'); }
+  // Only a JSON object: null made every b.field a TypeError (500); numbers/strings/arrays carry no fields.
+  if (v === null || typeof v !== 'object' || Array.isArray(v)) fail(400, 'bad_json');
+  return v;
 }
 
 function text(v, max, field) {

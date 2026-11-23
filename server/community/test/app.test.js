@@ -893,3 +893,14 @@ test('reports refuse a kind that is not one of the listed kinds (inherited names
   }
   assert.equal((await call('POST', '/v1/reports', { kind: 'submission', id: s, reason: 'x' }, a.token)).status, 201);
 });
+
+test('a JSON body that is not an object (null, a number, an array) is 400 bad_json, not a 500', async () => {
+  const { env, member } = setup();
+  const a = await member('nullbody@example.com');
+  for (const raw of ['null', '7', '"x"', '[1]']) {
+    const res = await handle(new Request('https://x/v1/blocks', {
+      method: 'POST', headers: { 'content-type': 'application/json', authorization: `Bearer ${a.token}`, 'cf-connecting-ip': '10.9.9.9' }, body: raw }), env);
+    assert.equal(res.status, 400, raw);
+    assert.equal((await res.json()).error, 'bad_json', raw);
+  }
+});
