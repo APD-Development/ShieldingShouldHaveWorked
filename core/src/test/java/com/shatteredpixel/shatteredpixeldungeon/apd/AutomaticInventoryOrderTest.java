@@ -184,4 +184,29 @@ public class AutomaticInventoryOrderTest {
             assertTrue(holsterView.get(2) instanceof WandOfMagicMissile);
         }finally{Dungeon.quickslot=previous;}
     }
+    //Chris, Nov 22: tier always before level; identified, then unidentified, then known-cursed; unknown gear still sorts by what's visible
+    @Test public void identifiedThenUnidentifiedThenKnownCursedWithTierBeforeLevel(){
+        Backpack bag=new Backpack();
+        Item t3plus2=known(new com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sword(),2);
+        Item t5=known(new com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Greatsword(),0);
+        Item unknownT5=new com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Greatsword();
+        Item unknownT2=new com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Shortsword();
+        Item cursedT2=new com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Shortsword();cursedT2.cursed=true;cursedT2.cursedKnown=true;
+        Item hiddenCurse=new com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sword();hiddenCurse.cursed=true;
+        populate(bag,cursedT2,unknownT5,t5,hiddenCurse,unknownT2,t3plus2);
+        expect(bag,t3plus2,t5,unknownT2,hiddenCurse,unknownT5,cursedT2);
+    }
+    @Test public void holsterSortsUnknownThrowablesByTierAndUnknownWandsByType(){
+        Bag holster=new com.shatteredpixel.shatteredpixeldungeon.items.bags.MagicalHolster();
+        Item trident=new com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Trident().quantity(3);
+        Item javelin=new com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Javelin().quantity(3);
+        Item knife=new com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingKnife().quantity(3);
+        Item wandKnown=known(new WandOfFrost(),2);
+        Item wandA=new WandOfMagicMissile(),wandB=new WandOfFrost();
+        populate(holster,wandB,trident,wandKnown,javelin,wandA,knife);
+        List<Item> v=holster.itemsForDisplay();
+        assertEquals(Arrays.asList(knife,javelin,trident),v.subList(0,3));
+        assertSame(wandKnown,v.get(3));
+        assertEquals("unknown wands grouped by their visible type",v.get(4).name().compareTo(v.get(5).name())<=0,true);
+    }
 }

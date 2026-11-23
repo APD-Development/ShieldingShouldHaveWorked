@@ -42,37 +42,51 @@ public final class InventoryOrder {
     }
     // An item's upgrade is public as soon as its level is known. Curse knowledge
     // is unrelated to equipment ordering and must not push visible +3 gear last.
-    private static boolean sortableKnowledge(Item item){
-        if(item instanceof MeleeWeapon || item instanceof MissileWeapon
+    private static boolean gear(Item item){
+        return item instanceof MeleeWeapon || item instanceof MissileWeapon
                 || item instanceof Armor || item instanceof Wand
                 || item instanceof com.shatteredpixel.shatteredpixeldungeon.items.rings.Ring
                 || item instanceof com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Artifact
-                || item instanceof com.shatteredpixel.shatteredpixeldungeon.items.trinkets.Trinket)
-            return item.levelKnown;
-        return item.isIdentified();
+                || item instanceof com.shatteredpixel.shatteredpixeldungeon.items.trinkets.Trinket;
+    }
+    // An item's upgrade is public as soon as its level is known.
+    private static boolean sortableKnowledge(Item item){
+        return gear(item) ? item.levelKnown : item.isIdentified();
+    }
+    /** Chris, Nov 22: within a category, identified first, then unidentified, then known-cursed last.
+     *  Only a curse the player already knows about counts; a hidden curse is never read. */
+    private static int knowledgeGroup(Item item){
+        if (item.cursedKnown && item.cursed) return 2;
+        return sortableKnowledge(item) ? 0 : 1;
     }
     private static int knowledge(Item a,Item b){
-        return Boolean.compare(!sortableKnowledge(a),!sortableKnowledge(b));
+        return Integer.compare(knowledgeGroup(a),knowledgeGroup(b));
     }
     private static int category(Item item){
         return Generator.Category.order(item)/100;
     }
+    /** Tier always before level (Chris, Nov 22). Tier and item type are visible even when the level isn't. */
+    private static int visible(Item a,Item b){
+        int order=Integer.compare(tier(a),tier(b));
+        if(order!=0)return order;
+        if(a.levelKnown && b.levelKnown){
+            order=Integer.compare(a.visiblyUpgraded(),b.visiblyUpgraded());
+            if(order!=0)return order;
+        }
+        order=Integer.compare(Generator.Category.order(a),Generator.Category.order(b));
+        if(order!=0)return order;
+        order=a.name().compareTo(b.name());
+        if(order!=0)return order;
+        return Integer.compare(a.quantity(),b.quantity());
+    }
     public static int compare(Item a,Item b){
         int group=Integer.compare(category(a),category(b));
         if(group!=0)return group;
-        // Unknown upgrades go last within each category. Known gear is ordered
-        // by tier first, then the upgrade the player can actually see.
         int order=knowledge(a,b);
         if(order!=0)return order;
-        if(!sortableKnowledge(a))return 0;
-        order=Integer.compare(tier(a),tier(b));
-        if(order!=0)return order;
-        order=Integer.compare(a.visiblyUpgraded(),b.visiblyUpgraded());
-        if(order!=0)return order;
-        // Existing subcategory order only resolves visible equal-rank ties.
-        order=Integer.compare(Generator.Category.order(a),Generator.Category.order(b));
-        if(order!=0)return order;
-        return Integer.compare(a.quantity(),b.quantity());
+        // Unidentified non-gear (potions, scrolls...) keep pickup order; gear sorts on what is visible.
+        if(knowledgeGroup(a)==1 && !gear(a) && !gear(b))return 0;
+        return visible(a,b);
     }
     public static int compareInBag(Bag bag,Item a,Item b){
         if(bag instanceof MagicalHolster){
@@ -82,9 +96,7 @@ public final class InventoryOrder {
             if(a instanceof Wand && b instanceof Wand){
                 int known=knowledge(a,b);
                 if(known!=0)return known;
-                if(!sortableKnowledge(a))return 0;
-                int level=Integer.compare(a.visiblyUpgraded(),b.visiblyUpgraded());
-                return level!=0?level:Integer.compare(a.quantity(),b.quantity());
+                return visible(a,b);
             }
             return compare(a,b);
         }
