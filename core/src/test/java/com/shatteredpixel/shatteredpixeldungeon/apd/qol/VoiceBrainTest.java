@@ -25,6 +25,10 @@ public class VoiceBrainTest {
 		assertEquals("look is one letter from loot: the search phrase must survive", "look around", VoiceBrain.clean("look around"));
 		assertEquals("look for secrets", VoiceBrain.clean("look for secrets"));
 		assertEquals("loot the chest", VoiceBrain.clean("loot the chest"));
+		assertEquals("right is one letter from fight: it must stay a direction", "down right", VoiceBrain.clean("down right"));
+		assertArrayEquals("down right steps south-east", new int[]{1,1}, VoiceBrain.direction(VoiceBrain.clean("down right")));
+		assertArrayEquals(new int[]{1,0}, VoiceBrain.direction(VoiceBrain.clean("right")));
+		assertEquals("near is one letter from wear", "attack the near rat", VoiceBrain.clean("attack the near rat"));
 		assertEquals("attack rat until dead", VoiceBrain.clean("attack rat until dead"));
 	}
 	@Test public void splitsMultiStepPhrases(){
