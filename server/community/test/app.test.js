@@ -837,3 +837,18 @@ test('hero mod workshop: subscribe, report to a moderator, admin hide, blocks, b
   assert.equal(env.DB.raw.prepare('SELECT COUNT(*) AS n FROM mods').get().n, 0);
   assert.equal(env.DB.raw.prepare('SELECT COUNT(*) AS n FROM mod_subscriptions').get().n, 0);
 });
+
+test('open review list: 100 old runs by a player I blocked do not hide a newer run from someone else', async () => {
+  const { env, call, member, tick } = setup();
+  const pest = await member('pest@x.com', 'Pest');
+  const ok = await member('ok@x.com', 'Ok');
+  const rev = await member('rev@x.com', 'Rev');
+  await call('POST', '/v1/blocks', { accountId: pest.id }, rev.token);
+  const ins = env.DB.raw.prepare(
+    "INSERT INTO review_requests (id, account_id, seed, setup, death_depth, ending, roasts, review_type, created_at) VALUES (?, ?, 'S', '{}', 3, '{}', 0, 'advice', ?)");
+  for (let i = 0; i < 100; i++) ins.run(`aa${i.toString(16).padStart(4, '0')}`, pest.id, env.now() - 1000 + i);
+  tick(1);
+  const id = (await call('POST', '/v1/reviews', { seed: 'X', setup: {}, deathDepth: 4, ending: {} }, ok.token)).body.id;
+  const runs = (await call('GET', '/v1/reviews/open', null, rev.token)).body.runs;
+  assert.deepEqual(runs.map((r) => r.id), [id]);
+});

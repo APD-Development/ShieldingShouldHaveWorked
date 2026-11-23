@@ -807,15 +807,16 @@ route('POST', '/v1/reviews', async (env, req) => {
 // Open runs I could review: not mine, not one I've already taken, from players I haven't blocked. No seed, no ending.
 route('GET', '/v1/reviews/open', async (env, req) => {
   const a = await needReviewer(env, req);
-  const blocked = await blockedIds(env, a);
   const { results } = await env.DB.prepare(
     `SELECT r.id, r.account_id, r.setup, r.roasts, r.review_type, r.created_at, x.display_name,
             (SELECT COUNT(*) FROM reviews v WHERE v.request_id = r.id AND v.finished_at IS NOT NULL) AS done
        FROM review_requests r JOIN accounts x ON x.id = r.account_id
       WHERE r.status = 'open' AND x.banned = 0 AND r.account_id != ?
         AND NOT EXISTS (SELECT 1 FROM reviews v WHERE v.request_id = r.id AND v.reviewer_id = ?)
-      ORDER BY r.created_at LIMIT 100`).bind(a.id, a.id).all();
-  return json(200, { runs: results.filter((r) => !blocked.has(r.account_id)).map((r) => ({
+        AND NOT EXISTS (SELECT 1 FROM blocks b WHERE b.blocker_id = ? AND b.blocked_id = r.account_id)
+      ORDER BY r.created_at LIMIT 100`).bind(a.id, a.id, a.id).all();
+  // Blocked players are left out in SQL, before the LIMIT: 100 old runs by blocked players must not empty the list.
+  return json(200, { runs: results.map((r) => ({
     id: r.id, player: r.display_name, setup: JSON.parse(r.setup), roasts: !!r.roasts, reviewType: r.review_type, done: r.done, needed: REVIEWS_NEEDED })) });
 });
 
