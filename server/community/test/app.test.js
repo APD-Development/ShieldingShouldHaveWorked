@@ -108,6 +108,7 @@ test('threaded comments: replies point at their parent; a removed comment stays 
   const top = (await call('POST', `/v1/submissions/${s}/comments`, { body: 'Love it' }, ana.token)).body.id;
   const reply = (await call('POST', `/v1/submissions/${s}/comments`, { body: 'Thanks', parentId: top }, bo.token)).body.id;
   assert.equal((await call('POST', `/v1/submissions/${s}/comments`, { body: 'x', parentId: 'ffff' }, bo.token)).body.error, 'bad_parent');
+  assert.equal((await call('POST', `/v1/submissions/${s}/comments`, { body: 'x', parentId: [top] }, bo.token)).body.error, 'bad_parent');
   // A reply can't target a comment by a player I blocked
   await call('POST', '/v1/blocks', { accountId: ana.id }, bo.token);
   assert.equal((await call('POST', `/v1/submissions/${s}/comments`, { body: 'x', parentId: top }, bo.token)).body.error, 'bad_parent');
@@ -503,6 +504,7 @@ test('selected content: a finished season\'s champion gets a page with admin sta
   const c1 = (await call('POST', `/v1/champions/${s1}/comments`, { body: 'Cannot wait' }, bo.token)).body.id;
   assert.equal((await call('POST', `/v1/champions/${s1}/comments`, { body: 'Same', parentId: c1 }, ana.token)).status, 201);
   assert.equal((await call('POST', `/v1/champions/${s1}/comments`, { body: 'x', parentId: 'nope' }, ana.token)).body.error, 'bad_parent');
+  assert.equal((await call('POST', `/v1/champions/${s1}/comments`, { body: 'x', parentId: [c1] }, ana.token)).body.error, 'bad_parent');
   await call('POST', '/v1/blocks', { accountId: bo.id }, ana.token);
   assert.equal((await call('POST', `/v1/champions/${s1}/comments`, { body: 'x', parentId: c1 }, ana.token)).body.error, 'bad_parent');
   await call('DELETE', `/v1/blocks/${bo.id}`, null, ana.token);

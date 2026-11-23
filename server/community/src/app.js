@@ -522,9 +522,11 @@ route('POST', '/v1/submissions/([0-9a-f]+)/comments', async (env, req, [id]) => 
   await rateLimit(env, a, 'comments');
   let parent = null;
   if (b.parentId != null) {
+    // Only a string id: String(['c']) would match comment c and bind as its id.
+    if (typeof b.parentId !== 'string') fail(400, 'bad_parent');
     parent = await env.DB.prepare(
       `SELECT c.id, c.author_id FROM comments c JOIN accounts x ON x.id = c.author_id
-        WHERE c.id = ? AND c.submission_id = ? AND c.status = 'visible' AND x.banned = 0`).bind(String(b.parentId), id).first();
+        WHERE c.id = ? AND c.submission_id = ? AND c.status = 'visible' AND x.banned = 0`).bind(b.parentId, id).first();
     // A reply can't be aimed at a placeholder: a hidden/removed comment, a banned player's, or one by a player I blocked.
     if (!parent || (await blockedIds(env, a)).has(parent.author_id)) fail(400, 'bad_parent');
   }
@@ -721,10 +723,12 @@ route('POST', '/v1/champions/([0-9a-z]+)/comments', async (env, req, [sid]) => {
   await rateLimit(env, a, 'championComments');
   let parent = null;
   if (b.parentId != null) {
+    // Only a string id: String(['c']) would match comment c and bind as its id.
+    if (typeof b.parentId !== 'string') fail(400, 'bad_parent');
     // Same rule as idea comments: no reply aimed at a placeholder (hidden/removed, banned author, or blocked by me).
     parent = await env.DB.prepare(
       `SELECT k.id, k.author_id FROM champion_comments k JOIN accounts x ON x.id = k.author_id
-        WHERE k.id = ? AND k.season_id = ? AND k.status = 'visible' AND x.banned = 0`).bind(String(b.parentId), sid).first();
+        WHERE k.id = ? AND k.season_id = ? AND k.status = 'visible' AND x.banned = 0`).bind(b.parentId, sid).first();
     if (!parent || (await blockedIds(env, a)).has(parent.author_id)) fail(400, 'bad_parent');
   }
   const id = newId();
