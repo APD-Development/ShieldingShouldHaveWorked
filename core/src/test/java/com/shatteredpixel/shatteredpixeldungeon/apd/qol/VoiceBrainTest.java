@@ -56,6 +56,13 @@ public class VoiceBrainTest {
 		assertNull(VoiceBrain.plan("kill the rat"));
 		assertNull(VoiceBrain.plan("ability"));
 	}
+	@Test public void pickUpIsNotAStepNorth(){
+		assertNull("in a run, \"pick up\" walked north", VoiceBrain.moveDirection("pick up"));
+		assertNull(VoiceBrain.moveDirection("pick it up"));
+		assertNull(VoiceBrain.moveDirection("slot 2 up"));
+		assertArrayEquals(new int[]{0,-1}, VoiceBrain.moveDirection("go up"));
+		assertArrayEquals(new int[]{1,0}, VoiceBrain.moveDirection("east 3 times"));
+	}
 	@Test public void enemyDirectionCones(){
 		assertTrue(VoiceBrain.inDirection(0, -3, new int[]{0,-1}));
 		assertTrue("slightly off straight north still counts as north", VoiceBrain.inDirection(1, -3, new int[]{0,-1}));

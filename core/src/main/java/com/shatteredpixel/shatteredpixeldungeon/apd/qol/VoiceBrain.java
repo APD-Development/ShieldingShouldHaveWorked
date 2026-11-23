@@ -344,6 +344,12 @@ public final class VoiceBrain {
 		return null;
 	}
 
+	/** The step direction of a movement phrase, or null when the direction word belongs to another command ("pick up", "zoom in", "slot 2"). */
+	static int[] moveDirection(String clause){
+		if (clause.matches(".*\\b(zoom|slot|pick|pickup)\\b.*")) return null;
+		return direction(clause);
+	}
+
 	private static final Set<String> FILLER = new HashSet<>(Arrays.asList("a","an","the","my","of","at","on","to","some",
 			"please","go","use","that","this","it","with","one","potion","scroll","wand","nearest","closest","near","nearer",
 			"far","farthest","furthest","other","second","next","different","enemy","monster","thing","guy","him","her","them",
@@ -578,8 +584,8 @@ public final class VoiceBrain {
 		}
 
 		// movement, with repeats
-		int[] d = direction(clause);
-		if (d != null && !clause.matches(".*\\b(zoom|slot)\\b.*")){
+		int[] d = moveDirection(clause);
+		if (d != null){
 			if (!inRun) { VoiceCommands.Match m = VoiceCommands.parse(clause); if (m != null && m.action != null){ plan.add(new KeyStep(m.action), null); return true; } return false; }
 			int n = count(clause);
 			for (int i = 0; i < n; i++) plan.add(new MoveStep(d[0], d[1]), i == 0 ? clause.replaceAll("\\b(go|move|walk|step)\\b ?", "") : null);
