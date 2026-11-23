@@ -38,7 +38,7 @@ final class AndroidVoiceInput implements VoiceCommands.Platform {
 
 	@Override public void start(){
 		main.post(() -> {
-			wanted = true; announced = false; lastShownError = -1;
+			wanted = true; announced = false; lastShownError = -1; downloadAsked = false;
 			if (Build.VERSION.SDK_INT >= 23 && activity.checkSelfPermission(Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED){
 				activity.requestPermissions(new String[]{Manifest.permission.RECORD_AUDIO}, PERMISSION_REQUEST);
 				return;
@@ -113,6 +113,18 @@ final class AndroidVoiceInput implements VoiceCommands.Platform {
 						say("Voice: " + explain(error));
 					}
 					if (error == SpeechRecognizer.ERROR_INSUFFICIENT_PERMISSIONS){ wanted = false; return; }
+					if (error == 13 && Build.VERSION.SDK_INT >= 33 && recognizer != null && !downloadAsked){
+						// the phone has the recognizer but not the offline language pack: ask Android to fetch it
+						downloadAsked = true;
+						try {
+							recognizer.triggerModelDownload(speechIntent());
+							say("Voice: asked the phone to download the offline speech pack. Accept the download if it asks, then voice starts by itself.");
+						} catch (RuntimeException e){ say("Voice: couldn't ask for the download (" + e.getClass().getSimpleName() + ")."); }
+						lastShownError = -1;
+						again(20000);
+						return;
+					}
+					if (error == 13 && downloadAsked){ again(20000); return; }
 					if (error == 12 || error == 13){ wanted = false; return; }
 					again(error == SpeechRecognizer.ERROR_RECOGNIZER_BUSY ? 800 : 250);
 				}
@@ -127,14 +139,21 @@ final class AndroidVoiceInput implements VoiceCommands.Platform {
 				@Override public void onEvent(int eventType, Bundle params){}
 			});
 		}
+		Intent intent = speechIntent();
+		try { recognizer.startListening(intent); }
+		catch (RuntimeException e){ say("Voice: couldn't start the recognizer (" + e.getClass().getSimpleName() + ")."); again(3000); }
+	}
+
+	private boolean downloadAsked;
+
+	private Intent speechIntent(){
 		Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
 		intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
 		intent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 5);
 		intent.putExtra(RecognizerIntent.EXTRA_PREFER_OFFLINE, true);
 		intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, java.util.Locale.getDefault().toLanguageTag());
 		intent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE, activity.getPackageName());
-		try { recognizer.startListening(intent); }
-		catch (RuntimeException e){ say("Voice: couldn't start the recognizer (" + e.getClass().getSimpleName() + ")."); again(3000); }
+		return intent;
 	}
 
 	private void again(long delayMs){
