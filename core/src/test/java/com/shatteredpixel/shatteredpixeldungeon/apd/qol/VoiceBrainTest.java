@@ -22,6 +22,9 @@ public class VoiceBrainTest {
 	@Test public void commandWordsAreNotSnappedToNeighbours(){
 		assertEquals("cast wand at rat", VoiceBrain.clean("cast wand at rat"));
 		assertNull("cast must not walk east", VoiceBrain.direction(VoiceBrain.clean("cast wand at rat")));
+		assertEquals("look is one letter from loot: the search phrase must survive", "look around", VoiceBrain.clean("look around"));
+		assertEquals("look for secrets", VoiceBrain.clean("look for secrets"));
+		assertEquals("loot the chest", VoiceBrain.clean("loot the chest"));
 		assertEquals("attack rat until dead", VoiceBrain.clean("attack rat until dead"));
 	}
 	@Test public void splitsMultiStepPhrases(){
