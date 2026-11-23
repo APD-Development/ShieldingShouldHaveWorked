@@ -38,4 +38,22 @@ public final class Verdict {
             return "In short: "+higher+" has a higher "+metric+" than "+lower+" by about "+gap+", and that gap is bigger than chance would usually make. It doesn't say why.";
         return "In short: "+higher+" averages "+gap+" more "+metric+" than "+lower+", but that's within what chance alone could make, so there's no clear difference.";
     }
+    /** One luck-lab metric in plain words: where the run sits among comparable runs. Restates the percentile only. */
+    public static String luckMetric(String label,Long observed,int n,double percentile){
+        String what=label.toLowerCase(java.util.Locale.ROOT);
+        if(observed==null)return "this run's "+what+" isn't known exactly";
+        if(n<RunLuck.MIN_PEERS || !Double.isFinite(percentile))return what+" ("+observed+") can't be ranked yet: "+n+" comparable runs, "+RunLuck.MIN_PEERS+" needed";
+        long p=Math.round(percentile);
+        String where=p>=75 ? "more than most":p<=25 ? "fewer than most":"about as many as usual";
+        return what+" ("+observed+"): "+where+", above "+p+"% of "+n+" comparable runs";
+    }
+    /** The luck lab's "In short:" line. */
+    public static String luck(RunLuck.Result r){
+        if(r==null)return "In short: this run can't be checked.";
+        if(!r.unavailable.isEmpty())return "In short: this run can't be checked: "+r.unavailable;
+        StringBuilder b=new StringBuilder("In short: ");
+        for(int i=0;i<r.metrics.size();i++){RunLuck.Metric m=r.metrics.get(i);if(i>0)b.append("; ");
+            String t=luckMetric(m.label,m.observed,m.n,m.percentile);b.append(i==0 ? Character.toUpperCase(t.charAt(0))+t.substring(1):t);}
+        return b.append(". This compares your own history only; it is not a chance score.").toString();
+    }
 }

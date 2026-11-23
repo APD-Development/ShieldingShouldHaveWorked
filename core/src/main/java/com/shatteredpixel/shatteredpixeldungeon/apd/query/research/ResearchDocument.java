@@ -57,6 +57,7 @@ public final class ResearchDocument {
     public static ResearchDocument luck(QueryResult source,RunLuck.Result result){
         ResearchDocument d=new ResearchDocument("Luck laboratory");
         d.notes.add("Empirical generation comparison, not a theoretical RNG probability or an overall luck score. No score is changed. Only random-seed finished runs with matching class, APD version, exact custom settings, rules, recording version, generated-level count and deepest floor enter the reference. Different routes can still differ.");
+        d.notes.add(0,Verdict.luck(result));
         if(!result.unavailable.isEmpty()){d.notes.add(result.unavailable);return d;}
         d.notes.add(result.peers.size()+" comparable unique-seed peers in your current filtered history; the selected run and repeated seeds are excluded. At least "+RunLuck.MIN_PEERS+" exact peer values are required for a percentile.");
         for(RunLuck.Metric m:result.metrics)d.cards.add(new Card(m.label,m.observed==null ? "?":Long.toString(m.observed),m.observed==null ? CellText.UNKNOWN:CellText.EXACT,

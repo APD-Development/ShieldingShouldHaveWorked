@@ -16,4 +16,11 @@ public class VerdictTest {
     @Test public void studyDocumentLeadsWithTheVerdict(){ResearchFixture f=new ResearchFixture();for(int i=0;i<20;i++){f.add("a"+i,"mage",0,10+i);f.add("b"+i,"warrior",0,30+i);}
         PopulationStudy.Comparison c=PopulationStudy.compare(s(f,"mage"),s(f,"warrior"));
         ResearchDocument d=ResearchDocument.study(f.result(f.forClass("mage")),f.result(f.forClass("warrior")),c);assertTrue(d.notes.get(0).startsWith("In short:"));assertEquals(c.note,d.notes.get(1));}
+    @Test public void luckMetricRestatesThePercentile(){
+        assertEquals("generated items (12): more than most, above 90% of 14 comparable runs",Verdict.luckMetric("Generated items",12L,14,90.4));
+        assertEquals("generated items (3): fewer than most, above 10% of 14 comparable runs",Verdict.luckMetric("Generated items",3L,14,10));
+        assertTrue(Verdict.luckMetric("Generated items",7L,14,50).contains("about as many as usual"));
+        assertEquals("generated items (7) can't be ranked yet: 4 comparable runs, 10 needed",Verdict.luckMetric("Generated items",7L,4,Double.NaN));
+        assertEquals("this run's generated items isn't known exactly",Verdict.luckMetric("Generated items",null,14,Double.NaN));
+        assertEquals("In short: this run can't be checked.",Verdict.luck(null));}
 }
