@@ -237,10 +237,13 @@ final class PlayTracker {
 		//goes only in the hidden record, which has every effect.
 		if (shownToPlayer){
 			String shown;
+			//the name the buff window shows ("Bleeding"); toString() gave the Java object name on buffs that don't override it (Chris, Nov 23)
 			try {
-				shown = buff.toString();
+				shown = buff.name();
+				if (shown == null || shown.isEmpty() || shown.equals(com.shatteredpixel.shatteredpixeldungeon.messages.Messages.NO_TEXT_FOUND))
+					shown = buff.getClass().getSimpleName();
 			} catch (Throwable t){
-				shown = "";
+				shown = buff.getClass().getSimpleName();
 			}
 			facts.record(began ? GameFacts.STATUS_START : GameFacts.STATUS_END, clock, shown, who, v, null);
 		}

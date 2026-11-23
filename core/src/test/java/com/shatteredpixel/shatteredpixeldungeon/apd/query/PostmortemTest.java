@@ -65,7 +65,7 @@ public class PostmortemTest {
 		assertEquals(12, p.hp.get(0).turn);
 		assertEquals(1, p.lowest().hp);
 		assertEquals(459, p.hunger);
-		assertEquals("starving (459)", Postmortem.hungerLabel(p.hunger));
+		assertEquals("starving (459 of 450)", Postmortem.hungerLabel(p.hunger));
 		assertEquals(2, p.damage.size());
 		assertEquals("gnoll", p.damage.get(0).source);
 		assertEquals(13, p.damage.get(0).amount);
@@ -78,7 +78,10 @@ public class PostmortemTest {
 		assertTrue(p.held.contains("amber potion (2)"));
 		assertTrue(p.held.contains("scroll of rage"));
 		String text = p.text();
-		assertTrue(text, text.contains("Killed by"));
+		assertTrue(text, text.startsWith("Gnoll shaman killed you on floor 4, turn 61"));
+		assertEquals("Bleeding", Postmortem.effectName("com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bleeding@1a2b3c"));
+		assertEquals("Magic immune", Postmortem.effectName("com.x.MagicImmune"));
+		assertEquals("Poisoned", Postmortem.effectName("Poisoned"));
 		assertTrue(text, text.contains("turn 61"));
 		assertTrue(text, text.contains("Total: 22"));
 		assertFalse("facts only: no advice", text.toLowerCase().contains("should"));

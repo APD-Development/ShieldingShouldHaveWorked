@@ -217,7 +217,8 @@ public final class Postmortem {
 		for (Row r : d.rowsOf(runId)){
 			if (!r.publicRow || !num(r, t) || !known(r, subj)) continue;
 			if (known(r, actor) && !r.asText(actor).isEmpty()) continue;
-			String name = r.asText(subj);
+			String name = effectName(r.asText(subj));
+			if (name.isEmpty()) continue;
 			int i = names.indexOf(name);
 			if (i < 0){
 				i = names.size();
@@ -225,6 +226,22 @@ public final class Postmortem {
 			}
 			order.add(new long[]{ r.num(t), sign, i });
 		}
+	}
+
+	//Runs recorded before Nov 23 stored some effects as the Java object's name ("com.shatteredpixel...Bleeding@1a2b"): show "Bleeding"
+	static String effectName( String raw ){
+		if (raw == null) return "";
+		String s = raw.trim();
+		int at = s.indexOf('@');
+		if (at >= 0) s = s.substring(0, at);
+		if (s.contains(".") && !s.contains(" ")){
+			s = s.substring(s.lastIndexOf('.') + 1);
+			int dollar = s.lastIndexOf('$');
+			if (dollar >= 0) s = s.substring(dollar + 1);
+			s = s.replaceAll("([a-z])([A-Z])", "$1 $2");
+			if (s.length() > 1) s = s.charAt(0) + s.substring(1).toLowerCase(java.util.Locale.ROOT);
+		}
+		return s;
 	}
 
 	private void held( Catalog cat ){
@@ -256,9 +273,9 @@ public final class Postmortem {
 
 	public static String hungerLabel( long hunger ){
 		if (hunger < 0) return "not recorded";
-		if (hunger >= STARVING) return "starving (" + hunger + ")";
-		if (hunger >= HUNGRY) return "hungry (" + hunger + ")";
-		return "not hungry (" + hunger + ")";
+		if (hunger >= STARVING) return "starving (" + hunger + " of " + STARVING + ")";
+		if (hunger >= HUNGRY) return "hungry (" + hunger + " of " + STARVING + ")";
+		return "not hungry (" + hunger + " of " + STARVING + ")";
 	}
 
 	/** The lowest recorded health in the window, or null. */
@@ -272,48 +289,55 @@ public final class Postmortem {
 	public String text(){
 		if (!found) return "No death is recorded for this run.";
 		StringBuilder b = new StringBuilder();
-		b.append(killer.isEmpty() ? "Killed by: not recorded" : "Killed by " + killer);
-		b.append(" on turn ").append(deathTurn);
-		if (floor > 0) b.append(", floor ").append(floor);
-		if (heroLevel > 0) b.append(", hero level ").append(heroLevel);
+		b.append(killer.isEmpty() ? "Cause of death not recorded" : capital(killer) + " killed you");
+		b.append(floor > 0 ? " on floor " + floor : "").append(", turn ").append(deathTurn);
+		if (heroLevel > 0) b.append(", at level ").append(heroLevel);
 		b.append('.');
-		if (!finalDeath) b.append(" This death did not end the run.");
+		if (!finalDeath) b.append(" You came back from this one.");
 
-		long from = Math.max(1, deathTurn - WINDOW + 1);
-		b.append("\n\nHealth, turns ").append(from).append(" to ").append(deathTurn).append(":\n");
-		if (!hpRecorded) b.append("Not recorded for this run (older recordings did not keep health every turn).");
+		b.append("\n\nYour health before you died:\n");
+		if (!hpRecorded) b.append("Not recorded for this run.");
 		else {
 			HpPoint first = hp.get(0), last = hp.get(hp.size() - 1), low = lowest();
-			b.append("Turn ").append(first.turn).append(": ").append(hpText(first)).append('\n');
-			b.append("Lowest: ").append(hpText(low)).append(" on turn ").append(low.turn).append('\n');
-			b.append("Last recorded, turn ").append(last.turn).append(": ").append(hpText(last)).append('\n');
-			b.append(trace());
+			if (first.turn == last.turn) b.append("Only turn ").append(last.turn).append(" was recorded: ").append(hpText(first))
+					.append(" down to ").append(hpText(last)).append('.');
+			else {
+				b.append("Turn ").append(first.turn).append(": ").append(hpText(first)).append('\n');
+				if (low != last) b.append("Lowest, turn ").append(low.turn).append(": ").append(hpText(low)).append('\n');
+				b.append("Turn ").append(last.turn).append(": ").append(hpText(last)).append('\n');
+				b.append(trace());
+			}
 		}
 
-		b.append("\n\nDamage you took in those turns:\n");
-		if (!damageRecorded) b.append("None recorded. That is not proof none was taken.");
+		long from = Math.max(1, deathTurn - WINDOW + 1);
+		b.append("\n\nDamage you took, turns ").append(from).append(" to ").append(deathTurn).append(":\n");
+		if (!damageRecorded) b.append("None recorded.");
 		else {
 			long total = 0;
 			for (DamageSource d : damage) total += d.amount;
 			for (DamageSource d : damage){
-				b.append("- ").append(d.source).append(": ").append(d.amount).append(" in ").append(d.hits).append(d.hits == 1 ? " hit" : " hits");
-				if (d.absorbed > 0) b.append(" (").append(d.absorbed).append(" absorbed by shield)");
+				String who = d.source.equals("Not recorded") ? "Unknown source" : capital(d.source);
+				b.append(who).append(": ").append(d.amount).append(" (").append(d.hits).append(d.hits == 1 ? " hit" : " hits").append(')');
+				if (d.absorbed > 0) b.append(", ").append(d.absorbed).append(" blocked by shield");
 				b.append('\n');
 			}
 			b.append("Total: ").append(total);
-			if (uncertainDamage > 0) b.append(", plus ").append(uncertainDamage).append(uncertainDamage == 1 ? " hit" : " hits").append(" of uncertain size left out");
+			if (uncertainDamage > 0) b.append(" (plus ").append(uncertainDamage).append(uncertainDamage == 1 ? " hit" : " hits").append(" of unknown size)");
 		}
 
-		b.append("\n\nEffects on you when you died: ");
+		b.append("\n\nEffects on you: ");
 		if (!effectsRecorded) b.append("not recorded.");
 		else b.append(effects.isEmpty() ? "none." : join(effects) + ".");
-
 		b.append("\nHunger: ").append(hungerLabel(hunger)).append('.');
 
-		b.append("\n\nConsumables you still had: ");
+		b.append("\n\nStill in your pack: ");
 		if (!heldRecorded) b.append("not recorded.");
-		else b.append(held.isEmpty() ? "none." : join(held) + ". Names as you knew them.");
+		else b.append(held.isEmpty() ? "no consumables." : join(held) + ".");
 		return b.toString();
+	}
+
+	private static String capital( String s ){
+		return s.isEmpty() ? s : Character.toUpperCase(s.charAt(0)) + s.substring(1);
 	}
 
 	private static String hpText( HpPoint h ){
@@ -323,7 +347,7 @@ public final class Postmortem {
 
 	//one number every five turns, so the shape of the last fifty turns fits on a phone line or two
 	private String trace(){
-		StringBuilder b = new StringBuilder("Every 5 turns: ");
+		StringBuilder b = new StringBuilder("HP every 5 turns: ");
 		long next = -1;
 		int n = 0;
 		for (HpPoint h : hp){
