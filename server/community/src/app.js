@@ -1046,7 +1046,8 @@ route('POST', '/v1/reports', async (env, req) => {
   if (!table) fail(400, 'bad_kind');
   await rateLimit(env, a, 'reports');
   const target = await env.DB.prepare(`SELECT id FROM ${table} WHERE id = ?`).bind(String(b.id || '')).first();
-  if (!target) fail(404, 'not_found');
+  // The 'deleted' placeholder isn't a player (same rule as blocking or banning it): a moderator could never act on it.
+  if (!target || (table === 'accounts' && target.id === 'deleted')) fail(404, 'not_found');
   const reason = clean(text(b.reason, LIMITS.reason, 'reason')) ?? '[reason contained blocked words]';
   await env.DB.prepare(
     'INSERT OR IGNORE INTO reports (id, reporter_id, target_kind, target_id, reason, created_at) VALUES (?, ?, ?, ?, ?, ?)')

@@ -326,6 +326,9 @@ test('deleting an account keeps other players\' replies; the deleted comment bec
   assert.equal(view.comments.length, 2);
   assert.deepEqual([view.comments[0].id, view.comments[0].body, view.comments[0].author], [parent, null, null]);
   assert.deepEqual([view.comments[1].body, view.comments[1].parentId], ['good point', parent]);
+  // The placeholder isn't a player: it can't be reported (a moderator could never act on it).
+  assert.equal((await call('POST', '/v1/reports', { kind: 'account', id: 'deleted', reason: 'x' }, b.token)).status, 404);
+  assert.equal((await call('POST', '/v1/reports', { kind: 'account', id: b.id, reason: 'x' }, b.token)).status, 201);
 });
 
 test('idea list comment count leaves out comments by players I blocked', async () => {
