@@ -1128,7 +1128,10 @@ async function setStatus(env, req, status) {
   const admin = await needAdmin(env, req);
   const b = await body(req);
   if (b.kind !== 'submission' && b.kind !== 'comment' && b.kind !== 'championComment' && b.kind !== 'review' && b.kind !== 'mod') fail(400, 'bad_kind');
-  const r = await env.DB.prepare(`UPDATE ${KINDS[b.kind]} SET status = ? WHERE id = ?`).bind(status, String(b.id || '')).run();
+  // Only a string id: [id] used to String() into a match, change the status, then fail binding the reports update
+  // (500, reports left open, no audit line).
+  if (typeof b.id !== 'string') fail(400, 'bad_id');
+  const r = await env.DB.prepare(`UPDATE ${KINDS[b.kind]} SET status = ? WHERE id = ?`).bind(status, b.id).run();
   if (!r.meta.changes) fail(404, 'not_found');
   await env.DB.prepare('UPDATE reports SET resolved = 1 WHERE target_kind = ? AND target_id = ?').bind(b.kind, b.id).run();
   await audit(env, admin, status, `${b.kind}:${b.id}`);

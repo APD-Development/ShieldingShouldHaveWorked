@@ -608,6 +608,10 @@ test('admin tools: acting on a post or account clears its reports, bad input is 
   assert.equal((await call('POST', '/v1/admin/ban', { accountId: 'ffff' }, chris.token)).status, 404);
   assert.equal((await call('POST', '/v1/admin/hide', { kind: 'submission', id: s })).status, 401);
   assert.deepEqual(await queue(), ['account', 'comment', 'submission']);
+  // A non-string id is refused before anything changes (an array used to change the status, then 500).
+  assert.equal((await call('POST', '/v1/admin/remove', { kind: 'comment', id: [c] }, chris.token)).body.error, 'bad_id');
+  assert.equal((await call('GET', `/v1/submissions/${s}`)).body.comments[0].body !== null, true);
+  assert.deepEqual(await queue(), ['account', 'comment', 'submission']);
   // Removing the comment clears only its reports; the thread keeps an empty placeholder.
   await call('POST', '/v1/admin/remove', { kind: 'comment', id: c }, chris.token);
   assert.deepEqual(await queue(), ['account', 'submission']);
