@@ -80,4 +80,11 @@ public class VoiceBrainTest {
 		assertTrue(VoiceCommands.wake(Arrays.asList("north"), true).isEmpty());
 		assertEquals(Arrays.asList("north"), VoiceCommands.wake(Arrays.asList("north"), false));
 	}
+	@Test public void fastEngineWordListCoversTheCommands(){
+		VoiceBrain.refreshVocabulary();
+		java.util.Set<String> words = new java.util.HashSet<>(Arrays.asList(VoiceBrain.vocabulary.split(" ")));
+		for (String w : "north southwest attack kill ability drink read eat zap throw slot three times then stop again dungeon listening downstairs door search pick up".split(" "))
+			assertTrue(w, words.contains(w));
+		assertFalse("only plain words, the engine can't take digits or brackets", VoiceBrain.vocabulary.matches(".*[^a-z ].*"));
+	}
 }

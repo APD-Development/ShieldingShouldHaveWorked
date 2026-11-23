@@ -27,8 +27,7 @@ import com.shatteredpixel.shatteredpixeldungeon.apd.qol.VoiceCommands;
 import java.util.ArrayList;
 
 /** Chris's dev build only (Nov 23): keeps Android's speech recognizer listening and hands each phrase to VoiceCommands. */
-final class AndroidVoiceInput implements VoiceCommands.Platform {
-	static final int PERMISSION_REQUEST = 7341;
+final class AndroidVoiceInput implements VoiceLifecycle {
 	private final Activity activity;
 	private final Handler main = new Handler(Looper.getMainLooper());
 	private SpeechRecognizer recognizer;
@@ -87,14 +86,14 @@ final class AndroidVoiceInput implements VoiceCommands.Platform {
 	}
 
 	/** Called by the launcher when the microphone permission answer comes back. */
-	void onPermission(boolean granted){
+	@Override public void onPermission(boolean granted){
 		if (granted && wanted) start();
 		else if (!granted){ wanted = false; say("Voice: microphone permission was denied."); }
 	}
 
 	/** Pause listening while the app is in the background; resume if it was on. */
-	void onPause(){ boolean was = wanted; stop(); main.post(() -> wanted = was); }
-	void onResume(){ if (wanted) start(); }
+	@Override public void onPause(){ boolean was = wanted; stop(); main.post(() -> wanted = was); }
+	@Override public void onResume(){ if (wanted) start(); }
 
 	private void listen(){
 		if (!wanted) return;

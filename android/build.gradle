@@ -138,6 +138,10 @@ dependencies {
     implementation 'androidx.credentials:credentials-play-services-auth:1.5.0'
     implementation 'com.google.android.libraries.identity.googleid:googleid:1.1.1'
 
+    //APD voice controls (Chris, Nov 23): fast on-phone speech engine, dev (debug) build only. Apache 2.0.
+    debugImplementation 'com.alphacephei:vosk-android:0.3.47'
+    debugImplementation 'net.java.dev.jna:jna:5.13.0@aar'
+
     androidTestImplementation "androidx.test.ext:junit:1.2.1"
     androidTestImplementation "androidx.test:core:1.6.1"
     androidTestImplementation "androidx.test:runner:1.6.2"
@@ -173,3 +177,36 @@ task copyAndroidNatives() {
 tasks.matching { it.name.contains("merge") && it.name.contains("JniLibFolders") }.configureEach { packageTask ->
     packageTask.dependsOn 'copyAndroidNatives'
 }
+
+// APD voice controls: the dev (debug) build bundles Vosk's small English speech model (Apache 2.0).
+// It is downloaded at build time, checked against a pinned SHA-256 and never committed. If the download
+// fails the build continues without it and the game falls back to the phone's own recognizer.
+def voskModelRoot = new File(layout.buildDirectory.get().asFile, 'voskModel')
+android.sourceSets.debug.assets.srcDir(voskModelRoot)
+task fetchVoskModel {
+    outputs.dir(voskModelRoot)
+    doLast {
+        def target = new File(voskModelRoot, 'vosk-model')
+        if (new File(target, 'files.txt').exists()) return
+        def zip = new File(temporaryDir, 'model.zip')
+        try {
+            new URL('https://alphacephei.com/vosk/models/vosk-model-small-en-us-0.15.zip').withInputStream { i -> zip.withOutputStream { it << i } }
+        } catch (Exception e) {
+            logger.warn("APD voice: speech model download failed (${e}); this debug build will use the phone's recognizer")
+            return
+        }
+        def sha = java.security.MessageDigest.getInstance('SHA-256').digest(zip.bytes).encodeHex().toString()
+        if (sha != '30f26242c4eb449f948e42cb302dd7a686cb29a3423a8367f99ff41780942498')
+            throw new GradleException("APD voice: speech model checksum mismatch: ${sha}")
+        copy {
+            from zipTree(zip)
+            into voskModelRoot
+            includeEmptyDirs = false
+            eachFile { f -> f.path = f.path.replaceFirst('^vosk-model-small-en-us-0.15/', 'vosk-model/') }
+        }
+        def names = []
+        target.eachFileRecurse(groovy.io.FileType.FILES) { f -> names << target.toPath().relativize(f.toPath()).toString().replace('\\', '/') }
+        new File(target, 'files.txt').text = names.findAll { it != 'files.txt' }.sort().join('\n') + '\n'
+    }
+}
+tasks.matching { it.name.startsWith('merge') && it.name.contains('Debug') && it.name.endsWith('Assets') }.configureEach { it.dependsOn 'fetchVoskModel' }

@@ -261,6 +261,55 @@ public final class VoiceBrain {
 		if (run) GLog.w("Voice: didn't understand \"" + guesses.get(0) + "\"");
 	}
 
+	// ---------- word list for the fast engine ----------
+	/** Every word the fast engine may hear right now, space separated. Read from any thread. */
+	public static volatile String vocabulary = "";
+
+	private static final String CONTROL_WORDS = "stop halt hold on never mind nevermind abort again repeat that do same one more time "
+			+ "listening voice off dungeon dungeons then and after times steps spaces until till dead dies "
+			+ "one once two twice to too three thrice four for five six seven eight nine ten "
+			+ "go move walk step use put on at of the a an my some please it this that with "
+			+ "attack fight kill hit slay ability special weapon search here around look secrets "
+			+ "drink quaff read eat wear wield equip zap cast throw toss get grab open loot pick up pickup take "
+			+ "door item items pile gold key chest stuff stairs downstairs upstairs descend ascend next previous floor exit "
+			+ "far farthest furthest other second different near nearest closest enemy monster side above below "
+			+ "north south east west northeast northwest southeast southwest up down left right "
+			+ "wait rest sleep continue resume action inventory backpack bag journal hero stats examine slot quick "
+			+ "zoom in out cycle back cancel close yes no okay ok potion scroll wand ring armor sword";
+
+	private static void addWords(java.util.TreeSet<String> out, String text){
+		if (text == null) return;
+		for (String w : VoiceCommands.normalize(text).split(" ")) if (w.matches("[a-z]{1,20}")) out.add(w);
+	}
+
+	/** Render thread: rebuild the word list from the fixed commands plus what is on screen and in the bag. */
+	public static void refreshVocabulary(){
+		java.util.TreeSet<String> out = new java.util.TreeSet<>();
+		addWords(out, CONTROL_WORDS);
+		for (String p : VoiceCommands.phrases()) addWords(out, p);
+		for (String v : VOCAB) addWords(out, v);
+		try {
+			if (inRun()){
+				for (Item i : Dungeon.hero.belongings) addWords(out, i.name());
+				for (Mob m : Dungeon.level.mobs.toArray(new Mob[0])) addWords(out, m.name());
+				for (Heap h : Dungeon.level.heaps.valueList()) if (h.seen && h.peek() != null) addWords(out, h.type == Heap.Type.HEAP ? h.peek().name() : h.title());
+				if (ActionIndicator.action != null) addWords(out, ActionIndicator.action.actionName());
+			}
+			if (scene() != null && (!inRun() || GameScene.showingWindow())){
+				Group root = scene();
+				for (Gizmo m : scene().snapshot()) if (m instanceof Window && m.isVisible()) root = (Group) m;
+				List<StyledButton> all = new ArrayList<>();
+				buttons(root, all);
+				for (StyledButton b : all) addWords(out, b.text());
+			}
+		} catch (RuntimeException ignored){
+			// a half-built scene: keep the fixed words, the next refresh picks the rest up
+		}
+		StringBuilder sb = new StringBuilder();
+		for (String w : out){ if (sb.length() > 0) sb.append(' '); sb.append(w); }
+		vocabulary = sb.toString();
+	}
+
 	// ---------- understanding ----------
 	static final class Plan {
 		final List<Step> steps = new ArrayList<>(); final StringBuilder said = new StringBuilder(); boolean stop, fighting;

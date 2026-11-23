@@ -149,6 +149,11 @@ public class AndroidLauncher extends AndroidApplication {
 		//APD voice controls (Chris, Nov 23): dev (debuggable) build only; Play builds never get a microphone path
 		if ((getApplicationInfo().flags & android.content.pm.ApplicationInfo.FLAG_DEBUGGABLE) != 0){
 			voice = new AndroidVoiceInput(this);
+			try {
+				//the fast on-phone engine only exists in the debug source set; Play builds don't have the class at all
+				voice = (VoiceLifecycle) Class.forName("com.shatteredpixel.shatteredpixeldungeon.android.VoskVoiceInput")
+						.getDeclaredConstructor(android.app.Activity.class, VoiceLifecycle.class).newInstance(this, voice);
+			} catch (Throwable ignored) {}
 			com.shatteredpixel.shatteredpixeldungeon.apd.qol.VoiceCommands.setPlatform(voice);
 			if (com.shatteredpixel.shatteredpixeldungeon.SPDSettings.apdVoiceControls())
 				com.shatteredpixel.shatteredpixeldungeon.apd.qol.VoiceCommands.setListening(true);
@@ -236,12 +241,12 @@ public class AndroidLauncher extends AndroidApplication {
 		return new AsynchronousAndroidAudio(context, config);
 	}
 
-	private AndroidVoiceInput voice;
+	private VoiceLifecycle voice;
 
 	@Override
 	public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
 		super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-		if (requestCode == AndroidVoiceInput.PERMISSION_REQUEST && voice != null)
+		if (requestCode == VoiceLifecycle.PERMISSION_REQUEST && voice != null)
 			voice.onPermission(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED);
 	}
 
