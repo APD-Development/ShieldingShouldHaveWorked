@@ -1058,7 +1058,9 @@ route('POST', '/v1/blocks', async (env, req) => {
   const b = await body(req);
   const other = String(b.accountId || '');
   if (other === a.id) fail(400, 'cannot_block_self');
-  if (!(await env.DB.prepare('SELECT id FROM accounts WHERE id = ?').bind(other).first())) fail(404, 'not_found');
+  // The 'deleted' placeholder isn't a player: blocking it would hide every deleted comment and could never be undone
+  // (DELETE /v1/blocks/<id> only takes real hex ids).
+  if (!(await env.DB.prepare("SELECT id FROM accounts WHERE id = ? AND id != 'deleted'").bind(other).first())) fail(404, 'not_found');
   await env.DB.prepare('INSERT OR IGNORE INTO blocks (blocker_id, blocked_id, created_at) VALUES (?, ?, ?)').bind(a.id, other, now(env)).run();
   return json(201, { ok: true });
 });

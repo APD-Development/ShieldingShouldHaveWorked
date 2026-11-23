@@ -149,6 +149,7 @@ test('report and block: blocking hides that player from me; reports reach the ad
   const q = (await call('GET', '/v1/admin/reports', null, chris.token)).body.reports;
   assert.deepEqual([q.length, q[0].reports, q[0].author_id, q[0].preview], [1, 2, troll.id, 'bait']);
   assert.equal((await call('POST', '/v1/blocks', { accountId: ana.id }, ana.token)).body.error, 'cannot_block_self');
+  assert.equal((await call('POST', '/v1/blocks', { accountId: 'deleted' }, ana.token)).status, 404); // not a player
   await call('POST', '/v1/blocks', { accountId: troll.id }, ana.token);
   assert.equal((await call('GET', '/v1/submissions', null, ana.token)).body.submissions.length, 0);
   assert.equal((await call('GET', `/v1/submissions/${s}`, null, ana.token)).status, 404);
