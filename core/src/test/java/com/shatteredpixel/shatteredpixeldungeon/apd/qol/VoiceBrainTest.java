@@ -26,6 +26,9 @@ public class VoiceBrainTest {
 		assertEquals("look for secrets", VoiceBrain.clean("look for secrets"));
 		assertEquals("loot the chest", VoiceBrain.clean("loot the chest"));
 		assertEquals("right is one letter from fight: it must stay a direction", "down right", VoiceBrain.clean("down right"));
+		assertEquals("till is one letter from kill: kept so 'till dead' is stripped from the target", "attack rat till dead", VoiceBrain.clean("attack rat till dead"));
+		assertTrue("one more time repeats (time was snapped to times)", VoiceBrain.isRepeat(VoiceBrain.clean("one more time")));
+		assertEquals("times still snaps", "north 2 times", VoiceBrain.clean("north 2 tmes"));
 		assertArrayEquals("down right steps south-east", new int[]{1,1}, VoiceBrain.direction(VoiceBrain.clean("down right")));
 		assertArrayEquals(new int[]{1,0}, VoiceBrain.direction(VoiceBrain.clean("right")));
 		assertEquals("near is one letter from wear", "attack the near rat", VoiceBrain.clean("attack the near rat"));
