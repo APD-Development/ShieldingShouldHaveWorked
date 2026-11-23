@@ -75,6 +75,7 @@ public class APDSettingsPane extends Component {
 	private RedButton btnClericQuickCasts;
     private RedButton btnWaitingInterruptions,btnAutoEatTrigger;
     private CheckBox chkAutoEatWaiting;
+    private CheckBox chkVoice;
     private CheckBox chkSingleTapSearch;
     private CheckBox chkAdaptiveSearchChoice;
     private CheckBox chkContinueTrapDiscovery;
@@ -240,6 +241,12 @@ public class APDSettingsPane extends Component {
         btnWaitingInterruptions=new SettingButton("Waiting interruptions"){
             @Override protected void onClick(){ShatteredPixelDungeon.scene().addToFront(new WndWaitingSettings());}
         };add(btnWaitingInterruptions);
+        if(com.shatteredpixel.shatteredpixeldungeon.apd.qol.VoiceCommands.available()){
+            chkVoice=new SettingCheckBox("Voice controls (dev build)"){
+                @Override protected void onClick(){super.onClick();SPDSettings.apdVoiceControls(checked());
+                    com.shatteredpixel.shatteredpixeldungeon.apd.qol.VoiceCommands.setListening(checked());}
+            };chkVoice.checked(SPDSettings.apdVoiceControls());add(chkVoice);
+        }
         chkAutoEatWaiting=new SettingCheckBox("Auto-Eat While Waiting"){
             @Override protected void onClick(){super.onClick();SPDSettings.autoEatWhileWaiting(checked());}
         };chkAutoEatWaiting.checked(SPDSettings.autoEatWhileWaiting());add(chkAutoEatWaiting);
@@ -538,6 +545,7 @@ public class APDSettingsPane extends Component {
         chkRatKingSearch.checked(SPDSettings.ratKingQuickSearch());add(chkRatKingSearch);
         row(ApdSettingsSection.GAMEPLAY,chkRatKingSearch,"Off by default. After Goo is defeated, Search can reveal only the Rat King's entrance on Floor 5. Pays the minimum ordinary walking-and-search time through normal turns. Other floors and ordinary Search remain unchanged when off. Temporary effects that prevent a reliable price must finish first.");
         row(ApdSettingsSection.GAMEPLAY,btnWaitingInterruptions,"Independent stops for full health, starvation onset and critical HP. Defaults preserve existing waiting; critical HP is opt-in. You may explicitly disable all three.");
+        row(ApdSettingsSection.GAMEPLAY,chkVoice,"Dev build only. Listens for: north, south, east, west, north east (and the other diagonals, or up/down/left/right), wait, rest, pick up, attack, loot, continue, inventory, journal, hero, examine, slot one to slot six, next, zoom in, zoom out, back. Say \"stop listening\" to turn it off. Android asks for the microphone the first time.");
         row(ApdSettingsSection.GAMEPLAY,chkAutoEatWaiting,"Off by default. While waiting, automatically eat available ordinary rations or safely cooked meat at the selected trigger. Pays normal eating time and consumes one food. If none is suitable, your interruption preferences apply.");
         row(ApdSettingsSection.GAMEPLAY,btnAutoEatTrigger,"Saved independently of Auto-Eat and interruption choices. Special, raw and unknown food is never automatically consumed.");
         row(ApdSettingsSection.GAMEPLAY,chkSingleTapSearch,"On: tap to search nearby; hold to examine a tile, enemy or item. Off: tap to examine; hold to search. A search costs the normal turns; examining is free.");
