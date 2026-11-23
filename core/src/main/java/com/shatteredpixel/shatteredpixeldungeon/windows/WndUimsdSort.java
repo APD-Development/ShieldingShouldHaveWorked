@@ -40,7 +40,7 @@ public final class WndUimsdSort {
 	}
 
 	//A sort key can be a column the table is not showing (the default order sorts on several): its name comes from the dataset,
-	//never the raw column id (Nov 23: the Sort menu showed "run.id" and "run.ascended").
+	//never the raw column id (Nov 23: the Sort menu showed raw ids for hidden sort keys).
 	static String labelOf( ResultTable t, com.shatteredpixel.shatteredpixeldungeon.apd.query.DatasetDef def, String id ){
 		if (t != null) for (ResultTable.Header h : t.headers) if (h.id.equals(id)) return h.label;
 		com.shatteredpixel.shatteredpixeldungeon.apd.query.ColumnDef c = def == null ? null : def.column(id);
