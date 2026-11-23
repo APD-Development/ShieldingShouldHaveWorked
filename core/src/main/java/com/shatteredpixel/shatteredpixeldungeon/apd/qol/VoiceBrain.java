@@ -624,6 +624,11 @@ public final class VoiceBrain {
 			String target = null;
 			int at = (" " + rest + " ").indexOf(" at ");
 			if (at >= 0){ target = rest.substring(Math.min(rest.length(), at + 3)).trim(); rest = rest.substring(0, Math.max(0, at)).trim(); }
+			//a bare "eat", "drink" or "read" uses something up, and "east" can be heard as "eat" (Chris, Nov 23): the item must be named
+			if (rest.trim().isEmpty() && !v[2].equals(Wand.AC_ZAP) && !v[2].equals(Item.AC_THROW)){
+				GLog.w("Voice: say what to " + v[3] + ", like \"" + v[3] + " " + (v[2].equals(Food.AC_EAT) ? "ration" : v[2].equals(Potion.AC_DRINK) ? "healing" : v[2].equals(Scroll.AC_READ) ? "identify" : "armor") + "\".");
+				return true;
+			}
 			@SuppressWarnings("unchecked") Class<? extends Item> kind = (Class<? extends Item>) v[1];
 			Item it = item(keywords(rest), kind);
 			if (it == null){ GLog.w("Voice: no matching item for \"" + clause + "\""); return true; }

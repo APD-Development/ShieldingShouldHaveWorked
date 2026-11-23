@@ -98,6 +98,20 @@ public final class VoiceCommands {
 			{"back", SPDAction.BACK}, {"cancel", SPDAction.BACK}, {"close", SPDAction.BACK},
 	};
 
+	//words that start a command but can't be one on their own ("go", "attack"): when a pause cuts a command after one of
+	//these ("go ... north"), the listener waits for the rest instead of acting on half a command (Chris, Nov 23 screenshot)
+	private static final java.util.Set<String> LEAD_INS = new java.util.HashSet<>(java.util.Arrays.asList(
+			"go", "walk", "move", "head", "step", "run", "attack", "hit", "fight", "kill", "use", "throw", "cast", "zap", "pick",
+			"take", "drink", "read", "eat", "equip", "wear", "search", "look", "open", "please", "and", "then", "slot", "target"));
+
+	/** True when the words so far are only a command's first word(s), so the listener should wait for more. */
+	public static boolean waitsForMore(String text){
+		String n = normalize(text == null ? "" : text);
+		if (n.isEmpty()) return false;
+		for (String w : n.split(" ")) if (!LEAD_INS.contains(w)) return false;
+		return true;
+	}
+
 	static String normalize(String s){
 		if (s == null) return "";
 		String n = s.toLowerCase(Locale.ROOT).replaceAll("[^a-z0-9 ]", " ").replaceAll("\\s+", " ").trim();

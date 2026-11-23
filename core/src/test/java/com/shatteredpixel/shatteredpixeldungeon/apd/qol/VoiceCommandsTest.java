@@ -46,4 +46,16 @@ public class VoiceCommandsTest {
 			VoiceCommands.setPlatform(null);
 		}
 	}
+
+	//Chris, Nov 23: "go" then a breath then "east" acted on "go" alone, then heard the direction as "eat"
+	@org.junit.Test
+	public void aFirstWordAloneWaitsForTheRest(){
+		org.junit.Assert.assertTrue(VoiceCommands.waitsForMore("go"));
+		org.junit.Assert.assertTrue(VoiceCommands.waitsForMore("Go."));
+		org.junit.Assert.assertTrue(VoiceCommands.waitsForMore("attack"));
+		org.junit.Assert.assertFalse(VoiceCommands.waitsForMore("go east"));
+		org.junit.Assert.assertFalse(VoiceCommands.waitsForMore("east"));
+		org.junit.Assert.assertFalse(VoiceCommands.waitsForMore("rest"));
+		org.junit.Assert.assertFalse(VoiceCommands.waitsForMore(""));
+	}
 }

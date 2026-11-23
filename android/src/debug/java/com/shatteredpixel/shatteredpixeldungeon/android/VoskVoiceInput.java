@@ -50,6 +50,8 @@ final class VoskVoiceInput implements VoiceLifecycle {
 	/** Words must stay unchanged this long before they count as a finished command. */
 	private static final long SETTLE_MS = 280;
 	private static final long VOCAB_MS = 1500;
+	/** How long to wait for the rest after only a first word ("go") was heard. */
+	private static final long LEAD_IN_MS = 1500;
 
 	private final Activity activity;
 	private final VoiceLifecycle fallback;
@@ -61,6 +63,7 @@ final class VoskVoiceInput implements VoiceLifecycle {
 	private boolean wanted, loading, usingFallback, paused;
 	private String grammarWords = "";
 	private String partial;
+	private boolean waitedForRest;
 
 	VoskVoiceInput(Activity activity, VoiceLifecycle fallback){
 		this.activity = activity;
@@ -235,6 +238,13 @@ final class VoskVoiceInput implements VoiceLifecycle {
 	private final Runnable settle = new Runnable(){
 		@Override public void run(){
 			if (service == null || partial == null) return;
+			//"go" then a breath then "north": don't act on "go" alone, give the rest a moment to arrive
+			if (!waitedForRest && com.shatteredpixel.shatteredpixeldungeon.apd.qol.VoiceCommands.waitsForMore(partial)){
+				waitedForRest = true;
+				main.postDelayed(settle, LEAD_IN_MS);
+				return;
+			}
+			waitedForRest = false;
 			String text = partial;
 			partial = null;
 			service.reset();
@@ -247,6 +257,7 @@ final class VoskVoiceInput implements VoiceLifecycle {
 			String text = words(hypothesis, "partial");
 			if (text.isEmpty() || text.equals(partial)) return;
 			partial = text;
+			waitedForRest = false;
 			main.removeCallbacks(settle);
 			main.postDelayed(settle, SETTLE_MS);
 		}
@@ -254,7 +265,10 @@ final class VoskVoiceInput implements VoiceLifecycle {
 			// the engine's own end-of-phrase: only used if the quick path above hasn't already acted
 			String text = words(hypothesis, "text");
 			if (partial == null || text.isEmpty()) return;
+			//the engine also ends a phrase at a pause: "go" alone waits for the rest the same way
+			if (com.shatteredpixel.shatteredpixeldungeon.apd.qol.VoiceCommands.waitsForMore(text) && !waitedForRest) return;
 			main.removeCallbacks(settle);
+			waitedForRest = false;
 			partial = null;
 			act(text);
 		}
