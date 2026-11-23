@@ -1133,6 +1133,8 @@ async function setBan(env, req, banned) {
   const b = await body(req);
   const id = String(b.accountId || '');
   if (id === admin.id) fail(400, 'cannot_ban_self');
+  // The 'deleted' placeholder isn't a player (same rule as blocking it): banning it would hide every deleted player's kept posts.
+  if (id === 'deleted') fail(404, 'not_found');
   const r = await env.DB.prepare('UPDATE accounts SET banned = ? WHERE id = ?').bind(banned ? 1 : 0, id).run();
   if (!r.meta.changes) fail(404, 'not_found');
   if (banned) await env.DB.prepare('DELETE FROM sessions WHERE account_id = ?').bind(id).run();

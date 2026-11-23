@@ -175,6 +175,7 @@ test('admin: hide, remove and restore posts, ban and unban accounts; banned play
   assert.equal((await call('GET', '/v1/submissions')).body.submissions.length, 0);
   assert.equal((await call('POST', `/v1/submissions/${s}/comments`, { body: 'x' }, chris.token)).status, 404); // a banned player's idea
   assert.equal((await call('POST', '/v1/admin/ban', { accountId: chris.id }, chris.token)).body.error, 'cannot_ban_self');
+  assert.equal((await call('POST', '/v1/admin/ban', { accountId: 'deleted' }, chris.token)).status, 404); // not a player
   await call('POST', '/v1/admin/unban', { accountId: bad.id }, chris.token);
   assert.equal((await call('GET', '/v1/submissions')).body.submissions.length, 1);
   const log = env.DB.raw.prepare('SELECT action FROM audit ORDER BY id').all().map((r) => r.action);
