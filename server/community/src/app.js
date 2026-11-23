@@ -606,7 +606,8 @@ route('POST', '/v1/tournament/vote', async (env, req) => {
   if (st.phase !== 'tournament') fail(409, 'no_matchups_open');
   const b = await body(req);
   const round = st.rounds.find((r) => r.week === st.week);
-  const m = round && round.matchups[b.matchup];
+  // Only a plain integer index: [7] or "length" must not reach matchups[...] or the INTEGER slot column.
+  const m = round && Number.isInteger(b.matchup) && b.matchup >= 0 ? round.matchups[b.matchup] : undefined;
   if (!m) fail(400, 'bad_matchup');
   if (m.bye) fail(400, 'bye_no_vote');
   const pick = String(b.submissionId || '');
