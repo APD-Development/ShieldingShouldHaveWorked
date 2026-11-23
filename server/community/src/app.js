@@ -465,9 +465,11 @@ route('GET', '/v1/submissions', async (env, req) => {
               WHERE c.submission_id = s.id AND c.status = 'visible' AND ca.banned = 0
                 AND c.author_id NOT IN (SELECT blocked_id FROM blocks WHERE blocker_id = ?)) AS comments
        FROM submissions s JOIN accounts a ON a.id = s.author_id
-      WHERE s.status = 'visible' AND a.banned = 0 AND s.season_id = ? ORDER BY s.created_at DESC LIMIT 500`)
+      WHERE s.status = 'visible' AND a.banned = 0 AND s.season_id = ?
+        AND s.author_id NOT IN (SELECT blocked_id FROM blocks WHERE blocker_id = ?) ORDER BY s.created_at DESC LIMIT 500`)
     // The count matches what the idea page shows readable: no banned players' or blocked players' comments.
-    .bind(viewer ? viewer.id : '', ((await currentSeason(env)) || {}).id ?? '').all();
+    // Blocked authors are left out in SQL, before the LIMIT: 500 newer ideas by a blocked player must not empty the list.
+    .bind(viewer ? viewer.id : '', ((await currentSeason(env)) || {}).id ?? '', viewer ? viewer.id : '').all();
   return json(200, { submissions: results.filter((s) => !blocked.has(s.author_id)).map((s) => ({
     id: s.id, title: s.title, author: { id: s.author_id, displayName: s.display_name }, createdAt: s.created_at, comments: s.comments,
   })) });
@@ -991,8 +993,12 @@ route('POST', '/v1/mods', async (env, req) => {
 });
 
 route('GET', '/v1/mods', async (env, req) => {
-  const blocked = await blockedIds(env, await currentAccount(env, req));
-  const { results } = await env.DB.prepare(`${MOD_SELECT} ORDER BY m.updated_at DESC LIMIT 500`).all();
+  const viewer = await currentAccount(env, req);
+  const blocked = await blockedIds(env, viewer);
+  // Blocked authors are left out in SQL, before the LIMIT: 500 newer mods by a blocked player must not empty the list.
+  const { results } = await env.DB.prepare(
+    `${MOD_SELECT} AND m.author_id NOT IN (SELECT blocked_id FROM blocks WHERE blocker_id = ?) ORDER BY m.updated_at DESC LIMIT 500`)
+    .bind(viewer ? viewer.id : '').all();
   return json(200, { mods: results.filter((m) => !blocked.has(m.author_id)).map((m) => publicMod(m)) });
 });
 

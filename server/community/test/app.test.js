@@ -852,3 +852,26 @@ test('open review list: 100 old runs by a player I blocked do not hide a newer r
   const runs = (await call('GET', '/v1/reviews/open', null, rev.token)).body.runs;
   assert.deepEqual(runs.map((r) => r.id), [id]);
 });
+
+test('idea and mod lists: 500 newer posts by a player I blocked do not hide an older one from someone else', async () => {
+  const { env, call, member, tick } = setup();
+  const ok = await member('ok@x.com', 'Ok');
+  const pest = await member('pest@x.com', 'Pest');
+  const me = await member('me@x.com', 'Me');
+  const ideaId = (await call('POST', '/v1/submissions', { title: 'Real idea', body: 'Body' }, ok.token)).body.id;
+  env.DB.raw.prepare("INSERT INTO mods (id, author_id, mod_id, name, description, hero_json, sprite, created_at, updated_at) VALUES ('ffff', ?, 'okmod', 'Ok', 'd', '{}', '', ?, ?)")
+    .run(ok.id, env.now(), env.now());
+  await call('POST', '/v1/blocks', { accountId: pest.id }, me.token);
+  tick(1);
+  const sub = env.DB.raw.prepare("INSERT INTO submissions (id, author_id, title, body, season_id, created_at) VALUES (?, ?, 'Spam', 'x', 's0', ?)");
+  const mod = env.DB.raw.prepare("INSERT INTO mods (id, author_id, mod_id, name, description, hero_json, sprite, created_at, updated_at) VALUES (?, ?, ?, 'Spam', 'd', '{}', '', ?, ?)");
+  for (let i = 0; i < 500; i++) {
+    const id = `bb${i.toString(16).padStart(4, '0')}`;
+    sub.run(id, pest.id, env.now() + i);
+    mod.run(id, pest.id, `spam${i}`, env.now() + i, env.now() + i);
+  }
+  assert.deepEqual((await call('GET', '/v1/submissions', null, me.token)).body.submissions.map((s) => s.id), [ideaId]);
+  assert.deepEqual((await call('GET', '/v1/mods', null, me.token)).body.mods.map((m) => m.id), ['ffff']);
+  // Not signed in: nothing is blocked, the newest 500 show.
+  assert.equal((await call('GET', '/v1/mods')).body.mods.length, 500);
+});
