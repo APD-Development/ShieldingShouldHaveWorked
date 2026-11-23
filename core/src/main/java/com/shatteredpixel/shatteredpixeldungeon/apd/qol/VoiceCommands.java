@@ -67,6 +67,8 @@ public final class VoiceCommands {
 	/** Phrase -> action, checked in order so "north east" wins over "north". */
 	private static final Object[][] PHRASES = {
 			{"stop listening", null}, {"voice off", null},
+			// before the directions, so "pick up" isn't heard as "up"
+			{"pick up", SPDAction.WAIT_OR_PICKUP}, {"pickup", SPDAction.WAIT_OR_PICKUP}, {"grab", SPDAction.WAIT_OR_PICKUP}, {"take", SPDAction.WAIT_OR_PICKUP},
 			{"north east", SPDAction.NE}, {"northeast", SPDAction.NE}, {"up right", SPDAction.NE},
 			{"north west", SPDAction.NW}, {"northwest", SPDAction.NW}, {"up left", SPDAction.NW},
 			{"south east", SPDAction.SE}, {"southeast", SPDAction.SE}, {"down right", SPDAction.SE},
@@ -75,7 +77,6 @@ public final class VoiceCommands {
 			{"south", SPDAction.S}, {"down", SPDAction.S},
 			{"east", SPDAction.E}, {"right", SPDAction.E},
 			{"west", SPDAction.W}, {"left", SPDAction.W},
-			{"pick up", SPDAction.WAIT_OR_PICKUP}, {"pickup", SPDAction.WAIT_OR_PICKUP}, {"grab", SPDAction.WAIT_OR_PICKUP}, {"take", SPDAction.WAIT_OR_PICKUP},
 			{"attack", SPDAction.TAG_ATTACK}, {"fight", SPDAction.TAG_ATTACK}, {"hit", SPDAction.TAG_ATTACK},
 			{"loot", SPDAction.TAG_LOOT},
 			{"continue", SPDAction.TAG_RESUME}, {"resume", SPDAction.TAG_RESUME},

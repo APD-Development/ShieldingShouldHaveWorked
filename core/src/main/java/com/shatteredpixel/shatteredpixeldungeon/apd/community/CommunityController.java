@@ -1226,7 +1226,7 @@ public final class CommunityController {
 			case "no_season": return "No season is running right now.";
 			case "not_admin": return "Only moderators can do that.";
 			case "cannot_block_self": return "You can't block yourself.";
-			case "bad_parent": return "That comment isn't there any more.";
+			case "bad_parent": case "bad_id": return "That comment isn't there any more.";
 			case "not_a_qualifier": return "That idea isn't in the tournament.";
 			case "bye_no_vote": case "bad_matchup": case "not_in_matchup": return "That vote isn't open right now.";
 			case "signed_out": return "You were signed out. Please sign in again.";
