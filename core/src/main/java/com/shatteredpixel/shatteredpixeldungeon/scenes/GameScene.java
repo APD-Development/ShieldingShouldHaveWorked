@@ -1682,6 +1682,48 @@ public class GameScene extends PixelScene {
 				restart.bottom() + 2
 		);
 		scene.add(menu);
+
+		//APD: the facts of how the run ended (UIMSD deep dive item 2), read from the run's own record
+		final String endedRun = com.shatteredpixel.shatteredpixeldungeon.apd.recorder.ApdRecorder.lastEndedRunId();
+		final java.io.File history = com.shatteredpixel.shatteredpixeldungeon.apd.recorder.ApdRecorder.historyRoot();
+		if (endedRun != null && history != null && !Dungeon.hero.isAlive()){
+			StyledButton what = new StyledButton(Chrome.Type.GREY_BUTTON_TR, "What happened", 9){
+				@Override
+				protected void onClick() {
+					new Thread(new Runnable(){
+						@Override
+						public void run(){
+							String text;
+							try {
+								text = com.shatteredpixel.shatteredpixeldungeon.apd.query.Postmortem.of(
+										new com.shatteredpixel.shatteredpixeldungeon.apd.query.DatasetStore(history).load(), endedRun).text();
+							} catch (Throwable unreadable){
+								text = "The record of this run could not be read.";
+							}
+							final String shown = text;
+							Game.runOnRenderThread(new com.watabou.utils.Callback(){
+								@Override
+								public void call(){
+									GameScene.show(new com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdText("What happened", shown));
+								}
+							});
+						}
+					}, "apd-postmortem").start();
+				}
+
+				@Override
+				public void update() {
+					alpha((float)Math.pow(gameOver.am, 2));
+					super.update();
+				}
+			};
+			what.icon(Icons.get(Icons.INFO));
+			what.alpha(0);
+			what.camera = uiCamera;
+			what.setSize(Math.max(80, what.reqWidth()), 20);
+			what.setPos(align(uiCamera, (what.camera.width - what.width()) / 2), menu.bottom() + 2);
+			scene.add(what);
+		}
 	}
 	
 	public static void bossSlain() {

@@ -226,8 +226,16 @@ public final class ApdRecorder {
 	}
 
 	//the run ended in death or victory (Dungeon.fail / Dungeon.win)
+	//the run that ended last in this session, for the death screen's "What happened" (null if none)
+	private static String lastEndedRunId;
+
+	public static synchronized String lastEndedRunId(){
+		return lastEndedRunId;
+	}
+
 	public static synchronized void onRunEnded( boolean won, Object cause ){
 		if (!usable()) return;
+		if (active != null) lastEndedRunId = active.runId;
 		if (active == null){
 			autoImportRankings();   //a run APD was not following still produced a ranking record
 			return;

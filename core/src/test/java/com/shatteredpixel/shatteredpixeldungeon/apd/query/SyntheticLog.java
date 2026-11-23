@@ -114,6 +114,13 @@ final class SyntheticLog {
 		return this;
 	}
 
+	SyntheticLog acquiredVia( String uid, String name, int category, int context ){
+		ItemEvents.Acquired a = new ItemEvents.Acquired();
+		a.uid = uid; a.where = iw(); a.context = context; a.state = state(name, category, false, 0, false);
+		ItemEvents.emitAcquired(w, clock++, 0, a);
+		return this;
+	}
+
 	SyntheticLog equip( String uid, String name, int category ){
 		ItemEvents.Equip q = new ItemEvents.Equip();
 		q.uid = uid; q.where = iw(); q.state = state(name, category, false, 0, false);

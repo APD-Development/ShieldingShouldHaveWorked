@@ -107,7 +107,7 @@ public class DamagedFactsProvenanceTest {
 
 	@Test
 	public void changedDerivationsInvalidateDisposableCaches() {
-		assertEquals(18, RowBuilders.BUILDER_VERSION);
+		assertEquals(19, RowBuilders.BUILDER_VERSION);
 		assertEquals(11, DerivedStore.DERIVATION_VERSION);
 	}
 

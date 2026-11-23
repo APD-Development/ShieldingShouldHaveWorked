@@ -195,21 +195,16 @@ public class UimsdWiringTest {
 	}
 
 	@Test
-	public void privacySubflowsRestoreTheirExactLocalStateAcrossSceneResets() throws Exception {
+	public void privacyIsWhatStaysOnTheDeviceAndAWayToCommunity() throws Exception {
+		//The old server menu (sending switch, server address, accounts, evidence requests, votes) never worked in Play builds and
+		//was replaced by Community (UIMSD deep dive item 5, Chris approved Nov 23). Its restore paths went with it.
 		String options = src("windows/WndUimsdOptions.java");
-		assertTrue("evidence-request restoration must retain the exact displayed entries",
-				options.contains("evidenceRequests(m, new ArrayList<>(EvidenceInbox.list(m.root())))")
-						&& options.contains("restoreWith(() -> evidenceRequests(m, list))"));
-		assertTrue("an evidence decision must restore the same request",
-				options.contains("restoreWith(() -> answerRequest(m, entry))"));
-		assertTrue("community-vote restoration must retain the exact displayed offers",
-				options.contains("communityVotes(m, new ArrayList<>(VoteActions.offers(m.root())))")
-						&& options.contains("restoreWith(() -> communityVotes(m, offers))"));
-		assertTrue("an in-progress vote must restore every current tick without casting it",
-				options.contains("Entry.item(o).checked(chosen.contains(o))")
-						&& options.contains("restoreWith(() -> castVote(m, offer, new java.util.TreeSet<>(chosen)))"));
-		assertTrue("an account request confirmation must restore the same request kind",
-				options.contains("restoreWith(() -> accountRequest(m, kind))"));
+		for (String gone : new String[]{ "Send queued runs now", "Server address", "Evidence requests", "Community votes",
+				"Delete my account", "BackendClient.sendNow", "SPDSettings.apdSending(!" })
+			assertFalse("the old server menu still offers " + gone, options.contains(gone));
+		assertTrue("Privacy still says what stays on the device", options.contains("privacySummary(m)"));
+		assertTrue("Privacy points to Community", options.contains("CommunityScene.open()"));
+		assertTrue("Privacy restores itself after a scene reset", options.contains("restoreWith(() -> privacy(m))"));
 	}
 
 

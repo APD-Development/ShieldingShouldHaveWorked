@@ -237,6 +237,13 @@ public final class Datasets {
 		d.add(ColumnDef.num("item.firstSeenDepth", "First seen on floor").shown().group("Journey"));
 		d.add(ColumnDef.num("item.acquiredDepth", "Acquired on floor").group("Journey"));
 		d.add(ColumnDef.num("item.acquiredTurn", "Acquired at turn").group("Journey"));
+		d.add(ColumnDef.text("item.foundSource", "Found in").group("Journey")
+				.describe("Where you found it, as the item's own window says: a chest, a tomb, a shop, an enemy drop, a quest reward, or just picked up. "
+						+ "Gear and wands only, like in the game. Mixed means two finds were merged into one item. While a run is still going only "
+						+ "picked up and shop can be said; the rest is hidden information until the run ends."));
+		d.add(ColumnDef.num("item.foundFloor", "Found on floor").group("Journey"));
+		d.add(ColumnDef.text("item.acquiredHow", "How you got it").group("Journey")
+				.describe("How it first came into your hands: picked up, bought, starting kit, crafted, transmuted or other."));
 		d.add(ColumnDef.num("item.equipCount", "Times equipped").shown().merge(Merge.SUM).group("Equipment"));
 		d.add(ColumnDef.num("item.turnsEquipped", "Turns equipped").shown().merge(Merge.SUM).group("Equipment")
 				.describe("Time spent equipped. If the run was still going, only up to the last recorded moment (a lower bound)."));
@@ -244,6 +251,9 @@ public final class Datasets {
 		d.add(yesNo(ColumnDef.enumeration("item.seen", "Ever seen")).merge(Merge.ANY).group("Journey"));
 		d.add(yesNo(ColumnDef.enumeration("item.acquired", "Ever acquired")).merge(Merge.ANY).group("Journey"));
 		d.add(yesNo(ColumnDef.enumeration("item.equipped", "Ever equipped")).merge(Merge.ANY).group("Equipment"));
+		d.add(yesNo(ColumnDef.enumeration("item.heldAtEnd", "Still held at the end")).merge(Merge.LAST).group("Journey")
+				.describe("Whether you still had it when the run ended (or, for a run still going, at the last record): acquired, and not "
+						+ "since used up, dropped, thrown, sold, or (once the run has ended) merged into another or turned into something else."));
 		d.add(ColumnDef.num("item.visibleLevel", "Level (as you knew it)").merge(Merge.LAST).group("Item")
 				.describe("Only when the player knew the item's level. Never revealed afterwards."));
 		d.add(yesNo(ColumnDef.enumeration("item.identified", "Identified")).merge(Merge.LAST).group("Item"));

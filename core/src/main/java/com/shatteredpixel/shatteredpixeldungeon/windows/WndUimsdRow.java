@@ -151,6 +151,9 @@ public class WndUimsdRow extends Window {
                 actions.add(new Action("Damage after equipping", () -> WndUimsdResearch.equipmentWindow(m,r,row)));
 			if (WndUimsdResearch.canDamageRecoveryWindow(r,row))
                 actions.add(new Action("Healing after damage", () -> WndUimsdResearch.damageRecoveryWindow(m,r,row)));
+			if (WndDeathContext.canOpen(r,row) || WndUimsdReport.isRunsTable(def))
+                actions.add(new Action("What happened", () -> com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon.scene().addToFront(
+                        new WndUimsdText("What happened", com.shatteredpixel.shatteredpixeldungeon.apd.query.Postmortem.of(m.catalog(), row.runId).text()))));
 			if (WndDeathContext.canOpen(r,row))
                 actions.add(new Action("Death context", () -> WndDeathContext.show(m,row)));
 			if (WndUimsdReport.isRunsTable(def)){

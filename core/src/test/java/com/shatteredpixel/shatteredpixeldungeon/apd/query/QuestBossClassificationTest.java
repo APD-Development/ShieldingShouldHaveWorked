@@ -68,7 +68,7 @@ public class QuestBossClassificationTest {
         }
     }
     @Test public void oldBuilderTenCacheIsRejectedAndRebuiltWithoutChangingRawEvidence() throws Exception {
-        assertEquals("Classification changes must invalidate old derived rows",18,RowBuilders.BUILDER_VERSION);
+        assertEquals("Classification changes must invalidate old derived rows",19,RowBuilders.BUILDER_VERSION);
         File root=tmp.newFolder();File file=log(root,"finished",true);byte[] original=Files.readAllBytes(file.toPath());
         DatasetStore store=new DatasetStore(root);assertBosses(store.load(),"finished",true);
         File cache=new File(store.rowsDir(),"runs-finished.apdr");byte[] bytes=com.shatteredpixel.shatteredpixeldungeon.apd.query.DatasetStore.plainCache(Files.readAllBytes(cache.toPath()));
@@ -76,7 +76,7 @@ public class QuestBossClassificationTest {
         LogRows oldRows=RowCodec.decode(bytes,file.length(),defs);assertNotNull(oldRows);
         for(Row row:oldRows.rows.get(Datasets.ENEMIES))row.setNum(defs.get(Datasets.ENEMIES).indexOf("enemy.boss"),0,Fact.PROV_RECORDED);
         bytes=RowCodec.encode(oldRows,file.length(),defs);
-        assertEquals(18,bytes[5]);bytes[5]=10;
+        assertEquals(19,bytes[5]);bytes[5]=10;
         java.util.zip.CRC32 crc=new java.util.zip.CRC32();crc.update(bytes,0,bytes.length-4);
         java.nio.ByteBuffer.wrap(bytes,bytes.length-4,4).order(java.nio.ByteOrder.LITTLE_ENDIAN).putInt((int)crc.getValue());
         Files.write(cache.toPath(),bytes);

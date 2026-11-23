@@ -23,11 +23,14 @@ Judgment rules in the postmortem (item 2, "you probably should have...") still n
 1. Memory wall: DONE Nov 23. Heavy datasets (events, fact:*) load lazily (LazyRows) into ColumnarRows (19 bytes a row vs 340).
    Gate UimsdMemoryGateTest: 50 long runs (1.85M rows, 5.8 MB logs) open + Home in under 1 MB, all 750k step rows in 19 MB.
    Prewarm ratio fixed (logs up to the whole 64 MB budget). Rows read from LazyRows are fresh objects: never mutate them.
-2. Facts-first postmortem (death screen + UIMSD): killer/turn, HP last 50 turns, damage by source, effects, hunger, unused items.
+2. Facts-first postmortem: DONE Nov 23 (apd/query/Postmortem). "What happened" button on the game-over screen and on UIMSD
+   death/run rows: killer, turn, floor, HP over the last 50 turns, damage taken by source, effects on at death, hunger,
+   consumables still held (new item.heldAtEnd column). No advice: judgment rules still need Chris's approval.
 3. Search for normal questions (synonyms, shapes, names as filters, typos, "did you mean"), gated by a 100-question test list.
 4. Front door by intent: How am I doing / What kills me / What works for me / Was I unlucky / Am I getting better.
 5. Old server menu in Options > Privacy: DONE Nov 23 (now: what stays on the device + Community link).
-6. Public item source column matching ItemOrigins, plus how the item was acquired.
+6. Public item source: DONE Nov 23. item.foundSource / item.foundFloor (same rules as recorder.ItemOriginHistory) and
+   item.acquiredHow (ACQ_* context). For a run still going only picked up / shop (hidden events are redacted on export).
 7. Plain-sentence verdicts on Research lab results.  8. In-run history popups from item/enemy windows (light index).
 9. Native PDF export (Android PdfDocument).  10. Run replay (floor map once per floor, new fact kind; finished runs only).
 11. Achievement for a never-made-before search; absurd-query line via Question.complexity.  12. Mod-run marker when script mods ship.

@@ -55,7 +55,7 @@ public final class RowBuilders {
 
 	private RowBuilders(){}
 
-	public static final int BUILDER_VERSION = 18;
+	public static final int BUILDER_VERSION = 19;
 
 	private static final DatasetDef RUNS = Datasets.runs();
 	private static final DatasetDef ITEMS = Datasets.items();
@@ -165,6 +165,8 @@ public final class RowBuilders {
 		final String uid;
 		ItemEvents.VisibleState last;
 		boolean seen, acquired, equipped;
+		//in the hero's hands as of the last record: acquired and not since left, merged away or turned into something else
+		boolean held;
 		int firstSeenDepth = -1, acquiredDepth = -1;
 		long acquiredTurn = -1;
 		int equipCount;
@@ -233,7 +235,13 @@ public final class RowBuilders {
 		//kinds of unidentified items (ring gems, potion colours, scroll runes) the player has learned so far, from ITEM_CLASS_KNOWN
 		Set<String> knownKinds = new HashSet<>();
 		int curDepth = 0;
+		PublicItemOrigins publicOrigins = new PublicItemOrigins(ended);
 		for (ApdEvent e : events){
+			try {
+				publicOrigins.accept(e, r);
+			} catch (RuntimeException unreadable){
+				//an event that cannot be read adds nothing to where items came from
+			}
 			try {
 				if (EventTypes.visibility(e.type) == EventTypes.Visibility.PUBLIC && isItemEvent(e.type)){
 					String uid = uidOf(e, r);
@@ -304,13 +312,33 @@ public final class RowBuilders {
 							a.acquiredTurn = e.clock;
 						}
 						a.acquired = true;
+						a.held = true;
 						a.last = q.state;
 						seenAt(a, q.where.depth);
 						break;
 					}
 					case EventTypes.ITEM_LEFT: {
 						ItemEvents.Left l = ItemEvents.decodeLeft(e, r);
-						acc(items, l.uid).last = l.state;
+						ItemAcc a = acc(items, l.uid);
+						a.last = l.state;
+						a.held = false;
+						break;
+					}
+					case EventTypes.ITEM_LINEAGE: {
+						//hidden information: a log of a run still going travels without it (see PublicItemOrigins), so only once it ended
+						if (!ended) break;
+						//only items that already have rows: lineage alone never makes an item row
+						ItemEvents.Lineage l = ItemEvents.decodeLineage(e, r);
+						ItemAcc to = items.get(l.to);
+						if (l.kind == ItemEvents.LIN_MERGE || l.kind == ItemEvents.LIN_CRAFT){
+							for (String uid : l.from){ ItemAcc f = items.get(uid); if (f != null) f.held = false; }
+						} else if (l.kind == ItemEvents.LIN_TRANSFORM && l.from.size() == 1){
+							ItemAcc f = items.get(l.from.get(0));
+							if (f != null){
+								if (to != null && f.held) to.held = true;
+								f.held = false;
+							}
+						}
 						break;
 					}
 					case EventTypes.ITEM_KNOWLEDGE: {
@@ -395,6 +423,17 @@ public final class RowBuilders {
 				put(row, "item.acquiredDepth", a.acquiredDepth, Fact.PROV_RECORDED);
 				put(row, "item.acquiredTurn", a.acquiredTurn, Fact.PROV_RECORDED);
 			}
+			if (a.acquired) put(row, "item.heldAtEnd", a.held ? 1 : 0, countProv);
+			//where the player found it, as the item's own window says, and how it came into their hands
+			PublicItemOrigins.Origin found = publicOrigins.origins.get(a.uid);
+			if (found != null && a.last != null && PublicItemOrigins.eligible(a.last.category)){
+				String label = PublicItemOrigins.sourceLabel(found.source);
+				if (!label.isEmpty()) put(row, "item.foundSource", label, Fact.PROV_RECORDED);
+				if (found.source != PublicItemOrigins.MIXED && found.floor > 0) put(row, "item.foundFloor", found.floor, Fact.PROV_RECORDED);
+			}
+			Integer how = publicOrigins.firstAcquired.get(a.uid);
+			if (how != null && !PublicItemOrigins.acquiredLabel(how).isEmpty())
+				put(row, "item.acquiredHow", PublicItemOrigins.acquiredLabel(how), Fact.PROV_RECORDED);
 			put(row, "item.equipCount", a.equipCount, countProv);
 			put(row, "item.turnsEquipped", a.turnsEquipped, timeProv);
 			put(row, "item.floorsEquipped", a.floors.size(), timeProv);
