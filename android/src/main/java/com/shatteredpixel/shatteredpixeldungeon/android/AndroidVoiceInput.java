@@ -102,13 +102,16 @@ final class AndroidVoiceInput implements VoiceCommands.Platform {
 			recognizer = SpeechRecognizer.createOnDeviceSpeechRecognizer(activity);
 			recognizer.setRecognitionListener(new RecognitionListener() {
 				@Override public void onResults(Bundle results){
+					main.removeCallbacks(settle);
 					ArrayList<String> heard = results.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
-					VoiceCommands.heard(heard);
-					again(150);
+					if (!acted) VoiceCommands.heard(heard);
+					again(30);
 				}
 				@Override public void onError(int error){
 					// 6 = heard nothing, 7 = no words matched: normal while idle. Anything else is shown so it can be fixed.
-					if (error != SpeechRecognizer.ERROR_SPEECH_TIMEOUT && error != SpeechRecognizer.ERROR_NO_MATCH && error != lastShownError){
+					main.removeCallbacks(settle);
+					if (error != SpeechRecognizer.ERROR_SPEECH_TIMEOUT && error != SpeechRecognizer.ERROR_NO_MATCH
+							&& error != SpeechRecognizer.ERROR_CLIENT && error != SpeechRecognizer.ERROR_RECOGNIZER_BUSY && error != lastShownError){
 						lastShownError = error;
 						say("Voice: " + explain(error));
 					}
@@ -126,16 +129,26 @@ final class AndroidVoiceInput implements VoiceCommands.Platform {
 					}
 					if (error == 13 && downloadAsked){ again(20000); return; }
 					if (error == 12 || error == 13){ wanted = false; return; }
-					again(error == SpeechRecognizer.ERROR_RECOGNIZER_BUSY ? 800 : 250);
+					again(error == SpeechRecognizer.ERROR_RECOGNIZER_BUSY ? 300 : 40);
 				}
+				@Override public void onBeginningOfSpeech(){ acted = false; partial = null; }
 				@Override public void onReadyForSpeech(Bundle params){
+					acted = false; partial = null;
 					if (!announced){ announced = true; say("Voice: listening."); }
 				}
-				@Override public void onBeginningOfSpeech(){}
 				@Override public void onRmsChanged(float rmsdB){}
 				@Override public void onBufferReceived(byte[] buffer){}
 				@Override public void onEndOfSpeech(){}
-				@Override public void onPartialResults(Bundle partialResults){}
+				@Override public void onPartialResults(Bundle partialResults){
+					// Speed (Chris, Nov 23): don't wait for the recognizer's long end-of-speech pause.
+					// Once the words stop changing for a moment, act on them and start listening again.
+					ArrayList<String> heard = partialResults.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
+					if (acted || heard == null || heard.isEmpty() || heard.get(0).trim().isEmpty()) return;
+					if (heard.get(0).equals(partial)) return;
+					partial = heard.get(0);
+					main.removeCallbacks(settle);
+					main.postDelayed(settle, SETTLE_MS);
+				}
 				@Override public void onEvent(int eventType, Bundle params){}
 			});
 		}
@@ -146,10 +159,29 @@ final class AndroidVoiceInput implements VoiceCommands.Platform {
 
 	private boolean downloadAsked;
 
+	/** How long the words must stay unchanged before they count as a finished command. */
+	private static final long SETTLE_MS = 400;
+	private boolean acted;
+	private String partial;
+	private final Runnable settle = new Runnable(){
+		@Override public void run(){
+			if (!wanted || acted || partial == null || recognizer == null) return;
+			acted = true;
+			ArrayList<String> one = new ArrayList<>();
+			one.add(partial);
+			VoiceCommands.heard(one);
+			try { recognizer.cancel(); } catch (RuntimeException ignored){}
+			again(40);
+		}
+	};
+
 	private Intent speechIntent(){
 		Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
 		intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
 		intent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 5);
+		intent.putExtra(RecognizerIntent.EXTRA_PARTIAL_RESULTS, true);
+		intent.putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_COMPLETE_SILENCE_LENGTH_MILLIS, 500L);
+		intent.putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_POSSIBLY_COMPLETE_SILENCE_LENGTH_MILLIS, 400L);
 		intent.putExtra(RecognizerIntent.EXTRA_PREFER_OFFLINE, true);
 		intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, java.util.Locale.getDefault().toLanguageTag());
 		intent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE, activity.getPackageName());
