@@ -820,6 +820,9 @@ test('hero mod workshop: subscribe, report to a moderator, admin hide, blocks, b
   // A removed mod can't be re-uploaded under the same id.
   await call('POST', '/v1/admin/remove', { kind: 'mod', id }, chris.token);
   assert.equal((await call('POST', '/v1/mods', { json: heroJson('ana.monk'), sprite: pngB64() }, ana.token)).body.error, 'mod_removed');
+  // ...and the author can't delete it to free the id and upload it again.
+  assert.equal((await call('DELETE', `/v1/mods/${id}`, null, ana.token)).status, 404);
+  assert.equal((await call('POST', '/v1/mods', { json: heroJson('ana.monk'), sprite: pngB64() }, ana.token)).body.error, 'mod_removed');
   await call('POST', '/v1/admin/restore', { kind: 'mod', id }, chris.token);
   // Banned author: hidden everywhere.
   await call('POST', '/v1/admin/ban', { accountId: ana.id }, chris.token);

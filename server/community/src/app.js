@@ -1026,10 +1026,11 @@ route('DELETE', '/v1/mods/([0-9a-f]+)/subscribe', async (env, req, [id]) => {
   return json(200, { subscribed: false });
 });
 
-// An author can take their own mod down (it goes for everyone, subscriptions too).
+// An author can take their own mod down (it goes for everyone, subscriptions too). Not one a moderator removed:
+// deleting that row would free its mod id, and the same mod could then be uploaded again as a new visible mod.
 route('DELETE', '/v1/mods/([0-9a-f]+)', async (env, req, [id]) => {
   const a = await need(env, req);
-  const r = await env.DB.prepare('DELETE FROM mods WHERE id = ? AND author_id = ?').bind(id, a.id).run();
+  const r = await env.DB.prepare("DELETE FROM mods WHERE id = ? AND author_id = ? AND status != 'removed'").bind(id, a.id).run();
   if (!r.meta.changes) fail(404, 'not_found');
   return json(200, { deleted: true });
 });
