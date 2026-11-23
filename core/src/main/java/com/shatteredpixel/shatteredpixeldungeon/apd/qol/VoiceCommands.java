@@ -124,7 +124,12 @@ public final class VoiceCommands {
 	public static void heard(final List<String> alternatives){
 		if (alternatives == null || alternatives.isEmpty()) return;
 		final List<String> copy = wake(alternatives, com.shatteredpixel.shatteredpixeldungeon.SPDSettings.apdVoiceWakeWord());
-		if (copy.isEmpty()) return;
+		if (copy.isEmpty()){
+			// heard something, but without the wake word: show it once in a while so it's clear the mic works
+			final String first = alternatives.get(0);
+			com.watabou.noosa.Game.runOnRenderThread(() -> com.shatteredpixel.shatteredpixeldungeon.utils.GLog.i("Voice heard \"" + first + "\" (say dungeon first)"));
+			return;
+		}
 		com.watabou.noosa.Game.runOnRenderThread(() -> VoiceBrain.understand(copy));
 	}
 

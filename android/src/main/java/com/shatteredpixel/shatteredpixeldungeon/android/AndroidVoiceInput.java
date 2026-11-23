@@ -38,7 +38,7 @@ final class AndroidVoiceInput implements VoiceCommands.Platform {
 
 	@Override public void start(){
 		main.post(() -> {
-			wanted = true;
+			wanted = true; announced = false; lastShownError = -1;
 			if (Build.VERSION.SDK_INT >= 23 && activity.checkSelfPermission(Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED){
 				activity.requestPermissions(new String[]{Manifest.permission.RECORD_AUDIO}, PERMISSION_REQUEST);
 				return;
@@ -65,10 +65,31 @@ final class AndroidVoiceInput implements VoiceCommands.Platform {
 		return Build.VERSION.SDK_INT >= 31 && SpeechRecognizer.isOnDeviceRecognitionAvailable(activity);
 	}
 
+	private boolean announced;
+	private int lastShownError = -1;
+
+	private static void say(final String text){
+		com.watabou.noosa.Game.runOnRenderThread(() -> com.shatteredpixel.shatteredpixeldungeon.utils.GLog.w(text));
+	}
+
+	private static String explain(int error){
+		switch (error){
+			case SpeechRecognizer.ERROR_INSUFFICIENT_PERMISSIONS: return "microphone permission is off for APD (error 9).";
+			case SpeechRecognizer.ERROR_AUDIO: return "the microphone couldn't be opened, another app may be using it (error 3).";
+			case SpeechRecognizer.ERROR_RECOGNIZER_BUSY: return "the phone's recognizer is busy (error 8).";
+			case SpeechRecognizer.ERROR_CLIENT: return "recognizer client error (error 5).";
+			case 12: return "the phone's on-device recognizer doesn't support this language (error 12).";
+			case 13: return "the offline speech language pack isn't downloaded on this phone (error 13).";
+			case SpeechRecognizer.ERROR_SERVER: case 11: return "the phone's recognizer service failed (error " + error + ").";
+			case SpeechRecognizer.ERROR_NETWORK: case SpeechRecognizer.ERROR_NETWORK_TIMEOUT: return "the recognizer wanted the network, which voice controls never use (error " + error + ").";
+			default: return "recognizer error " + error + ".";
+		}
+	}
+
 	/** Called by the launcher when the microphone permission answer comes back. */
 	void onPermission(boolean granted){
 		if (granted && wanted) start();
-		else if (!granted){ wanted = false; com.watabou.utils.SupportDiagnostics.event("voice.permission", "denied"); }
+		else if (!granted){ wanted = false; say("Voice: microphone permission was denied."); }
 	}
 
 	/** Pause listening while the app is in the background; resume if it was on. */
@@ -86,10 +107,18 @@ final class AndroidVoiceInput implements VoiceCommands.Platform {
 					again(150);
 				}
 				@Override public void onError(int error){
+					// 6 = heard nothing, 7 = no words matched: normal while idle. Anything else is shown so it can be fixed.
+					if (error != SpeechRecognizer.ERROR_SPEECH_TIMEOUT && error != SpeechRecognizer.ERROR_NO_MATCH && error != lastShownError){
+						lastShownError = error;
+						say("Voice: " + explain(error));
+					}
 					if (error == SpeechRecognizer.ERROR_INSUFFICIENT_PERMISSIONS){ wanted = false; return; }
+					if (error == 12 || error == 13){ wanted = false; return; }
 					again(error == SpeechRecognizer.ERROR_RECOGNIZER_BUSY ? 800 : 250);
 				}
-				@Override public void onReadyForSpeech(Bundle params){}
+				@Override public void onReadyForSpeech(Bundle params){
+					if (!announced){ announced = true; say("Voice: listening."); }
+				}
 				@Override public void onBeginningOfSpeech(){}
 				@Override public void onRmsChanged(float rmsdB){}
 				@Override public void onBufferReceived(byte[] buffer){}
@@ -105,7 +134,7 @@ final class AndroidVoiceInput implements VoiceCommands.Platform {
 		intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, java.util.Locale.getDefault().toLanguageTag());
 		intent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE, activity.getPackageName());
 		try { recognizer.startListening(intent); }
-		catch (RuntimeException e){ again(1000); }
+		catch (RuntimeException e){ say("Voice: couldn't start the recognizer (" + e.getClass().getSimpleName() + ")."); again(3000); }
 	}
 
 	private void again(long delayMs){
