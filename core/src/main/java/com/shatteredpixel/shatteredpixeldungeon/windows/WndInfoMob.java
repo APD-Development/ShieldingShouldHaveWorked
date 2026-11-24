@@ -35,8 +35,23 @@ public class WndInfoMob extends WndTitledMessage {
 	
 	public WndInfoMob( Mob mob ) {
 
-		super( new MobTitle( mob ), mob.info() );
+		super( new MobTitle( mob ), mob.info() + historyLine( mob ) );
 		
+	}
+
+	//APD: the light in-run history index (UIMSD deep dive item 8); empty until it has been read once off the render thread
+	private static String historyLine( Mob mob ){
+		try {
+			if (Char.hasProp(mob, Char.Property.OBJECT)) return "";
+			com.shatteredpixel.shatteredpixeldungeon.apd.query.EnemyHistory h =
+					com.shatteredpixel.shatteredpixeldungeon.apd.query.EnemyHistory.cached(
+							com.shatteredpixel.shatteredpixeldungeon.apd.recorder.ApdRecorder.historyRoot(),
+							com.shatteredpixel.shatteredpixeldungeon.apd.recorder.ApdRecorder.currentRunId());
+			String line = h == null ? "" : h.line(mob.name());
+			return line.isEmpty() ? "" : "\n\n" + line;
+		} catch (Throwable e){
+			return "";
+		}
 	}
 	
 	private static class MobTitle extends Component {
