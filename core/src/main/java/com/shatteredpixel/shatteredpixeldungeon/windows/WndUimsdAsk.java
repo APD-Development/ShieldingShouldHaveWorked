@@ -348,6 +348,19 @@ public final class WndUimsdAsk {
 		if (a.isEmpty()){
 			entries.add(Entry.note(a.note));
 		} else {
+			if (host != null && host.root() != null){
+				try {
+					java.io.File f = com.shatteredpixel.shatteredpixeldungeon.apd.query.QueryShapes.fileIn(host.root());
+					com.shatteredpixel.shatteredpixeldungeon.apd.query.QueryShapes shapes = com.shatteredpixel.shatteredpixeldungeon.apd.query.QueryShapes.load(f);
+					boolean known = shapes.seen(com.shatteredpixel.shatteredpixeldungeon.apd.query.QueryShapes.shape(q));
+					if (shapes.observe(q, System.currentTimeMillis()))
+						entries.add(Entry.note(com.shatteredpixel.shatteredpixeldungeon.apd.query.QueryShapes.line(q,
+								com.shatteredpixel.shatteredpixeldungeon.SPDSettings.apdAdultHumor())));
+					if (!known) shapes.store(f);
+				} catch (java.io.IOException | RuntimeException ignored){
+					//the reaction is decoration; the answer always follows
+				}
+			}
 			boolean single = a.lines.size() == 1 && a.lines.get(0).label.equals("All");
 			int shown = 0;
 			for (Questions.Line l : a.lines){
