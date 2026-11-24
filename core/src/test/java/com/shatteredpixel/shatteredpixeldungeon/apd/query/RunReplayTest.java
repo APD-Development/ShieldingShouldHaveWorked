@@ -55,4 +55,20 @@ public class RunReplayTest {
 		assertFalse(RunReplay.of(null, "c").available);
 		assertTrue(RunReplay.of(cat, "c").floors.isEmpty());
 	}
+
+	@Test
+	public void frameMarksStepsSoFarAndTheHeroOnTheLatest(){
+		new SyntheticLog(tmp.getRoot(), "f", TelemetryVersion.CURRENT, 400).start("f", 0, "MAGE", "r", 0, 30, false).enter(1)
+				.factTags(GameFacts.FLOOR_MAP, "", new String[]{ MAP }, 1, 0, 4, 4)
+				.factSeries(GameFacts.MOVE_STEP, "", new long[][]{ { 5, 4, 1 }, { 6, 4, 1 }, { 10, 4, 1 } })
+				.end(LifecycleEvents.OUTCOME_DIED, "Rat", 1, 1, 10).close(true);
+		RunReplay.Floor f = RunReplay.of(new DatasetStore(tmp.getRoot()).load(), "f").floors.get(0);
+		assertEquals(MAP, new String(f.frame(0)));
+		assertEquals("#####@.##.>#####", new String(f.frame(1)));
+		assertEquals("#####o@##.>#####", new String(f.frame(2)));
+		assertEquals("#####oo##.@#####", new String(f.frame(99)));
+		assertEquals(MAP, new String(f.frame(-3)));
+		assertEquals(MAP, f.cells);
+		assertEquals("Floor 1: 3 steps", f.title());
+	}
 }

@@ -157,6 +157,9 @@ public class WndUimsdRow extends Window {
 			if (WndDeathContext.canOpen(r,row))
                 actions.add(new Action("Death context", () -> WndDeathContext.show(m,row)));
 			if (WndUimsdReport.isRunsTable(def)){
+                if (row.runId != null && !row.runId.isEmpty() && m.catalog() != null)
+                    actions.add(new Action("Replay floors", () -> WndRunReplay.show(
+                            com.shatteredpixel.shatteredpixeldungeon.apd.query.RunReplay.of(m.catalog(), row.runId))));
                 actions.add(new Action("Run DNA", () -> WndUimsdResearch.dnaRun(m,row)));
                 actions.add(new Action("Luck laboratory", () -> WndUimsdResearch.luckRun(m,row)));
                 if (row.runId != null && !row.runId.isEmpty() && m.catalog() != null){

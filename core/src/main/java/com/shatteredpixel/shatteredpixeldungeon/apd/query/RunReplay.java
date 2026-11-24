@@ -53,6 +53,23 @@ public final class RunReplay {
 		public char cell( int x, int y ){
 			return cells.charAt(y * width + x);
 		}
+
+		public static final char VISITED = 'o', HERO = '@';
+
+		//the floor after the first `shown` steps (clamped to 0..path size): cells stepped on become VISITED, the latest one HERO.
+		//With no steps shown nothing is marked. Pure; used by the replay window.
+		public char[] frame( int shown ){
+			char[] out = cells.toCharArray();
+			int n = Math.max(0, Math.min(shown, path.size()));
+			for (int i = 0; i < n; i++) out[path.get(i)] = VISITED;
+			if (n > 0) out[path.get(n - 1)] = HERO;
+			return out;
+		}
+
+		//"Floor 3: 412 steps" (branch floors say which branch)
+		public String title(){
+			return "Floor " + depth + (branch != 0 ? " (branch " + branch + ")" : "") + ": " + path.size() + (path.size() == 1 ? " step" : " steps");
+		}
 	}
 
 	public final String runId;
