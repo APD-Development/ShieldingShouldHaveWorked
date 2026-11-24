@@ -160,6 +160,7 @@ public final class ApdRecorder {
 
 	//a new run was just set up (Dungeon.init)
 	public static synchronized void onNewRun(){
+		lastEndedRunId = null;
 		if (!usable()) return;
 		try {
 			inject();
@@ -174,6 +175,7 @@ public final class ApdRecorder {
 
 	//a saved game was loaded (Dungeon.loadGame). savedRunId is the apd_run_id stored in that save, null for older saves.
 	public static synchronized void onGameLoaded( int slot, String savedRunId, long lastPlayed ){
+		lastEndedRunId = null;
 		if (!usable()) return;
 		try {
 			inject();
@@ -227,15 +229,17 @@ public final class ApdRecorder {
 
 	//the run ended in death or victory (Dungeon.fail / Dungeon.win)
 	//the run that ended last in this session, for the death screen's "What happened" (null if none)
-	private static String lastEndedRunId;
+	//the run whose end the game-over screen describes; cleared when another run starts or ends unrecorded, so a death in a run
+	//APD was not following can never show an older run's "What happened"
+	static String lastEndedRunId;
 
 	public static synchronized String lastEndedRunId(){
 		return lastEndedRunId;
 	}
 
 	public static synchronized void onRunEnded( boolean won, Object cause ){
+		lastEndedRunId = active != null && usable() ? active.runId : null;
 		if (!usable()) return;
-		if (active != null) lastEndedRunId = active.runId;
 		if (active == null){
 			autoImportRankings();   //a run APD was not following still produced a ranking record
 			return;
