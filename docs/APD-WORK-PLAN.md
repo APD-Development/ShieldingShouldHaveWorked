@@ -288,6 +288,7 @@ default-on settings (SPDSettings.keepOldDefaultsForExistingPlayers). Next: Googl
 (Credential Manager), server URL default once deployed, run reviews. HttpGateway contract routes, deployment workflow, Android Community screens wired to it, Play Age Signals.
 
 ## Run log
+- 2026-11-24 9 AM ET (scheduled): Replay window bug: a floor with no recorded steps sent Play/Restart/next-floor into toggle->floor->toggle forever (stack overflow crash); floor() now sets playing directly and Play only restarts a floor that has steps. +2 WndRunReplayTest; full CI 45410736007 green. Not device-verified. Still OPEN for Chris: Badge-or-what for the new-search achievement; `defense` vs `evasion`; talents hook spec; mod starting items; Loot Availability score multiplier.
 - 2026-11-24 8 AM ET (scheduled): Play 941 uploaded to closed test (CI 45353994493 green on d2a5181e, only server/docs after;
   bundle run 45399165387; versionCode 941, icons pixel-identical, label ADHD Pixel Dungeon, no Rhino). New since 940: Replay
   floors screen (UIMSD item 10), never-seen-question line (item 11). Dev APK sent. Not device-verified.
