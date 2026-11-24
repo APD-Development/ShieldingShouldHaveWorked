@@ -304,7 +304,8 @@ public final class Postmortem {
 					.append(" down to ").append(hpText(last)).append('.');
 			else {
 				b.append("Turn ").append(first.turn).append(": ").append(hpText(first)).append('\n');
-				if (low != last) b.append("Lowest, turn ").append(low.turn).append(": ").append(hpText(low)).append('\n');
+				//the first or last line already shows it when health was lowest there
+				if (low != last && low != first) b.append("Lowest, turn ").append(low.turn).append(": ").append(hpText(low)).append('\n');
 				b.append("Turn ").append(last.turn).append(": ").append(hpText(last)).append('\n');
 				b.append(trace());
 			}
