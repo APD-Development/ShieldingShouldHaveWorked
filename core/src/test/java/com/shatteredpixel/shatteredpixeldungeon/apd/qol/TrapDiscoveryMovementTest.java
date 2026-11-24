@@ -167,6 +167,13 @@ public class TrapDiscoveryMovementTest {
         assertTrue(hero.curAction instanceof HeroAction.PickUp);
         assertEquals(start+1,hero.curAction.dst);
     }
+    // Chris, Nov 24: tapping past an item picks it up and then carries on to the tapped cell
+    @Test public void walkOverPickupRemembersWhereTheWalkWasGoing()throws Exception{
+        HeroAction.Move a=travel();pile(start+1,com.shatteredpixel.shatteredpixeldungeon.items.Heap.Type.HEAP);
+        assertTrue(move());
+        assertTrue(hero.curAction instanceof HeroAction.WalkoverPickUp);
+        assertEquals(a.dst,((HeroAction.WalkoverPickUp)hero.curAction).resumeTo);
+    }
     @Test public void walkOverPickupLeavesChestsShopsHiddenPilesAndTheOffSettingAlone()throws Exception{
         for(com.shatteredpixel.shatteredpixeldungeon.items.Heap.Type t:new com.shatteredpixel.shatteredpixeldungeon.items.Heap.Type[]{
                 com.shatteredpixel.shatteredpixeldungeon.items.Heap.Type.CHEST,com.shatteredpixel.shatteredpixeldungeon.items.Heap.Type.FOR_SALE}){

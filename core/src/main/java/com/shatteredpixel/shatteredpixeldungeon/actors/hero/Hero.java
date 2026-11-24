@@ -281,7 +281,11 @@ public class Hero extends Char {
         // Chris, Nov 21: gold on a grass tile with dew was left behind, because the grass pickup took over the tile.
         // Walk-over pickup now takes the whole pile (dew included), one item per pickup.
         grassDewPickup.clear();
-        curAction=new HeroAction.WalkoverPickUp(cell);
+        // Chris, Nov 24: after the pickup, carry on to where he tapped instead of stopping on the item
+        int resumeTo = curAction instanceof HeroAction.Move && curAction.dst != cell ? curAction.dst : -1;
+        HeroAction.WalkoverPickUp pick=new HeroAction.WalkoverPickUp(cell);
+        pick.resumeTo=resumeTo;
+        curAction=pick;
     }
     /** Why walk-over pickup does or doesn't act on this step ("queued" when it does). */
     public String apdWalkoverDecision(Level steppedLevel,int cell){
@@ -1423,7 +1427,13 @@ public class Hero extends Char {
 					
 					curAction = null;
 					if (action instanceof HeroAction.WalkoverPickUp && apdContinueWalkover(Dungeon.level.heaps.get(pos))) {
-						curAction = new HeroAction.WalkoverPickUp(pos);
+						HeroAction.WalkoverPickUp more = new HeroAction.WalkoverPickUp(pos);
+						more.resumeTo = ((HeroAction.WalkoverPickUp)action).resumeTo;
+						curAction = more;
+					} else if (action instanceof HeroAction.WalkoverPickUp && ((HeroAction.WalkoverPickUp)action).resumeTo >= 0
+							&& ((HeroAction.WalkoverPickUp)action).resumeTo != pos && visibleEnemies() == 0) {
+						//the pile is done: keep walking to the tapped cell (an enemy in view stops it, as any walk would)
+						curAction = new HeroAction.Move(((HeroAction.WalkoverPickUp)action).resumeTo);
 					}
 				} else {
 

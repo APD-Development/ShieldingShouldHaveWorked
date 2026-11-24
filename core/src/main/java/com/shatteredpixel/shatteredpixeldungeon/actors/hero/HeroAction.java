@@ -77,6 +77,8 @@ public class HeroAction {
 	public static class WalkoverPickUp extends PickUp {
 		/** The floor it was queued on; it never runs anywhere else. */
 		public final com.shatteredpixel.shatteredpixeldungeon.levels.Level level;
+		/** Where the walk was going when it stepped on the pile; it carries on there after the pickup (-1: nowhere). */
+		public int resumeTo = -1;
 		public WalkoverPickUp( int dst ) {
 			super( dst );
 			level = com.shatteredpixel.shatteredpixeldungeon.Dungeon.level;
