@@ -285,7 +285,15 @@ public class Hero extends Char {
         int resumeTo = curAction instanceof HeroAction.Move && curAction.dst != cell ? curAction.dst : -1;
         HeroAction.WalkoverPickUp pick=new HeroAction.WalkoverPickUp(cell);
         pick.resumeTo=resumeTo;
+        // keep the walk itself (stairs shortcut, Wall Search walk, travel mode), not just its end cell
+        pick.resumeWalk=resumeTo>=0?(HeroAction.Move)curAction:null;
         curAction=pick;
+    }
+    /** The walk a finished walk-over pickup carries on with: the original one, so a stairs shortcut still takes the
+     *  stairs and a Wall Search walk still searches when it arrives (a bare Move to the cell did neither). */
+    public HeroAction.Move apdWalkAfterPickup(HeroAction.WalkoverPickUp done){
+        if(done.resumeWalk!=null&&done.resumeWalk.dst==done.resumeTo)return done.resumeWalk;
+        return new HeroAction.Move(done.resumeTo);
     }
     /** Why walk-over pickup does or doesn't act on this step ("queued" when it does). */
     public String apdWalkoverDecision(Level steppedLevel,int cell){
@@ -1429,11 +1437,12 @@ public class Hero extends Char {
 					if (action instanceof HeroAction.WalkoverPickUp && apdContinueWalkover(Dungeon.level.heaps.get(pos))) {
 						HeroAction.WalkoverPickUp more = new HeroAction.WalkoverPickUp(pos);
 						more.resumeTo = ((HeroAction.WalkoverPickUp)action).resumeTo;
+						more.resumeWalk = ((HeroAction.WalkoverPickUp)action).resumeWalk;
 						curAction = more;
 					} else if (action instanceof HeroAction.WalkoverPickUp && ((HeroAction.WalkoverPickUp)action).resumeTo >= 0
 							&& ((HeroAction.WalkoverPickUp)action).resumeTo != pos && visibleEnemies() == 0) {
 						//the pile is done: keep walking to the tapped cell (an enemy in view stops it, as any walk would)
-						curAction = new HeroAction.Move(((HeroAction.WalkoverPickUp)action).resumeTo);
+						curAction = apdWalkAfterPickup((HeroAction.WalkoverPickUp)action);
 					}
 				} else {
 

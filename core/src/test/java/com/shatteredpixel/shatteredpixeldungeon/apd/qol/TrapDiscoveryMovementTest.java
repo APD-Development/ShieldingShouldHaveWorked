@@ -173,6 +173,19 @@ public class TrapDiscoveryMovementTest {
         assertTrue(move());
         assertTrue(hero.curAction instanceof HeroAction.WalkoverPickUp);
         assertEquals(a.dst,((HeroAction.WalkoverPickUp)hero.curAction).resumeTo);
+        assertSame("the same travel walk carries on",a,hero.apdWalkAfterPickup((HeroAction.WalkoverPickUp)hero.curAction));
+    }
+    // a stairs shortcut that steps on a pile still takes the stairs afterwards (a bare Move would just stop there)
+    @Test public void walkOverPickupResumesTheStairsShortcutItself()throws Exception{
+        com.shatteredpixel.shatteredpixeldungeon.apd.navigation.StairNavigation.Walk stairs=
+                new com.shatteredpixel.shatteredpixeldungeon.apd.navigation.StairNavigation.Walk(target,level,false,true);
+        hero.curAction=stairs;PathFinder.Path path=new PathFinder.Path();for(int at=hero.pos+1;at<=target;at++)path.add(at);hero.route(path);
+        pile(start+1,com.shatteredpixel.shatteredpixeldungeon.items.Heap.Type.HEAP);
+        assertTrue(move());
+        HeroAction.WalkoverPickUp pick=(HeroAction.WalkoverPickUp)hero.curAction;
+        assertSame(stairs,hero.apdWalkAfterPickup(pick));
+        pick.resumeWalk=null;
+        assertEquals("old saves without the walk still resume to the cell",target,hero.apdWalkAfterPickup(pick).dst);
     }
     @Test public void walkOverPickupLeavesChestsShopsHiddenPilesAndTheOffSettingAlone()throws Exception{
         for(com.shatteredpixel.shatteredpixeldungeon.items.Heap.Type t:new com.shatteredpixel.shatteredpixeldungeon.items.Heap.Type[]{
