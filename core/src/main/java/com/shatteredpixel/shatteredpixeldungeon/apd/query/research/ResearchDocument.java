@@ -116,11 +116,13 @@ public final class ResearchDocument {
     }
     public static ResearchDocument discoveries(Discoveries.Result result){
         ResearchDocument d=new ResearchDocument("Automatic discoveries");
+        d.notes.add(Verdict.discoveries(result));
+        if(result==null)return d;
         d.notes.add("Exploratory recorded win-rate contrasts, not causes or predictions. Requires at least 20 known outcomes per group, the same exact rules and APD version, and non-overlapping multiplicity-adjusted Wilson bands. Wins include ascensions; recorded deaths and abandonment remain distinct non-wins. Imported, unfinished, duplicate and uncertain-outcome records do not contribute.");
         d.notes.add(result.eligible+" eligible finished runs; "+result.excluded+" excluded rows; "+result.comparisons+" comparisons screened. "+result.omitted+" entries omitted by display/group limits. No finding is fabricated when data are insufficient.");
         if(result.findings.isEmpty())d.notes.add("No supported contrasts found in this filtered history. This does not prove that groups are equal.");
         for(Discoveries.Finding f:result.findings)d.cards.add(new Card(f.label,ResearchData.value(f.difference)+" pp",CellText.EXACT,
-                "A won "+f.a.wins+" / "+f.a.rows.size()+"; B won "+f.b.wins+" / "+f.b.rows.size()+". Version: "+f.version+"; rules: "+f.rules+". Adjusted Wilson bands: A "+ResearchData.value(100*f.aLow)+" to "+ResearchData.value(100*f.aHigh)+"%; B "+ResearchData.value(100*f.bLow)+" to "+ResearchData.value(100*f.bHigh)+"%. Sample selection, gear, route and player experience can explain associations. Inspect both groups before drawing conclusions.",
+                Verdict.discovery(f)+"\nA won "+f.a.wins+" / "+f.a.rows.size()+"; B won "+f.b.wins+" / "+f.b.rows.size()+". Version: "+f.version+"; rules: "+f.rules+". Adjusted Wilson bands: A "+ResearchData.value(100*f.aLow)+" to "+ResearchData.value(100*f.aHigh)+"%; B "+ResearchData.value(100*f.bLow)+" to "+ResearchData.value(100*f.bHigh)+"%. Sample selection, gear, route and player experience can explain associations. Inspect both groups before drawing conclusions.",
                 new Evidence("Group A contributors",result.source,f.a.rows),new Evidence("Group B contributors",result.source,f.b.rows)));
         return d;
     }

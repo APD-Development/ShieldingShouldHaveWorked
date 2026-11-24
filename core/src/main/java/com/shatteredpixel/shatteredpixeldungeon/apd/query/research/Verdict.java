@@ -56,4 +56,21 @@ public final class Verdict {
             String t=luckMetric(m.label,m.observed,m.n,m.percentile);b.append(i==0 ? Character.toUpperCase(t.charAt(0))+t.substring(1):t);}
         return b.append(". This compares your own history only; it is not a chance score.").toString();
     }
+    /** One discovery in plain words: who won more often, by how much. Restates the counts only. */
+    public static String discovery(Discoveries.Finding f){
+        if(f==null)return "In short: nothing to show.";
+        Discoveries.Group hi=f.difference>=0 ? f.a:f.b,lo=f.difference>=0 ? f.b:f.a;
+        return "In short: "+hi.label+" won "+pct(hi)+" of runs ("+hi.wins+" of "+hi.rows.size()+") and "+lo.label+" won "+pct(lo)+" ("+lo.wins+" of "+lo.rows.size()
+                +"), a gap bigger than chance would usually make. It doesn't say why.";
+    }
+    /** The Automatic discoveries "In short:" line. */
+    public static String discoveries(Discoveries.Result r){
+        if(r==null)return "In short: discoveries need the plain runs list (no grouping, no errors).";
+        if(r.findings.isEmpty())return r.eligible==0 ? "In short: no finished runs here can be compared yet."
+                :"In short: nothing stood out across "+r.eligible+" finished runs; that doesn't mean the groups are the same.";
+        Discoveries.Finding top=r.findings.get(0);
+        String n=r.findings.size()==1 ? "1 gap stood out":r.findings.size()+" gaps stood out";
+        return "In short: "+n+" across "+r.eligible+" finished runs. Biggest: "+discovery(top).substring("In short: ".length());
+    }
+    private static String pct(Discoveries.Group g){return ResearchData.value(100d*g.wins/g.rows.size())+"%";}
 }
