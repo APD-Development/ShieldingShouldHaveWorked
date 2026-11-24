@@ -195,8 +195,6 @@ public class Button extends Component {
 	protected void onPointerDown() {}
 	protected void onPointerUp() {}
 	protected void onClick() {} //left click, default key type
-	/** APD voice controls (dev build): press this button exactly as a tap would. */
-	public void apdVoiceClick(){ onClick(); }
 	protected void onRightClick() {}
 	protected void onMiddleClick() {}
 	protected boolean onLongClick() {

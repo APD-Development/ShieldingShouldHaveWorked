@@ -846,11 +846,6 @@ public class SPDSettings extends GameSettings {
     public static void autoPickupWhenFull(boolean enabled){put("apd_auto_pickup_when_full",enabled);}
     /** Chris, Nov 20: a failed pickup opens the full-backpack swap window (default on, as before). */
     /** Chris's dev build only (Nov 23): listen for spoken commands. Off by default. */
-    public static boolean apdVoiceControls(){return getBoolean("apd_voice_controls",false);}
-    public static void apdVoiceControls(boolean enabled){put("apd_voice_controls",enabled);}
-    /** Voice controls only act on phrases that start with "dungeon" (so talk or the radio can't move the hero). */
-    public static boolean apdVoiceWakeWord(){return getBoolean("apd_voice_wake_word",false);}
-    public static void apdVoiceWakeWord(boolean enabled){put("apd_voice_wake_word",enabled);}
     public static boolean fullPackSwapPrompt(){return getBoolean("apd_full_pack_swap_prompt",true);}
     public static void fullPackSwapPrompt(boolean enabled){put("apd_full_pack_swap_prompt",enabled);}
     public static boolean continueOnTrapDiscovery(){return getBoolean("apd_continue_trap_discovery",false);}

@@ -906,7 +906,6 @@ public class GameScene extends PixelScene {
 
 	@Override
 	public synchronized void update() {
-		com.shatteredpixel.shatteredpixeldungeon.apd.qol.VoiceBrain.tick();
         com.shatteredpixel.shatteredpixeldungeon.apd.PlaybackGroup.speed(SPDSettings.playbackSpeed());
 		lastOffset = null;
 
@@ -1796,11 +1795,6 @@ public class GameScene extends PixelScene {
 		}
 	}
 	
-	/** APD voice controls: true while an item is waiting for a target cell (zap, throw, scroll target...). */
-	public static boolean apdTargeting(){
-		return cellSelector != null && cellSelector.listener != null && cellSelector.listener != defaultCellListener;
-	}
-
 	public static boolean cancelCellSelector() {
 		if (cellSelector.listener != null && cellSelector.listener != defaultCellListener) {
 			cellSelector.resetKeyHold();

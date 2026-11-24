@@ -146,19 +146,6 @@ public class AndroidLauncher extends AndroidApplication {
 
         AndroidSupportDiagnostics.initialize(this);
 
-		//APD voice controls (Chris, Nov 23): dev (debuggable) build only; Play builds never get a microphone path
-		if ((getApplicationInfo().flags & android.content.pm.ApplicationInfo.FLAG_DEBUGGABLE) != 0){
-			voice = new AndroidVoiceInput(this);
-			try {
-				//the fast on-phone engine only exists in the debug source set; Play builds don't have the class at all
-				voice = (VoiceLifecycle) Class.forName("com.shatteredpixel.shatteredpixeldungeon.android.VoskVoiceInput")
-						.getDeclaredConstructor(android.app.Activity.class, VoiceLifecycle.class).newInstance(this, voice);
-			} catch (Throwable ignored) {}
-			com.shatteredpixel.shatteredpixeldungeon.apd.qol.VoiceCommands.setPlatform(voice);
-			if (com.shatteredpixel.shatteredpixeldungeon.SPDSettings.apdVoiceControls())
-				com.shatteredpixel.shatteredpixeldungeon.apd.qol.VoiceCommands.setListening(true);
-		}
-
 		//Shattered still overrides the back gesture behaviour, but we need to do it in a new way
 		// (API added in Android 13, functionality enforced in Android 16)
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -241,15 +228,6 @@ public class AndroidLauncher extends AndroidApplication {
 		return new AsynchronousAndroidAudio(context, config);
 	}
 
-	private VoiceLifecycle voice;
-
-	@Override
-	public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-		super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-		if (requestCode == VoiceLifecycle.PERMISSION_REQUEST && voice != null)
-			voice.onPermission(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED);
-	}
-
 	@Override
 	protected void onResume() {
 		com.watabou.utils.SupportDiagnostics.event("activity.resume", "");
@@ -261,7 +239,6 @@ public class AndroidLauncher extends AndroidApplication {
 		}
 		super.onResume();
 		requestHighestRefreshRate();
-		if (voice != null) voice.onResume();
 	}
 
 	@Override protected void onDestroy() {
@@ -271,7 +248,6 @@ public class AndroidLauncher extends AndroidApplication {
 	}
 
     @Override protected void onPause() {
-        if (voice != null) voice.onPause();
         com.watabou.utils.SupportDiagnostics.event("activity.pause", "");
         com.watabou.utils.SupportActionJournal.paused(com.watabou.noosa.Game.scene() == null ? "unknown" : com.watabou.noosa.Game.scene().getClass().getSimpleName());
         com.watabou.utils.SupportDiagnostics.memoryEvent("activity.pause");

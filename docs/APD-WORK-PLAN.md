@@ -288,6 +288,8 @@ default-on settings (SPDSettings.keepOldDefaultsForExistingPlayers). Next: Googl
 (Credential Manager), server URL default once deployed, run reviews. HttpGateway contract routes, deployment workflow, Android Community screens wired to it, Play Age Signals.
 
 ## Run log
+- 2026-11-24 4:40 PM ET: Voice controls removed (Chris: "way too slow"). All voice code, settings, the Vosk engine and model,
+  and the dev build's microphone permission are gone. Old voice settings left in prefs are ignored.
 - 2026-11-24 4 PM ET (scheduled): Play 942 uploaded to closed test (CI 45486711989 green on 8cc9eee6; bundle run 45487572490;
   versionCode 942, icons pixel-identical, label ADHD Pixel Dungeon, no Rhino). New since 941: What happened fixes (reads only the
   ended run, stale death, came-back pack, duplicate lowest line, repeat taps), Replay empty-floor loop fix, QueryShapes cap order,
