@@ -162,6 +162,9 @@ import java.util.Locale;
 
 public class GameScene extends PixelScene {
 
+	private static final com.shatteredpixel.shatteredpixeldungeon.apd.query.OneLoad postmortemLoad = new com.shatteredpixel.shatteredpixeldungeon.apd.query.OneLoad(),
+			replayLoad = new com.shatteredpixel.shatteredpixeldungeon.apd.query.OneLoad();
+
 	static GameScene scene;
 
 	private SkinnedBlock water;
@@ -1690,6 +1693,7 @@ public class GameScene extends PixelScene {
 			StyledButton what = new StyledButton(Chrome.Type.GREY_BUTTON_TR, "What happened", 9){
 				@Override
 				protected void onClick() {
+					if (!postmortemLoad.start()) return;   //a second tap while loading opened a second window
 					new Thread(new Runnable(){
 						@Override
 						public void run(){
@@ -1704,6 +1708,7 @@ public class GameScene extends PixelScene {
 							Game.runOnRenderThread(new com.watabou.utils.Callback(){
 								@Override
 								public void call(){
+									postmortemLoad.done();
 									GameScene.show(new com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdText("What happened", shown));
 								}
 							});
@@ -1728,6 +1733,7 @@ public class GameScene extends PixelScene {
 			StyledButton replay = new StyledButton(Chrome.Type.GREY_BUTTON_TR, "Replay floors", 9){
 				@Override
 				protected void onClick() {
+					if (!replayLoad.start()) return;   //a second tap while loading opened a second window
 					new Thread(new Runnable(){
 						@Override
 						public void run(){
@@ -1742,6 +1748,7 @@ public class GameScene extends PixelScene {
 							Game.runOnRenderThread(new com.watabou.utils.Callback(){
 								@Override
 								public void call(){
+									replayLoad.done();
 									com.shatteredpixel.shatteredpixeldungeon.windows.WndRunReplay.show(shown);
 								}
 							});
