@@ -3,7 +3,12 @@ package com.shatteredpixel.shatteredpixeldungeon.apd.query;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -37,11 +42,11 @@ public final class QueryShapes {
 		b.append('|').append(q.per == null ? "-" : q.per.name()).append('|');
 		List<String> g = new ArrayList<>(q.groupBy);
 		java.util.Collections.sort(g);
-		b.append(String.join(",", g)).append('|');
+		b.append(join(g)).append('|');
 		List<String> f = new ArrayList<>();
 		for (Filter x : q.filters) f.add(x.column + " " + x.op.name());
 		java.util.Collections.sort(f);
-		b.append(String.join(",", f)).append('|').append(q.showInternal ? 'i' : '-');
+		b.append(join(f)).append('|').append(q.showInternal ? 'i' : '-');
 		return b.toString().replace('\n', ' ');
 	}
 
@@ -65,19 +70,18 @@ public final class QueryShapes {
 		return react;
 	}
 
-	//The line shown above the answer. Same meaning in Clean and Adult; Adult only adds a mild swear.
-	public static String line( Question q, boolean adult ){
-		int n = q.complexity();
-		return adult
-				? "Wait... I've never been asked anything shaped like that before. You just had me tie " + n + " things together. Give me a damn second. ...huh. Here it is."
-				: "Wait... I've never been asked anything shaped like that before. You just had me tie " + n + " things together. Give me a second. ...huh. Here it is.";
+	//The line shown above the answer. The same words in Clean and Adult: nothing in it needs an adult branch.
+	public static String line( Question q ){
+		return "Wait... I've never been asked anything shaped like that before. You just had me tie " + q.complexity()
+				+ " things together. Give me a second. ...huh. Here it is.";
 	}
 
 	public static QueryShapes load( File file ){
 		QueryShapes s = new QueryShapes();
 		if (file == null || !file.isFile()) return s;
-		try {
-			for (String l : Files.readAllLines(file.toPath(), StandardCharsets.UTF_8)){
+		try (BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8))){
+			String l;
+			while ((l = in.readLine()) != null){
 				if (l.startsWith(LAST)){
 					try { s.lastReaction = Long.parseLong(l.substring(LAST.length()).trim()); } catch (NumberFormatException ignored){}
 				} else if (!l.isEmpty()) s.shapes.add(l);
@@ -94,8 +98,16 @@ public final class QueryShapes {
 		b.append(LAST).append(lastReaction).append('\n');
 		for (String s : shapes) b.append(s).append('\n');
 		File tmp = new File(file.getPath() + ".tmp");
-		Files.write(tmp.toPath(), b.toString().getBytes(StandardCharsets.UTF_8));
-		Files.move(tmp.toPath(), file.toPath(), java.nio.file.StandardCopyOption.REPLACE_EXISTING);
+		try (Writer w = new OutputStreamWriter(new FileOutputStream(tmp), StandardCharsets.UTF_8)){
+			w.write(b.toString());
+		}
+		if (!tmp.renameTo(file)) throw new IOException("cannot replace " + file);
+	}
+
+	private static String join( List<String> parts ){
+		StringBuilder b = new StringBuilder();
+		for (int i = 0; i < parts.size(); i++){ if (i > 0) b.append(','); b.append(parts.get(i)); }
+		return b.toString();
 	}
 
 	public int size(){ return shapes.size(); }

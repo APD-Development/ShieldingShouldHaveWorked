@@ -48,11 +48,10 @@ public class QueryShapesTest {
 	@Test
 	public void lineNeverChangesMeaningAndStaysLocal(){
 		Question q = big(5);
-		String clean = QueryShapes.line(q, false), adult = QueryShapes.line(q, true);
+		String clean = QueryShapes.line(q);
 		assertTrue(clean.contains(q.complexity() + " things"));
 		assertFalse(clean.toLowerCase().contains("damn"));
 		assertFalse(clean.toLowerCase().contains("nobody") || clean.toLowerCase().contains("no player"));
-		assertTrue(adult.contains(q.complexity() + " things"));
 		assertEquals(QueryShapes.shape(Question.about("runs")), QueryShapes.shape(Question.about("runs")));
 	}
 

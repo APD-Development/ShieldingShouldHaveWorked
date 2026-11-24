@@ -354,8 +354,7 @@ public final class WndUimsdAsk {
 					com.shatteredpixel.shatteredpixeldungeon.apd.query.QueryShapes shapes = com.shatteredpixel.shatteredpixeldungeon.apd.query.QueryShapes.load(f);
 					boolean known = shapes.seen(com.shatteredpixel.shatteredpixeldungeon.apd.query.QueryShapes.shape(q));
 					if (shapes.observe(q, System.currentTimeMillis()))
-						entries.add(Entry.note(com.shatteredpixel.shatteredpixeldungeon.apd.query.QueryShapes.line(q,
-								com.shatteredpixel.shatteredpixeldungeon.SPDSettings.apdAdultHumor())));
+						entries.add(Entry.note(com.shatteredpixel.shatteredpixeldungeon.apd.query.QueryShapes.line(q)));
 					if (!known) shapes.store(f);
 				} catch (java.io.IOException | RuntimeException ignored){
 					//the reaction is decoration; the answer always follows
