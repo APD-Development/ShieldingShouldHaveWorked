@@ -104,6 +104,26 @@ public class PostmortemTest {
 	}
 
 	@Test
+	public void healthLowestAtTheStartIsNotShownTwice(){
+		SyntheticLog s = new SyntheticLog(tmp.getRoot(), "h", TelemetryVersion.CURRENT, 100)
+				.start("h", 0, "WARRIOR", "r", 0, 60, false).enter(2);
+		//health climbs the whole window, so its lowest point is the first line
+		long[][] state = new long[60][];
+		for (int i = 0; i < 60; i++) state[i] = new long[]{ 10 + i / 2, 60, 0, 100 };
+		s.clock = 1;
+		s.factSeries(GameFacts.HERO_STATE, "", state);
+		s.clock = 61;
+		s.heroDies("rat", CombatEvents.SRC_CHAR);
+		s.end(LifecycleEvents.OUTCOME_DIED, "Rat", 2, 2, 10).close(true);
+		Postmortem p = Postmortem.of(new DatasetStore(tmp.getRoot()).load(), "h");
+		assertTrue(p.found);
+		assertEquals(p.hp.get(0).hp, p.lowest().hp);
+		String text = p.text();
+		assertTrue(text, text.contains("Turn 12: "));
+		assertFalse("the first line already is the lowest: " + text, text.contains("Lowest, turn"));
+	}
+
+	@Test
 	public void aRunWithNoDeathSaysSo(){
 		new SyntheticLog(tmp.getRoot(), "w", TelemetryVersion.CURRENT, 100).start("w", 0, "MAGE", "r", 0, 30, false).enter(1)
 				.end(LifecycleEvents.OUTCOME_WON, "", 1, 1, 10).close(true);
