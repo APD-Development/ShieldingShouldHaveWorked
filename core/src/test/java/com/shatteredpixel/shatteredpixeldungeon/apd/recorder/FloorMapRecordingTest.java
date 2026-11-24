@@ -46,12 +46,12 @@ public class FloorMapRecordingTest {
 	public void eachFloorIsMappedOnceWithItsRealLayout() throws Exception {
 		RecorderTestSupport.Session session = ItemTestSupport.startRun(311L);
 		String runId = ApdRecorder.currentRunId();
-		String floor1 = FloorMaps.encode(Dungeon.level.map, Dungeon.level.width(), Dungeon.level.height());
+		String floor1 = FloorMapCodes.encode(Dungeon.level.map, Dungeon.level.width(), Dungeon.level.height());
 		int w1 = Dungeon.level.width(), h1 = Dungeon.level.height();
 		int entrance = Dungeon.level.entrance();
 
 		RecorderTestSupport.enterLevel(2);
-		String floor2 = FloorMaps.encode(Dungeon.level.map, Dungeon.level.width(), Dungeon.level.height());
+		String floor2 = FloorMapCodes.encode(Dungeon.level.map, Dungeon.level.width(), Dungeon.level.height());
 		//arriving on floor 2 again in the same session adds nothing
 		Dungeon.switchLevel(Dungeon.level, -1);
 

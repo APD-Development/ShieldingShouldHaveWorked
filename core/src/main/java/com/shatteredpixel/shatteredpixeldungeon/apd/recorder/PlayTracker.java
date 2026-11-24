@@ -100,7 +100,7 @@ final class PlayTracker {
 	//the hero arrived on a floor: keep its true layout once per session, for the run replay (internal fact, shown after the run)
 	void onFloorEntered( com.shatteredpixel.shatteredpixeldungeon.levels.Level level, int depth, int branch ){
 		if (level == null || !mapped.add(depth * 1000L + branch)) return;
-		String cells = com.shatteredpixel.shatteredpixeldungeon.apd.stats.FloorMaps.encode(level.map, level.width(), level.height());
+		String cells = FloorMapCodes.encode(level.map, level.width(), level.height());
 		if (cells == null) return;
 		facts.record(GameFacts.FLOOR_MAP, GameSnapshot.turn(), "", "", new long[]{ depth, branch, level.width(), level.height() }, new String[]{ cells });
 	}

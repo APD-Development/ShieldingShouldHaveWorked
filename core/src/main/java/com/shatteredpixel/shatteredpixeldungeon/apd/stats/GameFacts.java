@@ -105,7 +105,7 @@ public final class GameFacts {
 			.value("branch", "Branch", "0 for the main dungeon, otherwise the side area's number.", FactKind.PLAIN)
 			.value("width", "Width", "How many cells wide the floor is.", FactKind.PLAIN)
 			.value("height", "Height", "How many cells tall the floor is.", FactKind.PLAIN)
-			.tag("cells", "Cells", "One character per cell, row by row: # wall, . floor, + door, ~ water, space chasm, < entrance, > exit.")
+			.tag("cells", "Cells", "One character per cell, row by row, for walls, floor, doors, water, chasms, the entrance and the exit.")
 			.since(1, 16).build());
 
 	//---- the journal: what the player learned about the dungeon, and keys ----
