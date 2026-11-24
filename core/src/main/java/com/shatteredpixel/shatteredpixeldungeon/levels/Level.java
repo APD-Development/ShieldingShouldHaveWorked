@@ -1031,6 +1031,9 @@ public abstract class Level implements Bundlable {
 		updateOpenSpace(cell);
 	}
 	
+	/** APD (Chris, Nov 24): dew a Dewcatcher scatters doesn't set off the plants it lands on (no Dewcatcher chains). */
+	public static boolean apdDewLanding = false;
+
 	public Heap drop( Item item, int cell ) {
 
 		if (item == null || Challenges.isItemBlocked(item)){
@@ -1328,7 +1331,7 @@ public abstract class Level implements Bundlable {
 			}
 		}
 		
-		Plant plant = plants.get( cell );
+		Plant plant = apdDewLanding ? null : plants.get( cell );
 		if (plant != null) {
 			if (bubble != null){
 				Sample.INSTANCE.play(Assets.Sounds.TRAMPLE, 1, Random.Float( 0.96f, 1.05f ) );

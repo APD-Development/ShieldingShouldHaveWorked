@@ -68,7 +68,8 @@ public class Dewdrop extends Item {
 		} else {
 
 			int terr = Dungeon.level.map[pos];
-			if (!consumeDew(1, hero, terr == Terrain.ENTRANCE || terr == Terrain.ENTRANCE_SP
+			//APD (Chris, Nov 24): two drops stacked on one tile are worth two, not one
+			if (!consumeDew(quantity, hero, terr == Terrain.ENTRANCE || terr == Terrain.ENTRANCE_SP
 					|| terr == Terrain.EXIT || terr == Terrain.UNLOCKED_EXIT)){
 				return false;
 			} else {

@@ -167,6 +167,18 @@ public class TrapDiscoveryMovementTest {
         assertTrue(hero.curAction instanceof HeroAction.PickUp);
         assertEquals(start+1,hero.curAction.dst);
     }
+    // Chris, Nov 24: dew scattered by a Dewcatcher doesn't set off a plant it lands on; anything else still does
+    public static class CountingPlant extends com.shatteredpixel.shatteredpixeldungeon.plants.Plant {
+        int triggers; @Override public void trigger(){triggers++;} @Override public void activate(com.shatteredpixel.shatteredpixeldungeon.actors.Char ch){}
+    }
+    @Test public void dewLandingDoesNotTriggerPlants(){
+        CountingPlant p=new CountingPlant();p.pos=start+2;level.plants.put(p.pos,p);
+        Level.apdDewLanding=true;
+        try{level.pressCell(p.pos);}finally{Level.apdDewLanding=false;}
+        assertEquals(0,p.triggers);
+        level.pressCell(p.pos);
+        assertEquals(1,p.triggers);
+    }
     // Chris, Nov 24: tapping past an item picks it up and then carries on to the tapped cell
     @Test public void walkOverPickupRemembersWhereTheWalkWasGoing()throws Exception{
         HeroAction.Move a=travel();pile(start+1,com.shatteredpixel.shatteredpixeldungeon.items.Heap.Type.HEAP);
