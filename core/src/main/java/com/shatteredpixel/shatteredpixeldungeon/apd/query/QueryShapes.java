@@ -104,7 +104,13 @@ public final class QueryShapes {
 		try (Writer w = new OutputStreamWriter(new FileOutputStream(tmp), StandardCharsets.UTF_8)){
 			w.write(b.toString());
 		}
-		if (!tmp.renameTo(file)) throw new IOException("cannot replace " + file);
+		if (!tmp.renameTo(file)){
+			//some platforms (Windows desktop) refuse to rename over an existing file; without this every store after the
+			//first failed, so the cooldown and new shapes were never kept and the "never asked" line came back each time.
+			//Losing this decoration-only memory mid-replace is harmless, unlike saved views.
+			if (file.exists() && !file.delete()) throw new IOException("cannot replace " + file);
+			if (!tmp.renameTo(file)) throw new IOException("cannot move " + tmp + " to " + file);
+		}
 	}
 
 	private static String join( List<String> parts ){
