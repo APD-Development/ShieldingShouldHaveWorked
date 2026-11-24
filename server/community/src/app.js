@@ -803,7 +803,8 @@ route('POST', '/v1/reviews', async (env, req) => {
   const a = await needMember(env, req);
   const b = await body(req);
   const seed = text(b.seed, 64, 'seed');
-  const depth = Number(b.deathDepth);
+  // Only a JSON number: Number(true) is 1 and Number(['5']) is 5, which used to be taken as a floor.
+  const depth = typeof b.deathDepth === 'number' ? b.deathDepth : NaN;
   if (!Number.isInteger(depth) || depth < 1 || depth > 100) fail(400, 'missing_deathDepth');
   // Review type replaces roasts on/off; an old app's `roasts` flag still maps onto it.
   const type = b.reviewType == null ? (b.roasts === true ? 'roasts' : 'advice') : b.reviewType;
@@ -864,7 +865,8 @@ route('POST', '/v1/reviews/([0-9a-f]+)/result', async (env, req, [id]) => {
   if (!mine) fail(409, 'not_claimed');
   if (mine.finished_at != null) fail(409, 'already_reviewed');
   if (r.status !== 'open') fail(409, 'review_closed');
-  const reached = Number(b.reachedDepth);
+  // Only a JSON number (same rule as deathDepth): Number(false) is 0, Number('3') is 3.
+  const reached = typeof b.reachedDepth === 'number' ? b.reachedDepth : NaN;
   if (!Number.isInteger(reached) || reached < 0 || reached > 100) fail(400, 'missing_reachedDepth');
   if (typeof b.salvageable !== 'boolean') fail(400, 'missing_salvageable');
   const advice = filtered(b.advice, LIMITS.comment, 'advice');

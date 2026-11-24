@@ -537,6 +537,7 @@ test('run reviews: secret seed, 5 reviews to close (failed reviews count), hidde
   const setupJson = { heroClass: 'WARRIOR', challenges: 3, difficulty: 'normal' };
   const ending = { cause: 'Goo', depth: 5, loot: ['ring of haste'] };
   assert.equal((await call('POST', '/v1/reviews', { seed: 'ABC-DEF', setup: setupJson, deathDepth: 0, ending }, pat.token)).body.error, 'missing_deathDepth');
+  for (const d of [true, '5', [5]]) assert.equal((await call('POST', '/v1/reviews', { seed: 'ABC-DEF', setup: setupJson, deathDepth: d, ending }, pat.token)).body.error, 'missing_deathDepth');
   const id = (await call('POST', '/v1/reviews', { seed: 'ABC-DEF', setup: setupJson, deathDepth: 5, ending, roasts: false }, pat.token)).body.id;
   // The open list never carries the seed or the ending, and my own run isn't in it
   const open = (await call('GET', '/v1/reviews/open', null, rev[0].token)).body.runs;
@@ -551,6 +552,7 @@ test('run reviews: secret seed, 5 reviews to close (failed reviews count), hidde
   assert.deepEqual([claim.seed, claim.deathDepth], ['ABC-DEF', 5]);
   assert.ok(!('ending' in claim));
   // Reaching the death depth = survived; then the ending is revealed. No second result.
+  for (const d of [false, '5', [5]]) assert.equal((await call('POST', `/v1/reviews/${id}/result`, { reachedDepth: d, salvageable: true, advice: 'x', tone: 'advice' }, rev[0].token)).body.error, 'missing_reachedDepth');
   let r = (await call('POST', `/v1/reviews/${id}/result`, { reachedDepth: 5, salvageable: true, advice: 'Drink the potion earlier', tone: 'advice' }, rev[0].token)).body;
   assert.deepEqual([r.survived, r.ending.cause, r.done], [true, 'Goo', 1]);
   assert.equal((await call('POST', `/v1/reviews/${id}/result`, { reachedDepth: 9, salvageable: true, advice: 'again', tone: 'advice' }, rev[0].token)).body.error, 'already_reviewed');
