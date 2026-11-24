@@ -60,8 +60,11 @@ public final class QueryShapes {
 	public boolean observe( Question q, long now ){
 		String s = shape(q);
 		boolean novel = !shapes.contains(s);
+		//a shape asked again moves to the newest end, so the cap forgets the least recently asked shapes, never a regular one
+		//(forgetting a regular question would let UIMSD claim it had "never been asked" it)
+		if (!novel) shapes.remove(s);
+		shapes.add(s);
 		if (novel){
-			shapes.add(s);
 			while (shapes.size() > MAX_SHAPES) shapes.remove(shapes.iterator().next());
 		}
 		boolean react = novel && q.complexity() >= COMPLEXITY_FLOOR

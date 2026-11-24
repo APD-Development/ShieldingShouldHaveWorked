@@ -59,4 +59,20 @@ public class QueryShapesTest {
 	public void unreadableFileStartsFresh() throws Exception {
 		assertEquals(0, QueryShapes.load(new File(tmp.getRoot(), "missing")).size());
 	}
+
+	@Test
+	public void regularShapeSurvivesTheCap(){
+		QueryShapes s = new QueryShapes();
+		Question regular = big(5);
+		s.observe(regular, 1000);
+		for (int i = 0; i < QueryShapes.MAX_SHAPES - 1; i++){
+			s.observe(Question.about("runs").withFilters(Arrays.asList(Filter.num("c" + i, Op.GE, 1))), 1000);
+		}
+		assertEquals(QueryShapes.MAX_SHAPES, s.size());
+		assertFalse(s.observe(regular, 2000));   //asked again: now the most recent
+		s.observe(Question.about("runs").withFilters(Arrays.asList(Filter.num("newest", Op.GE, 1))), 3000);
+		assertEquals(QueryShapes.MAX_SHAPES, s.size());
+		assertTrue("a regularly asked shape is not forgotten", s.seen(QueryShapes.shape(regular)));
+		assertFalse("the least recently asked one is", s.seen(QueryShapes.shape(Question.about("runs").withFilters(Arrays.asList(Filter.num("c0", Op.GE, 1))))));
+	}
 }
