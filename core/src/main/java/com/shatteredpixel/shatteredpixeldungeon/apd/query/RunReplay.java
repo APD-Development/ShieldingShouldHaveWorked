@@ -21,9 +21,6 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.apd.query;
 
-
-package com.shatteredpixel.shatteredpixeldungeon.apd.query;
-
 import com.shatteredpixel.shatteredpixeldungeon.apd.stats.FloorMaps;
 
 import java.util.ArrayList;
