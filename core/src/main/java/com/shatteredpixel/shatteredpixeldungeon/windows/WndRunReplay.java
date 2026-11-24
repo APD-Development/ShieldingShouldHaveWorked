@@ -88,7 +88,7 @@ public class WndRunReplay extends Window {
 	}
 
 	private void toggle(){
-		if (!playing && shown >= replay.floors.get(floorIndex).path.size()){ floor(floorIndex); return; }
+		if (restartOnPlay(playing, shown, replay.floors.get(floorIndex).path.size())){ floor(floorIndex); return; }
 		playing = !playing;
 		play.text(playing ? "Pause" : "Play");
 	}
@@ -110,7 +110,14 @@ public class WndRunReplay extends Window {
 		hero = null;
 		shown = 0;
 		timer = 0;
-		if (!playing) toggle();
+		//set directly: going through toggle() on a floor with no recorded steps restarted the floor forever (stack overflow)
+		playing = true;
+		play.text("Pause");
+	}
+
+	//Play on a finished floor restarts it; a floor with no recorded steps has nothing to restart
+	static boolean restartOnPlay( boolean playing, int shown, int steps ){
+		return !playing && steps > 0 && shown >= steps;
 	}
 
 	private static int color( char c ){
