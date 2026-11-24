@@ -105,10 +105,31 @@ public class WndInfoItem extends Window {
 		IconTitle titlebar = new IconTitle( item );
 		titlebar.color( color );
 		
-        String visibleInfo=item.info();
+        String visibleInfo=item.info()+historyLine(item);
 		RenderedTextBlock txtInfo = PixelScene.renderTextBlock( visibleInfo, 6 );
 		
 		layoutFields(titlebar, txtInfo);
+	}
+
+	//APD: the light in-run history index (UIMSD deep dive item 8); empty until it has been read once off the render thread,
+	//and never for an item whose kind is still unknown (those names are shuffled every run)
+	private static String historyLine( Item item ){
+		try {
+			if (item instanceof com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion
+					&& !((com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion) item).isKnown()) return "";
+			if (item instanceof com.shatteredpixel.shatteredpixeldungeon.items.scrolls.Scroll
+					&& !((com.shatteredpixel.shatteredpixeldungeon.items.scrolls.Scroll) item).isKnown()) return "";
+			if (item instanceof com.shatteredpixel.shatteredpixeldungeon.items.rings.Ring
+					&& !((com.shatteredpixel.shatteredpixeldungeon.items.rings.Ring) item).isKnown()) return "";
+			com.shatteredpixel.shatteredpixeldungeon.apd.query.ItemHistory h =
+					com.shatteredpixel.shatteredpixeldungeon.apd.query.ItemHistory.cached(
+							com.shatteredpixel.shatteredpixeldungeon.apd.recorder.ApdRecorder.historyRoot(),
+							com.shatteredpixel.shatteredpixeldungeon.apd.recorder.ApdRecorder.currentRunId());
+			String line = h == null ? "" : h.line(item.name());
+			return line.isEmpty() ? "" : "\n\n" + line;
+		} catch (Throwable e){
+			return "";
+		}
 	}
 
 	private void layoutFields(IconTitle title, RenderedTextBlock info){
