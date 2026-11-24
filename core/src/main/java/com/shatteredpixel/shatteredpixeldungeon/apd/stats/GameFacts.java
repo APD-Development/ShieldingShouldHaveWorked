@@ -96,6 +96,18 @@ public final class GameFacts {
 	public static final FactKind WELL = FactKinds.register(FactKind.builder("explore.well", "Well used").plural("Wells used").area("Exploration")
 			.description("Every time the hero drank from a well.").subject("Well").since(1, 9).build());
 
+	//the floor's layout as it really was when the hero first arrived there in a session, for the run replay of a finished run. INTERNAL:
+	//it shows rooms, secret doors and the exit before the player found them, so it is only shown once the run is over. One map per floor
+	//per session (a reloaded game may write a second one for a floor it revisits; readers use the first). Cells are FloorMaps codes.
+	public static final FactKind FLOOR_MAP = FactKinds.register(FactKind.builder("floor.map", "Floor map").plural("Floor maps").area("Exploration")
+			.description("The layout of each floor the hero reached, as it really was on arrival (shown after the run).").internal()
+			.value("depth", "Floor", "The floor the map is of.", FactKind.PLAIN)
+			.value("branch", "Branch", "0 for the main dungeon, otherwise the side area's number.", FactKind.PLAIN)
+			.value("width", "Width", "How many cells wide the floor is.", FactKind.PLAIN)
+			.value("height", "Height", "How many cells tall the floor is.", FactKind.PLAIN)
+			.tag("cells", "Cells", "One character per cell, row by row: # wall, . floor, + door, ~ water, space chasm, < entrance, > exit.")
+			.since(1, 16).build());
+
 	//---- the journal: what the player learned about the dungeon, and keys ----
 
 	//a landmark was written in (or removed from) the journal: a shop, an alchemy pot, a well, a floor feeling

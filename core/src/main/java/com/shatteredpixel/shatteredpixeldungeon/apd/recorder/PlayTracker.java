@@ -94,6 +94,17 @@ final class PlayTracker {
 		facts.record(GameFacts.MOVE_STEP, GameSnapshot.turn(), "", "", new long[]{ to, Dungeon.level.width(), travelling ? 1 : 0 }, null);
 	}
 
+	//floors already mapped in this session (key: depth * 1000 + branch)
+	private final java.util.Set<Long> mapped = new java.util.HashSet<>();
+
+	//the hero arrived on a floor: keep its true layout once per session, for the run replay (internal fact, shown after the run)
+	void onFloorEntered( com.shatteredpixel.shatteredpixeldungeon.levels.Level level, int depth, int branch ){
+		if (level == null || !mapped.add(depth * 1000L + branch)) return;
+		String cells = com.shatteredpixel.shatteredpixeldungeon.apd.stats.FloorMaps.encode(level.map, level.width(), level.height());
+		if (cells == null) return;
+		facts.record(GameFacts.FLOOR_MAP, GameSnapshot.turn(), "", "", new long[]{ depth, branch, level.width(), level.height() }, new String[]{ cells });
+	}
+
 	void onMoveCommand( int destination, String mode ){
 		facts.record(GameFacts.MOVE_COMMAND, GameSnapshot.turn(), "", "",
 				new long[]{ destination, Dungeon.level.width() }, new String[]{ mode == null ? "" : mode });

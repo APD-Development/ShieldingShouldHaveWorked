@@ -391,6 +391,9 @@ final class RunRecorder {
 		e.feeling = Dungeon.level == null || Dungeon.level.feeling == null ? "" : Dungeon.level.feeling.name();
 		LifecycleEvents.emitLevelEnter(writer, clock, e);
 		checkpoint(LifecycleEvents.CP_LEVEL_ENTER);
+		if (play != null){
+			try { play.onFloorEntered(Dungeon.level, Dungeon.depth, Dungeon.branch); } catch (Throwable ignored){}
+		}
 
 		levelOpen = true;
 		curDepth = Dungeon.depth;

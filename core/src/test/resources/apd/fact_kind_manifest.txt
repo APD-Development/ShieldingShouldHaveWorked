@@ -30,3 +30,4 @@ ally.summon|P|-|depth|
 boss.phase|P|-|phase,depth|state
 npc.quest|P|-|depth|step
 alchemy.craft|P|-|depth,quantity,energy,carriedEnergy,toolkitEnergy|ingredients
+floor.map|I|-|depth,branch,width,height|cells
