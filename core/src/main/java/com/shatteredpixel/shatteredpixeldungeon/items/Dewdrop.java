@@ -162,22 +162,7 @@ public class Dewdrop extends Item {
 		return true;
 	}
 
-	//max of one dew in a stack
-
-	@Override
-	public Item merge( Item other ){
-		if (isSimilar( other )){
-			quantity = 1;
-			other.quantity = 0;
-		}
-		return this;
-	}
-
-	@Override
-	public Item quantity(int value) {
-		quantity = Math.min( value, 1);
-		return this;
-	}
+	//APD (Chris, Nov 24): a drop landing on another drop makes a stack of 2 (the base game kept only 1)
 
 }
 
