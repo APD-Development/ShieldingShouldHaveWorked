@@ -79,6 +79,8 @@ public class HeroAction {
 		public final com.shatteredpixel.shatteredpixeldungeon.levels.Level level;
 		/** Where the walk was going when it stepped on the pile; it carries on there after the pickup (-1: nowhere). */
 		public int resumeTo = -1;
+		/** The walk itself, so it resumes with its own kind (stairs shortcut, Wall Search walk) and mode. */
+		public Move resumeWalk;
 		public WalkoverPickUp( int dst ) {
 			super( dst );
 			level = com.shatteredpixel.shatteredpixeldungeon.Dungeon.level;
