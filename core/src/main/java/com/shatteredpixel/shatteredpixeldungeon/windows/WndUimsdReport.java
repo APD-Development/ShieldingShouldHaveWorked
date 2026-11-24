@@ -11,6 +11,7 @@ import com.shatteredpixel.shatteredpixeldungeon.apd.query.Row;
 import com.shatteredpixel.shatteredpixeldungeon.apd.query.SeedFloors;
 import com.shatteredpixel.shatteredpixeldungeon.apd.query.UimsdModel;
 import com.shatteredpixel.shatteredpixeldungeon.apd.recorder.ApdRecorder;
+import com.shatteredpixel.shatteredpixeldungeon.apd.archive.ApdFiles;
 import com.shatteredpixel.shatteredpixeldungeon.apd.report.Report;
 import com.shatteredpixel.shatteredpixeldungeon.apd.report.ReportBuilder;
 import com.shatteredpixel.shatteredpixeldungeon.apd.report.ReportExport;
@@ -48,7 +49,7 @@ public final class WndUimsdReport {
 	}
 
 	public static void show( final UimsdModel model, String what, final Source source ){
-		final ReportExport.Format[] formats = ReportExport.Format.values();
+		final ReportExport.Format[] formats = ReportExport.available(ApdFiles.provider(base()));
 		String[] options = new String[formats.length + 1];
 		options[0] = "Share as text";
 		for (int i = 0; i < formats.length; i++) options[i + 1] = "Save: " + formats[i].label;

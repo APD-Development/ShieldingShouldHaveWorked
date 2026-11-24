@@ -10,8 +10,8 @@ import java.util.Locale;
 
 //Getting a Report out of the app: as text handed to the system share sheet, or as a file the player saves wherever they choose (the same
 //file picker the history archive uses). Formats are plain text files on purpose: they open on every device, need no library, and a web page
-//can be printed to PDF from any browser. A native PDF writer would add a layout and font engine for one platform only (see
-//docs/APD-REPORTS.md).
+//can be printed to PDF from any browser. Where the platform can lay out text itself (Android's PdfDocument) a real PDF of the plain-text
+//report is offered too; nowhere else (see available()).
 public final class ReportExport {
 
 	private ReportExport(){}
@@ -20,7 +20,8 @@ public final class ReportExport {
 		MARKDOWN("Markdown", "md", "text/markdown"),
 		TEXT("Plain text", "txt", "text/plain"),
 		HTML("Web page (print to PDF from a browser)", "html", "text/html"),
-		CSV("Spreadsheet (CSV, tables only)", "csv", "text/csv");
+		CSV("Spreadsheet (CSV, tables only)", "csv", "text/csv"),
+		PDF("PDF document", "pdf", "application/pdf");
 
 		public final String label, extension, mime;
 
@@ -38,9 +39,19 @@ public final class ReportExport {
 		void finished( String message );
 	}
 
+	//the formats this platform can save: PDF only where the provider lays out a PDF itself
+	public static Format[] available( ApdFiles.Provider p ){
+		boolean pdf;
+		try { pdf = p != null && p.canWritePdf(); } catch (Throwable e){ pdf = false; }
+		java.util.List<Format> out = new java.util.ArrayList<>();
+		for (Format f : Format.values()) if (f != Format.PDF || pdf) out.add(f);
+		return out.toArray(new Format[0]);
+	}
+
+	//the text a format is made from (a PDF is the plain-text report laid out on pages)
 	public static String render( Report r, Format f ){
 		switch (f){
-			case TEXT: return ReportRenderer.text(r);
+			case TEXT: case PDF: return ReportRenderer.text(r);
 			case HTML: return ReportRenderer.html(r);
 			case CSV: return ReportRenderer.csv(r);
 			default: return ReportRenderer.markdown(r);
@@ -91,8 +102,14 @@ public final class ReportExport {
     // Saves through the file picker; an accepted stream's worker owns the final outcome.
     public static void save(File fallbackBase, final Report r, final Format f, final Done done){
         final byte[] bytes;
+        final ApdFiles.Provider provider;
         try {
-            bytes = render(r, f).getBytes(Charset.forName("UTF-8"));
+            provider = ApdFiles.provider(fallbackBase);
+            if (f == Format.PDF && !provider.canWritePdf()){
+                done.finished("PDF is not available here. Save the report as a web page and print it to PDF instead.");
+                return;
+            }
+            bytes = f == Format.PDF ? toPdf(provider, r) : render(r, f).getBytes(Charset.forName("UTF-8"));
         } catch (Throwable e){
             done.finished("The report could not be made: " + e);
             return;
@@ -103,7 +120,7 @@ public final class ReportExport {
             if (finished.compareAndSet(false, true)) done.finished(message);
         };
         try {
-            ApdFiles.provider(fallbackBase).chooseExport(fileName(r, f), f.mime, new ApdFiles.ExportTarget(){
+            provider.chooseExport(fileName(r, f), f.mime, new ApdFiles.ExportTarget(){
                 @Override
                 public void onStream(final OutputStream out, final String displayName){
                     streamAccepted.set(true);
@@ -141,6 +158,15 @@ public final class ReportExport {
             if (!streamAccepted.get()) once.finished("The report could not be saved: " + e);
         }
     }
+
+	//lays the plain-text report out as PDF bytes in memory, so a layout failure is reported before a file is chosen
+	static byte[] toPdf( ApdFiles.Provider provider, Report r ) throws java.io.IOException {
+		java.io.ByteArrayOutputStream buf = new java.io.ByteArrayOutputStream();
+		provider.writePdf(r.title, ReportRenderer.text(r), buf);
+		byte[] b = buf.toByteArray();
+		if (b.length < 5 || b[0] != '%' || b[1] != 'P' || b[2] != 'D' || b[3] != 'F') throw new java.io.IOException("the PDF came out empty");
+		return b;
+	}
 
 	//Shares as plain text through the system share sheet.
 	public static void share( File fallbackBase, Report r, Done done ){

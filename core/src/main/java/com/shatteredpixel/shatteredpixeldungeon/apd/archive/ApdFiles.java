@@ -60,6 +60,14 @@ public final class ApdFiles {
 		default boolean shareText( String subject, String text ){
 			return false;
 		}
+		//True when this platform can lay text out as a real PDF document (Android: PdfDocument). Desktop and tests cannot.
+		default boolean canWritePdf(){
+			return false;
+		}
+		//Writes the text (one report line per line) as a PDF to out; does not close out. Only called when canWritePdf() is true.
+		default void writePdf( String title, String text, OutputStream out ) throws java.io.IOException {
+			throw new java.io.IOException("PDF is not available on this platform");
+		}
 		void chooseImport( ImportSource source );
 		//a few words on where files go, for the confirmation messages ("the folder you choose", ...)
 		String where();

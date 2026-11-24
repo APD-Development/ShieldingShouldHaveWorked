@@ -79,6 +79,61 @@ public class AndroidFileProvider implements ApdFiles.Provider, AndroidEventListe
 	}
 
 	@Override
+	public boolean canWritePdf(){
+		return true;
+	}
+
+	//APD: a report's plain text laid out on A4 pages with Android's own PdfDocument (monospace so the text tables stay aligned).
+	//Long lines wrap at the page width; every page ends with "page n". The system font draws any script the device can show.
+	@Override
+	public void writePdf( final String title, final String text, final OutputStream out ) throws java.io.IOException {
+		final int pageW = 595, pageH = 842, margin = 36;
+		android.graphics.Paint paint = new android.graphics.Paint( android.graphics.Paint.ANTI_ALIAS_FLAG );
+		paint.setTypeface( android.graphics.Typeface.MONOSPACE );
+		paint.setTextSize( 8f );
+		paint.setColor( 0xFF000000 );
+		float lineH = paint.getFontSpacing();
+		float maxW = pageW - 2 * margin;
+		int perPage = Math.max( 1, (int)((pageH - 2 * margin - lineH * 2) / lineH) );
+
+		java.util.ArrayList<String> lines = new java.util.ArrayList<>();
+		for (String raw : (text == null ? "" : text).replace( "\r", "" ).replace( "\t", "    " ).split( "\n", -1 )) {
+			String rest = raw;
+			while (rest.length() > 0) {
+				int n = paint.breakText( rest, true, maxW, null );
+				if (n <= 0) n = 1;
+				if (n < rest.length()) {
+					int sp = rest.lastIndexOf( ' ', n );
+					if (sp > n / 2) n = sp + 1;
+				}
+				lines.add( rest.substring( 0, n ) );
+				rest = rest.substring( n );
+			}
+			if (raw.length() == 0) lines.add( "" );
+		}
+
+		android.graphics.pdf.PdfDocument doc = new android.graphics.pdf.PdfDocument();
+		try {
+			int pages = Math.max( 1, (lines.size() + perPage - 1) / perPage );
+			for (int p = 0; p < pages; p++) {
+				android.graphics.pdf.PdfDocument.Page page = doc.startPage(
+						new android.graphics.pdf.PdfDocument.PageInfo.Builder( pageW, pageH, p + 1 ).create() );
+				android.graphics.Canvas c = page.getCanvas();
+				float y = margin - paint.ascent();
+				for (int i = p * perPage; i < Math.min( lines.size(), (p + 1) * perPage ); i++) {
+					c.drawText( lines.get( i ), margin, y, paint );
+					y += lineH;
+				}
+				c.drawText( "page " + (p + 1) + " of " + pages, margin, pageH - margin, paint );
+				doc.finishPage( page );
+			}
+			doc.writeTo( out );
+		} finally {
+			doc.close();
+		}
+	}
+
+	@Override
 	public void chooseExport( final String suggestedName, final String mimeType, final ApdFiles.ExportTarget target ){
 		pendingExport = target;
 		activity.runOnUiThread( new Runnable() {
