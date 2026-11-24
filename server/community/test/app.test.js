@@ -567,6 +567,11 @@ test('run reviews: secret seed, 5 reviews to close (failed reviews count), hidde
   // A reported reviewer loses review access (moderator)
   assert.equal((await call('POST', '/v1/admin/review-access', { accountId: rev[2].id, allowed: false }, pat.token)).status, 403);
   await call('POST', `/v1/reviews/${id}/claim`, null, rev[2].token);
+  // Only a string id; the 'deleted' placeholder isn't a reviewer
+  assert.equal((await call('POST', '/v1/admin/review-access', { accountId: [rev[2].id], allowed: false }, chris.token)).status, 404);
+  assert.equal((await call('POST', '/v1/admin/review-access', { accountId: 'deleted', allowed: false }, chris.token)).status, 404);
+  assert.equal((await call('POST', '/v1/blocks', { accountId: [rev[3].id] }, rev[4].token)).status, 404);
+  assert.equal((await call('POST', '/v1/admin/ban', { accountId: [rev[3].id] }, chris.token)).status, 404);
   assert.equal((await call('POST', '/v1/admin/review-access', { accountId: rev[2].id, allowed: false }, chris.token)).status, 200);
   assert.equal((await call('POST', `/v1/reviews/${id}/result`, { reachedDepth: 5, salvageable: true, advice: 'x', tone: 'advice' }, rev[2].token)).body.error, 'review_access_removed');
   assert.equal((await call('GET', '/v1/reviews/open', null, rev[2].token)).body.error, 'review_access_removed');

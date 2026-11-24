@@ -925,11 +925,16 @@ route('GET', '/v1/reviews/mine', async (env, req) => {
 });
 
 // A moderator takes review access away from (or gives it back to) a reviewer.
+// Only a string id, like every other id field: String(['x']) would match account x (and 0/true became '0'/'true').
+const strId = (v) => (typeof v === 'string' ? v : '');
+
 route('POST', '/v1/admin/review-access', async (env, req) => {
   const admin = await needAdmin(env, req);
   const b = await body(req);
-  const id = String(b.accountId || '');
+  const id = strId(b.accountId);
   if (typeof b.allowed !== 'boolean') fail(400, 'missing_allowed');
+  // The 'deleted' placeholder isn't a reviewer (same rule as banning or blocking it).
+  if (id === 'deleted') fail(404, 'not_found');
   const r = await env.DB.prepare('UPDATE accounts SET review_banned = ? WHERE id = ?').bind(b.allowed ? 0 : 1, id).run();
   if (!r.meta.changes) fail(404, 'not_found');
   await audit(env, admin, b.allowed ? 'review_access_on' : 'review_access_off', `account:${id}`);
@@ -1065,7 +1070,7 @@ route('POST', '/v1/reports', async (env, req) => {
   const table = typeof b.kind === 'string' && Object.hasOwn(KINDS, b.kind) ? KINDS[b.kind] : null;
   if (!table) fail(400, 'bad_kind');
   await rateLimit(env, a, 'reports');
-  const target = await env.DB.prepare(`SELECT id FROM ${table} WHERE id = ?`).bind(String(b.id || '')).first();
+  const target = await env.DB.prepare(`SELECT id FROM ${table} WHERE id = ?`).bind(strId(b.id)).first();
   // The 'deleted' placeholder isn't a player (same rule as blocking or banning it): a moderator could never act on it.
   if (!target || (table === 'accounts' && target.id === 'deleted')) fail(404, 'not_found');
   const reason = clean(text(b.reason, LIMITS.reason, 'reason')) ?? '[reason contained blocked words]';
@@ -1078,7 +1083,7 @@ route('POST', '/v1/reports', async (env, req) => {
 route('POST', '/v1/blocks', async (env, req) => {
   const a = await need(env, req);
   const b = await body(req);
-  const other = String(b.accountId || '');
+  const other = strId(b.accountId);
   if (other === a.id) fail(400, 'cannot_block_self');
   // The 'deleted' placeholder isn't a player: blocking it would hide every deleted comment and could never be undone
   // (DELETE /v1/blocks/<id> only takes real hex ids).
@@ -1156,7 +1161,7 @@ route('POST', '/v1/admin/restore', (env, req) => setStatus(env, req, 'visible'))
 async function setBan(env, req, banned) {
   const admin = await needAdmin(env, req);
   const b = await body(req);
-  const id = String(b.accountId || '');
+  const id = strId(b.accountId);
   if (id === admin.id) fail(400, 'cannot_ban_self');
   // The 'deleted' placeholder isn't a player (same rule as blocking it): banning it would hide every deleted player's kept posts.
   if (id === 'deleted') fail(404, 'not_found');
