@@ -237,7 +237,8 @@ route('POST', '/v1/auth/login', async (env, req) => {
   await guarded(env, 'login_email', email);
   await guarded(env, 'login_ip', ipOf(req));
   const a = await env.DB.prepare('SELECT * FROM accounts WHERE email = ?').bind(email).first();
-  if (!a || !(await verifyPassword(String(b.password || ''), a.password_hash))) {
+  if (!a || typeof b.password !== 'string' || b.password.length > 200
+      || !(await verifyPassword(b.password, a.password_hash))) {
     await strike(env, 'login_email', email);
     await strike(env, 'login_ip', ipOf(req));
     fail(401, 'wrong_login');

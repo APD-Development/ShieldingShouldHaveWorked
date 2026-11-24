@@ -52,6 +52,8 @@ test('register sends a code; the code verifies the email and signs in', async ()
   assert.deepEqual([me.body.displayName, me.body.emailVerified, me.body.ageOk, me.body.admin], ['Ana', true, false, false]);
   const again = await call('POST', '/v1/auth/login', { email: 'a@example.com', password: 'longenough' });
   assert.equal(again.status, 200);
+  const arr = await call('POST', '/v1/auth/login', { email: 'a@example.com', password: ['longenough'] });
+  assert.deepEqual([arr.status, arr.body.error], [401, 'wrong_login']);
 });
 
 test('wrong codes are limited, and codes expire', async () => {
