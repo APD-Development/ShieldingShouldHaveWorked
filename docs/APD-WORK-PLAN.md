@@ -288,6 +288,7 @@ default-on settings (SPDSettings.keepOldDefaultsForExistingPlayers). Next: Googl
 (Credential Manager), server URL default once deployed, run reviews. HttpGateway contract routes, deployment workflow, Android Community screens wired to it, Play Age Signals.
 
 ## Run log
+- 2026-11-24 5 PM ET (scheduled): Walk-over pickup bug (from today's carry-on change): after the pile it resumed as a bare Move, so a stairs shortcut stopped on the stairs without taking them and a Wall Search walk arrived without searching (and travel mode was lost); it now resumes the original walk (old saves fall back to the cell). +1 TrapDiscoveryMovementTest, +1 assertion; full CI 45497932127 green (side branch fix/walkover-resume-walk, same commit cherry-picked). Not device-verified. Still OPEN for Chris: Badge-or-what for the new-search achievement; `defense` vs `evasion`; talents hook spec; mod starting items; Loot Availability score multiplier.
 - 2026-11-24 4:40 PM ET: Voice controls removed (Chris: "way too slow"). All voice code, settings, the Vosk engine and model,
   and the dev build's microphone permission are gone. Old voice settings left in prefs are ignored.
 - 2026-11-24 4 PM ET (scheduled): Play 942 uploaded to closed test (CI 45486711989 green on 8cc9eee6; bundle run 45487572490;
