@@ -132,4 +132,23 @@ public class PostmortemTest {
 		assertEquals("No death is recorded for this run.", p.text());
 		assertFalse(Postmortem.of(null, null).found);
 	}
+
+	@Test
+	public void oneRunLoadGivesTheSameAnswerAndReadsNoOtherLog(){
+		new SyntheticLog(tmp.getRoot(), "w", TelemetryVersion.CURRENT, 100).start("w", 0, "MAGE", "r", 0, 30, false).enter(1)
+				.end(LifecycleEvents.OUTCOME_WON, "", 1, 1, 10).close(true);
+		SyntheticLog s = new SyntheticLog(tmp.getRoot(), "d", TelemetryVersion.CURRENT, 100)
+				.start("d", 0, "WARRIOR", "r", 0, 30, false).enter(2);
+		s.clock = 9; s.damageToHero("rat", "Rat", 30);
+		s.heroDies("Rat", CombatEvents.SRC_CHAR);
+		s.end(LifecycleEvents.OUTCOME_DIED, "Rat", 2, 1, 10).close(true);
+		DatasetStore store = new DatasetStore(tmp.getRoot());
+		Catalog one = store.loadRun("d");
+		assertTrue(one.dataset(Datasets.RUNS).rowsOf("w").isEmpty());
+		assertEquals(1, one.dataset(Datasets.RUNS).rowsOf("d").size());
+		assertEquals(Postmortem.of(store.load(), "d").text(), Postmortem.of(one, "d").text());
+		assertTrue(Postmortem.of(one, "d").found);
+		assertFalse(Postmortem.of(store.loadRun("nope"), "nope").found);
+		assertFalse(Postmortem.of(store.loadRun(null), null).found);
+	}
 }

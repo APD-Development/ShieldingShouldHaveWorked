@@ -1700,7 +1700,7 @@ public class GameScene extends PixelScene {
 							String text;
 							try {
 								text = com.shatteredpixel.shatteredpixeldungeon.apd.query.Postmortem.of(
-										new com.shatteredpixel.shatteredpixeldungeon.apd.query.DatasetStore(history).load(), endedRun).text();
+										new com.shatteredpixel.shatteredpixeldungeon.apd.query.DatasetStore(history).loadRun(endedRun), endedRun).text();
 							} catch (Throwable unreadable){
 								text = "The record of this run could not be read.";
 							}

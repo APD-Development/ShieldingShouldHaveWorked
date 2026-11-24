@@ -124,7 +124,11 @@ public final class DatasetStore {
 	//Never throws.
     public interface Cancellation {boolean cancelled();}
     public Catalog load(){return load(() -> false);}
-    public Catalog load(Cancellation cancelled){
+    public Catalog load(Cancellation cancelled){return load(cancelled, null);}
+    /** Only the one recorded run's log (no ranking imports): what a single-run window such as "What happened" needs,
+     *  without reading every log in the history. Unknown or empty ids give an empty catalog. Never throws. */
+    public Catalog loadRun(String runId){return load(() -> false, runId == null ? "" : runId);}
+    private Catalog load(Cancellation cancelled, String onlyRun){
         checkCancelled(cancelled);
 		long t0 = System.nanoTime();
 		Catalog cat = new Catalog();
@@ -137,10 +141,11 @@ public final class DatasetStore {
 		for (File f : logs(new File(root, "runs"))){
             checkCancelled(cancelled);
 			if (idOf(f).startsWith(DEMO_LOG_PREFIX) != demoFolder) continue;
+			if (onlyRun != null && !idOf(f).equals(onlyRun)) continue;
 			LogRows lr = rowsFor(f, false, defs, cat, fingerprintBuffer);
 			if (lr != null) recorded.add(lr);
 		}
-		for (File f : logs(new File(root, "legacy"))){
+		for (File f : onlyRun != null ? new ArrayList<File>() : logs(new File(root, "legacy"))){
             checkCancelled(cancelled);
 			if (idOf(f).startsWith(DEMO_LOG_PREFIX) != demoFolder) continue;
 			LogRows lr = rowsFor(f, true, defs, cat, fingerprintBuffer);
