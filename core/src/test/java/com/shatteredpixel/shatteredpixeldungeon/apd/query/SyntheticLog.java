@@ -58,6 +58,14 @@ final class SyntheticLog {
 		return this;
 	}
 
+	//one generic fact observation with text tags, on the next clock tick
+	SyntheticLog factTags( com.shatteredpixel.shatteredpixeldungeon.apd.stats.FactKind k, String subject, String[] tags, long... values ){
+		com.shatteredpixel.shatteredpixeldungeon.apd.stats.FactEvents.emit(w, k.eventType(), clock,
+				new com.shatteredpixel.shatteredpixeldungeon.apd.stats.FactEvents.Observation(k.key, subject, "", clock, values, tags));
+		clock++;
+		return this;
+	}
+
 	//many observations of a series kind, one per tick, as one event
 	SyntheticLog factSeries( com.shatteredpixel.shatteredpixeldungeon.apd.stats.FactKind k, String subject, long[][] rows ){
 		long[] clocks = new long[rows.length];
