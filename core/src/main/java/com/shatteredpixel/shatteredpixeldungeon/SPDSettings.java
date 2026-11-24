@@ -429,6 +429,20 @@ public class SPDSettings extends GameSettings {
 	}
 
 	//Every APD setting's saved value ("unset" = nothing saved, the default applies), for bug reports.
+	//Nov 24: a run went unrecorded and the report could not say why. States only; no paths, run ids or history.
+	static String recorderReport( com.shatteredpixel.shatteredpixeldungeon.apd.recorder.RecorderStatus s ){
+		if (s == null) return "apd_recorder=unavailable\n";
+		String err = s.lastError == null ? "" : s.lastError.replace('\n', ' ');
+		if (err.length() > 300) err = err.substring(0, 300);
+		String writer = s.writerProblem == null ? "" : s.writerProblem.replace('\n', ' ');
+		if (writer.length() > 300) writer = writer.substring(0, 300);
+		return "apd_recorder configured=" + s.configured + " enabled=" + s.enabled + " session_disabled=" + s.sessionDisabled
+				+ " errors=" + s.errorCount + " recording_a_run=" + (s.logId != null) + " writer_disabled=" + s.writerDisabled
+				+ " events_accepted=" + s.eventsAccepted + " events_dropped=" + s.eventsDropped + " run_logs=" + s.runLogs + "\n"
+				+ "apd_recorder_last_error=" + (err.isEmpty() ? "none" : err) + "\n"
+				+ "apd_recorder_writer_problem=" + (writer.isEmpty() ? "none" : writer) + "\n";
+	}
+
 	public static String apdSettingsReport(){
 		StringBuilder b = new StringBuilder();
 		String[] keys = { "apd_stair_navigation_shortcut", "apd_auto_enter_stairs", "apd_adaptive_search_choice",
@@ -439,6 +453,7 @@ public class SPDSettings extends GameSettings {
 		for (String k : keys){
 			b.append(k).append('=').append(contains(k) ? String.valueOf(getBoolean(k, false)) : "unset").append('\n');
 		}
+		b.append(recorderReport(com.shatteredpixel.shatteredpixeldungeon.apd.recorder.ApdRecorder.status()));
 		return b.toString();
 	}
 
