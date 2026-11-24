@@ -85,6 +85,10 @@ test('Google sign-in makes its own account and signs back into it', async () => 
   const b = await call('GET', '/v1/me', null, second.body.token);
   assert.equal(a.body.id, b.body.id);
   assert.equal(a.body.emailVerified, true);
+  for (const [sub, displayName] of [['200', {}], ['201', ['Gee']], ['202', 42]]) {
+    const r = await call('POST', '/v1/auth/google', { idToken: `good:${sub}`, displayName });
+    assert.equal((await call('GET', '/v1/me', null, r.body.token)).body.displayName, 'Adventurer');
+  }
 });
 
 test('posting needs a verified, 16+ account; the server only ever records a pass', async () => {

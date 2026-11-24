@@ -253,7 +253,9 @@ route('POST', '/v1/auth/google', async (env, req) => {
   if (!who || !who.sub) fail(401, 'bad_google_token');
   let a = await env.DB.prepare('SELECT * FROM accounts WHERE google_sub = ?').bind(who.sub).first();
   if (!a) {
-    const name = clean(String(b.displayName || '').trim().slice(0, LIMITS.name)) || 'Adventurer';
+    // Only a string name: String({}) became '[object Object]' and String(['Gee']) 'Gee'; anything else is 'Adventurer'.
+    const raw = typeof b.displayName === 'string' ? b.displayName : '';
+    const name = clean(raw.trim().slice(0, LIMITS.name)) || 'Adventurer';
     a = { id: newId() };
     const email = who.email ? String(who.email).toLowerCase() : null;
     // No email is stored for Google accounts: the Google id is enough, and the email is only read here for the admin check.
