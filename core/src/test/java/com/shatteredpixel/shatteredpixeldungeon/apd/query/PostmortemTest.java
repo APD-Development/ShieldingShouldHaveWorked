@@ -88,6 +88,22 @@ public class PostmortemTest {
 	}
 
 	@Test
+	public void aDeathYouCameBackFromDoesNotListTheEndOfRunPack(){
+		SyntheticLog s = new SyntheticLog(tmp.getRoot(), "b", TelemetryVersion.CURRENT, 100)
+				.start("b", 0, "WARRIOR", "r", 0, 30, false).enter(3);
+		s.acquiredVia("pot", "amber potion", ItemEvents.CAT_POTION, ItemEvents.ACQ_PICKUP);
+		s.clock = 20;
+		s.heroDies("rat", CombatEvents.SRC_CHAR);
+		s.revived();
+		s.end(LifecycleEvents.OUTCOME_WON, "", 3, 3, 10).close(true);
+		Postmortem p = Postmortem.of(new DatasetStore(tmp.getRoot()).load(), "b");
+		assertTrue(p.found);
+		assertFalse(p.finalDeath);
+		assertTrue("the pack at the run's end is not the pack at this death", p.held.isEmpty());
+		assertTrue(p.text(), p.text().contains("Still in your pack: not recorded for a death you came back from."));
+	}
+
+	@Test
 	public void aRunWithNoDeathSaysSo(){
 		new SyntheticLog(tmp.getRoot(), "w", TelemetryVersion.CURRENT, 100).start("w", 0, "MAGE", "r", 0, 30, false).enter(1)
 				.end(LifecycleEvents.OUTCOME_WON, "", 1, 1, 10).close(true);

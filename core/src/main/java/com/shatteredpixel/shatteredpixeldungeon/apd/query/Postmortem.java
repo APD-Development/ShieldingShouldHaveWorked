@@ -116,7 +116,8 @@ public final class Postmortem {
 		p.health(cat, from);
 		p.damage(cat, from);
 		p.effects(cat);
-		p.held(cat);
+		//item.heldAtEnd is the pack when the run ended, not at a death the hero came back from: only shown for the final death
+		if (p.finalDeath) p.held(cat);
 		return p;
 	}
 
@@ -331,7 +332,8 @@ public final class Postmortem {
 		b.append("\nHunger: ").append(hungerLabel(hunger)).append('.');
 
 		b.append("\n\nStill in your pack: ");
-		if (!heldRecorded) b.append("not recorded.");
+		if (!finalDeath) b.append("not recorded for a death you came back from.");
+		else if (!heldRecorded) b.append("not recorded.");
 		else b.append(held.isEmpty() ? "no consumables." : join(held) + ".");
 		return b.toString();
 	}
