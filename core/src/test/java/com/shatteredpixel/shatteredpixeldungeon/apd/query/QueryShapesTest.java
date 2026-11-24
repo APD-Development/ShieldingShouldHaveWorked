@@ -56,6 +56,20 @@ public class QueryShapesTest {
 	}
 
 	@Test
+	public void secondStoreReplacesTheFileAndKeepsTheCooldown() throws Exception {
+		File f = new File(tmp.getRoot(), QueryShapes.FILE_NAME);
+		QueryShapes s = new QueryShapes();
+		s.observe(Question.about("runs"), 1000);
+		s.store(f);
+		assertTrue(s.observe(big(5), 2000));
+		s.store(f);
+		assertFalse(new File(f.getPath() + ".tmp").exists());
+		QueryShapes back = QueryShapes.load(f);
+		assertEquals(2, back.size());
+		assertFalse("cooldown from the second store survives", back.observe(big(5).withPer(PerUnit.Unit.TURN), 3000));
+	}
+
+	@Test
 	public void unreadableFileStartsFresh() throws Exception {
 		assertEquals(0, QueryShapes.load(new File(tmp.getRoot(), "missing")).size());
 	}
