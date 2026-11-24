@@ -1723,6 +1723,44 @@ public class GameScene extends PixelScene {
 			what.setSize(Math.max(80, what.reqWidth()), 20);
 			what.setPos(align(uiCamera, (what.camera.width - what.width()) / 2), menu.bottom() + 2);
 			scene.add(what);
+
+			//APD: replay the floors of the run that just ended (UIMSD deep dive item 10)
+			StyledButton replay = new StyledButton(Chrome.Type.GREY_BUTTON_TR, "Replay floors", 9){
+				@Override
+				protected void onClick() {
+					new Thread(new Runnable(){
+						@Override
+						public void run(){
+							com.shatteredpixel.shatteredpixeldungeon.apd.query.RunReplay r;
+							try {
+								r = com.shatteredpixel.shatteredpixeldungeon.apd.query.RunReplay.of(
+										new com.shatteredpixel.shatteredpixeldungeon.apd.query.DatasetStore(history).load(), endedRun);
+							} catch (Throwable unreadable){
+								r = null;
+							}
+							final com.shatteredpixel.shatteredpixeldungeon.apd.query.RunReplay shown = r;
+							Game.runOnRenderThread(new com.watabou.utils.Callback(){
+								@Override
+								public void call(){
+									com.shatteredpixel.shatteredpixeldungeon.windows.WndRunReplay.show(shown);
+								}
+							});
+						}
+					}, "apd-replay").start();
+				}
+
+				@Override
+				public void update() {
+					alpha((float)Math.pow(gameOver.am, 2));
+					super.update();
+				}
+			};
+			replay.icon(Icons.get(Icons.INFO));
+			replay.alpha(0);
+			replay.camera = uiCamera;
+			replay.setSize(Math.max(80, replay.reqWidth()), 20);
+			replay.setPos(align(uiCamera, (replay.camera.width - replay.width()) / 2), what.bottom() + 2);
+			scene.add(replay);
 		}
 	}
 	
