@@ -279,6 +279,7 @@ test('full season on a fast clock: upvotes to qualify, a 16-seed bracket from we
   const m1 = r.rounds[0].matchups[7]; // seed 8 vs seed 9
   assert.deepEqual([m1.a.title, m1.b.title], ['Idea 3', 'Idea 4']);
   assert.equal((await call('POST', '/v1/tournament/vote', { matchup: 7, submissionId: subs[9] }, voters[0].token)).body.error, 'not_in_matchup');
+  assert.equal((await call('POST', '/v1/tournament/vote', { matchup: 7, submissionId: [m1.a.id] }, voters[0].token)).body.error, 'not_in_matchup');
   for (const bad of [[7], '7', 7.5, -1, 'length'])
     assert.equal((await call('POST', '/v1/tournament/vote', { matchup: bad, submissionId: m1.a.id }, voters[0].token)).body.error, 'bad_matchup');
   assert.equal((await call('POST', '/v1/tournament/vote', { matchup: 7, submissionId: m1.b.id }, authors[4].token)).body.error, 'own_submission');

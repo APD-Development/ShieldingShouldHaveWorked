@@ -616,7 +616,8 @@ route('POST', '/v1/tournament/vote', async (env, req) => {
   const m = round && Number.isInteger(b.matchup) && b.matchup >= 0 ? round.matchups[b.matchup] : undefined;
   if (!m) fail(400, 'bad_matchup');
   if (m.bye) fail(400, 'bye_no_vote');
-  const pick = String(b.submissionId || '');
+  // Only a string id, like every other id field: String([id]) would otherwise match and count as a vote.
+  const pick = typeof b.submissionId === 'string' ? b.submissionId : '';
   if (pick !== m.a && pick !== m.b) fail(400, 'not_in_matchup');
   const authorOf = new Map(st.entries.map((e) => [e.id, e.author_id]));
   if (authorOf.get(pick) === a.id) fail(403, 'own_submission');
