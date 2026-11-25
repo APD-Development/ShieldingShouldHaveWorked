@@ -82,7 +82,7 @@ public final class RunReplay {
 			return out;
 		}
 
-		//"Floor 3: 412 steps"; side areas say what they are ("Floor 12 mine", "Floor 19 vault")
+		//"Floor 3: 412 steps"; quest floors say whose they are ("Floor 12 (Blacksmith floor)", "Floor 19 (Imp floor)")
 		public String title(){
 			return "Floor " + depth + place(depth, branch) + ": " + path.size() + (path.size() == 1 ? " step" : " steps")
 					+ (mapped ? "" : ", no map recorded");
@@ -90,9 +90,9 @@ public final class RunReplay {
 
 		static String place( int depth, int branch ){
 			if (branch == 0) return "";
-			if (branch == 1 && depth >= 11 && depth <= 14) return " mine";
-			if (branch == 1 && depth >= 16 && depth <= 19) return " vault";
-			return " side area";
+			if (branch == 1 && depth >= 11 && depth <= 14) return " (Blacksmith floor)";
+			if (branch == 1 && depth >= 16 && depth <= 19) return " (Imp floor)";
+			return " (side floor)";
 		}
 	}
 

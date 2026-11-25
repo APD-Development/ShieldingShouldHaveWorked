@@ -117,8 +117,8 @@ public class RunReplayTest {
 	@Test
 	public void sideAreasAreNamedNotNumbered(){
 		assertEquals("", RunReplay.Floor.place(9, 0));
-		assertEquals(" mine", RunReplay.Floor.place(12, 1));
-		assertEquals(" vault", RunReplay.Floor.place(19, 1));
-		assertEquals(" side area", RunReplay.Floor.place(3, 2));
+		assertEquals(" (Blacksmith floor)", RunReplay.Floor.place(12, 1));
+		assertEquals(" (Imp floor)", RunReplay.Floor.place(19, 1));
+		assertEquals(" (side floor)", RunReplay.Floor.place(3, 2));
 	}
 }
