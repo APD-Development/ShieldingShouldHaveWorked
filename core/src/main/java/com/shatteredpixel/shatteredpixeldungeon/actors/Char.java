@@ -1115,6 +1115,7 @@ public abstract class Char extends Actor {
 		if (HP < 0) HP = 0;
 
 		ApdCombat.onDamage( this, src, apdRequested, apdHpBefore, apdShieldBefore, shielded, dmg );
+		com.shatteredpixel.shatteredpixeldungeon.apd.diagnostics.CombatJournal.damage( this, src, apdRequested, apdHpBefore, apdShieldBefore, shielded, dmg );
         if (src instanceof Buff.DOTbuff && src instanceof Buff) {
             ((Buff)src).apdRecordDot(apdDotInput,shielded,Math.max(0,apdHpBefore-HP));
         }
@@ -1173,6 +1174,7 @@ public abstract class Char extends Actor {
 	
 	public void die( Object src ) {
 		ApdCombat.onCharDied( this, src );
+		com.shatteredpixel.shatteredpixeldungeon.apd.diagnostics.CombatJournal.died( this, src );
 		//something else is forcing death, so remove death mark to prevent conflicts
 		if (buff(DeathMark.DeathMarkTracker.class) != null){
 			buff(DeathMark.DeathMarkTracker.class).detachOnDeath();

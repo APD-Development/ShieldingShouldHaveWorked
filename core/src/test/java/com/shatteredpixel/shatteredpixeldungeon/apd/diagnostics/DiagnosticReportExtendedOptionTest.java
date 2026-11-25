@@ -93,7 +93,8 @@ public class DiagnosticReportExtendedOptionTest {
             assertTrue(done.await(20,TimeUnit.SECONDS));
             assertTrue(status[0],status[0].contains("saved"));
             Map<String,String> files=unzip(zipBytes.toByteArray());
-            assertEquals(2,files.size());
+            assertEquals(3,files.size());
+            assertTrue(files.get("APD-game-state.txt").startsWith("APD GAME STATE"));
             assertEquals(raw.toString(StandardCharsets.UTF_8.name()),files.get("APD-action-history.txt"));
             assertTrue(files.get("APD-diagnostic.txt").startsWith("APD SUPPORT REPORT v1"));
             assertTrue("Expected strong compression for repetitive diagnostic events",
@@ -138,7 +139,8 @@ public class DiagnosticReportExtendedOptionTest {
             },true);
             assertTrue(successDone.await(5,TimeUnit.SECONDS));
             Map<String,String> files=unzip(successful.toByteArray());
-            assertEquals(2,files.size());
+            assertEquals(3,files.size());
+            assertTrue(files.containsKey("APD-game-state.txt"));
             assertTrue(files.get("APD-diagnostic.txt").startsWith("APD SUPPORT REPORT v1"));
             String text=files.get("APD-action-history.txt");
             assertTrue(text.contains("APD ACTION HISTORY SINCE LAST SUCCESSFUL REPORT"));

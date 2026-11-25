@@ -35,6 +35,8 @@ public final class DiagnosticReport {
 
     public static void export(Listener listener, boolean extended){
         SupportDiagnostics.event("report.requested",extended?"extended":"");
+        // Read on the game thread, before the export worker starts.
+        final String gameState=extended?GameStateSnapshot.full():"";
         SimpleDateFormat date=new SimpleDateFormat("yyyyMMdd-HHmmss",Locale.ROOT);date.setTimeZone(TimeZone.getTimeZone("UTC"));
         String name="APD-diagnostic-"+(extended?"extended-":"")+date.format(new Date())+"-UTC."+(extended?"zip":"txt");
         // Platform pickers may fail before calling any ExportTarget callback. Report
@@ -63,6 +65,9 @@ public final class DiagnosticReport {
                                 zip.setLevel(Deflater.BEST_COMPRESSION);
                                 zip.putNextEntry(new ZipEntry("APD-diagnostic.txt"));
                                 zip.write(SupportDiagnostics.report().getBytes(StandardCharsets.UTF_8));
+                                zip.closeEntry();
+                                zip.putNextEntry(new ZipEntry("APD-game-state.txt"));
+                                zip.write(gameState.getBytes(StandardCharsets.UTF_8));
                                 zip.closeEntry();
                                 String notes=BugNotes.read();
                                 if(!notes.isEmpty()){

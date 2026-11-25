@@ -92,6 +92,7 @@ public final class ApdPlay {
 
 	//a visible boss crossed one of its explicit gameplay phase boundaries
 	public static void onBossPhase( String boss, int phase, String state ){
+		com.shatteredpixel.shatteredpixeldungeon.apd.diagnostics.CombatJournal.bossPhase( boss, phase, state );
 		PlayTracker p = t();
 		if (p == null || restoring > 0) return;
 		try { p.onBossPhase(boss, phase, state); } catch (Throwable ignored){}

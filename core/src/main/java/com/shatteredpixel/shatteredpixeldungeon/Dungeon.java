@@ -823,6 +823,7 @@ public class Dungeon {
 			saveLevel( GamesInProgress.curSlot );
 
 			GamesInProgress.set( GamesInProgress.curSlot );
+			com.shatteredpixel.shatteredpixeldungeon.apd.diagnostics.GameStateSnapshot.journal("game.save");
 
 		}
 	}
@@ -858,6 +859,7 @@ public class Dungeon {
 		com.shatteredpixel.shatteredpixeldungeon.apd.replay.FloorReplay.awaitIdle();
 		
 		com.shatteredpixel.shatteredpixeldungeon.apd.loot.LootTransfers.recover(save);
+		if (com.watabou.utils.SupportActionJournal.enabled()) com.watabou.utils.SupportActionJournal.record("game.load", "slot="+save+" full="+fullLoad);
         Bundle bundle = FileUtils.bundleFromFile( GamesInProgress.gameFile( save ) );
 
 		initialVersion = bundle.getInt( INIT_VER );
