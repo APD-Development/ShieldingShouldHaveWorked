@@ -237,6 +237,13 @@ public final class ApdRecorder {
 		return lastEndedRunId;
 	}
 
+	//the run the game-over screen is about: the one that just ended, or the one still being recorded when the screen opens before its end
+	//is filed (the hero died first, the death is recorded right after). Null when APD is not following the run.
+	public static synchronized String gameOverRunId(){
+		if (active != null && usable()) return active.runId;
+		return lastEndedRunId;
+	}
+
 	public static synchronized void onRunEnded( boolean won, Object cause ){
 		lastEndedRunId = active != null && usable() ? active.runId : null;
 		if (!usable()) return;

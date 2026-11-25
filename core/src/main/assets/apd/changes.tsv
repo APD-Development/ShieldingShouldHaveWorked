@@ -6,6 +6,7 @@ MAJOR	Coming Soon
 BTN	i:NEWS	What's next	Finishing the last **UIMSD** upgrades, then **script mods** for Community once I've tested them on my own phone.\n\nAnything marked "Developer build" only exists in my own test build until I say it's ready for Alpha Testers.
 MAJOR	Play builds
 BUILD	Play 947 (Nov 25)
+BTN	c:V061_BUGFIX	Game-over buttons always show	After some deaths (starving, for one) the game-over screen only had the menu and new-game buttons until you left the app and came back. **What happened** and **Replay floors** now show right away.
 BTN	c:V061_BUGFIX	What happened shows your last turns	The death screen's What happened could say **turn 0** and show no health or damage: every event between two saves was stamped with the same turn. Turns are now recorded exactly, so the **health, damage and effects** before a death show up again (for runs played from this build on).
 BTN	c:V061_BUGFIX	Upgrade range counts your scrolls	An unidentified item's **Possible upgrade level** now adds the upgrades you put into it: three scrolls on a +0 to +2 scimitar reads **+3 to +5**, with a line saying so.
 BTN	c:V061_BUGFIX	Replay floors: a color for each creature	In Replay floors, every kind of creature now has **its own color** (rats, gnolls and so on never share one on a floor), and **bosses fill their whole tile**. Creatures now **move when they moved**, even while you stood still. Tap one to see what it is.

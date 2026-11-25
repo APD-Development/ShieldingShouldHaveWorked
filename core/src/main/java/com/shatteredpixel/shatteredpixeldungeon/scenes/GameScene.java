@@ -1686,7 +1686,9 @@ public class GameScene extends PixelScene {
 		scene.add(menu);
 
 		//APD: the facts of how the run ended (UIMSD deep dive item 2), read from the run's own record
-		final String endedRun = com.shatteredpixel.shatteredpixeldungeon.apd.recorder.ApdRecorder.lastEndedRunId();
+		//the game-over screen can open before the run's end is recorded (starving, for one: the hero dies first, the death is filed
+		//right after), so the run still being recorded counts too; it has ended by the time a button can be tapped (Pie and Chris, Nov 25)
+		final String endedRun = com.shatteredpixel.shatteredpixeldungeon.apd.recorder.ApdRecorder.gameOverRunId();
 		final java.io.File history = com.shatteredpixel.shatteredpixeldungeon.apd.recorder.ApdRecorder.historyRoot();
 		if (endedRun != null && history != null && !Dungeon.hero.isAlive()){
 			StyledButton what = new StyledButton(Chrome.Type.GREY_BUTTON_TR, "What happened", 9){

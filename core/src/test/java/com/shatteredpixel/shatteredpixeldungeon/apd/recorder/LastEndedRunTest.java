@@ -1,5 +1,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.apd.recorder;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
 import org.junit.After;
@@ -31,5 +33,24 @@ public class LastEndedRunTest {
 		ApdRecorder.lastEndedRunId = "older-run";
 		ApdRecorder.onGameLoaded(0, null, 0);
 		assertNull(ApdRecorder.lastEndedRunId());
+	}
+
+	//Pie and Chris, Nov 25: starving opened the game-over screen before the death was filed, so What happened and Replay floors
+	//were missing until the app was reopened. The run still being recorded is the one the screen is about.
+	@Test
+	public void theGameOverScreenFindsTheRunBeforeItsEndIsFiled() throws Exception {
+		ItemTestSupport.startRun(313L);
+		String id = ApdRecorder.gameOverRunId();
+		assertNotNull(id);
+		ApdRecorder.onRunEnded(false, null);
+		assertEquals(id, ApdRecorder.lastEndedRunId());
+		assertEquals(id, ApdRecorder.gameOverRunId());
+	}
+
+	@Test
+	public void anUnrecordedRunHasNoGameOverRun(){
+		ApdRecorder.reset();
+		ApdRecorder.onNewRun();
+		assertNull(ApdRecorder.gameOverRunId());
 	}
 }
