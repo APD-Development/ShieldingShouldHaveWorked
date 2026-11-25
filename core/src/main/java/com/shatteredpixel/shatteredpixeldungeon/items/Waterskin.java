@@ -206,15 +206,27 @@ public class Waterskin extends Item {
 	}
 
 	public void collectDew( Dewdrop dew ) {
+		collectDewReturningExtra( dew );
+	}
+
+	/** APD: drops that fit in a flask holding {@code volume}; a stacked pile can hold more than the room left. */
+	public static int dropsThatFit( int volume, int drops ) {
+		return Math.max( 0, Math.min( drops, MAX_VOLUME - volume ) );
+	}
+
+	/** APD: collects what fits and returns the drops that did not fit (stacked dew, Nov 24), so they are not lost. */
+	public int collectDewReturningExtra( Dewdrop dew ) {
 
 		GLog.i( Messages.get(this, "collected") );
-		volume += dew.quantity;
+		int taken = dropsThatFit( volume, dew.quantity );
+		volume += taken;
 		if (volume >= MAX_VOLUME) {
 			volume = MAX_VOLUME;
 			GLog.p( Messages.get(this, "full") );
 		}
 
 		updateQuickslot();
+		return dew.quantity - taken;
 	}
 
 	public void fill() {
