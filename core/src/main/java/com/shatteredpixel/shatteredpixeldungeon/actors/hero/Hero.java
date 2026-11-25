@@ -309,7 +309,7 @@ public class Hero extends Char {
         if(heap.isEmpty()) return "skip_empty";
         if(curAction instanceof HeroAction.PickUp) return "skip_already_picking_up";
         if(curAction!=null && curAction.dst==cell) return "skip_walk_target";
-        if(apdDewCantTake(heap.peek())) return "skip_dew_no_use"; // full flask and full HP: the walk goes on
+        if(apdDewCantTake(heap)) return "skip_dew_no_use"; // only dew, full flask and full HP: the walk goes on
         if(!SPDSettings.autoPickupWhenFull() && !apdRoomFor(heap.peek())) return "skip_no_room"; // Chris, Nov 20: full backpack = no walk-over pickup (no "can't carry" spam)
         return "queued";
     }
@@ -330,11 +330,13 @@ public class Hero extends Char {
         if(!SPDSettings.autoPickupWalkover()) return false;
         if(SPDSettings.autoPickupWalkoverMode()==SPDSettings.WALKOVER_NO_ENEMIES && visibleEnemies()>0) return false;
         // a drop left behind by a stack the flask couldn't hold: don't stop the walk on it
-        if(apdDewCantTake(heap.peek())) return false;
+        if(apdDewCantTake(heap)) return false;
         return SPDSettings.autoPickupWhenFull() || apdRoomFor(heap.peek());
     }
-    private boolean apdDewCantTake(com.shatteredpixel.shatteredpixeldungeon.items.Item top){
-        return top instanceof Dewdrop && !Dewdrop.canTakeNow(this, top.quantity());
+    /** A pile that is only dew this hero can't use now (a mixed pile keeps the normal rules). */
+    private boolean apdDewCantTake(Heap heap){
+        com.shatteredpixel.shatteredpixeldungeon.items.Item top=heap.peek();
+        return heap.items.size()==1 && top instanceof Dewdrop && !Dewdrop.canTakeNow(this, top.quantity());
     }
     /** Whether walking over this item could actually pick it up: gold, energy, dew and keys never need a slot;
      *  anything else needs room in a pouch that takes it or in the backpack (stacking onto a carried stack counts). */

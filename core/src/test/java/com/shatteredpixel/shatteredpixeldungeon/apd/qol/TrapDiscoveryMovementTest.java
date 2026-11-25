@@ -249,6 +249,15 @@ public class TrapDiscoveryMovementTest {
         assertTrue(hero.apdContinueWalkover(h));
         h.items.clear();
         assertFalse("pile empty: stop",hero.apdContinueWalkover(h));
+        // only dew left that this hero can't use (no flask room, full HP): stop, so the walk goes on
+        hero.HP=hero.HT;
+        if(com.shatteredpixel.shatteredpixeldungeon.items.Dewdrop.canTakeNow(hero,1)==false){
+            h.items.add(new com.shatteredpixel.shatteredpixeldungeon.items.Dewdrop());
+            assertFalse("unusable dew alone: stop",hero.apdContinueWalkover(h));
+            h.items.add(new com.shatteredpixel.shatteredpixeldungeon.items.Gold(5));
+            assertTrue("dew with gold under it: keep going",hero.apdContinueWalkover(h));
+            h.items.clear();
+        }
         SPDSettings.autoPickupWalkover(false);
         h.items.add(new com.shatteredpixel.shatteredpixeldungeon.items.Gold(5));
         assertFalse("setting turned off: stop",hero.apdContinueWalkover(h));
