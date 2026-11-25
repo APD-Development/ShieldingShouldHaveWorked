@@ -71,7 +71,7 @@ public final class EquipmentWindow {
                 +"; filter evaluations excluded for unknown/uncertain/hidden fields="+undecidable
                 +". Zero observed means no qualifying exact positive damage was recorded, not proof that no damage happened."
                 +(overflow ? " The sum exceeds the integer range; no numeric total is reported.":"");
-        d.cards.add(new ResearchDocument.Card("Observed damage, next "+turns+" turns",shown,overflow ? CellText.UNKNOWN:CellText.LOWER,detail,
+        d.cards.add(new ResearchDocument.Card("Observed damage, next "+turns+(turns==1?" turn":" turns"),shown,overflow ? CellText.UNKNOWN:CellText.LOWER,detail,
                 new ResearchDocument.Evidence("Anchor equipment",anchors,Collections.singletonList(anchor)),
                 new ResearchDocument.Evidence("Contributing damage records",damage,contributing)));
         return d;
