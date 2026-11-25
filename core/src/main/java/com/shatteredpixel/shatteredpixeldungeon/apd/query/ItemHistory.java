@@ -104,12 +104,17 @@ public final class ItemHistory {
 
 	/** One plain line for the info window, or "" when there are no finished runs to read. */
 	public String line( String name ){
+		return line(name, true);
+	}
+
+	/** Chris, Nov 25: "equipped in" only for things that can be equipped (a scroll can't be). */
+	public String line( String name, boolean equippable ){
 		if (finishedRuns == 0) return "";
 		Entry e = get(name);
 		String runs = finishedRuns == 1 ? "1 finished run" : finishedRuns + " finished runs";
 		if (e == null) return "Your history: not seen in your " + runs + ".";
 		return "Your history: seen in " + e.seen.size() + " of your " + runs + "; picked up in " + e.acquired.size()
-				+ ", equipped in " + e.equipped.size() + ".";
+				+ (equippable ? ", equipped in " + e.equipped.size() : "") + ".";
 	}
 
 	//---- the game's shared copy: built once off the render thread, rebuilt for a new run ----

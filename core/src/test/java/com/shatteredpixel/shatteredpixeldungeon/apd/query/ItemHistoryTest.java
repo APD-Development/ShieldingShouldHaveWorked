@@ -43,6 +43,7 @@ public class ItemHistoryTest {
 		assertEquals(1, h.get("sword").acquired.size());
 		assertEquals(1, h.get("sword").equipped.size());
 		assertEquals("Your history: seen in 2 of your 2 finished runs; picked up in 1, equipped in 1.", h.line("Sword"));
+		assertEquals("Your history: seen in 2 of your 2 finished runs; picked up in 1.", h.line("Sword", false));
 		assertEquals("Your history: not seen in your 2 finished runs.", h.line("glaive"));
 		assertNull(h.get(null));
 	}
