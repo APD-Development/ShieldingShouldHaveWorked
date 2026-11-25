@@ -219,7 +219,8 @@ possible (no overlaps, nothing off-screen at 390px-wide phone scale), then a dev
    OPEN QUESTIONS for Chris (ask one at a time; build the rest meanwhile, safe default in brackets):
    - DECIDED by Claude (Chris, Nov 25 4:06 PM: "you decide and I'll probably change it later"; revisit if he asks):
      * Mod starting items go ON TOP of the class kit (what HeroModRun already does; class mechanics keep their items).
-     * Monster spec uses "evasion" for dodging (the game's defenseSkill) and "armor" for damage reduction; the word "defense" is not used.
+     * Monster spec (Chris, Nov 25: "Defense never means evasion"): "defense" = damage reduction (armor), "evasion" = dodging
+       (the game's defenseSkill). Never use "defense" for dodging anywhere players or modders read.
      * Talents hook: mods get a read-only list of the hero's talents and ranks plus an event when a talent is upgraded. No new
        talents and no changing talent numbers yet.
    - ANSWERED (Chris, Nov 19): mod-hero runs count "only on their app": local rankings/history on that phone only, marked Mod;
