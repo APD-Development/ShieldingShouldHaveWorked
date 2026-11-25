@@ -114,19 +114,22 @@ public class WndInfoItem extends Window {
 	//APD: the light in-run history index (UIMSD deep dive item 8); empty until it has been read once off the render thread,
 	//and never for an item whose kind is still unknown (those names are shuffled every run)
 	private static String historyLine( Item item ){
+		//Chris, Nov 25: the history line only on things that can be equipped
+		if (!(item instanceof com.shatteredpixel.shatteredpixeldungeon.items.EquipableItem)) return "";
 		try {
-			if (item instanceof com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion
-					&& !((com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion) item).isKnown()) return "";
-			if (item instanceof com.shatteredpixel.shatteredpixeldungeon.items.scrolls.Scroll
-					&& !((com.shatteredpixel.shatteredpixeldungeon.items.scrolls.Scroll) item).isKnown()) return "";
+			return historyLine(item, com.shatteredpixel.shatteredpixeldungeon.apd.query.ItemHistory.cached(
+					com.shatteredpixel.shatteredpixeldungeon.apd.recorder.ApdRecorder.historyRoot(),
+					com.shatteredpixel.shatteredpixeldungeon.apd.recorder.ApdRecorder.currentRunId()));
+		} catch (Throwable e){
+			return "";
+		}
+	}
+
+	static String historyLine( Item item, com.shatteredpixel.shatteredpixeldungeon.apd.query.ItemHistory h ){
+		try {
+			if (!(item instanceof com.shatteredpixel.shatteredpixeldungeon.items.EquipableItem)) return "";
 			if (item instanceof com.shatteredpixel.shatteredpixeldungeon.items.rings.Ring
 					&& !((com.shatteredpixel.shatteredpixeldungeon.items.rings.Ring) item).isKnown()) return "";
-			com.shatteredpixel.shatteredpixeldungeon.apd.query.ItemHistory h =
-					com.shatteredpixel.shatteredpixeldungeon.apd.query.ItemHistory.cached(
-							com.shatteredpixel.shatteredpixeldungeon.apd.recorder.ApdRecorder.historyRoot(),
-							com.shatteredpixel.shatteredpixeldungeon.apd.recorder.ApdRecorder.currentRunId());
-			//Chris, Nov 25: the history line only on things that can be equipped
-			if (!(item instanceof com.shatteredpixel.shatteredpixeldungeon.items.EquipableItem)) return "";
 			String line = h == null ? "" : h.line(item.name());
 			return line.isEmpty() ? "" : "\n\n" + line;
 		} catch (Throwable e){
