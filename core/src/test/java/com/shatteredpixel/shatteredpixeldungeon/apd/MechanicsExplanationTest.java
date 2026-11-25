@@ -887,6 +887,7 @@ public class MechanicsExplanationTest {
    com.watabou.utils.Bundle before=new com.watabou.utils.Bundle();combo.storeInBundle(before);String text=MechanicsDetails.buff(combo,combo.desc());assertTrue(text.contains("Time left: 10 turns at the normal decay rate"));assertTrue(text.contains("2 times normal damage"));assertSame(hold,hero.buff(HoldFast.class));com.watabou.utils.Bundle after=new com.watabou.utils.Bundle();combo.storeInBundle(after);assertEquals(before.toString(),after.toString());
    float expected=!samePosition||rank==0?1:rank==1?.5f:rank==2?.25f:0;assertTrue(text.contains("reduces the countdown by "+ObfuscationExplanation.number(expected)));combo.act();assertEquals(10-expected,combo.remainingComboTime(),0);if(hero.buff(HoldFast.class)!=null)hero.buff(HoldFast.class).detach();
   }
+  {Combo one=new Combo();one.target=hero;com.watabou.utils.Bundle s1=new com.watabou.utils.Bundle();one.storeInBundle(s1);s1.put("combotime",5f);s1.put("count",1);one.restoreFromBundle(s1);String t1=MechanicsDetails.buff(one,one.desc());assertTrue(t1.contains("Combo: 1 hit. "));assertTrue(t1.contains("up to 1 strike at 60%"));assertFalse(t1.contains("1 hits"));assertFalse(t1.contains("1 strikes"));}
  }
  public static class DescriptionHungerHero extends Hero {int requestedDamage;@Override public void damage(int amount,Object source){requestedDamage+=amount;}}
  @Test public void hungerDamagePreviewMatchesActualStrictReserveThresholdAndDoesNotAdvanceState(){
