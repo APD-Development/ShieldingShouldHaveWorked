@@ -47,13 +47,21 @@ public final class Verdict {
         String where=p>=75 ? "more than most":p<=25 ? "fewer than most":"about as many as usual";
         return what+" ("+observed+"): "+where+", above "+p+"% of "+n+" comparable runs";
     }
+    /** As above, but says the exact counts: percentile is a mid-rank, so with ties "above p%" would overstate it. */
+    public static String luckMetric(String label,Long observed,int n,double percentile,int below,int tied){
+        String t=luckMetric(label,observed,n,percentile);
+        if(observed==null || n<RunLuck.MIN_PEERS || !Double.isFinite(percentile) || tied<=0)return t;
+        String what=label.toLowerCase(java.util.Locale.ROOT);long p=Math.round(percentile);
+        String where=p>=75 ? "more than most":p<=25 ? "fewer than most":"about as many as usual";
+        return what+" ("+observed+"): "+where+", above "+below+" and level with "+tied+" of "+n+" comparable runs";
+    }
     /** The luck lab's "In short:" line. */
     public static String luck(RunLuck.Result r){
         if(r==null)return "In short: this run can't be checked.";
         if(!r.unavailable.isEmpty())return "In short: this run can't be checked: "+r.unavailable;
         StringBuilder b=new StringBuilder("In short: ");
         for(int i=0;i<r.metrics.size();i++){RunLuck.Metric m=r.metrics.get(i);if(i>0)b.append("; ");
-            String t=luckMetric(m.label,m.observed,m.n,m.percentile);b.append(i==0 ? Character.toUpperCase(t.charAt(0))+t.substring(1):t);}
+            String t=luckMetric(m.label,m.observed,m.n,m.percentile,m.below,m.tied);b.append(i==0 ? Character.toUpperCase(t.charAt(0))+t.substring(1):t);}
         return b.append(". This compares your own history only; it is not a chance score.").toString();
     }
     /** One discovery in plain words: who won more often, by how much. Restates the counts only. */
