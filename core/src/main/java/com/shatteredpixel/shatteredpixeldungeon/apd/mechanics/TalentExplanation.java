@@ -249,7 +249,7 @@ public final class TalentExplanation {
                 float strengthFraction = .03f + .05f * rank;
                 return "_Added strength points_\nAdds floor(base strength × " + ObfuscationExplanation.number(strengthFraction)
                     + ") strength points. The percentage uses base strength, excluding Ring of Might, Adrenaline Surge and this talent's own bonus. Those separate added bonuses are not multiplied again. "
-                    + (Dungeon.hero == null ? "" : "Current base strength: " + Dungeon.hero.STR + " points; this rank adds " + (int)Math.floor(Dungeon.hero.STR * strengthFraction) + " strength points. ")
+                    + (Dungeon.hero == null ? "" : "Current base strength: " + Dungeon.hero.STR + " points; this rank adds " + strongmanAdded(Dungeon.hero.STR, strengthFraction) + ". ")
                     + "The result is rounded down to whole strength points and can stay unchanged until enough base strength is gained. Strength requirements and strength-based damage effects use their own rules; this is not a direct damage percentage.";
             case DESPERATE_POWER:
                 return "_Last-charge wand level_\nWhen a charged wand is down to exactly one charge, this talent adds " + rank
@@ -328,5 +328,10 @@ public final class TalentExplanation {
                 }
                 return "";
         }
+    }
+
+    static String strongmanAdded(int baseStrength, float fraction) {
+        int added = (int)Math.floor(baseStrength * fraction);
+        return added + (added == 1 ? " strength point" : " strength points");
     }
 }
