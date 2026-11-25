@@ -255,6 +255,7 @@ public class DwarfKing extends Mob {
 					}
 					return true;
 				} else {
+					apdUnstickShield();
 					spend(TICK);
 					return true;
 				}
@@ -296,6 +297,7 @@ public class DwarfKing extends Mob {
 					spend(TICK);
 					return true;
 				} else {
+					apdUnstickShield();
 					spend(TICK);
 					return true;
 				}
@@ -537,25 +539,7 @@ public class DwarfKing extends Mob {
 				}
 			}
 		} else if (phase == 2 && shielding() == 0) {
-			properties.remove(Property.IMMOVABLE);
-			phase = 3;
-			ApdPlay.onBossPhase(name(), phase, "final");
-			summonsMade = 1; //monk/warlock on 3rd summon
-			sprite.centerEmitter().start( Speck.factory( Speck.SCREAM ), 0.4f, 2 );
-			Sample.INSTANCE.play( Assets.Sounds.CHALLENGE );
-			yell(  Messages.get(this, "enraged", Dungeon.hero.name()) );
-			BossHealthBar.bleed(true);
-			Game.runOnRenderThread(new Callback() {
-				@Override
-				public void call() {
-					Music.INSTANCE.fadeOut(0.5f, new Callback() {
-						@Override
-						public void call() {
-							Music.INSTANCE.play(Assets.Music.CITY_BOSS_FINALE, true);
-						}
-					});
-				}
-			});
+			apdEnterFinalPhase();
 		} else if (phase == 3 && preHP > com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomBossHealthHooks.threshold(20) && HP < com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomBossHealthHooks.threshold(20) && isAlive()){
 			yell( Messages.get(this, "losing") );
 		}
@@ -788,6 +772,58 @@ public class DwarfKing extends Mob {
 			pos = bundle.getInt(POS);
 			summon = bundle.getClass(SUMMON);
 		}
+	}
+
+	private void apdEnterFinalPhase(){
+			properties.remove(Property.IMMOVABLE);
+			phase = 3;
+			ApdPlay.onBossPhase(name(), phase, "final");
+			summonsMade = 1; //monk/warlock on 3rd summon
+			sprite.centerEmitter().start( Speck.factory( Speck.SCREAM ), 0.4f, 2 );
+			Sample.INSTANCE.play( Assets.Sounds.CHALLENGE );
+			yell(  Messages.get(this, "enraged", Dungeon.hero.name()) );
+			BossHealthBar.bleed(true);
+			Game.runOnRenderThread(new Callback() {
+				@Override
+				public void call() {
+					Music.INSTANCE.fadeOut(0.5f, new Callback() {
+						@Override
+						public void call() {
+							Music.INSTANCE.play(Assets.Music.CITY_BOSS_FINALE, true);
+						}
+					});
+				}
+			});
+	}
+
+	// APD (Pie's report, Nov 23): phase 2 must end once every summon is dead. If a summon's
+	// KingDamager never fired, the shield sat above the next wave's threshold with nothing left
+	// to kill, and the king stayed invulnerable forever. With no summon alive, downed or still
+	// being summoned, drop the shield to where the finished waves should have left it.
+	void apdUnstickShield(){
+		if (phase != 2 || !buffs(Summoning.class).isEmpty()) return;
+		for (Char ch : Actor.chars()){
+			if (ch == this) continue;
+			if (ch.buff(KingDamager.class) != null || ch.buff(Ghoul.GhoulLifeLink.class) != null) return;
+		}
+		for (Mob m : getSubjects()) if (m.isAlive()) return;
+		boolean hard = Dungeon.isChallenged(Challenges.STRONGER_BOSSES);
+		int objectives = hard ? 18 : 12, done, target;
+		if (hard) {
+			if (summonsMade < 12)      { target = com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomBossHealthHooks.threshold(300); done = 6; }
+			else if (summonsMade < 18) { target = com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomBossHealthHooks.threshold(150); done = 12; }
+			else                       { target = 0; done = 18; }
+		} else {
+			if (summonsMade < 8)       { target = com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomBossHealthHooks.threshold(200); done = 4; }
+			else if (summonsMade < 12) { target = com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomBossHealthHooks.threshold(100); done = 8; }
+			else                       { target = 0; done = 12; }
+		}
+		if (shielding() <= target) return;
+		DKBarrior barrier = buff(DKBarrior.class);
+		if (barrier == null) return;
+		barrier.absorbDamage(shielding() - target);
+		apdShieldObjectivesResolved = Math.max(apdShieldObjectivesResolved, Math.min(objectives, done));
+		if (shielding() == 0) apdEnterFinalPhase();
 	}
 
 	public static class KingDamager extends Buff {
