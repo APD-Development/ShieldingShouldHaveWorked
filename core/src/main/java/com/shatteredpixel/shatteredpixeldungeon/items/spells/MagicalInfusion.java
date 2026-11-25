@@ -105,6 +105,7 @@ public class MagicalInfusion extends InventorySpell {
 			if (wasCurseInfused) ((Wand) item).curseInfusionBonus = true;
 		}
 
+		if (item != null) item.apdPlayerUpgrades++;
 		GLog.p( Messages.get(this, "infuse") );
 		Badges.validateItemLevelAquired(item);
 

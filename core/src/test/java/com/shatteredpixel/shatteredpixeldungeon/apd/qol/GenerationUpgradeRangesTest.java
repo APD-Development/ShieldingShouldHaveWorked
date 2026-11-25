@@ -120,4 +120,19 @@ public class GenerationUpgradeRangesTest {
     }
     
     @Test public void remainsAndUnspecifiedCraftingCannotBorrowOrdinaryGeneratorSupport() { GenerationEvents.ItemGenerated source=new GenerationEvents.ItemGenerated();source.container=GenerationEvents.C_REMAINS;source.drawKind=GenerationEvents.DRAW_CATEGORY;assertEquals("",GenerationUpgradeRanges.historicalRule(source));Sword s=found(new Sword());GenerationUpgradeRanges.recover(s,origin("unrecognised"));assertNull(s.apdGenerationRange); }
+
+    //Chris, Nov 25: three scrolls of upgrade into an unidentified +0..+2 scimitar must read +3 to +5
+    @Test public void scrollUpgradesTheplayerAddedShiftTheRange() throws Exception {
+        Sword s=found(new Sword());GenerationUpgradeRanges.baseline(s);s.apdPlayerUpgrades=3;
+        String text=GenerationUpgradeRanges.describe(s);
+        assertTrue(text,text.contains("Possible upgrade level: +3 to +5"));
+        assertTrue(text,text.contains("Includes the 3 upgrades you added."));
+        assertFalse(text,text.contains("Before any later upgrades"));
+        range(s,0,2);
+        Bundle b=new Bundle();b.put("item",s);ByteArrayOutputStream out=new ByteArrayOutputStream();Bundle.write(b,out);
+        Item restored=(Item)Bundle.read(new ByteArrayInputStream(out.toByteArray())).get("item");
+        assertEquals(3,restored.apdPlayerUpgrades);
+        s.apdPlayerUpgrades=1;
+        assertTrue(GenerationUpgradeRanges.describe(s).contains("Includes the upgrade you added."));
+    }
 }

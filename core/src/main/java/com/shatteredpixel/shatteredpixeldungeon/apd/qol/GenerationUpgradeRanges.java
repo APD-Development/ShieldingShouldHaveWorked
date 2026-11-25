@@ -99,12 +99,14 @@ public final class GenerationUpgradeRanges {
         survivor.apdGenerationRange = a == null || b == null ? null : new Range(Math.min(a.min, b.min), Math.max(a.max, b.max));
     }
     public static void store(Item item, Bundle bundle) {
+        if (item.apdPlayerUpgrades > 0) bundle.put(SAVE_KEY + "_player", item.apdPlayerUpgrades);
         Range r = item.apdGenerationRange;
         if (r == null) return;
         bundle.put(SAVE_KEY, new int[]{r.min, r.max});
     }
     public static void restore(Item item, Bundle bundle) {
         item.apdGenerationRange = null;
+        item.apdPlayerUpgrades = Math.max(0, Math.min(100, bundle.getInt(SAVE_KEY + "_player")));
         if (!ItemOrigins.eligible(item) || !bundle.contains(SAVE_KEY)) return;
         int[] values = bundle.getIntArray(SAVE_KEY);
         if (values != null && values.length == 2 && values[0] <= values[1] && values[0] >= -100 && values[1] <= 100)
@@ -159,6 +161,11 @@ public final class GenerationUpgradeRanges {
                 || item.apdFoundOrigin.source == ItemOrigins.PICKUP || item.apdFoundOrigin.source == ItemOrigins.CRAFTED
                 || item.apdGenerationRange == null) return "";
         Range range = item.apdGenerationRange;
+        int added = item.apdPlayerUpgrades;
+        if (added > 0)
+            return "\n" + Messages.get(GenerationUpgradeRanges.class, "possible", signed(range.min + added), signed(range.max + added))
+                    + "\n" + (added == 1 ? Messages.get(GenerationUpgradeRanges.class, "with_upgrade")
+                            : Messages.get(GenerationUpgradeRanges.class, "with_upgrades", added));
         return "\n" + Messages.get(GenerationUpgradeRanges.class, "possible", signed(range.min), signed(range.max))
                 + "\n" + Messages.get(GenerationUpgradeRanges.class, "generation_only");
     }

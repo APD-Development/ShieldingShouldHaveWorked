@@ -29,6 +29,12 @@ import java.util.HashSet;
 
 public class Statistics {
 
+	//APD, read only: the run's real turn. duration only catches up when the actor clock is re-based (saves, floor changes).
+	public static long apdTurn(){
+		return (long) (duration + com.shatteredpixel.shatteredpixeldungeon.actors.Actor.now());
+	}
+
+
 	public static int goldCollected;
 	public static int deepestFloor;
 	public static int highestAscent;

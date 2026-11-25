@@ -42,8 +42,11 @@ final class GameSnapshot {
 	private static final int MAX_ITEMS = 400;
 
 	//the game clock in whole turns
+	//the run's turn: Statistics.duration only catches up when the actor clock is re-based (saves, floor changes), so on its own
+	//every event between two saves got the same turn (Chris, Nov 25: "killed you on floor 1, turn 0", no health or damage shown).
+	//duration + the actor clock is the real turn and never goes backwards: re-basing moves time from one to the other.
 	static long turn(){
-		return Math.max(0, (long) Statistics.duration);
+		return Math.max(0, Statistics.apdTurn());
 	}
 
 	static String shortName( Class<?> cls ){

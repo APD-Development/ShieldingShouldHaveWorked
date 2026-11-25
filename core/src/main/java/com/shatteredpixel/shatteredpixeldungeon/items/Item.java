@@ -116,6 +116,9 @@ public class Item implements Bundlable {
 	public com.shatteredpixel.shatteredpixeldungeon.apd.qol.ItemOrigins.Origin apdFoundOrigin;
 	public transient boolean apdOriginLegacyUnknown;
 	public com.shatteredpixel.shatteredpixeldungeon.apd.qol.GenerationUpgradeRanges.Range apdGenerationRange;
+	//upgrades the player put into this item with scrolls of upgrade or magical infusion (Chris, Nov 25: an unidentified item's
+	//possible level range must include them)
+	public int apdPlayerUpgrades;
 	// Optional, first-collection provenance for Upgrade Scrolls and Strength Potions only.
 	public com.shatteredpixel.shatteredpixeldungeon.apd.ProgressionPickups.Origins apdProgressionOrigins;
 	public boolean apdProgressionLegacy;
