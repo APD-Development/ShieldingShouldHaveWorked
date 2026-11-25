@@ -33,6 +33,12 @@ public class WndDeathContextTest {
     }
 
     @Test
+    public void contextTitleUsesSingularForOneTurn() {
+        assertEquals("Death context - last 1 turn", WndDeathContext.contextTitle(1));
+        assertEquals("Death context - last 25 turns", WndDeathContext.contextTitle(25));
+    }
+
+    @Test
     public void customWindowAcceptsOnlyTheDocumentedRange() {
         assertEquals(1, WndDeathContext.parseWindow(" 1 "));
         assertEquals(1000, WndDeathContext.parseWindow("1000"));
