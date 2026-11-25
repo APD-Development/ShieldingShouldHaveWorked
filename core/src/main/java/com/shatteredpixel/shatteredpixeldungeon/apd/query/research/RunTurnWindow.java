@@ -78,6 +78,6 @@ public final class RunTurnWindow {
             throw new IllegalArgumentException("An anchor label is required");
         }
         return "run " + runId + ", strictly after " + anchorLabel + " turn " + anchorTurn
-                + " through turn " + lastTurn + " inclusive (" + turnCount + " turns)";
+                + " through turn " + lastTurn + " inclusive (" + turnCount + (turnCount == 1 ? " turn)" : " turns)");
     }
 }

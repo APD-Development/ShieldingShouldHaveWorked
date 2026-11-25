@@ -47,6 +47,8 @@ public class RunTurnWindowTest {
     @Test public void sharedDescriptionPinsTheSameExactBoundaries() {
         assertEquals("run A, strictly after equipment turn 10 through turn 20 inclusive (10 turns)",
                 RunTurnWindow.strictlyFollowing("A",10,10).describeStrictlyFollowing("equipment"));
+        assertEquals("run A, strictly after equipment turn 10 through turn 11 inclusive (1 turn)",
+                RunTurnWindow.strictlyFollowing("A",10,1).describeStrictlyFollowing("equipment"));
     }
 
     private static void invalid(String run,long anchor,long turns) {
