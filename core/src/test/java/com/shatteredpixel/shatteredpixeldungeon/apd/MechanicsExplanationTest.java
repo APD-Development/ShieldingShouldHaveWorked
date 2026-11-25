@@ -174,6 +174,12 @@ public class MechanicsExplanationTest {
   wand.cursed=true;wand.curseInfusionBonus=true;wand.level(5);wand.levelKnown=wand.cursedKnown=wand.curChargeKnown=true;wand.cursed=false;int capacity=wand.maxCharges;com.watabou.utils.Bundle before=new com.watabou.utils.Bundle(),after=new com.watabou.utils.Bundle();wand.storeInBundle(before);String visible=wand.info();MechanicsDetails.item(wand,visible);wand.storeInBundle(after);assertEquals("description must not perform the gameplay curse-cleanup query",before.toString(),after.toString());assertTrue(wand.curseInfusionBonus);assertEquals(capacity,wand.maxCharges);assertEquals("the real gameplay query still performs its normal cleanup",5,wand.level());assertFalse(wand.curseInfusionBonus);
  }
  @Test public void wardingInfoDoesNotPerformInfusionCleanup(){assertWandInfoPreservesInfusionCleanup(new com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfWarding());}
+ @Test public void regrowthDetailsUseSingularForOneChargeCast(){
+  com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfRegrowth wand=new com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfRegrowth();wand.levelKnown=wand.cursedKnown=wand.curChargeKnown=true;wand.curCharges=1;
+  assertEquals(1,wand.previewChargeCost());String text=com.shatteredpixel.shatteredpixeldungeon.apd.mechanics.WandExplanation.details(wand);
+  assertTrue(text,text.contains("The next cast uses 1 charge and"));assertFalse(text,text.contains("uses 1 charges"));
+  wand.curCharges=4;assertTrue(com.shatteredpixel.shatteredpixeldungeon.apd.mechanics.WandExplanation.details(wand).contains("uses 2 charges and"));
+ }
  @Test public void regrowthInfoDoesNotPerformInfusionCleanup(){assertWandInfoPreservesInfusionCleanup(new com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfRegrowth());}
  @Test public void identifiedRegrowthDescriptionWithoutAHeroWithholdsDepletionInsteadOfCrashing(){
   com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfRegrowth wand=new com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfRegrowth();wand.levelKnown=wand.cursedKnown=wand.curChargeKnown=true;Dungeon.hero=null;try{String description=wand.statsDesc();assertNotNull(description);assertFalse(description.contains("After another"));assertFalse(wand.info().isEmpty());}finally{Dungeon.hero=hero;}

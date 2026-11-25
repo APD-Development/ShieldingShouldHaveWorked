@@ -94,7 +94,7 @@ public final class WandExplanation {
         }
         if (wand instanceof WandOfRegrowth && Dungeon.hero != null) {
             WandOfRegrowth growth=(WandOfRegrowth)wand;int cost=wand.previewChargeCost();int limit=growth.previewChargeLimit(Dungeon.hero.lvl);
-            result += "\n\n_Growth and exhaustion_\nThe next cast uses "+cost+" charges and tries to grow tall grass on "
+            result += "\n\n_Growth and exhaustion_\nThe next cast uses "+cost+(cost==1?" charge":" charges")+" and tries to grow tall grass on "
                 + Math.round((3.67f+levels[0]/3f)*cost) + (levels[0]==levels[1]?"":"–"+Math.round((3.67f+levels[1]/3f)*cost))
                 + " tiles: round((3.67 + casting level / 3) × charges). Terrain, plants and creatures can leave less room. Creatures on suitable tiles are rooted for up to "+(4*cost)+" turns (4 × charges), before resistance. "
                 + "With space available, separate rolls can grow a seedpod or dewcatcher (charges / 6 chance) and a random plant (charges / 3 chance). Exhaustion can prevent either. "
