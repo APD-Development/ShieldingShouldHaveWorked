@@ -41,4 +41,11 @@ public class DewStackTest {
 		assertEquals(1, h.peek().quantity());
 		assertEquals(false, Dewdrop.leaveRest(new Heap(), new Dewdrop(), 1));
 	}
+
+	//walk-over pickup: dew it can't take (full flask, drinking does nothing) is skipped so the walk goes on
+	@Test public void walkoverSkipsDewItCantTake(){
+		assertEquals(false, Dewdrop.takes(false, false));
+		assertEquals(true, Dewdrop.takes(true, false));
+		assertEquals(true, Dewdrop.takes(false, true));
+	}
 }

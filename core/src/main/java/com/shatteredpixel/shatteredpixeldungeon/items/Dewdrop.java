@@ -110,6 +110,14 @@ public class Dewdrop extends Item {
 		return helps(hero.HT, hero.HP, effect, shieldRoom);
 	}
 
+	/** APD: whether picking this many drops up now does anything (room in the flask, or drinking heals/shields).
+	 *  Walk-over pickup skips dew it can't take, so a walk doesn't stop on it. */
+	public static boolean canTakeNow(Hero hero, int drops){
+		Waterskin flask = hero.belongings.getItem(Waterskin.class);
+		return takes(flask != null && !flask.isFull(), wouldHelp(hero, drops));
+	}
+	public static boolean takes(boolean flaskRoom, boolean drinkHelps){ return flaskRoom || drinkHelps; }
+
 	public static boolean helpsForTest(int ht, int hp, int effect, int shieldRoom){ return helps(ht, hp, effect, shieldRoom); }
 	static boolean helps(int ht, int hp, int effect, int shieldRoom){
 		int heal = Math.min(ht - hp, effect);
