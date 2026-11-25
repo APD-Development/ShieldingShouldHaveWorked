@@ -1739,7 +1739,7 @@ public class GameScene extends PixelScene {
 							com.shatteredpixel.shatteredpixeldungeon.apd.query.RunReplay r;
 							try {
 								r = com.shatteredpixel.shatteredpixeldungeon.apd.query.RunReplay.of(
-										new com.shatteredpixel.shatteredpixeldungeon.apd.query.DatasetStore(history).load(), endedRun);
+										new com.shatteredpixel.shatteredpixeldungeon.apd.query.DatasetStore(history).loadRun(endedRun), endedRun);
 							} catch (Throwable unreadable){
 								r = null;
 							}
