@@ -292,6 +292,7 @@ Before bumping appVersionCode, add "BUILD<tab>Play <code> (<date>)" with player-
 "Play builds" section of core/src/main/assets/apd/changes.tsv and run tools/run-core-tests.sh --tests '*ApdChanges*'.
 
 ## Run log
+- 2026-11-25 9 AM ET (scheduled): Combo buff details said "Combo: 1 hits" and "up to 1 strikes" for a one-hit combo; now singular. +1 MechanicsExplanationTest block; full CI 45630624011 green (side branch fix/combo-singular, cherry-picked). Not device-verified. Still OPEN for Chris: Badge-or-what for the new-search achievement; `defense` vs `evasion`; talents hook spec; mod starting items; Loot Availability score multiplier.
 - 2026-11-25 8 AM ET (scheduled): Play 944 uploaded to closed test (CI 45619321485 green on a9580786; bundle run 45620136695;
   versionCode 944, icons pixel-identical, label ADHD Pixel Dungeon, no Rhino). New since 943: game-over Replay floors reads only
   the ended run, What happened single-reading fix, Research lab/Luck lab wording. Dev APK sent. Not device-verified.
