@@ -239,6 +239,7 @@ public class DerivedStoreTest {
 		assertEquals(1, attacks.known);
 		assertEquals(2, attacks.total);
 		assertEquals("1 of 2 runs contain combat.heroAttacks", attacks.toString());
+		assertEquals("1 of 1 run contains combat.heroAttacks", FactTable.coverage(rows.get(0).isKnown(FactKeys.HERO_ATTACKS) ? rows.subList(0, 1) : rows.subList(1, 2), FactKeys.HERO_ATTACKS).toString());
 	}
 
 	@Test

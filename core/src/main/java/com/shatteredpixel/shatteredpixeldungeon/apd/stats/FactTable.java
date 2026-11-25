@@ -110,7 +110,7 @@ public final class FactTable {
 
 		@Override
 		public String toString(){
-			return known + " of " + total + " runs contain " + key;
+			return known + " of " + total + (total == 1 ? " run contains " : " runs contain ") + key;
 		}
 	}
 
