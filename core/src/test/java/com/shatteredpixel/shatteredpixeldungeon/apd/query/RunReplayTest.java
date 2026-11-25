@@ -71,4 +71,22 @@ public class RunReplayTest {
 		assertEquals(MAP, f.cells);
 		assertEquals("Floor 1: 3 steps", f.title());
 	}
+
+	@Test
+	public void oneRunLoadGivesTheSameReplayAsTheWholeHistory(){
+		new SyntheticLog(tmp.getRoot(), "g", TelemetryVersion.CURRENT, 500).start("g", 0, "WARRIOR", "r", 0, 30, false).enter(1)
+				.factTags(GameFacts.FLOOR_MAP, "", new String[]{ MAP }, 1, 0, 4, 4)
+				.factSeries(GameFacts.MOVE_STEP, "", new long[][]{ { 5, 4, 1 }, { 6, 4, 1 } })
+				.end(LifecycleEvents.OUTCOME_DIED, "Rat", 1, 1, 10).close(true);
+		new SyntheticLog(tmp.getRoot(), "h", TelemetryVersion.CURRENT, 600).start("h", 0, "MAGE", "r", 0, 30, false).enter(1)
+				.factTags(GameFacts.FLOOR_MAP, "", new String[]{ "#<>#" }, 1, 0, 2, 2)
+				.end(LifecycleEvents.OUTCOME_DIED, "Rat", 1, 1, 10).close(true);
+		DatasetStore store = new DatasetStore(tmp.getRoot());
+		RunReplay all = RunReplay.of(store.load(), "g"), one = RunReplay.of(store.loadRun("g"), "g");
+		assertTrue(one.available);
+		assertEquals(all.floors.size(), one.floors.size());
+		assertEquals(all.floors.get(0).cells, one.floors.get(0).cells);
+		assertEquals(all.floors.get(0).path, one.floors.get(0).path);
+		assertEquals(Arrays.asList(5, 6), one.floors.get(0).path);
+	}
 }
