@@ -124,6 +124,23 @@ public class PostmortemTest {
 	}
 
 	@Test
+	public void aSingleHealthReadingIsNotShownFallingToItself(){
+		SyntheticLog s = new SyntheticLog(tmp.getRoot(), "o", TelemetryVersion.CURRENT, 100)
+				.start("o", 0, "WARRIOR", "r", 0, 30, false).enter(1);
+		s.clock = 5;
+		s.factSeries(GameFacts.HERO_STATE, "", new long[][]{ { 12, 30, 0, 100 } });
+		s.clock = 6;
+		s.heroDies("rat", CombatEvents.SRC_CHAR);
+		s.end(LifecycleEvents.OUTCOME_DIED, "Rat", 1, 1, 10).close(true);
+		Postmortem p = Postmortem.of(new DatasetStore(tmp.getRoot()).load(), "o");
+		assertTrue(p.found);
+		assertEquals(1, p.hp.size());
+		String text = p.text();
+		assertTrue(text, text.contains("Only turn " + p.hp.get(0).turn + " was recorded: 12/30 HP."));
+		assertFalse(text, text.contains("down to"));
+	}
+
+	@Test
 	public void aRunWithNoDeathSaysSo(){
 		new SyntheticLog(tmp.getRoot(), "w", TelemetryVersion.CURRENT, 100).start("w", 0, "MAGE", "r", 0, 30, false).enter(1)
 				.end(LifecycleEvents.OUTCOME_WON, "", 1, 1, 10).close(true);

@@ -300,8 +300,14 @@ public final class Postmortem {
 		if (!hpRecorded) b.append("Not recorded for this run.");
 		else {
 			HpPoint first = hp.get(0), last = hp.get(hp.size() - 1), low = lowest();
-			if (first.turn == last.turn) b.append("Only turn ").append(last.turn).append(" was recorded: ").append(hpText(first))
-					.append(" down to ").append(hpText(last)).append('.');
+			if (first.turn == last.turn){
+				//one reading (or several identical ones) is shown once, never as "30/30 HP down to 30/30 HP";
+				//"down to" only when health actually fell within that turn
+				String a = hpText(first), z = hpText(last);
+				b.append("Only turn ").append(last.turn).append(" was recorded: ").append(a);
+				if (!a.equals(z)) b.append(last.hp + last.shield < first.hp + first.shield ? " down to " : " then ").append(z);
+				b.append('.');
+			}
 			else {
 				b.append("Turn ").append(first.turn).append(": ").append(hpText(first)).append('\n');
 				//the first or last line already shows it when health was lowest there
