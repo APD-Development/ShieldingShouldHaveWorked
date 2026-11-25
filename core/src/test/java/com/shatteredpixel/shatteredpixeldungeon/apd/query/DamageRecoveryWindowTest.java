@@ -50,7 +50,7 @@ public class DamageRecoveryWindowTest {
         assertTrue(d.notes.get(0).contains("turn 10 through turn 20 inclusive"));
         assertEquals(2,card.evidence.get(1).rows.size());
         for(Row r:card.evidence.get(1).rows)assertEquals("A",r.runId);
-        assertEquals("4 observed (at least)",answer(c,1).cards.get(0).value);
+        assertEquals("4 observed (at least)",answer(c,1).cards.get(0).value);assertEquals("Observed healing, next 1 turn",answer(c,1).cards.get(0).label);assertEquals("Observed healing, next 10 turns",answer(c,10).cards.get(0).label);
         assertEquals("16 observed (at least)",answer(c,20).cards.get(0).value);
     }
 

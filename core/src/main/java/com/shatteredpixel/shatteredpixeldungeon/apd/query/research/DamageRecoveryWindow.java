@@ -100,7 +100,7 @@ public final class DamageRecoveryWindow {
                 +"; filter evaluations excluded for unknown/uncertain/hidden fields="+undecidable
                 +". Zero observed means no qualifying exact HP healing was recorded, not proof that no recovery happened."
                 +(overflow ? " The sum exceeds the integer range; no numeric total is reported.":"");
-        d.cards.add(new ResearchDocument.Card("Observed healing, next "+turns+" turns",shown,
+        d.cards.add(new ResearchDocument.Card("Observed healing, next "+turns+(turns==1?" turn":" turns"),shown,
                 overflow ? CellText.UNKNOWN:CellText.LOWER,detail,
                 new ResearchDocument.Evidence("Anchor hero damage",anchors,Collections.singletonList(anchor)),
                 new ResearchDocument.Evidence("Contributing healing records",heals,contributing)));
