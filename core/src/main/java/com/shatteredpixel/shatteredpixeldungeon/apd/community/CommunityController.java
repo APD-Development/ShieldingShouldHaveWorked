@@ -199,9 +199,28 @@ public final class CommunityController {
 
 	private void signedInOrOut(){
 		if (!api.signedIn()){ ui.show(signedOut(null)); return; }
+		// Coming back to Community (Back from "What's coming next", reopening it from the title) asked the server who you are every time,
+		// behind "Talking to the Community server..." (Chris, Nov 25). With an answer kept from earlier, show the menu at once and check
+		// in the background; a sign-out found there still signs you out.
+		final String k = cacheKey("me");
+		final String old;
+		synchronized (CACHE){ old = CACHE.get(k); }
+		if (old != null && !EMPTY_BODY.equals(old)){
+			me = new JsonReader().parse(old);
+			if (me.getBoolean("ageOk", false)){
+				hub();
+				runner.run(api::me, r -> {
+					if (updateRequired(r)){ ui.show(updateScreen()); return; }
+					if (r.status == 401){ forget(); ui.show(signedOut("You were signed out. Please sign in again.")); return; }
+					if (r.ok() && r.body != null){ store(k, r); me = r.body; }
+				});
+				return;
+			}
+		}
 		call(api::me, r -> {
 			if (r.status == 0 || r.status >= 500){ ui.show(cantReach()); return; } // keep the sign-in: it's the connection, not the account
 			if (!r.ok()){ forget(); ui.show(signedOut(message(r))); return; }
+			store(k, r);
 			me = r.body;
 			if (!me.getBoolean("ageOk", false)) call(api::ageGatePassed, x -> hub());
 			else hub();
@@ -1163,7 +1182,7 @@ public final class CommunityController {
 			call(call, r -> { store(k, r); then.accept(r); });
 			return;
 		}
-		then.accept(new CommunityApi.Result(200, new JsonReader().parse(old), null));
+		then.accept(new CommunityApi.Result(200, EMPTY_BODY.equals(old) ? null : new JsonReader().parse(old), null));
 		final int shownAt = uiChanges;
 		runner.run(call, r -> {
 			if (updateRequired(r)){ ui.show(updateScreen()); return; }
@@ -1174,9 +1193,13 @@ public final class CommunityController {
 		});
 	}
 
+	// A successful answer with no body (no season running, for one) is kept too: before, it was never cached, so every Back to the
+	// Community menu showed "Talking to the Community server..." again (Chris, Nov 25).
+	private static final String EMPTY_BODY = "\u0000empty";
+
 	private static String store(String k, CommunityApi.Result r){
-		if (!r.ok() || r.body == null) return "";
-		String json = r.body.toJson(JsonWriter.OutputType.json);
+		if (!r.ok()) return "";
+		String json = r.body == null ? EMPTY_BODY : r.body.toJson(JsonWriter.OutputType.json);
 		synchronized (CACHE){ CACHE.put(k, json); }
 		return json;
 	}

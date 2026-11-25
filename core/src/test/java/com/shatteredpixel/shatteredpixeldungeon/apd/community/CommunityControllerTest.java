@@ -31,13 +31,14 @@ public class CommunityControllerTest {
 	private final List<String> asked = new ArrayList<>();
 	private boolean left, planned;
 
+	private final java.util.List<String> busyMessages = new java.util.ArrayList<>();
 	private final CommunityController.Ui ui = new CommunityController.Ui(){
 		public void show(CommunityController.Screen s){ screens.add(s); }
 		public void ask(String title, String body, String initial, int max, boolean multi, Consumer<String> answer){
 			asked.add(title);
 			answer.accept(answers.isEmpty() ? null : answers.poll());
 		}
-		public void busy(String m){}
+		public void busy(String m){ busyMessages.add(m); }
 		public void leave(){ left = true; }
 		public void planned(){ planned = true; }
 		public void playReview(ReviewClaim c){ played.add(c); }
@@ -746,5 +747,28 @@ public class CommunityControllerTest {
 	@Test public void seasonSummary_saysOneDayNotOneDays(){
 		assertEquals("Submissions 1 day, voting 30 days, tournament 28 days. Starts now.", CommunityController.seasonSummary(1, 30, 28));
 		assertEquals("Submissions 30 days, voting 1 day, tournament 4 days. Starts now.", CommunityController.seasonSummary(30, 1, 4));
+	}
+
+	//Chris, Nov 25 (video): coming back to Community showed "Talking to the Community server..." every time
+	@Test public void comingBackToCommunityShowsTheMenuAtOnce(){
+		store.age = "pass"; store.token = "tok";
+		signedInWorld(false);
+		controller().start();
+		assertTrue(has(last(), "Signed in as"));
+		busyMessages.clear();
+		int before = screens.size();
+		controller().start();
+		assertFalse(busyMessages.toString(), busyMessages.contains("Talking to the Community server..."));
+		assertTrue(has(last(), "Signed in as"));
+		assertEquals(before + 1, screens.size());
+	}
+
+	@Test public void aSignOutFoundInTheBackgroundStillSignsOut(){
+		store.age = "pass"; store.token = "tok";
+		signedInWorld(false);
+		controller().start();
+		reply("GET /v1/me", 401, "{\"error\":\"unauthorized\"}");
+		controller().start();
+		assertTrue(has(last(), "You were signed out"));
 	}
 }
