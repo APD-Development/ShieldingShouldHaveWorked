@@ -39,6 +39,11 @@ public final class RunReplay {
 		public final String cells;
 		//the cells the hero stepped onto on this floor, in order (every visit)
 		public final List<Integer> path = new ArrayList<>();
+		//the turn of each step in path
+		final List<Long> pathTurns = new ArrayList<>();
+		//creature snapshots on this floor (floor.actors), in turn order: every creature and where it stood from that turn on
+		final List<Long> actorTurns = new ArrayList<>();
+		final List<String> actorTexts = new ArrayList<>();
 		//false when this floor's layout was never recorded (played on a build from before maps were kept): only the walk is drawn
 		public final boolean mapped;
 		long firstTurn;
@@ -71,6 +76,41 @@ public final class RunReplay {
 		}
 
 		public static final char VISITED = 'o', HERO = '@';
+
+		public static final class Creature {
+			public final int cell;
+			//H hostile, B boss or unique, F friendly NPC, A ally, D neutral
+			public final char kind;
+			//the recorded class name, e.g. "actors.mobs.Gnoll"
+			public final String type;
+			Creature( int cell, char kind, String type ){ this.cell = cell; this.kind = kind; this.type = type; }
+		}
+
+		public boolean hasCreatures(){
+			return !actorTexts.isEmpty();
+		}
+
+		//every creature on the floor at the moment of the shown-th step (with no steps shown: the first snapshot). Empty when none were recorded.
+		public List<Creature> creatures( int shown ){
+			List<Creature> out = new ArrayList<>();
+			if (actorTexts.isEmpty()) return out;
+			int n = Math.max(0, Math.min(shown, path.size()));
+			long turn = n > 0 && n - 1 < pathTurns.size() ? pathTurns.get(n - 1) : actorTurns.get(0);
+			int pick = 0;
+			for (int i = 0; i < actorTurns.size(); i++) if (actorTurns.get(i) <= turn) pick = i;
+			String text = actorTexts.get(pick);
+			if (text.isEmpty()) return out;
+			for (String part : text.split(";")){
+				String[] f = part.split(":", 3);
+				if (f.length != 3 || f[1].length() != 1) continue;
+				try {
+					int c = Integer.parseInt(f[0]);
+					if (c >= 0 && c < cells.length()) out.add(new Creature(c, f[1].charAt(0), f[2]));
+				} catch (NumberFormatException ignored){
+				}
+			}
+			return out;
+		}
 
 		//the floor after the first `shown` steps (clamped to 0..path size): cells stepped on become VISITED, the latest one HERO.
 		//With no steps shown nothing is marked. Pure; used by the replay window.
@@ -137,6 +177,7 @@ public final class RunReplay {
 		RunReplay out = new RunReplay(runId, true);
 		out.steps(cat, byFloor);
 		if (byFloor.isEmpty()) return null;
+		creaturesOf(cat, runId, byFloor);
 		out.floors.addAll(byFloor.values());
 		Collections.sort(out.floors, new Comparator<Floor>(){
 			@Override
@@ -161,6 +202,33 @@ public final class RunReplay {
 			String cells = r.asText(cC);
 			if (!FloorMaps.valid(cells, r.num(wC), r.num(hC))) continue;
 			byFloor.put(key, new Floor((int) r.num(dC), (int) r.num(bC), (int) r.num(wC), (int) r.num(hC), cells, turn));
+		}
+	}
+
+	private static void creaturesOf( Catalog cat, String runId, Map<Long, Floor> byFloor ){
+		Dataset d = cat.dataset(FactDatasets.PREFIX + "floor.actors");
+		if (d == null) return;
+		DatasetDef dd = d.def;
+		int tC = dd.indexOf(FactDatasets.TURN), dC = dd.indexOf("fact.v.depth"), bC = dd.indexOf("fact.v.branch"),
+				wC = dd.indexOf("fact.v.width"), aC = dd.indexOf("fact.t.actors");
+		List<Row> rows = new ArrayList<>();
+		for (Row r : d.rowsOf(runId)){
+			if (r.imported || r.duplicate || !num(r, dC) || !num(r, bC) || aC < 0) continue;
+			rows.add(r);
+		}
+		final int t = tC;
+		Collections.sort(rows, new Comparator<Row>(){
+			@Override
+			public int compare( Row a, Row b ){
+				long x = num(a, t) ? a.num(t) : 0, y = num(b, t) ? b.num(t) : 0;
+				return x < y ? -1 : x > y ? 1 : 0;
+			}
+		});
+		for (Row r : rows){
+			Floor f = byFloor.get(r.num(dC) * 1000L + r.num(bC));
+			if (f == null || (num(r, wC) && r.num(wC) != f.width)) continue;
+			f.actorTurns.add(num(r, t) ? r.num(t) : 0L);
+			f.actorTexts.add(r.isKnown(aC) ? r.asText(aC) : "");
 		}
 	}
 
@@ -210,6 +278,7 @@ public final class RunReplay {
 			//first played on an older build and revisited later got its map late and sorted after floors played after it
 			if (f.path.isEmpty() && num(r, t)) f.firstTurn = Math.min(f.firstTurn, r.num(t));
 			f.path.add((int) c);
+			f.pathTurns.add(num(r, t) ? r.num(t) : 0L);
 		}
 	}
 }

@@ -17,7 +17,8 @@ public class FloorMapCodesTest {
 		int[] map = { Terrain.WALL, Terrain.EMPTY, Terrain.GRASS, Terrain.DOOR, Terrain.SECRET_DOOR, Terrain.LOCKED_DOOR,
 				Terrain.WATER, Terrain.CHASM, Terrain.ENTRANCE, Terrain.EXIT, Terrain.LOCKED_EXIT, Terrain.BOOKSHELF,
 				Terrain.HIGH_GRASS, Terrain.WALL_DECO, Terrain.STATUE, Terrain.EMPTY_SP };
-		assertEquals("#..+++~ <>>#.##.", FloorMapCodes.encode(map, 4, 4));
+		//door kinds kept apart since Nov 25 (Pie): hidden ?, locked =
+		assertEquals("#..+?=~ <>>#.##.", FloorMapCodes.encode(map, 4, 4));
 	}
 
 	@Test

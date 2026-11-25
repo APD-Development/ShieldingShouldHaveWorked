@@ -108,6 +108,17 @@ public final class GameFacts {
 			.tag("cells", "Cells", "One character per cell, row by row, for walls, floor, doors, water, chasms, the entrance and the exit.")
 			.since(1, 16).build());
 
+	//every creature on the floor (enemies, NPCs, allies, bosses) and where it stood, for the run replay of a finished run. INTERNAL:
+	//it shows monsters the hero never saw. Written on the hero's turn only when something changed since the last one on that floor.
+	//The tag is "cell:kind:class" entries joined by ';' (kind: H hostile, B boss or unique, F friendly NPC, A ally, D neutral).
+	public static final FactKind FLOOR_ACTORS = FactKinds.register(FactKind.builder("floor.actors", "Creatures on the floor").plural("Creatures on the floor").area("Exploration")
+			.description("Where every creature on the floor stood, turn by turn (shown after the run).").internal()
+			.value("depth", "Floor", "The floor.", FactKind.PLAIN)
+			.value("branch", "Branch", "0 for the main dungeon, otherwise the side area's number.", FactKind.PLAIN)
+			.value("width", "Width", "How many cells wide the floor is.", FactKind.PLAIN)
+			.tag("actors", "Creatures", "cell:kind:class for each creature, joined by ';'.")
+			.since(1, 16).build());
+
 	//---- the journal: what the player learned about the dungeon, and keys ----
 
 	//a landmark was written in (or removed from) the journal: a shop, an alchemy pot, a well, a floor feeling

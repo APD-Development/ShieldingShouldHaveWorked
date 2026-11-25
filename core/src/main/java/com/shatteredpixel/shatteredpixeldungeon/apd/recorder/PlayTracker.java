@@ -82,6 +82,41 @@ final class PlayTracker {
 			Hunger hunger = h.buff(Hunger.class);
 			facts.record(GameFacts.HERO_STATE, GameSnapshot.turn(), "", "", new long[]{ h.HP, h.HT, h.shielding(), hunger == null ? 0 : hunger.hunger() }, null);
 		}
+		recordActors();
+	}
+
+	//the last creature snapshot written, per floor in this session, so an unchanged turn writes nothing
+	private final java.util.Map<Long, String> lastActors = new java.util.HashMap<>();
+
+	void recordActors(){
+		com.shatteredpixel.shatteredpixeldungeon.levels.Level level = Dungeon.level;
+		if (level == null || level.mobs == null) return;
+		String now = actorsText(level);
+		long key = Dungeon.depth * 1000L + Dungeon.branch;
+		if (now.equals(lastActors.get(key))) return;
+		lastActors.put(key, now);
+		facts.record(GameFacts.FLOOR_ACTORS, GameSnapshot.turn(), "", "", new long[]{ Dungeon.depth, Dungeon.branch, level.width() }, new String[]{ now });
+	}
+
+	static String actorsText( com.shatteredpixel.shatteredpixeldungeon.levels.Level level ){
+		java.util.List<String> parts = new java.util.ArrayList<>();
+		for (com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob m : level.mobs.toArray(new com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob[0])){
+			if (m == null || !m.isAlive() || m.pos < 0 || m.pos >= level.length()) continue;
+			parts.add(m.pos + ":" + actorKind(m) + ":" + name(m.getClass()));
+		}
+		java.util.Collections.sort(parts);
+		StringBuilder sb = new StringBuilder();
+		for (String p : parts){ if (sb.length() > 0) sb.append(';'); sb.append(p); }
+		return sb.toString();
+	}
+
+	static char actorKind( com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob m ){
+		if (m instanceof com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NPC) return 'F';
+		if (m.alignment == com.shatteredpixel.shatteredpixeldungeon.actors.Char.Alignment.ALLY) return 'A';
+		if (m.alignment == com.shatteredpixel.shatteredpixeldungeon.actors.Char.Alignment.NEUTRAL) return 'D';
+		if (com.shatteredpixel.shatteredpixeldungeon.actors.Char.hasProp(m, com.shatteredpixel.shatteredpixeldungeon.actors.Char.Property.BOSS)
+				|| com.shatteredpixel.shatteredpixeldungeon.actors.Char.hasProp(m, com.shatteredpixel.shatteredpixeldungeon.actors.Char.Property.MINIBOSS)) return 'B';
+		return 'H';
 	}
 
 	void recordTime(){
@@ -103,6 +138,7 @@ final class PlayTracker {
 		String cells = FloorMapCodes.encode(level.map, level.width(), level.height());
 		if (cells == null) return;
 		facts.record(GameFacts.FLOOR_MAP, GameSnapshot.turn(), "", "", new long[]{ depth, branch, level.width(), level.height() }, new String[]{ cells });
+		lastActors.remove(depth * 1000L + branch);
 	}
 
 	void onMoveCommand( int destination, String mode ){

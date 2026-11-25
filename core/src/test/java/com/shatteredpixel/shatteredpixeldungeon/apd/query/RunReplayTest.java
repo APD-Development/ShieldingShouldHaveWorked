@@ -141,4 +141,24 @@ public class RunReplayTest {
 		assertEquals(2, r.floors.get(1).depth);
 		assertEquals(Arrays.asList(5, 9), r.floors.get(0).path);
 	}
+
+	//Pie, Nov 25: creatures on the replay, each with what it is
+	@Test
+	public void creaturesFollowTheSteps(){
+		new SyntheticLog(tmp.getRoot(), "k", TelemetryVersion.CURRENT, 900).start("k", 0, "WARRIOR", "r", 0, 30, false).enter(1)
+				.factTags(GameFacts.FLOOR_MAP, "", new String[]{ MAP }, 1, 0, 4, 4)
+				.factTags(GameFacts.FLOOR_ACTORS, "", new String[]{ "6:H:actors.mobs.Rat;9:F:actors.mobs.npcs.Shopkeeper" }, 1, 0, 4)
+				.factSeries(GameFacts.MOVE_STEP, "", new long[][]{ { 5, 4, 1 } })
+				.factTags(GameFacts.FLOOR_ACTORS, "", new String[]{ "10:B:actors.mobs.Goo" }, 1, 0, 4)
+				.factSeries(GameFacts.MOVE_STEP, "", new long[][]{ { 6, 4, 1 } })
+				.end(LifecycleEvents.OUTCOME_DIED, "Rat", 1, 1, 10).close(true);
+		RunReplay.Floor f = RunReplay.of(new DatasetStore(tmp.getRoot()).load(), "k").floors.get(0);
+		assertTrue(f.hasCreatures());
+		assertEquals(2, f.creatures(1).size());
+		assertEquals(6, f.creatures(1).get(0).cell);
+		assertEquals('H', f.creatures(1).get(0).kind);
+		assertEquals("actors.mobs.npcs.Shopkeeper", f.creatures(1).get(1).type);
+		assertEquals(1, f.creatures(2).size());
+		assertEquals('B', f.creatures(2).get(0).kind);
+	}
 }

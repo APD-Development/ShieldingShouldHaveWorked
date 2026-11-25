@@ -26,6 +26,51 @@ public class FloorMapRecordingTest {
 		ApdRecorder.reset();
 	}
 
+	private static List<FactEvents.Observation> of( ReadResult result, String key ){
+		List<FactEvents.Observation> out = new ArrayList<>();
+		for (ApdEvent event : result.events){
+			if (!FactEvents.isFactEvent(event.type)) continue;
+			for (FactEvents.Observation o : FactEvents.decode(event, result)){
+				if (o.key.equals(key)) out.add(o);
+			}
+		}
+		return out;
+	}
+
+	//Chris, Nov 25: "Literally everything should be saved": every creature on the floor, each turn something changed
+	@Test
+	public void everyCreatureOnTheFloorIsRecordedWhenSomethingChanges() throws Exception {
+		RecorderTestSupport.Session session = ItemTestSupport.startRun(312L);
+		String runId = ApdRecorder.currentRunId();
+		assertTrue(FactKinds.get("floor.actors").isInternal());
+		int mobs = 0;
+		for (com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob m : Dungeon.level.mobs) if (m.isAlive()) mobs++;
+		ApdPlay.onHeroTurn();
+		ApdPlay.onHeroTurn();   //nothing moved: no second snapshot
+		com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob first = Dungeon.level.mobs.iterator().next();
+		int was = first.pos;
+		first.pos = was + 1;
+		ApdPlay.onHeroTurn();
+		ApdRecorder.flushForReading();
+		List<FactEvents.Observation> got = of(session.read(runId), "floor.actors");
+		assertEquals(2, got.size());
+		assertEquals(1, got.get(0).values[0]);
+		assertEquals(Dungeon.level.width(), got.get(0).values[2]);
+		String[] parts = got.get(0).tags[0].isEmpty() ? new String[0] : got.get(0).tags[0].split(";");
+		assertEquals(mobs, parts.length);
+		assertTrue(got.get(0).tags[0].contains(was + ":"));
+		assertTrue(got.get(1).tags[0].contains((was + 1) + ":"));
+	}
+
+	@Test
+	public void doorKindsAreKeptApart(){
+		assertEquals(FloorMaps.DOOR, FloorMapCodes.code(com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.DOOR));
+		assertEquals(FloorMaps.LOCKED_DOOR, FloorMapCodes.code(com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.LOCKED_DOOR));
+		assertEquals(FloorMaps.CRYSTAL_DOOR, FloorMapCodes.code(com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.CRYSTAL_DOOR));
+		assertEquals(FloorMaps.HIDDEN_DOOR, FloorMapCodes.code(com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.SECRET_DOOR));
+		assertTrue(FloorMaps.valid("=*?+", 2, 2));
+	}
+
 	private static List<FactEvents.Observation> maps( ReadResult result ){
 		List<FactEvents.Observation> out = new ArrayList<>();
 		for (ApdEvent event : result.events){

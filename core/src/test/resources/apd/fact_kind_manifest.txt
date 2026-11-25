@@ -31,3 +31,4 @@ boss.phase|P|-|phase,depth|state
 npc.quest|P|-|depth|step
 alchemy.craft|P|-|depth,quantity,energy,carriedEnergy,toolkitEnergy|ingredients
 floor.map|I|-|depth,branch,width,height|cells
+floor.actors|I|-|depth,branch,width|actors

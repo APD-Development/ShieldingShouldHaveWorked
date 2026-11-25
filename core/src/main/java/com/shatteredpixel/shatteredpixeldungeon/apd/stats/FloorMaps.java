@@ -27,6 +27,8 @@ public final class FloorMaps {
 	private FloorMaps(){}
 
 	public static final char WALL = '#', FLOOR = '.', DOOR = '+', WATER = '~', CHASM = ' ', ENTRANCE = '<', EXIT = '>';
+	//door kinds (recorded from Nov 25): a door that needed a key, a crystal door, a hidden (secret) door. Older maps only have DOOR.
+	public static final char LOCKED_DOOR = '=', CRYSTAL_DOOR = '*', HIDDEN_DOOR = '?';
 
 	//a map bigger than this is not kept (no floor in the game is near it); a damaged one must not cost unbounded memory
 	public static final int MAX_CELLS = 1 << 16;
@@ -36,7 +38,8 @@ public final class FloorMaps {
 		if (cells == null || width <= 0 || height <= 0 || width * height > MAX_CELLS || cells.length() != width * height) return false;
 		for (int i = 0; i < cells.length(); i++){
 			char c = cells.charAt(i);
-			if (c != WALL && c != FLOOR && c != DOOR && c != WATER && c != CHASM && c != ENTRANCE && c != EXIT) return false;
+			if (c != WALL && c != FLOOR && c != DOOR && c != WATER && c != CHASM && c != ENTRANCE && c != EXIT
+					&& c != LOCKED_DOOR && c != CRYSTAL_DOOR && c != HIDDEN_DOOR) return false;
 		}
 		return true;
 	}

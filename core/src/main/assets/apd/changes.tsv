@@ -5,6 +5,8 @@ TAB	480+
 MAJOR	Coming Soon
 BTN	i:NEWS	What's next	Finishing the last **UIMSD** upgrades, then **script mods** for Community once I've tested them on my own phone.\n\nAnything marked "Developer build" only exists in my own test build until I say it's ready for Alpha Testers.
 MAJOR	Play builds
+BUILD	Play 946 (Nov 25)
+BTN	c:V061_BUGFIX	Replay floors: creatures and doors	Finished runs played from now on show **every creature on the floor**, turn by turn: hostile, boss, friendly, ally and neutral each have their own color, and you can **tap one to see what it is**. **Locked, crystal and hidden doors** now look different from normal doors. Floors from before maps were kept now show your walk, floors are in the order you played them, and the Blacksmith and Imp floors are named. Idea and notes from National Pie.
 BUILD	Play 945 (Nov 25)
 BTN	c:V061_BUGFIX	Dwarf King always fights	With **custom boss health** below 100%, the Dwarf King could stay **shielded forever** after every summon died. His shield regrows a little when it gets low, and the kills never took that back. Some health values also put a wave's trigger 1 point out of reach. Each kill now leaves the shield exactly where it should be, so the **final fight always starts**.
 BUILD	Play 944 (Nov 25)

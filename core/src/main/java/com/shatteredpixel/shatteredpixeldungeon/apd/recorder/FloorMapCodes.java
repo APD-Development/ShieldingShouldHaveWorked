@@ -33,8 +33,10 @@ public final class FloorMapCodes {
 		switch (terrain){
 			case Terrain.ENTRANCE: case Terrain.ENTRANCE_SP: return FloorMaps.ENTRANCE;
 			case Terrain.EXIT: case Terrain.LOCKED_EXIT: case Terrain.UNLOCKED_EXIT: return FloorMaps.EXIT;
-			case Terrain.DOOR: case Terrain.OPEN_DOOR: case Terrain.LOCKED_DOOR: case Terrain.HERO_LKD_DR:
-			case Terrain.CRYSTAL_DOOR: case Terrain.SECRET_DOOR: return FloorMaps.DOOR;
+			case Terrain.DOOR: case Terrain.OPEN_DOOR: return FloorMaps.DOOR;
+			case Terrain.LOCKED_DOOR: case Terrain.HERO_LKD_DR: return FloorMaps.LOCKED_DOOR;
+			case Terrain.CRYSTAL_DOOR: return FloorMaps.CRYSTAL_DOOR;
+			case Terrain.SECRET_DOOR: return FloorMaps.HIDDEN_DOOR;
 			case Terrain.WATER: return FloorMaps.WATER;
 			case Terrain.CHASM: return FloorMaps.CHASM;
 		}
