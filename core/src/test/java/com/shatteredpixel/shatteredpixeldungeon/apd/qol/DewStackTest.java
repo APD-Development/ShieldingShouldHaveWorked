@@ -25,4 +25,20 @@ public class DewStackTest {
 		assertEquals(2, com.shatteredpixel.shatteredpixeldungeon.items.Waterskin.dropsThatFit(0, 2));
 		assertEquals(0, com.shatteredpixel.shatteredpixeldungeon.items.Waterskin.dropsThatFit(20, 3));
 	}
+
+	//19/20 flask at full HP: the drop that does not fit stays on the tile instead of being drunk for nothing
+	@Test public void extraStaysWhenDrinkingDoesNothing(){
+		assertEquals(false, Dewdrop.helpsForTest(50, 50, 5, 0));
+		assertEquals(true, Dewdrop.helpsForTest(50, 49, 5, 0));
+		assertEquals(true, Dewdrop.helpsForTest(50, 50, 5, 3));
+		Heap h = new Heap();
+		h.drop(new Dewdrop()); h.drop(new Dewdrop());
+		Dewdrop d = (Dewdrop) h.peek();
+		assertEquals(true, Dewdrop.leaveRest(h, d, 1));
+		assertEquals(1, d.quantity());
+		h.pickUp();
+		assertEquals(1, h.items.size());
+		assertEquals(1, h.peek().quantity());
+		assertEquals(false, Dewdrop.leaveRest(new Heap(), new Dewdrop(), 1));
+	}
 }

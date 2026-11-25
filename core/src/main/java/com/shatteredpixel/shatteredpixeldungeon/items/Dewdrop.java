@@ -63,8 +63,12 @@ public class Dewdrop extends Item {
 		if (flask != null && !flask.isFull()){
 
 			int extra = flask.collectDewReturningExtra( this );
-			//APD: drops of a stack that did not fit in the flask are drunk, as when the flask is full
-			if (extra > 0) consumeDew( extra, hero, true );
+			//APD: drops of a stack that did not fit in the flask are drunk, as when the flask is full;
+			// if drinking would do nothing (full HP, no Barrier room) they stay on the tile, as with a full flask
+			if (extra > 0) {
+				Heap heap = Dungeon.level != null && Dungeon.level.heaps != null ? Dungeon.level.heaps.get(pos) : null;
+				if (wouldHelp(hero, extra) || !leaveRest(heap, this, extra)) consumeDew( extra, hero, true );
+			}
 			GameScene.pickUp( this, pos );
 
 		} else {
@@ -94,6 +98,35 @@ public class Dewdrop extends Item {
     public static int shieldingDewCap(Hero hero) {
         return Math.round(hero.HT * 0.2f * hero.pointsInTalent(Talent.SHIELDING_DEW));
     }
+
+	/** APD: whether drinking {@code drops} now heals or shields at all (same test consumeDew uses to refuse). */
+	public static boolean wouldHelp(Hero hero, int drops){
+		int effect = baseDewEffect(hero, drops);
+		int shieldRoom = 0;
+		if (hero.hasTalent(Talent.SHIELDING_DEW)){
+			int cur = hero.buff(Barrier.class) != null ? hero.buff(Barrier.class).shielding() : 0;
+			shieldRoom = shieldingDewCap(hero) - cur;
+		}
+		return helps(hero.HT, hero.HP, effect, shieldRoom);
+	}
+
+	public static boolean helpsForTest(int ht, int hp, int effect, int shieldRoom){ return helps(ht, hp, effect, shieldRoom); }
+	static boolean helps(int ht, int hp, int effect, int shieldRoom){
+		int heal = Math.min(ht - hp, effect);
+		int shield = Math.min(effect - Math.max(heal, 0), shieldRoom);
+		return heal > 0 || shield > 0;
+	}
+
+	/** APD: keeps {@code extra} drops of the picked-up stack on its tile as a new stack behind it
+	 *  (the caller then removes {@code dew} itself). False when the stack is not in that heap. */
+	public static boolean leaveRest(Heap heap, Dewdrop dew, int extra){
+		if (heap == null || extra <= 0 || extra >= dew.quantity || !heap.items.contains(dew)) return false;
+		Dewdrop rest = new Dewdrop();
+		rest.quantity = extra;
+		dew.quantity -= extra;
+		heap.items.add(rest);
+		return true;
+	}
 
 	public static boolean consumeDew(int quantity, Hero hero, boolean force){
 		//20 drops for a full heal
