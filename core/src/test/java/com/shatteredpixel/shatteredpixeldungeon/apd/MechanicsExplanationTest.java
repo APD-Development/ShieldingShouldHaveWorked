@@ -1373,6 +1373,7 @@ public class MechanicsExplanationTest {
   shield.storeInBundle(after);assertEquals(before.toString(),after.toString());assertEquals(heroBefore,savedDescriptionHero());
   shield.act();assertEquals(149,shield.remainingCooldown());assertEquals(1,shield.enemyFreeProgress(),0);assertTrue(BuffExplanation.details(shield).contains("Enemy-free decay progress: 1 of 5"));for(int tick=0;tick<4;tick++)shield.act();assertEquals(0,shield.shielding());assertEquals(70,shield.remainingCooldown());assertTrue(BuffExplanation.details(shield).contains("Recharge remaining: 70"));
   shield.reduceCooldown(1);assertEquals(-80,shield.remainingCooldown());String credit=BuffExplanation.details(shield);assertTrue(credit,credit.contains("Stored cooldown reduction: 80 turns"));shield.activate();assertEquals(70,shield.remainingCooldown());assertEquals(2,shield.shielding());
+  for(int c:new int[]{1,-1}){com.watabou.utils.Bundle b=new com.watabou.utils.Bundle();shield.storeInBundle(b);b.put(com.shatteredpixel.shatteredpixeldungeon.items.BrokenSeal.WarriorShield.COOLDOWN,c);shield.restoreFromBundle(b);assertEquals(c,shield.remainingCooldown());String one=BuffExplanation.details(shield);assertTrue(one,one.contains(c>0?"Recharge remaining: 1 turn while":"Stored cooldown reduction: 1 turn, deducted"));assertFalse(one,one.contains("1 turns"));}
  }
  @Test public void sealShieldDescriptionDoesNotAdvancePausedCooldownOrOutOfPositionHoldFast() throws Exception {
   hero.heroClass=HeroClass.ROGUE;hero.talents.get(0).put(Talent.IRON_WILL,2);hero.talents.get(2).put(Talent.HOLD_FAST,1);
