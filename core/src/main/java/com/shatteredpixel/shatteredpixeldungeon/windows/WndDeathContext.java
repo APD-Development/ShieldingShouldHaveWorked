@@ -109,7 +109,11 @@ public final class WndDeathContext {
             return;
         }
         ShatteredPixelDungeon.scene().addToFront(
-                new WndUimsdText("Death context - last " + turns + " turns", context.summary(), false));
+                new WndUimsdText(contextTitle(turns), context.summary(), false));
+    }
+
+    public static String contextTitle(int turns) {
+        return "Death context - last " + turns + (turns == 1 ? " turn" : " turns");
     }
 
     private static void tell(String message) {
