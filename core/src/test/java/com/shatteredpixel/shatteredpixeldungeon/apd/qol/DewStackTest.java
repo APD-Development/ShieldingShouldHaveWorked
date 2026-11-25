@@ -18,4 +18,11 @@ public class DewStackTest {
 		h.drop(new Dewdrop());
 		assertEquals(3, h.peek().quantity());
 	}
+
+	//a stack bigger than the flask's room: only the room goes in, the rest is not thrown away
+	@Test public void flaskTakesOnlyWhatFits(){
+		assertEquals(1, com.shatteredpixel.shatteredpixeldungeon.items.Waterskin.dropsThatFit(19, 2));
+		assertEquals(2, com.shatteredpixel.shatteredpixeldungeon.items.Waterskin.dropsThatFit(0, 2));
+		assertEquals(0, com.shatteredpixel.shatteredpixeldungeon.items.Waterskin.dropsThatFit(20, 3));
+	}
 }

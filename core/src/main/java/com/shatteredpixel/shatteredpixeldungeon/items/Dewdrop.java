@@ -62,7 +62,9 @@ public class Dewdrop extends Item {
 		
 		if (flask != null && !flask.isFull()){
 
-			flask.collectDew( this );
+			int extra = flask.collectDewReturningExtra( this );
+			//APD: drops of a stack that did not fit in the flask are drunk, as when the flask is full
+			if (extra > 0) consumeDew( extra, hero, true );
 			GameScene.pickUp( this, pos );
 
 		} else {
