@@ -89,4 +89,36 @@ public class RunReplayTest {
 		assertEquals(all.floors.get(0).path, one.floors.get(0).path);
 		assertEquals(Arrays.asList(5, 6), one.floors.get(0).path);
 	}
+
+	//Chris, Nov 25: a run's replay began at floor 9 because floors 1 to 8 were played before maps were kept. Their walks are still shown.
+	@Test
+	public void floorsWithStepsButNoMapStillAppearInOrder(){
+		new SyntheticLog(tmp.getRoot(), "u", TelemetryVersion.CURRENT, 700).start("u", 0, "WARRIOR", "r", 0, 30, false).enter(1)
+				.factSeries(GameFacts.MOVE_STEP, "", new long[][]{ { 5, 4, 1 }, { 6, 4, 1 }, { 10, 4, 1 } })
+				.leave().enter(2)
+				.factTags(GameFacts.FLOOR_MAP, "", new String[]{ MAP }, 2, 0, 4, 4)
+				.factSeries(GameFacts.MOVE_STEP, "", new long[][]{ { 5, 4, 1 } })
+				.end(LifecycleEvents.OUTCOME_DIED, "Rat", 2, 1, 10).close(true);
+		RunReplay r = RunReplay.of(new DatasetStore(tmp.getRoot()).load(), "u");
+		assertTrue(r.available);
+		assertEquals(2, r.floors.size());
+		RunReplay.Floor f1 = r.floors.get(0);
+		assertEquals(1, f1.depth);
+		assertFalse(f1.mapped);
+		assertEquals(4, f1.width);
+		assertEquals(3, f1.height);
+		assertEquals(Arrays.asList(5, 6, 10), f1.path);
+		assertEquals("Floor 1: 3 steps, no map recorded", f1.title());
+		assertTrue(r.floors.get(1).mapped);
+		assertEquals("Floor 2: 1 step", r.floors.get(1).title());
+	}
+
+	//Chris, Nov 25: "Floor 19 branch 1? The fuck does that mean?"
+	@Test
+	public void sideAreasAreNamedNotNumbered(){
+		assertEquals("", RunReplay.Floor.place(9, 0));
+		assertEquals(" mine", RunReplay.Floor.place(12, 1));
+		assertEquals(" vault", RunReplay.Floor.place(19, 1));
+		assertEquals(" side area", RunReplay.Floor.place(3, 2));
+	}
 }

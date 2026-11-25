@@ -39,6 +39,8 @@ public final class RunReplay {
 		public final String cells;
 		//the cells the hero stepped onto on this floor, in order (every visit)
 		public final List<Integer> path = new ArrayList<>();
+		//false when this floor's layout was never recorded (played on a build from before maps were kept): only the walk is drawn
+		public final boolean mapped;
 		long firstTurn;
 
 		Floor( int depth, int branch, int width, int height, String cells, long firstTurn ){
@@ -48,6 +50,20 @@ public final class RunReplay {
 			this.height = height;
 			this.cells = cells;
 			this.firstTurn = firstTurn;
+			this.mapped = true;
+		}
+
+		//a floor known only from its steps: every cell starts as wall, and the walk shows where the hero went
+		Floor( int depth, int branch, int width, int height, long firstTurn ){
+			this.depth = depth;
+			this.branch = branch;
+			this.width = width;
+			this.height = height;
+			char[] blank = new char[width * height];
+			java.util.Arrays.fill(blank, FloorMaps.WALL);
+			this.cells = new String(blank);
+			this.firstTurn = firstTurn;
+			this.mapped = false;
 		}
 
 		public char cell( int x, int y ){
@@ -66,9 +82,17 @@ public final class RunReplay {
 			return out;
 		}
 
-		//"Floor 3: 412 steps" (branch floors say which branch)
+		//"Floor 3: 412 steps"; side areas say what they are ("Floor 12 mine", "Floor 19 vault")
 		public String title(){
-			return "Floor " + depth + (branch != 0 ? " (branch " + branch + ")" : "") + ": " + path.size() + (path.size() == 1 ? " step" : " steps");
+			return "Floor " + depth + place(depth, branch) + ": " + path.size() + (path.size() == 1 ? " step" : " steps")
+					+ (mapped ? "" : ", no map recorded");
+		}
+
+		static String place( int depth, int branch ){
+			if (branch == 0) return "";
+			if (branch == 1 && depth >= 11 && depth <= 14) return " mine";
+			if (branch == 1 && depth >= 16 && depth <= 19) return " vault";
+			return " side area";
 		}
 	}
 
@@ -98,16 +122,35 @@ public final class RunReplay {
 	private static RunReplay build( Catalog cat, String runId ){
 		if (cat == null || runId == null || runId.isEmpty()) return null;
 		Dataset maps = cat.dataset(FactDatasets.PREFIX + "floor.map");
-		if (maps == null) return null;
+		Dataset stepSet = cat.dataset(FactDatasets.PREFIX + "move.step");
+		if (maps == null && stepSet == null) return null;
 		boolean finished = false;
-		for (Dataset.RunInfo ri : maps.runs){
-			if (runId.equals(ri.runId) && ri.finished && !ri.duplicate) finished = true;
+		for (Dataset ds : new Dataset[]{ maps, stepSet }){
+			if (ds == null) continue;
+			for (Dataset.RunInfo ri : ds.runs){
+				if (runId.equals(ri.runId) && ri.finished && !ri.duplicate) finished = true;
+			}
 		}
 		if (!finished) return null;
+		Map<Long, Floor> byFloor = new LinkedHashMap<>();
+		if (maps != null) mapsOf(maps, runId, byFloor);
+		RunReplay out = new RunReplay(runId, true);
+		out.steps(cat, byFloor);
+		if (byFloor.isEmpty()) return null;
+		out.floors.addAll(byFloor.values());
+		Collections.sort(out.floors, new Comparator<Floor>(){
+			@Override
+			public int compare( Floor a, Floor b ){
+				return a.firstTurn != b.firstTurn ? (a.firstTurn < b.firstTurn ? -1 : 1) : (a.depth != b.depth ? a.depth - b.depth : a.branch - b.branch);
+			}
+		});
+		return out;
+	}
+
+	private static void mapsOf( Dataset maps, String runId, Map<Long, Floor> byFloor ){
 		DatasetDef md = maps.def;
 		int tC = md.indexOf(FactDatasets.TURN), dC = md.indexOf("fact.v.depth"), bC = md.indexOf("fact.v.branch"),
 				wC = md.indexOf("fact.v.width"), hC = md.indexOf("fact.v.height"), cC = md.indexOf("fact.t.cells");
-		Map<Long, Floor> byFloor = new LinkedHashMap<>();
 		for (Row r : maps.rowsOf(runId)){
 			if (r.imported || r.duplicate || !r.finished) continue;
 			if (!num(r, dC) || !num(r, bC) || !num(r, wC) || !num(r, hC) || cC < 0 || !r.isKnown(cC)) continue;
@@ -119,17 +162,6 @@ public final class RunReplay {
 			if (!FloorMaps.valid(cells, r.num(wC), r.num(hC))) continue;
 			byFloor.put(key, new Floor((int) r.num(dC), (int) r.num(bC), (int) r.num(wC), (int) r.num(hC), cells, turn));
 		}
-		if (byFloor.isEmpty()) return null;
-		RunReplay out = new RunReplay(runId, true);
-		out.floors.addAll(byFloor.values());
-		Collections.sort(out.floors, new Comparator<Floor>(){
-			@Override
-			public int compare( Floor a, Floor b ){
-				return a.firstTurn != b.firstTurn ? (a.firstTurn < b.firstTurn ? -1 : 1) : (a.depth != b.depth ? a.depth - b.depth : a.branch - b.branch);
-			}
-		});
-		out.steps(cat, byFloor);
-		return out;
 	}
 
 	private void steps( Catalog cat, Map<Long, Floor> byFloor ){
@@ -151,6 +183,23 @@ public final class RunReplay {
 				return x < y ? -1 : x > y ? 1 : 0;
 			}
 		});
+		//floors played before maps were kept: size them from their steps (width is on each step; height from the lowest cell)
+		Map<Long, long[]> unmapped = new LinkedHashMap<>();   //key -> {width, highest cell, first turn}
+		for (Row r : rows){
+			long key = r.num(dC) * 1000L + r.num(bC);
+			if (byFloor.containsKey(key) || !num(r, wC) || r.num(wC) <= 0) continue;
+			long c = r.num(cC), w = r.num(wC), turn = num(r, tC) ? r.num(tC) : 0;
+			if (c < 0) continue;
+			long[] u = unmapped.get(key);
+			if (u == null) unmapped.put(key, new long[]{ w, c, turn });
+			else if (u[0] == w) u[1] = Math.max(u[1], c);
+		}
+		for (Map.Entry<Long, long[]> e : unmapped.entrySet()){
+			long[] u = e.getValue();
+			long h = u[1] / u[0] + 1;
+			if (u[0] * h > FloorMaps.MAX_CELLS) continue;
+			byFloor.put(e.getKey(), new Floor((int) (e.getKey() / 1000L), (int) (e.getKey() % 1000L), (int) u[0], (int) h, u[2]));
+		}
 		for (Row r : rows){
 			Floor f = byFloor.get(r.num(dC) * 1000L + r.num(bC));
 			if (f == null) continue;

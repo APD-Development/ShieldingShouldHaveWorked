@@ -69,7 +69,13 @@ public class WndRunReplay extends Window {
 		add(map);
 		trail = new Group();
 		add(trail);
-		top = 14;
+		//a long title wraps to two lines; the map starts below the tallest one so it never covers text
+		float titleHeight = 0;
+		for (int i = 0; i < r.floors.size(); i++){
+			title.text(titleOf(i));
+			titleHeight = Math.max(titleHeight, title.height());
+		}
+		top = 2 + titleHeight + 3;
 		float mapMax = Math.min(PixelScene.uiCamera.height * 0.7f, width * 1.2f);
 		float tallest = 1, widest = 1;
 		for (RunReplay.Floor f : r.floors){ widest = Math.max(widest, f.width); tallest = Math.max(tallest, f.height); }
@@ -96,7 +102,7 @@ public class WndRunReplay extends Window {
 	private void floor( int index ){
 		floorIndex = Math.max(0, Math.min(index, replay.floors.size() - 1));
 		RunReplay.Floor f = replay.floors.get(floorIndex);
-		title.text(f.title() + "  (" + (floorIndex + 1) + " of " + replay.floors.size() + ")");
+		title.text(titleOf(floorIndex));
 		title.setPos(2, 2);
 		map.clear();
 		trail.clear();
@@ -113,6 +119,10 @@ public class WndRunReplay extends Window {
 		//set directly: going through toggle() on a floor with no recorded steps restarted the floor forever (stack overflow)
 		playing = true;
 		play.text("Pause");
+	}
+
+	private String titleOf( int index ){
+		return replay.floors.get(index).title() + "  (" + (index + 1) + " of " + replay.floors.size() + ")";
 	}
 
 	//Play on a finished floor restarts it; a floor with no recorded steps has nothing to restart
