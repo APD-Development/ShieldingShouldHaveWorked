@@ -1087,6 +1087,12 @@ public final class CommunityController {
 		});
 	}
 
+	static String seasonSummary(int sub, int vote, int tour){
+		return "Submissions " + days(sub) + ", voting " + days(vote) + ", tournament " + days(tour) + ". Starts now.";
+	}
+
+	private static String days(int n){ return n + (n == 1 ? " day" : " days"); }
+
 	// Title, then the three phase lengths in days (30 / 30 / 28 suggested), then confirm.
 	private void startSeason(){
 		ui.ask("Season title", "What should this season be called?", "", 80, false, title -> {
@@ -1100,7 +1106,7 @@ public final class CommunityController {
 					ui.ask("Tournament (days)", "How many days does the tournament run? (4 weeks = 28)", "28", 3, false, c -> {
 						Integer tour = number(c, 4, 120);
 						if (tour == null){ moderation(); return; }
-						Screen s = new Screen("Start " + title.trim() + "?", "Submissions " + sub + " days, voting " + vote + " days, tournament " + tour + " days. Starts now.");
+						Screen s = new Screen("Start " + title.trim() + "?", seasonSummary(sub, vote, tour));
 						s.item("Start it", null, () -> call(() -> api.adminStartSeason(title.trim(), sub, vote, tour), r -> {
 							if (r.ok()){ uncacheLists(); done("Season started. Submissions are open.", this::hub); }
 							else if ("season_overlaps".equals(r.error)) problem(r, this::moderation);
