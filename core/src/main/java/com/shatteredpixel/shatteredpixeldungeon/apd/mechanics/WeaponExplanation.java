@@ -111,9 +111,15 @@ public final class WeaponExplanation {
         Float delay = normalAttackDelay(weapon, hero);
         if (delay == null) return result + "Personal attack timing is withheld while contributing ring bonuses are unknown or unavailable.";
         int missing = Math.max(0, weapon.STRReq() - ArmorExplanation.knownStrength(hero));
-        return result + "This weapon's base attack time: " + ObfuscationExplanation.number(weapon.DLY)
-                + " turns; after augmentation: " + ObfuscationExplanation.number(weapon.augment.delayFactor(weapon.DLY))
-                + " turns; missing strength: " + missing + " points. Normal weapon attack time with your known bonuses: "
-                + ObfuscationExplanation.number(delay) + " turns before the other exceptions above. This does not consume a waiting free attack or ability.";
+        return result + "This weapon's base attack time: " + turns(weapon.DLY)
+                + "; after augmentation: " + turns(weapon.augment.delayFactor(weapon.DLY))
+                + "; missing strength: " + missing + (missing == 1 ? " point" : " points") + ". Normal weapon attack time with your known bonuses: "
+                + turns(delay) + " before the other exceptions above. This does not consume a waiting free attack or ability.";
+    }
+
+    /** "1 turn" for exactly one, otherwise "N turns" (decimals such as 0.667 stay plural). */
+    static String turns(float value) {
+        String n = ObfuscationExplanation.number(value);
+        return n + ("1".equals(n) ? " turn" : " turns");
     }
 }
