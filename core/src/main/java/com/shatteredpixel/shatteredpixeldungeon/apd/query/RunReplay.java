@@ -206,6 +206,9 @@ public final class RunReplay {
 			if (num(r, wC) && r.num(wC) != f.width) continue;   //a step on a floor of another shape is not this map's
 			long c = r.num(cC);
 			if (c < 0 || c >= f.cells.length()) continue;
+			//order floors by when they were first walked: a map is only recorded when a session loads the floor, so a floor
+			//first played on an older build and revisited later got its map late and sorted after floors played after it
+			if (f.path.isEmpty() && num(r, t)) f.firstTurn = Math.min(f.firstTurn, r.num(t));
 			f.path.add((int) c);
 		}
 	}

@@ -121,4 +121,24 @@ public class RunReplayTest {
 		assertEquals(" (Imp floor)", RunReplay.Floor.place(19, 1));
 		assertEquals(" (side floor)", RunReplay.Floor.place(3, 2));
 	}
+
+	//Chris, Nov 25: floors must be in the order they were played, even when a floor's map was recorded on a later visit
+	@Test
+	public void floorsAreInTheOrderTheyWereFirstWalked(){
+		new SyntheticLog(tmp.getRoot(), "o", TelemetryVersion.CURRENT, 800).start("o", 0, "WARRIOR", "r", 0, 30, false).enter(1)
+				.factSeries(GameFacts.MOVE_STEP, "", new long[][]{ { 5, 4, 1 } })
+				.leave().enter(2)
+				.factTags(GameFacts.FLOOR_MAP, "", new String[]{ MAP }, 2, 0, 4, 4)
+				.factSeries(GameFacts.MOVE_STEP, "", new long[][]{ { 6, 4, 1 } })
+				.leave().enter(1)
+				//floor 1's map only now, on the way back up
+				.factTags(GameFacts.FLOOR_MAP, "", new String[]{ MAP }, 1, 0, 4, 4)
+				.factSeries(GameFacts.MOVE_STEP, "", new long[][]{ { 9, 4, 1 } })
+				.end(LifecycleEvents.OUTCOME_DIED, "Rat", 1, 1, 10).close(true);
+		RunReplay r = RunReplay.of(new DatasetStore(tmp.getRoot()).load(), "o");
+		assertEquals(2, r.floors.size());
+		assertEquals(1, r.floors.get(0).depth);
+		assertEquals(2, r.floors.get(1).depth);
+		assertEquals(Arrays.asList(5, 9), r.floors.get(0).path);
+	}
 }
