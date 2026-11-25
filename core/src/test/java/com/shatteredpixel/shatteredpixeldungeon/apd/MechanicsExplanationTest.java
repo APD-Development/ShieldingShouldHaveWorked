@@ -2297,7 +2297,7 @@ public class MechanicsExplanationTest {
  }
 
  @Test public void strongmanUsesBaseStrengthAndDoesNotMultiplyRingContribution(){
-  for(int rank=1;rank<=3;rank++){hero.talents.get(2).put(Talent.STRONGMAN,rank);for(int strength=10;strength<=20;strength++){hero.STR=strength;int added=(int)Math.floor(strength*(.03f+.05f*rank));assertEquals(strength+5+added,hero.previewStrength(5));String text=MechanicsDetails.talent(Talent.STRONGMAN,rank,"");assertTrue(text.contains("this rank adds "+added+" strength points"));assertTrue(text.contains("excluding Ring of Might"));}}
+  for(int rank=1;rank<=3;rank++){hero.talents.get(2).put(Talent.STRONGMAN,rank);for(int strength=10;strength<=20;strength++){hero.STR=strength;int added=(int)Math.floor(strength*(.03f+.05f*rank));assertEquals(strength+5+added,hero.previewStrength(5));String text=MechanicsDetails.talent(Talent.STRONGMAN,rank,"");assertTrue(text.contains("this rank adds "+added+(added==1?" strength point.":" strength points.")));assertTrue(text.contains("excluding Ring of Might"));}}
  }
  public static class RangeAccuracyDart extends com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.Dart {public float rangeFactor(Hero owner,com.shatteredpixel.shatteredpixeldungeon.actors.Char enemy){return adjacentAccFactor(owner,enemy);}}
  @Test public void pointBlankDetailsMatchActualAdjacentAndDistantFactors(){
