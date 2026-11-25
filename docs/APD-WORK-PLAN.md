@@ -287,6 +287,10 @@ wired (CommunityController/CommunityScene; live when SPDSettings.communityServer
 default-on settings (SPDSettings.keepOldDefaultsForExistingPlayers). Next: Google sign-in button on Android
 (Credential Manager), server URL default once deployed, run reviews. HttpGateway contract routes, deployment workflow, Android Community screens wired to it, Play Age Signals.
 
+## Every Play build: update the in-game change history (National Pie, Nov 25)
+Before bumping appVersionCode, add "BUILD<tab>Play <code> (<date>)" with player-facing BTN lines at the top of the
+"Play builds" section of core/src/main/assets/apd/changes.tsv and run tools/run-core-tests.sh --tests '*ApdChanges*'.
+
 ## Run log
 - 2026-11-25 8 AM ET (scheduled): Play 944 uploaded to closed test (CI 45619321485 green on a9580786; bundle run 45620136695;
   versionCode 944, icons pixel-identical, label ADHD Pixel Dungeon, no Rhino). New since 943: game-over Replay floors reads only
