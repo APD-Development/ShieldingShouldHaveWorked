@@ -161,4 +161,23 @@ public class RunReplayTest {
 		assertEquals(1, f.creatures(2).size());
 		assertEquals('B', f.creatures(2).get(0).kind);
 	}
+
+	//Chris, Nov 25: creatures move when they moved, even on turns the hero did not step
+	@Test
+	public void playbackInterleavesCreatureMovesWithSteps(){
+		new SyntheticLog(tmp.getRoot(), "m", TelemetryVersion.CURRENT, 950).start("m", 0, "WARRIOR", "r", 0, 30, false).enter(1)
+				.factTags(GameFacts.FLOOR_MAP, "", new String[]{ MAP }, 1, 0, 4, 4)
+				.factTags(GameFacts.FLOOR_ACTORS, "", new String[]{ "6:H:actors.mobs.Rat" }, 1, 0, 4)
+				.factSeries(GameFacts.MOVE_STEP, "", new long[][]{ { 5, 4, 1 } })
+				//the hero waits; the rat walks twice
+				.factTags(GameFacts.FLOOR_ACTORS, "", new String[]{ "9:H:actors.mobs.Rat" }, 1, 0, 4)
+				.factTags(GameFacts.FLOOR_ACTORS, "", new String[]{ "10:H:actors.mobs.Rat" }, 1, 0, 4)
+				.factSeries(GameFacts.MOVE_STEP, "", new long[][]{ { 6, 4, 1 } })
+				.end(LifecycleEvents.OUTCOME_DIED, "Rat", 1, 1, 10).close(true);
+		RunReplay.Floor f = RunReplay.of(new DatasetStore(tmp.getRoot()).load(), "m").floors.get(0);
+		assertTrue(Arrays.equals(new int[]{ -1, 0, -2, -3, 1 }, f.timeline()));
+		assertEquals(6, f.creaturesAt(0).get(0).cell);
+		assertEquals(9, f.creaturesAt(1).get(0).cell);
+		assertEquals(10, f.creaturesAt(2).get(0).cell);
+	}
 }

@@ -50,7 +50,7 @@ public class WndRunReplay extends Window {
 	private static final float STEP_SECONDS = 0.05f;
 
 	private final RunReplay replay;
-	private int floorIndex, shown;
+	private int floorIndex, shown, pos, snapshot;
 	private float timer;
 	private boolean playing = true;
 	private RenderedTextBlock title;
@@ -125,7 +125,7 @@ public class WndRunReplay extends Window {
 	}
 
 	private void toggle(){
-		if (restartOnPlay(playing, shown, replay.floors.get(floorIndex).path.size())){ floor(floorIndex); return; }
+		if (restartOnPlay(playing, pos, replay.floors.get(floorIndex).timeline().length)){ floor(floorIndex); return; }
 		playing = !playing;
 		play.text(playing ? "Pause" : "Play");
 	}
@@ -152,6 +152,8 @@ public class WndRunReplay extends Window {
 		typeColors = new TypeColors(f.creatureTypes());
 		drawCreatures(f);
 		shown = 0;
+		pos = 0;
+		snapshot = 0;
 		timer = 0;
 		//set directly: going through toggle() on a floor with no recorded steps restarted the floor forever (stack overflow)
 		playing = true;
@@ -187,9 +189,13 @@ public class WndRunReplay extends Window {
 		if (!playing) return;
 		RunReplay.Floor f = replay.floors.get(floorIndex);
 		timer += Game.elapsed;
-		while (timer >= STEP_SECONDS && shown < f.path.size()){
+		int[] line = f.timeline();
+		while (timer >= STEP_SECONDS && pos < line.length){
 			timer -= STEP_SECONDS;
-			int c = f.path.get(shown++);
+			int entry = line[pos++];
+			if (entry < 0){ snapshot = -entry - 1; continue; }   //creatures moved: drawn below
+			int c = f.path.get(entry);
+			shown = entry + 1;
 			if (!marked[c]){
 				marked[c] = true;
 				ColorBlock v = new ColorBlock(cell, cell, VISITED);
@@ -201,13 +207,13 @@ public class WndRunReplay extends Window {
 			hero.x = left + (c % f.width) * cell; hero.y = top + (c / f.width) * cell;
 		}
 		drawCreatures(f);
-		if (shown >= f.path.size()) toggle();
+		if (pos >= line.length) toggle();
 	}
 
 	//redraws the creature dots when the shown step moves to a new snapshot
 	private void drawCreatures( RunReplay.Floor f ){
 		if (!f.hasCreatures()) return;
-		List<RunReplay.Floor.Creature> now = f.creatures(shown);
+		List<RunReplay.Floor.Creature> now = f.creaturesAt(snapshot);
 		StringBuilder key = new StringBuilder();
 		for (RunReplay.Floor.Creature c : now) key.append(c.cell).append(c.kind).append(c.type).append(';');
 		int frame = key.toString().hashCode();

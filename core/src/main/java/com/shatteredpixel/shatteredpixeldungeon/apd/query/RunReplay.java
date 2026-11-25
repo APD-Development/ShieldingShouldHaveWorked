@@ -103,6 +103,40 @@ public final class RunReplay {
 			return !actorTexts.isEmpty();
 		}
 
+		//the playback order (Chris, Nov 25: creatures move when they moved, even while the hero stands still): every step and every creature
+		//snapshot by turn, a snapshot before a step on the same turn. Entry >= 0 is a step index, entry < 0 is snapshot -(entry + 1).
+		private int[] timeline;
+
+		public int[] timeline(){
+			if (timeline != null) return timeline;
+			int n = path.size(), m = actorTexts.size();
+			int[] out = new int[n + m];
+			int i = 0, j = 0, k = 0;
+			while (i < n || j < m){
+				boolean takeSnapshot = j < m && (i >= n || actorTurns.get(j) <= (i < pathTurns.size() ? pathTurns.get(i) : Long.MAX_VALUE));
+				out[k++] = takeSnapshot ? -(j++) - 1 : i++;
+			}
+			return timeline = out;
+		}
+
+		//every creature in snapshot number `snapshot` (clamped); empty when none were recorded
+		public List<Creature> creaturesAt( int snapshot ){
+			List<Creature> out = new ArrayList<>();
+			if (actorTexts.isEmpty()) return out;
+			String text = actorTexts.get(Math.max(0, Math.min(snapshot, actorTexts.size() - 1)));
+			if (text.isEmpty()) return out;
+			for (String part : text.split(";")){
+				String[] f = part.split(":", 3);
+				if (f.length != 3 || f[1].length() != 1) continue;
+				try {
+					int c = Integer.parseInt(f[0]);
+					if (c >= 0 && c < cells.length()) out.add(new Creature(c, f[1].charAt(0), f[2]));
+				} catch (NumberFormatException ignored){
+				}
+			}
+			return out;
+		}
+
 		//every creature on the floor at the moment of the shown-th step (with no steps shown: the first snapshot). Empty when none were recorded.
 		public List<Creature> creatures( int shown ){
 			List<Creature> out = new ArrayList<>();
