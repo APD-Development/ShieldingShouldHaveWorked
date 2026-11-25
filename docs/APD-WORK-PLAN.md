@@ -288,6 +288,7 @@ default-on settings (SPDSettings.keepOldDefaultsForExistingPlayers). Next: Googl
 (Credential Manager), server URL default once deployed, run reviews. HttpGateway contract routes, deployment workflow, Android Community screens wired to it, Play Age Signals.
 
 ## Run log
+- 2026-11-25 1 AM ET (scheduled): Game-over "Replay floors" read the WHOLE history (same heap spike fixed for What happened at 3 PM Nov 24); now DatasetStore.loadRun(endedRun) only, same replay. +1 RunReplayTest; full CI 45558242314 green (side branch fix/replay-one-run, cherry-picked). Not device-verified. Still OPEN for Chris: Badge-or-what for the new-search achievement; `defense` vs `evasion`; talents hook spec; mod starting items; Loot Availability score multiplier.
 - 2026-11-25 12 AM ET (scheduled): Play 943 uploaded to closed test (CI 45550648992 green on b4c0ec73; bundle run 45551069076;
   versionCode 943, icons pixel-identical, label ADHD Pixel Dungeon, no Rhino). New since 942: walk-over pickup keeps walking to
   the tap (and skips dew it can't use), dewdrops stack, Dewcatcher dew doesn't trigger plants, voice controls removed. Dev APK sent.
