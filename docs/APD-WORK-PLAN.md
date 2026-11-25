@@ -290,6 +290,8 @@ default-on settings (SPDSettings.keepOldDefaultsForExistingPlayers). Next: Googl
 ## Every Play build: update the in-game change history (National Pie, Nov 25)
 Before bumping appVersionCode, add "BUILD<tab>Play <code> (<date>)" with player-facing BTN lines at the top of the
 "Play builds" section of core/src/main/assets/apd/changes.tsv and run tools/run-core-tests.sh --tests '*ApdChanges*'.
+PLAY UPLOAD RULE (Chris, Nov 25, after 945/946/947 went up early): uploads to Play happen ONLY in the scheduled 12 AM / 8 AM / 4 PM
+builds. When Chris says "push" or asks for an APK, build the dev APK and send it to him alone: no versionCode bump, no Play upload.
 
 ## Run log
 - 2026-11-25 3 PM ET (scheduled): Wand of Regrowth details said "The next cast uses 1 charges"; now singular (WandExplanation). +1 MechanicsExplanationTest; full CI 45691835187 green (side branch fix/regrowth-charge-singular, cherry-picked). Not device-verified. Daily alpha APK still PAUSED (not built). Still OPEN for Chris: Badge-or-what for the new-search achievement; `defense` vs `evasion`; talents hook spec; mod starting items.
