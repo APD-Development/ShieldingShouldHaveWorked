@@ -63,6 +63,7 @@ public class WndRunReplay extends Window {
 	private RenderedTextBlock info;
 	private int creatureFrame = -1;
 	private List<RunReplay.Floor.Creature> shownCreatures = new ArrayList<>();
+	private TypeColors typeColors = new TypeColors(new ArrayList<String>());
 
 	public static void show( RunReplay r ){
 		if (r == null || !r.available || r.floors.isEmpty()){
@@ -148,6 +149,7 @@ public class WndRunReplay extends Window {
 		creatureFrame = -1;
 		shownCreatures = new ArrayList<>();
 		info.text(f.hasCreatures() ? "Tap a creature to see what it is." : "No creatures were recorded on this floor.");
+		typeColors = new TypeColors(f.creatureTypes());
 		drawCreatures(f);
 		shown = 0;
 		timer = 0;
@@ -213,9 +215,11 @@ public class WndRunReplay extends Window {
 		creatureFrame = frame;
 		shownCreatures = now;
 		creatures.clear();
-		float s = Math.max(1, cell * 0.7f), pad = (cell - s) / 2f;
+		float small = Math.max(1, cell * 0.7f);
 		for (RunReplay.Floor.Creature c : now){
-			ColorBlock b = new ColorBlock(s, s, creatureColor(c.kind));
+			//bosses and uniques fill the whole tile so they stand out from ordinary creatures
+			float s = c.kind == 'B' ? cell : small, pad = (cell - s) / 2f;
+			ColorBlock b = new ColorBlock(s, s, typeColors.color(c.type));
 			b.x = left + (c.cell % f.width) * cell + pad;
 			b.y = top + (c.cell / f.width) * cell + pad;
 			creatures.add(b);
@@ -235,6 +239,41 @@ public class WndRunReplay extends Window {
 			if (d <= 1 && d < bestD){ best = c; bestD = d; }
 		}
 		info.text(best == null ? "Nothing there." : creatureName(best.type) + " (" + kindWord(best.kind) + ")");
+	}
+
+	//Chris, Nov 25: each kind of creature (rat, gnoll, ...) has its own color. A type keeps the same color on every floor where it can;
+	//when two types on one floor would share a color, the later one moves to the next free color so they never look alike.
+	static final int[] PALETTE = { 0xFFFF8C1A, 0xFFD040FF, 0xFF30D050, 0xFF20E0C0, 0xFFFF9AD0, 0xFF40C8FF, 0xFFB0FF30,
+			0xFFFF40A0, 0xFFC08040, 0xFF8060FF, 0xFF90FFB0, 0xFFFF7060, 0xFFA0A030, 0xFF80B0FF };
+
+	static final class TypeColors {
+		private final java.util.Map<String, Integer> colors = new java.util.HashMap<>();
+
+		TypeColors( List<String> types ){
+			boolean[] used = new boolean[PALETTE.length];
+			int extra = 0;
+			for (String t : types){
+				if (colors.containsKey(t)) continue;
+				int i = Math.floorMod(t.hashCode(), PALETTE.length), tries = 0;
+				while (used[i] && tries < PALETTE.length){ i = (i + 1) % PALETTE.length; tries++; }
+				if (tries < PALETTE.length){ used[i] = true; colors.put(t, PALETTE[i]); }
+				//more types on one floor than colors: spread the rest around the color wheel
+				else colors.put(t, hue((extra++ * 0.618034f) % 1f));
+			}
+		}
+
+		//a bright color at hue h (0..1), saturation 0.6
+		static int hue( float h ){
+			float r = Math.abs(h * 6 - 3) - 1, g = 2 - Math.abs(h * 6 - 2), b = 2 - Math.abs(h * 6 - 4);
+			r = Math.max(0, Math.min(1, r)); g = Math.max(0, Math.min(1, g)); b = Math.max(0, Math.min(1, b));
+			int R = Math.round((0.4f + 0.6f * r) * 255), G = Math.round((0.4f + 0.6f * g) * 255), B = Math.round((0.4f + 0.6f * b) * 255);
+			return 0xFF000000 | (R << 16) | (G << 8) | B;
+		}
+
+		int color( String type ){
+			Integer c = colors.get(type);
+			return c == null ? PALETTE[Math.floorMod(type.hashCode(), PALETTE.length)] : c;
+		}
 	}
 
 	static int creatureColor( char kind ){

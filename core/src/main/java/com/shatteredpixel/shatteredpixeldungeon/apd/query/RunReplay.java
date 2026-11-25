@@ -86,6 +86,19 @@ public final class RunReplay {
 			Creature( int cell, char kind, String type ){ this.cell = cell; this.kind = kind; this.type = type; }
 		}
 
+		//every creature type seen on this floor, in the order they first appear
+		public List<String> creatureTypes(){
+			java.util.LinkedHashSet<String> types = new java.util.LinkedHashSet<>();
+			for (String text : actorTexts){
+				if (text.isEmpty()) continue;
+				for (String part : text.split(";")){
+					String[] f = part.split(":", 3);
+					if (f.length == 3) types.add(f[2]);
+				}
+			}
+			return new ArrayList<>(types);
+		}
+
 		public boolean hasCreatures(){
 			return !actorTexts.isEmpty();
 		}

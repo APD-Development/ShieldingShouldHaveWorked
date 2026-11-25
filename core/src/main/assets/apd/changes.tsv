@@ -5,6 +5,8 @@ TAB	480+
 MAJOR	Coming Soon
 BTN	i:NEWS	What's next	Finishing the last **UIMSD** upgrades, then **script mods** for Community once I've tested them on my own phone.\n\nAnything marked "Developer build" only exists in my own test build until I say it's ready for Alpha Testers.
 MAJOR	Play builds
+BUILD	Play 947 (Nov 25)
+BTN	c:V061_BUGFIX	Replay floors: a color for each creature	In Replay floors, every kind of creature now has **its own color** (rats, gnolls and so on never share one on a floor), and **bosses fill their whole tile**. Tap one to see what it is.
 BUILD	Play 946 (Nov 25)
 BTN	c:V061_BUGFIX	Replay floors: creatures and doors	Finished runs played from now on show **every creature on the floor**, turn by turn: hostile, boss, friendly, ally and neutral each have their own color, and you can **tap one to see what it is**. **Locked, crystal and hidden doors** now look different from normal doors. Floors from before maps were kept now show your walk, floors are in the order you played them, and the Blacksmith and Imp floors are named. Idea and notes from National Pie.
 BUILD	Play 945 (Nov 25)
