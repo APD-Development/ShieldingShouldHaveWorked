@@ -125,7 +125,9 @@ public class WndInfoItem extends Window {
 					com.shatteredpixel.shatteredpixeldungeon.apd.query.ItemHistory.cached(
 							com.shatteredpixel.shatteredpixeldungeon.apd.recorder.ApdRecorder.historyRoot(),
 							com.shatteredpixel.shatteredpixeldungeon.apd.recorder.ApdRecorder.currentRunId());
-			String line = h == null ? "" : h.line(item.name(), item instanceof com.shatteredpixel.shatteredpixeldungeon.items.EquipableItem);
+			//Chris, Nov 25: the history line only on things that can be equipped
+			if (!(item instanceof com.shatteredpixel.shatteredpixeldungeon.items.EquipableItem)) return "";
+			String line = h == null ? "" : h.line(item.name());
 			return line.isEmpty() ? "" : "\n\n" + line;
 		} catch (Throwable e){
 			return "";
