@@ -742,4 +742,9 @@ public class CommunityControllerTest {
 			assertTrue(has(last(), "Deleted from the workshop."));
 		} finally { CommunityController.modsDir = null; }
 	}
+
+	@Test public void seasonSummary_saysOneDayNotOneDays(){
+		assertEquals("Submissions 1 day, voting 30 days, tournament 28 days. Starts now.", CommunityController.seasonSummary(1, 30, 28));
+		assertEquals("Submissions 30 days, voting 1 day, tournament 4 days. Starts now.", CommunityController.seasonSummary(30, 1, 4));
+	}
 }
