@@ -3511,4 +3511,10 @@ public class MechanicsExplanationTest {
   Dungeon.hero=null;String text=wand.statsDesc();assertTrue(text.contains("heal an ally"));assertFalse(text.contains("costs _1"));assertFalse(text.contains("restore _1"));Dungeon.hero=hero;
  }
 
+ @Test public void runtimeBuffDurationsUseSingularForOneTurn(){
+  assertEquals("1 turn",BuffExplanation.turns(1));
+  assertEquals("2 turns",BuffExplanation.turns(2));
+  assertEquals("0 turns",BuffExplanation.turns(0));
+  assertEquals(ObfuscationExplanation.number(1.5f)+" turns",BuffExplanation.turns(1.5f));
+ }
 }
