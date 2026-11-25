@@ -288,6 +288,9 @@ default-on settings (SPDSettings.keepOldDefaultsForExistingPlayers). Next: Googl
 (Credential Manager), server URL default once deployed, run reviews. HttpGateway contract routes, deployment workflow, Android Community screens wired to it, Play Age Signals.
 
 ## Run log
+- 2026-11-25 8 AM ET (scheduled): Play 944 uploaded to closed test (CI 45619321485 green on a9580786; bundle run 45620136695;
+  versionCode 944, icons pixel-identical, label ADHD Pixel Dungeon, no Rhino). New since 943: game-over Replay floors reads only
+  the ended run, What happened single-reading fix, Research lab/Luck lab wording. Dev APK sent. Not device-verified.
 - 2026-11-25 7 AM ET (scheduled): Research Equipment/Healing window cards said "next 1 turns" for a one-turn window; now "next 1 turn". +2 assertions (EquipmentWindowTest, DamageRecoveryWindowTest); full CI 45610604619 green (side branch fix/window-turn-singular, cherry-picked). Not device-verified. Still OPEN for Chris: Badge-or-what for the new-search achievement; `defense` vs `evasion`; talents hook spec; mod starting items; Loot Availability score multiplier.
 - 2026-11-25 6 AM ET (scheduled): UIMSD fact-coverage report said "1 of 1 runs contain" for a single run; now "1 of 1 run contains". +1 DerivedStoreTest assertion; full CI 45601359601 green (side branch fix/coverage-singular, cherry-picked). Not device-verified. Still OPEN for Chris: Badge-or-what for the new-search achievement; `defense` vs `evasion`; talents hook spec; mod starting items; Loot Availability score multiplier.
 - 2026-11-25 5 AM ET (scheduled): Research turn-window description said "(1 turns)" for a one-turn window; now "(1 turn)". +1 RunTurnWindowTest assertion; full CI 45591866222 green (side branch fix/turn-window-singular, cherry-picked). Not device-verified. Still OPEN for Chris: Badge-or-what for the new-search achievement; `defense` vs `evasion`; talents hook spec; mod starting items; Loot Availability score multiplier.
