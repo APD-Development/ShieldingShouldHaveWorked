@@ -115,22 +115,25 @@ public final class ItemHistory {
 	//---- the game's shared copy: built once off the render thread, rebuilt for a new run ----
 
 	private static volatile ItemHistory shared;
-	private static volatile String sharedFor;
+	//The run an index was built for travels with the index itself, so a reader can never pair one build's index
+	//with another build's run id (two separate volatile fields could be read across a rebuild).
+	private volatile String builtFor;
 	private static volatile boolean building;
 
 	/** The cached index if it is ready for this run; otherwise starts building it and returns null. */
 	public static ItemHistory cached( final File history, final String currentRun ){
 		ItemHistory h = shared;
 		String forRun = currentRun == null ? "" : currentRun;
-		if (h != null && forRun.equals(sharedFor)) return h;
+		if (h != null && forRun.equals(h.builtFor)) return h;
 		if (history == null || building) return null;
 		building = true;
 		Thread t = new Thread(new Runnable(){
 			@Override
 			public void run(){
 				try {
-					shared = of(new DatasetStore(history).load(), currentRun);
-					sharedFor = forRun;
+					ItemHistory built = of(new DatasetStore(history).load(), currentRun);
+					built.builtFor = forRun;
+					shared = built;
 				} catch (Throwable unreadable){
 					//leave the old copy; the window simply shows no history line
 				} finally {
