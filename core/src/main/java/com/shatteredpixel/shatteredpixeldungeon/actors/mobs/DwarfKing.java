@@ -220,7 +220,7 @@ public class DwarfKing extends Mob {
 					spend(3 * TICK);
 					summonsMade += 2;
 					return true;
-				} else if (shielding() <= com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomBossHealthHooks.threshold(300) && summonsMade < 12){
+				} else if (shielding() <= apdShieldMark(6) && summonsMade < 12){
 					if (summonsMade == 6) {
 						sprite.centerEmitter().start(Speck.factory(Speck.SCREAM), 0.4f, 2);
 						Sample.INSTANCE.play(Assets.Sounds.CHALLENGE);
@@ -236,7 +236,7 @@ public class DwarfKing extends Mob {
 					summonsMade += 3;
 					spend(3*TICK);
 					return true;
-				} else if (shielding() <= com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomBossHealthHooks.threshold(150) && summonsMade < 18) {
+				} else if (shielding() <= apdShieldMark(12) && summonsMade < 18) {
 					if (summonsMade == 12) {
 						sprite.centerEmitter().start(Speck.factory(Speck.SCREAM), 0.4f, 2);
 						Sample.INSTANCE.play(Assets.Sounds.CHALLENGE);
@@ -255,7 +255,6 @@ public class DwarfKing extends Mob {
 					}
 					return true;
 				} else {
-					apdUnstickShield();
 					spend(TICK);
 					return true;
 				}
@@ -271,7 +270,7 @@ public class DwarfKing extends Mob {
 					spend(3 * TICK);
 					summonsMade++;
 					return true;
-				} else if (shielding() <= com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomBossHealthHooks.threshold(200) && summonsMade < 8) {
+				} else if (shielding() <= apdShieldMark(4) && summonsMade < 8) {
 					if (summonsMade == 4) {
 						sprite.centerEmitter().start(Speck.factory(Speck.SCREAM), 0.4f, 2);
 						Sample.INSTANCE.play(Assets.Sounds.CHALLENGE);
@@ -285,7 +284,7 @@ public class DwarfKing extends Mob {
 					summonsMade++;
 					spend(TICK);
 					return true;
-				} else if (shielding() <= com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomBossHealthHooks.threshold(100) && summonsMade < 12) {
+				} else if (shielding() <= apdShieldMark(8) && summonsMade < 12) {
 					sprite.centerEmitter().start(Speck.factory(Speck.SCREAM), 0.4f, 2);
 					Sample.INSTANCE.play(Assets.Sounds.CHALLENGE);
 					yell(Messages.get(this, "wave_3"));
@@ -297,7 +296,6 @@ public class DwarfKing extends Mob {
 					spend(TICK);
 					return true;
 				} else {
-					apdUnstickShield();
 					spend(TICK);
 					return true;
 				}
@@ -496,7 +494,11 @@ public class DwarfKing extends Mob {
 			int objectives = Dungeon.isChallenged(Challenges.STRONGER_BOSSES) ? 18 : 12;
 			int completed = Math.min(objectives, apdShieldObjectivesResolved);
 			if (completed < objectives) {
-				dmg = (int)((long)HT*(completed+1)/objectives - (long)HT*completed/objectives);
+				// Each finished objective leaves the shield exactly where its share says, so the last one always reaches 0.
+				// A fixed slice was not enough: below 20 shield the barrier regrows 1 a turn, and that regrowth was never
+				// taken back, leaving the king shielded forever with every summon dead (National Pie, Nov 23).
+				int target = (int)((long)HT - (long)HT*(completed+1)/objectives);
+				dmg = Math.max(0, shielding() - target);
 				apdShieldObjectivesResolved = completed+1;
 			} else dmg = 0;
 		}
@@ -539,7 +541,25 @@ public class DwarfKing extends Mob {
 				}
 			}
 		} else if (phase == 2 && shielding() == 0) {
-			apdEnterFinalPhase();
+			properties.remove(Property.IMMOVABLE);
+			phase = 3;
+			ApdPlay.onBossPhase(name(), phase, "final");
+			summonsMade = 1; //monk/warlock on 3rd summon
+			sprite.centerEmitter().start( Speck.factory( Speck.SCREAM ), 0.4f, 2 );
+			Sample.INSTANCE.play( Assets.Sounds.CHALLENGE );
+			yell(  Messages.get(this, "enraged", Dungeon.hero.name()) );
+			BossHealthBar.bleed(true);
+			Game.runOnRenderThread(new Callback() {
+				@Override
+				public void call() {
+					Music.INSTANCE.fadeOut(0.5f, new Callback() {
+						@Override
+						public void call() {
+							Music.INSTANCE.play(Assets.Music.CITY_BOSS_FINALE, true);
+						}
+					});
+				}
+			});
 		} else if (phase == 3 && preHP > com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomBossHealthHooks.threshold(20) && HP < com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomBossHealthHooks.threshold(20) && isAlive()){
 			yell( Messages.get(this, "losing") );
 		}
@@ -774,56 +794,12 @@ public class DwarfKing extends Mob {
 		}
 	}
 
-	private void apdEnterFinalPhase(){
-			properties.remove(Property.IMMOVABLE);
-			phase = 3;
-			ApdPlay.onBossPhase(name(), phase, "final");
-			summonsMade = 1; //monk/warlock on 3rd summon
-			sprite.centerEmitter().start( Speck.factory( Speck.SCREAM ), 0.4f, 2 );
-			Sample.INSTANCE.play( Assets.Sounds.CHALLENGE );
-			yell(  Messages.get(this, "enraged", Dungeon.hero.name()) );
-			BossHealthBar.bleed(true);
-			Game.runOnRenderThread(new Callback() {
-				@Override
-				public void call() {
-					Music.INSTANCE.fadeOut(0.5f, new Callback() {
-						@Override
-						public void call() {
-							Music.INSTANCE.play(Assets.Music.CITY_BOSS_FINALE, true);
-						}
-					});
-				}
-			});
-	}
-
-	// APD (Pie's report, Nov 23): phase 2 must end once every summon is dead. If a summon's
-	// KingDamager never fired, the shield sat above the next wave's threshold with nothing left
-	// to kill, and the king stayed invulnerable forever. With no summon alive, downed or still
-	// being summoned, drop the shield to where the finished waves should have left it.
-	void apdUnstickShield(){
-		if (phase != 2 || !buffs(Summoning.class).isEmpty()) return;
-		for (Char ch : Actor.chars()){
-			if (ch == this) continue;
-			if (ch.buff(KingDamager.class) != null || ch.buff(Ghoul.GhoulLifeLink.class) != null) return;
-		}
-		for (Mob m : getSubjects()) if (m.isAlive()) return;
-		boolean hard = Dungeon.isChallenged(Challenges.STRONGER_BOSSES);
-		int objectives = hard ? 18 : 12, done, target;
-		if (hard) {
-			if (summonsMade < 12)      { target = com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomBossHealthHooks.threshold(300); done = 6; }
-			else if (summonsMade < 18) { target = com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomBossHealthHooks.threshold(150); done = 12; }
-			else                       { target = 0; done = 18; }
-		} else {
-			if (summonsMade < 8)       { target = com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomBossHealthHooks.threshold(200); done = 4; }
-			else if (summonsMade < 12) { target = com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.CustomBossHealthHooks.threshold(100); done = 8; }
-			else                       { target = 0; done = 12; }
-		}
-		if (shielding() <= target) return;
-		DKBarrior barrier = buff(DKBarrior.class);
-		if (barrier == null) return;
-		barrier.absorbDamage(shielding() - target);
-		apdShieldObjectivesResolved = Math.max(apdShieldObjectivesResolved, Math.min(objectives, done));
-		if (shielding() == 0) apdEnterFinalPhase();
+	// Where the shield stands once this many phase 2 objectives are done (300 shield: 4 -> 200, 8 -> 100; stronger
+	// 450: 6 -> 300, 12 -> 150, the original numbers). Rounding each wave threshold on its own at custom boss health
+	// could put it 1 below where the kills leave the shield, so the next wave never came.
+	int apdShieldMark(int objectivesDone){
+		int objectives = Dungeon.isChallenged(Challenges.STRONGER_BOSSES) ? 18 : 12;
+		return (int)((long)HT - (long)HT*objectivesDone/objectives);
 	}
 
 	public static class KingDamager extends Buff {
