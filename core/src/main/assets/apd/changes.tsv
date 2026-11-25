@@ -3,7 +3,36 @@
 # Icons: i:NAME = Icons, c:NAME = ChangeIcons, s:NAME = ItemSpriteSheet. Body: \n = new line, **x** = highlight.
 TAB	480+
 MAJOR	Coming Soon
-BTN	i:NEWS	What's next	I'm working on this change history first. After that, the **Cleric Grudge** design and the leftover **talent description** audit are next.\n\nAnything marked "Developer build" only exists in my own test build until I say it's ready for Alpha Testers.
+BTN	i:NEWS	What's next	Finishing the last **UIMSD** upgrades, then **script mods** for Community once I've tested them on my own phone.\n\nAnything marked "Developer build" only exists in my own test build until I say it's ready for Alpha Testers.
+MAJOR	Play builds
+BUILD	Play 944 (Nov 25)
+BTN	i:RANKINGS	Clearer research wording	**Replay floors** from the game-over screen opens faster. The Research lab no longer overstates luck when runs are tied, and says **1 turn** instead of 1 turns.
+BUILD	Play 943 (Nov 25)
+BTN	i:BACKPACK	Walk-over pickup keeps walking	With auto pickup on, tapping past an item picks it up and then **keeps walking to where you tapped**. Dew you can't use (full waterskin, full health) is walked over.
+BTN	s:DEWDROP	Dew stacks	A dewdrop landing on another makes a **stack of 2**, and a stack heals by its full count. Dew scattered by a **Dewcatcher** no longer sets off other plants.
+BUILD	Play 942 (Nov 24)
+BTN	i:INFO	What happened fixes	The **What happened** screen after a death reads only the run that just ended, shows the right death, and no longer repeats lines. **Replay floors** handles floors with no recorded steps. The support report says whether your runs are being recorded.
+BUILD	Play 941 (Nov 24)
+BTN	i:RANKINGS	Replay floors	After a run ends, step through **each floor's map and the path you took**, from UIMSD or the game-over screen. UIMSD Search notices when you ask something new.
+BUILD	Play 940 (Nov 24)
+BTN	i:RANKINGS	History in item and enemy windows	Item and enemy info windows show a **one-line history** from your past runs. UIMSD reports can be **saved as PDF**, and Research lab results open with a **plain summary line**.
+BUILD	Play 939 (Nov 23)
+BTN	i:INFO	What happened	A **What happened** button on the game-over screen: who killed you and when, your health over the last turns, damage taken by source, effects on you, hunger and what was still in your pack.
+BTN	i:RANKINGS	UIMSD rebuilt	UIMSD opens **much faster** and uses far less memory on long histories. Search understands **everyday questions** ("what kills me the most", "best score as a mage") and fixes typos. Home has a **What do you want to know?** card. Items show **where you found them** and **how you got them**.
+BUILD	Play 938 (Nov 23)
+BTN	i:BACKPACK	Inventory order	Identified items sort by **tier, then level**; unidentified ones after them, with **known-cursed last**.
+BUILD	Play 937 (Nov 22)
+BTN	i:BACKPACK	Take from a pile	The **Items on tile** list has a **Take** button for any item in the pile you're standing on. Community cards and Custom Rules got cleaner screens with tabs.
+BUILD	Play 936 (Nov 22)
+BTN	i:PREFS	Walk-over pickup choices	Walk-over pickup is now a **three-way setting**.
+BUILD	Play 935 (Nov 21)
+BTN	i:INFO	Duelist and loot	Duelist abilities **lock on** to your target. Walk-over pickup takes the **whole pile**. Ring of Wealth gear range and **Gemstone Dust** were adjusted, and spellbook scroll names are shown.
+BUILD	Play 932-934 (Nov 20-21)
+BTN	i:INFO	Blocking and alchemy	Shields and blocking weapons show their **block numbers**. **Loot Availability** info, ring alchemy rules, and Scroll of Gathering moves loot sitting on **spent traps**. Full-backpack pickup settings.
+BUILD	Play 926-931 (Nov 19-20)
+BTN	i:INFO	Speed and pickup	The **APD icon**, game speed from **0.5x to 1000x** in every build, walk-over item pickup, a lag fix, and Scroll of Gathering only moving loot you've seen (not traps or locked rooms). Wraith 0 HP fix.
+BUILD	Play 922-924 (Nov 18)
+BTN	i:NEWS	Community	**Community** went live with Google sign-in, an **About** menu, and the seed bracket.
 MAJOR	APD 489
 BUILD	C489S / P489S (Nov 18)
 BTN	i:PREFS	APD settings start off	Every **APD setting** now starts **off** for new players (stair shortcut, adaptive search, damage-over-time panel, grass dew pickup, waterskin and known-trap confirmations, trophy outlines). Settings you already changed stay as you set them. Recording stays on, and resting still stops at full health and when starving.

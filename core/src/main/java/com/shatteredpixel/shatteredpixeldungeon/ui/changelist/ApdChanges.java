@@ -83,6 +83,7 @@ public class ApdChanges {
 			case "DART": return ItemSpriteSheet.DART;
 			case "SPIRIT_BOW": return ItemSpriteSheet.SPIRIT_BOW;
 			case "GOLD": return ItemSpriteSheet.GOLD;
+			case "DEWDROP": return ItemSpriteSheet.DEWDROP;
 			default: throw new IllegalArgumentException(name);
 		}
 	}
