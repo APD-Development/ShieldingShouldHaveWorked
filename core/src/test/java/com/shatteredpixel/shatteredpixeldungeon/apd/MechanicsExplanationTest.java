@@ -2469,7 +2469,7 @@ public class MechanicsExplanationTest {
   }
  }
  @Test public void earthrootExplanationPreservesItsLastHitRuleRatherThanRockArmorRule(){
-  com.shatteredpixel.shatteredpixeldungeon.plants.Earthroot.Armor earth=Buff.affect(hero,com.shatteredpixel.shatteredpixeldungeon.plants.Earthroot.Armor.class);earth.level(1);int limit=earth.perHitLimit();assertTrue(earth.desc().contains("at least 1 more damage"));assertTrue(MechanicsDetails.buff(earth,earth.desc()).contains("Remaining reserve: 1 points"));assertEquals(11-Math.min(11,limit),earth.absorb(11));assertNull(hero.buff(com.shatteredpixel.shatteredpixeldungeon.plants.Earthroot.Armor.class));
+  com.shatteredpixel.shatteredpixeldungeon.plants.Earthroot.Armor earth=Buff.affect(hero,com.shatteredpixel.shatteredpixeldungeon.plants.Earthroot.Armor.class);earth.level(1);int limit=earth.perHitLimit();assertTrue(earth.desc().contains("at least 1 more damage"));assertTrue(MechanicsDetails.buff(earth,earth.desc()).contains("Remaining reserve: 1 point."));assertEquals(11-Math.min(11,limit),earth.absorb(11));assertNull(hero.buff(com.shatteredpixel.shatteredpixeldungeon.plants.Earthroot.Armor.class));
  }
 
  @Test public void magicalSightDescriptionUsesLiveRadiusAndFieldOfViewDoesNotDiscoverSecret(){
