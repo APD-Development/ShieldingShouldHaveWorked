@@ -274,19 +274,23 @@ public class CommunityControllerTest {
 		assertTrue(requests.stream().anyMatch(r -> r.startsWith("DELETE /v1/blocks/dd04")));
 	}
 
-	@Test public void adminStartsASeasonWithDaysTurnedIntoTheServersMilliseconds(){
+	// Chris, Nov 25: the button schedules the season on the next 1st (and the 1st of each following month), it doesn't open it now
+	@Test public void adminSchedulesASeasonOnTheNextFirstsOfTheMonth(){
 		store.age = "pass"; store.token = "tok";
 		signedInWorld(true);
 		reply("GET /v1/admin/reports", 200, "{\"reports\":[]}");
 		reply("POST /v1/admin/seasons", 201, "{\"id\":\"s2\"}");
-		answers.add("Season 2"); answers.add("10"); answers.add("10"); answers.add("28");
+		answers.add("Season 2");
 		controller().start();
 		tap("Moderation");
 		tap("Start a new season");
-		assertEquals("Start Season 2?", last().title);
-		tap("Start it");
-		assertTrue(requests.stream().anyMatch(r -> r.startsWith("POST /v1/admin/seasons {\"title\":\"Season 2\",\"submissionMs\":864000000,\"votingMs\":864000000,\"tournamentMs\":2419200000}")));
-		assertTrue(has(last(), "Season started."));
+		assertEquals("Schedule Season 2?", last().title);
+		long[] m = CommunityController.seasonMonths(System.currentTimeMillis());
+		tap("Schedule it");
+		assertTrue(requests.stream().anyMatch(r -> r.startsWith("POST /v1/admin/seasons {\"title\":\"Season 2\",\"startsAt\":" + m[0]
+				+ ",\"submissionMs\":" + (m[1] - m[0]) + ",\"votingMs\":" + (m[2] - m[1]) + ",\"tournamentMs\":" + (m[3] - m[2]) + "}")));
+		assertTrue(m[0] > System.currentTimeMillis());
+		assertTrue(has(last(), "Season scheduled."));
 	}
 
 	@Test public void adminActsOnReports_hideBanAndFailuresStayOnModeration(){
@@ -744,9 +748,23 @@ public class CommunityControllerTest {
 		} finally { CommunityController.modsDir = null; }
 	}
 
-	@Test public void seasonSummary_saysOneDayNotOneDays(){
-		assertEquals("Submissions 1 day, voting 30 days, tournament 28 days. Starts now.", CommunityController.seasonSummary(1, 30, 28));
-		assertEquals("Submissions 30 days, voting 1 day, tournament 4 days. Starts now.", CommunityController.seasonSummary(30, 1, 4));
+	// Chris, Nov 25: pressed any time in November, the season opens Dec 1, voting Jan 1, bracket Feb 1, ends Mar 1 (Eastern)
+	@Test public void seasonRunsOnCalendarMonthsFromTheNextFirst(){
+		java.text.SimpleDateFormat f = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm");
+		f.setTimeZone(java.util.TimeZone.getTimeZone("America/New_York"));
+		for (String pressed : new String[]{"2026-11-01 00:00", "2026-11-25 23:45", "2026-11-30 23:59"}){
+			long[] m;
+			try { m = CommunityController.seasonMonths(f.parse(pressed).getTime()); } catch (java.text.ParseException e){ throw new AssertionError(e); }
+			assertEquals("2026-12-01 00:00", f.format(new java.util.Date(m[0])));
+			assertEquals("2027-01-01 00:00", f.format(new java.util.Date(m[1])));
+			assertEquals("2027-02-01 00:00", f.format(new java.util.Date(m[2])));
+			assertEquals("2027-03-01 00:00", f.format(new java.util.Date(m[3])));
+		}
+		try {
+			long[] m = CommunityController.seasonMonths(f.parse("2026-11-25 23:45").getTime());
+			assertEquals("Submissions open December 1, 2026. Voting starts January 1, 2027. The tournament starts February 1, 2027 and ends March 1, 2027.",
+					CommunityController.seasonDates(m));
+		} catch (java.text.ParseException e){ throw new AssertionError(e); }
 	}
 
 	//Chris, Nov 25 (video): coming back to Community showed "Talking to the Community server..." every time

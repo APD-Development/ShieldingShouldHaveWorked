@@ -206,6 +206,26 @@ test('account deletion removes the account, its sessions, posts, comments, repor
   assert.equal((await call('POST', '/v1/auth/login', { email: 'gone@x.com', password: 'hunter2hunter2' })).status, 401);
 });
 
+test('a season scheduled for later stays closed until its start date (Chris, Nov 25: opens on the 1st)', async () => {
+  const { env, call, member, tick } = setup();
+  env.DB.raw.prepare('DELETE FROM seasons').run();
+  const chris = await member('chris@example.com', 'Chris');
+  const ana = await member('ana@x.com', 'Ana');
+  const hour = 3600 * 1000;
+  const start = env.now() + 5 * hour;
+  const r = await call('POST', '/v1/admin/seasons', { title: 'December', startsAt: start, submissionMs: 31 * 24 * hour, votingMs: 31 * 24 * hour, tournamentMs: 28 * 24 * hour }, chris.token);
+  assert.equal(r.status, 201);
+  assert.equal((await call('GET', '/v1/season')).body.season, null);
+  assert.equal((await call('POST', '/v1/submissions', { title: 'Early', body: 'b' }, ana.token)).body.error, 'submissions_closed');
+  tick(5 * hour);
+  const s = (await call('GET', '/v1/season')).body.season;
+  assert.equal(s.phase, 'submissions');
+  assert.equal(s.startsAt, start);
+  assert.equal(s.votingAt, start + 31 * 24 * hour);
+  assert.equal(s.endsAt, start + 90 * 24 * hour);
+  assert.equal((await call('POST', '/v1/submissions', { title: 'On time', body: 'b' }, ana.token)).status, 201);
+});
+
 test('there is no private-message route', async () => {
   const { call, member } = setup();
   const m = await member('pm@x.com');

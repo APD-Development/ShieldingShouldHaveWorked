@@ -216,6 +216,12 @@ public final class CommunityApi {
 				+ ",\"votingMs\":" + votingDays * day + ",\"tournamentMs\":" + tournamentDays * day + "}");
 	}
 
+	// A season on fixed dates: m = {submissions open, voting starts, tournament starts, season ends}, all ms.
+	public Result adminScheduleSeason(String title, long[] m){
+		return call("POST", "/v1/admin/seasons", "{\"title\":" + quote(title) + ",\"startsAt\":" + m[0] + ",\"submissionMs\":" + (m[1] - m[0])
+				+ ",\"votingMs\":" + (m[2] - m[1]) + ",\"tournamentMs\":" + (m[3] - m[2]) + "}");
+	}
+
 	public Result adminFind(String query){
 		try { return call("GET", "/v1/admin/accounts?q=" + java.net.URLEncoder.encode(query, "UTF-8"), null); }
 		catch (java.io.UnsupportedEncodingException e){ return new Result(0, null, "offline"); }

@@ -1050,7 +1050,7 @@ public final class CommunityController {
 		call(api::adminReports, r -> {
 			Screen s = new Screen("Moderation", "Open reports, most reported first.");
 			s.back = this::hub;
-			s.item("Start a new season", "Opens submissions now", this::startSeason);
+			s.item("Start a new season", "Opens on the 1st of next month", this::startSeason);
 			s.item("Find a player", "Ban or unban anyone by name or email", this::findPlayer);
 			if (!r.ok()){ s.warning(message(r)); s.item("Back", null, this::hub); ui.show(s); return; }
 			JsonValue list = r.body.get("reports");
@@ -1106,37 +1106,42 @@ public final class CommunityController {
 		});
 	}
 
-	static String seasonSummary(int sub, int vote, int tour){
-		return "Submissions " + days(sub) + ", voting " + days(vote) + ", tournament " + days(tour) + ". Starts now.";
+	/** Chris, Nov 25: a season runs on calendar months, Eastern time. Submissions open at midnight on the 1st of the
+	 *  month after the button is pressed, Month 2 voting on the next 1st, the Month 3 bracket on the 1st after that,
+	 *  and the season ends on the following 1st. Returns those four instants (ms). */
+	static long[] seasonMonths(long nowMs){
+		java.util.Calendar c = java.util.Calendar.getInstance(java.util.TimeZone.getTimeZone("America/New_York"));
+		c.setTimeInMillis(nowMs);
+		c.set(java.util.Calendar.DAY_OF_MONTH, 1);
+		c.set(java.util.Calendar.HOUR_OF_DAY, 0);
+		c.set(java.util.Calendar.MINUTE, 0);
+		c.set(java.util.Calendar.SECOND, 0);
+		c.set(java.util.Calendar.MILLISECOND, 0);
+		long[] out = new long[4];
+		for (int n = 0; n < 4; n++){ c.add(java.util.Calendar.MONTH, 1); out[n] = c.getTimeInMillis(); }
+		return out;
 	}
 
-	private static String days(int n){ return n + (n == 1 ? " day" : " days"); }
+	static String seasonDates(long[] m){
+		java.text.SimpleDateFormat f = new java.text.SimpleDateFormat("MMMM d, yyyy", java.util.Locale.US);
+		f.setTimeZone(java.util.TimeZone.getTimeZone("America/New_York"));
+		return "Submissions open " + f.format(new java.util.Date(m[0])) + ". Voting starts " + f.format(new java.util.Date(m[1]))
+				+ ". The tournament starts " + f.format(new java.util.Date(m[2])) + " and ends " + f.format(new java.util.Date(m[3])) + ".";
+	}
 
-	// Title, then the three phase lengths in days (30 / 30 / 28 suggested), then confirm.
+	// Title, then confirm the calendar-month dates.
 	private void startSeason(){
 		ui.ask("Season title", "What should this season be called?", "", 80, false, title -> {
 			if (title == null || title.trim().isEmpty()){ moderation(); return; }
-			ui.ask("Submissions (days)", "How many days are submissions open?", "30", 3, false, a -> {
-				Integer sub = number(a, 1, 120);
-				if (sub == null){ moderation(); return; }
-				ui.ask("Voting (days)", "How many days does Month 2 voting run?", "30", 3, false, b -> {
-					Integer vote = number(b, 1, 120);
-					if (vote == null){ moderation(); return; }
-					ui.ask("Tournament (days)", "How many days does the tournament run? (4 weeks = 28)", "28", 3, false, c -> {
-						Integer tour = number(c, 4, 120);
-						if (tour == null){ moderation(); return; }
-						Screen s = new Screen("Start " + title.trim() + "?", seasonSummary(sub, vote, tour));
-						s.item("Start it", null, () -> call(() -> api.adminStartSeason(title.trim(), sub, vote, tour), r -> {
-							if (r.ok()){ uncacheLists(); done("Season started. Submissions are open.", this::hub); }
-							else if ("season_overlaps".equals(r.error)) problem(r, this::moderation);
-							else problem(r, this::moderation);
-						}));
-						s.item("Cancel", null, this::moderation);
-						s.back = this::moderation;
-						ui.show(s);
-					});
-				});
-			});
+			final long[] m = seasonMonths(System.currentTimeMillis());
+			Screen s = new Screen("Schedule " + title.trim() + "?", seasonDates(m));
+			s.item("Schedule it", null, () -> call(() -> api.adminScheduleSeason(title.trim(), m), r -> {
+				if (r.ok()){ uncacheLists(); done("Season scheduled. " + seasonDates(m), this::hub); }
+				else problem(r, this::moderation);
+			}));
+			s.item("Cancel", null, this::moderation);
+			s.back = this::moderation;
+			ui.show(s);
 		});
 	}
 

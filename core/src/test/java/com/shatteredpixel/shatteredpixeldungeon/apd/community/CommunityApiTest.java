@@ -112,6 +112,13 @@ public class CommunityApiTest {
 		assertEquals("POST /v1/auth/google {\"idToken\":\"idtok\"} Bearer t", seen.get(3));
 	}
 
+	@Test public void schedulingASeasonSendsItsStartAndMonthLengths(){
+		CommunityApi api = api();
+		api.token("t");
+		api.adminScheduleSeason("S", new long[]{1000L, 3000L, 6000L, 10000L});
+		assertEquals("POST /v1/admin/seasons {\"title\":\"S\",\"startsAt\":1000,\"submissionMs\":2000,\"votingMs\":3000,\"tournamentMs\":4000} Bearer t", seen.get(0));
+	}
+
 	@Test public void sendingARunForReviewPostsSeedSetupEndingAndRoasts(){
 		CommunityApi api = api();
 		api.token("t");
