@@ -64,6 +64,7 @@ public class APDSettingsPane extends Component {
 	private CheckBox chkRecord;
     private CheckBox chkDotOverlay;
     private CheckBox chkTrophyOutlines;
+    private CheckBox chkUimsdTour;
 	private CheckBox chkAdult;
     private CheckBox chkTileVisibility;
     private RedButton btnSearchedWallColor;
@@ -186,6 +187,12 @@ public class APDSettingsPane extends Component {
         };
         chkDotOverlay.checked(SPDSettings.dotOverlayEnabled());
         add(chkDotOverlay);
+        //Chris, Nov 26: the UIMSD tour hides after the first view; this brings the welcome card's tour button back
+        chkUimsdTour=new SettingCheckBox("Offer the UIMSD tour again"){
+            @Override protected void onClick(){ super.onClick(); SPDSettings.apdUimsdTourDone(!checked()); }
+        };
+        chkUimsdTour.checked(!SPDSettings.apdUimsdTourDone());
+        add(chkUimsdTour);
         chkTrophyOutlines=new SettingCheckBox("Trophy outlines"){
             @Override protected void onClick(){super.onClick();SPDSettings.trophyOutlines(checked());}
         };
@@ -565,6 +572,7 @@ public class APDSettingsPane extends Component {
         row(ApdSettingsSection.VISIBILITY,chkStairNavigation,"Immediate shortcut to discovered stairs only. This does not reveal hidden stairs.");
         row(ApdSettingsSection.VISIBILITY,chkAutoEnterStairs,"Immediate. Automatically change floors when a stair-navigation path reaches the staircase.");
         row(ApdSettingsSection.HISTORY,btnUimsd,"Open your recorded statistics, queries and investigation tools.");
+        row(ApdSettingsSection.HISTORY,chkUimsdTour,"On: UIMSD's welcome card shows Take the tour again. It turns itself off once you take the tour. The Guide can always replay it.");
         row(ApdSettingsSection.HISTORY,chkRecord,"After restarting APD. Enable or disable recording; existing history is preserved.");
         row(ApdSettingsSection.HISTORY,btnExportHistory,"Save a ZIP backup of run history using the platform file chooser.");
         row(ApdSettingsSection.HISTORY,btnImportHistory,"Import a history ZIP through the platform file chooser. Existing records remain protected.");

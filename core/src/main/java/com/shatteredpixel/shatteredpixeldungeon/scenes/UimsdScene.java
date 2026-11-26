@@ -627,19 +627,22 @@ public class UimsdScene extends PixelScene {
 		RenderedTextBlock what = text(home.emptyMessage(), UimsdStyle.SIZE_HELP, UimsdStyle.TEXT, contentW);
 		what.setPos(x0, y);y = what.bottom() + 4;
 
-		StyledButton tour = new StyledButton(Chrome.Type.GREY_BUTTON_TR, "Take the tour (2 minutes)", 8){
-			@Override
-			protected void onClick(){
-				startTour(0);
-			}
-		};
-		tour.setRect(x0, y, contentW, 22);
-		ui.add(tour);
-		reg("tour", x0, y, contentW, 22);
-		y += 24;
-		RenderedTextBlock sampleNote = text("The tour uses a small made-up history, so it works even before you have played. It never touches your own.", UimsdStyle.SIZE_META, UimsdStyle.FAINT, contentW);
-		sampleNote.setPos(x0, y);
-		y = sampleNote.bottom() + 4;
+		//the tour hides after the first view (Chris, Nov 26); the Guide still replays it
+		if (com.shatteredpixel.shatteredpixeldungeon.apd.demo.UimsdTourFlag.showWelcomeTourButton()){
+			StyledButton tour = new StyledButton(Chrome.Type.GREY_BUTTON_TR, "Take the tour (2 minutes)", 8){
+				@Override
+				protected void onClick(){
+					startTour(0);
+				}
+			};
+			tour.setRect(x0, y, contentW, 22);
+			ui.add(tour);
+			reg("tour", x0, y, contentW, 22);
+			y += 24;
+			RenderedTextBlock sampleNote = text("The tour uses a small made-up history, so it works even before you have played. It never touches your own.", UimsdStyle.SIZE_META, UimsdStyle.FAINT, contentW);
+			sampleNote.setPos(x0, y);
+			y = sampleNote.bottom() + 4;
+		}
 		StyledButton read = new StyledButton(Chrome.Type.GREY_BUTTON_TR, "Read the Guide", 7){
 			@Override
 			protected void onClick(){
@@ -1126,6 +1129,7 @@ public class UimsdScene extends PixelScene {
     private static void endTutorial(){
         synchronized(TOUR_LOCK){
             ++tourGeneration;
+            if (tutorial != null) com.shatteredpixel.shatteredpixeldungeon.apd.demo.UimsdTourFlag.tourEnded();
             tutorial = null;
             tutorialPreparing = false;
             showingSample = false;

@@ -352,6 +352,18 @@ public class SPDSettings extends GameSettings {
 		return getBoolean( KEY_APD_UIMSD_GUIDE_SEEN, false );
 	}
 
+	//APD (Chris, Nov 26): the UIMSD tour has been taken (finished, exited or backed out of). Permanent for the install:
+	//the welcome card's "Take the tour" button never shows again. The Guide still replays it on purpose.
+	public static final String KEY_APD_UIMSD_TOUR_DONE = "apd_uimsd_tour_done";
+
+	public static void apdUimsdTourDone( boolean value ){
+		put( KEY_APD_UIMSD_TOUR_DONE, value );
+	}
+
+	public static boolean apdUimsdTourDone(){
+		return getBoolean( KEY_APD_UIMSD_TOUR_DONE, false );
+	}
+
 	//UIMSD Demo Unlock: both flags are permanent (nothing ever sets them back), so deleting runs or demo data cannot lock UIMSD again or bring the demo button back
 	public static final String KEY_APD_UIMSD_UNLOCKED = "apd_uimsd_unlocked";
 	public static final String KEY_APD_DEMO_UNLOCK_USED = "apd_demo_unlock_used";
