@@ -40,7 +40,7 @@ public final class WndUimsdSearch {
             return;
         }
         ShatteredPixelDungeon.scene().addToFront(WndUimsdList.menu(
-                "UIMSD Search: "+matches.size()+" results",
+                "UIMSD Search: "+matches.size()+(matches.size()==1?" result":" results"),
                 "Choose a table. Its normal filters and hidden-information rules still apply.",
                 choices,(index,checked)->{
                     if(index>=0 && index<matches.size())opener.open(matches.get(index).viewId);
