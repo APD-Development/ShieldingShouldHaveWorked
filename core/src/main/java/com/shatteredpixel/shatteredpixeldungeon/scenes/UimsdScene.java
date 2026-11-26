@@ -495,6 +495,8 @@ public class UimsdScene extends PixelScene {
 	private UimsdHome homeData(){
 		Catalog c = model.catalog();
 		if (c == null) return null;
+		if (model.sharedPicked()) homeAllRules = model.sharedAllRules();
+		else if (homeAllRules) model.shareRules(com.shatteredpixel.shatteredpixeldungeon.apd.query.Scope.Rules.ALL, "");
 		if (cachedHome == null || cachedCatalog != c || cachedAll != homeAllRules){
 			UimsdHome prepared = model.preparedHome(c, homeAllRules);
 			cachedHome = prepared == null ? UimsdHome.build(c, model.currentRuleset(), homeAllRules) : prepared;
@@ -552,7 +554,7 @@ public class UimsdScene extends PixelScene {
         reg("search",x0,y,(contentW-2)*.6f,16);
         y+=18;
 		StyledButton rules = new StyledButton(Chrome.Type.GREY_BUTTON_TR, home.mixedRulesets ? "Rules: Mixed" : homeAllRules ? "Rules: all" : "Rules: current", 6){
-			@Override protected void onClick(){ homeAllRules=!homeAllRules;dirty=true; }
+			@Override protected void onClick(){ homeAllRules=!homeAllRules;model.shareRules(homeAllRules ? com.shatteredpixel.shatteredpixeldungeon.apd.query.Scope.Rules.ALL : com.shatteredpixel.shatteredpixeldungeon.apd.query.Scope.Rules.CURRENT, "");dirty=true; }
 		};
 		rules.setRect(x0,y,contentW-22,18);ui.add(rules);
 		StyledButton scopeInfo = new StyledButton(Chrome.Type.GREY_BUTTON_TR, "?", 7){

@@ -465,6 +465,7 @@ public final class UimsdModel {
 	}
 
 	private void apply( Query q ){
+		q = withSharedRules(q);
 		query = q;
 		page = 0;
 		recompute();
@@ -622,6 +623,32 @@ public final class UimsdModel {
 		}
 	}
 
+	// Chris, Nov 26 (five trial jurors set "All rules" on one table and found the next one back on current rules):
+	// one rules setting for all of UIMSD. Whatever rules the player picks on Home or any table, every table opened
+	// afterwards uses them too, while UIMSD stays open. Null until the player picks.
+	private Scope.Rules sharedRules;
+	private String sharedRuleset = "";
+
+	public synchronized void shareRules( Scope.Rules r, String ruleset ){
+		sharedRules = r;
+		sharedRuleset = ruleset == null ? "" : ruleset;
+	}
+
+	public synchronized boolean sharedPicked(){
+		return sharedRules != null;
+	}
+
+	/** The shared choice is "all rules" (Home's Rules: all). */
+	public synchronized boolean sharedAllRules(){
+		return sharedRules == Scope.Rules.ALL;
+	}
+
+	synchronized Query withSharedRules( Query q ){
+		if (q == null || sharedRules == null) return q;
+		if (q.scope.rules == sharedRules && q.scope.ruleset.equals(sharedRuleset)) return q;
+		return q.withScope(q.scope.withRules(sharedRules, sharedRuleset));
+	}
+
 	private Query initialQuery(ViewDef v, boolean showInternal){
 		Query initial = v.initialQuery().withShowInternal(showInternal);
 		SavedViews.View saved = columnLayouts.get(v.id);
@@ -701,6 +728,7 @@ public final class UimsdModel {
 
 	public synchronized void setScope( Scope s ){
 		if (query.scope.finishedOnly) s = s.withFinishedOnly(true);
+		shareRules(s.rules, s.ruleset);
 		apply(query.withScope(s));
 	}
 
