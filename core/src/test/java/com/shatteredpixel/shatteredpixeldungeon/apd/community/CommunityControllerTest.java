@@ -136,6 +136,16 @@ public class CommunityControllerTest {
 		assertEquals("Hero · by Chris", last().message);
 	}
 
+	@Test public void picturesLine_countsShownAndHeld(){
+		com.badlogic.gdx.utils.JsonReader j = new com.badlogic.gdx.utils.JsonReader();
+		assertNull(CommunityController.picturesLine(null));
+		assertNull(CommunityController.picturesLine(j.parse("[]")));
+		assertEquals("1 picture", CommunityController.picturesLine(j.parse("[{\"id\":\"a\",\"status\":\"approved\"}]")));
+		assertEquals("3 pictures (2 waiting for a moderator; only you can see them)", CommunityController.picturesLine(
+				j.parse("[{\"status\":\"approved\"},{\"status\":\"held\"},{\"status\":\"held\"}]")));
+		assertFalse(CommunityController.IMAGES_ON);
+	}
+
 	@Test public void postTypeName_unknownIsOther(){
 		assertEquals("Quality of life", CommunityController.postTypeName("qol"));
 		assertEquals("Other", CommunityController.postTypeName("weapon"));

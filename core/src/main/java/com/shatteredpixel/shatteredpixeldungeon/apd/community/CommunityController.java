@@ -363,6 +363,23 @@ public final class CommunityController {
 	static final String[] POST_TYPE_NAMES = {"Hero", "Item", "Enemy", "Boss", "Mechanic", "Quality of life", "Other"};
 
 	// Unknown or missing (older server) types read as Other, as the server stores old posts.
+	/** Pictures on ideas stay hidden in the app until Chris approves the R2 + Workers AI cost/setup (plan item 3). */
+	static final boolean IMAGES_ON = false;
+
+	/** One line for an idea's pictures from GET /v1/submissions/:id/images, or null when there are none.
+	 *  Held pictures only come back to their author, so the "waiting" part only ever shows to them. */
+	static String picturesLine(JsonValue images){
+		if (images == null) return null;
+		int shown = 0, held = 0;
+		for (JsonValue v = images.child; v != null; v = v.next){
+			if ("held".equals(v.getString("status", ""))) held++; else if ("approved".equals(v.getString("status", ""))) shown++;
+		}
+		if (shown + held == 0) return null;
+		String line = (shown + held) + ((shown + held) == 1 ? " picture" : " pictures");
+		if (held > 0) line += " (" + held + " waiting for a moderator; only you can see " + (held == 1 ? "it" : "them") + ")";
+		return line;
+	}
+
 	static String postTypeName(String id){
 		for (int i = 0; i < POST_TYPES.length; i++) if (POST_TYPES[i].equals(id)) return POST_TYPE_NAMES[i];
 		return "Other";
@@ -1103,6 +1120,7 @@ public final class CommunityController {
 			s.back = this::hub;
 			s.item("Start a new season", "Opens on the 1st of next month", this::startSeason);
 			s.item("Find a player", "Ban or unban anyone by name or email", this::findPlayer);
+			if (IMAGES_ON) s.item("Pictures waiting", "Approve or remove held pictures", this::heldPictures);
 			if (!r.ok()){ s.warning(message(r)); s.item("Back", null, this::hub); ui.show(s); return; }
 			JsonValue list = r.body.get("reports");
 			if (list == null || list.size == 0) s.note("No open reports.");
@@ -1112,6 +1130,26 @@ public final class CommunityController {
 				s.item(v.getInt("reports", 0) + "x " + kind + ": " + (preview == null ? "(deleted)" : preview), v.getString("reasons", ""), () -> moderate(kind, id, author, preview));
 			}
 			s.item("Back", null, this::hub);
+			ui.show(s);
+		});
+	}
+
+	private void heldPictures(){
+		call(api::adminImages, r -> {
+			Screen s = new Screen("Pictures waiting", "The filter wasn't sure about these. Nobody else sees them until approved.");
+			s.back = this::moderation;
+			if (!r.ok()){ s.warning(message(r)); s.item("Back", null, this::moderation); ui.show(s); return; }
+			JsonValue list = r.body.get("images");
+			if (list == null || list.size == 0) s.note("No pictures waiting.");
+			else for (JsonValue v = list.child; v != null; v = v.next){
+				final String imageId = v.getString("id");
+				String kb = Math.max(1, (v.getInt("size", 0) + 1023) / 1024) + " KB";
+				s.item("Approve " + imageId, kb + " " + ("image/png".equals(v.getString("type", "")) ? "PNG" : "JPG"),
+						() -> call(() -> api.adminImageDecide(imageId, true), x -> { if (x.ok()) heldPictures(); else problem(x, this::heldPictures); }));
+				s.item("Remove " + imageId, "Deleted for good",
+						() -> call(() -> api.adminImageDecide(imageId, false), x -> { if (x.ok()) heldPictures(); else problem(x, this::heldPictures); }));
+			}
+			s.item("Back", null, this::moderation);
 			ui.show(s);
 		});
 	}
