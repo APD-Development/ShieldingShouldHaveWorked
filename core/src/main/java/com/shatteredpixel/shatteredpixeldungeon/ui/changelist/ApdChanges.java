@@ -19,6 +19,27 @@ public class ApdChanges {
 	}
 
 	/** Tab labels in file order. */
+	/** Chris, Nov 26: the "has been patched" screen lists what changed instead of Shattered's two stock lines. The titles
+	 *  of every "Play N" build newer than the one the player had, newest first; empty when none is listed. */
+	public static ArrayList<String> playBuildTitles(String text, int previousVersion, int currentVersion){
+		ArrayList<String> out = new ArrayList<>();
+		if (text == null) return out;
+		boolean take = false;
+		for (String line : text.split("\n")){
+			String[] f = line.split("\t");
+			if (f.length >= 2 && f[0].equals("BUILD")){
+				java.util.regex.Matcher m = java.util.regex.Pattern.compile("^Play (\\d+)").matcher(f[1]);
+				take = false;
+				if (m.find()){ int v = Integer.parseInt(m.group(1)); take = v > previousVersion && v <= currentVersion; }
+			} else if (f.length >= 3 && (f[0].equals("MAJOR") || f[0].equals("TAB"))){
+				take = false;
+			} else if (take && f.length >= 3 && f[0].equals("BTN")){
+				out.add(f[2]);
+			}
+		}
+		return out;
+	}
+
 	public static ArrayList<String> tabs(String text){
 		ArrayList<String> out = new ArrayList<>();
 		for (String line : text.split("\n")){

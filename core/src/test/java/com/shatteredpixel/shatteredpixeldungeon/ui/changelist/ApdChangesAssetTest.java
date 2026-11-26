@@ -78,4 +78,14 @@ public class ApdChangesAssetTest {
 		assertTrue(tabs.size() >= 5);
 		assertEquals(tabs.size(), new java.util.LinkedHashSet<>(tabs).size());
 	}
+
+	// Chris, Nov 26: the patched screen lists each Play build's changes since the one the player had
+	@org.junit.Test public void patchedScreenListsTheNewPlayBuildsChanges(){
+		String text = "MAJOR\tPlay builds\nBUILD\tPlay 949 (Nov 26)\nBTN\ti:NEWS\tC\tc\nBUILD\tPlay 948 (Nov 26)\nBTN\ti:NEWS\tA\ta\nBTN\ti:NEWS\tB\tb\n"
+				+ "BUILD\tPlay 947 (Nov 25)\nBTN\ti:NEWS\tOld\to\nMAJOR\tOther\nBTN\ti:NEWS\tNot a build\tx\n";
+		org.junit.Assert.assertEquals(java.util.Arrays.asList("A", "B"), ApdChanges.playBuildTitles(text, 947, 948));
+		org.junit.Assert.assertEquals(java.util.Arrays.asList("C", "A", "B"), ApdChanges.playBuildTitles(text, 947, 949));
+		org.junit.Assert.assertTrue(ApdChanges.playBuildTitles(text, 949, 949).isEmpty());
+		org.junit.Assert.assertFalse("the real file lists Play 948", ApdChanges.playBuildTitles(ApdChanges.read(), 947, 948).isEmpty());
+	}
 }

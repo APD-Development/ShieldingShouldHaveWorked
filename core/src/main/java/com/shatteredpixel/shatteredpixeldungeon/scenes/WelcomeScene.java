@@ -187,9 +187,15 @@ public class WelcomeScene extends PixelScene {
 				//TODO: change the messages here in accordance with the type of patch.
 				message = Messages.get(this, "patch_intro");
 				message += "\n";
-				//message += "\n" + Messages.get(this, "patch_balance");
-				message += "\n" + Messages.get(this, "patch_bugfixes");
-				message += "\n" + Messages.get(this, "patch_translations");
+				java.util.ArrayList<String> apdChanged = com.shatteredpixel.shatteredpixeldungeon.ui.changelist.ApdChanges.playBuildTitles(
+						com.shatteredpixel.shatteredpixeldungeon.ui.changelist.ApdChanges.read(), previousVersion, ShatteredPixelDungeon.versionCode);
+				if (!apdChanged.isEmpty()){
+					//Chris, Nov 26: say what changed in this build (details under Changes)
+					for (String t : apdChanged) message += "\n- " + t;
+				} else {
+					message += "\n" + Messages.get(this, "patch_bugfixes");
+					message += "\n" + Messages.get(this, "patch_translations");
+				}
 
 			}
 		} else {
