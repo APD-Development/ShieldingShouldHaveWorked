@@ -471,22 +471,32 @@ route('POST', '/delete', async (env, req) => {
 
 // ---- submissions and comments ----
 
+// Post types (Chris, Nov 25): picked when posting; a missing type (older app) is 'other', an unknown one is refused.
+const POST_TYPES = ['hero', 'item', 'enemy', 'boss', 'mechanic', 'qol', 'other'];
+function postType(v) {
+  if (v === undefined || v === null) return 'other';
+  if (typeof v !== 'string' || !POST_TYPES.includes(v)) fail(400, 'bad_type');
+  return v;
+}
+
 route('GET', '/v1/submissions', async (env, req) => {
   const viewer = await currentAccount(env, req);
   const blocked = await blockedIds(env, viewer);
+  const want = new URL(req.url).searchParams.get('type');
+  if (want !== null && !POST_TYPES.includes(want)) fail(400, 'bad_type');
   const { results } = await env.DB.prepare(
-    `SELECT s.id, s.title, s.created_at, s.author_id, a.display_name,
+    `SELECT s.id, s.title, s.post_type, s.created_at, s.author_id, a.display_name,
             (SELECT COUNT(*) FROM comments c JOIN accounts ca ON ca.id = c.author_id
               WHERE c.submission_id = s.id AND c.status = 'visible' AND ca.banned = 0
                 AND c.author_id NOT IN (SELECT blocked_id FROM blocks WHERE blocker_id = ?)) AS comments
        FROM submissions s JOIN accounts a ON a.id = s.author_id
-      WHERE s.status = 'visible' AND a.banned = 0 AND s.season_id = ?
+      WHERE s.status = 'visible' AND a.banned = 0 AND s.season_id = ? AND (? = '' OR s.post_type = ?)
         AND s.author_id NOT IN (SELECT blocked_id FROM blocks WHERE blocker_id = ?) ORDER BY s.created_at DESC LIMIT 500`)
     // The count matches what the idea page shows readable: no banned players' or blocked players' comments.
     // Blocked authors are left out in SQL, before the LIMIT: 500 newer ideas by a blocked player must not empty the list.
-    .bind(viewer ? viewer.id : '', ((await currentSeason(env)) || {}).id ?? '', viewer ? viewer.id : '').all();
+    .bind(viewer ? viewer.id : '', ((await currentSeason(env)) || {}).id ?? '', want ?? '', want ?? '', viewer ? viewer.id : '').all();
   return json(200, { submissions: results.filter((s) => !blocked.has(s.author_id)).map((s) => ({
-    id: s.id, title: s.title, author: { id: s.author_id, displayName: s.display_name }, createdAt: s.created_at, comments: s.comments,
+    id: s.id, title: s.title, type: s.post_type, author: { id: s.author_id, displayName: s.display_name }, createdAt: s.created_at, comments: s.comments,
   })) });
 });
 
@@ -495,10 +505,11 @@ route('POST', '/v1/submissions', async (env, req) => {
   const b = await body(req);
   const season = await currentSeason(env);
   if (phaseOf(season, now(env)) !== 'submissions') fail(409, 'submissions_closed');
+  const type = postType(b.type);
   await rateLimit(env, a, 'submissions');
   const id = newId();
-  await env.DB.prepare('INSERT INTO submissions (id, author_id, title, body, season_id, created_at) VALUES (?, ?, ?, ?, ?, ?)')
-    .bind(id, a.id, filtered(b.title, LIMITS.title, 'title'), filtered(b.body, LIMITS.body, 'body'), season.id, now(env)).run();
+  await env.DB.prepare('INSERT INTO submissions (id, author_id, title, body, post_type, season_id, created_at) VALUES (?, ?, ?, ?, ?, ?, ?)')
+    .bind(id, a.id, filtered(b.title, LIMITS.title, 'title'), filtered(b.body, LIMITS.body, 'body'), type, season.id, now(env)).run();
   return json(201, { id });
 });
 
@@ -518,7 +529,7 @@ route('GET', '/v1/submissions/([0-9a-f]+)', async (env, req, [id]) => {
     return { id: c.id, parentId: c.parent_id, createdAt: c.created_at,
       body: gone ? null : c.body, author: gone ? null : { id: c.author_id, displayName: c.display_name } };
   });
-  return json(200, { id: s.id, title: s.title, body: s.body, createdAt: s.created_at,
+  return json(200, { id: s.id, title: s.title, body: s.body, type: s.post_type, createdAt: s.created_at,
     author: { id: s.author_id, displayName: s.display_name }, comments });
 });
 

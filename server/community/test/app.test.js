@@ -131,6 +131,23 @@ test('threaded comments: replies point at their parent; a removed comment stays 
   assert.deepEqual([list[0].title, list[0].comments], ['Shield rework', 1]);
 });
 
+test('post types: picked when posting, shown on the post, filterable; missing type is other, unknown refused', async () => {
+  const { call, member } = setup();
+  const m = await member('t@x.com', 'T');
+  const boss = (await call('POST', '/v1/submissions', { title: 'Big boss', body: 'b', type: 'boss' }, m.token)).body.id;
+  const old = (await call('POST', '/v1/submissions', { title: 'Old app', body: 'b' }, m.token)).body.id;
+  assert.equal((await call('POST', '/v1/submissions', { title: 'x', body: 'y', type: 'weapon' }, m.token)).body.error, 'bad_type');
+  assert.equal((await call('POST', '/v1/submissions', { title: 'x', body: 'y', type: ['boss'] }, m.token)).body.error, 'bad_type');
+  assert.equal((await call('POST', '/v1/submissions', { title: 'x', body: 'y', type: 'constructor' }, m.token)).body.error, 'bad_type');
+  assert.equal((await call('GET', `/v1/submissions/${boss}`)).body.type, 'boss');
+  assert.equal((await call('GET', `/v1/submissions/${old}`)).body.type, 'other');
+  const all = (await call('GET', '/v1/submissions')).body.submissions;
+  assert.deepEqual(all.map((s) => s.type).sort(), ['boss', 'other']);
+  assert.deepEqual((await call('GET', '/v1/submissions?type=boss')).body.submissions.map((s) => s.id), [boss]);
+  assert.deepEqual((await call('GET', '/v1/submissions?type=qol')).body.submissions, []);
+  assert.equal((await call('GET', '/v1/submissions?type=nope')).body.error, 'bad_type');
+});
+
 test('filter: slurs are refused, swears are masked, harmless words pass', async () => {
   const { call, member } = setup();
   const m = await member('e@x.com');
