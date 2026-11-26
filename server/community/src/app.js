@@ -309,6 +309,13 @@ async function deleteAccount(env, a) {
   }
   // A champion page is the game's development record and stays, but my name and my text come off it.
   await env.DB.prepare("UPDATE champions SET author_id = NULL, body = '' WHERE author_id = ?").bind(a.id).run();
+  // Image bytes aren't in D1, so the cascade can't remove them: delete them from the store first.
+  if (env.IMAGES) {
+    const { results } = await env.DB.prepare(
+      'SELECT i.id FROM idea_images i JOIN submissions s ON s.id = i.submission_id WHERE i.author_id = ? OR s.author_id = ?')
+      .bind(a.id, a.id).all();
+    for (const r of results) await env.IMAGES.delete(r.id);
+  }
   await env.DB.prepare('DELETE FROM accounts WHERE id = ?').bind(a.id).run();
 }
 
@@ -960,6 +967,128 @@ route('POST', '/v1/admin/review-access', async (env, req) => {
   const r = await env.DB.prepare('UPDATE accounts SET review_banned = ? WHERE id = ?').bind(b.allowed ? 0 : 1, id).run();
   if (!r.meta.changes) fail(404, 'not_found');
   await audit(env, admin, b.allowed ? 'review_access_on' : 'review_access_off', `account:${id}`);
+  return json(200, { ok: true });
+});
+
+// ---- images on ideas (Chris, Nov 25: community item 3) ----
+// Up to 8 jpg/png per idea, uploaded by its author. Every upload goes through env.IMAGE_FILTER.check(bytes, type), which
+// answers 'pass', 'block' or 'borderline'. Blocked images are never stored. Borderline ones are HELD for a moderator
+// (Claude's default; Chris hasn't confirmed it). Only approved images are shown to other players.
+// env.IMAGES is the byte store: { put(key, bytes, type), get(key) -> {bytes, type} | null, delete(key) } (R2 adapter).
+// Both are unset in wrangler.toml until Chris approves the R2 / Workers AI cost, so every image route answers
+// 503 images_not_enabled until then.
+const IMAGES_PER_IDEA = 8;
+const IMAGE_MAX = 1024 * 1024; // 1 MB per image after decoding (Claude's call)
+
+function imagesOn(env) { if (!env.IMAGES || !env.IMAGE_FILTER) fail(503, 'images_not_enabled'); }
+
+function imageBytes(type, b64) {
+  if (type !== 'image/png' && type !== 'image/jpeg') fail(400, 'bad_image_type');
+  if (typeof b64 !== 'string' || !b64 || b64.length > Math.ceil(IMAGE_MAX / 3) * 4 + 4) fail(413, 'image_too_large');
+  if (!/^[A-Za-z0-9+/]+={0,2}$/.test(b64)) fail(400, 'bad_image');
+  let bytes;
+  try { bytes = Uint8Array.from(atob(b64), (c) => c.charCodeAt(0)); } catch { fail(400, 'bad_image'); }
+  if (bytes.length > IMAGE_MAX) fail(413, 'image_too_large');
+  // The bytes must really be the declared format, not just labelled as one.
+  const png = [0x89, 0x50, 0x4e, 0x47, 13, 10, 26, 10];
+  const ok = type === 'image/png'
+    ? bytes.length >= 24 && png.every((v, i) => bytes[i] === v)
+    : bytes.length >= 4 && bytes[0] === 0xff && bytes[1] === 0xd8 && bytes[2] === 0xff;
+  if (!ok) fail(400, 'bad_image');
+  return bytes;
+}
+
+// The idea as a viewer may see it (same rule as GET /v1/submissions/:id).
+async function visibleIdea(env, viewer, id) {
+  const s = await env.DB.prepare(
+    `SELECT s.id, s.author_id FROM submissions s JOIN accounts a ON a.id = s.author_id
+      WHERE s.id = ? AND s.status = 'visible' AND a.banned = 0`).bind(id).first();
+  if (!s || (await blockedIds(env, viewer)).has(s.author_id)) fail(404, 'not_found');
+  return s;
+}
+
+route('POST', '/v1/submissions/([0-9a-f]+)/images', async (env, req, [id]) => {
+  imagesOn(env);
+  const a = await needMember(env, req);
+  const s = await visibleIdea(env, a, id);
+  if (s.author_id !== a.id) fail(403, 'not_author');
+  const b = await body(req);
+  const bytes = imageBytes(b.type, b.data);
+  const n = await env.DB.prepare('SELECT COUNT(*) AS n FROM idea_images WHERE submission_id = ?').bind(id).first();
+  if (n.n >= IMAGES_PER_IDEA) fail(409, 'too_many_images');
+  let verdict;
+  try { verdict = await env.IMAGE_FILTER.check(bytes, b.type); } catch { fail(503, 'image_filter_unavailable'); }
+  if (verdict === 'block') fail(422, 'image_refused');
+  // Anything the filter didn't clearly pass waits for a moderator.
+  const status = verdict === 'pass' ? 'approved' : 'held';
+  const iid = newId();
+  await env.IMAGES.put(iid, bytes, b.type);
+  await env.DB.prepare('INSERT INTO idea_images (id, submission_id, author_id, content_type, size, status, created_at) VALUES (?, ?, ?, ?, ?, ?, ?)')
+    .bind(iid, id, a.id, b.type, bytes.length, status, now(env)).run();
+  return json(201, { id: iid, status });
+});
+
+route('GET', '/v1/submissions/([0-9a-f]+)/images', async (env, req, [id]) => {
+  imagesOn(env);
+  const viewer = await currentAccount(env, req);
+  const s = await visibleIdea(env, viewer, id);
+  // The author also sees their own held images (marked held); everyone else sees approved ones only.
+  const own = viewer && viewer.id === s.author_id;
+  const { results } = await env.DB.prepare(
+    `SELECT id, status, content_type FROM idea_images WHERE submission_id = ? AND (status = 'approved' OR ?) ORDER BY created_at`)
+    .bind(id, own ? 1 : 0).all();
+  return json(200, { images: results.map((r) => ({ id: r.id, status: r.status, type: r.content_type })) });
+});
+
+route('GET', '/v1/images/([0-9a-f]+)', async (env, req, [id]) => {
+  imagesOn(env);
+  const viewer = await currentAccount(env, req);
+  const r = await env.DB.prepare('SELECT * FROM idea_images WHERE id = ?').bind(id).first();
+  if (!r) fail(404, 'not_found');
+  const admin = viewer && viewer.role === 'admin' && !viewer.banned;
+  if (!admin) {
+    const s = await visibleIdea(env, viewer, r.submission_id);
+    if (r.status !== 'approved' && !(viewer && viewer.id === s.author_id)) fail(404, 'not_found');
+  }
+  const o = await env.IMAGES.get(id);
+  if (!o) fail(404, 'not_found');
+  return new Response(o.bytes, { status: 200, headers: { 'content-type': r.content_type, 'cache-control': 'private, no-store' } });
+});
+
+route('DELETE', '/v1/images/([0-9a-f]+)', async (env, req, [id]) => {
+  imagesOn(env);
+  const a = await need(env, req);
+  const r = await env.DB.prepare('SELECT * FROM idea_images WHERE id = ?').bind(id).first();
+  if (!r || (r.author_id !== a.id && a.role !== 'admin')) fail(404, 'not_found');
+  await env.IMAGES.delete(id);
+  await env.DB.prepare('DELETE FROM idea_images WHERE id = ?').bind(id).run();
+  if (a.role === 'admin' && r.author_id !== a.id) await audit(env, a, 'image_delete', `image:${id}`);
+  return json(200, { deleted: true });
+});
+
+route('GET', '/v1/admin/images', async (env, req) => {
+  imagesOn(env);
+  await needAdmin(env, req);
+  const { results } = await env.DB.prepare(
+    `SELECT id, submission_id, author_id, content_type, size, created_at FROM idea_images WHERE status = 'held' ORDER BY created_at`).all();
+  return json(200, { images: results.map((r) => ({ id: r.id, submissionId: r.submission_id, authorId: r.author_id,
+    type: r.content_type, size: r.size, createdAt: r.created_at })) });
+});
+
+route('POST', '/v1/admin/images/([0-9a-f]+)', async (env, req, [id]) => {
+  imagesOn(env);
+  const admin = await needAdmin(env, req);
+  const b = await body(req);
+  if (typeof b.approve !== 'boolean') fail(400, 'bad_decision');
+  const r = await env.DB.prepare("SELECT id FROM idea_images WHERE id = ? AND status = 'held'").bind(id).first();
+  if (!r) fail(404, 'not_found');
+  if (b.approve) {
+    await env.DB.prepare("UPDATE idea_images SET status = 'approved' WHERE id = ?").bind(id).run();
+  } else {
+    await env.IMAGES.delete(id);
+    await env.DB.prepare('DELETE FROM idea_images WHERE id = ?').bind(id).run();
+  }
+  await audit(env, admin, b.approve ? 'image_approve' : 'image_reject', `image:${id}`);
   return json(200, { ok: true });
 });
 
