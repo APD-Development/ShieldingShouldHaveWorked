@@ -61,7 +61,7 @@ public final class RecorderStatus {
 		} else {
 			sb.append("No run being recorded\n");
 		}
-		sb.append("History: ").append(runLogs).append(" runs, ").append(storageBytes / 1024).append(" KB\n");
+		sb.append("History: ").append(runLogs).append(runLogs == 1 ? " run, " : " runs, ").append(storageBytes / 1024).append(" KB\n");
 		if (errorCount > 0 || !lastError.isEmpty()){
 			sb.append("Errors: ").append(errorCount).append("  last: ").append(lastError).append("\n");
 		}
