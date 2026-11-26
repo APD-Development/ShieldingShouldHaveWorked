@@ -69,6 +69,10 @@ public final class ApdFiles {
 			throw new java.io.IOException("PDF is not available on this platform");
 		}
 		void chooseImport( ImportSource source );
+		//the same, but the picker shows only files of this type (e.g. "image/*"); a provider that cannot filter shows everything
+		default void chooseImport( String mimeType, ImportSource source ){
+			chooseImport(source);
+		}
 		//a few words on where files go, for the confirmation messages ("the folder you choose", ...)
 		String where();
 	}

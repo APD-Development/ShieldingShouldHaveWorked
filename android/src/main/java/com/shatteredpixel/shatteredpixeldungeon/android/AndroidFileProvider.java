@@ -155,6 +155,11 @@ public class AndroidFileProvider implements ApdFiles.Provider, AndroidEventListe
 
 	@Override
 	public void chooseImport( final ApdFiles.ImportSource source ){
+		chooseImport( "*/*", source );
+	}
+
+	@Override
+	public void chooseImport( final String mimeType, final ApdFiles.ImportSource source ){
 		pendingImport = source;
 		activity.runOnUiThread( new Runnable() {
 			@Override
@@ -163,7 +168,7 @@ public class AndroidFileProvider implements ApdFiles.Provider, AndroidEventListe
 					Intent intent = new Intent( Intent.ACTION_OPEN_DOCUMENT );
 					intent.addCategory( Intent.CATEGORY_OPENABLE );
 					//archives are .zip, but some file apps label them with other types, so any file can be chosen and is then checked
-					intent.setType( "*/*" );
+					intent.setType( mimeType == null ? "*/*" : mimeType );
 					activity.startActivityForResult( intent, REQUEST_IMPORT );
 				} catch (Throwable e) {
 					pendingImport = null;
