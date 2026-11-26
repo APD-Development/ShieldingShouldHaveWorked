@@ -69,7 +69,7 @@ public final class Datasets {
 		d.add(ColumnDef.num(FactKeys.SCORE, "Score").shown().merge(Merge.LAST).group("Result"));
 		d.add(ColumnDef.num(FactKeys.TURNS, "Turns").shown().merge(Merge.LAST).group("Result"));
 		d.add(ColumnDef.num(FactKeys.DEPTH, "Ended on floor").merge(Merge.LAST).group("Result"));
-		d.add(ColumnDef.text(FactKeys.CAUSE, "Ended by").merge(Merge.LAST).group("Result"));
+		d.add(ColumnDef.text(FactKeys.CAUSE, "Ended by").merge(Merge.LAST).format(ColumnDef.Format.CLASS_NAME).group("Result"));
 		d.add(ColumnDef.enumeration("run.source", "Source").label(1, "Recorded").label(2, "Imported ranking").group("Run"));
 		d.add(ColumnDef.text(FactKeys.STATUS, "Status").merge(Merge.LAST).group("Run"));
 		d.add(ColumnDef.num("run.segments", "Recording parts").merge(Merge.SUM).group("Run")

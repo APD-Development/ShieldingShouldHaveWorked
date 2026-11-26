@@ -85,4 +85,12 @@ public class CellFormatterTest {
 		assertEquals(Long.valueOf(Long.MAX_VALUE), CellFormatter.parse(hundredths, "92233720368547758.07"));
 		assertNull(CellFormatter.parse(hundredths, "92233720368547758.075"));
 	}
+
+	// Trial juror 2 (Nov 25): inner class names showed raw in the Items table and "Ended by"
+	@org.junit.Test public void innerClassNamesReadAsWords(){
+		org.junit.Assert.assertEquals("Firebloom Seed", CellFormatter.className("plants.Firebloom$Seed"));
+		org.junit.Assert.assertEquals("Conjured Bomb", CellFormatter.className("items.bombs.Bomb$ConjuredBomb"));
+		org.junit.Assert.assertEquals("Wand of Blast Wave", CellFormatter.className("items.wands.WandOfBlastWave"));
+		org.junit.Assert.assertEquals("Bomb", CellFormatter.className("items.bombs.Bomb$1"));
+	}
 }

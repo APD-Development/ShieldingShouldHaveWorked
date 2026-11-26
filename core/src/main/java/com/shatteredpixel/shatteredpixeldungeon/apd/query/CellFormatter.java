@@ -60,6 +60,14 @@ public final class CellFormatter {
 	public static String className( String key ){
 		if (key.startsWith(NAME_KEY_PREFIX)) return key.substring(NAME_KEY_PREFIX.length());
 		String simple = key.substring(key.lastIndexOf('.') + 1);
+		//inner classes (trial juror 2, Nov 25: "Firebloom$Seed", "Bomb$ConjuredBomb" in the tables): "Firebloom Seed",
+		//"Conjured Bomb" (an inner name that already ends with the outer one stands alone), anonymous "$1" dropped
+		int d = simple.indexOf('$');
+		if (d >= 0){
+			String outer = simple.substring(0, d), inner = simple.substring(simple.lastIndexOf('$') + 1);
+			if (inner.isEmpty() || Character.isDigit(inner.charAt(0))) simple = outer;
+			else simple = inner.endsWith(outer) ? inner : outer + inner;
+		}
 		StringBuilder b = new StringBuilder();
 		for (int i = 0; i < simple.length(); i++){
 			char c = simple.charAt(i);
