@@ -963,3 +963,85 @@ test('a JSON body that is not an object (null, a number, an array) is 400 bad_js
     assert.equal((await res.json()).error, 'bad_json', raw);
   }
 });
+
+test('idea images: off without bindings; filter pass shows, block refuses, borderline is held for a moderator', async () => {
+  const t = setup();
+  const { call, member, env } = t;
+  const ana = await member('ana@example.com');
+  const bo = await member('bo@example.com');
+  const chris = await member('chris@example.com');
+  const idea = (await call('POST', '/v1/submissions', { title: 'Shield hero', body: 'A hero with a shield' }, ana.token)).body.id;
+  const png = (tag) => btoa(String.fromCharCode(0x89, 0x50, 0x4e, 0x47, 13, 10, 26, 10, ...new Array(16).fill(tag)));
+  const jpg = btoa(String.fromCharCode(0xff, 0xd8, 0xff, 0xe0, 1, 2, 3));
+  // Not configured (the live server today): every image route says so and nothing is stored.
+  let r = await call('POST', `/v1/submissions/${idea}/images`, { type: 'image/png', data: png(1) }, ana.token);
+  assert.deepEqual([r.status, r.body.error], [503, 'images_not_enabled']);
+  r = await call('GET', `/v1/submissions/${idea}/images`);
+  assert.deepEqual([r.status, r.body.error], [503, 'images_not_enabled']);
+
+  const store = new Map();
+  env.IMAGES = { async put(k, b, type) { store.set(k, { bytes: b, type }); }, async get(k) { return store.get(k) || null; }, async delete(k) { store.delete(k); } };
+  // The test filter reads the 9th byte: 1 pass, 2 block, 3 borderline, 4 throws (filter down).
+  env.IMAGE_FILTER = { async check(b) { if (b[8] === 4) throw new Error('down'); return { 1: 'pass', 2: 'block', 3: 'borderline' }[b[8]] || 'pass'; } };
+
+  r = await call('POST', `/v1/submissions/${idea}/images`, { type: 'image/png', data: png(1) }, bo.token);
+  assert.deepEqual([r.status, r.body.error], [403, 'not_author']);
+  r = await call('POST', `/v1/submissions/${idea}/images`, { type: 'image/gif', data: png(1) }, ana.token);
+  assert.deepEqual([r.status, r.body.error], [400, 'bad_image_type']);
+  r = await call('POST', `/v1/submissions/${idea}/images`, { type: 'image/jpeg', data: png(1) }, ana.token);
+  assert.deepEqual([r.status, r.body.error], [400, 'bad_image'], 'a PNG labelled as JPEG is refused');
+  r = await call('POST', `/v1/submissions/${idea}/images`, { type: 'image/png', data: btoa('x'.repeat(1024 * 1024 + 1)) }, ana.token);
+  assert.deepEqual([r.status, r.body.error], [413, 'image_too_large']);
+
+  const ok = await call('POST', `/v1/submissions/${idea}/images`, { type: 'image/png', data: png(1) }, ana.token);
+  assert.deepEqual([ok.status, ok.body.status], [201, 'approved']);
+  r = await call('POST', `/v1/submissions/${idea}/images`, { type: 'image/png', data: png(2) }, ana.token);
+  assert.deepEqual([r.status, r.body.error], [422, 'image_refused']);
+  assert.equal(store.size, 1, 'a refused image is never stored');
+  r = await call('POST', `/v1/submissions/${idea}/images`, { type: 'image/png', data: png(4) }, ana.token);
+  assert.deepEqual([r.status, r.body.error], [503, 'image_filter_unavailable']);
+  const held = await call('POST', `/v1/submissions/${idea}/images`, { type: 'image/png', data: png(3) }, ana.token);
+  assert.deepEqual([held.status, held.body.status], [201, 'held']);
+  const j = await call('POST', `/v1/submissions/${idea}/images`, { type: 'image/jpeg', data: jpg }, ana.token);
+  assert.equal(j.body.status, 'approved');
+
+  // Others see approved only; the author also sees the held one.
+  r = await call('GET', `/v1/submissions/${idea}/images`, null, bo.token);
+  assert.deepEqual(r.body.images.map((i) => i.id), [ok.body.id, j.body.id]);
+  r = await call('GET', `/v1/submissions/${idea}/images`, null, ana.token);
+  assert.deepEqual(r.body.images.map((i) => i.status), ['approved', 'held', 'approved']);
+  const res = await handle(new Request(`https://x/v1/images/${ok.body.id}`), env);
+  assert.equal(res.status, 200);
+  assert.equal(res.headers.get('content-type'), 'image/png');
+  assert.equal(new Uint8Array(await res.arrayBuffer())[8], 1);
+  r = await call('GET', `/v1/images/${held.body.id}`, null, bo.token);
+  assert.equal(r.status, 404, 'a held image is hidden from other players');
+
+  // Moderator queue: approve shows it, reject deletes it.
+  r = await call('GET', '/v1/admin/images', null, bo.token);
+  assert.equal(r.status, 403);
+  r = await call('GET', '/v1/admin/images', null, chris.token);
+  assert.deepEqual(r.body.images.map((i) => i.id), [held.body.id]);
+  r = await call('POST', `/v1/admin/images/${held.body.id}`, { approve: true }, chris.token);
+  assert.equal(r.status, 200);
+  r = await call('GET', `/v1/submissions/${idea}/images`, null, bo.token);
+  assert.equal(r.body.images.length, 3);
+  const held2 = await call('POST', `/v1/submissions/${idea}/images`, { type: 'image/png', data: png(3) }, ana.token);
+  r = await call('POST', `/v1/admin/images/${held2.body.id}`, { approve: false }, chris.token);
+  assert.equal(r.status, 200);
+  assert.equal(store.has(held2.body.id), false);
+
+  // At most 8 per idea.
+  for (let i = 0; i < 5; i++) assert.equal((await call('POST', `/v1/submissions/${idea}/images`, { type: 'image/png', data: png(1) }, ana.token)).status, 201);
+  r = await call('POST', `/v1/submissions/${idea}/images`, { type: 'image/png', data: png(1) }, ana.token);
+  assert.deepEqual([r.status, r.body.error], [409, 'too_many_images']);
+
+  // Author can delete their own; another player can't; deleting the account removes the stored bytes.
+  r = await call('DELETE', `/v1/images/${ok.body.id}`, null, bo.token);
+  assert.equal(r.status, 404);
+  r = await call('DELETE', `/v1/images/${ok.body.id}`, null, ana.token);
+  assert.equal(r.status, 200);
+  assert.equal(store.size, 7);
+  await call('DELETE', '/v1/account', null, ana.token);
+  assert.equal(store.size, 0);
+});
