@@ -14,6 +14,16 @@ on:
       - settings.gradle
   workflow_dispatch:
     inputs:
+      backfill_version:
+        description: "One-off: only publish a GitHub release for an earlier Play build (versionCode). Its dev APK is read from branch release-assets/play-<version>."
+        default: ""
+      backfill_commit:
+        description: "One-off: the exact commit that earlier build came from."
+        default: ""
+      backfill_latest:
+        description: "One-off: mark the backfilled release as latest."
+        type: boolean
+        default: false
       github_release:
         description: "Also publish a GitHub release (play-<versionCode>) with the dev APK and the exact source. Scheduled Play builds only."
         type: boolean
@@ -23,7 +33,28 @@ permissions:
   contents: write
 
 jobs:
+  backfill:
+    if: github.event_name == 'workflow_dispatch' && inputs.backfill_version != ''
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { ref: "${{ inputs.backfill_commit }}", fetch-depth: 0 }
+      - name: Publish the GitHub release for an earlier Play build
+        env:
+          GH_TOKEN: ${{ github.token }}
+          V: ${{ inputs.backfill_version }}
+          C: ${{ inputs.backfill_commit }}
+          LATEST: ${{ inputs.backfill_latest }}
+        run: |
+          mkdir -p /tmp/rel
+          git fetch -q origin "release-assets/play-$V"
+          git show "FETCH_HEAD:APD-Developer-Play$V.apk" > /tmp/rel/APD-Developer-Play$V.apk
+          git archive --format=zip --prefix=ADHD-Pixel-Dungeon-Play$V-source/ -o /tmp/rel/ADHD-Pixel-Dungeon-Play$V-source.zip "$C"
+          gh release create "play-$V" --target "$C" --title "ADHD Pixel Dungeon Play $V" --latest="$LATEST" \
+            --notes "Play closed test build $V (2026-11-25). Developer APK and the exact source of this build attached. What's new: the Changes page in the game." /tmp/rel/*
+          git push -q origin --delete "release-assets/play-$V" || true
   bundle:
+    if: github.event_name != 'workflow_dispatch' || inputs.backfill_version == ''
     runs-on: ubuntu-latest
     timeout-minutes: 40
     steps:
