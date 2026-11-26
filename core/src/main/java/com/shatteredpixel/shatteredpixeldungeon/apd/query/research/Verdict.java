@@ -42,7 +42,7 @@ public final class Verdict {
     public static String luckMetric(String label,Long observed,int n,double percentile){
         String what=label.toLowerCase(java.util.Locale.ROOT);
         if(observed==null)return "this run's "+what+" isn't known exactly";
-        if(n<RunLuck.MIN_PEERS || !Double.isFinite(percentile))return what+" ("+observed+") can't be ranked yet: "+n+" comparable runs, "+RunLuck.MIN_PEERS+" needed";
+        if(n<RunLuck.MIN_PEERS || !Double.isFinite(percentile))return what+" ("+observed+") can't be ranked yet: "+runs(n,"comparable")+", "+RunLuck.MIN_PEERS+" needed";
         long p=Math.round(percentile);
         String where=p>=75 ? "more than most":p<=25 ? "fewer than most":"about as many as usual";
         return what+" ("+observed+"): "+where+", above "+p+"% of "+n+" comparable runs";
@@ -75,10 +75,11 @@ public final class Verdict {
     public static String discoveries(Discoveries.Result r){
         if(r==null)return "In short: discoveries need the plain runs list (no grouping, no errors).";
         if(r.findings.isEmpty())return r.eligible==0 ? "In short: no finished runs here can be compared yet."
-                :"In short: nothing stood out across "+r.eligible+" finished runs; that doesn't mean the groups are the same.";
+                :"In short: nothing stood out across "+runs(r.eligible,"finished")+"; that doesn't mean the groups are the same.";
         Discoveries.Finding top=r.findings.get(0);
         String n=r.findings.size()==1 ? "1 gap stood out":r.findings.size()+" gaps stood out";
-        return "In short: "+n+" across "+r.eligible+" finished runs. Biggest: "+discovery(top).substring("In short: ".length());
+        return "In short: "+n+" across "+runs(r.eligible,"finished")+". Biggest: "+discovery(top).substring("In short: ".length());
     }
+    private static String runs(long n,String kind){return n+" "+kind+(n==1?" run":" runs");}
     private static String pct(Discoveries.Group g){return ResearchData.value(100d*g.wins/g.rows.size())+"%";}
 }

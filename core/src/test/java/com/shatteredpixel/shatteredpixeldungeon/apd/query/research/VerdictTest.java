@@ -25,6 +25,7 @@ public class VerdictTest {
         assertEquals("generated items (3): fewer than most, above 10% of 14 comparable runs",Verdict.luckMetric("Generated items",3L,14,10));
         assertTrue(Verdict.luckMetric("Generated items",7L,14,50).contains("about as many as usual"));
         assertEquals("generated items (7) can't be ranked yet: 4 comparable runs, 10 needed",Verdict.luckMetric("Generated items",7L,4,Double.NaN));
+        assertEquals("generated items (7) can't be ranked yet: 1 comparable run, 10 needed",Verdict.luckMetric("Generated items",7L,1,Double.NaN));
         assertEquals("this run's generated items isn't known exactly",Verdict.luckMetric("Generated items",null,14,Double.NaN));
         assertEquals("In short: this run can't be checked.",Verdict.luck(null));}
 }
