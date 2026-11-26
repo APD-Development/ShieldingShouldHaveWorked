@@ -104,6 +104,7 @@ public final class CommunityApi {
 	public Result submissions(){ return call("GET", "/v1/submissions", null); }
 	public Result submission(String id){ return call("GET", "/v1/submissions/" + id(id), null); }
 	public Result submit(String title, String body){ return call("POST", "/v1/submissions", obj("title", title, "body", body)); }
+	public Result submit(String title, String body, String type){ return call("POST", "/v1/submissions", obj("title", title, "body", body, "type", type)); }
 
 	public Result comment(String submissionId, String parentId, String body){
 		return call("POST", "/v1/submissions/" + id(submissionId) + "/comments",

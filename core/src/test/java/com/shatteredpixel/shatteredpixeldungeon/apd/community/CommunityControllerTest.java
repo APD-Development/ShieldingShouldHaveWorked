@@ -103,6 +103,45 @@ public class CommunityControllerTest {
 		assertFalse(has(last(), "No season is running"));
 	}
 
+	@Test public void postTypes_pickedWhenPosting_shownOnTheIdea_andFilterTheList(){
+		store.age = "pass"; store.token = "tok";
+		signedInWorld(false);
+		reply("GET /v1/season", 200, "{\"season\":{\"id\":\"s1\",\"title\":\"Season 1\",\"phase\":\"submissions\"}}");
+		reply("GET /v1/submissions", 200, "{\"submissions\":[{\"id\":\"b1\",\"title\":\"Big boss\",\"type\":\"boss\",\"author\":{\"displayName\":\"A\"},\"comments\":0},"
+				+ "{\"id\":\"o1\",\"title\":\"Older post\",\"author\":{\"displayName\":\"B\"},\"comments\":2}]}");
+		controller().start();
+		tap("Submissions");
+		assertTrue(has(last(), "Boss · by A"));
+		assertTrue(has(last(), "Other · by B")); // no type from the server reads as Other
+		tap("Show: All types");
+		tap("Boss");
+		assertTrue(has(last(), "Big boss"));
+		assertFalse(has(last(), "Older post"));
+		tap("Show: Boss");
+		tap("Quality of life");
+		assertTrue(has(last(), "No Quality of life ideas yet this season."));
+		tap("Show: Quality of life");
+		tap("All types");
+		assertTrue(has(last(), "Older post"));
+
+		reply("POST /v1/submissions", 201, "{\"id\":\"e1\"}");
+		reply("GET /v1/submissions/e1", 200, "{\"id\":\"e1\",\"title\":\"New hero\",\"body\":\"A bard\",\"type\":\"hero\",\"author\":{\"id\":\"aa01\",\"displayName\":\"Chris\"},\"comments\":[]}");
+		tap("+ Post an idea");
+		assertEquals(8, last().items().size()); // seven types and Back
+		answers.add("New hero"); answers.add("A bard");
+		tap("Hero");
+		boolean sent = false;
+		for (String q : requests) if (q.startsWith("POST /v1/submissions ") && q.contains("\"type\":\"hero\"")) sent = true;
+		assertTrue(requests.toString(), sent);
+		assertEquals("Hero · by Chris", last().message);
+	}
+
+	@Test public void postTypeName_unknownIsOther(){
+		assertEquals("Quality of life", CommunityController.postTypeName("qol"));
+		assertEquals("Other", CommunityController.postTypeName("weapon"));
+		assertEquals("Other", CommunityController.postTypeName(null));
+	}
+
 	@Test public void startsText_isTheEasternDate(){
 		assertEquals("Season starts December 1, 2026 (Eastern). Submissions open then.", CommunityController.startsText(1796101200000L));
 	}

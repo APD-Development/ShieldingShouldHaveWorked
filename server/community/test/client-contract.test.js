@@ -40,14 +40,14 @@ test('every field the app reads exists in the server replies, through a whole se
   const season = await call('GET', '/v1/season', null, chris);
   has(season, 'season.title'); has(season, 'season.phase');
 
-  const sid = (await call('POST', '/v1/submissions', { title: 'Idea', body: 'Body' }, bo)).id;
+  const sid = (await call('POST', '/v1/submissions', { title: 'Idea', body: 'Body', type: 'boss' }, bo)).id;
   await call('POST', '/v1/submissions', { title: 'Other idea', body: 'Body' }, chris); // a bracket needs two
   const cid = (await call('POST', `/v1/submissions/${sid}/comments`, { body: 'Hi' }, chris)).id;
   await call('POST', `/v1/submissions/${sid}/comments`, { body: 'Re', parentId: cid }, bo);
   const list = await call('GET', '/v1/submissions', null, chris);
-  for (const k of ['id', 'title', 'author.displayName', 'comments']) has(list.submissions[1], k);
+  for (const k of ['id', 'title', 'type', 'author.displayName', 'comments']) has(list.submissions[1], k);
   const detail = await call('GET', `/v1/submissions/${sid}`, null, chris);
-  for (const k of ['title', 'body', 'author.id', 'author.displayName']) has(detail, k);
+  for (const k of ['title', 'body', 'type', 'author.id', 'author.displayName']) has(detail, k);
   for (const k of ['id', 'parentId', 'body', 'author.id', 'author.displayName']) has(detail.comments[1], k);
 
   clock += 10 * min;

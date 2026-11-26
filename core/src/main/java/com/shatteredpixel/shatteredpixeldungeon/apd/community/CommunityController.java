@@ -358,29 +358,69 @@ public final class CommunityController {
 
 	// ---- submissions ----
 
+	// Post types (Chris, Nov 25, option 1). Server ids in order; one vote, one bracket, one champion regardless of type.
+	static final String[] POST_TYPES = {"hero", "item", "enemy", "boss", "mechanic", "qol", "other"};
+	static final String[] POST_TYPE_NAMES = {"Hero", "Item", "Enemy", "Boss", "Mechanic", "Quality of life", "Other"};
+
+	// Unknown or missing (older server) types read as Other, as the server stores old posts.
+	static String postTypeName(String id){
+		for (int i = 0; i < POST_TYPES.length; i++) if (POST_TYPES[i].equals(id)) return POST_TYPE_NAMES[i];
+		return "Other";
+	}
+
+	private String typeFilter; // null = every type
+
 	private void submissions(){
 		cached("submissions", api::submissions, r -> {
 			Screen s = new Screen("Submissions", null);
 			s.back = this::hub;
 			if (!r.ok()){ s.warning(message(r)); s.item("Back", null, this::hub); ui.show(s); return; }
 			if ("submissions".equals(phase())) s.item("+ Post an idea", null, this::post);
+			s.item("Show: " + (typeFilter == null ? "All types" : postTypeName(typeFilter)), "Filter ideas by type", this::chooseFilter);
 			JsonValue list = r.body.get("submissions");
-			if (list == null || list.size == 0) s.note("No ideas yet this season.");
-			else for (JsonValue v = list.child; v != null; v = v.next){
+			int shown = 0;
+			if (list != null) for (JsonValue v = list.child; v != null; v = v.next){
 				final String id = v.getString("id");
-				s.item(v.getString("title", ""), "by " + v.get("author").getString("displayName", "?") + " · " + v.getInt("comments", 0) + " comments", () -> detail(id));
+				String type = v.getString("type", "other");
+				if (typeFilter != null && !typeFilter.equals(postTypeName(type).equals("Other") ? "other" : type)) continue;
+				shown++;
+				s.item(v.getString("title", ""), postTypeName(type) + " · by " + v.get("author").getString("displayName", "?") + " · " + v.getInt("comments", 0) + " comments", () -> detail(id));
 			}
+			if (shown == 0) s.note(typeFilter == null ? "No ideas yet this season." : "No " + postTypeName(typeFilter) + " ideas yet this season.");
 			s.item("Back", null, this::hub);
 			ui.show(s);
 		});
 	}
 
+	private void chooseFilter(){
+		Screen s = new Screen("Show ideas", null);
+		s.back = this::submissions;
+		s.item("All types", null, () -> { typeFilter = null; submissions(); });
+		for (int i = 0; i < POST_TYPES.length; i++){
+			final String t = POST_TYPES[i];
+			s.item(POST_TYPE_NAMES[i], null, () -> { typeFilter = t; submissions(); });
+		}
+		s.item("Back", null, this::submissions);
+		ui.show(s);
+	}
+
 	private void post(){
+		Screen s = new Screen("Post an idea", "What kind of idea is it?");
+		s.back = this::submissions;
+		for (int i = 0; i < POST_TYPES.length; i++){
+			final String t = POST_TYPES[i];
+			s.item(POST_TYPE_NAMES[i], null, () -> post(t));
+		}
+		s.item("Back", null, this::submissions);
+		ui.show(s);
+	}
+
+	private void post(String type){
 		ui.ask("Title", "A short title for your idea.", "", 80, false, title -> {
 			if (title == null){ submissions(); return; }
 			ui.ask("Your idea", "Describe it. Others can comment and ask you questions.", "", 4000, true, body -> {
 				if (body == null){ submissions(); return; }
-				call(() -> api.submit(title, body), r -> { if (r.ok()){ uncache("submissions"); detail(r.string("id")); } else problem(r, this::submissions); });
+				call(() -> api.submit(title, body, type), r -> { if (r.ok()){ uncache("submissions"); detail(r.string("id")); } else problem(r, this::submissions); });
 			});
 		});
 	}
@@ -405,7 +445,7 @@ public final class CommunityController {
 			JsonValue b = r.body;
 			String authorId = b.get("author").getString("id");
 			boolean mine = me != null && authorId.equals(me.getString("id"));
-			Screen s = new Screen(b.getString("title", ""), "by " + b.get("author").getString("displayName", "?"));
+			Screen s = new Screen(b.getString("title", ""), postTypeName(b.getString("type", "other")) + " · by " + b.get("author").getString("displayName", "?"));
 			s.back = this::submissions;
 			s.note(b.getString("body", ""));
 			if ("voting".equals(phase()) && !mine){
@@ -1272,6 +1312,7 @@ public final class CommunityController {
 			case "not_admin": return "Only moderators can do that.";
 			case "cannot_block_self": return "You can't block yourself.";
 			case "bad_parent": case "bad_id": return "That comment isn't there any more.";
+			case "bad_type": return "Pick a type for your idea and try again.";
 			case "not_a_qualifier": return "That idea isn't in the tournament.";
 			case "bye_no_vote": case "bad_matchup": case "not_in_matchup": return "That vote isn't open right now.";
 			case "signed_out": return "You were signed out. Please sign in again.";
