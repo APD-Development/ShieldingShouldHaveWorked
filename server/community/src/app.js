@@ -339,7 +339,15 @@ function publicSeason(s, t) {
     tournamentAt: s.tournament_at, endsAt: s.ends_at };
 }
 
-route('GET', '/v1/season', async (env) => json(200, { season: publicSeason(await currentSeason(env), now(env)) }));
+// The next season that hasn't opened yet, so players can see "Season starts <date>" before it opens.
+async function nextSeason(env) {
+  return env.DB.prepare('SELECT * FROM seasons WHERE starts_at > ? ORDER BY starts_at ASC LIMIT 1').bind(now(env)).first();
+}
+
+route('GET', '/v1/season', async (env) => json(200, {
+  season: publicSeason(await currentSeason(env), now(env)),
+  next: publicSeason(await nextSeason(env), now(env)) || null,
+}));
 
 // Chris opens a season. Default: 30 days per phase from the given start. Phases may not overlap another season.
 route('POST', '/v1/admin/seasons', async (env, req) => {

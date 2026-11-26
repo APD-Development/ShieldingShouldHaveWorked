@@ -93,6 +93,20 @@ public class CommunityControllerTest {
 		reply("GET /v1/season", 200, "{\"season\":{\"id\":\"s1\",\"title\":\"Season 1\",\"phase\":\"voting\"}}");
 	}
 
+	@Test public void aScheduledSeasonShowsItsStartDateBeforeItOpens(){
+		store.age = "pass"; store.token = "tok";
+		signedInWorld(false);
+		// Dec 1 2026 00:00 America/New_York = 05:00 UTC
+		reply("GET /v1/season", 200, "{\"season\":null,\"next\":{\"id\":\"s2\",\"title\":\"December\",\"phase\":\"none\",\"startsAt\":1796101200000}}");
+		controller().start();
+		assertTrue(labels(last()).toString(), has(last(), "Season starts December 1, 2026 (Eastern)"));
+		assertFalse(has(last(), "No season is running"));
+	}
+
+	@Test public void startsText_isTheEasternDate(){
+		assertEquals("Season starts December 1, 2026 (Eastern). Submissions open then.", CommunityController.startsText(1796101200000L));
+	}
+
 	@Test public void underSixteenLocksForGood_andTheDateIsNeverStored(){
 		answers.add("5"); answers.add("2012");
 		controller().start();
