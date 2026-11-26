@@ -29,11 +29,13 @@ public final class BuffExplanation {
     private static String n(float x){return ObfuscationExplanation.number(x);}
     /** "1 turn" vs "N turns" for a runtime amount, using the same number formatting as n(). */
     public static String turns(float x){String t=n(x);return t+("1".equals(t)?" turn":" turns");}
+    /** "1 point" vs "N points" for a runtime count. */
+    public static String points(long x){return x+(x==1?" point":" points");}
     public static String details(Buff buff){
         if(buff instanceof com.shatteredpixel.shatteredpixeldungeon.items.BrokenSeal.WarriorShield){
             com.shatteredpixel.shatteredpixeldungeon.items.BrokenSeal.WarriorShield shield=(com.shatteredpixel.shatteredpixeldungeon.items.BrokenSeal.WarriorShield)buff;
             int cooldown=shield.remainingCooldown();
-            String text="_Seal shield_\nCurrent shield: "+shield.shielding()+" points. Original shield at last activation: "+shield.activationShield()+" points. ";
+            String text="_Seal shield_\nCurrent shield: "+points(shield.shielding())+"."+" Original shield at last activation: "+points(shield.activationShield())+"."+" ";
             if(buff.target==Dungeon.hero && Dungeon.hero!=null)text+="Next activation: "+shield.maxShield()+" shield points. ";
             text+=cooldown>0?"Recharge remaining: "+cooldown+(cooldown==1?" turn":" turns")+" while regeneration is allowed. ":cooldown<0?"Stored cooldown reduction: "+(-cooldown)+(cooldown==-1?" turn":" turns")+", deducted from the next recharge. ":"Ready to activate. ";
             return text+"Positive non-hunger damage can activate it when health is at or below half, or the incoming hit after existing shields would cross that threshold. Each activation adds its shield capacity and "+shield.cooldownDuration()+" turns of recharge, reduced by any stored credit. Hunger alone does not pause recharging.\n\n_Shield expiry_\nEnemy-free decay progress: "+n(shield.enemyFreeProgress())+" of 5. Normally advances by 1 each turn without visible enemies or an active Gladiator combo; Hold Fast slows or pauses it. Enemies or a combo reset it. At 5, remaining shield disappears and can refund recharge time.\n\n_Details_\nWarrior sealed-armor capacity = 3 + 2 × armor tier + Iron Will rank. Armor upgrades do not increase it. The separate non-Warrior Iron Will benefit equals its rank. Activation threshold = floor(maximum HP / 2). Recharge refund = "+shield.cooldownDuration()+" × (shield left / original shield) / 2; subtract it from remaining recharge, round down, and stop at zero.";
@@ -110,7 +112,7 @@ public final class BuffExplanation {
         }
         if(buff instanceof com.shatteredpixel.shatteredpixeldungeon.plants.Earthroot.Armor){
             com.shatteredpixel.shatteredpixeldungeon.plants.Earthroot.Armor armor=(com.shatteredpixel.shatteredpixeldungeon.plants.Earthroot.Armor)buff;
-            return "_Earthroot protection_\nBlocks up to "+armor.perHitLimit()+" damage per attack while you stay on the protected tile. Remaining reserve: "+armor.remainingReserve()+" points. Blocked damage spends reserve; the final hit can still block the full per-hit amount. Moving ends protection.\nPer-hit limit = floor((dungeon depth + 5) / 2). During the ascension challenge, use depth 26.";
+            return "_Earthroot protection_\nBlocks up to "+armor.perHitLimit()+" damage per attack while you stay on the protected tile. Remaining reserve: "+points(armor.remainingReserve())+"."+" Blocked damage spends reserve; the final hit can still block the full per-hit amount. Moving ends protection.\nPer-hit limit = floor((dungeon depth + 5) / 2). During the ascension challenge, use depth 26.";
         }
         if(buff instanceof com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfLightning.LightningCharge)return "_Lightning Charge_\nProtects against Lightning wand damage. A charged caster's lightning jumps 1 tile farther along open paths: up to 2 tiles from a dry target, or 3 from a target standing in water. Other sources of electricity can still hurt you. Reapplying keeps the longer time remaining.";
         if(buff instanceof Paralysis){
@@ -143,13 +145,13 @@ public final class BuffExplanation {
         }
         if(buff instanceof com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.cleric.AscendedForm.AscendBuff){
             com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.cleric.AscendedForm.AscendBuff form=(com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.cleric.AscendedForm.AscendBuff)buff;
-            return "_Current ascended resources_\nForm shield: "+form.shielding()+" points. Remaining form updates: "+form.left+". Counted spell casts: "+form.spellCasts+". Flash uses counted: "+form.flashCasts+". These are separate shield, time and use resources; inspecting does not change them."+(buff.target instanceof com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero?AbilityExplanation.effects(new com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.cleric.AscendedForm(),(com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero)buff.target):"");
+            return "_Current ascended resources_\nForm shield: "+points(form.shielding())+"."+" Remaining form updates: "+form.left+". Counted spell casts: "+form.spellCasts+". Flash uses counted: "+form.flashCasts+". These are separate shield, time and use resources; inspecting does not change them."+(buff.target instanceof com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero?AbilityExplanation.effects(new com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.cleric.AscendedForm(),(com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero)buff.target):"");
         }
         if(buff instanceof com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.cleric.PowerOfMany.PowerBuff)return "_Powered ally_\nAn existing ally keeps its own stats and equipment."+AbilityExplanation.effects(new com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.cleric.PowerOfMany(),Dungeon.hero);
         if(buff instanceof com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.duelist.Challenge.DuelParticipant){
             com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.duelist.Challenge.DuelParticipant duel=(com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.duelist.Challenge.DuelParticipant)buff;
             String current="_Current duel counter_\nRemaining scheduled duel updates: "+duel.remainingDuelUpdates()+".";
-            if(buff.target==Dungeon.hero)current+=" Your tracked HP/shield damage suffered: "+duel.trackedDamage()+" points. This is the potential healing formula's input, not guaranteed health restored.";
+            if(buff.target==Dungeon.hero)current+=" Your tracked HP/shield damage suffered: "+points(duel.trackedDamage())+"."+" This is the potential healing formula's input, not guaranteed health restored.";
             return current+AbilityExplanation.effects(new com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.duelist.Challenge(),Dungeon.hero);
         }
         if(buff instanceof AscensionChallenge){
