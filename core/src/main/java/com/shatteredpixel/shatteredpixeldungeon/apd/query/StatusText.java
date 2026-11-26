@@ -160,4 +160,22 @@ public final class StatusText {
 		}
 		return b.toString();
 	}
+
+	/** Trial juror 2 (Nov 25) didn't know what "~waterskin" meant: the key to the marks was only in Options. This is a
+	 *  one-line key under the table naming just the marks it shows, or null when every value is exact. */
+	public static String markKey(QueryResult r){
+		if (r == null || r.coverage == null) return null;
+		boolean inferred = false, lower = false, unknown = false;
+		for (QueryResult.ColumnCoverage c : r.coverage){
+			inferred |= c.inferred > 0;
+			lower |= c.lowerBound > 0;
+			unknown |= c.total - c.known - c.hidden > 0;
+		}
+		if (!inferred && !lower && !unknown) return null;
+		StringBuilder b = new StringBuilder();
+		if (inferred) b.append("~ worked out, not recorded exactly");
+		if (lower) b.append(b.length() > 0 ? "   " : "").append(">= at least");
+		if (unknown) b.append(b.length() > 0 ? "   " : "").append("? never recorded");
+		return b.toString();
+	}
 }

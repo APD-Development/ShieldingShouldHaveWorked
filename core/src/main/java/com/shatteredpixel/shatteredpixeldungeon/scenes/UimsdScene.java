@@ -734,6 +734,12 @@ public class UimsdScene extends PixelScene {
 		reg("notes", x0 + contentW - 44, y, 44, 14);
 		reg("status", x0, y, contentW - 46, Math.max(statusBottom - y, 10));
 		y = Math.max(statusBottom, y + 14) + 3;
+		String markKey = StatusText.markKey(model.result());
+		if (markKey != null){
+			RenderedTextBlock key = text(markKey, UimsdStyle.SIZE_META, UimsdStyle.MUTED, contentW);
+			key.setPos(x0, y);
+			y = key.bottom() + 3;
+		}
 
 		//All conditions remain editable in a scrolling native picker; their count does not consume table height.
 		final List<Filter> filters = model.query().filters;

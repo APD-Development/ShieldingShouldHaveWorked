@@ -93,4 +93,16 @@ public class CellFormatterTest {
 		org.junit.Assert.assertEquals("Wand of Blast Wave", CellFormatter.className("items.wands.WandOfBlastWave"));
 		org.junit.Assert.assertEquals("Bomb", CellFormatter.className("items.bombs.Bomb$1"));
 	}
+
+	// Trial juror 2 (Nov 25): the key to "~", ">=" and "?" sits under the table, naming only the marks it shows
+	@org.junit.Test public void markKeyNamesOnlyTheMarksShown(){
+		ColumnDef col = ColumnDef.text("x", "X");
+		java.util.List<QueryResult.ColumnCoverage> exact = java.util.Collections.singletonList(new QueryResult.ColumnCoverage(col, 3, 3, 0, 0, 0));
+		java.util.List<QueryResult.ColumnCoverage> mixed = java.util.Collections.singletonList(new QueryResult.ColumnCoverage(col, 5, 3, 0, 2, 0));
+		org.junit.Assert.assertNull(StatusText.markKey(withCoverage(exact)));
+		org.junit.Assert.assertEquals("~ worked out, not recorded exactly   ? never recorded", StatusText.markKey(withCoverage(mixed)));
+	}
+	private static QueryResult withCoverage(java.util.List<QueryResult.ColumnCoverage> c){
+		return new QueryResult(null, null, null, null, null, null, null, c, null, null);
+	}
 }
