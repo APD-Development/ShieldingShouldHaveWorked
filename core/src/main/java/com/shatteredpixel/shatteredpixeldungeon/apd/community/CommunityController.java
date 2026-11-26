@@ -1313,6 +1313,15 @@ public final class CommunityController {
 			case "cannot_block_self": return "You can't block yourself.";
 			case "bad_parent": case "bad_id": return "That comment isn't there any more.";
 			case "bad_type": return "Pick a type for your idea and try again.";
+			case "images_not_enabled": return "Pictures on ideas aren't switched on yet.";
+			case "bad_image_type": return "Only JPG and PNG pictures can be added.";
+			case "bad_image": return "That file isn't a working JPG or PNG picture.";
+			case "image_too_large": return "That picture is over 1 MB. Try a smaller one.";
+			case "not_author": return "Only the person who posted this idea can add pictures to it.";
+			case "too_many_images": return "An idea can have up to 8 pictures.";
+			case "image_filter_unavailable": return "Pictures can't be checked right now. Try again later.";
+			case "image_refused": return "That picture can't be posted here.";
+			case "bad_decision": return "Choose approve or remove.";
 			case "not_a_qualifier": return "That idea isn't in the tournament.";
 			case "bye_no_vote": case "bad_matchup": case "not_in_matchup": return "That vote isn't open right now.";
 			case "signed_out": return "You were signed out. Please sign in again.";
