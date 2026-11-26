@@ -296,6 +296,9 @@ default-on settings (SPDSettings.keepOldDefaultsForExistingPlayers). Next: Googl
 ## Every Play build: update the in-game change history (National Pie, Nov 25)
 Before bumping appVersionCode, add "BUILD<tab>Play <code> (<date>)" with player-facing BTN lines at the top of the
 "Play builds" section of core/src/main/assets/apd/changes.tsv and run tools/run-core-tests.sh --tests '*ApdChanges*'.
+GITHUB RELEASE RULE (Chris, Nov 25): every scheduled Play build dispatches apd-play-release.yml with -f github_release=true, so GitHub
+Releases gets play-<versionCode> with the dev APK and the exact source (GPLv3: testers can get the source). Two 12 AM scheduled tasks may
+fire on Nov 26 (an older copy without this step): whichever runs second finds nothing new and skips.
 PLAY UPLOAD RULE (Chris, Nov 25, after 945/946/947 went up early): uploads to Play happen ONLY in the scheduled 12 AM / 8 AM / 4 PM
 builds. When Chris says "push" or asks for an APK, build the dev APK and send it to him alone: no versionCode bump, no Play upload.
 

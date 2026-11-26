@@ -51,4 +51,12 @@ public class GplLicenseTest {
         assertTrue(GplLicense.NOTICE.contains("without warranty"));
         assertTrue(GplLicense.NOTICE.contains(GplLicense.SOURCE_URL));
     }
+
+    //Nov 25: testers get the exact source of their build; the old link pointed at a stale export
+    @org.junit.Test public void sourceLinkPointsAtTheBuildsOwnRelease() {
+        assertTrue(GplLicense.SOURCE_URL.endsWith("ShieldingShouldHaveWorked/releases"));
+        org.junit.Assert.assertEquals(GplLicense.SOURCE_URL + "/tag/play-947", GplLicense.sourceUrlFor(947, false));
+        org.junit.Assert.assertEquals(GplLicense.SOURCE_URL, GplLicense.sourceUrlFor(947, true));
+        org.junit.Assert.assertFalse(GplLicense.NOTICE.contains("private"));
+    }
 }

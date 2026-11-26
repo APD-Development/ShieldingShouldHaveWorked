@@ -1,13 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:installLocation="auto"
 	android:targetSandboxVersion="2">
 
 	<uses-feature android:glEsVersion="0x00020000"/>
 
+	<!-- Every permission, and why (permissions audit, Nov 25):
+	     VIBRATE: long-press feedback and the vibration setting (Shattered's own).
+	     INTERNET: Shattered's news/update check, and APD's opt-in Community server (sign-in, submissions, run reviews).
+	     ACCESS_NETWORK_STATE: Shattered's "check for news/updates on Wi-Fi only" setting (is the connection metered).
+	     Google sign-in for Community runs through androidx.credentials (Credential Manager); it needs no extra permission. -->
 	<uses-permission android:name="android.permission.VIBRATE" />
 	<uses-permission android:name="android.permission.INTERNET" />
 	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+	<!-- androidx.credentials merges these in for passkeys/biometric prompts. APD uses neither: removed. -->
+	<uses-permission android:name="android.permission.USE_BIOMETRIC" tools:node="remove" />
+	<uses-permission android:name="android.permission.USE_FINGERPRINT" tools:node="remove" />
 
 	<!-- Hilariously small screens still exist but are usually high enough DPI to work now -->
 	<supports-screens

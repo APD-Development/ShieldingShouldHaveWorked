@@ -25,15 +25,21 @@ import java.util.List;
 public final class GplLicense {
     private GplLicense() {}
     public static final String ASSET = "legal/GPL-3.0.txt";
-    public static final String SOURCE_URL = "https://github.com/APD-Development/adhd-pixel-dungeon";
+    //every Play build is published as GitHub release play-<versionCode> with its exact source (Chris, Nov 25; the repo is public)
+    public static final String SOURCE_URL = "https://github.com/APD-Development/ShieldingShouldHaveWorked/releases";
     public static final String NOTICE = "ADHD Pixel Dungeon is modified by Chris Charlton (2026). "
             + "It is based on Shattered Pixel Dungeon by Evan Debenham and Pixel Dungeon by Oleg Dolya (Watabou).\n\n"
             + "Licensed under GNU GPL version 3 or later, without warranty. "
             + "The complete license is bundled for offline reading.\n\n"
             + "APD is not affiliated with or endorsed by Evan Debenham or Shattered Pixel.\n\n"
-            + "Matching source must be provided beside your build download. Development source: " + SOURCE_URL
-            + "\n\nThe development repository is private. If you cannot access the matching source, request it from Chris. "
-            + "GPL rights are not restricted to the alpha-tester group.";
+            + "The exact source of every Play build is published with that build at: " + SOURCE_URL
+            + " (release play-<version>, the source zip beside the APK).\n\n"
+            + "GPL rights are not restricted to the tester group.";
+
+    //the page with this build's exact source: its own release for a Play build, the release list for a developer test build
+    public static String sourceUrlFor(int versionCode, boolean testBuild) {
+        return testBuild || versionCode <= 0 ? SOURCE_URL : SOURCE_URL + "/tag/play-" + versionCode;
+    }
 
     public static List<String> pages(String text, int limit) {
         if (limit < 1) throw new IllegalArgumentException("Positive page limit required");

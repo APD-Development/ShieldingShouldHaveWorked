@@ -141,7 +141,8 @@ public class AboutScene extends PixelScene {
                         "GPLv3 (offline)", "APD source") {
                     @Override protected void onSelect(int index) {
                         if (index == 0) com.shatteredpixel.shatteredpixeldungeon.windows.WndGplLicense.show();
-                        else ShatteredPixelDungeon.platform.openURI(com.shatteredpixel.shatteredpixeldungeon.apd.GplLicense.SOURCE_URL);
+                        else ShatteredPixelDungeon.platform.openURI(com.shatteredpixel.shatteredpixeldungeon.apd.GplLicense.sourceUrlFor(
+                                com.watabou.noosa.Game.versionCode, com.shatteredpixel.shatteredpixeldungeon.apd.ApdFeatures.testBuild()));
                     }
                 });
 			}
