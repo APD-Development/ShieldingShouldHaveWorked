@@ -366,6 +366,49 @@ public final class CommunityController {
 	/** Pictures on ideas stay hidden in the app until Chris approves the R2 + Workers AI cost/setup (plan item 3). */
 	static final boolean IMAGES_ON = false;
 
+	/** Reads a chosen picture file; null when it is over the 1 MB limit (stops reading there). */
+	static byte[] readPicture(java.io.InputStream in) throws java.io.IOException {
+		java.io.ByteArrayOutputStream out = new java.io.ByteArrayOutputStream();
+		byte[] buf = new byte[8192];
+		int n;
+		while ((n = in.read(buf)) > 0){
+			out.write(buf, 0, n);
+			if (out.size() > CommunityApi.IMAGE_MAX_BYTES) return null;
+		}
+		return out.toByteArray();
+	}
+
+	/** The plain message for a picture refused before upload, or null when it can be sent. */
+	static String pictureProblem(byte[] image){
+		if (image == null) return "That picture is over 1 MB. Try a smaller one.";
+		if (image.length == 0 || CommunityApi.imageType(image) == null) return "Only JPG and PNG pictures can be added.";
+		return null;
+	}
+
+	private void addPicture(String id){
+		com.shatteredpixel.shatteredpixeldungeon.apd.archive.ApdFiles.Provider files = com.shatteredpixel.shatteredpixeldungeon.apd.archive.ApdFiles.provider;
+		if (files == null){ done("Pictures can't be chosen on this device.", () -> detail(id)); return; }
+		files.chooseImport("image/*", new com.shatteredpixel.shatteredpixeldungeon.apd.archive.ApdFiles.ImportSource(){
+			@Override public void onStream(java.io.InputStream in, String name){
+				byte[] image;
+				try { image = readPicture(in); } catch (java.io.IOException e){ later("That file couldn't be read.", id); return; }
+				String why = pictureProblem(image);
+				if (why != null){ later(why, id); return; }
+				call(() -> api.imageUpload(id, image), r -> {
+					if (!r.ok()){ problem(r, () -> detail(id)); return; }
+					done("held".equals(r.string("status")) ? "Picture added. A moderator will look at it before anyone else sees it." : "Picture added.", () -> detail(id));
+				});
+			}
+			@Override public void onCancelled(){ later(null, id); }
+			@Override public void onFailed(String why){ later("The picture couldn't be opened.", id); }
+		});
+	}
+
+	// Picker answers can arrive off the render thread: go back through the runner before showing anything.
+	private void later(String text, String id){
+		runner.run(() -> null, x -> { if (text == null) detail(id); else done(text, () -> detail(id)); });
+	}
+
 	/** One line for an idea's pictures from GET /v1/submissions/:id/images, or null when there are none.
 	 *  Held pictures only come back to their author, so the "waiting" part only ever shows to them. */
 	static String picturesLine(JsonValue images){
@@ -471,6 +514,7 @@ public final class CommunityController {
 						call(() -> api.upvote(id, !upvoted), x -> { if (x.ok()){ uncache("submissions", "results"); detail(id); } else problem(x, () -> detail(id)); }));
 			} else if ("voting".equals(phase()) && upvotes >= 0) s.note(upvotes + (upvotes == 1 ? " upvote" : " upvotes") + " (you can't upvote your own idea)");
 			s.item("Comment", null, () -> comment(id, null));
+			if (IMAGES_ON && mine) s.item("Add a picture", "JPG or PNG, up to 1 MB, 8 per idea", () -> addPicture(id));
 			if (!mine){
 				s.item("Report this idea", null, () -> report("submission", id, () -> detail(id)));
 				s.item("Block " + b.get("author").getString("displayName", "this player"), "Hide everything they post from you", () -> block(authorId, this::submissions));

@@ -146,6 +146,21 @@ public class CommunityControllerTest {
 		assertFalse(CommunityController.IMAGES_ON);
 	}
 
+	@Test public void readPicture_refusesOverOneMbAndNonPictures() throws Exception {
+		byte[] png = java.util.Arrays.copyOf(new byte[]{(byte)0x89, 'P', 'N', 'G', 13, 10, 26, 10}, 24);
+		byte[] read = CommunityController.readPicture(new java.io.ByteArrayInputStream(png));
+		assertArrayEquals(png, read);
+		assertNull(CommunityController.pictureProblem(read));
+		byte[] big = new byte[CommunityApi.IMAGE_MAX_BYTES + 1];
+		big[0] = (byte)0xff; big[1] = (byte)0xd8; big[2] = (byte)0xff;
+		assertNull(CommunityController.readPicture(new java.io.ByteArrayInputStream(big)));
+		byte[] exact = java.util.Arrays.copyOf(big, CommunityApi.IMAGE_MAX_BYTES);
+		assertNull(CommunityController.pictureProblem(CommunityController.readPicture(new java.io.ByteArrayInputStream(exact))));
+		assertEquals("That picture is over 1 MB. Try a smaller one.", CommunityController.pictureProblem(null));
+		assertEquals("Only JPG and PNG pictures can be added.", CommunityController.pictureProblem("GIF89a".getBytes()));
+		assertEquals("Only JPG and PNG pictures can be added.", CommunityController.pictureProblem(new byte[0]));
+	}
+
 	@Test public void postTypeName_unknownIsOther(){
 		assertEquals("Quality of life", CommunityController.postTypeName("qol"));
 		assertEquals("Other", CommunityController.postTypeName("weapon"));
