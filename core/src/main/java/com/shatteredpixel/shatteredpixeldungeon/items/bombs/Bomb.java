@@ -314,6 +314,16 @@ public class Bomb extends Item {
 	//used to track the death from friendly magic badge, if an explosion was conjured by magic
 	public static class ConjuredBomb extends Bomb{};
 
+	/** Chris, Nov 25 (trial juror 2): a cursed wand's explosion killed the hero and the death recap blamed "Bomb".
+	 *  When set, the run history records a death from this blast against this (the wand that conjured it). Rankings and
+	 *  damage still treat it as a bomb, so resistances and the rankings line ("Killed by an explosion") don't change. */
+	public Object apdDeathCause;
+	public Bomb apdCausedBy(Object cause){ apdDeathCause = cause; return this; }
+	/** What the run history should blame for a death: the bomb's recorded cause if it has one. */
+	public static Object apdBlame(Object cause){
+		return cause instanceof Bomb && ((Bomb) cause).apdDeathCause != null ? ((Bomb) cause).apdDeathCause : cause;
+	}
+
 	public static class Fuse extends Actor{
 
 		{

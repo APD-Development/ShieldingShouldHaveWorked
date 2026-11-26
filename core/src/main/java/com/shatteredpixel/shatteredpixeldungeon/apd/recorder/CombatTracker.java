@@ -333,7 +333,7 @@ final class CombatTracker {
 		Hero h = Dungeon.hero;
 		CombatEvents.HeroDeath d = new CombatEvents.HeroDeath();
 		d.where = where();
-		d.cause = describe(cause);
+		d.cause = describe(com.shatteredpixel.shatteredpixeldungeon.items.bombs.Bomb.apdBlame(cause));
 		d.pos = h == null ? -1 : h.pos;
 		CombatEvents.emitHeroDeath(w, clock(), d);
 	}

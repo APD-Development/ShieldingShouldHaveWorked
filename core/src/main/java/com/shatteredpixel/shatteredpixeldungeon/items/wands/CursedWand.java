@@ -526,7 +526,7 @@ public class CursedWand {
 	public static class Explosion extends CursedEffect {
 		@Override
 		public boolean effect(Item origin, Char user, Ballistica bolt, boolean positiveOnly) {
-			new Bomb.ConjuredBomb().apdExplodeAttributed(bolt.collisionPos,com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin.capture(user,null));
+			new Bomb.ConjuredBomb().apdCausedBy(origin).apdExplodeAttributed(bolt.collisionPos,com.shatteredpixel.shatteredpixeldungeon.apd.difficulty.OffensiveDamageOrigin.capture(user,null));
 			tryForWandProc(Actor.findChar(bolt.collisionPos), origin);
 			return true;
 		}

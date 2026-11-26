@@ -429,6 +429,7 @@ final class RunRecorder {
 		e.outcome = outcome;
 		e.ascendedKnown = true;
 		e.ascended = outcome == LifecycleEvents.OUTCOME_WON && Statistics.ascended;
+		cause = com.shatteredpixel.shatteredpixeldungeon.items.bombs.Bomb.apdBlame(cause);
 		if (cause != null){
 			e.cause = GameSnapshot.shortName(cause instanceof Class ? (Class<?>) cause : cause.getClass());
 		}
