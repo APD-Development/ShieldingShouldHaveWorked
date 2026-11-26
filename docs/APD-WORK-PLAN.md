@@ -302,6 +302,19 @@ fire on Nov 26 (an older copy without this step): whichever runs second finds no
 PLAY UPLOAD RULE (Chris, Nov 25, after 945/946/947 went up early): uploads to Play happen ONLY in the scheduled 12 AM / 8 AM / 4 PM
 builds. When Chris says "push" or asks for an APK, build the dev APK and send it to him alone: no versionCode bump, no Play upload.
 
+## COMMUNITY BUILD-OUT (Chris, Nov 25 11:40 PM: "work in the community to what I want it to be") — TOP PRIORITY for scheduled runs
+Decided by Chris tonight (rules in memory/plan above still stand: Month 2 upvote-only no self-votes, Month 3 16-seed bracket
+reseeded each round, one changeable vote per matchup, ties to higher seed, champion status pages with dev notes):
+1. First season starts DECEMBER 1 (America/New_York midnight). Add a start date to Moderation > Start a new season (server already
+   accepts startsAt); default "now", let Chris pick a date. Show "Season starts <date>" to players before it opens.
+2. Post types, option 1: when posting, pick a type (Hero, Item, Enemy, Boss, Mechanic, Quality of life, Other). Shown on the post,
+   filter when browsing; ONE vote, ONE bracket, ONE champion per season. Store type server-side (migration), old posts = Other.
+3. Images on ideas: UP TO 8 jpg/png per idea. Every image goes through an automatic content filter on upload (block explicit or
+   illicit images); refused uploads get a plain message. Borderline results: HOLD for Chris/moderator approval (Claude's default,
+   Chris hasn't answered; ask him once). Storage + filter on Cloudflare (R2 + Workers AI or equivalent); confirm cost/setup with
+   Chris before enabling anything billed. Images are hidden until they pass. Server tests for every path.
+Server changes deploy by pushing to deploy/community-server; app changes reach players through the 8-hour Play builds.
+
 ## Run log
 - 2026-11-25 11 PM ET (scheduled): Desperate Power details said "adds 1 effective wand levels" at rank 1; now singular (TalentExplanation). +2 MechanicsExplanationTest assertions; full CI 45753092512 green (side branch fix/desperate-power-singular, cherry-picked). Not device-verified. Still OPEN for Chris: Badge-or-what for the new-search achievement.
 - 2026-11-25 10 PM ET (scheduled): Artifact recharge text could say "provides 1 charges" / "about 1 turns" when the live value is exactly 1; now singular (ArtifactEconomyExplanation). +1 MechanicsExplanationTest; full CI 45746802017 green (side branch fix/artifact-rate-singular, cherry-picked). Not device-verified. Still OPEN for Chris: Badge-or-what for the new-search achievement.
