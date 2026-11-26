@@ -40,7 +40,7 @@ public final class ExperimentReport {
             lines.add(col.label+": "+summary(values)+"; unknown/uncertain="+unknown);
         }
         lines.add("These are recorded conditions of exact metric contributors, not proof that all relevant conditions match. Equipment, route, player choices and unrecorded facts can differ. Compare both sides; unknowns are not assumed equal.");
-        d.cards.add(new ResearchDocument.Card(title,sample.n+" exact metric contributors",sample.n==0?CellText.UNKNOWN:CellText.EXACT,String.join("\n",lines),new ResearchDocument.Evidence("Condition source records",r,sample.contributors)));
+        d.cards.add(new ResearchDocument.Card(title,sample.n+(sample.n==1?" exact metric contributor":" exact metric contributors"),sample.n==0?CellText.UNKNOWN:CellText.EXACT,String.join("\n",lines),new ResearchDocument.Evidence("Condition source records",r,sample.contributors)));
     }
     private static String summary(Map<String,Integer> values){
         if(values.isEmpty())return "none recorded";

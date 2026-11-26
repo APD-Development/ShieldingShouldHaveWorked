@@ -443,6 +443,16 @@ public final class DatasetStore {
 			}
 			cat.rulesets.add(new Catalog.RulesetInfo(e.getKey(), label, e.getValue()[0]));
 		}
+		//Two rule sets can differ only in settings the label doesn't name (sliders and the like), which listed the same
+		//line twice in the Rules picker. Number repeated labels so each line is told apart.
+		java.util.Map<String, Integer> labelSeen = new java.util.HashMap<>(), total = new java.util.HashMap<>();
+		for (Catalog.RulesetInfo ri : cat.rulesets) total.merge(ri.label, 1, Integer::sum);
+		for (int i = 0; i < cat.rulesets.size(); i++){
+			Catalog.RulesetInfo ri = cat.rulesets.get(i);
+			if (total.get(ri.label) < 2) continue;
+			int k = labelSeen.merge(ri.label, 1, Integer::sum);
+			cat.rulesets.set(i, new Catalog.RulesetInfo(ri.id, ri.label + " (other settings, set " + k + " of " + total.get(ri.label) + ")", ri.runs));
+		}
 
 		//datasets, with the runs each one can have rows for
 		for (Map.Entry<String, List<Row>> e : merged.entrySet()){

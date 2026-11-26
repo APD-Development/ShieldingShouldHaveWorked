@@ -168,7 +168,7 @@ public final class WndUimsdResearch {
             add(entries,actions,label,"Record "+row.id,()->picked.accept(row));}
         if(page>0)add(entries,actions,"Previous records","",()->chooseRows(m,title,evidence,page-1,picked));
         if(end<evidence.rows.size())add(entries,actions,"Next records","",()->chooseRows(m,title,evidence,page+1,picked));
-        menu(m,title,evidence.rows.size()+" source records. Showing "+(evidence.rows.isEmpty()?0:start+1)+"-"+end+". "+(m.catalog().synthetic?"DEMO DATA: made up.":"Recorded history."),entries,actions,()->chooseRows(m,title,evidence,page,picked));
+        menu(m,title,evidence.rows.size()+(evidence.rows.size()==1?" source record. Showing ":" source records. Showing ")+(evidence.rows.isEmpty()?0:start+1)+"-"+end+". "+(m.catalog().synthetic?"DEMO DATA: made up.":"Recorded history."),entries,actions,()->chooseRows(m,title,evidence,page,picked));
     }
     private static void document(UimsdModel m,ResearchDocument d){
         List<WndUimsdList.Entry> entries=new ArrayList<>();List<Runnable> actions=new ArrayList<>();

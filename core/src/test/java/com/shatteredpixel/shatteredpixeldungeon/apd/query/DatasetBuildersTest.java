@@ -1,6 +1,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.apd.query;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -594,5 +595,15 @@ public class DatasetBuildersTest {
 		Catalog cat = load();
 		for (Dataset d : cat.datasets()) assertEquals(0, d.rows.size());
 		assertEquals(13, cat.views().size());
+	}
+
+	@Test
+	public void rulesetsThatOnlyDifferInUnnamedSettingsAreNotListedTwice() throws Exception {
+		log("a", V14, 100).start("run-a", 0, "WARRIOR", RS, 0, 0, false).enter(1).end(LifecycleEvents.OUTCOME_DIED, "Rat", 1, 1, 1).close(true);
+		log("b", V14, 200).start("run-b", 0, "WARRIOR", "r1-bbbbbbbbbbbb", 0, 0, false).enter(1).end(LifecycleEvents.OUTCOME_DIED, "Rat", 1, 1, 1).close(true);
+		Catalog cat = load();
+		assertEquals(2, cat.rulesets.size());
+		assertNotEquals(cat.rulesets.get(0).label, cat.rulesets.get(1).label);
+		assertTrue(cat.rulesets.get(1).label.endsWith("(other settings, set 2 of 2)"));
 	}
 }
