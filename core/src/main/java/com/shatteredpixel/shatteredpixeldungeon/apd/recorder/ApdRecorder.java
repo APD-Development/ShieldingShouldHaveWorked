@@ -762,6 +762,11 @@ public final class ApdRecorder {
 		}
 	}
 
+	//"1 game" / "3 games": the history overview counts can be 1.
+	static String count(long n, String one, String many){
+		return n + " " + (n == 1 ? one : many);
+	}
+
 	//A few lines about what the history holds, from the derived fact table (rebuilt from the raw files when needed).
 	public static String historyOverview(){
 		try {
@@ -773,16 +778,16 @@ public final class ApdRecorder {
 			int linked = 0;
 			for (RunFacts leg : t.legacyRows) if (leg.isKnown(FactKeys.LINKED_RUN)) linked++;
 			StringBuilder b = new StringBuilder();
-			b.append(t.apdRows.size()).append(" recorded runs, ").append(t.legacyRows.size()).append(" imported APD ranking records");
-			if (linked > 0) b.append(" (").append(linked).append(" are also recorded runs)");
-			b.append(". ").append(rows.size()).append(" distinct runs in total.\n");
+			b.append(count(t.apdRows.size(), "recorded run", "recorded runs")).append(", ").append(count(t.legacyRows.size(), "imported APD ranking record", "imported APD ranking records"));
+			if (linked > 0) b.append(" (").append(linked == 1 ? "1 is also a recorded run" : linked + " are also recorded runs").append(")");
+			b.append(". ").append(count(rows.size(), "distinct run", "distinct runs")).append(" in total.\n");
 			if (!rows.isEmpty()){
 				b.append(FactTable.coverage(rows, FactKeys.OUTCOME)).append(".\n");
 				b.append(FactTable.coverage(rows, FactKeys.HERO_ATTACKS)).append(".\n");
 				b.append(FactTable.coverage(rows, FactKeys.GEN_ITEMS)).append(".\n");
 			}
 			if (t.legacyTotals != null && t.legacyTotals.isKnown("legacy.totalNumber")){
-				b.append("APD's rankings counted ").append(t.legacyTotals.numOr("legacy.totalNumber", 0)).append(" games");
+				b.append("APD's rankings counted ").append(count(t.legacyTotals.numOr("legacy.totalNumber", 0), "game", "games"));
 				if (t.legacyTotals.isKnown("legacy.wonNumber")) b.append(", ").append(t.legacyTotals.numOr("legacy.wonNumber", 0)).append(" won");
 				b.append(" (the rankings file only keeps the best 11 records).\n");
 			}
