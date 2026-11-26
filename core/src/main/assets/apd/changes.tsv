@@ -6,6 +6,9 @@ MAJOR	Coming Soon
 BTN	i:NEWS	What's next	Finishing the last **UIMSD** upgrades, then **script mods** for Community once I've tested them on my own phone.\n\nAnything marked "Developer build" only exists in my own test build until I say it's ready for Alpha Testers.
 MAJOR	Play builds
 BUILD	Play 948 (Nov 26)
+BTN	c:V061_BUGFIX	Walk-over pickup takes everything	Tapping an item now **picks up every pile you walk over on the way**, then the item you tapped. A pile is emptied of **everything that fits**, even when the item on top doesn't.
+BTN	c:V061_BUGFIX	The right cause of death	A **cursed wand's explosion** is now named as what killed you in What happened and UIMSD, instead of "Bomb".
+BTN	i:RANKINGS	UIMSD reads more clearly	Names like "Firebloom$Seed" now read **Firebloom Seed**, Ended by shows plain names, and a short key under each table explains **~**, **>=** and **?**.
 BTN	c:V061_BUGFIX	Community opens at once	Coming back to the **Community** menu no longer waits on "Talking to the Community server..." every time: it shows the menu right away and checks with the server in the background.
 BUILD	Play 947 (Nov 25)
 BTN	c:V061_BUGFIX	Game-over buttons always show	After some deaths (starving, for one) the game-over screen only had the menu and new-game buttons until you left the app and came back. **What happened** and **Replay floors** now show right away.
