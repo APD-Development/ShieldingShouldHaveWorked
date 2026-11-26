@@ -248,6 +248,16 @@ public class TrapDiscoveryMovementTest {
             h=pile(start+1,com.shatteredpixel.shatteredpixeldungeon.items.Heap.Type.HEAP);
             h.items.clear();h.items.add(new com.shatteredpixel.shatteredpixeldungeon.items.Gold(10));
             assertTrue(move());assertTrue("gold needs no slot",hero.curAction instanceof HeroAction.PickUp);
+            // Chris, Nov 25: every item in a pile that can be picked up is, even when the top one can't
+            level.heaps.clear();hero.pos=start;travel();
+            h=pile(start+1,com.shatteredpixel.shatteredpixeldungeon.items.Heap.Type.HEAP);
+            h.items.clear();h.items.add(new com.shatteredpixel.shatteredpixeldungeon.items.armor.ScaleArmor());
+            com.shatteredpixel.shatteredpixeldungeon.items.Gold under=new com.shatteredpixel.shatteredpixeldungeon.items.Gold(12);h.items.add(under);
+            assertTrue(move());assertTrue("armor on top doesn't fit, gold under it does: pick up",hero.curAction instanceof HeroAction.WalkoverPickUp);
+            assertSame("the gold is the item taken",under,hero.apdWalkoverItem(h));
+            h.items.remove(under);
+            assertFalse("only the armor that can't fit is left: stop",hero.apdContinueWalkover(h));
+            assertEquals(1,h.items.size());
         }finally{hero.belongings.backpack.items.clear();hero.belongings.backpack.items.addAll(saved);}
     }
     @Test public void walkOverTakesTheWholePileEvenWhenTheGrassPickupWantsItsDew()throws Exception{ // Chris, Nov 21: gold left behind on grass

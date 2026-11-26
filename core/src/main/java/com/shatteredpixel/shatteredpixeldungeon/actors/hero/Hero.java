@@ -314,7 +314,7 @@ public class Hero extends Char {
         if(curAction instanceof HeroAction.PickUp && curAction.dst==cell) return "skip_already_picking_up";
         if(curAction!=null && curAction.dst==cell) return "skip_walk_target";
         if(apdDewCantTake(heap)) return "skip_dew_no_use"; // only dew, full flask and full HP: the walk goes on
-        if(!SPDSettings.autoPickupWhenFull() && !apdRoomFor(heap.peek())) return "skip_no_room"; // Chris, Nov 20: full backpack = no walk-over pickup (no "can't carry" spam)
+        if(apdWalkoverItem(heap)==null) return "skip_no_room"; // Chris, Nov 20: full backpack = no walk-over pickup (no "can't carry" spam)
         return "queued";
     }
     public static String apdPileKind(Heap heap){
@@ -335,7 +335,18 @@ public class Hero extends Char {
         if(SPDSettings.autoPickupWalkoverMode()==SPDSettings.WALKOVER_NO_ENEMIES && visibleEnemies()>0) return false;
         // a drop left behind by a stack the flask couldn't hold: don't stop the walk on it
         if(apdDewCantTake(heap)) return false;
-        return SPDSettings.autoPickupWhenFull() || apdRoomFor(heap.peek());
+        return apdWalkoverItem(heap)!=null;
+    }
+    /** Chris, Nov 25: walking over a pile takes every item in it that can be picked up, not just the top one.
+     *  The next one to take: the first in pile order that fits (or any, with the full-pack setting on); dew the hero
+     *  can't use now is passed over. Null when nothing left in the pile can be picked up. */
+    public com.shatteredpixel.shatteredpixeldungeon.items.Item apdWalkoverItem(Heap heap){
+        if(heap==null) return null;
+        for(com.shatteredpixel.shatteredpixeldungeon.items.Item i:heap.items){
+            if(i instanceof Dewdrop && !Dewdrop.canTakeNow(this,i.quantity())) continue;
+            if(SPDSettings.autoPickupWhenFull() || apdRoomFor(i)) return i;
+        }
+        return null;
     }
     /** A pile that is only dew this hero can't use now (a mixed pile keeps the normal rules). */
     private boolean apdDewCantTake(Heap heap){
@@ -1407,13 +1418,15 @@ public class Hero extends Char {
 			}
 			if (heap != null) {
 				Item item = action instanceof HeroAction.PickUpItem ? apdChosenPickup(heap, action) : heap.peek();
+				//walk-over: the next item in the pile that can be picked up, even when the top one can't
+				if (action instanceof HeroAction.WalkoverPickUp && apdWalkoverItem(heap) != null) item = apdWalkoverItem(heap);
 				ApdItems.noteAcquireContext( ItemEvents.ACQ_PICKUP );
 				String apdKind = action instanceof HeroAction.WalkoverPickUp ? apdPileKind(heap) : null;
 				boolean apdPicked = item.doPickUp( this );
 				if (apdKind != null) com.watabou.utils.SupportActionJournal.record("loot.walkover_pickup",
 						"floor="+Dungeon.depth+" cell="+pos+" pile="+apdKind+" picked="+apdPicked);
 				if (apdPicked) {
-					if (action instanceof HeroAction.PickUpItem) apdRemovePicked(heap, item);
+					if (action instanceof HeroAction.PickUpItem || action instanceof HeroAction.WalkoverPickUp) apdRemovePicked(heap, item);
 					else heap.pickUp();
 
 					//TODO this statement is getting silly, might be better to handle this as a propery of items
