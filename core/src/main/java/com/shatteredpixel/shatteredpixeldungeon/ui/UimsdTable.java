@@ -240,7 +240,20 @@ public class UimsdTable extends Component {
 			moreLeft.size(3, body.height() + TableGeometry.HEADER_HEIGHT);
 			moreLeft.x = x + firstWidth();
 			moreLeft.y = y;
+			int off = offRight(geo, sx, width);
+			if (off != lastOffRight){ lastOffRight = off; if (onOffRight != null) onOffRight.accept(off); }
 		}
+	}
+
+	//Trial juror 3 (Nov 26): "4 more columns to the right" never changed after swiping. The scene now gets the live count.
+	public java.util.function.IntConsumer onOffRight;
+	private int lastOffRight = -1;
+
+	/** Columns still cut off on the right when the scrolling part is moved sx to the left (the first column never moves). */
+	public static int offRight( TableGeometry g, float sx, float visibleWidth ){
+		int off = 0;
+		for (int c = 1; c < g.lefts.length; c++) if (g.lefts[c] + g.widths[c] - sx > visibleWidth + 1) off++;
+		return off;
 	}
 
 	@Override

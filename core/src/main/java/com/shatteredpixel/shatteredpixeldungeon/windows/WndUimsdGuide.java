@@ -49,7 +49,7 @@ public final class WndUimsdGuide {
 		final List<UimsdGuide.Topic> topics = UimsdGuide.topics();
 		List<WndUimsdList.Entry> entries = new ArrayList<>();
 		entries.add(WndUimsdList.Entry.heading("Take the tour"));
-		entries.add(WndUimsdList.Entry.item("Interactive tour", "about two minutes, on the real screens (sample data if you have no runs)"));
+		entries.add(WndUimsdList.Entry.item("Interactive tour", "about two minutes, on the real screens. Opens after 10 runs of your own"));
 		String last = null;
 		for (UimsdGuide.Topic t : topics){
 			if (!t.section.equals(last)){

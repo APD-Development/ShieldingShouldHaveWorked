@@ -382,6 +382,10 @@ public class UimsdScene extends PixelScene {
 
 	private float x0, contentW, y;
 
+	static String offRightText( int off ){
+		return off == 0 ? "Swipe the table sideways: you're at the last column." : "Swipe the table sideways: " + off + (off == 1 ? " more column" : " more columns") + " to the right.";
+	}
+
 	private RenderedTextBlock text( String s, int size, int color, float maxW ){
 		RenderedTextBlock t = renderTextBlock(size);
 		t.text(s, (int) maxW);
@@ -814,14 +818,19 @@ public class UimsdScene extends PixelScene {
 		if (table == null) return barTop;
 		//a table wider than the screen says so, and how many columns are off to the right
 		com.shatteredpixel.shatteredpixeldungeon.apd.query.TableGeometry geoNow = com.shatteredpixel.shatteredpixeldungeon.apd.query.TableGeometry.of(table);
+		RenderedTextBlock moreHint = null;
 		if (geoNow.totalWidth > contentW + 1){
-			int off = 0;
-			for (int c = 0; c < geoNow.lefts.length; c++) if (geoNow.lefts[c] + geoNow.widths[c] > contentW + 1) off++;
-			RenderedTextBlock more = text("Swipe the table sideways: " + off + (off == 1 ? " more column" : " more columns") + " to the right.", UimsdStyle.SIZE_META, UimsdStyle.FAINT, contentW);
-			more.setPos(x0, y);
-			y = more.bottom() + 2;
+			int off = com.shatteredpixel.shatteredpixeldungeon.ui.UimsdTable.offRight(geoNow, 0, contentW);
+			moreHint = text(offRightText(off), UimsdStyle.SIZE_META, UimsdStyle.FAINT, contentW);
+			moreHint.setPos(x0, y);
+			y = moreHint.bottom() + 2;
 		}
 		UimsdTable t = new UimsdTable();
+		if (moreHint != null){
+			final RenderedTextBlock hint = moreHint;
+			final float hx = x0;
+			t.onOffRight = n -> { hint.text(offRightText(n)); hint.setPos(hx, hint.top()); };
+		}
 		activeTable = t;
 		tableModel = model;
 		tablePlaceId = model.placeId();
