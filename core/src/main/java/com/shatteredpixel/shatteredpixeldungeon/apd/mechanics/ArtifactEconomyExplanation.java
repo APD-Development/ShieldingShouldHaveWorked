@@ -88,10 +88,10 @@ public final class ArtifactEconomyExplanation {
         String qualifier=Float.isFinite(known)?"":" before ring bonuses";
         String value=com.shatteredpixel.shatteredpixeldungeon.messages.Messages.decimalFormat("0.##",gain);
         if(item instanceof AlchemistsToolkit)return "Gaining a full experience level provides _"+value+" energy_"+qualifier+".";
-        if(item instanceof HornOfPlenty||item instanceof MasterThievesArmband)return "Gaining a full experience level provides _"+value+" charges_"+qualifier+".";
+        if(item instanceof HornOfPlenty||item instanceof MasterThievesArmband)return "Gaining a full experience level provides _"+value+("1".equals(value)?" charge_":" charges_")+qualifier+".";
         if(item instanceof SandalsOfNature)return "Trampling tall grass restores _"+value+"% charge_"+qualifier+".";
         String time=com.shatteredpixel.shatteredpixeldungeon.messages.Messages.decimalFormat("0.##",1f/gain);
-        String recharge="At the current charge, restores _"+(item instanceof TalismanOfForesight||item instanceof DriedRose?"1% charge":"1 charge")+"_ in about _"+time+" turns_"+qualifier+" while recharging is active.";
+        String recharge="At the current charge, restores _"+(item instanceof TalismanOfForesight||item instanceof DriedRose?"1% charge":"1 charge")+"_ in about _"+time+("1".equals(time)?" turn_":" turns_")+qualifier+" while recharging is active.";
         if(item instanceof EtherealChains)recharge+=" Natural recharge stops at _"+(5+2*item.level())+" charges_; experience can add more.";
         return recharge;
     }
