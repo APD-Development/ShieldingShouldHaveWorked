@@ -1702,6 +1702,12 @@ public class MechanicsExplanationTest {
  @Test public void capeChargeCoefficientMatchesActualProcWithoutAnActivation(){
   for(int level:new int[]{0,3,6}){com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CapeOfThorns cape=new com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CapeOfThorns();cape.level(level);cape.levelKnown=cape.cursedKnown=true;cape.activate(hero);com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CapeOfThorns.Thorns effect=hero.buff(com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CapeOfThorns.Thorns.class);assertEquals(10,effect.proc(10,null,hero));assertEquals((int)(10*(.5+level*.05)),cape.currentCharges());String details=ArtifactExplanation.details(cape);assertTrue(details,details.contains(ObfuscationExplanation.number(.5f+.05f*level)+" charge points per damage point"));effect.detach();}
  }
+ @Test public void capeOneTurnLeftIsSingular()throws Exception{
+  com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CapeOfThorns cape=new com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CapeOfThorns();cape.levelKnown=cape.cursedKnown=true;
+  java.lang.reflect.Field f=com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Artifact.class.getDeclaredField("cooldown");f.setAccessible(true);f.setInt(cape,1);
+  String d=ArtifactExplanation.details(cape);assertTrue(d,d.contains("Current time left: 1 turn."));assertFalse(d,d.contains("1 turns"));
+  f.setInt(cape,4);d=ArtifactExplanation.details(cape);assertTrue(d,d.contains("Current time left: 4 turns."));
+ }
  @Test public void capePlainReflectionDescriptionMatchesActualAdjacentAndDistantProc(){
   for(boolean adjacent:new boolean[]{false,true})for(int seed=0;seed<24;seed++){
    com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CapeOfThorns cape=new com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CapeOfThorns();cape.level(10);cape.levelKnown=cape.cursedKnown=true;cape.activate(hero);cape.charge(hero,25f);assertTrue(cape.effectCountdown()>0);com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CapeOfThorns.Thorns thorns=hero.buff(com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CapeOfThorns.Thorns.class);LightningDamageTarget enemy=new LightningDamageTarget();enemy.pos=hero.pos+(adjacent?1:2);
