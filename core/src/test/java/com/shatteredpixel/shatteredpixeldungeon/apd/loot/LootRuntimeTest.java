@@ -41,7 +41,9 @@ public class LootRuntimeTest {
         Room r=Dungeon.level instanceof RegularLevel?((RegularLevel)Dungeon.level).room(i):null;
         return r==null||!LootTransfers.roomLocked(Dungeon.level,r); }
     private int safeAway() {
-        for(int i=0;i<Dungeon.level.length();i++) if(LootPlacement.safe(Dungeon.level,i)
+        // a pile the hero could walk to (Nov 26: loot behind locked doors no longer gathers)
+        boolean[] reach=LootTransfers.reachableWithoutKeys(Dungeon.level,Dungeon.hero.pos);
+        for(int i=0;i<Dungeon.level.length();i++) if(LootPlacement.safe(Dungeon.level,i) && (reach==null||reach[i])
                 && openCell(i)
                 && i!=LootPlacement.besideDownstairs(Dungeon.level)) return i;
         throw new AssertionError("Fixture has no safe source");
@@ -355,5 +357,40 @@ public class LootRuntimeTest {
         Dungeon.level.map[doorCell]=Terrain.DOOR;
         assertTrue("unlocked room counts again",LootTransfers.cellAllowed(Dungeon.level,cell));
         Dungeon.level.map[doorCell]=old;
+    }
+
+    // Chris, Nov 26: a room with locked cells inside (its own door open) gave up the loot in the cells
+    @Test public void lootInALockedCellInsideAnOpenRoomStaysPut() throws Exception {
+        Dungeon.level.heaps.clear();int away=safeAway();int w=Dungeon.level.width();
+        int cell=-1;
+        for(int i=2*w;i<Dungeon.level.length()-2*w&&cell<0;i++)if(i!=away&&i%w>1&&i%w<w-2&&LootPlacement.safe(Dungeon.level,i)&&openCell(i)
+                &&i!=LootPlacement.besideDownstairs(Dungeon.level)&&Math.abs(i-away)>2*w&&Math.abs(i-Dungeon.hero.pos)>2*w&&plainFloorAround(i,w))cell=i;
+        assertTrue(cell>=0);
+        int[] ring={-w-1,-w,-w+1,-1,1,w-1,w,w+1};int[] oldMap=new int[8];boolean[] oldPass=new boolean[8];
+        for(int k=0;k<8;k++){int n=cell+ring[k];oldMap[k]=Dungeon.level.map[n];oldPass[k]=Dungeon.level.passable[n];
+            Dungeon.level.map[n]=Terrain.WALL;Dungeon.level.passable[n]=false;}
+        int doorCell=cell+ring[1];
+        try{
+            Pasty inside=new Pasty();inside.apdUid="in-cell";pile(cell,Heap.Type.HEAP,inside);
+            Pasty free=new Pasty();free.apdUid="free";pile(away,Heap.Type.HEAP,free);
+            assertTrue("the old rule lets this pile go (the bug)",LootTransfers.cellAllowed(Dungeon.level,cell));
+            for(int t:new int[]{Terrain.LOCKED_DOOR,Terrain.HERO_LKD_DR,Terrain.CRYSTAL_DOOR}){
+                Dungeon.level.map[doorCell]=t;Dungeon.level.passable[doorCell]=false;
+                assertFalse("terrain "+t,LootTransfers.reachableWithoutKeys(Dungeon.level,Dungeon.hero.pos)[cell]);}
+            assertTrue("the room's own doors are open, so only reachability holds it back",LootTransfers.cellAllowed(Dungeon.level,cell));
+            assertEquals("hero can reach the gathering spot",true,LootTransfers.reachableWithoutKeys(Dungeon.level,Dungeon.hero.pos)[away]);
+            readGathering();
+            assertEquals(1,gatherCount("free"));assertEquals(0,gatherCount("in-cell"));
+            Dungeon.level.map[doorCell]=Terrain.DOOR;Dungeon.level.passable[doorCell]=true;
+            boolean[] r=LootTransfers.reachableWithoutKeys(Dungeon.level,Dungeon.hero.pos);
+            assertTrue("an unlocked cell door counts again when the cell is reachable",!r[cell-2*w]||r[cell]);
+        }finally{for(int k=0;k<8;k++){int n=cell+ring[k];Dungeon.level.map[n]=oldMap[k];Dungeon.level.passable[n]=oldPass[k];}}
+    }
+    // the 8 cells around it (and the one beyond its top) are open ground (no doors or traps), so walling it in never touches a room's own door
+    private boolean plainFloorAround(int c,int w){
+        for(int n:new int[]{c-w-1,c-w,c-w+1,c-1,c+1,c+w-1,c+w,c+w+1,c-2*w}){
+            if(n<0||n>=Dungeon.level.length()||!Dungeon.level.passable[n]||Dungeon.level.map[n]==Terrain.DOOR||Dungeon.level.map[n]==Terrain.OPEN_DOOR
+                    ||Dungeon.level.traps.get(n)!=null||Dungeon.level.heaps.get(n)!=null)return false;}
+        int b=LootPlacement.besideDownstairs(Dungeon.level);return Math.abs(b%w-c%w)>3||Math.abs(b/w-c/w)>3;
     }
 }

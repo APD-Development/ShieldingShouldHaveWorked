@@ -80,6 +80,42 @@ public final class LootTransfers {
         }
         return true;
     }
+    /**
+     * Chris, Nov 26: a prison room with locked cells inside it (its own door unlocked) still gave up the loot behind
+     * the cell doors. Loot now has to be reachable from the hero on foot without opening a locked, skeleton-key or
+     * crystal door. Null when there is no map to walk.
+     */
+    public static boolean[] reachableWithoutKeys(Level level, int from) {
+        if (level == null || level.map == null || level.passable == null || from < 0 || from >= level.length()) return null;
+        int len = level.length();
+        boolean[] open = new boolean[len];
+        for (int i = 0; i < len; i++) {
+            int t = level.map[i];
+            open[i] = (level.passable[i] || t == com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.DOOR)
+                    && t != com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.LOCKED_DOOR
+                    && t != com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.HERO_LKD_DR
+                    && t != com.shatteredpixel.shatteredpixeldungeon.levels.Terrain.CRYSTAL_DOOR;
+        }
+        if (!open[from]) return null; // hero not standing on walkable ground (tests, odd states): don't filter
+        boolean[] seen = new boolean[len];
+        int[] queue = new int[len];
+        int head = 0, tail = 0;
+        seen[from] = true; queue[tail++] = from;
+        int w = level.width();
+        // this floor's own offsets: PathFinder's are for whichever floor last set the map size
+        int[] around = {-w - 1, -w, -w + 1, -1, 1, w - 1, w, w + 1};
+        while (head < tail) {
+            int c = queue[head++];
+            for (int o : around) {
+                int n = c + o;
+                if (n < 0 || n >= len || seen[n] || !open[n]) continue;
+                if (Math.abs((n % w) - (c % w)) > 1) continue;
+                seen[n] = true; queue[tail++] = n;
+            }
+        }
+        return seen;
+    }
+
     static boolean roomLocked(Level level, com.shatteredpixel.shatteredpixeldungeon.levels.rooms.Room room) {
         for (com.shatteredpixel.shatteredpixeldungeon.levels.rooms.Room.Door door : room.connected.values()) {
             if (door == null) continue;
@@ -99,7 +135,8 @@ public final class LootTransfers {
         if (!exotic && cell < 0) return "There is no safe space beside the downstairs. The scroll is not consumed.";
         int destination = LootScrollRules.destinationDepth(Dungeon.depth);
         if (exotic && destination < 0) return "There is no shop destination. The scroll is not consumed.";
-        GroundLootPlan plan = GroundLootPlan.capture(level, LootTransfers::eligible, c -> cellAllowed(level, c));
+        final boolean[] reach = reachableWithoutKeys(level, Dungeon.hero.pos);
+        GroundLootPlan plan = GroundLootPlan.capture(level, LootTransfers::eligible, c -> cellAllowed(level, c) && (reach == null || reach[c]));
         if (plan.stacks() == 0) return "There is no eligible loose loot to gather. The scroll is not consumed.";
         if (exotic) for (GroundLootPlan.Source source : plan.sources) for (Item item : source.items)
             if (item instanceof Bomb && ((Bomb)item).fuse != null)
