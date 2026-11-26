@@ -84,7 +84,7 @@ public final class WndUimsdResearch {
     }
     public static void equipmentWindow(UimsdModel m,QueryResult anchors,Row anchor){
         List<WndUimsdList.Entry> entries=new ArrayList<>();List<Runnable> actions=new ArrayList<>();
-        for(int turns:new int[]{1,5,10,20,50})add(entries,actions,"Next "+turns+" turns","Strictly after the equip turn, through equip turn + "+turns+" inclusive. Includes shield absorption.",()->{
+        for(int turns:new int[]{1,5,10,20,50})add(entries,actions,"Next "+turns+(turns==1?" turn":" turns"),"Strictly after the equip turn, through equip turn + "+turns+" inclusive. Includes shield absorption.",()->{
             Catalog cat=m.catalog();String rules=m.currentRuleset();work(m,"Damage after equipping",()->EquipmentWindow.answer(cat,anchors,anchor,turns,rules),d->document(m,d));
         });
         menu(m,"Damage after equipping","Choose the time window. This measures observed damage after an event, not whether the equipment caused it.",entries,actions,()->equipmentWindow(m,anchors,anchor));
@@ -114,7 +114,7 @@ public final class WndUimsdResearch {
     }
     public static void damageRecoveryWindow(UimsdModel m,QueryResult anchors,Row anchor){
         List<WndUimsdList.Entry> entries=new ArrayList<>();List<Runnable> actions=new ArrayList<>();
-        for(int turns:new int[]{1,5,10,20,50})add(entries,actions,"Next "+turns+" turns","Strictly after the damage turn, through damage turn + "+turns+" inclusive. Counts recorded HP healing, not shielding.",()->{
+        for(int turns:new int[]{1,5,10,20,50})add(entries,actions,"Next "+turns+(turns==1?" turn":" turns"),"Strictly after the damage turn, through damage turn + "+turns+" inclusive. Counts recorded HP healing, not shielding.",()->{
             Catalog cat=m.catalog();String rules=m.currentRuleset();work(m,"Healing after damage",()->DamageRecoveryWindow.answer(cat,anchors,anchor,turns,rules),d->document(m,d));
         });
         menu(m,"Healing after damage","Choose the time window. This reports observed recovery after an event; it does not claim that the damage caused the heal.",entries,actions,()->damageRecoveryWindow(m,anchors,anchor));
