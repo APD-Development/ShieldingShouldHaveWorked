@@ -268,6 +268,12 @@ public class CommunityControllerTest {
 		assertTrue(has(last(), "Report this comment"));
 	}
 
+	@Test public void oneVoteIsSingular(){
+		assertEquals("1 upvote", CommunityController.count(1, "upvote"));
+		assertEquals("0 votes", CommunityController.count(0, "vote"));
+		assertEquals("2 votes", CommunityController.count(2, "vote"));
+	}
+
 	@Test public void votingStandingsAndPlainErrors(){
 		store.age = "pass"; store.token = "tok";
 		signedInWorld(false);
