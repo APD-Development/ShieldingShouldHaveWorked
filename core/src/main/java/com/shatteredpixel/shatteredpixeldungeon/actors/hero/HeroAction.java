@@ -81,6 +81,8 @@ public class HeroAction {
 		public int resumeTo = -1;
 		/** The walk itself, so it resumes with its own kind (stairs shortcut, Wall Search walk) and mode. */
 		public Move resumeWalk;
+		/** Chris, Nov 25: when the walk was going to pick something up (he tapped an item), that pickup, so it still happens. */
+		public PickUp resumePick;
 		public WalkoverPickUp( int dst ) {
 			super( dst );
 			level = com.shatteredpixel.shatteredpixeldungeon.Dungeon.level;

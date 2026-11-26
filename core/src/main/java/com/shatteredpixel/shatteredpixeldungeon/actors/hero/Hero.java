@@ -282,16 +282,19 @@ public class Hero extends Char {
         // Walk-over pickup now takes the whole pile (dew included), one item per pickup.
         grassDewPickup.clear();
         // Chris, Nov 24: after the pickup, carry on to where he tapped instead of stopping on the item
-        int resumeTo = curAction instanceof HeroAction.Move && curAction.dst != cell ? curAction.dst : -1;
+        boolean toPickup = curAction instanceof HeroAction.PickUp && !(curAction instanceof HeroAction.WalkoverPickUp);
+        int resumeTo = (curAction instanceof HeroAction.Move || toPickup) && curAction.dst != cell ? curAction.dst : -1;
         HeroAction.WalkoverPickUp pick=new HeroAction.WalkoverPickUp(cell);
         pick.resumeTo=resumeTo;
+        pick.resumePick=resumeTo>=0&&toPickup?(HeroAction.PickUp)curAction:null;
         // keep the walk itself (stairs shortcut, Wall Search walk, travel mode), not just its end cell
-        pick.resumeWalk=resumeTo>=0?(HeroAction.Move)curAction:null;
+        pick.resumeWalk=resumeTo>=0&&!toPickup?(HeroAction.Move)curAction:null;
         curAction=pick;
     }
     /** The walk a finished walk-over pickup carries on with: the original one, so a stairs shortcut still takes the
      *  stairs and a Wall Search walk still searches when it arrives (a bare Move to the cell did neither). */
-    public HeroAction.Move apdWalkAfterPickup(HeroAction.WalkoverPickUp done){
+    public HeroAction apdWalkAfterPickup(HeroAction.WalkoverPickUp done){
+        if(done.resumePick!=null&&done.resumePick.dst==done.resumeTo)return done.resumePick;
         if(done.resumeWalk!=null&&done.resumeWalk.dst==done.resumeTo)return done.resumeWalk;
         return new HeroAction.Move(done.resumeTo);
     }
@@ -307,7 +310,8 @@ public class Hero extends Char {
         if(heap.type!=Heap.Type.HEAP) return "skip_container_or_shop";
         if(heap.hidden) return "skip_hidden";
         if(heap.isEmpty()) return "skip_empty";
-        if(curAction instanceof HeroAction.PickUp) return "skip_already_picking_up";
+        // Chris, Nov 25: walking to a tapped item skipped every pile on the way. Only a pickup of this very cell counts.
+        if(curAction instanceof HeroAction.PickUp && curAction.dst==cell) return "skip_already_picking_up";
         if(curAction!=null && curAction.dst==cell) return "skip_walk_target";
         if(apdDewCantTake(heap)) return "skip_dew_no_use"; // only dew, full flask and full HP: the walk goes on
         if(!SPDSettings.autoPickupWhenFull() && !apdRoomFor(heap.peek())) return "skip_no_room"; // Chris, Nov 20: full backpack = no walk-over pickup (no "can't carry" spam)
@@ -1446,6 +1450,7 @@ public class Hero extends Char {
 						HeroAction.WalkoverPickUp more = new HeroAction.WalkoverPickUp(pos);
 						more.resumeTo = ((HeroAction.WalkoverPickUp)action).resumeTo;
 						more.resumeWalk = ((HeroAction.WalkoverPickUp)action).resumeWalk;
+						more.resumePick = ((HeroAction.WalkoverPickUp)action).resumePick;
 						curAction = more;
 					} else if (action instanceof HeroAction.WalkoverPickUp && ((HeroAction.WalkoverPickUp)action).resumeTo >= 0
 							&& ((HeroAction.WalkoverPickUp)action).resumeTo != pos && visibleEnemies() == 0) {

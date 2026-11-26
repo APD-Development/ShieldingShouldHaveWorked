@@ -187,6 +187,21 @@ public class TrapDiscoveryMovementTest {
         assertEquals(a.dst,((HeroAction.WalkoverPickUp)hero.curAction).resumeTo);
         assertSame("the same travel walk carries on",a,hero.apdWalkAfterPickup((HeroAction.WalkoverPickUp)hero.curAction));
     }
+    // Chris, Nov 25 (his report: thief drop tapped, gold and spears on the way all skipped "already picking up")
+    @Test public void pilesOnTheWayToATappedItemArePickedUpAndTheTappedItemStillIs()throws Exception{
+        HeroAction.PickUp tapped=new HeroAction.PickUp(target);
+        hero.curAction=tapped;PathFinder.Path path=new PathFinder.Path();for(int at=hero.pos+1;at<=target;at++)path.add(at);hero.route(path);
+        pile(start+1,com.shatteredpixel.shatteredpixeldungeon.items.Heap.Type.HEAP);pile(target,com.shatteredpixel.shatteredpixeldungeon.items.Heap.Type.HEAP);
+        assertTrue(move());
+        assertEquals(start+1,hero.pos);
+        assertTrue("the pile on the way is picked up",hero.curAction instanceof HeroAction.WalkoverPickUp);
+        HeroAction.WalkoverPickUp pick=(HeroAction.WalkoverPickUp)hero.curAction;
+        assertEquals(target,pick.resumeTo);
+        assertSame("then the tapped item's pickup carries on",tapped,hero.apdWalkAfterPickup(pick));
+        assertEquals("the tapped tile itself still uses its own pickup","skip_already_picking_up",
+                withAction(new HeroAction.PickUp(start+1),()->hero.apdWalkoverDecision(level,start+1)));
+    }
+    private String withAction(HeroAction a,java.util.function.Supplier<String> f){HeroAction old=hero.curAction;hero.curAction=a;try{return f.get();}finally{hero.curAction=old;}}
     // a stairs shortcut that steps on a pile still takes the stairs afterwards (a bare Move would just stop there)
     @Test public void walkOverPickupResumesTheStairsShortcutItself()throws Exception{
         com.shatteredpixel.shatteredpixeldungeon.apd.navigation.StairNavigation.Walk stairs=
