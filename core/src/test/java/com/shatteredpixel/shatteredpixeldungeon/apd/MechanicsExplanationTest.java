@@ -3523,6 +3523,11 @@ public class MechanicsExplanationTest {
   assertEquals("0 turns",BuffExplanation.turns(0));
   assertEquals(ObfuscationExplanation.number(1.5f)+" turns",BuffExplanation.turns(1.5f));
  }
+ @Test public void runtimeShieldPointCountsUseSingularForOne(){
+  assertEquals("1 point",BuffExplanation.points(1));
+  assertEquals("2 points",BuffExplanation.points(2));
+  assertEquals("0 points",BuffExplanation.points(0));
+ }
  @Test public void adrenalineSurgeOneTurnIsSingular(){
   com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AdrenalineSurge surge=Buff.affect(hero,com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AdrenalineSurge.class);surge.reset(1,1f);
   String text=BuffExplanation.details(surge);
