@@ -880,4 +880,11 @@ public class CommunityControllerTest {
 		controller().start();
 		assertTrue(has(last(), "You were signed out"));
 	}
+
+	@Test
+	public void commentCountIsSingularForOne() {
+		org.junit.Assert.assertEquals("1 comment", CommunityController.commentCount(1));
+		org.junit.Assert.assertEquals("0 comments", CommunityController.commentCount(0));
+		org.junit.Assert.assertEquals("2 comments", CommunityController.commentCount(2));
+	}
 }

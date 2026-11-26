@@ -473,7 +473,7 @@ public final class CommunityController {
 				String type = v.getString("type", "other");
 				if (typeFilter != null && !typeFilter.equals(postTypeName(type).equals("Other") ? "other" : type)) continue;
 				shown++;
-				s.item(v.getString("title", ""), postTypeName(type) + " · by " + v.get("author").getString("displayName", "?") + " · " + v.getInt("comments", 0) + " comments", () -> detail(id));
+				s.item(v.getString("title", ""), postTypeName(type) + " · by " + v.get("author").getString("displayName", "?") + " · " + commentCount(v.getInt("comments", 0)), () -> detail(id));
 			}
 			if (shown == 0) s.note(typeFilter == null ? "No ideas yet this season." : "No " + postTypeName(typeFilter) + " ideas yet this season.");
 			s.item("Back", null, this::hub);
@@ -1471,5 +1471,9 @@ public final class CommunityController {
 				if (e.startsWith("missing_")) return "Something was left empty.";
 				return "Something went wrong (" + e + "). Try again.";
 		}
+	}
+
+	static String commentCount(int n) {
+		return n + (n == 1 ? " comment" : " comments");
 	}
 }
