@@ -423,6 +423,35 @@ public final class CommunityController {
 		return line;
 	}
 
+	/** The subtitle for one of my pictures from GET /v1/submissions/:id/images. */
+	static String pictureLabel(JsonValue v){
+		String kind = "image/png".equals(v.getString("type", "")) ? "PNG" : "JPG";
+		String status = v.getString("status", "");
+		if ("held".equals(status)) return kind + " · waiting for a moderator (only you can see it)";
+		if ("approved".equals(status)) return kind + " · everyone can see it";
+		return kind;
+	}
+
+	private void myPictures(String id){
+		call(() -> api.images(id), r -> {
+			if (!r.ok()){ problem(r, () -> detail(id)); return; }
+			Screen s = new Screen("My pictures", "Removing a picture deletes it for good.");
+			s.back = () -> detail(id);
+			JsonValue list = r.body.get("images");
+			if (list == null || list.size == 0) s.note("No pictures on this idea yet.");
+			else {
+				int n = 1;
+				for (JsonValue v = list.child; v != null; v = v.next, n++){
+					final String imageId = v.getString("id");
+					s.item("Remove picture " + n, pictureLabel(v),
+							() -> call(() -> api.imageDelete(imageId), x -> { if (x.ok()) myPictures(id); else problem(x, () -> myPictures(id)); }));
+				}
+			}
+			s.item("Back", null, () -> detail(id));
+			ui.show(s);
+		});
+	}
+
 	static String postTypeName(String id){
 		for (int i = 0; i < POST_TYPES.length; i++) if (POST_TYPES[i].equals(id)) return POST_TYPE_NAMES[i];
 		return "Other";
@@ -514,7 +543,10 @@ public final class CommunityController {
 						call(() -> api.upvote(id, !upvoted), x -> { if (x.ok()){ uncache("submissions", "results"); detail(id); } else problem(x, () -> detail(id)); }));
 			} else if ("voting".equals(phase()) && upvotes >= 0) s.note(upvotes + (upvotes == 1 ? " upvote" : " upvotes") + " (you can't upvote your own idea)");
 			s.item("Comment", null, () -> comment(id, null));
-			if (IMAGES_ON && mine) s.item("Add a picture", "JPG or PNG, up to 1 MB, 8 per idea", () -> addPicture(id));
+			if (IMAGES_ON && mine){
+				s.item("Add a picture", "JPG or PNG, up to 1 MB, 8 per idea", () -> addPicture(id));
+				s.item("My pictures", "See or remove pictures on this idea", () -> myPictures(id));
+			}
 			if (!mine){
 				s.item("Report this idea", null, () -> report("submission", id, () -> detail(id)));
 				s.item("Block " + b.get("author").getString("displayName", "this player"), "Hide everything they post from you", () -> block(authorId, this::submissions));

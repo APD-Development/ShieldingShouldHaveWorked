@@ -161,6 +161,13 @@ public class CommunityControllerTest {
 		assertEquals("Only JPG and PNG pictures can be added.", CommunityController.pictureProblem(new byte[0]));
 	}
 
+	@Test public void pictureLabel_saysTypeAndWhoCanSeeIt(){
+		com.badlogic.gdx.utils.JsonReader j = new com.badlogic.gdx.utils.JsonReader();
+		assertEquals("PNG · waiting for a moderator (only you can see it)", CommunityController.pictureLabel(j.parse("{\"status\":\"held\",\"type\":\"image/png\"}")));
+		assertEquals("JPG · everyone can see it", CommunityController.pictureLabel(j.parse("{\"status\":\"approved\",\"type\":\"image/jpeg\"}")));
+		assertEquals("JPG", CommunityController.pictureLabel(j.parse("{}")));
+	}
+
 	@Test public void postTypeName_unknownIsOther(){
 		assertEquals("Quality of life", CommunityController.postTypeName("qol"));
 		assertEquals("Other", CommunityController.postTypeName("weapon"));
