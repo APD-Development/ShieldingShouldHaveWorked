@@ -215,10 +215,16 @@ test('a season scheduled for later stays closed until its start date (Chris, Nov
   const start = env.now() + 5 * hour;
   const r = await call('POST', '/v1/admin/seasons', { title: 'December', startsAt: start, submissionMs: 31 * 24 * hour, votingMs: 31 * 24 * hour, tournamentMs: 28 * 24 * hour }, chris.token);
   assert.equal(r.status, 201);
-  assert.equal((await call('GET', '/v1/season')).body.season, null);
+  const before = (await call('GET', '/v1/season')).body;
+  assert.equal(before.season, null);
+  assert.equal(before.next.title, 'December');
+  assert.equal(before.next.startsAt, start);
+  assert.equal(before.next.phase, 'none');
   assert.equal((await call('POST', '/v1/submissions', { title: 'Early', body: 'b' }, ana.token)).body.error, 'submissions_closed');
   tick(5 * hour);
-  const s = (await call('GET', '/v1/season')).body.season;
+  const after = (await call('GET', '/v1/season')).body;
+  assert.equal(after.next, null);
+  const s = after.season;
   assert.equal(s.phase, 'submissions');
   assert.equal(s.startsAt, start);
   assert.equal(s.votingAt, start + 31 * 24 * hour);

@@ -317,8 +317,11 @@ public final class CommunityController {
 			season = r.ok() ? r.body.get("season") : null;
 			if (season != null && season.isNull()) season = null;
 			Screen s = new Screen("Community", "Signed in as " + me.getString("displayName", "?") + ".");
-			if (season == null) s.note("No season is running right now.");
-			else s.heading(season.getString("title", "Season")).note(phaseText(season.getString("phase", "")));
+			JsonValue next = r.ok() ? r.body.get("next") : null;
+			if (next != null && next.isNull()) next = null;
+			if (season == null && next == null) s.note("No season is running right now.");
+			else if (season != null) s.heading(season.getString("title", "Season")).note(phaseText(season.getString("phase", "")));
+			if (next != null && (season == null || "finished".equals(phase()))) s.heading(next.getString("title", "Next season")).note(startsText(next.getLong("startsAt", 0)));
 			s.item("Submissions", "Ideas and their discussions", this::submissions);
 			s.item("Voting and results", "Upvotes, the top 16 and the tournament", this::results);
 			s.item("Selected content", "Every champion and how its development is going", this::champions);
@@ -331,6 +334,14 @@ public final class CommunityController {
 			s.back = ui::leave;
 			ui.show(s);
 		});
+	}
+
+	/** Plan item 1 (Chris, Nov 25): players see when the next season opens, Eastern date. */
+	static String startsText(long startsAt){
+		if (startsAt <= 0) return "This season hasn't started yet.";
+		java.text.SimpleDateFormat f = new java.text.SimpleDateFormat("MMMM d, yyyy", java.util.Locale.US);
+		f.setTimeZone(java.util.TimeZone.getTimeZone("America/New_York"));
+		return "Season starts " + f.format(new java.util.Date(startsAt)) + " (Eastern). Submissions open then.";
 	}
 
 	static String phaseText(String phase){
