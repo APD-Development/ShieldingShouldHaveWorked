@@ -577,7 +577,7 @@ public final class CommunityController {
 				int rank = 1;
 				for (JsonValue v = b.get("standings").child; v != null; v = v.next, rank++){
 					final String id = v.getString("id");
-					s.item(rank + ". " + v.getString("title", ""), v.getInt("upvotes", 0) + " upvotes" + (mine.contains(id) ? " · you upvoted" : ""), () -> detail(id));
+					s.item(rank + ". " + v.getString("title", ""), count(v.getInt("upvotes", 0), "upvote") + (mine.contains(id) ? " · you upvoted" : ""), () -> detail(id));
 				}
 			} else if ("tournament".equals(phase) || "finished".equals(phase)){
 				int week = b.getInt("week", 1);
@@ -605,12 +605,14 @@ public final class CommunityController {
 			for (JsonValue side : new JsonValue[]{a, bb}){
 				final String id = side.getString("id");
 				String label = side.getString("title", "") + (id.equals(winner) ? "  (won)" : "");
-				String detail = side.getInt("votes", 0) + " votes";
+				String detail = count(side.getInt("votes", 0), "vote");
 				if (open) s.item("Vote: " + label, detail, () -> call(() -> api.vote(idx, id), r -> { if (r.ok()){ uncache("results"); results(); } else problem(r, this::results); }));
 				else s.item(label, detail, () -> detail(id));
 			}
 		}
 	}
+
+	static String count(int n, String word){ return n + " " + word + (n == 1 ? "" : "s"); }
 
 	// ---- account ----
 
