@@ -1227,6 +1227,12 @@ public class Hero extends Char {
         interrupt(); lastAction=null; path=route; curAction=walk; damageInterrupt=true;
     }
 
+    public void apdStarvingInterrupt(){
+        if (curAction instanceof com.shatteredpixel.shatteredpixeldungeon.apd.navigation.StairNavigation.Walk
+                && com.shatteredpixel.shatteredpixeldungeon.apd.navigation.StairNavigation.survivesWalk(this, path == null ? 1 : path.size())) return;
+        interrupt();
+    }
+
     public void finishRatQuickSearch(){ready();}
     public void beginRatQuickSearch(com.shatteredpixel.shatteredpixeldungeon.apd.qol.RatKingQuickSearch.Payment payment){
         interrupt();lastAction=null;curAction=new com.shatteredpixel.shatteredpixeldungeon.apd.qol.RatKingQuickSearch.Action(Dungeon.level,payment);damageInterrupt=true;busy();next();
@@ -1249,7 +1255,12 @@ public class Hero extends Char {
                     (com.shatteredpixel.shatteredpixeldungeon.apd.navigation.StairNavigation.Walk) action;
             boolean blocked = path != null && !path.isEmpty()
                     && !com.shatteredpixel.shatteredpixeldungeon.apd.navigation.StairNavigation.safeStep(Dungeon.level,this,path.getFirst());
-            if (walk.level != Dungeon.level || visibleEnemies() > 0 || rooted || Dungeon.level.locked || blocked) {
+            if (blocked && walk.level == Dungeon.level) {
+                // A newly noticed trap (or other hazard) on the route: walk around it if a safe route exists.
+                com.watabou.utils.PathFinder.Path around = com.shatteredpixel.shatteredpixeldungeon.apd.navigation.StairNavigation.reroute(this,walk);
+                if (around != null) { path = around; blocked = false; }
+            }
+            if (walk.level != Dungeon.level || com.shatteredpixel.shatteredpixeldungeon.apd.navigation.StairNavigation.enemyStops(this,path) || rooted || Dungeon.level.locked || blocked) {
                 if (blocked) com.shatteredpixel.shatteredpixeldungeon.utils.GLog.w("Stair navigation stopped: the route is blocked or unsafe.");
                 interrupt(); lastAction=null; ready(); return false;
             }
@@ -2012,8 +2023,11 @@ public class Hero extends Char {
         // A real hit still stops stair autopilot. Ordinary travel retains the game's
         // original mild-DOT and explicit "continue moving" behavior.
         if (curAction instanceof com.shatteredpixel.shatteredpixeldungeon.apd.navigation.StairNavigation.Walk) {
-            interrupt();
-            lastAction = null;
+            // Starving keeps the walk going as long as the hero survives to the stairs (Chris, Nov 26).
+            if (!(src instanceof Hunger && com.shatteredpixel.shatteredpixeldungeon.apd.navigation.StairNavigation.survivesWalk(this, path == null ? 1 : path.size()))) {
+                interrupt();
+                lastAction = null;
+            }
         } else if (!(src instanceof Hunger || src instanceof Viscosity.DeferedDamage) && damageInterrupt) {
             interrupt();
         }
@@ -2236,9 +2250,14 @@ public class Hero extends Char {
 
         if (curAction instanceof com.shatteredpixel.shatteredpixeldungeon.apd.navigation.StairNavigation.Walk
                 && step != -1 && !com.shatteredpixel.shatteredpixeldungeon.apd.navigation.StairNavigation.safeStep(Dungeon.level,this,step)) {
+            com.watabou.utils.PathFinder.Path around = com.shatteredpixel.shatteredpixeldungeon.apd.navigation.StairNavigation.reroute(this,(com.shatteredpixel.shatteredpixeldungeon.apd.navigation.StairNavigation.Walk)curAction);
+            if (around != null && com.shatteredpixel.shatteredpixeldungeon.apd.navigation.StairNavigation.safeStep(Dungeon.level,this,around.getFirst())) {
+                path = around; step = path.removeFirst();
+            } else {
             path=null;
             com.shatteredpixel.shatteredpixeldungeon.utils.GLog.w("Stair navigation stopped: the route is blocked or unsafe.");
             return false;
+            }
         }
 
 		if (step != -1) {
@@ -3039,7 +3058,9 @@ public class Hero extends Char {
             // already cancelled by damage, enemies, a triggered trap or the player.
             boolean moving = curAction != null && (apdSearchingAfterMovement
                     || curAction instanceof HeroAction.Move || curAction instanceof HeroAction.LvlTransition);
-            if (intentional || nonTrapFound || !moving || !SPDSettings.continueOnTrapDiscovery()) interrupt();
+            boolean stairWalk = curAction instanceof com.shatteredpixel.shatteredpixeldungeon.apd.navigation.StairNavigation.Walk;
+            // Stair walks keep going past a newly noticed trap; the next step reroutes around it.
+            if (intentional || nonTrapFound || !moving || !(stairWalk || SPDSettings.continueOnTrapDiscovery())) interrupt();
 		}
 
 		if (foresight){

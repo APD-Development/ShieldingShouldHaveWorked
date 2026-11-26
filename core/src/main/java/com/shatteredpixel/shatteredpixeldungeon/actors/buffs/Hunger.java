@@ -102,7 +102,7 @@ public class Hunger extends Buff implements Hero.Doom {
 					GLog.n( Messages.get(this, "onstarving") );
 					hero.damage( 1, this );
 
-                    if(com.shatteredpixel.shatteredpixeldungeon.apd.qol.WaitingPolicy.interruptOnStarving(hero))hero.interrupt();
+                    if(com.shatteredpixel.shatteredpixeldungeon.apd.qol.WaitingPolicy.interruptOnStarving(hero))hero.apdStarvingInterrupt();
 					newLevel = STARVING;
 
 				} else if (newLevel >= HUNGRY && level < HUNGRY) {

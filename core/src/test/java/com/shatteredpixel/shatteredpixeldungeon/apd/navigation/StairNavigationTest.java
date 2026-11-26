@@ -22,7 +22,7 @@ public class StairNavigationTest {
    activations++;activatedStair=transition;return true;
   }
  }
- static class Player extends Hero {int enemies;@Override public int visibleEnemies(){return enemies;}}
+ static class Player extends Hero {int enemies;java.util.ArrayList<com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob> seen=new java.util.ArrayList<>();float heroSpeed=1f;@Override public int visibleEnemies(){return enemies;}@Override public java.util.ArrayList<com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob> getVisibleEnemies(){return seen;}@Override public float speed(){return heroSpeed;}}
  private Level previousLevel, level;private Hero previousHero;private Player hero; private Object previousSelector;private boolean previousAutoEnter;
  @Before public void setup() throws Exception {HeadlessTestSupport.start();java.lang.reflect.Field selector=com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene.class.getDeclaredField("cellSelector");selector.setAccessible(true);previousSelector=selector.get(null);
  java.lang.reflect.Field uf=sun.misc.Unsafe.class.getDeclaredField("theUnsafe");uf.setAccessible(true);sun.misc.Unsafe unsafe=(sun.misc.Unsafe)uf.get(null);selector.set(null,unsafe.allocateInstance(com.shatteredpixel.shatteredpixeldungeon.scenes.CellSelector.class));
@@ -37,7 +37,7 @@ public class StairNavigationTest {
   @Override public void showStatusWithIcon(int color,String text,int icon,Object...args){}
   @Override public void showAlert(){} @Override public void hideAlert(){}
  }
- @Test public void damageCancelsEvenWhenNormalDamageInterruptionWasDisabled(){stairs();new InvisibleSprite().attach(hero);assertNull(StairNavigation.begin(hero,false));hero.damageInterrupt=false;int hp=hero.HP;hero.damage(1,new com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger());assertTrue(hero.HP<hp);assertNull(hero.curAction);assertNull(hero.lastAction);}
+ @Test public void damageCancelsEvenWhenNormalDamageInterruptionWasDisabled(){stairs();new InvisibleSprite().attach(hero);assertNull(StairNavigation.begin(hero,false));hero.damageInterrupt=false;int hp=hero.HP;hero.damage(1,new com.shatteredpixel.shatteredpixeldungeon.actors.blobs.ToxicGas());assertTrue(hero.HP<hp);assertNull(hero.curAction);assertNull(hero.lastAction);}
  @Test public void restoredHeroDoesNotResumeTransientNavigation(){stairs();assertNull(StairNavigation.begin(hero,false));com.watabou.utils.Bundle saved=new com.watabou.utils.Bundle();hero.storeInBundle(saved);Hero restored=new Hero();restored.restoreFromBundle(saved);assertEquals(hero.pos,restored.pos);assertEquals(hero.HP,restored.HP);assertNull(restored.curAction);assertNull(restored.lastAction);}
  @Test public void walkingPaysTheNormalMovementCostWithoutChangingFloors() throws Exception {
   stairs();new InvisibleSprite().attach(hero);int depth=Dungeon.depth;float before=hero.cooldown();assertNull(StairNavigation.begin(hero,false));
@@ -100,7 +100,7 @@ public class StairNavigationTest {
   assertNull(StairNavigation.begin(hero,false));
   hero.interrupt();assertNull(hero.curAction);assertNull(hero.lastAction);
   assertNull(StairNavigation.begin(hero,false));new InvisibleSprite().attach(hero);
-  hero.damage(1,new com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger());
+  hero.damage(1,new com.shatteredpixel.shatteredpixeldungeon.actors.blobs.ToxicGas());
   assertNull(hero.curAction);assertNull(hero.lastAction);assertEquals(0,((Empty)level).activations);
  }
  @Test public void offscreenAndObscuredKnownStairsStillHaveExactDestinations(){stairs();Arrays.fill(hero.fieldOfView,false);assertNull(StairNavigation.begin(hero,false));assertEquals(13,hero.curAction.dst);assertTrue(com.shatteredpixel.shatteredpixeldungeon.effects.StairHighlight.known(13));level.visited[11]=false;assertFalse(com.shatteredpixel.shatteredpixeldungeon.effects.StairHighlight.known(11));}
@@ -226,4 +226,21 @@ public class StairNavigationTest {
  @Test public void manualCancellationCannotResumeAStaleStairRoute(){stairs();assertNull(StairNavigation.begin(hero,false));hero.interrupt();assertNull(hero.curAction);assertNull(hero.lastAction);}
  @Test public void blockedStairHasNoRoute(){stairs();level.passable[13]=false;assertNotNull(StairNavigation.begin(hero,false));assertNull(hero.curAction);}
  @Test public void navigationDoesNotConsumeRandomnessOrChangeTerrain(){stairs();int[] before=level.map.clone();int expected;Random.pushGenerator(3456);try{expected=Random.Int();}finally{Random.popGenerator();}Random.pushGenerator(3456);try{StairNavigation.begin(hero,false);assertEquals(expected,Random.Int());}finally{Random.popGenerator();}assertArrayEquals(before,level.map);}
+
+ // Reguretto / Chris, Nov 26: stop only for a faster enemy or one in the way; keep walking if the hero survives to the stairs.
+ private com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob seenMob(int pos,float speed){com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob m=new com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Rat(){@Override public float speed(){return speed;}};m.pos=pos;hero.seen.add(m);hero.enemies=hero.seen.size();return m;}
+ @Test public void slowerEnemyOutOfTheWayDoesNotStopStairWalk(){stairs();seenMob(0,0.5f);assertNull(StairNavigation.begin(hero,false));assertTrue(hero.curAction instanceof StairNavigation.Walk);}
+ @Test public void equalSpeedEnemyOutOfTheWayDoesNotStopStairWalk(){stairs();seenMob(20,1f);assertNull(StairNavigation.begin(hero,false));assertTrue(hero.curAction instanceof StairNavigation.Walk);}
+ @Test public void fasterEnemyAnywhereStopsStairWalk(){stairs();seenMob(0,2f);assertNotNull(StairNavigation.begin(hero,false));assertNull(hero.curAction);}
+ @Test public void slowEnemyNextToTheRouteStopsStairWalk(){stairs();seenMob(14,0.5f);assertNotNull(StairNavigation.begin(hero,false));assertNull(hero.curAction);}
+ @Test public void slowEnemyOnTheRouteStopsStairWalk(){stairs();assertTrue(StairNavigation.enemyStops(hero,java.util.Collections.singletonList(13))==false);seenMob(13,0.5f);assertTrue(StairNavigation.enemyStops(hero,java.util.Collections.singletonList(13)));}
+ @Test public void fasterHeroIsNotStoppedByEnemyAtTheSameSpeedAsBefore(){stairs();hero.heroSpeed=2f;seenMob(0,1.5f);assertFalse(StairNavigation.enemyStops(hero,java.util.Collections.singletonList(13)));}
+ private void starve(){com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger h=com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff.affect(hero,com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger.class);h.satisfy(-com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger.STARVING);assertTrue(h.isStarving());}
+ @Test public void starvingHeroWhoSurvivesKeepsWalkingAfterHungerDamage(){stairs();new InvisibleSprite().attach(hero);starve();hero.HP=hero.HT;assertNull(StairNavigation.begin(hero,false));hero.damage(1,hero.buff(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger.class));assertTrue(hero.curAction instanceof StairNavigation.Walk);hero.apdStarvingInterrupt();assertTrue(hero.curAction instanceof StairNavigation.Walk);}
+ @Test public void starvingHeroWhoWouldDieBeforeTheStairsStops(){stairs();new InvisibleSprite().attach(hero);starve();hero.HP=3;assertNull(StairNavigation.begin(hero,false));hero.damage(1,hero.buff(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger.class));assertNull(hero.curAction);assertNull(hero.lastAction);}
+ @Test public void survivalUsesTheStepsLeftToTheStairs(){starve();hero.HT=1000;hero.HP=12;assertTrue(StairNavigation.survivesWalk(hero,10));assertFalse(StairNavigation.survivesWalk(hero,11));hero.heroSpeed=2f;assertTrue(StairNavigation.survivesWalk(hero,20));}
+ @Test public void fedHeroAlwaysSurvivesTheWalk(){hero.HP=1;assertTrue(StairNavigation.survivesWalk(hero,500));}
+ private void walledBorder(){for(int c=0;c<25;c++){int x=c%5,y=c/5;if(x==0||y==0||x==4||y==4){level.passable[c]=false;level.map[c]=Terrain.WALL;}}}
+ @Test public void newlyNoticedTrapIsWalkedAroundNotStopped(){walledBorder();level.transitions.add(new LevelTransition(level,13,LevelTransition.Type.REGULAR_EXIT));hero.pos=11;assertNull(StairNavigation.begin(hero,false));WornDartTrap trap=new WornDartTrap();trap.pos=12;trap.visible=true;level.traps.put(12,trap);com.watabou.utils.PathFinder.Path around=StairNavigation.reroute(hero,(StairNavigation.Walk)hero.curAction);assertNotNull(around);assertFalse(around.contains(12));assertEquals(13,(int)around.getLast());}
+ @Test public void trapBlockingEveryRouteStillStops(){walledBorder();level.transitions.add(new LevelTransition(level,13,LevelTransition.Type.REGULAR_EXIT));hero.pos=11;assertNull(StairNavigation.begin(hero,false));for(int c:new int[]{7,12,17}){WornDartTrap t=new WornDartTrap();t.pos=c;t.visible=true;level.traps.put(c,t);}assertNull(StairNavigation.reroute(hero,(StairNavigation.Walk)hero.curAction));}
 }

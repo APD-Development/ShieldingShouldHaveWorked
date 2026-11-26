@@ -97,11 +97,55 @@ public final class StairNavigation {
         Level level = Dungeon.level;
         if (walk == null || !walk.enterOnArrival || hero == null || !hero.isAlive()
                 || level == null || walk.level != level || hero.pos != walk.dst
-                || hero.visibleEnemies() > 0 || hero.rooted || level.locked
+                || enemyStops(hero, null) || hero.rooted || level.locked
                 || !safeStep(level, hero, walk.dst)) return false;
         LevelTransition transition = level.getTransition(walk.dst);
         return transition != null && transition.cell() == walk.dst
                 && matchesRoute(transition, walk.route) && transition.inside(hero.pos);
+    }
+
+    // Reguretto / Chris, Nov 26: a stair walk stops for an enemy only when it is faster than the hero
+    // or is in the way (on, or next to, the cells still to walk, or next to the hero).
+    public static boolean enemyStops(Hero hero, java.util.List<Integer> route) {
+        if (hero == null) return true;
+        int count = hero.visibleEnemies();
+        if (count <= 0) return false;
+        java.util.List<com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob> mobs = hero.getVisibleEnemies();
+        if (mobs == null || mobs.size() < count) return true;
+        Level level = Dungeon.level;
+        for (com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob mob : mobs) {
+            if (mob == null || level == null) return true;
+            if (mob.speed() > hero.speed()) return true;
+            if (mob.pos == hero.pos || level.adjacent(mob.pos, hero.pos)) return true;
+            if (route != null) for (Integer cell : route) {
+                if (cell == null) continue;
+                if (mob.pos == cell || level.adjacent(mob.pos, cell)) return true;
+            }
+        }
+        return false;
+    }
+
+    // Chris, Nov 26: "If the player won't die by the stairs, then they keep walking." Worst case: starving
+    // for every remaining move (HT/1000 per turn, plus the 1 damage of the starving notice).
+    public static boolean survivesWalk(Hero hero, int stepsLeft) {
+        if (hero == null || !hero.isAlive()) return false;
+        com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger hunger =
+                hero.buff(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger.class);
+        if (hunger == null || !(hunger.isStarving() || hunger.isHungry())) return true;
+        float speed = Math.max(0.01f, hero.speed());
+        float turns = Math.max(1, stepsLeft) / speed;
+        int damage = (int)Math.ceil(turns * hero.HT / 1000f) + 1;
+        return hero.HP > damage;
+    }
+
+    public static PathFinder.Path reroute(Hero hero, Walk walk) {
+        Level level = Dungeon.level;
+        if (hero == null || walk == null || level == null || walk.level != level) return null;
+        boolean[] passable = new boolean[level.length()];
+        for (int i = 0; i < passable.length; i++) passable[i] = safeStep(level, hero, i);
+        passable[hero.pos] = true;
+        PathFinder.Path path = Dungeon.findPath(hero, walk.dst, passable, hero.fieldOfView, true);
+        return path == null || path.isEmpty() ? null : path;
     }
 
     public static boolean safeStep(Level level, Hero hero, int cell) {
@@ -144,10 +188,10 @@ public final class StairNavigation {
         if (hero.pos==target && !enterOnArrival) return route == Route.RETURN_TO_MAIN_DUNGEON
                 ? "You are already at the return to the main dungeon."
                 : "You are already at the stairs.";
-        if (hero.visibleEnemies()>0) return "An enemy is nearby. Stair navigation stopped.";
         if (hero.rooted || level.locked) return "You cannot navigate to those stairs right now.";
         if (!safeStep(level,hero,target)) return "No safe discovered route reaches those stairs.";
         if (hero.pos==target) {
+            if (enemyStops(hero,null)) return "An enemy is nearby. Stair navigation stopped.";
             LevelTransition transition=level.getTransition(target);
             if (transition==null || transition.cell()!=target || !matchesRoute(transition,route))
                 return "The requested stairs are no longer available.";
@@ -161,6 +205,7 @@ public final class StairNavigation {
         passable[hero.pos]=true;
         PathFinder.Path path=Dungeon.findPath(hero,target,passable,hero.fieldOfView,true);
         if(path==null || path.isEmpty()) return "No safe discovered route reaches those stairs.";
+        if (enemyStops(hero,path)) return "An enemy is nearby. Stair navigation stopped.";
         hero.beginStairWalk(new Walk(target,level,route,enterOnArrival),path);
         return null;
     }
