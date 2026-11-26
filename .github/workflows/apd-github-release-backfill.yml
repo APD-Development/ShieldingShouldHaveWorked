@@ -1,0 +1,31 @@
+name: APD GitHub release backfill
+# One-off: publishes a GitHub release for a Play build that was uploaded before releases were automated (Play 945-947, Nov 25).
+# The dev APK is read from the branch release-assets/play-<version>; the source zip is made from the exact build commit.
+on:
+  workflow_dispatch:
+    inputs:
+      version: { description: "versionCode, e.g. 947", required: true }
+      commit: { description: "exact commit the build came from", required: true }
+      latest: { description: "mark as latest", type: boolean, default: false }
+permissions:
+  contents: write
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { ref: "${{ inputs.commit }}", fetch-depth: 0 }
+      - name: Publish
+        env:
+          GH_TOKEN: ${{ github.token }}
+          V: ${{ inputs.version }}
+          C: ${{ inputs.commit }}
+          LATEST: ${{ inputs.latest }}
+        run: |
+          mkdir -p /tmp/rel
+          git fetch -q origin "release-assets/play-$V"
+          git show "FETCH_HEAD:APD-Developer-Play$V.apk" > /tmp/rel/APD-Developer-Play$V.apk
+          git archive --format=zip --prefix=ADHD-Pixel-Dungeon-Play$V-source/ -o /tmp/rel/ADHD-Pixel-Dungeon-Play$V-source.zip "$C"
+          gh release create "play-$V" --target "$C" --title "ADHD Pixel Dungeon Play $V" --latest="$LATEST" \
+            --notes "Play closed test build $V (2026-11-25). Developer APK and the exact source of this build attached. What's new: the Changes page in the game." /tmp/rel/*
+          git push -q origin --delete "release-assets/play-$V" || true

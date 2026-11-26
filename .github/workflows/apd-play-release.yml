@@ -13,6 +13,11 @@ on:
       - services/**
       - settings.gradle
   workflow_dispatch:
+    inputs:
+      github_release:
+        description: "Also publish a GitHub release (play-<versionCode>) with the dev APK and the exact source. Scheduled Play builds only."
+        type: boolean
+        default: false
 
 permissions:
   contents: write
@@ -78,6 +83,20 @@ jobs:
           cd /tmp/dev && git init -q -b handoff/dev-apk && git config user.name apd-ci && git config user.email ci@users.noreply.github.com
           git add . && git commit -qm "Developer APK C490D"
           git push -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" handoff/dev-apk
+      - name: GitHub release with the dev APK and the exact source (Chris, Nov 25)
+        if: github.event_name == 'workflow_dispatch' && inputs.github_release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          V=$(grep -o 'appVersionCode = [0-9]*' build.gradle | grep -o '[0-9]*')
+          mkdir -p /tmp/rel && cp /tmp/dev/APD-Developer-C490D.apk /tmp/rel/APD-Developer-Play$V.apk
+          git archive --format=zip --prefix=ADHD-Pixel-Dungeon-Play$V-source/ -o /tmp/rel/ADHD-Pixel-Dungeon-Play$V-source.zip HEAD
+          NOTES="Play closed test build $V ($(date -u +%Y-%m-%d)). Developer APK and the exact source of this build attached. What's new: the Changes page in the game."
+          if gh release view play-$V >/dev/null 2>&1; then
+            gh release upload play-$V /tmp/rel/* --clobber
+          else
+            gh release create play-$V --target "$GITHUB_SHA" --title "ADHD Pixel Dungeon Play $V" --notes "$NOTES" --latest /tmp/rel/*
+          fi
       - name: No Shattered servers in the release
         run: |
           APK=$(find android/build/outputs/apk/release -name "*.apk" | head -1)
