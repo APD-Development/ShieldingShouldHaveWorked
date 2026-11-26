@@ -426,6 +426,19 @@ public class UimsdScene extends PixelScene {
 		if (showingSample || showingDemo){
 			StyledButton dataIndicator = new StyledButton(Chrome.Type.GREY_BUTTON_TR, "DEMO DATA", 6){
 				@Override protected void onClick(){
+					//trial juror 7 (Nov 26): after "I LIKE CONFUSION" there was no way back to your own runs
+					if (showingDemo){
+						UimsdScene.this.addToFront(new com.shatteredpixel.shatteredpixeldungeon.windows.WndUimsdChoices("Demo data",
+								"These runs are made up. They're kept apart from your own history and never count toward the ten-run unlock.",
+								"Show my own runs", "Keep showing the demo"){
+							@Override protected void onSelect( int index ){
+								if (index != 0) return;
+								DemoData.viewDemo(false);
+								UimsdScene.reopen();
+							}
+						});
+						return;
+					}
 					UimsdScene.this.addToFront(new WndUimsdText("Fictional statistics", "These records are made-up test data. They are stored separately from your real run history and never count toward the ten-run unlock.", false));
 				}
 			};

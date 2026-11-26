@@ -552,5 +552,18 @@ public class PixelScene extends Scene {
 			
 		}
 	}
-}
 
+	//Trial juror 7 (Nov 26): Back on the title screen closed the game with no warning. It asks first now. (Kept here so the
+	//frozen title screen source stays exactly as approved.)
+	@Override
+	protected void onBackPressed() {
+		if (!(this instanceof TitleScene)){ super.onBackPressed(); return; }
+		for (Object m : members) if (m instanceof com.shatteredpixel.shatteredpixeldungeon.ui.Window) return;
+		addToFront(new com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions("Quit ADHD Pixel Dungeon?", "", "Quit", "Stay"){
+			@Override
+			protected void onSelect( int index ){
+				if (index == 0) com.watabou.noosa.Game.instance.finish();
+			}
+		});
+	}
+}

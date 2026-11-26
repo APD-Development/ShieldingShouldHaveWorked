@@ -143,6 +143,12 @@ final class CombatTracker {
 			} else if (src instanceof Class){
 				s.kind = CombatEvents.SRC_CLASS;
 				s.label = ((Class<?>) src).getSimpleName();
+			} else if (src instanceof com.shatteredpixel.shatteredpixeldungeon.levels.features.Chasm){
+				//trial juror 5 (Nov 26): a chasm fall showed as "Unknown source" in What happened
+				s.label = "falling into a chasm";
+			} else if (src != null){
+				//anything else still gets its name rather than "Unknown source"
+				s.label = src.getClass().getSimpleName();
 			}
 		} catch (Throwable t){
 			//a source that cannot be described stays "other"

@@ -619,10 +619,10 @@ public class HeroSelectScene extends PixelScene {
 		for (Object v : members){
 			if (v instanceof Window) resetFade();
 		}
+		//APD (trial jurors 1, 3, 5, Nov 26): no automatic fade. Shattered faded the whole UI after ~8 idle seconds in portrait
+		//and switched every button off, so the first tap after reading the hero text only brought the UI back (Start "didn't
+		//take"). The fade button still hides the UI to show the hero art.
 		if (!PixelScene.landscape() && GamesInProgress.selectedClass != null) {
-			if (uiAlpha > 0f){
-				uiAlpha -= Game.elapsed/4f;
-			}
 			updateFade();
 		}
 	}

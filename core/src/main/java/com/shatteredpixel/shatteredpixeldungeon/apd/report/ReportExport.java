@@ -129,7 +129,7 @@ public final class ReportExport {
                         try (OutputStream target = out){
                             target.write(bytes);
                             target.flush();
-                            message = "Saved " + f.label.split(" \\(")[0] + " report to " + displayName + " (" + bytes.length + " bytes).";
+                            message = "Saved " + f.label.split(" \\(")[0] + " report to " + shownName(displayName, fileName(r, f)) + " (" + bytes.length + " bytes).";
                         } catch (IOException | RuntimeException e){
                             message = "The report could not be saved: " + e;
                         } catch (OutOfMemoryError exhausted){
@@ -189,4 +189,11 @@ public final class ReportExport {
 		}
 		done.finished(ok ? "Choose where to send the report." : "Sharing is not available here. Save the report as a file instead.");
 	}
+
+    /** Trial juror 5 (Nov 26): some Android pickers name the saved file by an internal id ("Saved ... to 15").
+     *  A blank or all-digits name is replaced by the file name the report asked for. */
+    static String shownName( String displayName, String asked ){
+        if (displayName == null || displayName.trim().isEmpty() || displayName.trim().matches("\\d+")) return asked;
+        return displayName;
+    }
 }

@@ -235,7 +235,7 @@ public final class UimsdHome {
 		stat(c, "Win rate", def, q, Aggregate.rate(FactKeys.OUTCOME, 1), r.rows);
 		stat(c, "Deepest floor", def, q, Aggregate.of(Aggregate.Fn.MAX, FactKeys.DEEPEST), r.rows);
 		stat(c, "Best score", def, q, Aggregate.of(Aggregate.Fn.MAX, FactKeys.SCORE), r.rows);
-		c.link("All runs", "runs");
+		c.link("Runs table", "runs"); //trial juror 7 (Nov 26): said "All runs" but opens with the table's own rules filter
 		return c;
 	}
 
@@ -418,7 +418,7 @@ public final class UimsdHome {
 			int state = worst(worst(out.state, deep.state), score.state);
 			c.line(date.text + " - " + cls.text, out.text + ", floor " + deep.text + ", score " + score.text, "", state == CellText.HIDDEN ? CellText.EXACT : state);
 		}
-		c.link("All runs", "runs");
+		c.link("Runs table", "runs"); //trial juror 7 (Nov 26): said "All runs" but opens with the table's own rules filter
 		return c;
 	}
 
@@ -431,7 +431,7 @@ public final class UimsdHome {
 		record(c, "Most HP healed in a run", def, q, r.rows, FactKeys.HEALED, true, -1);
 		record(c, "Fastest win (turns)", def, q, r.rows, FactKeys.TURNS, false, 1);
 		if (c.lines.isEmpty()) return null;
-		c.link("All runs", "runs");
+		c.link("Runs table", "runs"); //trial juror 7 (Nov 26): said "All runs" but opens with the table's own rules filter
 		return c;
 	}
 

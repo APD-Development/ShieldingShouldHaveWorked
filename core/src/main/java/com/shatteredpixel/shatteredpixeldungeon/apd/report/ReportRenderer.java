@@ -108,7 +108,7 @@ public final class ReportRenderer {
 		for (String a : r.about) sb.append(md(a)).append("  \n");
 		if (!r.about.isEmpty()) sb.append("\n");
 		if (r.hasCanonical()) sb.append("> **").append(CANONICAL_NOTICE).append("**\n\n");
-		for (Report.Block b : r.blocks){
+		for (Report.Block b : shown(r)){
 			if (b instanceof Report.Heading){
 				Report.Heading h = (Report.Heading) b;
 				sb.append("\n");
@@ -185,7 +185,7 @@ public final class ReportRenderer {
 		for (String a : r.about) sb.append(a).append("\n");
 		sb.append("\n");
 		if (r.hasCanonical()) sb.append(CANONICAL_NOTICE).append("\n\n");
-		for (Report.Block b : r.blocks){
+		for (Report.Block b : shown(r)){
 			if (b instanceof Report.Heading){
 				Report.Heading h = (Report.Heading) b;
 				sb.append("\n").append(h.level == 1 ? h.text.toUpperCase(Locale.ROOT) : h.text).append("\n");
@@ -266,7 +266,7 @@ public final class ReportRenderer {
 		if (r.synthetic) sb.append("<p class=\"warn\"><strong>").append(esc(SYNTHETIC_NOTICE)).append("</strong></p>\n");
 		for (String a : r.about) sb.append("<div>").append(esc(a)).append("</div>\n");
 		if (r.hasCanonical()) sb.append("<p class=\"canonical\">").append(esc(CANONICAL_NOTICE)).append("</p>\n");
-		for (Report.Block b : r.blocks){
+		for (Report.Block b : shown(r)){
 			if (b instanceof Report.Heading){
 				Report.Heading h = (Report.Heading) b;
 				sb.append("<h").append(h.level + 1).append(">").append(esc(h.text)).append("</h").append(h.level + 1).append(">\n");
@@ -355,7 +355,7 @@ public final class ReportRenderer {
 		boolean any = false;
 		if (r.synthetic) sb.append("# ").append(SYNTHETIC_NOTICE).append("\r\n");
 		if (r.hasCanonical()) sb.append("# ").append(csvComment(CANONICAL_NOTICE)).append("\r\n");
-		for (Report.Block b : r.blocks){
+		for (Report.Block b : shown(r)){
 			if (b instanceof Report.Facts){
 				Report.Facts facts = (Report.Facts) b;
 				if (any) sb.append("\r\n");
@@ -386,5 +386,23 @@ public final class ReportRenderer {
 		if (!any) sb.append("# ").append(csvComment(r.title)).append(" has no table\r\n");
 		sb.append("# marks: ? unknown, >=N at least N, ~N inferred or canonical, hidden = hidden information. ").append(csvComment(footer(r))).append("\r\n");
 		return sb.toString();
+	}
+
+	/** Trial juror 5 (Nov 26): the saved report had headings with nothing under them ("What do you want to know?").
+	 *  A heading is left out when the very next block is a heading at the same or a higher level. */
+	static java.util.List<Report.Block> shown( Report r ){
+		java.util.List<Report.Block> out = new java.util.ArrayList<>();
+		for (int i = 0; i < r.blocks.size(); i++){
+			Report.Block b = r.blocks.get(i);
+			if (b instanceof Report.Heading){
+				int level = ((Report.Heading) b).level;
+				//only a heading straight followed by another at its level or above (a trailing heading is left alone)
+				boolean empty = i + 1 < r.blocks.size() && r.blocks.get(i + 1) instanceof Report.Heading
+						&& ((Report.Heading) r.blocks.get(i + 1)).level <= level;
+				if (empty) continue;
+			}
+			out.add(b);
+		}
+		return out;
 	}
 }

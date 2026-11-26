@@ -56,10 +56,15 @@ public final class RunLuck {
         if(!row.finished || row.imported || row.duplicate)return "Needs a finished recorded run, not an imported or repeated ranking.";
         if(row.ruleset==null || row.ruleset.isEmpty() || row.ruleset.equals(Row.RULESET_MIXED) || row.telemetry.isEmpty())return "Exact rules or recording version are unknown.";
         for(String k:new String[]{"run.apdVersion","run.heroClass",CustomRuleFacts.IDENTITY,"gen.levels","result.deepest","run.seedType","run.seed"})
-            if(!ResearchData.exact(r,row,k))return "Missing or hidden exact evidence: "+k+". Generation and seed details require Show hidden information for finished runs.";
+            if(!ResearchData.exact(r,row,k))return "Missing or hidden exact evidence: "+label(r,k)+". Generation and seed details require Show hidden information for finished runs.";
         Long levels=ResearchData.number(r,row,"gen.levels"),kind=ResearchData.number(r,row,"run.seedType");
         if(levels==null || levels<=0 || kind==null || kind!=0 || ResearchData.number(r,row,"run.seed")==null)return "Needs a random-seed run with a positive recorded generated-level count. Daily/custom seeds are not independent reference samples.";
         return "";
+    }
+    //trial juror 5 (Nov 26): the lab showed the raw key "custom.identity"; players see the column's name instead
+    static String label(QueryResult r,String key){
+        com.shatteredpixel.shatteredpixeldungeon.apd.query.ColumnDef c=r==null||r.def==null?null:r.def.column(key);
+        return c!=null&&c.label!=null&&!c.label.isEmpty()?c.label:key;
     }
     public static Result build(QueryResult r,Row subject){
         if(r==null || !Datasets.RUNS.equals(r.def.id) || r.isGrouped() || !r.problems.isEmpty() || subject==null)return null;
