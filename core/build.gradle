@@ -26,6 +26,12 @@ test {
     inputs.dir('src/main/assets').withPropertyName('gameAssets')
     //run with -Papd.golden.update=true to rewrite the golden file instead of comparing against it
     systemProperty 'apd.golden.update', project.findProperty('apd.golden.update') ?: 'false'
+    //owner-history memory check: -Papd.history.dir=<unzipped history export> runs RealHistoryMemoryTest inside a 256 MB heap (Chris's
+    //phone's limit when the stats screen ran out of memory). Without the property that test skips.
+    if (project.hasProperty('apd.history.dir')) {
+        systemProperty 'apd.history.dir', project.property('apd.history.dir')
+        maxHeapSize = '256m'
+    }
     systemProperty 'apd.golden.file', file('src/test/resources/apd/golden_levels.txt').absolutePath
     systemProperty 'apd.event.manifest', file('src/test/resources/apd/event_type_manifest.txt').absolutePath
     systemProperty 'apd.game.src', file('src/main/java/com/shatteredpixel/shatteredpixeldungeon').absolutePath
