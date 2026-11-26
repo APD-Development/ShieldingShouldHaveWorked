@@ -50,7 +50,7 @@ public final class BuffExplanation {
         }
         if(buff instanceof Barkskin || buff instanceof ArcaneArmor){
             int interval=buff instanceof Barkskin?((Barkskin)buff).decayInterval():((ArcaneArmor)buff).decayInterval();
-            return "_Fading protection_\nEach update reduces maximum protection by 1 damage point. Later losses are "+interval+" turns apart. Protection ends when this maximum reaches zero. Each protected hit blocks a random amount up to the current maximum; other defenses still apply.";
+            return "_Fading protection_\nEach update reduces maximum protection by 1 damage point. Later losses are "+interval+(interval==1?" turn":" turns")+" apart. Protection ends when this maximum reaches zero. Each protected hit blocks a random amount up to the current maximum; other defenses still apply.";
         }
         if(buff instanceof RevealedArea)return "_Temporary local sight_\nReveals a 3 × 3 area around the original impact tile on its original floor and branch. It stays there rather than following a moving target. This does not identify items or discover hidden doors.";
         if(buff instanceof PinCushion){int count=0;for(com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon item:((PinCushion)buff).getStuckItems())count+=item.quantity();return "_Embedded projectiles_\nRecoverable projectile quantity: "+count+". These drop at the carrier's position when this effect ends. Stacked projectiles count individually. Projectiles already destroyed by wear cannot be recovered.";}
