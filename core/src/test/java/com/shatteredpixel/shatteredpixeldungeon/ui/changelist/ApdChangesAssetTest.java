@@ -86,6 +86,8 @@ public class ApdChangesAssetTest {
 		org.junit.Assert.assertEquals(java.util.Arrays.asList("A", "B"), ApdChanges.playBuildTitles(text, 947, 948));
 		org.junit.Assert.assertEquals(java.util.Arrays.asList("C", "A", "B"), ApdChanges.playBuildTitles(text, 947, 949));
 		org.junit.Assert.assertTrue(ApdChanges.playBuildTitles(text, 949, 949).isEmpty());
-		org.junit.Assert.assertFalse("the real file lists Play 948", ApdChanges.playBuildTitles(ApdChanges.read(), 947, 948).isEmpty());
+		String real;
+		try { real = asset(); } catch (Exception e){ throw new AssertionError(e); }
+		org.junit.Assert.assertFalse("the real file lists Play 948", ApdChanges.playBuildTitles(real, 947, 948).isEmpty());
 	}
 }

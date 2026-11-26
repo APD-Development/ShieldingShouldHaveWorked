@@ -5,6 +5,10 @@ TAB	480+
 MAJOR	Coming Soon
 BTN	i:NEWS	What's next	Finishing the last **UIMSD** upgrades, then **script mods** for Community once I've tested them on my own phone.\n\nAnything marked "Developer build" only exists in my own test build until I say it's ready for Alpha Testers.
 MAJOR	Play builds
+BUILD	Play 949 (Nov 26)
+BTN	c:V061_BUGFIX	Gathering skips locked cells	The **Scroll of Gathering** only pulls loot you could walk to. Loot behind a **locked or crystal door** stays where it is.
+BTN	i:NEWS	This screen lists what changed	When the game updates, the welcome screen now **lists each change** instead of a generic note.
+BTN	i:RANKINGS	UIMSD tables	The **"more columns to the right"** hint counts down as you swipe, and the Guide says the tour opens after **10 of your runs**.
 BUILD	Play 948 (Nov 26)
 BTN	c:V061_BUGFIX	Walk-over pickup takes everything	Tapping an item now **picks up every pile you walk over on the way**, then the item you tapped. A pile is emptied of **everything that fits**, even when the item on top doesn't.
 BTN	c:V061_BUGFIX	The right cause of death	A **cursed wand's explosion** is now named as what killed you in What happened and UIMSD, instead of "Bomb".
