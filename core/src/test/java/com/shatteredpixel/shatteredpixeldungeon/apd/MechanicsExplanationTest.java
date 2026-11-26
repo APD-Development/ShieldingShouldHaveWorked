@@ -1937,6 +1937,11 @@ public class MechanicsExplanationTest {
    assertEquals(name,expected,item.currentCharges()+partial.getFloat(item),.00001f);assertFalse(name,ArtifactEconomyExplanation.details(item,hero).isEmpty());
   }
  }
+ @Test public void toolkitLevelNineWarmupSaysOneTurn()throws Exception{
+  com.shatteredpixel.shatteredpixeldungeon.items.artifacts.AlchemistsToolkit kit=new com.shatteredpixel.shatteredpixeldungeon.items.artifacts.AlchemistsToolkit();kit.level(9);kit.levelKnown=kit.cursedKnown=true;hero.belongings.artifact=kit;
+  String text=ArtifactEconomyExplanation.details(kit,hero);assertTrue(text,text.contains("= 1 turn at this level"));assertFalse(text,text.contains("1 turns"));
+  kit.level(8);text=ArtifactEconomyExplanation.details(kit,hero);assertTrue(text,text.contains("= 4 turns at this level"));
+ }
  @Test public void artifactRateTextNeverSaysOneTurnsOrOneCharges()throws Exception{
   java.lang.reflect.Field charge=com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Artifact.class.getDeclaredField("charge");charge.setAccessible(true);
   for(String name:new String[]{"HornOfPlenty","MasterThievesArmband","CloakOfShadows","TimekeepersHourglass","UnstableSpellbook","SkeletonKey","TalismanOfForesight","DriedRose","EtherealChains"})for(int lvl=0;lvl<=10;lvl++){
