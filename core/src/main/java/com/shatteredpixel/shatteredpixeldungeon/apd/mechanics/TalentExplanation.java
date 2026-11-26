@@ -253,7 +253,7 @@ public final class TalentExplanation {
                     + "The result is rounded down to whole strength points and can stay unchanged until enough base strength is gained. Strength requirements and strength-based damage effects use their own rules; this is not a direct damage percentage.";
             case DESPERATE_POWER:
                 return "_Last-charge wand level_\nWhen a charged wand is down to exactly one charge, this talent adds " + rank
-                    + " effective wand levels to its cast. It does not add that many damage points or permanent upgrades. The wand's level-dependent effects determine the result. A stronger Magic Charge and Wild Magic's own cap/order can affect the resulting effective level; wand details show the current result without spending the charge.";
+                    + (rank == 1 ? " effective wand level" : " effective wand levels") + " to its cast. It does not add that many damage points or permanent upgrades. The wand's level-dependent effects determine the result. A stronger Magic Charge and Wild Magic's own cap/order can affect the resulting effective level; wand details show the current result without spending the charge.";
             case WILD_POWER:
                 return "_Wild Magic's temporary level bonus_\nBefore the cap, the two equally likely bonus branches add " + ((4+rank)/2)
                     + " or " + ((5+rank)/2) + " effective wand levels. When both amounts are equal, there is no difference between the branches. "

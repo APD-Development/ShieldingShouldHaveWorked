@@ -41,6 +41,8 @@ public class MechanicsExplanationTest {
   String focused=TalentExplanation.details(Talent.FOCUSED_MEAL,2);
   assertTrue(focused,focused.contains("_1 weapon-ability charge_"));
   assertTrue(TalentExplanation.details(Talent.FOCUSED_MEAL,1).contains("_0.667 weapon-ability charges_"));
+  assertTrue(TalentExplanation.details(Talent.DESPERATE_POWER,1).contains("adds 1 effective wand level to its cast"));
+  assertTrue(TalentExplanation.details(Talent.DESPERATE_POWER,2).contains("adds 2 effective wand levels to its cast"));
   hero.heroClass=HeroClass.CLERIC;
   String enlightening=TalentExplanation.details(Talent.ENLIGHTENING_MEAL,2);
   assertTrue(enlightening,enlightening.contains("_1 Tome charge_"));
