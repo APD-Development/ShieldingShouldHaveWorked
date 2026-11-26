@@ -972,8 +972,9 @@ route('POST', '/v1/admin/review-access', async (env, req) => {
 
 // ---- images on ideas (Chris, Nov 25: community item 3) ----
 // Up to 8 jpg/png per idea, uploaded by its author. Every upload goes through env.IMAGE_FILTER.check(bytes, type), which
-// answers 'pass', 'block' or 'borderline'. Blocked images are never stored. Borderline ones are HELD for a moderator
-// (Claude's default; Chris hasn't confirmed it). Only approved images are shown to other players.
+// answers 'pass', 'block' or 'borderline'. Blocked images are never stored. Borderline ones are REFUSED too (Chris, Nov 26:
+// "Reject it now, maybe later I can pay people to moderate the pictures"). Setting env.HOLD_BORDERLINE = "on" holds them for
+// the moderator queue instead, for when there are paid moderators. Only approved images are shown to other players.
 // env.IMAGES is the byte store: { put(key, bytes, type), get(key) -> {bytes, type} | null, delete(key) } (R2 adapter).
 // Both are unset in wrangler.toml until Chris approves the R2 / Workers AI cost, so every image route answers
 // 503 images_not_enabled until then.
@@ -1019,7 +1020,8 @@ route('POST', '/v1/submissions/([0-9a-f]+)/images', async (env, req, [id]) => {
   let verdict;
   try { verdict = await env.IMAGE_FILTER.check(bytes, b.type); } catch { fail(503, 'image_filter_unavailable'); }
   if (verdict === 'block') fail(422, 'image_refused');
-  // Anything the filter didn't clearly pass waits for a moderator.
+  if (verdict !== 'pass' && env.HOLD_BORDERLINE !== 'on') fail(422, 'image_refused');
+  // With HOLD_BORDERLINE on, anything the filter didn't clearly pass waits for a moderator.
   const status = verdict === 'pass' ? 'approved' : 'held';
   const iid = newId();
   await env.IMAGES.put(iid, bytes, b.type);

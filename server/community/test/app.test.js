@@ -964,7 +964,7 @@ test('a JSON body that is not an object (null, a number, an array) is 400 bad_js
   }
 });
 
-test('idea images: off without bindings; filter pass shows, block refuses, borderline is held for a moderator', async () => {
+test('idea images: off without bindings; filter pass shows, block and borderline refuse, borderline held only with HOLD_BORDERLINE', async () => {
   const t = setup();
   const { call, member, env } = t;
   const ana = await member('ana@example.com');
@@ -1000,6 +1000,10 @@ test('idea images: off without bindings; filter pass shows, block refuses, borde
   assert.equal(store.size, 1, 'a refused image is never stored');
   r = await call('POST', `/v1/submissions/${idea}/images`, { type: 'image/png', data: png(4) }, ana.token);
   assert.deepEqual([r.status, r.body.error], [503, 'image_filter_unavailable']);
+  r = await call('POST', `/v1/submissions/${idea}/images`, { type: 'image/png', data: png(3) }, ana.token);
+  assert.deepEqual([r.status, r.body.error], [422, 'image_refused'], 'borderline is refused by default (Chris, Nov 26)');
+  assert.equal(store.size, 1, 'a refused borderline image is never stored');
+  env.HOLD_BORDERLINE = 'on';
   const held = await call('POST', `/v1/submissions/${idea}/images`, { type: 'image/png', data: png(3) }, ana.token);
   assert.deepEqual([held.status, held.body.status], [201, 'held']);
   const j = await call('POST', `/v1/submissions/${idea}/images`, { type: 'image/jpeg', data: jpg }, ana.token);
