@@ -178,6 +178,38 @@ public class CommunityApiTest {
 		assertEquals(6, seen.size());
 	}
 
+	@Test public void ideaImageCallsCheckFormatAndSizeBeforeAnyRequest(){
+		CommunityApi api = api();
+		api.token("t");
+		byte[] png = new byte[24];
+		byte[] sig = {(byte) 0x89, 0x50, 0x4e, 0x47, 13, 10, 26, 10};
+		System.arraycopy(sig, 0, png, 0, sig.length);
+		byte[] jpg = {(byte) 0xff, (byte) 0xd8, (byte) 0xff, (byte) 0xe0};
+		assertEquals("image/png", CommunityApi.imageType(png));
+		assertEquals("image/jpeg", CommunityApi.imageType(jpg));
+		assertNull(CommunityApi.imageType(new byte[]{1, 2, 3, 4}));
+		assertNull(CommunityApi.imageType(Arrays.copyOf(sig, 8))); // png signature but too short
+		api.imageUpload("ab12", jpg);
+		api.images("ab12");
+		api.imageDelete("cd34");
+		api.adminImages();
+		api.adminImageDecide("cd34", true);
+		api.adminImageDecide("cd34", false);
+		assertEquals("POST /v1/submissions/ab12/images {\"type\":\"image/jpeg\",\"data\":\"/9j/4A==\"} Bearer t", seen.get(0));
+		assertEquals("GET /v1/submissions/ab12/images  Bearer t", seen.get(1));
+		assertEquals("DELETE /v1/images/cd34  Bearer t", seen.get(2));
+		assertEquals("GET /v1/admin/images  Bearer t", seen.get(3));
+		assertEquals("POST /v1/admin/images/cd34 {\"approve\":true} Bearer t", seen.get(4));
+		assertEquals("POST /v1/admin/images/cd34 {\"approve\":false} Bearer t", seen.get(5));
+		try { api.imageUpload("ab12", new byte[]{1, 2, 3, 4}); fail(); } catch (IllegalArgumentException expected) {}
+		byte[] big = Arrays.copyOf(png, CommunityApi.IMAGE_MAX_BYTES + 1);
+		try { api.imageUpload("ab12", big); fail(); } catch (IllegalArgumentException expected) {}
+		try { api.imageUpload("ab12", null); fail(); } catch (IllegalArgumentException expected) {}
+		try { api.imageUpload("../x", png); fail(); } catch (IllegalArgumentException expected) {}
+		try { api.imageDelete("../x"); fail(); } catch (IllegalArgumentException expected) {}
+		assertEquals(6, seen.size());
+	}
+
 	@Test public void refusesUnsafeAddressesAndIds(){
 		try { new CommunityApi("http://example.com", 1000); fail(); } catch (IllegalArgumentException expected) {}
 		try { api().submission("../admin"); fail(); } catch (IllegalArgumentException expected) {}

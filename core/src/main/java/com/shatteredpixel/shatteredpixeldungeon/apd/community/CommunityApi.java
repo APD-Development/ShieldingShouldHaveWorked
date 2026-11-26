@@ -193,6 +193,40 @@ public final class CommunityApi {
 	public Result modSubscribe(String id, boolean on){ return call(on ? "POST" : "DELETE", "/v1/mods/" + id(id) + "/subscribe", null); }
 	public Result modDelete(String id){ return call("DELETE", "/v1/mods/" + id(id), null); }
 
+	// ---- images on ideas (server answers 503 images_not_enabled until storage + filter are switched on) ----
+
+	/** Same limits as the server: up to 8 per idea, 1 MB each. */
+	public static final int IMAGES_PER_IDEA = 8;
+	public static final int IMAGE_MAX_BYTES = 1024 * 1024;
+
+	/** "image/png" or "image/jpeg" from the file's first bytes (not its name), or null for anything else. */
+	public static String imageType(byte[] b){
+		if (b == null) return null;
+		byte[] png = {(byte) 0x89, 0x50, 0x4e, 0x47, 13, 10, 26, 10};
+		if (b.length >= 24){
+			boolean ok = true;
+			for (int i = 0; i < png.length; i++) if (b[i] != png[i]) { ok = false; break; }
+			if (ok) return "image/png";
+		}
+		if (b.length >= 4 && (b[0] & 0xff) == 0xff && (b[1] & 0xff) == 0xd8 && (b[2] & 0xff) == 0xff) return "image/jpeg";
+		return null;
+	}
+
+	/** Refused before any request when the bytes are not a real png/jpg or are over 1 MB. Reply: id + status (approved/held). */
+	public Result imageUpload(String submissionId, byte[] image){
+		String path = "/v1/submissions/" + id(submissionId) + "/images";
+		if (image == null || image.length == 0 || image.length > IMAGE_MAX_BYTES) throw new IllegalArgumentException("size");
+		String type = imageType(image);
+		if (type == null) throw new IllegalArgumentException("type");
+		return call("POST", path, obj("type", type, "data", java.util.Base64.getEncoder().encodeToString(image)));
+	}
+	public Result images(String submissionId){ return call("GET", "/v1/submissions/" + id(submissionId) + "/images", null); }
+	public Result imageDelete(String imageId){ return call("DELETE", "/v1/images/" + id(imageId), null); }
+	public Result adminImages(){ return call("GET", "/v1/admin/images", null); }
+	public Result adminImageDecide(String imageId, boolean approve){
+		return call("POST", "/v1/admin/images/" + id(imageId), "{\"approve\":" + approve + "}");
+	}
+
 	// ---- reports and blocks ----
 
 	public Result report(String kind, String targetId, String reason){
