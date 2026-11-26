@@ -1935,6 +1935,13 @@ public class MechanicsExplanationTest {
    assertEquals(name,expected,item.currentCharges()+partial.getFloat(item),.00001f);assertFalse(name,ArtifactEconomyExplanation.details(item,hero).isEmpty());
   }
  }
+ @Test public void artifactRateTextNeverSaysOneTurnsOrOneCharges()throws Exception{
+  java.lang.reflect.Field charge=com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Artifact.class.getDeclaredField("charge");charge.setAccessible(true);
+  for(String name:new String[]{"HornOfPlenty","MasterThievesArmband","CloakOfShadows","TimekeepersHourglass","UnstableSpellbook","SkeletonKey","TalismanOfForesight","DriedRose","EtherealChains"})for(int lvl=0;lvl<=10;lvl++){
+   com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Artifact item=(com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Artifact)Class.forName("com.shatteredpixel.shatteredpixeldungeon.items.artifacts."+name).getConstructor().newInstance();item.levelKnown=item.cursedKnown=true;item.level(Math.min(lvl,item.visiblyUpgraded()>=0?lvl:0));charge.setInt(item,0);hero.belongings.artifact=item;
+   String text=ArtifactEconomyExplanation.summary(item,hero);assertFalse(name+lvl+text,text.matches("(?s).*_1 (turns|charges)_.*"));
+  }
+ }
  @Test public void unidentifiedRechargeRingCannotBeInferredFromArtifactRate(){
   com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass item=new com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass();item.levelKnown=item.cursedKnown=true;RingOfEnergy energy=new RingOfEnergy();hero.belongings.ring=energy;energy.levelKnown=false;String first=ArtifactEconomyExplanation.summary(item,hero);assertTrue(Float.isNaN(ArtifactEconomyExplanation.knownGain(item,hero)));hero.belongings.ring=new RingOfHaste();assertEquals(first,ArtifactEconomyExplanation.summary(item,hero));assertTrue(Float.isNaN(ArtifactEconomyExplanation.knownGain(item,hero)));
  }
