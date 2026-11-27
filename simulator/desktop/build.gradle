@@ -3,6 +3,7 @@ apply plugin: 'application'
 //APD Simulator for the PC. Never published; built only for Chris.
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 java.sourceCompatibility = java.targetCompatibility = appJavaCompatibility
+base { archivesName = 'apd-simulator-desktop' }
 
 application.mainClass = 'com.shatteredpixel.shatteredpixeldungeon.desktop.DesktopSimLauncher'
 application.applicationName = 'APD-Simulator'

@@ -15,6 +15,11 @@ on:
 permissions:
   contents: read
 
+#a newer push replaces an older check that is still running
+concurrency:
+  group: apd-simulator-check-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   emulator:
     runs-on: ubuntu-latest
