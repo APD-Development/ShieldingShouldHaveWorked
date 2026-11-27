@@ -696,7 +696,9 @@ public final class SimRuntime {
 		recorderLogId = null;
 		status = "Run " + run + ": " + heroClass.title();
 		//the render thread's random numbers (thrown items landing, item effects, visuals) come from this run's own seed too
-		Random.resetGenerators();
+		//everything this run does on this thread (turns, item effects, visuals) draws from its own seeded stream; level
+		//generation on the loading thread keeps using the shared stack with its own per-floor seeds
+		Random.isolateThread();
 		Random.pushGenerator(seed * 0x9E3779B97F4A7C15L ^ botSeed);
 		seededShared = true;
 		lockstepTimeouts = 0;
@@ -1037,6 +1039,7 @@ public final class SimRuntime {
 	void sceneSwitched(){
 		if (Game.scene() instanceof GameScene && runActive){
 			StableTurnOrder.forLevel(Dungeon.level);
+			TurnStepper.takeOver();
 			if (TurnLog.echo && Dungeon.level != null){
 				long h = 7;
 				for (int t : Dungeon.level.map) h = h * 31 + t;
@@ -1046,7 +1049,7 @@ public final class SimRuntime {
 				for (Mob m : Dungeon.level.mobs) mobs += m.pos * 7919L + m.getClass().getName().hashCode();
 				log.turn("floor " + Dungeon.depth + " fingerprint map=" + Long.toHexString(h) + " piles=" + Long.toHexString(heaps) + " monsters=" + Long.toHexString(mobs));
 			}
-			com.shatteredpixel.shatteredpixeldungeon.actors.Actor.add(new SeedActor(this));
+			if (TurnStepper.failed) com.shatteredpixel.shatteredpixeldungeon.actors.Actor.add(new SeedActor(this));
 		}
 	}
 
@@ -1065,6 +1068,17 @@ public final class SimRuntime {
 	//true while a simulated run is in the dungeon
 	boolean lockstep(){
 		return runActive && !driving && Game.scene() instanceof GameScene;
+	}
+
+	//runs this frame's turns (on this thread) or, if that is unavailable, waits for the game's own turn thread
+	void runTurns(){
+		if (TurnStepper.active()){
+			try { TurnStepper.step(this); }
+			catch (java.lang.reflect.InvocationTargetException e){ caught(e.getCause() == null ? e : e.getCause()); }
+			catch (Throwable t){ botProblem("running turns", t); }
+			return;
+		}
+		waitForTurnThread();
 	}
 
 	//after the scene woke the turn thread, wait until it has finished (waiting for the hero or an animation)

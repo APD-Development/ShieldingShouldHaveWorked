@@ -50,6 +50,7 @@ public class SimGame extends ShatteredPixelDungeon {
 		SimRuntime r = SimRuntime.get();
 		if (r == null || !r.lockstep()){
 			super.update();
+			if (r != null && r.runActive() && TurnStepper.active()) r.runTurns();
 			if (r != null) r.frame();
 			return;
 		}
@@ -64,7 +65,7 @@ public class SimGame extends ShatteredPixelDungeon {
 		scene.update();
 		Camera.updateAll();
 		com.shatteredpixel.shatteredpixeldungeon.windows.GrudgeHooks.tick();
-		r.waitForTurnThread();
+		r.runTurns();
 		r.frame();
 	}
 
