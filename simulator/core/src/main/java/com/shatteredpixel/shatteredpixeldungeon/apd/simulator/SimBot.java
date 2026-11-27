@@ -330,6 +330,25 @@ final class SimBot {
 		Mob near = foes.get(0);
 		focusCell = near.pos;
 
+		//piranhas can't leave the water: step away from it instead of trading bites at the edge (not Clueless)
+		if (!clueless() && near instanceof com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Piranha){
+			SimNav nav = nav(false);
+			int best = -1;
+			for (int c = 0; c < level().length(); c++){
+				if (!nav.reachable(c) || nav.dist[c] > 3) continue;
+				boolean wet = false;
+				for (int d : PathFinder.NEIGHBOURS9){
+					int n = c + d;
+					if (n >= 0 && n < level().length() && level().map[n] == Terrain.WATER){ wet = true; break; }
+				}
+				if (!wet && (best < 0 || nav.dist[c] < nav.dist[best])) best = c;
+			}
+			if (best >= 0 && best != h.pos){
+				String step = stepToward(nav, best, "away from the piranha's water");
+				if (step != null) return step;
+			}
+		}
+
 		//low health: heal if a known Healing potion is held, otherwise gamble on an unknown potion
 		if (h.HP < h.HT * healAt){
 			PotionOfHealing heal = find(PotionOfHealing.class);

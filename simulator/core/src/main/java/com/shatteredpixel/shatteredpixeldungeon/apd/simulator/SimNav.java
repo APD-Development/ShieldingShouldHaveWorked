@@ -21,6 +21,7 @@ final class SimNav {
 	final int[] dist;
 	final int[] from;
 	final int origin;
+	private boolean[] waterEdges;
 
 	SimNav(Level level, int origin, boolean throughMobs){
 		this(level, origin, throughMobs, true);
@@ -55,6 +56,16 @@ final class SimNav {
 			for (Char c : Actor.chars()){
 				if (c instanceof com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Piranha && c.isAlive() && c.pos >= 0 && c.pos < length && level.heroFOV[c.pos]){
 					for (int i = 0; i < length; i++) if (level.water[i] && level.map[i] == Terrain.WATER && i != origin) walk[i] = false;
+					//and keep a step away from deep water, where they bite from (the next pass lets edges back in if that is the only way)
+					boolean[] edge = new boolean[length];
+					for (int i = 0; i < length; i++){
+						if (!walk[i] || i == origin) continue;
+						for (int d : PathFinder.NEIGHBOURS8){
+							int n = i + d;
+							if (n >= 0 && n < length && level.map[n] == Terrain.WATER){ edge[i] = true; break; }
+						}
+					}
+					waterEdges = edge;
 					break;
 				}
 			}
@@ -78,7 +89,24 @@ final class SimNav {
 			from[origin] = origin;
 			queue[tail++] = origin;
 		}
-		while (head < tail){
+		int[] deferred = new int[length * 8];
+		int dHead = 0, dTail = 0;
+		while (head < tail || dHead < dTail){
+			if (head >= tail){
+				//only water-edge cells are left: allow them now
+				int c = deferred[dHead++];
+				if (dist[c] >= 0) continue;
+				int best = -1;
+				for (int d : PathFinder.NEIGHBOURS8){
+					int n = c + d;
+					if (n >= 0 && n < length && dist[n] >= 0 && Math.abs((n % width) - (c % width)) <= 1 && (best < 0 || dist[n] < dist[best])) best = n;
+				}
+				if (best < 0) continue;
+				dist[c] = dist[best] + 1;
+				from[c] = best;
+				queue[tail++] = c;
+				continue;
+			}
 			int c = queue[head++];
 			for (int d : PathFinder.NEIGHBOURS8){
 				int n = c + d;
@@ -88,6 +116,10 @@ final class SimNav {
 				//no diagonal moves through doors (the game forbids them too)
 				if (d != -1 && d != 1 && d != -width && d != width){
 					if (isDoor(level.map[n]) || isDoor(level.map[c])) continue;
+				}
+				if (waterEdges != null && waterEdges[n]){
+					deferred[dTail++] = n;
+					continue;
 				}
 				dist[n] = dist[c] + 1;
 				from[n] = c;
