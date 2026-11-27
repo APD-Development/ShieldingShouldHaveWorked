@@ -261,6 +261,17 @@ public final class SimRuntime {
 			return;
 		}
 		if (scene instanceof InterlevelScene){
+			//an error window on the loading screen (the game could not load or build the floor): report what it says, close it
+			Window loadError = SimUi.topWindow();
+			if (loadError != null && !paused && framesSinceSceneChange > 10){
+				String said = String.join(" | ", SimUi.texts(loadError));
+				report(BugReport.Kind.SAVELOAD, "loaderror:" + said.replaceAll("[0-9]+", "#"),
+						"The loading screen showed an error instead of the floor: " + said, saveLoad.pending ? "This was the reload of the save/load stress check." : "");
+				saveLoad.pending = false;
+				endRun("stopped (the game could not load the floor)");
+				loadError.onBackPressed();
+				return;
+			}
 			//a region's story is shown with a Continue button: read it (text checks), then continue like a player
 			if (!paused && framesSinceSceneChange > 10){
 				for (SimUi.Choice c : SimUi.buttons(scene)){

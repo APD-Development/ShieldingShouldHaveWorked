@@ -24,8 +24,12 @@ public class DesktopSimLauncher {
 		File dir = new File(System.getProperty("apd.sim.dir", System.getProperty("user.home") + File.separator + "APD-Simulator")).getAbsoluteFile();
 		dir.mkdirs();
 		String base = dir.getPath() + File.separator;
-		Game.version = System.getProperty("Specification-Version", "desktop-sim");
-		try { Game.versionCode = Integer.parseInt(System.getProperty("Implementation-Version", "0")); } catch (NumberFormatException e){ Game.versionCode = 0; }
+		//from this program's jar; the system properties are only for running straight from the build tool
+		Package pkg = DesktopSimLauncher.class.getPackage();
+		String v = pkg == null ? null : pkg.getSpecificationVersion();
+		String c = pkg == null ? null : pkg.getImplementationVersion();
+		Game.version = v != null ? v : System.getProperty("Specification-Version", "desktop-sim");
+		try { Game.versionCode = Integer.parseInt(c != null ? c : System.getProperty("Implementation-Version", "0")); } catch (NumberFormatException e){ Game.versionCode = 0; }
 		ApdFeatures.parse("testBuild\ngrudge\ndemoUnlock\nclericPlayable\n");
 
 		Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();

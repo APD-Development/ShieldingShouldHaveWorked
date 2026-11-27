@@ -207,7 +207,10 @@ final class SimBot {
 		try { return i.actions(hero()).contains(action); } catch (Throwable t){ return false; }
 	}
 
+	private Item lastUsed;
+
 	private String use(Item i, String action){
+		lastUsed = i;
 		i.execute(hero(), action);
 		return action.toLowerCase() + " " + nameOf(i);
 	}
@@ -310,6 +313,11 @@ final class SimBot {
 		if (restStartTurn >= 0){
 			restTurnsThisFloor += com.shatteredpixel.shatteredpixeldungeon.Statistics.apdTurn() - restStartTurn;
 			restStartTurn = -1;
+		}
+		//dew in the waterskin heals for free: drink before resting (not Clueless)
+		if (foes.isEmpty() && h.HP < h.HT * 0.6f){
+			String dew = drinkDew();
+			if (dew != null) return dew;
 		}
 		//food in the pack buys more resting time (resting only costs hunger)
 		int foodHeld = 0;
@@ -420,6 +428,8 @@ final class SimBot {
 
 		//low health: heal if a known Healing potion is held, otherwise gamble on an unknown potion
 		if (h.HP < h.HT * healAt){
+			String dew = drinkDew();
+			if (dew != null) return dew;
 			PotionOfHealing heal = find(PotionOfHealing.class);
 			if (heal != null && heal.isKnown()) return use(heal, Potion.AC_DRINK);
 			CloakOfShadows cloak = find(CloakOfShadows.class);
@@ -604,6 +614,17 @@ final class SimBot {
 		b.append("\nterrain: hero ").append(level().map[h.pos]).append(", target ").append(level().map[m.pos]);
 		b.append("\nweapon: ").append(h.belongings.attackingWeapon() == null ? "none" : h.belongings.attackingWeapon().getClass().getSimpleName());
 		return b.toString();
+	}
+
+	private String drinkDew(){
+		if (clueless()) return null;
+		com.shatteredpixel.shatteredpixeldungeon.items.Waterskin skin = find(com.shatteredpixel.shatteredpixeldungeon.items.Waterskin.class);
+		if (skin == null) return null;
+		Object v = SimUi.field(skin, "volume");
+		int dew = v instanceof Integer ? (Integer) v : 0;
+		//each drop heals about 5% of max health; worth a turn from 3 drops up
+		if (dew < 3 || !has(skin, "DRINK") || tried("dew@" + (int) Actor.now(), 1)) return null;
+		return use(skin, "DRINK");
 	}
 
 	private static boolean harmful(Potion p){
@@ -949,6 +970,12 @@ final class SimBot {
 			try { if (selector.itemSelectable(i)) ok.add(i); } catch (Throwable ignored){}
 		}
 		if (ok.isEmpty()) return null;
+		//Scroll of Upgrade (not Clueless): the worn armor first, the Mage's staff for a Mage. One item gets them all.
+		if (!clueless() && selector.getClass().getName().contains("InventoryScroll") && lastUsed instanceof ScrollOfUpgrade){
+			Item staff = hero().belongings.weapon() instanceof MagesStaff ? hero().belongings.weapon() : null;
+			Item target = staff != null ? staff : hero().belongings.armor();
+			if (target != null && ok.contains(target)) return target;
+		}
 		Item best = null;
 		int bestScore = Integer.MIN_VALUE;
 		for (Item i : ok){
