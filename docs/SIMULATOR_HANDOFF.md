@@ -101,6 +101,21 @@ Last updated: 2026-11-27 (end of the first long session). Every scheduled run is
    coverage, bug handling tools, reports and outputs, fun extras.
 
 ## Run log (newest first; one line per run: what was done, what was verified, commit)
+- 2026-11-27 live session, evening: (1) Chris's new requirement: TWO MODES. Mode 1 headless (no drawing, fastest, every
+  death/bug/stat logged to an exportable file), Mode 2 visual (watchable, personalities). Same engine and bot code, so a seed
+  gives the same result in both; a button replays any headless seed in visual mode. BUILT: Mode toggle on the home screen,
+  `SimGame.draw` skips 19 of 20 frames in headless, `simlog.csv` (one line per run, `RunLog`), "Export log" (zip of log, run
+  list, reports), "Run log" window where tapping a run replays it in visual mode, desktop `-Dapd.sim.headless=1`.
+  VERIFIED: 2 of 3 seeds identical in both modes; the third differed for a reason that is NOT the mode (next point). Headless
+  is only slightly faster under the cloud's software graphics (54 s vs 59 s for 3 runs); on a phone, and for screen-off, true
+  no-graphics still needs work. (2) NEW GAME FINDING, waiting for Chris: `Random.chances(HashMap)` and
+  `Random.element(HashSet)` pick from address-ordered collections (example: Wand of Corruption's debuff table, keyed by
+  class), so the same random number picks a different entry after an app restart. Same family as the turn-order finding.
+  Inside one app session replays are exact; across restarts they can split when such a pick happens. A switch in
+  `Random` (inert in the real game, turned on by the simulator) was drafted but NOT applied: it edits game code, so it needs
+  Chris's yes. (3) Bot benchmark on 30 fixed seeds: baseline 3.30 average deepest floor; piranha pool rule 4.00; Goo, boss
+  rest and hunger rules 4.27 (14 of 30 reach floor 5+, max 9). Potion rules (no low-health gamble, test in water) not scored.
+  PC program version fix (it refused its own saves). The hourly scheduled run is DISABLED (Chris: "Only work here").
 - 2026-11-27 live session, last entry: bot stands and fights when no stairs are near (running across open floor got it killed),
   relaxes its careful rules in 3 steps when it has nothing left to do (it used to wait forever), food in the pack extends the
   rest budget. Compiles; only one noisy 12-run check, NOT benchmarked. New tool: fixed-seed benchmark, desktop option

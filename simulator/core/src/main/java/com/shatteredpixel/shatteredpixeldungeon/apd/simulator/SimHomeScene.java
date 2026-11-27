@@ -67,6 +67,7 @@ public class SimHomeScene extends PixelScene {
 
 		List<RedButton> buttons = new ArrayList<>();
 		buttons.add(new RedButton(sim.playing ? "Keep playing" : "Start", 8){ @Override protected void onClick(){ sim.paused = false; sim.setPlaying(true); sim.resetStopClock(); sim.startRun(); } });
+		buttons.add(new RedButton("Mode: " + (sim.headless ? "Headless (no graphics, fastest)" : "Visual (watchable)"), 7){ @Override protected void onClick(){ sim.setHeadless(!sim.headless); refresh(); } });
 		buttons.add(new RedButton("Speed: " + sim.speedLabel(), 7){ @Override protected void onClick(){ sim.cycleSpeed(); refresh(); } });
 		buttons.add(new RedButton("Class: " + p.classTitle(), 7){ @Override protected void onClick(){
 			p.heroClass = p.heroClass + 1 >= HeroClass.values().length ? -1 : p.heroClass + 1; save(p); } });
@@ -108,6 +109,8 @@ public class SimHomeScene extends PixelScene {
 			boolean on = !SPDSettings.soundFx(); SPDSettings.soundFx(on); SPDSettings.music(on); GameSettings.put("apdsim_sound", on); refresh(); } });
 		buttons.add(new RedButton("Your runs (Try my death)", 7){ @Override protected void onClick(){ add(new WndRealRunSeeds(p)); } });
 		buttons.add(new RedButton("Bug reports (" + sim.reportCount() + ")", 7){ @Override protected void onClick(){ add(new WndSimReports(sim)); } });
+		buttons.add(new RedButton("Run log (tap a run to watch it)", 7){ @Override protected void onClick(){ add(new WndSimRuns(sim)); } });
+		buttons.add(new RedButton("Export log (runs, deaths, bugs)", 7){ @Override protected void onClick(){ sim.platform.share(RunLog.exportZip(), "APD simulator log"); } });
 		buttons.add(new RedButton("Summary", 7){ @Override protected void onClick(){ add(new WndSimSummary()); } });
 		buttons.add(new RedButton("Simulator UIMSD", 7){ @Override protected void onClick(){ ShatteredPixelDungeon.switchNoFade(UimsdScene.class); } });
 		buttons.add(new RedButton("Clear simulator history", 7){ @Override protected void onClick(){ confirmClear(sim); } });

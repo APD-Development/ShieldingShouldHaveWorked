@@ -65,6 +65,7 @@ public final class SimRuntime {
 	public static int forcedCheckpoint;
 	public static int forcedVerify = -1;
 	public static long forcedSeedBase;
+	public static boolean forcedHeadless;
 	private int finishedRuns;
 
 	public static SimRuntime get(){ return instance; }
@@ -104,6 +105,9 @@ public final class SimRuntime {
 	//settings that outlive the app (the simulator's own settings file, never the game's)
 	public boolean playing;
 	public boolean paused;
+	//Mode 1 headless (no drawing, as fast as possible) or Mode 2 visual (watchable). Same engine and bot either way.
+	public boolean headless;
+	public void setHeadless(boolean h){ headless = h; GameSettings.put("apdsim_headless", h); }
 	//the player has the controls (take over / Chauffeur); the bot watches and does nothing
 	public boolean driving;
 	private boolean chauffeurDone;
@@ -116,6 +120,7 @@ public final class SimRuntime {
 		return profile;
 	}
 	public void reloadProfile(){ profile = null; }
+	SimProfile profileOfRun(){ return runProfile != null ? runProfile : profile(); }
 	private SimProfile runProfile;  //the profile the current run was started with (a replay may use a report's copy)
 	public String runSettings = "";
 	private long stopClockStart;
@@ -191,6 +196,8 @@ public final class SimRuntime {
 	void loadSettings(){
 		playing = GameSettings.getBoolean("apdsim_playing", false);
 		speed = GameSettings.getInt("apdsim_speed", 0, 0, SPEED_LABELS.length - 1);
+		headless = GameSettings.getBoolean("apdsim_headless", false);
+		if (forcedHeadless) headless = true;
 		run = GameSettings.getInt("apdsim_run", 0);
 		newBugsTotal = GameSettings.getInt("apdsim_bugs", 0);
 		lastRunSummary = GameSettings.getString("apdsim_last", "");
@@ -756,6 +763,18 @@ public final class SimRuntime {
 		Game.switchScene(InterlevelScene.class);
 	}
 
+	//Replays a run from the log in VISUAL mode (watchable), with the same class, seed, bot seed and simulator settings
+	public void replayVisual(String heroClassName, long seed, long botSeed, String profileText){
+		HeroClass cls;
+		try { cls = HeroClass.valueOf(heroClassName.toUpperCase(Locale.ROOT)); } catch (RuntimeException e){ return; }
+		boolean wasHeadless = headless;
+		headless = false;      //this session only; the saved mode is not changed
+		startReplay(cls, seed, botSeed, profileText, -1);
+		replayTargetTurn = -1; //watch from the start at the chosen speed
+		resumeHeadlessAfterReplay = wasHeadless;
+	}
+	private boolean resumeHeadlessAfterReplay;
+
 	//Try my death: one run on the seed and class of one of the owner's real runs, with this simulator's settings
 	public void tryRun(String heroClassName, String seedCode){
 		HeroClass cls;
@@ -775,6 +794,7 @@ public final class SimRuntime {
 	}
 
 	private void nextRun(){
+		if (resumeHeadlessAfterReplay && replaying){ resumeHeadlessAfterReplay = false; headless = true; }
 		//determinism check: play the run that just ended again, with the same seed and decisions, and compare
 		if (pendingVerify != null && !verifying && playing && pauseReason.isEmpty()){
 			verifying = true;
@@ -868,6 +888,8 @@ public final class SimRuntime {
 			FileUtils.getFileHandle("simruns.txt").writeString(lastRunSummary + " | seed " + DungeonSeed.convertToCode(seed)
 					+ " | bot seed " + botSeed + " | build " + Game.version + " | crashes " + crashesThisRun + " | deepest " + maxDepth + " | save/load checks " + saveLoadsThisRun
 					+ (startedFrom.isEmpty() ? "" : " | checkpoint") + "\n", true, "UTF-8");
+			RunLog.append(this, outcome, depth, h == null ? 0 : h.lvl, deathTurn >= 0 ? deathTurn : Statistics.apdTurn(), maxDepth,
+					Long.toHexString(runDigest), System.currentTimeMillis() - runStartMillis);
 			Digest.runEnded(this, maxDepth);
 		} catch (Throwable ignored){}
 		checkRecorder(depth, outcome.startsWith("died") || outcome.startsWith("won"));
@@ -1151,6 +1173,7 @@ public final class SimRuntime {
 
 	int stepsPerFrame(){
 		if (paused || driving) return 1;
+		if (headless && !replaying) return 1_000_000;
 		//bug replay: fast until about 50 turns before the bug, then 1x so the lead-up can be watched
 		if (replaying && replayTargetTurn >= 0) return Statistics.apdTurn() < replayTargetTurn ? SPEED_STEPS[3] : 1;
 		return SPEED_STEPS[speed];

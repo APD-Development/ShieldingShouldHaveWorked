@@ -73,7 +73,7 @@ final class SimHud extends Component {
 		pause.text(sim.paused ? "Resume" : "Pause");
 		speed.text(sim.speedLabel());
 		drive.text(sim.driving ? "Bot" : "Drive");
-		String t = String.format(Locale.ROOT, "Run %d %s  %s/%s  Floor %d  Turn %.0f  Bugs %d",
+		String t = String.format(Locale.ROOT, (sim.headless ? "HEADLESS  " : "") + "Run %d %s  %s/%s  Floor %d  Turn %.0f  Bugs %d",
 				sim.run, sim.heroClass == null ? "" : sim.heroClass.title(), sim.profile().aggression.title, sim.profile().intelligence.title,
 				Dungeon.depth, Actor.now(), sim.bugsThisRun);
 		if (!t.equals(lastText)){

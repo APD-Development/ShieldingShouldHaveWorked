@@ -38,12 +38,25 @@ public class SimGame extends ShatteredPixelDungeon {
 			return;
 		}
 		int steps = r.stepsPerFrame();
-		long until = System.nanoTime() + 15_000_000L;
+		//headless mode gives almost the whole frame to the game (no drawing to pay for)
+		long until = System.nanoTime() + (r.headless ? 200_000_000L : 15_000_000L);
 		for (int i = 0; i < steps; i++){
 			super.step();
 			if (!r.lockstep() || Game.switchingScene()) break;
 			if (steps > 4 && System.nanoTime() > until) break;
 		}
+	}
+
+	//Headless mode: the same game frames, the same turns, the same bot; only the drawing is left out. One frame in 20 is
+	//still drawn so the screen shows progress. Because nothing in the game depends on drawing, a seed gives the same result
+	//in headless and in visual mode (the determinism check compares them the same way as any replay).
+	private int skippedDraws;
+
+	@Override
+	protected void draw(){
+		SimRuntime r = SimRuntime.get();
+		if (r != null && r.headless && r.lockstep() && !r.paused && ++skippedDraws % 20 != 0) return;
+		super.draw();
 	}
 
 	@Override
