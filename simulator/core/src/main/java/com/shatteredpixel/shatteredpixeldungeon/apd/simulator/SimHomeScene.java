@@ -77,7 +77,23 @@ public class SimHomeScene extends PixelScene {
 		buttons.add(new RedButton("Seeds: " + p.seedMode.title + (p.seedMode == SimProfile.SeedMode.RANDOM ? "" : " " + p.seedText), 7){ @Override protected void onClick(){ chooseSeed(p); } });
 		buttons.add(new RedButton("Randomize APD Settings: " + (p.randomizeSettings ? "on" : "off"), 7){ @Override protected void onClick(){
 			p.randomizeSettings = !p.randomizeSettings; save(p); } });
-		buttons.add(new RedButton("Stop: " + p.stop.title + (p.stop == SimProfile.Stop.RUNS || p.stop == SimProfile.Stop.MINUTES ? " (" + p.stopAmount + ")" : ""), 7){ @Override protected void onClick(){ chooseStop(p); } });
+		buttons.add(new RedButton("Stop: " + p.stop.title + (p.stop == SimProfile.Stop.RUNS || p.stop == SimProfile.Stop.MINUTES || p.stop == SimProfile.Stop.FLOOR ? " (" + p.stopAmount + ")" : ""), 7){ @Override protected void onClick(){ chooseStop(p); } });
+		buttons.add(new RedButton("Chauffeur: " + (p.chauffeurFloor > 0 ? "to floor " + p.chauffeurFloor : "off"), 7){ @Override protected void onClick(){
+			ShatteredPixelDungeon.scene().add(new WndTextInput("Chauffeur", "The bot plays to this floor, then hands you the controls. 0 turns it off.",
+					String.valueOf(p.chauffeurFloor), 2, false, "OK", "Cancel"){
+				@Override public void onSelect(boolean positive, String text){
+					try { if (positive) p.chauffeurFloor = Math.max(0, Math.min(26, Integer.parseInt(text.trim()))); } catch (NumberFormatException ignored){}
+					save(p);
+				}
+			}); } });
+		buttons.add(new RedButton("Start from checkpoints: " + (p.checkpointFloor > 1 ? "floor " + p.checkpointFloor + "+" : "off") + " (" + Checkpoints.all().size() + " saved)", 7){ @Override protected void onClick(){
+			ShatteredPixelDungeon.scene().add(new WndTextInput("Checkpoints", "Start runs from a saved checkpoint at this floor or deeper (saved automatically whenever a run reaches a new floor). 0 or 1 = start at floor 1.",
+					String.valueOf(p.checkpointFloor), 2, false, "OK", "Cancel"){
+				@Override public void onSelect(boolean positive, String text){
+					try { if (positive) p.checkpointFloor = Math.max(0, Math.min(26, Integer.parseInt(text.trim()))); } catch (NumberFormatException ignored){}
+					save(p);
+				}
+			}); } });
 		buttons.add(new RedButton("Sound: " + (SPDSettings.soundFx() ? "on" : "off"), 7){ @Override protected void onClick(){
 			boolean on = !SPDSettings.soundFx(); SPDSettings.soundFx(on); SPDSettings.music(on); GameSettings.put("apdsim_sound", on); refresh(); } });
 		buttons.add(new RedButton("Bug reports (" + sim.reportCount() + ")", 7){ @Override protected void onClick(){ add(new WndSimReports(sim)); } });
@@ -124,10 +140,10 @@ public class SimHomeScene extends PixelScene {
 
 	private void chooseStop(final SimProfile p){
 		add(new WndOptions("Stop when", "When should this simulator stop?", SimProfile.Stop.FOREVER.title, SimProfile.Stop.RUNS.title,
-				SimProfile.Stop.MINUTES.title, SimProfile.Stop.FIRST_BUG.title){
+				SimProfile.Stop.MINUTES.title, SimProfile.Stop.FIRST_BUG.title, SimProfile.Stop.FIRST_WIN.title, SimProfile.Stop.FLOOR.title){
 			@Override protected void onSelect(final int index){
 				p.stop = SimProfile.Stop.values()[index];
-				if (p.stop == SimProfile.Stop.RUNS || p.stop == SimProfile.Stop.MINUTES){
+				if (p.stop == SimProfile.Stop.RUNS || p.stop == SimProfile.Stop.MINUTES || p.stop == SimProfile.Stop.FLOOR){
 					ShatteredPixelDungeon.scene().add(new WndTextInput(p.stop.title, "How many?", String.valueOf(p.stopAmount), 6, false, "OK", "Cancel"){
 						@Override public void onSelect(boolean positive, String text){
 							try { if (positive) p.stopAmount = Math.max(1, Integer.parseInt(text.trim())); } catch (NumberFormatException ignored){}

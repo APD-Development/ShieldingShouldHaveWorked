@@ -27,4 +27,11 @@ public class TextCheckTest {
 		assertNull(TextCheck.problem("A 2 turn delay."));
 		assertNull(TextCheck.problem("The sewer snake bites you."));
 	}
+
+	@Test public void cleanModeSwears(){
+		assertNotNull(TextCheck.swear("Well, shit."));
+		assertNotNull(TextCheck.swear("Get Fucked"));
+		assertNull(TextCheck.swear("The cockatrice and the scunthorpe pass by."));
+		assertNull(TextCheck.swear("A shitake? No, a mushroom."));
+	}
 }

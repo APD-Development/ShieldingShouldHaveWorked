@@ -52,6 +52,7 @@ public class DesktopSimLauncher {
 			SimRuntime.forcedSpeed = Integer.getInteger("apd.sim.speed", 3);
 			SimRuntime.forcedAggression = System.getProperty("apd.sim.aggression");
 			SimRuntime.forcedIntelligence = System.getProperty("apd.sim.intelligence");
+			SimRuntime.forcedCheckpoint = Integer.getInteger("apd.sim.checkpoint", 0);
 		}
 		SimRuntime.realHistoryRoot(new File(System.getProperty("apd.sim.realHistory", defaultRealHistory())));
 		new Lwjgl3Application(new SimGame(new DesktopPlatformSupport()), config);

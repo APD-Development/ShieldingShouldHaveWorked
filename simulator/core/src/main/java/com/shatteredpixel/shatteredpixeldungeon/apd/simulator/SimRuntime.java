@@ -60,6 +60,7 @@ public final class SimRuntime {
 	public static int exitAfterRuns;
 	public static int forcedSpeed = -1;
 	public static String forcedAggression, forcedIntelligence;
+	public static int forcedCheckpoint;
 	private int finishedRuns;
 
 	public static SimRuntime get(){ return instance; }
@@ -99,6 +100,10 @@ public final class SimRuntime {
 	//settings that outlive the app (the simulator's own settings file, never the game's)
 	public boolean playing;
 	public boolean paused;
+	//the player has the controls (take over / Chauffeur); the bot watches and does nothing
+	public boolean driving;
+	private boolean chauffeurDone;
+	boolean firstWinHit;
 	public int speed;
 
 	private SimProfile profile;
@@ -114,7 +119,7 @@ public final class SimRuntime {
 	public String pauseReason = "";
 	private float replayTargetTurn = -1;
 
-	public void resetStopClock(){ stopClockStart = System.currentTimeMillis(); runsSinceStart = 0; }
+	public void resetStopClock(){ stopClockStart = System.currentTimeMillis(); runsSinceStart = 0; firstBugHit = firstWinHit = floorStopHit = false; }
 
 	//the current run
 	public int run;
@@ -155,6 +160,8 @@ public final class SimRuntime {
 	private int pendingFrames;
 	private int busySamples, idleSamples;
 	private boolean runTagsRecorded;
+	private int checkpointedDepth;
+	public String startedFrom = "";
 
 	private SimRuntime(SimPlatform platform){
 		this.platform = platform;
@@ -184,6 +191,7 @@ public final class SimRuntime {
 			if (forcedSpeed >= 0) speed = forcedSpeed;
 			if (forcedAggression != null) profile().aggression = SimProfile.Aggression.valueOf(forcedAggression);
 			if (forcedIntelligence != null) profile().intelligence = SimProfile.Intelligence.valueOf(forcedIntelligence);
+			if (forcedCheckpoint > 0) profile().checkpointFloor = forcedCheckpoint;
 			resetStopClock();
 		}
 	}
@@ -301,7 +309,7 @@ public final class SimRuntime {
 
 		if (runActive && !runTagsRecorded && com.shatteredpixel.shatteredpixeldungeon.apd.recorder.ApdFacts.isActive()){
 			runTagsRecorded = true;
-			SimFacts.recordRun(runProfile, replaying, runSettings, botSeed);
+			SimFacts.recordRun(runProfile, replaying, runSettings + (startedFrom.isEmpty() ? "" : ",checkpoint=" + startedFrom), botSeed);
 			recorderLogId = ApdRecorder.status().logId;
 		}
 		Hero h = Dungeon.hero;
@@ -331,7 +339,20 @@ public final class SimRuntime {
 			return;
 		}
 		deadTimer = 0;
-		if (paused) { waitingSince = 0; return; }
+		//Chauffeur: the bot plays to the chosen floor, then the player takes over
+		if (runProfile != null && runProfile.chauffeurFloor > 0 && !chauffeurDone && Dungeon.depth >= runProfile.chauffeurFloor){
+			chauffeurDone = true;
+			driving = true;
+			log.turn(where() + " Chauffeur: reached floor " + Dungeon.depth + ", the controls are yours");
+			platform.notifyBug(7, "APD Simulator: Chauffeur", "Reached floor " + Dungeon.depth + ". The controls are yours.");
+		}
+		if (runProfile != null && runProfile.stop == SimProfile.Stop.FLOOR && Dungeon.depth >= runProfile.stopAmount && !floorStopHit){
+			floorStopHit = true;
+			endRun("reached floor " + Dungeon.depth + " (stop condition)");
+			nextRun();
+			return;
+		}
+		if (paused || driving) { waitingSince = 0; return; }
 
 		if (!pauseReason.isEmpty()) return;
 		int effectiveSpeed = speed;
@@ -410,6 +431,10 @@ public final class SimRuntime {
 		if (thinkTimer > 0) return;
 		thinkTimer = SPEED_DELAY[speed];
 
+		if (Dungeon.depth > checkpointedDepth && Dungeon.depth > 1 && !replaying){
+			checkpointedDepth = Dungeon.depth;
+			Checkpoints.save(heroClass.name(), Dungeon.depth);
+		}
 		Invariants.check(this);
 		checkItemsText();
 		if (!checkProgress()) return;
@@ -588,6 +613,8 @@ public final class SimRuntime {
 		zeroTimeActions = 0;
 		amuletClicks = 0;
 		lastOutcome = null;
+		chauffeurDone = false;
+		driving = false;
 		runStartMillis = System.currentTimeMillis();
 
 		SPDSettings.intro(false);
@@ -603,6 +630,21 @@ public final class SimRuntime {
 		Dungeon.customSeedText = "";
 		ActionIndicator.clearAction();
 		InterlevelScene.mode = InterlevelScene.Mode.DESCEND;
+		checkpointedDepth = 0;
+		startedFrom = "";
+		//start deep: continue a saved checkpoint instead of a new game (tagged, kept apart in the stats)
+		if (fixedSeed == 0 && runProfile.checkpointFloor > 1){
+			com.badlogic.gdx.files.FileHandle cp = Checkpoints.pick(master, runProfile.heroClass >= 0 ? heroClass.name() : null, runProfile.checkpointFloor);
+			if (cp != null && Checkpoints.restore(cp)){
+				startedFrom = cp.name();
+				GamesInProgress.curSlot = 1;
+				GamesInProgress.Info info = GamesInProgress.check(1);
+				heroClass = info.heroClass;
+				seed = info.seed;
+				checkpointedDepth = info.depth;
+				InterlevelScene.mode = InterlevelScene.Mode.CONTINUE;
+			}
+		}
 		runActive = true;
 		SeedPicker.remember(seed);
 		RecorderStatus rs = ApdRecorder.status();
@@ -628,7 +670,12 @@ public final class SimRuntime {
 		}
 	}
 
-	boolean firstBugHit;
+	boolean firstBugHit, floorStopHit;
+
+	public void takeOver(boolean player){
+		driving = player;
+		if (!player) thinkTimer = 0;
+	}
 
 	private boolean stopReached(){
 		SimProfile p = profile();
@@ -636,6 +683,8 @@ public final class SimRuntime {
 			case RUNS: return runsSinceStart >= p.stopAmount;
 			case MINUTES: return stopClockStart > 0 && System.currentTimeMillis() - stopClockStart >= p.stopAmount * 60_000L;
 			case FIRST_BUG: return firstBugHit;
+			case FIRST_WIN: return firstWinHit;
+			case FLOOR: return floorStopHit;
 			default: return false;
 		}
 	}
@@ -678,6 +727,7 @@ public final class SimRuntime {
 
 	void endRun(String outcome){
 		if (!runActive) return;
+		if (outcome.startsWith("won")) firstWinHit = true;
 		runActive = false;
 		int depth = Dungeon.depth;
 		Hero h = Dungeon.hero;
@@ -736,6 +786,7 @@ public final class SimRuntime {
 
 	void checkText(String text, String where){
 		String p = TextCheck.problem(text);
+		if (p == null && !SPDSettings.apdAdultHumor()) p = TextCheck.swear(text);
 		if (p == null) return;
 		String sig = "text:" + p.replaceAll("\\(.*", "") + ":" + text.replaceAll("[0-9]+", "#");
 		if (!textSeen.add(sig)) return;

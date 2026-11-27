@@ -24,7 +24,8 @@ public final class SimProfile {
 	public enum SeedMode { RANDOM("Random"), TYPED("Typed seed"), REAL_RUN("Seed of a real run");
 		public final String title; SeedMode(String t){ title = t; } }
 
-	public enum Stop { FOREVER("Run forever"), RUNS("After N runs"), MINUTES("After N minutes"), FIRST_BUG("On the first bug");
+	public enum Stop { FOREVER("Run forever"), RUNS("After N runs"), MINUTES("After N minutes"), FIRST_BUG("On the first bug"),
+		FIRST_WIN("On the first win"), FLOOR("At floor N");
 		public final String title; Stop(String t){ title = t; } }
 
 	public int index;
@@ -40,6 +41,8 @@ public final class SimProfile {
 	public Intelligence intelligence = Intelligence.AVERAGE;
 	public Stop stop = Stop.FOREVER;
 	public int stopAmount = 10;
+	public int chauffeurFloor = 0;
+	public int checkpointFloor = 0;  //start runs from a saved checkpoint at this floor or deeper (0 = always start at floor 1)   //Chauffeur: play to this floor, then hand the controls to the player (0 = off)
 
 	//APD Settings the simulator may randomize each run (setters on SPDSettings taking a boolean). Recording is never touched.
 	static final String[] RANDOMIZABLE = {
@@ -56,7 +59,7 @@ public final class SimProfile {
 	public String encode(){
 		return String.join("\t", name.replace('\t', ' '), String.valueOf(heroClass), String.valueOf(difficulty), String.valueOf(challenges),
 				customRules, seedMode.name(), seedText.replace('\t', ' '), String.valueOf(randomizeSettings), aggression.name(),
-				intelligence.name(), stop.name(), String.valueOf(stopAmount));
+				intelligence.name(), stop.name(), String.valueOf(stopAmount), String.valueOf(chauffeurFloor), String.valueOf(checkpointFloor));
 	}
 
 	public static SimProfile decode(int index, String text){
@@ -78,6 +81,8 @@ public final class SimProfile {
 			p.intelligence = Intelligence.valueOf(f[9]);
 			p.stop = Stop.valueOf(f[10]);
 			p.stopAmount = Integer.parseInt(f[11]);
+			if (f.length > 12) p.chauffeurFloor = Integer.parseInt(f[12]);
+			if (f.length > 13) p.checkpointFloor = Integer.parseInt(f[13]);
 		} catch (RuntimeException damaged){
 			//a damaged or older entry keeps whatever was read; the rest stays default
 		}
@@ -127,7 +132,10 @@ public final class SimProfile {
 		if (!customRules.isEmpty()) parts.add("custom rules");
 		parts.add(seedMode == SeedMode.RANDOM ? "random seeds" : "seed " + seedText);
 		if (randomizeSettings) parts.add("random APD Settings");
-		parts.add(stop == Stop.RUNS ? "stop after " + stopAmount + " runs" : stop == Stop.MINUTES ? "stop after " + stopAmount + " min" : stop.title.toLowerCase(Locale.ROOT));
+		parts.add(stop == Stop.RUNS ? "stop after " + stopAmount + " runs" : stop == Stop.MINUTES ? "stop after " + stopAmount + " min"
+				: stop == Stop.FLOOR ? "stop at floor " + stopAmount : stop.title.toLowerCase(Locale.ROOT));
+		if (chauffeurFloor > 0) parts.add("Chauffeur to floor " + chauffeurFloor);
+		if (checkpointFloor > 0) parts.add("starts from checkpoints at floor " + checkpointFloor + "+");
 		return String.join(", ", parts);
 	}
 }

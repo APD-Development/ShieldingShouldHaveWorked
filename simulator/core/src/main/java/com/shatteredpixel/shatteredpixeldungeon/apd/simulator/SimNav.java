@@ -32,6 +32,8 @@ final class SimNav {
 		this.length = level.length();
 		this.origin = origin;
 		walk = new boolean[length];
+		//already standing in gas or fire: crossing more of it is allowed, to get out
+		boolean escaping = origin >= 0 && origin < length && danger(level, origin);
 		for (int i = 0; i < length; i++){
 			boolean known = level.visited[i] || level.mapped[i] || level.heroFOV[i];
 			if (!known) continue;
@@ -41,7 +43,7 @@ final class SimNav {
 			if (level.pit[i] || t == Terrain.CHASM) pass = false;
 			Trap trap = level.traps.get(i);
 			if (avoidTraps && trap != null && trap.visible && trap.active) pass = false;
-			if (danger(level, i)) pass = false;
+			if (!escaping && danger(level, i)) pass = false;
 			walk[i] = pass;
 		}
 		//keep out of the water while piranhas are around (not for a Clueless bot, which doesn't know)

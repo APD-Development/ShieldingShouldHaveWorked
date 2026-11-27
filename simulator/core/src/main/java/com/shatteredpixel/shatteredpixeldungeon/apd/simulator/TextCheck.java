@@ -23,6 +23,17 @@ public final class TextCheck {
 	//"3 turn " (a number above one followed by a singular noun that is not used as an adjective)
 	private static final Pattern MANY_SINGULAR = Pattern.compile("(?<![\\d.,/+-])\\b([02-9]|[1-9]\\d+) (" + NOUNS + ")\\b(?![-'\\w])(?! (?:of|ago|limit|bonus|cost|penalty|duration|count|cap|delay|timer|cooldown|radius|range))");
 
+	//Clean mode audit: with Adult humor off, none of these may ever be shown (whole words, any case)
+	private static final Pattern SWEAR = Pattern.compile(
+			"(?i)\\b(fuck\\w*|motherfuck\\w*|shit(s|ty|ting|ted|head\\w*)?|bullshit|bitch\\w*|bastard\\w*|asshole\\w*|dickhead\\w*|cunt\\w*|cock(sucker)?s?|piss(ed)?|goddamn\\w*|twat\\w*|wanker\\w*|prick\\w*|slut\\w*|whore\\w*)\\b");
+
+	//null when the text is clean
+	public static String swear(String text){
+		if (text == null) return null;
+		Matcher m = SWEAR.matcher(text);
+		return m.find() ? "swear word shown with Adult humor off (\"" + m.group() + "\")" : null;
+	}
+
 	public static String problem(String text){
 		if (text == null) return null;
 		if (text.contains("NO TEXT FOUND")) return "missing text marker (NO TEXT FOUND)";

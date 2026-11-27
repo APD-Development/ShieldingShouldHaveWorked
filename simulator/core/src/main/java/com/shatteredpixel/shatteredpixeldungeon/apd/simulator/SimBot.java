@@ -212,6 +212,19 @@ final class SimBot {
 		List<Mob> foes = hostiles();
 		Hunger hunger = h.buff(Hunger.class);
 
+		//standing in fire or poison gas: get out first (a Clueless bot doesn't notice)
+		if (!clueless() && SimNav.danger(level(), h.pos)){
+			SimNav out = nav(true);
+			int best = -1;
+			for (int c = 0; c < level().length(); c++){
+				if (out.reachable(c) && !SimNav.danger(level(), c) && (best < 0 || out.dist[c] < out.dist[best])) best = c;
+			}
+			if (best >= 0){
+				String step = stepToward(out, best, "out of the gas or fire");
+				if (step != null) return step;
+			}
+		}
+
 		if (!foes.isEmpty()){
 			String fight = fight(foes);
 			if (fight != null) return fight;
