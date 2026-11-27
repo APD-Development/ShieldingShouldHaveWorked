@@ -77,6 +77,8 @@ final class SimBot {
 	private int idleThisFloor, desperation;
 	//a piranha was seen on this floor: its water stays off limits even when it is out of sight
 	private boolean piranhaFloor;
+	//the most health a single fight on this floor was judged to cost (Smart and better rest up to it)
+	private float floorFightCost;
 	private boolean[] piranhaWater;
 	//goals are kept until reached or no longer valid, so the bot does not flip between two equally near targets
 	private int searchGoal = -1, exploreGoal = -1;
@@ -95,6 +97,7 @@ final class SimBot {
 
 	SimBot(long seed, SimProfile.Aggression aggression, SimProfile.Intelligence intelligence){
 		rng = new Random(seed);
+		FightJudge.reset();
 		this.aggression = aggression;
 		this.intelligence = intelligence;
 		switch (aggression){
@@ -176,6 +179,7 @@ final class SimBot {
 			desperation = 0;
 			piranhaFloor = false;
 			piranhaWater = null;
+			floorFightCost = 0;
 			restStartTurn = -1;
 			searchesThisFloor = 0;
 			searchGoal = exploreGoal = -1;
@@ -406,8 +410,11 @@ final class SimBot {
 		//food in the pack buys more resting time (resting only costs hunger)
 		int foodHeld = 0;
 		for (Item i : items()) if (i instanceof Food) foodHeld += i.quantity();
-		int restBudget = this.restBudget == 0 ? 0 : this.restBudget + 200 * foodHeld;
-		if (foes.isEmpty() && h.HP < h.HT * restBelow && restTurnsThisFloor < restBudget && (hunger == null || !hunger.isHungry())){
+		//Smart and better know resting only costs food, so they allow themselves more of it (never while hungry)
+		int restBudget = this.restBudget == 0 ? 0 : this.restBudget + 200 * foodHeld + (smart() ? 250 : 0);
+		//Smart and better also rest when the hardest fight met on this floor would cost more than they have left
+		boolean tooHurtForThisFloor = smart() && restBudget > 0 && h.HP < Math.min(h.HT * 0.9f, floorFightCost * 1.5f);
+		if (foes.isEmpty() && (h.HP < h.HT * restBelow || tooHurtForThisFloor) && restTurnsThisFloor < restBudget && (hunger == null || !hunger.isHungry())){
 			restStartTurn = com.shatteredpixel.shatteredpixeldungeon.Statistics.apdTurn();
 			h.rest(true);
 			return "rest until healed (" + restTurnsThisFloor + " of " + restBudget + " rest turns used on this floor)";
@@ -544,8 +551,23 @@ final class SimBot {
 			}
 		}
 
-		//low health: heal if a known Healing potion is held, otherwise gamble on an unknown potion
-		if (h.HP < h.HT * healAt){
+		//the fight judge (not Clueless): what the monsters next to the hero can do this turn at worst, what they do on
+		//average, and what finishing this fight should cost
+		float worstNow = 0, fightCost = 0;
+		if (!clueless()){
+			for (Mob m : foes){
+				if (level().distance(m.pos, h.pos) <= 1) worstNow += FightJudge.judge(m).worstHit;
+			}
+			fightCost = FightJudge.costOfAll(foes);
+			if (smart()) floorFightCost = Math.max(floorFightCost, Math.min(fightCost, h.HT));
+		}
+		//when to heal. Clueless: below a fixed share of health. Average: that, or when the next hits could kill.
+		//Smart and better: only when the next hits could kill, or when the rest of the fight costs more than is left,
+		//so potions are not spent on fights that are already won.
+		boolean couldDieNow = !clueless() && h.HP <= worstNow;
+		boolean losing = !clueless() && h.HP < h.HT * 0.6f && fightCost >= h.HP;
+		boolean healNow = smart() ? (couldDieNow || losing) : (h.HP < h.HT * healAt || couldDieNow);
+		if (healNow){
 			String dew = drinkDew();
 			if (dew != null) return dew;
 			PotionOfHealing heal = find(PotionOfHealing.class);
@@ -592,8 +614,19 @@ final class SimBot {
 			if (h.isCharmedBy(m)) continue;
 			Float until = refusedAttack.get(m.id());
 			if (until != null && Actor.now() < until) continue;
-			//Clueless hits the closest; others pick the weakest in reach
-			if (reach == null || (!clueless() && m.HP < reach.HP)) reach = m;
+			//Clueless hits the closest; Average the weakest in reach; Smart and better the one whose death saves the
+			//most health for the fewest swings (the fight judge's numbers)
+			if (reach == null) reach = m;
+			else if (smart()){
+				FightJudge.Verdict a = FightJudge.judge(m), b = FightJudge.judge(reach);
+				if (!a.cannotWin() && (b.cannotWin() || a.perTurn / a.turnsToKill > b.perTurn / b.turnsToKill)) reach = m;
+			} else if (!clueless() && m.HP < reach.HP) reach = m;
+		}
+
+		//Smart and better: a fight that should cost more health than is left is not started if stairs are close
+		if (smart() && reach == null && fightCost >= h.HP && aggression != SimProfile.Aggression.RECKLESS){
+			String away = retreat(foes);
+			if (away != null) return away;
 		}
 
 		//backing off: low health, nothing to heal with, and the settings say retreat
@@ -628,10 +661,11 @@ final class SimBot {
 			focusCell = reach.pos;
 			lastAttack = reach;
 			lastAttackTime = Actor.now();
-			return tap(reach.pos, "attack " + nameOf(reach) + " (" + reach.HP + "/" + reach.HT + " health) at");
+			return tap(reach.pos, "attack " + nameOf(reach) + " (" + reach.HP + "/" + reach.HT + " health" + (clueless() ? "" : "; " + FightJudge.describe(reach)) + ") at");
 		}
 
 		//ranged options for an enemy that can't be hit yet
+		boolean dangerous = smart() && fightCost >= h.HP / 3f;
 		boolean clear = !clueless() && new Ballistica(h.pos, near.pos, Ballistica.PROJECTILE).collisionPos == near.pos;
 		if (clear){
 			SpiritBow bow = find(SpiritBow.class);
@@ -639,13 +673,14 @@ final class SimBot {
 			MagesStaff staff = find(MagesStaff.class);
 			if (staff != null && staffCharges(staff) > 0 && has(staff, MagesStaff.AC_ZAP)) return use(staff, MagesStaff.AC_ZAP);
 			for (Item i : items()){
-				if (i instanceof Wand && ((Wand) i).curCharges > 0 && has(i, Wand.AC_ZAP) && rng.nextInt(2) == 0) return use(i, Wand.AC_ZAP);
+				//wands and thrown weapons: now and then in an easy fight, every time in one that costs a third of the health left
+				if (i instanceof Wand && ((Wand) i).curCharges > 0 && has(i, Wand.AC_ZAP) && (dangerous || rng.nextInt(2) == 0)) return use(i, Wand.AC_ZAP);
 			}
 			for (Item i : items()){
 				if (i instanceof Potion && ((Potion) i).isKnown() && harmful((Potion) i) && level().distance(h.pos, near.pos) >= 2) return use(i, Item.AC_THROW);
 			}
 			for (Item i : items()){
-				if (i instanceof MissileWeapon && !i.isEquipped(h) && rng.nextInt(2) == 0) return use(i, Item.AC_THROW);
+				if (i instanceof MissileWeapon && !i.isEquipped(h) && (dangerous || rng.nextInt(2) == 0)) return use(i, Item.AC_THROW);
 			}
 		}
 
