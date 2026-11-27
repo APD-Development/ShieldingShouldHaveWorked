@@ -48,4 +48,11 @@ public class SmallExplanationsTest {
 		staff.levelKnown = false;
 		assertTrue(StaffExplanation.details(staff, wand, new Hero()).startsWith("Identify the staff"));
 	}
+	@Test public void prismaticStaffAtLevelZeroSaysOneTurn(){
+		MagesStaff staff = new MagesStaff(); staff.levelKnown = true;
+		com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfPrismaticLight wand = new com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfPrismaticLight(); wand.levelKnown = true;
+		String text = StaffExplanation.details(staff, wand, new Hero());
+		assertTrue(text, text.contains("= 1 turn before target"));
+		assertFalse(text, text.contains("1 turns"));
+	}
 }
