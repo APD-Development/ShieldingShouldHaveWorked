@@ -124,6 +124,7 @@ final class SimBot {
 			searchedSpots.clear();
 			npcTalkedAt.clear();
 			refused.clear();
+			bannedGoals.clear();
 			restsThisFloor = 0;
 			searchesThisFloor = 0;
 			searchGoal = exploreGoal = -1;
@@ -200,9 +201,20 @@ final class SimBot {
 		return what + " " + cell(cell);
 	}
 
+	//goals the bot was caught going round in circles for on this floor
+	private final Set<String> bannedGoals = new HashSet<>();
+	private String lastGoal = "";
+
 	private String stepToward(SimNav nav, int target, String why){
+		String goal = why.replaceAll("[0-9]", "") + "@" + target;
+		if (bannedGoals.contains(goal)) return null;
 		int step = nav.firstStep(target);
 		if (step < 0) return null;
+		lastGoal = goal;
+		//only runs of consecutive moves count towards walking in circles (fighting or resting in place is fine)
+		lastWasMove = true;
+		recent.addLast(hero().pos);
+		while (recent.size() > 40) recent.removeFirst();
 		lastStepFrom = hero().pos;
 		lastStepTo = step;
 		lastStepTime = Actor.now();
@@ -215,18 +227,20 @@ final class SimBot {
 	//recent positions, to notice walking back and forth between a couple of cells
 	private final java.util.ArrayDeque<Integer> recent = new java.util.ArrayDeque<>();
 	String oscillation = null;
+	private boolean lastWasMove;
 
 	String act(){
 		newFloorCheck();
-		recent.addLast(hero().pos);
-		while (recent.size() > 40) recent.removeFirst();
-		if (recent.size() == 40 && new HashSet<>(recent).size() <= 3){
+		if (!lastWasMove) recent.clear();
+		lastWasMove = false;
+		if (recent.size() >= 40 && new HashSet<>(recent).size() <= 3){
 			oscillation = "walking back and forth between " + new HashSet<>(recent).size() + " cells at " + cell(hero().pos);
 			//give up whatever it was heading for on this floor and pick something else
 			if (exploreGoal >= 0) doneFrontier.add(exploreGoal);
 			if (searchGoal >= 0) searchedSpots.add(searchGoal);
 			for (int c : new HashSet<>(recent)) for (int d : PathFinder.NEIGHBOURS9) attempts.put("door" + (c + d), 99);
 			exploreGoal = searchGoal = -1;
+			if (!lastGoal.isEmpty()) bannedGoals.add(lastGoal);
 			recent.clear();
 		}
 		if (lastStepTo >= 0 && hero().pos == lastStepFrom && Actor.now() == lastStepTime) refused.add(lastStepTo);
