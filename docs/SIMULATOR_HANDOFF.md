@@ -83,8 +83,10 @@ Last updated: 2026-11-27 (end of the first long session). Every scheduled run is
 - `docs/APD-SIMULATOR-GUIDE.md` needs the new features added (Drive, determinism check, checkpoints are partly there).
 
 ## Work claims
-- None. The long live session stopped on Nov 27 (Chris: fresh scheduled runs only). Scheduled runs own everything, including
-  `SimBot.java` and `SimNav.java`. Always `git pull --rebase origin feature/apd-simulator` before pushing.
+- The live session is working again (Chris, Nov 27 evening: "work here") on BOT QUALITY: `SimBot.java`, `SimNav.java` and the
+  fixed-seed benchmark. Scheduled runs: do NOT edit those two files until this claim is removed. Take item 1 (emulator check
+  result, build S2 and send it), then item 3 (screen-off foreground service + no-graphics mode), then item 4.
+  Always `git pull --rebase origin feature/apd-simulator` before pushing.
 
 ## Next (in this order unless Chris says otherwise)
 1. Confirm the two "not yet re-run" items above; build S2 (phone APK, Developer APK with link, PC zip) and send to Chris.
