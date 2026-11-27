@@ -41,6 +41,19 @@ Rogue run (floor 7 in one launch, died to Goo on floor 5 in the other). Caveat: 
 more address-ordered picks, so re-measure once bots get deep. Same run also scores the bot rules that were unscored:
 avg deepest 4.50 and 4.43 (was 4.27), 15 of 30 reach floor 5+, max 9, top deaths Goo 5-6, starvation 4, wraith 4.
 
+## Bot progress, Nov 27 late session (30 fixed seeds, Normal/Average)
+Average deepest floor by step: 4.50 (start of session) -> 4.40 worn key fix (bots that killed Goo could not unlock the
+LOCKED_EXIT and starved; `unlock()` now uses the WornKey) plus ooze wash anywhere, Great Crab ignored, remains only from
+level 5 -> 4.87 Goo standing rule (`gooSpot`: water under the hero, dry floor around; Goo deaths 14 -> 7) -> 5.03 SimNav
+no longer paths over tombs/chests/remains (a step onto one is a tap that opens it; that was the floor 2 wraith deaths)
+-> 5.60 gear rules: everyone but Cautious tries found weapons and armor on unidentified; upgrade scrolls shared between
+armor and a tier 2+ weapon; Smart and better hold scrolls on floors 1-3 while in tier 1 armor. Max floor 10, Goo deaths 4,
+20 of 30 reach floor 5. Run summary lines in simruns.txt now end with "gear at floor 5" and "gear at end" (`gearSummary`).
+Before the gear rules 18 of 20 bots met Goo in cloth armor with the starting weapon; after, 9 of 20 have tier 2 armor and
+10 of 20 a tier 2 weapon. Trace mode (`-Dapd.sim.trace=1`) prints an ASCII map (APDSIM_MAP) when the bot has nothing to do.
+Still open on gear: Average spends scrolls on cloth; items above the hero's strength are never worn; no shop buying plan;
+arcane stylus, enchant scrolls and the Ghost reward are not used on purpose. New top killers: DM-100 4, Goo 4.
+
 ## How it is built
 - `simulator/core`: bot, checks, reports, screens (package `...apd.simulator`). `simulator/android`: the app. `simulator/desktop`: PC program.
 - `SimGame` (subclass of the game) drives everything; `SimRuntime` is the per-frame driver; `SimBot` decides; `SimNav` paths;

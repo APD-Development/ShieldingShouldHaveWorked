@@ -132,9 +132,37 @@ final class SimBot {
 	private Hero hero(){ return Dungeon.hero; }
 	private Level level(){ return Dungeon.level; }
 
+	//what the hero carried when first reaching floor 5 (the first boss), for the run summary
+	String gearAtFirstBoss = "";
+
+	//weapon, armor, strength and what is still unused in the pack, in one line
+	static String gearSummary(){
+		Hero h = Dungeon.hero;
+		if (h == null) return "";
+		StringBuilder b = new StringBuilder();
+		Item w = h.belongings.weapon(), a = h.belongings.armor();
+		b.append("weapon ").append(w == null ? "none" : nameOf(w) + (w instanceof MeleeWeapon ? " T" + ((MeleeWeapon) w).tier : "") + " +" + w.level());
+		b.append(", armor ").append(a == null ? "none" : nameOf(a) + " T" + ((Armor) a).tier + " +" + a.level());
+		b.append(", STR ").append(h.STR()).append(", level ").append(h.lvl);
+		int weapons = 0, armors = 0, upgrades = 0, unknownPotions = 0, unknownScrolls = 0, healing = 0;
+		for (Item i : h.belongings){
+			if (i.isEquipped(h)) continue;
+			if (i instanceof MeleeWeapon) weapons++;
+			else if (i instanceof Armor) armors++;
+			else if (i instanceof ScrollOfUpgrade && ((Scroll) i).isKnown()) upgrades += i.quantity();
+			else if (i instanceof PotionOfHealing && ((Potion) i).isKnown()) healing += i.quantity();
+			else if (i instanceof Potion && !((Potion) i).isKnown()) unknownPotions += i.quantity();
+			else if (i instanceof Scroll && !((Scroll) i).isKnown()) unknownScrolls += i.quantity();
+		}
+		b.append(", in pack: ").append(weapons).append(" weapons, ").append(armors).append(" armors, ").append(upgrades).append(" upgrade scrolls, ")
+				.append(healing).append(" healing, ").append(unknownPotions).append(" unknown potions, ").append(unknownScrolls).append(" unknown scrolls");
+		return b.toString();
+	}
+
 	private void newFloorCheck(){
 		int key = Dungeon.depth * 100 + Dungeon.branch;
 		if (key != levelKey){
+			if (Dungeon.depth == 5 && gearAtFirstBoss.isEmpty()) gearAtFirstBoss = gearSummary();
 			levelKey = key;
 			attempts.clear();
 			doneFrontier.clear();
@@ -816,7 +844,8 @@ final class SimBot {
 			MeleeWeapon cur = h.belongings.weapon() instanceof MeleeWeapon ? (MeleeWeapon) h.belongings.weapon() : null;
 			for (Item i : items()){
 				if (!(i instanceof MeleeWeapon) || i.isEquipped(h) || (i.cursedKnown && i.cursed)) continue;
-				if (!i.isIdentified() && !wearUnidentified && !clueless()) continue;
+				//found weapons and armor are tried on unidentified, the way players do (a Cautious bot waits until it knows)
+				if (!i.isIdentified() && aggression == SimProfile.Aggression.CAUTIOUS && !clueless()) continue;
 				MeleeWeapon m = (MeleeWeapon) i;
 				if (!clueless() && m.STRReq() > h.STR()) continue;
 				if (weaponValue(m) > (cur == null ? 0 : weaponValue(cur)) && (better == null || weaponValue(m) > weaponValue(better))) better = m;
@@ -826,7 +855,8 @@ final class SimBot {
 		Armor cur = h.belongings.armor();
 		for (Item i : items()){
 			if (!(i instanceof Armor) || i.isEquipped(h) || (i.cursedKnown && i.cursed)) continue;
-			if (!i.isIdentified() && !wearUnidentified && !clueless()) continue;
+			//found weapons and armor are tried on unidentified, the way players do (a Cautious bot waits until it knows)
+				if (!i.isIdentified() && aggression == SimProfile.Aggression.CAUTIOUS && !clueless()) continue;
 			if (!clueless() && ((Armor) i).STRReq() > h.STR()) continue;
 			if (armorValue((Armor) i) > (cur == null ? 0 : armorValue(cur)) && !tried("equip" + i.getClass().getName(), 2)) return use(i, EquipableItem.AC_EQUIP);
 		}
@@ -840,7 +870,13 @@ final class SimBot {
 		for (Item i : items()){
 			if (i instanceof PotionOfStrength && ((Potion) i).isKnown()) return use(i, Potion.AC_DRINK);
 			if (i instanceof PotionOfExperience && ((Potion) i).isKnown()) return use(i, Potion.AC_DRINK);
-			if (i instanceof ScrollOfUpgrade && ((Scroll) i).isKnown()) return use(i, Scroll.AC_READ);
+			if (i instanceof ScrollOfUpgrade && ((Scroll) i).isKnown()){
+				//Smart and better: scrolls put into starting cloth are lost when real armor turns up, so they keep them
+				//for the first three floors while still in tier 1 armor (a Mage's go into the staff either way)
+				boolean hold = smart() && Dungeon.depth < 4 && !(h.belongings.weapon() instanceof MagesStaff)
+						&& (h.belongings.armor() == null || h.belongings.armor().tier <= 1);
+				if (!hold) return use(i, Scroll.AC_READ);
+			}
 		}
 		//identify by use, like a player: read unknown scrolls, drink unknown potions at full health
 		for (Item i : items()){
@@ -1160,10 +1196,14 @@ final class SimBot {
 			try { if (selector.itemSelectable(i)) ok.add(i); } catch (Throwable ignored){}
 		}
 		if (ok.isEmpty()) return null;
-		//Scroll of Upgrade (not Clueless): the worn armor first, the Mage's staff for a Mage. One item gets them all.
+		//Scroll of Upgrade (not Clueless): the Mage's staff for a Mage; otherwise the worn armor, shared with a good weapon.
 		if (!clueless() && selector.getClass().getName().contains("InventoryScroll") && lastUsed instanceof ScrollOfUpgrade){
 			Item staff = hero().belongings.weapon() instanceof MagesStaff ? hero().belongings.weapon() : null;
 			Item target = staff != null ? staff : hero().belongings.armor();
+			//a weapon worth keeping (tier 2 or better) shares the scrolls: whichever of the two is behind gets the next one
+			Item wep = hero().belongings.weapon();
+			if (staff == null && wep instanceof MeleeWeapon && ((MeleeWeapon) wep).tier >= 2 && !(wep.cursedKnown && wep.cursed)
+					&& (target == null || wep.level() < target.level()) && ok.contains(wep)) target = wep;
 			if (target != null && ok.contains(target)) return target;
 		}
 		Item best = null;

@@ -916,7 +916,9 @@ public final class SimRuntime {
 		try {
 			FileUtils.getFileHandle("simruns.txt").writeString(lastRunSummary + " | seed " + DungeonSeed.convertToCode(seed)
 					+ " | bot seed " + botSeed + " | build " + Game.version + " | crashes " + crashesThisRun + " | deepest " + maxDepth + " | save/load checks " + saveLoadsThisRun
-					+ (startedFrom.isEmpty() ? "" : " | checkpoint") + "\n", true, "UTF-8");
+					+ (startedFrom.isEmpty() ? "" : " | checkpoint")
+					+ (bot == null || bot.gearAtFirstBoss.isEmpty() ? "" : " | gear at floor 5: " + bot.gearAtFirstBoss)
+					+ " | gear at end: " + SimBot.gearSummary() + "\n", true, "UTF-8");
 			if (benchLeft > 0){
 				benchDeepSum += maxDepth; benchRuns++;
 				if (--benchLeft == 0){
