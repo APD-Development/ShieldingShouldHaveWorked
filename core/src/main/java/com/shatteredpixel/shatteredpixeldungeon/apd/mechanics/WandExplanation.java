@@ -98,7 +98,7 @@ public final class WandExplanation {
                 + Math.round((3.67f+levels[0]/3f)*cost) + (levels[0]==levels[1]?"":"–"+Math.round((3.67f+levels[1]/3f)*cost))
                 + " tiles: round((3.67 + casting level / 3) × charges). Terrain, plants and creatures can leave less room. Creatures on suitable tiles are rooted for up to "+(4*cost)+" turns (4 × charges), before resistance. "
                 + "With space available, separate rolls can grow a seedpod or dewcatcher (charges / 6 chance) and a random plant (charges / 3 chance). Exhaustion can prevent either. "
-                + "\n\n"+(wand.previewBaseLevel()>=10 ? "At wand level +10 or higher, exhaustion is effectively disabled. " : "The wand becomes exhausted after "+limit+" charges of growth; "+growth.usedGrowthCharges()+" are recorded toward that limit. ")+""
+                + "\n\n"+(wand.previewBaseLevel()>=10 ? "At wand level +10 or higher, exhaustion is effectively disabled. " : "The wand becomes exhausted after "+limit+" charges of growth; "+growth.usedGrowthCharges()+(growth.usedGrowthCharges()==1?" is":" are")+" recorded toward that limit. ")+""
                 + (wand.previewBaseLevel()>=10 ? "" : "Limit = round(20 + hero level × (2 + wand level) × (1 + whole-number quotient of wand level / (50 − 5 × wand level))). Resin and curse infusion count toward wand level; temporary casting bonuses do not. ")
                 + "Once exhausted, grass can be furrowed instead of tall and give no dew or seeds. Chance per grass tile: min(100%, (charges beyond the limit + 1) × 20%) — currently "+ObfuscationExplanation.number(100*growth.previewFurrowedChance(Dungeon.hero.lvl))+"%.";
 
