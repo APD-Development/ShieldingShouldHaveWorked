@@ -24,6 +24,15 @@ Last updated: 2026-11-27 (end of the first long session). Every scheduled run is
 - Chris wants small chats: do the work, update this file, give a short summary. Say exactly what was verified vs assumed.
 - Chris: "Do not stop ever." Each run should make real progress, commit and push.
 
+## Intelligence levels and win-rate targets (Chris, Nov 27 night; replaces every earlier version)
+Five levels, hand-written rules only: Clueless 0%, Average 0.5%, Smart 3%, Pro 7.5% (new, between Smart and Expert),
+Expert 15%. These are full-win rates (beat the whole dungeon) on default difficulty with no challenges. They are targets to
+tune towards and to measure with the benchmark and headless runs, by level and class. (Earlier the same evening Chris gave
+75/50/25/12.5/2; the list above is his later correction and is the one that counts. "Pro" is the working name of the new
+level: Chris has not confirmed the name.) Current state: 0 wins at every level; `PRO` exists in `SimProfile.Intelligence`
+and currently plays like Smart (`smart()` is true for Smart, Pro and Expert). Chris: "I want the bots to be able to beat the
+game, not just beat Goo." Goo HAS been beaten (every run that reached floor 6+); no bot has beaten Tengu (floor 10) yet.
+
 ## How it is built
 - `simulator/core`: bot, checks, reports, screens (package `...apd.simulator`). `simulator/android`: the app. `simulator/desktop`: PC program.
 - `SimGame` (subclass of the game) drives everything; `SimRuntime` is the per-frame driver; `SimBot` decides; `SimNav` paths;

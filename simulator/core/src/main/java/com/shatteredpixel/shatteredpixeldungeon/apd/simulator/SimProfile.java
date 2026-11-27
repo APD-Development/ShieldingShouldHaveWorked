@@ -18,8 +18,11 @@ public final class SimProfile {
 	public enum Aggression { CAUTIOUS("Cautious"), NORMAL("Normal"), AGGRESSIVE("Aggressive"), RECKLESS("Reckless");
 		public final String title; Aggression(String t){ title = t; } }
 
-	public enum Intelligence { CLUELESS("Clueless"), AVERAGE("Average"), SMART("Smart"), EXPERT("Expert");
-		public final String title; Intelligence(String t){ title = t; } }
+	//Five levels, hand-written rules only. Target full-win rates (Chris, Nov 27; Standard difficulty, no challenges):
+	//Clueless 0%, Average 0.5%, Smart 3%, Pro 7.5%, Expert 15%. Targets to tune towards, measured by the benchmark.
+	public enum Intelligence { CLUELESS("Clueless", 0f), AVERAGE("Average", 0.5f), SMART("Smart", 3f), PRO("Pro", 7.5f), EXPERT("Expert", 15f);
+		public final String title; public final float targetWinPercent;
+		Intelligence(String t, float w){ title = t; targetWinPercent = w; } }
 
 	public enum SeedMode { RANDOM("Random"), TYPED("Typed seed"), REAL_RUN("Seed of a real run");
 		public final String title; SeedMode(String t){ title = t; } }

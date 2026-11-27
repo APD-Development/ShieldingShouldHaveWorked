@@ -75,8 +75,8 @@ public class SimHomeScene extends PixelScene {
 			p.heroClass = p.heroClass + 1 >= HeroClass.values().length ? -1 : p.heroClass + 1; save(p); } });
 		buttons.add(new RedButton("Aggression: " + p.aggression.title, 7){ @Override protected void onClick(){
 			p.aggression = SimProfile.Aggression.values()[(p.aggression.ordinal() + 1) % 4]; save(p); } });
-		buttons.add(new RedButton("Intelligence: " + p.intelligence.title, 7){ @Override protected void onClick(){
-			p.intelligence = SimProfile.Intelligence.values()[(p.intelligence.ordinal() + 1) % 4]; save(p); } });
+		buttons.add(new RedButton("Intelligence: " + p.intelligence.title + " (target " + p.intelligence.targetWinPercent + "% wins)", 7){ @Override protected void onClick(){
+			p.intelligence = SimProfile.Intelligence.values()[(p.intelligence.ordinal() + 1) % SimProfile.Intelligence.values().length]; save(p); } });
 		buttons.add(new RedButton("Difficulty: " + p.difficulty, 7){ @Override protected void onClick(){
 			p.difficulty = p.difficulty >= Difficulty.MAX ? Difficulty.MIN : p.difficulty + 1; save(p); } });
 		buttons.add(new RedButton("Seeds: " + p.seedMode.title + (p.seedMode == SimProfile.SeedMode.RANDOM ? "" : " " + p.seedText), 7){ @Override protected void onClick(){ chooseSeed(p); } });
