@@ -26,6 +26,19 @@ public final class BugReport {
 
 		public final String title;
 		Kind(String title){ this.title = title; }
+		//severity, worst first: crash, save loss, stuck, wrong result, text, slow
+		public String severity(){
+			switch (this){
+				case CRASH: case EXCEPTION: return "1 crash";
+				case SAVELOAD: return "2 save loss";
+				case STUCK: return "3 stuck";
+				case STATE: case RECORDER: case NONDETERMINISM: case NETWORK: return "4 wrong result";
+				case TEXT: return "5 text";
+				case SLOW: case LEAK: return "6 slow";
+				default: return "7 simulator";
+			}
+		}
+
 		//only real game problems ping the phone
 		public boolean notifies(){ return this != BOT && this != BOT_STUCK; }
 	}
@@ -61,6 +74,7 @@ public final class BugReport {
 		StringBuilder b = new StringBuilder();
 		b.append("APD SIMULATOR BUG REPORT\n");
 		b.append("Kind: ").append(kind.title).append('\n');
+		b.append("Severity: ").append(kind.severity()).append('\n');
 		b.append("What: ").append(summary).append('\n');
 		b.append("Found: ").append(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ROOT).format(new Date(time)));
 		if (repeats > 1) b.append(" (seen ").append(repeats).append(" times)");
