@@ -72,8 +72,6 @@ public class ShatteredPixelDungeon extends Game {
 		super.update();
 		//APD: the Cleric grudge (does nothing while its switch is off)
 		com.shatteredpixel.shatteredpixeldungeon.windows.GrudgeHooks.tick();
-		//APD simulator: does nothing unless this is the Developer build's separate simulator process
-		com.shatteredpixel.shatteredpixeldungeon.apd.sim.SimHooks.frame();
 	}
 
 	@Override

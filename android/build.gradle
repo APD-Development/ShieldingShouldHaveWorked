@@ -22,10 +22,9 @@ android {
         apdFeaturesFile.parentFile.mkdirs()
         apdFeaturesFile.text = "testBuild\ngrudge\ndemoUnlock\nclericPlayable\n"
         sourceSets.main.assets.srcDir(apdFeaturesDir)
-        //APD simulator: Developer build only, and only in the debug build type (Play bundles are release builds and never get it).
-        //Its activity runs in its own process (":apdsim") with its own save folder, settings and UIMSD; see src/apdsim.
-        sourceSets.debug.java.srcDir('src/apdsim/java')
-        sourceSets.debug.manifest.srcFile('src/apdsim/AndroidManifest.xml')
+        //Developer build only: the read-only history link for the APD Simulator app (debug build type only, so never in a Play bundle)
+        sourceSets.debug.java.srcDir('src/apdlink/java')
+        sourceSets.debug.manifest.srcFile('src/apdlink/AndroidManifest.xml')
     } else if ((project.findProperty('apdBuild') ?: '').toString().startsWith('P')) {
         // Owner-approved Alpha Testers playback and hidden Grudge, without Developer switches.
         def apdPlaybackDir = project.layout.buildDirectory.dir('apdAlphaPlaybackAssets').get().asFile

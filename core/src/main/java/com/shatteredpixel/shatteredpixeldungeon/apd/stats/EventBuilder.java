@@ -101,11 +101,6 @@ public final class EventBuilder {
 		return this;
 	}
 
-	//an optional trailing string: nothing at all is written when it is null or empty
-	public EventBuilder stringIf( String v ){
-		return v == null || v.isEmpty() ? this : string( v );
-	}
-
 	//null is stored as the empty string
 	public EventBuilder string( String v ){
 		if (!inert){

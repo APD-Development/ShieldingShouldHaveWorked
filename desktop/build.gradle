@@ -6,22 +6,6 @@ plugins {
 java.sourceCompatibility = java.targetCompatibility = appJavaCompatibility
 
 ext.appMainClass = "com.shatteredpixel.shatteredpixeldungeon.desktop.DesktopLauncher"
-
-//APD simulator (Developer build only, -PapdTestBuild): a desktop launcher for testing the bot on a computer
-if (project.hasProperty('apdTestBuild')) {
-    sourceSets.main.java.srcDir 'src/apdsim/java'
-    tasks.register('simulate', JavaExec) {
-        classpath = sourceSets.main.runtimeClasspath
-        mainClass = 'com.shatteredpixel.shatteredpixeldungeon.desktop.DesktopSimLauncher'
-        workingDir = rootProject.file('core/src/main/assets')
-        systemProperty 'Specification-Version', appVersionName + '-INDEV-SIM'
-        systemProperty 'Implementation-Version', appVersionCode
-        ['apd.sim.dir','apd.sim.runs','apd.sim.speed','apd.sim.autostart','apd.sim.aggression','apd.sim.intelligence'].each { k ->
-            if (project.hasProperty(k)) systemProperty k, project.property(k)
-        }
-        ignoreExitValue = true
-    }
-}
 application.mainClass = appMainClass
 processResources {
     from new File(project(':core').projectDir, "/src/main/assets")

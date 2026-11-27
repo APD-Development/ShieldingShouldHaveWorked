@@ -121,11 +121,6 @@ public final class RunFactsBuilder {
 							f.num(FactKeys.DIFFICULTY_BALANCE, s.difficultyBalance, Fact.PROV_RECORDED);
 						}
 						CustomRuleFacts.record(f, s);
-						//APD simulator runs only (their own history): sim.aggression, sim.intelligence, ...
-						for (String tag : s.simTags.split(";")){
-							int eq = tag.indexOf('=');
-							if (eq > 0 && eq < tag.length() - 1) f.text("sim." + tag.substring(0, eq).trim(), tag.substring(eq + 1).trim(), Fact.PROV_RECORDED);
-						}
 						f.num(FactKeys.START_MILLIS, s.realTimeMillis, Fact.PROV_RECORDED);
 						break;
 					}

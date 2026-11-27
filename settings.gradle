@@ -17,3 +17,8 @@ include ':services'
     include ':services:news:debugNews'
     include ':services:news:shatteredNews'
     include ':services:news:noNews'
+//APD Simulator: a separate app (phone and PC) that plays APD to find bugs and collect balance data.
+//Nothing in :android or :desktop (the game itself) depends on these modules.
+include ':simulator:core'
+include ':simulator:android'
+include ':simulator:desktop'

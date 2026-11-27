@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<paths>
+	<!-- only zipped bug reports, nothing else from the simulator's folder -->
+	<files-path name="simshare" path="simshare/" />
+</paths>

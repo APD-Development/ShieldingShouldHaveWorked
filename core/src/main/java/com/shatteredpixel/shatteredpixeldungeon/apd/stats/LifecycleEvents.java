@@ -105,9 +105,6 @@ public final class LifecycleEvents {
 		public String customRules = "";
         public int customScoreVersion;
         public String customScoreStatus="",customScoreCalculation="",customScoreMultiplier="";
-		//APD simulator only (Developer build): "aggression=Normal;intelligence=Smart;..." for the simulator's own history.
-		//Empty in every real run, and then not written at all, so real logs are byte-for-byte unchanged.
-		public String simTags = "";
 	}
 
 	public static boolean emitRunStart( RunLogWriter w, long clock, boolean partial, RunStart s ){
@@ -118,7 +115,6 @@ public final class LifecycleEvents {
 				.string(s.heroClass).string(s.rulesetId).string(s.rulesetText).unsigned(Math.max(0, s.exoticChance))
 				.bool(s.introActive).bool(s.externalModsPresent).string(s.platform).unsigned(Math.max(0, s.realTimeMillis))
 				.unsigned(Math.max(0, s.difficulty)).unsigned(Math.max(0, s.difficultyBalance)).string(s.customRules).unsigned(s.customScoreVersion).string(s.customScoreStatus).string(s.customScoreCalculation).string(s.customScoreMultiplier)
-				.stringIf(s.simTags)
 				.emit();
 	}
 
@@ -154,7 +150,6 @@ public final class LifecycleEvents {
         if(p.hasRemaining())s.customScoreStatus=str(p.string());
         if(p.hasRemaining())s.customScoreCalculation=str(p.string());
         if(p.hasRemaining())s.customScoreMultiplier=str(p.string());
-		if (p.hasRemaining()) s.simTags = str(p.string());
 		return s;
 	}
 

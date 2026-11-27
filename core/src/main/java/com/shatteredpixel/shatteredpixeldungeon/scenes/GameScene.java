@@ -942,7 +942,6 @@ public class GameScene extends PixelScene {
 				actorThread = new Thread() {
 					@Override
 					public void run() {
-						com.shatteredpixel.shatteredpixeldungeon.apd.sim.SimHooks.actorThreadStarting();
 						Actor.process();
 					}
 				};

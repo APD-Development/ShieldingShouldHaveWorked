@@ -1,0 +1,104 @@
+apply plugin: 'com.android.application'
+
+//APD Simulator for Android: its own app (own ID, name and icon) that installs next to APD. Never published anywhere.
+//It contains the whole current game (from :core), so it always plays real APD, plus the simulator (:simulator:core).
+android {
+    namespace 'com.shatteredpixel.shatteredpixeldungeon.apdsim'
+    compileSdk appAndroidCompileSDK
+    compileOptions.sourceCompatibility = compileOptions.targetCompatibility = appJavaCompatibility
+
+    defaultConfig {
+        applicationId appPackageName + '.simulator'
+        versionCode appVersionCode
+        versionName appVersionName + '-SIM' + (project.hasProperty('apdBuild') ? '-b' + project.property('apdBuild') : '')
+        minSdkVersion appAndroidMinSDK
+        targetSdkVersion appAndroidTargetSDK
+        manifestPlaceholders = [appName: 'APD Simulator']
+    }
+
+    sourceSets {
+        main {
+            //the game's Android platform code is shared as source (nothing from the simulator goes back to APD)
+            java.srcDirs = ['src/main/java', new File(project(':android').projectDir, 'src/main/java')]
+            res.srcDirs = ['src/main/res'] //own icon (APD with a SIM band) and the same theme as the game
+            assets.srcDirs = [new File(project(':core').projectDir, 'src/main/assets')]
+            jniLibs.srcDirs = ['libs']
+        }
+    }
+
+    //same key as the Developer build, so the Developer build's read-only history link (signature permission) accepts it
+    signingConfigs {
+        apdDebug {
+            if (System.getenv('APD_DEBUG_KEYSTORE')) {
+                storeFile file(System.getenv('APD_DEBUG_KEYSTORE'))
+                storePassword System.getenv('APD_DEBUG_STORE_PASSWORD')
+                keyAlias System.getenv('APD_DEBUG_KEY_ALIAS') ?: 'apd'
+                keyPassword System.getenv('APD_DEBUG_KEY_PASSWORD') ?: System.getenv('APD_DEBUG_STORE_PASSWORD')
+            } else {
+                storeFile rootProject.file('keystore/apd-debug.jks')
+                storePassword 'apdpassword'
+                keyAlias 'apd'
+                keyPassword 'apdpassword'
+            }
+        }
+    }
+
+    buildTypes {
+        debug {
+            signingConfig signingConfigs.apdDebug
+        }
+        release {
+            //never built for publishing; kept debuggable-free only so a release-type build is possible for speed tests
+            signingConfig signingConfigs.apdDebug
+            minifyEnabled false
+        }
+    }
+
+    androidResources {
+        localeFilters += ['en']
+    }
+}
+
+configurations { natives }
+
+dependencies {
+    implementation project(':simulator:core')
+    implementation project(':services:updates:noUpdates')
+    implementation project(':services:news:noNews')
+
+    implementation "com.badlogicgames.gdx:gdx-backend-android:$gdxVersion"
+    natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-armeabi-v7a"
+    natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-x86"
+    natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-arm64-v8a"
+    natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-x86_64"
+    implementation "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
+    natives "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-armeabi-v7a"
+    natives "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-arm64-v8a"
+    natives "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-x86"
+    natives "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-x86_64"
+    implementation "com.badlogicgames.gdx-controllers:gdx-controllers-android:$gdxControllersVersion"
+    //needed to compile the shared game platform sources; the simulator never signs in or asks Play anything
+    implementation 'androidx.core:core:1.13.1'
+    implementation 'com.google.android.play:age-signals:0.0.4'
+    implementation 'androidx.credentials:credentials:1.5.0'
+    implementation 'androidx.credentials:credentials-play-services-auth:1.5.0'
+    implementation 'com.google.android.libraries.identity.googleid:googleid:1.1.1'
+}
+
+tasks.register('copyAndroidNatives') {
+    doFirst {
+        ['armeabi-v7a', 'arm64-v8a', 'x86', 'x86_64'].each { file("libs/$it/").mkdirs() }
+        configurations.natives.copy().files.each { jar ->
+            def outputDir = null
+            if (jar.name.endsWith("natives-armeabi-v7a.jar")) outputDir = file("libs/armeabi-v7a")
+            if (jar.name.endsWith("natives-arm64-v8a.jar")) outputDir = file("libs/arm64-v8a")
+            if (jar.name.endsWith("natives-x86.jar")) outputDir = file("libs/x86")
+            if (jar.name.endsWith("natives-x86_64.jar")) outputDir = file("libs/x86_64")
+            if (outputDir != null) {
+                copy { from zipTree(jar); into outputDir; include "*.so" }
+            }
+        }
+    }
+}
+
+tasks.matching { it.name.contains("merge") && it.name.contains("JniLibFolders") }.configureEach { it.dependsOn 'copyAndroidNatives' }

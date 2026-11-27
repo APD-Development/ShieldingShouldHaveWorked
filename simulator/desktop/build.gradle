@@ -1,0 +1,42 @@
+apply plugin: 'application'
+
+//APD Simulator for the PC. Never published; built only for Chris.
+[compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
+java.sourceCompatibility = java.targetCompatibility = appJavaCompatibility
+
+application.mainClass = 'com.shatteredpixel.shatteredpixeldungeon.desktop.DesktopSimLauncher'
+application.applicationName = 'APD-Simulator'
+
+processResources {
+    from new File(project(':core').projectDir, "/src/main/assets")
+    from new File(project(':desktop').projectDir, "/src/main/assets")
+}
+
+dependencies {
+    implementation project(':simulator:core')
+    implementation "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
+    implementation "com.badlogicgames.gdx:gdx-backend-lwjgl3:$gdxVersion"
+    implementation "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
+    implementation "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-desktop"
+    implementation "com.badlogicgames.gdx-controllers:gdx-controllers-desktop:$gdxControllersVersion"
+    implementation "org.lwjgl:lwjgl-tinyfd:3.3.3"
+    implementation "org.lwjgl:lwjgl-tinyfd:3.3.3:natives-windows"
+    implementation "org.lwjgl:lwjgl-tinyfd:3.3.3:natives-linux"
+    implementation "org.lwjgl:lwjgl-tinyfd:3.3.3:natives-macos"
+    implementation project(':services:updates:noUpdates')
+    implementation project(':services:news:noNews')
+}
+
+//the desktop platform code is shared with the game's desktop module (sources only, nothing from the simulator goes back)
+sourceSets.main.java.srcDir new File(project(':desktop').projectDir, 'src/main/java')
+
+application.applicationDefaultJvmArgs = ['-Xmx2g']
+
+tasks.named('run', JavaExec) {
+    workingDir = rootProject.file('core/src/main/assets')
+    systemProperty 'Specification-Version', appVersionName + '-SIM'
+    systemProperty 'Implementation-Version', appVersionCode
+    ['apd.sim.dir','apd.sim.runs','apd.sim.speed','apd.sim.autostart','apd.sim.aggression','apd.sim.intelligence','apd.sim.grid','apd.sim.realHistory'].each { k ->
+        if (project.hasProperty(k)) systemProperty k, project.property(k)
+    }
+}

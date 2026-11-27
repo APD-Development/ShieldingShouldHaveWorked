@@ -61,17 +61,6 @@ public class AndroidLauncher extends AndroidApplication {
 	
 	private static AndroidPlatformSupport support;
 	
-	//APD: where this activity keeps every file (saves, settings, UIMSD, diagnostics). The real game uses the app's files folder
-	//itself and its usual settings; the Developer build's simulator (a subclass in its own process) overrides both so it never
-	//touches the real game's data.
-	protected String apdDataFolder(){
-		return "";
-	}
-
-	protected String apdPreferencesName(){
-		return "ShatteredPixelDungeon";
-	}
-
 	@SuppressLint("SetTextI18n")
 	@Override
 	protected void onCreate (Bundle savedInstanceState) {
@@ -140,13 +129,13 @@ public class AndroidLauncher extends AndroidApplication {
 				News.service = NewsImpl.getNewsService();
 			}
 
-			FileUtils.setDefaultFileProperties(Files.FileType.Local, apdDataFolder());
+			FileUtils.setDefaultFileProperties(Files.FileType.Local, "");
 
 			// grab preferences directly using our instance first
 			// so that we don't need to rely on Gdx.app, which isn't initialized yet.
 			// Note that we use a different prefs name on android for legacy purposes,
 			// this is the default prefs filename given to an android app (.xml is automatically added to it)
-			SPDSettings.set(instance.getPreferences(apdPreferencesName()));
+			SPDSettings.set(instance.getPreferences("ShatteredPixelDungeon"));
 
 		} else {
 			instance = this;
@@ -155,7 +144,7 @@ public class AndroidLauncher extends AndroidApplication {
 				com.shatteredpixel.shatteredpixeldungeon.apd.community.CommunityController.google = new GoogleCommunitySignIn(this, com.shatteredpixel.shatteredpixeldungeon.SPDSettings.COMMUNITY_GOOGLE_CLIENT_ID);
 		}
 
-        AndroidSupportDiagnostics.initialize(this, apdDataFolder());
+        AndroidSupportDiagnostics.initialize(this);
 
 		//Shattered still overrides the back gesture behaviour, but we need to do it in a new way
 		// (API added in Android 13, functionality enforced in Android 16)

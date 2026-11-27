@@ -1,0 +1,10 @@
+apply plugin: 'java-library'
+
+//APD Simulator's bot, checks, reports and screens. Only the simulator apps depend on this module; APD never does.
+[compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
+java.sourceCompatibility = java.targetCompatibility = appJavaCompatibility
+
+dependencies {
+    api project(':core')
+    testImplementation 'junit:junit:4.13.2'
+}
