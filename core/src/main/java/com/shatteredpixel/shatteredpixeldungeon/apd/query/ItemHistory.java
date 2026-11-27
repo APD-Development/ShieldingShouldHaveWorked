@@ -72,7 +72,7 @@ public final class ItemHistory {
 		for (Row r : d.rows){
 			if (r.imported || r.duplicate || !r.publicRow || !finished.contains(r.runId)) continue;
 			if (!known(r, nameC)) continue;
-			String name = r.asText(nameC);
+			String name = CellFormatter.readable(r.asText(nameC));
 			if (name.isEmpty()) continue;
 			boolean seen = yes(r, seenC), acq = yes(r, acqC), eq = yes(r, eqC);
 			if (!seen && !acq && !eq) continue;

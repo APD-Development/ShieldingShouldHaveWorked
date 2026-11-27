@@ -70,7 +70,7 @@ public final class EnemyHistory {
 		for (Row r : d.rows){
 			if (r.imported || r.duplicate || !r.publicRow || !finished.contains(r.runId)) continue;
 			if (!known(r, nameC)) continue;
-			String name = r.asText(nameC);
+			String name = CellFormatter.readable(r.asText(nameC));
 			if (name.isEmpty()) continue;
 			String key = key(name);
 			Entry e = h.byName.get(key);

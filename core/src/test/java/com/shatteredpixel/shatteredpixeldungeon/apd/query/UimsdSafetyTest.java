@@ -183,7 +183,7 @@ public class UimsdSafetyTest {
 		assertTrue("the secrets of the finished run are readable now", ids.contains("run-open/o-secret-1"));
 		Row ring = null;
 		for (Row row : r.rows) if (row.id.equals("run-open/o-ring")) ring = row;
-		assertEquals("items.rings.RingOfHaste", CellFormatter.cell(q, ring, after.dataset("items").def.column("item.trueClass")).text);
+		assertEquals("Ring of Haste", CellFormatter.cell(q, ring, after.dataset("items").def.column("item.trueClass")).text);
 	}
 
 	@Test

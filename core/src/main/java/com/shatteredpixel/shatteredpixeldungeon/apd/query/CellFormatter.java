@@ -46,13 +46,27 @@ public final class CellFormatter {
 		int i = col.index;
 		if (!row.isKnown(i)) return new CellText(UNKNOWN_TEXT, CellText.UNKNOWN);
 		int prov = row.prov(i);
-		String body = row.kind(i) == Row.K_TEXT ? (col.format == ColumnDef.Format.CLASS_NAME ? className(row.text(i)) : col.format == ColumnDef.Format.TITLE_CASE ? titleCase(row.text(i)) : row.text(i)) : value(col, row.num(i));
+		String body = row.kind(i) == Row.K_TEXT ? (col.format == ColumnDef.Format.CLASS_NAME ? className(row.text(i)) : col.format == ColumnDef.Format.TITLE_CASE ? titleCase(readable(row.text(i))) : readable(row.text(i))) : value(col, row.num(i));
 		switch (prov){
 			case Fact.PROV_INCOMPLETE: return new CellText(">=" + body, CellText.LOWER);
 			case Fact.PROV_INFERRED: return new CellText("~" + body, CellText.INFERRED);
 			case Fact.PROV_LEGACY: return new CellText(body, CellText.LEGACY);
 			default: return new CellText(body, CellText.EXACT);
 		}
+	}
+
+	//Some text columns (enemy names, causes) were recorded as a class key when the game had no name to give
+	//(trial jurors, Nov 27: "actors.mobs.Piranha", "actors.mobs.Snake", "Bomb$Conjure" on screen). Anything that looks
+	//like a class key is shown as its readable name; ordinary text is left alone.
+	public static boolean looksLikeClassKey( String s ){
+		if (s == null || s.isEmpty() || s.indexOf(' ') >= 0) return false;
+		return s.matches("([a-z][a-z0-9_]*\\.)+[A-Z][A-Za-z0-9_$]*(@[0-9a-fA-F]+)?") || s.matches("[A-Z][A-Za-z0-9_]*\\$[A-Za-z0-9_$]*");
+	}
+
+	public static String readable( String s ){
+		if (!looksLikeClassKey(s)) return s;
+		int at = s.indexOf('@');
+		return className(at >= 0 ? s.substring(0, at) : s);
 	}
 
 	//A stable class key as a readable name: "items.weapon.melee.WarHammer" is "War Hammer", "items.rings.RingOfHaste" is "Ring of Haste".
