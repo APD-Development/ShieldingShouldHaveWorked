@@ -63,6 +63,7 @@ public final class SimRuntime {
 	public static int forcedSpeed = -1;
 	public static String forcedAggression, forcedIntelligence;
 	public static int forcedCheckpoint;
+	public static int forcedVerify = -1;
 	private int finishedRuns;
 
 	public static SimRuntime get(){ return instance; }
@@ -198,6 +199,7 @@ public final class SimRuntime {
 			if (forcedAggression != null) profile().aggression = SimProfile.Aggression.valueOf(forcedAggression);
 			if (forcedIntelligence != null) profile().intelligence = SimProfile.Intelligence.valueOf(forcedIntelligence);
 			if (forcedCheckpoint > 0) profile().checkpointFloor = forcedCheckpoint;
+			if (forcedVerify >= 0) profile().verifyEvery = forcedVerify;
 			resetStopClock();
 		}
 	}
@@ -336,7 +338,8 @@ public final class SimRuntime {
 		if (!h.isAlive()){
 			Window w = SimUi.topWindow();
 			if (w != null && !paused){ answerWindow(w); return; }
-			deadTimer += realDelta;
+			if (deathTurn < 0) deathTurn = Statistics.apdTurn();
+			deadTimer += SimGame.FIXED_DT;
 			if (deadTimer > 1.5f){
 				deadTimer = 0;
 				endRun("died: " + deathCause());
@@ -458,6 +461,11 @@ public final class SimRuntime {
 			botProblem("bot decision", t);
 			try { h.rest(false); } catch (Throwable ignored){}
 			did = "wait (after a simulator problem)";
+		}
+		if (did != null){
+			//determinism check: a running fingerprint of every action (with the hero's state), kept every 50 actions
+			runDigest = runDigest * 1099511628211L + (where() + did).hashCode();
+			if (++digestCount % 50 == 0) digests.add(runDigest);
 		}
 		if (did != null && TurnLog.echo){
 			//full-trace mode: a fingerprint of every monster (place, health) so the first hidden difference between two replays shows
@@ -592,7 +600,7 @@ public final class SimRuntime {
 			String[] r = forcedReplay.split(":");
 			forcedReplay = null;
 			HeroClass cls = HeroClass.valueOf(r[0]);
-			long rs = Long.parseLong(r[1]), rb = Long.parseLong(r[2]);
+			long rs = r[1].matches("-?\\d+") ? Long.parseLong(r[1]) : DungeonSeed.convertFromText(r[1]), rb = Long.parseLong(r[2]);
 			startRun(cls.ordinal(), rs, rb);
 			return;
 		}
@@ -710,6 +718,20 @@ public final class SimRuntime {
 		runRandom = CountingRandom.pushOnIsolated(seed * 0x9E3779B97F4A7C15L ^ botSeed);
 		CountingRandom.recordCallers = TurnLog.echo;
 		sharedSeedCounter = 0;
+		//nothing may carry over from the previous run into this one's timing
+		thinkTimer = 0;
+		deadTimer = 0;
+		pendingFrames = 0;
+		sameWindowActions = 0;
+		lastWindow = null;
+		waitingSince = 0;
+		itemCheckCounter = 0;
+		lastActionTurn = -1;
+		lastTurnSeen = 0;
+		deathTurn = -1;
+		runDigest = 0;
+		digestCount = 0;
+		digests = new ArrayList<>();
 		lockFrames = freeFrames = 0;
 		seedSharedRandom();
 		seededShared = true;
@@ -736,6 +758,12 @@ public final class SimRuntime {
 	}
 
 	private void nextRun(){
+		//determinism check: play the run that just ended again, with the same seed and decisions, and compare
+		if (pendingVerify != null && !verifying && playing && pauseReason.isEmpty()){
+			verifying = true;
+			startRun((Integer) pendingVerify[0], (Long) pendingVerify[1], (Long) pendingVerify[2]);
+			return;
+		}
 		if (playing && !replaying && !stopReached() && pauseReason.isEmpty()) startRun();
 		else {
 			if (stopReached()) setPlaying(false);
@@ -798,6 +826,7 @@ public final class SimRuntime {
 	}
 
 	private float lastTurnSeen;
+	private long deathTurn = -1;
 
 	void endRun(String outcome){
 		if (!runActive) return;
@@ -807,9 +836,9 @@ public final class SimRuntime {
 		Hero h = Dungeon.hero;
 		long minutes = (System.currentTimeMillis() - runStartMillis) / 60000;
 		lastRunSummary = String.format(Locale.ROOT, "Run %d %s: %s on floor %d, level %d, turn %.0f, %d bug report(s), %d min",
-				run, heroClass == null ? "?" : heroClass.title(), outcome, depth, h == null ? 0 : h.lvl, (float) Math.max(Statistics.apdTurn(), lastTurnSeen), bugsThisRun, minutes);
+				run, heroClass == null ? "?" : heroClass.title(), outcome, depth, h == null ? 0 : h.lvl, (float) (deathTurn >= 0 ? deathTurn : Math.max(Statistics.apdTurn(), lastTurnSeen)), bugsThisRun, minutes);
 		GameSettings.put("apdsim_last", lastRunSummary);
-		System.out.println("APDSIM_RUN " + lastRunSummary);
+		System.out.println("APDSIM_RUN " + lastRunSummary + (verifying ? " [determinism replay]" : "") + " digest " + Long.toHexString(runDigest));
 		if (autostart){
 			for (String t : log.turns()) System.out.println("APDSIM_TURN " + t);
 			for (String m : log.messages()) System.out.println("APDSIM_MSG " + m);
@@ -825,6 +854,29 @@ public final class SimRuntime {
 			Digest.runEnded(this, maxDepth);
 		} catch (Throwable ignored){}
 		checkRecorder(depth, outcome.startsWith("died") || outcome.startsWith("won"));
+		boolean natural = outcome.startsWith("died") || outcome.startsWith("won");
+		if (verifying){
+			verifying = false;
+			Object[] v = pendingVerify;
+			pendingVerify = null;
+			if (v != null && natural){
+				@SuppressWarnings("unchecked")
+				java.util.List<Long> first = (java.util.List<Long>) v[3];
+				int same = 0;
+				while (same < first.size() && same < digests.size() && first.get(same).equals(digests.get(same))) same++;
+				verifiedRuns++;
+				if (same < first.size() || same < digests.size() || !String.valueOf(v[4]).equals(outcome)){
+					verifyMismatches++;
+					report(BugReport.Kind.NONDETERMINISM, "replaymismatch",
+							"Replaying a run with the same seed and the same decisions gave a different result.",
+							"First play: " + v[4] + " (" + first.size() * 50 + "+ actions)\nReplay: " + outcome + " (" + digests.size() * 50 + "+ actions)\n"
+									+ "The two were identical for the first " + same * 50 + " actions, then differed within the next 50.");
+				}
+			}
+		} else if (natural && !replaying && startedFrom.isEmpty() && runProfile != null && runProfile.verifyEvery > 0
+				&& runsSinceStart % runProfile.verifyEvery == 0){
+			pendingVerify = new Object[]{heroClass.ordinal(), seed, botSeed, digests, outcome};
+		}
 		//a run the bot stopped is left as an unfinished save; remove it so the next run starts clean
 		try { if (!outcome.startsWith("died") && !outcome.startsWith("won") && GamesInProgress.gameExists(1)) Dungeon.deleteGame(1, true); } catch (Throwable ignored){}
 	}
@@ -1060,7 +1112,16 @@ public final class SimRuntime {
 				for (com.shatteredpixel.shatteredpixeldungeon.items.Heap hp : Dungeon.level.heaps.valueList()) heaps += hp.pos * 131L + hp.peek().getClass().getName().hashCode();
 				long mobs = 0;
 				for (Mob m : Dungeon.level.mobs) mobs += m.pos * 7919L + m.getClass().getName().hashCode();
-				log.turn("floor " + Dungeon.depth + " fingerprint map=" + Long.toHexString(h) + " piles=" + Long.toHexString(heaps) + " monsters=" + Long.toHexString(mobs));
+				StringBuilder docs = new StringBuilder();
+				for (com.shatteredpixel.shatteredpixeldungeon.journal.Document d : com.shatteredpixel.shatteredpixeldungeon.journal.Document.values()){
+					int found = 0, read = 0, total = 0;
+					for (String pg : d.pageNames()){ total++; if (d.isPageFound(pg)) found++; if (d.isPageRead(pg)) read++; }
+					docs.append(d.name().charAt(0)).append(found).append('/').append(read).append('/').append(total).append(' ');
+				}
+				StringBuilder drops = new StringBuilder();
+				for (Dungeon.LimitedDrops ld : Dungeon.LimitedDrops.values()) drops.append(ld.count).append(',');
+				log.turn("floor " + Dungeon.depth + " fingerprint map=" + Long.toHexString(h) + " piles=" + Long.toHexString(heaps) + " monsters=" + Long.toHexString(mobs)
+						+ " journal=" + docs + " drops=" + drops + " feeling=" + Dungeon.level.feeling);
 			}
 			if (TurnStepper.failed) com.shatteredpixel.shatteredpixeldungeon.actors.Actor.add(new SeedActor(this));
 		}
@@ -1087,6 +1148,13 @@ public final class SimRuntime {
 	//on arrival). Before each loading screen can start, that shared stream is re-seeded from the run, on a helper thread
 	//(this thread has its own isolated stream), so loading a floor is repeatable too.
 	private int sharedSeedCounter;
+	//determinism check
+	private long runDigest;
+	private int digestCount;
+	private java.util.List<Long> digests = new ArrayList<>();
+	private boolean verifying;
+	private Object[] pendingVerify;     //{class index, seed, bot seed, digests, outcome}
+	public int verifiedRuns, verifyMismatches;
 	CountingRandom runRandom;
 	long lockFrames, freeFrames;
 	private void seedSharedRandom(){

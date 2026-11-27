@@ -32,6 +32,7 @@ public class SimGame extends ShatteredPixelDungeon {
 		//paused: the game stands completely still (no frames, so nothing can shift a random roll); only taps are handled
 		if (r.paused){
 			applyRequestedScene();
+			FrameRunnables.drain();
 			inputHandler.processAllEvents();
 			r.frame();
 			return;
@@ -50,12 +51,15 @@ public class SimGame extends ShatteredPixelDungeon {
 		SimRuntime r = SimRuntime.get();
 		if (r == null || !r.lockstep()){
 			if (r != null) r.freeFrames++;
+			FrameRunnables.install();
+			FrameRunnables.drain();
 			super.update();
 			if (r != null && r.runActive() && TurnStepper.active()) r.runTurns();
 			if (r != null) r.frame();
 			return;
 		}
 		r.lockFrames++;
+		FrameRunnables.drain();
 		com.watabou.utils.SupportDiagnostics.periodicMemoryEvent();
 		com.watabou.utils.SupportDiagnostics.frame(scene);
 		Game.elapsed = Game.timeScale * FIXED_DT;

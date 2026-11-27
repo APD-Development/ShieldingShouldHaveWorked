@@ -42,6 +42,7 @@ public final class SimProfile {
 	public Stop stop = Stop.FOREVER;
 	public int stopAmount = 10;
 	public int chauffeurFloor = 0;
+	public int verifyEvery = 10;     //determinism check: replay every Nth run and compare (0 = off)
 	public int checkpointFloor = 0;  //start runs from a saved checkpoint at this floor or deeper (0 = always start at floor 1)   //Chauffeur: play to this floor, then hand the controls to the player (0 = off)
 
 	//APD Settings the simulator may randomize each run (setters on SPDSettings taking a boolean). Recording is never touched.
@@ -59,7 +60,7 @@ public final class SimProfile {
 	public String encode(){
 		return String.join("\t", name.replace('\t', ' '), String.valueOf(heroClass), String.valueOf(difficulty), String.valueOf(challenges),
 				customRules, seedMode.name(), seedText.replace('\t', ' '), String.valueOf(randomizeSettings), aggression.name(),
-				intelligence.name(), stop.name(), String.valueOf(stopAmount), String.valueOf(chauffeurFloor), String.valueOf(checkpointFloor));
+				intelligence.name(), stop.name(), String.valueOf(stopAmount), String.valueOf(chauffeurFloor), String.valueOf(checkpointFloor), String.valueOf(verifyEvery));
 	}
 
 	public static SimProfile decode(int index, String text){
@@ -83,6 +84,7 @@ public final class SimProfile {
 			p.stopAmount = Integer.parseInt(f[11]);
 			if (f.length > 12) p.chauffeurFloor = Integer.parseInt(f[12]);
 			if (f.length > 13) p.checkpointFloor = Integer.parseInt(f[13]);
+			if (f.length > 14) p.verifyEvery = Integer.parseInt(f[14]);
 		} catch (RuntimeException damaged){
 			//a damaged or older entry keeps whatever was read; the rest stays default
 		}

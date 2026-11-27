@@ -96,6 +96,14 @@ public class SimHomeScene extends PixelScene {
 					save(p);
 				}
 			}); } });
+		buttons.add(new RedButton("Determinism check: " + (p.verifyEvery > 0 ? "replay every " + p.verifyEvery + (p.verifyEvery == 1 ? " run" : " runs") : "off"), 7){ @Override protected void onClick(){
+			ShatteredPixelDungeon.scene().add(new WndTextInput("Determinism check", "Every Nth run is played again with the same seed and decisions and compared. A difference is reported as a bug. 0 turns it off.",
+					String.valueOf(p.verifyEvery), 4, false, "OK", "Cancel"){
+				@Override public void onSelect(boolean positive, String text){
+					try { if (positive) p.verifyEvery = Math.max(0, Integer.parseInt(text.trim())); } catch (NumberFormatException ignored){}
+					save(p);
+				}
+			}); } });
 		buttons.add(new RedButton("Sound: " + (SPDSettings.soundFx() ? "on" : "off"), 7){ @Override protected void onClick(){
 			boolean on = !SPDSettings.soundFx(); SPDSettings.soundFx(on); SPDSettings.music(on); GameSettings.put("apdsim_sound", on); refresh(); } });
 		buttons.add(new RedButton("Your runs (Try my death)", 7){ @Override protected void onClick(){ add(new WndRealRunSeeds(p)); } });
