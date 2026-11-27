@@ -581,6 +581,7 @@ public final class SimRuntime {
 		log.clear();
 		textSeen.clear();
 		bugsThisRun = 0;
+		botProblemsThisRun = 0;
 		depthEntries = 0;
 		maxDepth = 0;
 		progressKey = Long.MIN_VALUE;
@@ -724,7 +725,7 @@ public final class SimRuntime {
 	String where(){
 		Hero h = Dungeon.hero;
 		if (h == null || Dungeon.level == null) return "";
-		return String.format(Locale.ROOT, "T%.0f D%d %s HP %d/%d L%d:", Statistics.apdTurn(), Dungeon.depth, SimBot.cell(h.pos), h.HP, h.HT, h.lvl);
+		return String.format(Locale.ROOT, "T%d D%d %s HP %d/%d L%d:", Statistics.apdTurn(), Dungeon.depth, SimBot.cell(h.pos), h.HP, h.HT, h.lvl);
 	}
 
 	private void gameMessage(String text){
@@ -793,7 +794,16 @@ public final class SimRuntime {
 		GameSettings.put("apdsim_last", "Run " + run + " crashed: " + r.summary);
 	}
 
+	private int botProblemsThisRun;
+
 	void botProblem(String during, Throwable t){
+		//the simulator's own code keeps failing: give up on this run instead of spinning
+		if (++botProblemsThisRun == 200 && runActive){
+			report(BugReport.Kind.BOT, "bot-giveup", "The simulator gave up on a run after 200 of its own errors.", stack(t));
+			endRun("abandoned (simulator errors)");
+			nextRun();
+			return;
+		}
 		report(BugReport.Kind.BOT, "bot:" + signature(t), "The simulator itself failed while " + during + ": " + t, stack(t));
 	}
 
