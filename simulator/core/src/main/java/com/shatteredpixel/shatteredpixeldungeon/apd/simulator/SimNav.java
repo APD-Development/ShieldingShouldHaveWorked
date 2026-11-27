@@ -75,6 +75,13 @@ final class SimNav {
 				}
 			}
 		}
+		//a step onto a chest, tomb, skeleton or remains is a tap on it, and a tap opens it: the bot only opens those on
+		//purpose (from the cell beside them), so paths go around
+		for (com.shatteredpixel.shatteredpixeldungeon.items.Heap heap : level.heaps.valueList()){
+			if (heap.pos < 0 || heap.pos >= length || heap.pos == origin) continue;
+			if (heap.type != com.shatteredpixel.shatteredpixeldungeon.items.Heap.Type.HEAP
+					&& heap.type != com.shatteredpixel.shatteredpixeldungeon.items.Heap.Type.FOR_SALE) walk[heap.pos] = false;
+		}
 		if (refused != null) for (int c : refused) if (c >= 0 && c < length) walk[c] = false;
 		//red sentries fire on anyone standing on their room's special floor
 		if (avoidSentries){

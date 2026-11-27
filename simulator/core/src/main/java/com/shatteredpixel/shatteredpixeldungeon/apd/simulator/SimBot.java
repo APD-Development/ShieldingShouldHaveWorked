@@ -489,6 +489,7 @@ final class SimBot {
 		Hero h = hero();
 		Mob near = foes.get(0);
 		focusCell = near.pos;
+		holdGround = false;
 
 		//Goo (floor 5 boss), not Clueless: wash caustic ooze off in water, and step out of reach while it pumps up its big hit
 		if (!clueless()){
@@ -620,6 +621,10 @@ final class SimBot {
 			}
 		}
 
+		if (holdGround){
+			h.rest(false);
+			return "hold this spot and let " + nameOf(near) + " come";
+		}
 		SimNav nav = nav(false);
 		int goal = nav.approach(level(), near.pos);
 		if (goal >= 0 && goal != h.pos){
@@ -634,6 +639,8 @@ final class SimBot {
 		return null;
 	}
 
+	private boolean holdGround;
+
 	private String gooRules(List<Mob> foes){
 		Hero h = hero();
 		com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Goo goo = null;
@@ -646,7 +653,7 @@ final class SimBot {
 		if (pumped > 0 && level().distance(h.pos, goo.pos) <= 2){
 			int best = -1;
 			for (int c = 0; c < level().length(); c++){
-				if (!nav.reachable(c) || nav.dist[c] > 2 || level().distance(c, goo.pos) <= 2) continue;
+				if (!nav.reachable(c) || nav.dist[c] > 3 || level().distance(c, goo.pos) <= 2) continue;
 				if (best < 0 || nav.dist[c] < nav.dist[best]) best = c;
 			}
 			if (best >= 0){
@@ -654,18 +661,36 @@ final class SimBot {
 				if (step != null) return step;
 			}
 		}
-		//caustic ooze burns every turn until washed off in water
-		if (h.buff(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Ooze.class) != null && !level().water[h.pos]){
-			int best = -1;
+		//where to stand: Goo heals while it is in water, and water under the hero washes ooze off at once. So the best
+		//spot is a water cell with dry floor around it. Moving there costs nothing: Goo spends its turn following.
+		int here = gooSpot(h.pos, goo.pos);
+		if ((level().water[goo.pos] || !level().water[h.pos]) && !tried("goospot", 60)){
+			int best = -1, bestScore = here;
 			for (int c = 0; c < level().length(); c++){
-				if (level().water[c] && nav.reachable(c) && nav.dist[c] <= 3 && (best < 0 || nav.dist[c] < nav.dist[best])) best = c;
+				if (!nav.reachable(c) || nav.dist[c] > 8 || c == goo.pos) continue;
+				int score = gooSpot(c, goo.pos) + nav.dist[c];
+				if (score < bestScore - 2){ bestScore = score; best = c; }
 			}
 			if (best >= 0){
-				String step = stepToward(nav, best, "into water to wash the ooze off");
+				String step = stepToward(nav, best, "to fight Goo from a puddle with dry floor around it");
 				if (step != null) return step;
 			}
 		}
+		//on a good spot already: let Goo come instead of walking back into its water
+		holdGround = here <= 10 && !level().adjacent(h.pos, goo.pos) && !tried("goohold", 40);
 		return null;
+	}
+
+	//lower is better: 10 points for each water cell next to this one (Goo would stand in it and heal), 12 if the cell
+	//itself is dry (ooze stays on the hero)
+	private int gooSpot(int c, int gooPos){
+		int score = level().water[c] ? 0 : 12;
+		for (int d : PathFinder.NEIGHBOURS8){
+			int n = c + d;
+			if (n < 0 || n >= level().length() || !level().passable[n]) continue;
+			if (level().water[n]) score += 10;
+		}
+		return score;
 	}
 
 	private int openNeighbours(int c){
