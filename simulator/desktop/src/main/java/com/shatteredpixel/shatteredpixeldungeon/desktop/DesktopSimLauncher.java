@@ -76,6 +76,9 @@ public class DesktopSimLauncher {
 			SimRuntime.forcedAggression = System.getProperty("apd.sim.aggression");
 			SimRuntime.forcedIntelligence = System.getProperty("apd.sim.intelligence");
 			SimRuntime.forcedCheckpoint = Integer.getInteger("apd.sim.checkpoint", 0);
+			SimRuntime.forcedBossTest = Boolean.getBoolean("apd.sim.bosstest");
+			SimRuntime.forcedNoJudge = Boolean.getBoolean("apd.sim.nojudge");
+			SimRuntime.checkpointNameHas = System.getProperty("apd.sim.checkpointName");
 			SimRuntime.forcedReplay = System.getProperty("apd.sim.replay");
 			SimRuntime.forcedVerify = Integer.getInteger("apd.sim.verify", -1);
 			SimRuntime.forcedSeedBase = Long.getLong("apd.sim.seedbase", 0L);

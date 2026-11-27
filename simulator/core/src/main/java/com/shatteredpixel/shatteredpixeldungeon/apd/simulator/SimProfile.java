@@ -45,6 +45,9 @@ public final class SimProfile {
 	public Stop stop = Stop.FOREVER;
 	public int stopAmount = 10;
 	public int chauffeurFloor = 0;
+	//boss test: every run starts from a checkpoint saved on arriving at exactly checkpointFloor and ends when that
+	//floor is cleared (the hero goes deeper) or the hero dies. Marked TEST, never part of the normal win rates.
+	public boolean bossTest = false;
 	public int verifyEvery = 10;     //determinism check: replay every Nth run and compare (0 = off)
 	public int checkpointFloor = 0;  //start runs from a saved checkpoint at this floor or deeper (0 = always start at floor 1)   //Chauffeur: play to this floor, then hand the controls to the player (0 = off)
 
@@ -63,7 +66,7 @@ public final class SimProfile {
 	public String encode(){
 		return String.join("\t", name.replace('\t', ' '), String.valueOf(heroClass), String.valueOf(difficulty), String.valueOf(challenges),
 				customRules, seedMode.name(), seedText.replace('\t', ' '), String.valueOf(randomizeSettings), aggression.name(),
-				intelligence.name(), stop.name(), String.valueOf(stopAmount), String.valueOf(chauffeurFloor), String.valueOf(checkpointFloor), String.valueOf(verifyEvery));
+				intelligence.name(), stop.name(), String.valueOf(stopAmount), String.valueOf(chauffeurFloor), String.valueOf(checkpointFloor), String.valueOf(verifyEvery), bossTest ? "1" : "0");
 	}
 
 	public static SimProfile decode(int index, String text){
@@ -88,6 +91,7 @@ public final class SimProfile {
 			if (f.length > 12) p.chauffeurFloor = Integer.parseInt(f[12]);
 			if (f.length > 13) p.checkpointFloor = Integer.parseInt(f[13]);
 			if (f.length > 14) p.verifyEvery = Integer.parseInt(f[14]);
+			if (f.length > 15) p.bossTest = f[15].equals("1");
 		} catch (RuntimeException damaged){
 			//a damaged or older entry keeps whatever was read; the rest stays default
 		}
@@ -140,7 +144,8 @@ public final class SimProfile {
 		parts.add(stop == Stop.RUNS ? "stop after " + stopAmount + " runs" : stop == Stop.MINUTES ? "stop after " + stopAmount + " min"
 				: stop == Stop.FLOOR ? "stop at floor " + stopAmount : stop.title.toLowerCase(Locale.ROOT));
 		if (chauffeurFloor > 0) parts.add("Chauffeur to floor " + chauffeurFloor);
-		if (checkpointFloor > 0) parts.add("starts from checkpoints at floor " + checkpointFloor + "+");
+		if (bossTest && checkpointFloor > 0) parts.add("TEST: boss fight on floor " + checkpointFloor + " from checkpoints");
+		else if (checkpointFloor > 0) parts.add("TEST: starts from checkpoints at floor " + checkpointFloor + "+");
 		return String.join(", ", parts);
 	}
 }

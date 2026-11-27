@@ -75,6 +75,12 @@ public final class SimRuntime {
 	public static int forcedSpeed = -1;
 	public static String forcedAggression, forcedIntelligence;
 	public static int forcedCheckpoint;
+	//desktop: boss test (see SimProfile.bossTest), and only checkpoints whose name contains this text
+	public static boolean forcedBossTest;
+	//desktop: play by the older fixed rules, to measure the fight judge against them
+	public static boolean forcedNoJudge;
+	public static String checkpointNameHas;
+	private int startedDepth;
 	public static int forcedVerify = -1;
 	public static long forcedSeedBase;
 	public static boolean forcedHeadless;
@@ -230,6 +236,7 @@ public final class SimRuntime {
 			if (forcedAggression != null) profile().aggression = SimProfile.Aggression.valueOf(forcedAggression);
 			if (forcedIntelligence != null) profile().intelligence = SimProfile.Intelligence.valueOf(forcedIntelligence);
 			if (forcedCheckpoint > 0) profile().checkpointFloor = forcedCheckpoint;
+			if (forcedBossTest) profile().bossTest = true;
 			if (forcedVerify >= 0) profile().verifyEvery = forcedVerify;
 			resetStopClock();
 		}
@@ -402,6 +409,12 @@ public final class SimRuntime {
 			driving = true;
 			log.turn(where() + " Chauffeur: reached floor " + Dungeon.depth + ", the controls are yours");
 			platform.notifyBug(7, "APD Simulator: Chauffeur", "Reached floor " + Dungeon.depth + ". The controls are yours.");
+		}
+		//boss test: the fight is over once the hero has gone deeper than the floor the checkpoint was saved on
+		if (runProfile != null && runProfile.bossTest && !startedFrom.isEmpty() && Dungeon.depth > startedDepth){
+			endRun("TEST boss floor " + startedDepth + " cleared");
+			nextRun();
+			return;
 		}
 		if (runProfile != null && runProfile.stop == SimProfile.Stop.FLOOR && Dungeon.depth >= runProfile.stopAmount && !floorStopHit){
 			floorStopHit = true;
@@ -746,7 +759,9 @@ public final class SimRuntime {
 		saveLoad.pending = false;
 		//start deep: continue a saved checkpoint instead of a new game (tagged, kept apart in the stats)
 		if (fixedSeed == 0 && runProfile.checkpointFloor > 1){
-			com.badlogic.gdx.files.FileHandle cp = Checkpoints.pick(master, runProfile.heroClass >= 0 ? heroClass.name() : null, runProfile.checkpointFloor);
+			com.badlogic.gdx.files.FileHandle cp = Checkpoints.pick(master, runProfile.heroClass >= 0 ? heroClass.name() : null, runProfile.checkpointFloor,
+					runProfile.bossTest, checkpointNameHas);
+			if (cp == null && runProfile.bossTest) System.out.println("APDSIM_NOTE no checkpoint saved on floor " + runProfile.checkpointFloor + " yet: this run starts at floor 1 and is a normal run");
 			if (cp != null && Checkpoints.restore(cp)){
 				startedFrom = cp.name();
 				GamesInProgress.curSlot = 1;
@@ -754,6 +769,7 @@ public final class SimRuntime {
 				heroClass = info.heroClass;
 				seed = info.seed;
 				checkpointedDepth = info.depth;
+				startedDepth = info.depth;
 				InterlevelScene.mode = InterlevelScene.Mode.CONTINUE;
 			}
 		}
@@ -901,8 +917,10 @@ public final class SimRuntime {
 		int depth = Dungeon.depth;
 		Hero h = Dungeon.hero;
 		long minutes = (System.currentTimeMillis() - runStartMillis) / 60000;
+		//runs that began from a checkpoint are tests: marked, and left out of the normal win rates
+		String shown = !startedFrom.isEmpty() && !outcome.startsWith("TEST") ? "TEST " + outcome : outcome;
 		lastRunSummary = String.format(Locale.ROOT, "Run %d %s: %s on floor %d, level %d, turn %.0f, %d bug report(s), %d min",
-				run, heroClass == null ? "?" : heroClass.title(), outcome, depth, h == null ? 0 : h.lvl, (float) (deathTurn >= 0 ? deathTurn : Math.max(Statistics.apdTurn(), lastTurnSeen)), bugsThisRun, minutes);
+				run, heroClass == null ? "?" : heroClass.title(), shown, depth, h == null ? 0 : h.lvl, (float) (deathTurn >= 0 ? deathTurn : Math.max(Statistics.apdTurn(), lastTurnSeen)), bugsThisRun, minutes);
 		GameSettings.put("apdsim_last", lastRunSummary);
 		System.out.println("APDSIM_RUN " + lastRunSummary + (verifying ? " [determinism replay]" : "") + " digest " + Long.toHexString(runDigest));
 		if (autostart){
@@ -916,7 +934,7 @@ public final class SimRuntime {
 		try {
 			FileUtils.getFileHandle("simruns.txt").writeString(lastRunSummary + " | seed " + DungeonSeed.convertToCode(seed)
 					+ " | bot seed " + botSeed + " | build " + Game.version + " | crashes " + crashesThisRun + " | deepest " + maxDepth + " | save/load checks " + saveLoadsThisRun
-					+ (startedFrom.isEmpty() ? "" : " | checkpoint")
+					+ (startedFrom.isEmpty() ? "" : " | checkpoint " + startedFrom)
 					+ (bot == null || bot.gearAtFirstBoss.isEmpty() ? "" : " | gear at floor 5: " + bot.gearAtFirstBoss)
 					+ " | gear at end: " + SimBot.gearSummary() + "\n", true, "UTF-8");
 			if (benchLeft > 0){

@@ -18,6 +18,7 @@ final class Checkpoints {
 
 	static final String DIR = "simcheckpoints/";
 	static final int KEEP_PER_FLOOR = 3;
+	static final int KEEP_PER_BOSS_FLOOR = 40;
 
 	private static FileHandle dir(){
 		FileHandle d = FileUtils.getFileHandle(DIR);
@@ -35,6 +36,9 @@ final class Checkpoints {
 			FileHandle target = dir().child(name);
 			slot.copyTo(target.parent());
 			target.parent().child(slot.name()).moveTo(target);
+			//what the hero carried, readable without loading the save
+			try { target.child("checkpoint.txt").writeString("floor " + depth + ", " + heroClass + ", health " + Dungeon.hero.HP + "/" + Dungeon.hero.HT
+					+ ", " + SimBot.gearSummary() + "\n", false, "UTF-8"); } catch (Throwable ignored){}
 			prune(heroClass, depth);
 		} catch (Throwable ignored){
 			//a checkpoint is a convenience; a failure never stops the run
@@ -46,7 +50,9 @@ final class Checkpoints {
 		String prefix = heroClass + "-d" + (depth < 10 ? "0" : "") + depth + "-";
 		for (FileHandle f : dir().list()) if (f.isDirectory() && f.name().startsWith(prefix)) same.add(f);
 		same.sort((a, b) -> b.name().compareTo(a.name()));
-		for (int i = KEEP_PER_FLOOR; i < same.size(); i++) same.get(i).deleteDirectory();
+		//boss floors keep many more: they are what boss tests start from
+		int keep = depth % 5 == 0 ? KEEP_PER_BOSS_FLOOR : KEEP_PER_FLOOR;
+		for (int i = keep; i < same.size(); i++) same.get(i).deleteDirectory();
 	}
 
 	static List<FileHandle> all(){
@@ -58,12 +64,19 @@ final class Checkpoints {
 
 	//picks one (optionally for a class and at least a floor); null when there is none
 	static FileHandle pick(Random rng, String heroClass, int minDepth){
+		return pick(rng, heroClass, minDepth, false, null);
+	}
+
+	//exact: only checkpoints saved on that very floor. nameHas: only checkpoints whose name contains this text
+	//(a class, a seed code or a whole snapshot name), so one chosen snapshot can be played over and over.
+	static FileHandle pick(Random rng, String heroClass, int minDepth, boolean exact, String nameHas){
 		List<FileHandle> ok = new ArrayList<>();
 		for (FileHandle f : all()){
 			String[] p = f.name().split("-");
 			if (heroClass != null && !p[0].equals(heroClass)) continue;
+			if (nameHas != null && !nameHas.isEmpty() && !f.name().contains(nameHas)) continue;
 			int d = Integer.parseInt(p[1].substring(1));
-			if (d < minDepth) continue;
+			if (d < minDepth || (exact && d != minDepth)) continue;
 			ok.add(f);
 		}
 		return ok.isEmpty() ? null : ok.get(rng.nextInt(ok.size()));
@@ -75,7 +88,7 @@ final class Checkpoints {
 			FileHandle slot = FileUtils.getFileHandle(GamesInProgress.gameFolder(1));
 			if (slot.exists()) slot.deleteDirectory();
 			slot.mkdirs();
-			for (FileHandle f : cp.list()) f.copyTo(slot);
+			for (FileHandle f : cp.list()) if (!f.name().equals("checkpoint.txt")) f.copyTo(slot);
 			GamesInProgress.setUnknown(1);
 			return GamesInProgress.check(1) != null;
 		} catch (Throwable t){

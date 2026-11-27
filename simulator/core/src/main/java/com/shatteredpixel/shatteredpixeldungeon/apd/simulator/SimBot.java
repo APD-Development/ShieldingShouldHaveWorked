@@ -98,6 +98,7 @@ final class SimBot {
 	SimBot(long seed, SimProfile.Aggression aggression, SimProfile.Intelligence intelligence){
 		rng = new Random(seed);
 		FightJudge.reset();
+		FightJudge.enabled = !SimRuntime.forcedNoJudge;
 		this.aggression = aggression;
 		this.intelligence = intelligence;
 		switch (aggression){
@@ -554,7 +555,7 @@ final class SimBot {
 		//the fight judge (not Clueless): what the monsters next to the hero can do this turn at worst, what they do on
 		//average, and what finishing this fight should cost
 		float worstNow = 0, fightCost = 0;
-		if (!clueless()){
+		if (!clueless() && FightJudge.enabled){
 			for (Mob m : foes){
 				if (level().distance(m.pos, h.pos) <= 1) worstNow += FightJudge.judge(m).worstHit;
 			}
@@ -566,7 +567,7 @@ final class SimBot {
 		//so potions are not spent on fights that are already won.
 		boolean couldDieNow = !clueless() && h.HP <= worstNow;
 		boolean losing = !clueless() && h.HP < h.HT * 0.6f && fightCost >= h.HP;
-		boolean healNow = smart() ? (couldDieNow || losing) : (h.HP < h.HT * healAt || couldDieNow);
+		boolean healNow = !FightJudge.enabled ? h.HP < h.HT * healAt : smart() ? (couldDieNow || losing) : (h.HP < h.HT * healAt || couldDieNow);
 		if (healNow){
 			String dew = drinkDew();
 			if (dew != null) return dew;
@@ -617,7 +618,7 @@ final class SimBot {
 			//Clueless hits the closest; Average the weakest in reach; Smart and better the one whose death saves the
 			//most health for the fewest swings (the fight judge's numbers)
 			if (reach == null) reach = m;
-			else if (smart()){
+			else if (smart() && FightJudge.enabled){
 				FightJudge.Verdict a = FightJudge.judge(m), b = FightJudge.judge(reach);
 				if (!a.cannotWin() && (b.cannotWin() || a.perTurn / a.turnsToKill > b.perTurn / b.turnsToKill)) reach = m;
 			} else if (!clueless() && m.HP < reach.HP) reach = m;
@@ -661,7 +662,7 @@ final class SimBot {
 			focusCell = reach.pos;
 			lastAttack = reach;
 			lastAttackTime = Actor.now();
-			return tap(reach.pos, "attack " + nameOf(reach) + " (" + reach.HP + "/" + reach.HT + " health" + (clueless() ? "" : "; " + FightJudge.describe(reach)) + ") at");
+			return tap(reach.pos, "attack " + nameOf(reach) + " (" + reach.HP + "/" + reach.HT + " health" + (clueless() || !FightJudge.enabled ? "" : "; " + FightJudge.describe(reach)) + ") at");
 		}
 
 		//ranged options for an enemy that can't be hit yet

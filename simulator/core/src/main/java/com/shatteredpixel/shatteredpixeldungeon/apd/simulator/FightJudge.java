@@ -28,6 +28,9 @@ final class FightJudge {
 	private static final Map<String, Stats> cache = new HashMap<>();
 	private static final int SAMPLES = 24;
 
+	//off = the bot plays by its older fixed rules (kept so the judge can be measured against them)
+	public static boolean enabled = true;
+
 	static void reset(){ cache.clear(); }
 
 	static final class Verdict {

@@ -91,6 +91,18 @@ public class SimHomeScene extends PixelScene {
 					save(p);
 				}
 			}); } });
+		final int bossAt = p.bossTest ? p.checkpointFloor : 0;
+		final String[] bossNames = {"off", "Goo (floor 5)", "Tengu (floor 10)", "DM-300 (floor 15)", "Dwarf King (floor 20)", "Yog-Dzewa (floor 25)"};
+		int bossSaved = 0;
+		if (bossAt > 0) for (com.badlogic.gdx.files.FileHandle f : Checkpoints.all()) if (f.name().contains("-d" + (bossAt < 10 ? "0" : "") + bossAt + "-")) bossSaved++;
+		buttons.add(new RedButton("Boss test: " + (bossAt > 0 && bossAt % 5 == 0 ? bossNames[bossAt / 5] + ", " + bossSaved + " saved" : "off"), 7){ @Override protected void onClick(){
+			//cycles off, Goo, Tengu, DM-300, Dwarf King, Yog-Dzewa: every run then starts from a snapshot saved on arriving at
+			//that boss floor and ends when the boss floor is cleared or the hero dies. Marked TEST, kept out of the win rates.
+			int next = (bossAt / 5 + 1) % 6;
+			p.bossTest = next > 0;
+			p.checkpointFloor = next * 5;
+			save(p);
+		} });
 		buttons.add(new RedButton("Start from checkpoints: " + (p.checkpointFloor > 1 ? "floor " + p.checkpointFloor + "+" : "off") + " (" + Checkpoints.all().size() + " saved)", 7){ @Override protected void onClick(){
 			ShatteredPixelDungeon.scene().add(new WndTextInput("Checkpoints", "Start runs from a saved checkpoint at this floor or deeper (saved automatically whenever a run reaches a new floor). 0 or 1 = start at floor 1.",
 					String.valueOf(p.checkpointFloor), 2, false, "OK", "Cancel"){

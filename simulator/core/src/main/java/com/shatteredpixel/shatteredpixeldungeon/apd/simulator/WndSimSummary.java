@@ -41,9 +41,12 @@ final class WndSimSummary extends WndSimText {
 			File root = ApdRecorder.historyRoot();
 			if (root == null) return "The simulator's UIMSD is not set up.";
 			FactTable t = new DerivedStore(root).load();
-			List<RunFacts> rows = new ArrayList<>(t.apdRows);
+			//runs started from a checkpoint are tests (boss fights and deep starts): counted apart, never in the win rates
+			List<RunFacts> rows = new ArrayList<>(), tests = new ArrayList<>();
+			for (RunFacts f : t.apdRows) (f.textOr("sim.settings", "").contains("checkpoint=") ? tests : rows).add(f);
 			StringBuilder b = new StringBuilder();
-			b.append(rows.size()).append(" simulated runs recorded.\n").append(Digest.readiness()).append('\n');
+			b.append(rows.size()).append(" simulated runs recorded")
+					.append(tests.isEmpty() ? "" : ", plus " + tests.size() + " TEST runs from checkpoints that are left out of everything below").append(".\n").append(Digest.readiness()).append('\n');
 			section(b, "By class", rows, FactKeys.HERO_CLASS);
 			section(b, "By aggression", rows, "sim.aggression");
 			section(b, "By intelligence", rows, "sim.intelligence");
