@@ -428,12 +428,19 @@ final class SimBot {
 	}
 
 	//running away from something next to you only gives it free hits; the bot escapes only by stairs that are close
+	private long lastEscapeTurn = -1000;
+
 	private String retreat(List<Mob> foes){
+		//one stair escape at a time: taking stairs costs no turns, so escaping again at once would loop between two floors
+		if (com.shatteredpixel.shatteredpixeldungeon.Statistics.apdTurn() - lastEscapeTurn < 50) return null;
 		SimNav nav = nav(false);
 		int best = -1;
 		for (LevelTransition t : level().transitions){
 			int c = t.cell();
-			if (c == hero().pos && !level().locked) return tap(c, "escape (low health) by the stairs at");
+			if (c == hero().pos && !level().locked){
+				lastEscapeTurn = com.shatteredpixel.shatteredpixeldungeon.Statistics.apdTurn();
+				return tap(c, "escape (low health) by the stairs at");
+			}
 			if (nav.reachable(c) && nav.dist[c] <= 6 && (best < 0 || nav.dist[c] < nav.dist[best])) best = c;
 		}
 		if (best >= 0) return stepToward(nav, best, "escape to the stairs");

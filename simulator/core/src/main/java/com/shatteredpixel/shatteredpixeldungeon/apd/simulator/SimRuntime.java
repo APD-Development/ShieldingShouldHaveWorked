@@ -161,6 +161,9 @@ public final class SimRuntime {
 	private int busySamples, idleSamples;
 	private boolean runTagsRecorded;
 	private int checkpointedDepth;
+	private final SaveLoadCheck saveLoad = new SaveLoadCheck();
+	private long nextSaveLoadTurn = 300;
+	public static int saveLoadEvery = 300; //turns between save/load stress checks (0 = off)
 	public String startedFrom = "";
 
 	private SimRuntime(SimPlatform platform){
@@ -435,6 +438,14 @@ public final class SimRuntime {
 			checkpointedDepth = Dungeon.depth;
 			Checkpoints.save(heroClass.name(), Dungeon.depth);
 		}
+		if (saveLoad.pending){ saveLoad.compare(this); }
+		else if (saveLoadEvery > 0 && !replaying && Statistics.apdTurn() >= nextSaveLoadTurn){
+			nextSaveLoadTurn = Statistics.apdTurn() + saveLoadEvery;
+			log.turn(where() + " save and reload (save/load stress check)");
+			saveLoadsThisRun++;
+			saveLoad.start(this);
+			return;
+		}
 		Invariants.check(this);
 		checkItemsText();
 		if (!checkProgress()) return;
@@ -455,8 +466,16 @@ public final class SimRuntime {
 		lastActionTurn = t;
 		if (zeroTimeActions > 300){
 			zeroTimeActions = 0;
-			report(BugReport.Kind.STUCK, "notime:" + (did == null ? "" : did.replaceAll("[0-9(),]", "")),
-					"300 actions in a row took no game time (the game keeps refusing or undoing an action). Last action: " + did, "");
+			//the same action refused again and again is the game's problem; different actions going round in a loop is the bot's
+			java.util.Set<String> kinds = new java.util.HashSet<>();
+			for (String t : log.turns()) kinds.add(t.replaceAll("^\\d+\\. T\\d+ D\\d+ \\(\\d+,\\d+\\) HP \\d+/\\d+ L\\d+: ", "").replaceAll("[0-9(),]", ""));
+			if (kinds.size() > 1){
+				report(BugReport.Kind.BOT_STUCK, "botloop:" + (did == null ? "" : did.replaceAll("[0-9(),]", "")),
+						"The bot went round in a loop of actions that take no game time (" + kinds.size() + " different actions).", String.join("\n", kinds));
+			} else {
+				report(BugReport.Kind.STUCK, "notime:" + (did == null ? "" : did.replaceAll("[0-9(),]", "")),
+						"300 actions in a row took no game time (the game keeps refusing or undoing the same action). Last action: " + did, "");
+			}
 			endRun("stuck (actions take no time)");
 			nextRun();
 		}
@@ -608,6 +627,7 @@ public final class SimRuntime {
 		bugsThisRun = 0;
 		botProblemsThisRun = 0;
 		crashesThisRun = 0;
+		saveLoadsThisRun = 0;
 		depthEntries = 0;
 		maxDepth = 0;
 		progressKey = Long.MIN_VALUE;
@@ -633,6 +653,8 @@ public final class SimRuntime {
 		InterlevelScene.mode = InterlevelScene.Mode.DESCEND;
 		checkpointedDepth = 0;
 		startedFrom = "";
+		nextSaveLoadTurn = saveLoadEvery;
+		saveLoad.pending = false;
 		//start deep: continue a saved checkpoint instead of a new game (tagged, kept apart in the stats)
 		if (fixedSeed == 0 && runProfile.checkpointFloor > 1){
 			com.badlogic.gdx.files.FileHandle cp = Checkpoints.pick(master, runProfile.heroClass >= 0 ? heroClass.name() : null, runProfile.checkpointFloor);
@@ -759,7 +781,7 @@ public final class SimRuntime {
 		}
 		try {
 			FileUtils.getFileHandle("simruns.txt").writeString(lastRunSummary + " | seed " + DungeonSeed.convertToCode(seed)
-					+ " | bot seed " + botSeed + " | build " + Game.version + " | crashes " + crashesThisRun + " | deepest " + maxDepth
+					+ " | bot seed " + botSeed + " | build " + Game.version + " | crashes " + crashesThisRun + " | deepest " + maxDepth + " | save/load checks " + saveLoadsThisRun
 					+ (startedFrom.isEmpty() ? "" : " | checkpoint") + "\n", true, "UTF-8");
 			Digest.runEnded(this, maxDepth);
 		} catch (Throwable ignored){}
@@ -861,7 +883,7 @@ public final class SimRuntime {
 	}
 
 	private int botProblemsThisRun;
-	int crashesThisRun;
+	int crashesThisRun, saveLoadsThisRun;
 
 	void botProblem(String during, Throwable t){
 		//the simulator's own code keeps failing: give up on this run instead of spinning
