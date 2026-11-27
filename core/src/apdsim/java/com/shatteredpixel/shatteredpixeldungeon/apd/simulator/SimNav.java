@@ -23,6 +23,11 @@ final class SimNav {
 	final int origin;
 
 	SimNav(Level level, int origin, boolean throughMobs){
+		this(level, origin, throughMobs, true);
+	}
+
+	//avoidTraps false: walks over traps it can see (only traps already triggered are avoided, as they are spent)
+	SimNav(Level level, int origin, boolean throughMobs, boolean avoidTraps){
 		this.width = level.width();
 		this.length = level.length();
 		this.origin = origin;
@@ -35,9 +40,18 @@ final class SimNav {
 			if (t == Terrain.LOCKED_DOOR || t == Terrain.CRYSTAL_DOOR || t == Terrain.LOCKED_EXIT || t == Terrain.HERO_LKD_DR) pass = false;
 			if (level.pit[i] || t == Terrain.CHASM) pass = false;
 			Trap trap = level.traps.get(i);
-			if (trap != null && trap.visible && trap.active) pass = false;
+			if (avoidTraps && trap != null && trap.visible && trap.active) pass = false;
 			if (danger(level, i)) pass = false;
 			walk[i] = pass;
+		}
+		//keep out of the water while piranhas are around (not for a Clueless bot, which doesn't know)
+		if (avoidTraps){
+			for (Char c : Actor.chars()){
+				if (c instanceof com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Piranha && c.isAlive() && c.pos >= 0 && c.pos < length && level.heroFOV[c.pos]){
+					for (int i = 0; i < length; i++) if (level.water[i] && level.map[i] == Terrain.WATER && i != origin) walk[i] = false;
+					break;
+				}
+			}
 		}
 		if (!throughMobs){
 			for (Char c : Actor.chars()){

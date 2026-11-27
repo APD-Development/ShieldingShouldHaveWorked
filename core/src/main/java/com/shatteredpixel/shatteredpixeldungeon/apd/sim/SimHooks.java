@@ -21,6 +21,10 @@ public final class SimHooks {
 
 	public static volatile Controller controller;
 
+	//The simulator process only: tags recorded with each run in the simulator's own UIMSD (aggression, intelligence, settings).
+	//Always empty in the real game, so nothing extra is ever written to real history.
+	public static volatile String runTags = "";
+
 	public static boolean inSimulator(){
 		return controller != null;
 	}

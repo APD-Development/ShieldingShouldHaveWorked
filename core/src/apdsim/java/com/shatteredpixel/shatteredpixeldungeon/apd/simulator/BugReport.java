@@ -32,6 +32,9 @@ public final class BugReport {
 	public long seed;
 	public long botSeed;
 	public String heroClass = "";
+	public String aggression = "", intelligence = "";
+	public int difficulty, challenges;
+	public String customRules = "", apdSettings = "", profileText = "";
 	public int depth;
 	public int branch;
 	public float turn;
@@ -57,11 +60,17 @@ public final class BugReport {
 		b.append('\n');
 		b.append("Seed: ").append(seedCode).append(" (").append(seed).append(")\n");
 		b.append("Class: ").append(heroClass).append('\n');
+		b.append("Aggression: ").append(aggression).append('\n');
+		b.append("Intelligence: ").append(intelligence).append('\n');
+		b.append("Difficulty: ").append(difficulty).append(", challenges ").append(challenges).append('\n');
+		b.append("Custom rules: ").append(customRules.isEmpty() ? "default" : customRules).append('\n');
+		b.append("APD Settings: ").append(apdSettings).append('\n');
 		b.append("Floor: ").append(depth).append(branch != 0 ? " (branch " + branch + ")" : "").append('\n');
 		b.append("Turn: ").append(String.format(Locale.ROOT, "%.1f", turn)).append('\n');
 		b.append("Hero level: ").append(heroLevel).append('\n');
 		b.append("Simulator run: ").append(run).append(", bot seed ").append(botSeed).append('\n');
-		b.append("Game version: ").append(version).append('\n');
+		b.append("Build: ").append(version).append('\n');
+		b.append("Simulator settings: ").append(profileText.replace('\n', ' ')).append('\n');
 		b.append("Report id: ").append(id).append('\n');
 		b.append("Signature: ").append(signature).append('\n');
 		b.append("\nDETAILS\n").append(details).append('\n');
@@ -76,7 +85,7 @@ public final class BugReport {
 	//The first lines of text() are enough to list reports without keeping every report in memory.
 	public static String[] header(String text){
 		String kind = "", what = "", found = "", cls = "", floor = "";
-		for (String line : text.split("\n", 12)){
+		for (String line : text.split("\n", 20)){
 			if (line.startsWith("Kind: ")) kind = line.substring(6);
 			else if (line.startsWith("What: ")) what = line.substring(6);
 			else if (line.startsWith("Found: ")) found = line.substring(7);

@@ -48,6 +48,13 @@ public final class SimRuntime implements SimHooks.Controller {
 
 	private static SimRuntime instance;
 
+	//desktop test runs only (set by the desktop launcher)
+	public static boolean autostart;
+	public static int exitAfterRuns;
+	public static int forcedSpeed = -1;
+	public static String forcedAggression, forcedIntelligence;
+	private int finishedRuns;
+
 	public static SimRuntime get(){ return instance; }
 
 	final SimPlatform platform;
@@ -59,6 +66,21 @@ public final class SimRuntime implements SimHooks.Controller {
 	public boolean playing;
 	public boolean paused;
 	public int speed;
+
+	private SimProfile profile;
+	public SimProfile profile(){
+		if (profile == null) profile = SimProfile.load(GameSettings.getInt("apdsim_profile_current", 0));
+		return profile;
+	}
+	public void reloadProfile(){ profile = null; }
+	private SimProfile runProfile;  //the profile the current run was started with (a replay may use a report's copy)
+	public String runSettings = "";
+	private long stopClockStart;
+	private int runsSinceStart;
+	public String pauseReason = "";
+	private float replayTargetTurn = -1;
+
+	public void resetStopClock(){ stopClockStart = System.currentTimeMillis(); runsSinceStart = 0; }
 
 	//the current run
 	public int run;
@@ -96,6 +118,7 @@ public final class SimRuntime implements SimHooks.Controller {
 	private long interlevelSince;
 	private final java.util.Set<String> textSeen = new java.util.HashSet<>();
 	private int itemCheckCounter;
+	private int pendingFrames;
 
 	private SimRuntime(SimPlatform platform){
 		this.platform = platform;
@@ -126,6 +149,13 @@ public final class SimRuntime implements SimHooks.Controller {
 		run = GameSettings.getInt("apdsim_run", 0);
 		newBugsTotal = GameSettings.getInt("apdsim_bugs", 0);
 		lastRunSummary = GameSettings.getString("apdsim_last", "");
+		if (autostart){
+			playing = true;
+			if (forcedSpeed >= 0) speed = forcedSpeed;
+			if (forcedAggression != null) profile().aggression = SimProfile.Aggression.valueOf(forcedAggression);
+			if (forcedIntelligence != null) profile().intelligence = SimProfile.Intelligence.valueOf(forcedIntelligence);
+			resetStopClock();
+		}
 	}
 
 	private boolean settingsLoaded;
@@ -178,8 +208,9 @@ public final class SimRuntime implements SimHooks.Controller {
 			ShatteredPixelDungeon.switchNoFade(SimHomeScene.class);
 			return;
 		}
+		autoPause();
 		if (scene instanceof SimHomeScene){
-			if (playing && !paused) startRun();
+			if (playing && !paused && pauseReason.isEmpty() && !stopReached()) startRun();
 			return;
 		}
 		if (scene instanceof InterlevelScene){
@@ -249,15 +280,18 @@ public final class SimRuntime implements SimHooks.Controller {
 			if (deadTimer > 1.5f){
 				deadTimer = 0;
 				endRun("died: " + deathCause());
-				if (playing) startRun();
-				else ShatteredPixelDungeon.switchNoFade(SimHomeScene.class);
+				nextRun();
 			}
 			return;
 		}
 		deadTimer = 0;
 		if (paused) { waitingSince = 0; return; }
 
-		PlaybackSpeed.apply(SPEED_PLAYBACK[speed]);
+		if (!pauseReason.isEmpty()) return;
+		int effectiveSpeed = speed;
+		if (replaying && replayTargetTurn >= 0) effectiveSpeed = Actor.now() < replayTargetTurn ? 3 : 0;
+		PlaybackSpeed.apply(SPEED_PLAYBACK[effectiveSpeed]);
+		final int speed = effectiveSpeed;
 
 		thinkTimer -= realDelta;
 		Window w = SimUi.topWindow();
@@ -281,6 +315,16 @@ public final class SimRuntime implements SimHooks.Controller {
 			return;
 		}
 
+		//an action was given and the game has not taken it yet
+		if (h.ready && h.curAction != null){
+			pendingFrames++;
+			if (pendingFrames < 120) return;
+			report(BugReport.Kind.STUCK, "untaken:" + h.curAction.getClass().getSimpleName(),
+					"The hero was given an action (" + h.curAction.getClass().getSimpleName() + ") that the game never carried out.", "");
+			h.curAction = null;
+		}
+		pendingFrames = 0;
+
 		if (!h.ready){
 			if (waitingSince == 0) waitingSince = System.currentTimeMillis();
 			long waited = System.currentTimeMillis() - waitingSince;
@@ -294,7 +338,7 @@ public final class SimRuntime implements SimHooks.Controller {
 				report(BugReport.Kind.STUCK, "frozen:" + topFrames(actorThread(), 4),
 						"The game stopped responding: the hero's turn never came back for 45 seconds and no window was open.", threadDump());
 				endRun("stuck (game stopped responding)");
-				if (playing) startRun();
+				nextRun();
 			}
 			return;
 		}
@@ -325,6 +369,7 @@ public final class SimRuntime implements SimHooks.Controller {
 		String did;
 		try {
 			did = bot.act();
+			lastTurnSeen = Actor.now();
 		} catch (Throwable t){
 			botProblem("bot decision", t);
 			try { h.rest(false); } catch (Throwable ignored){}
@@ -340,7 +385,7 @@ public final class SimRuntime implements SimHooks.Controller {
 			report(BugReport.Kind.STUCK, "notime:" + (did == null ? "" : did.replaceAll("[0-9(),]", "")),
 					"300 actions in a row took no game time (the game keeps refusing or undoing an action). Last action: " + did, "");
 			endRun("stuck (actions take no time)");
-			if (playing) startRun();
+			nextRun();
 		}
 	}
 
@@ -362,7 +407,7 @@ public final class SimRuntime implements SimHooks.Controller {
 			report(BugReport.Kind.STUCK, "noprogress-d" + Dungeon.depth + ":" + why.replaceAll("[0-9]", "#"),
 					"No progress for 1500 turns on floor " + Dungeon.depth + " (nothing new explored, killed, found or gained).", "Bot's view of the floor: " + why);
 			endRun("stuck (no progress)");
-			if (playing) startRun();
+			nextRun();
 			return false;
 		}
 		return true;
@@ -428,9 +473,35 @@ public final class SimRuntime implements SimHooks.Controller {
 		startRun(-1, 0, 0);
 	}
 
-	public void startReplay(HeroClass cls, long seed, long botSeed){
+	//Same seed, class, bot seed and simulator settings as a report; plays fast until about 50 turns before the bug, then at 1x.
+	public void startReplay(HeroClass cls, long seed, long botSeed, String profileText, int bugTurn){
 		replaying = true;
+		SimProfile copy = profileText == null || profileText.isEmpty() ? profile() : SimProfile.decode(profile().index, profileText);
+		copy.randomizeSettings = false;
+		replayProfile = copy;
+		replayTargetTurn = Math.max(0, bugTurn - 50);
+		setPlaying(false);
+		paused = false;
 		startRun(cls.ordinal(), seed, botSeed);
+	}
+	private SimProfile replayProfile;
+
+	//Simulator history only: its UIMSD folder, bug reports and run list. The real game's folders are elsewhere and are never touched.
+	public void clearHistory(){
+		try {
+			ApdRecorder.reset();
+			FileUtils.getFileHandle("apd").deleteDirectory();
+			FileUtils.getFileHandle("simruns.txt").delete();
+			reports.deleteAll();
+			SeedPicker.forget();
+			newBugsTotal = 0;
+			GameSettings.put("apdsim_bugs", 0);
+			GameSettings.put("apdsim_last", "");
+			lastRunSummary = "";
+			ApdRecorder.configureDefault(SPDSettings.apdRecording());
+		} catch (Throwable t){
+			botProblem("clearing the simulator history", t);
+		}
 	}
 
 	private void startRun(int classIndex, long fixedSeed, long fixedBotSeed){
@@ -438,11 +509,20 @@ public final class SimRuntime implements SimHooks.Controller {
 		run++;
 		GameSettings.put("apdsim_run", run);
 		if (classIndex < 0) replaying = false;
-		heroClass = classIndex >= 0 ? CLASSES[classIndex] : CLASSES[(run - 1) % CLASSES.length];
+		if (classIndex < 0){ replayProfile = null; replayTargetTurn = -1; }
+		runProfile = replayProfile != null ? replayProfile : profile();
 		java.util.Random master = new java.util.Random(System.nanoTime() ^ ((long) run << 32));
-		seed = fixedSeed != 0 ? fixedSeed : Math.floorMod(master.nextLong(), DungeonSeed.TOTAL_SEEDS);
+		heroClass = classIndex >= 0 ? CLASSES[classIndex]
+				: runProfile.heroClass >= 0 ? CLASSES[runProfile.heroClass] : CLASSES[(run - 1) % CLASSES.length];
+		if (fixedSeed != 0) seed = fixedSeed;
+		else if (runProfile.seedMode != SimProfile.SeedMode.RANDOM && !runProfile.seedText.isEmpty()) seed = DungeonSeed.convertFromText(runProfile.seedText);
+		else seed = SeedPicker.freshRandomSeed(master);
 		botSeed = fixedBotSeed != 0 ? fixedBotSeed : master.nextLong();
-		bot = new SimBot(botSeed);
+		runSettings = runProfile.applyForRun(new java.util.Random(botSeed));
+		SimHooks.runTags = "aggression=" + runProfile.aggression.title + ";intelligence=" + runProfile.intelligence.title
+				+ ";profile=" + runProfile.name.replace(';', ',') + ";replay=" + replaying + ";settings=" + runSettings;
+		bot = new SimBot(botSeed, runProfile.aggression, runProfile.intelligence);
+		runsSinceStart++;
 		log.clear();
 		textSeen.clear();
 		bugsThisRun = 0;
@@ -468,6 +548,7 @@ public final class SimRuntime implements SimHooks.Controller {
 		ActionIndicator.clearAction();
 		InterlevelScene.mode = InterlevelScene.Mode.DESCEND;
 		runActive = true;
+		SeedPicker.remember(seed);
 		RecorderStatus rs = ApdRecorder.status();
 		recorderErrors = rs.errorCount;
 		recorderDropped = rs.eventsDropped;
@@ -479,8 +560,44 @@ public final class SimRuntime implements SimHooks.Controller {
 	public void skipRun(){
 		if (!runActive) return;
 		endRun("skipped");
-		if (playing) startRun();
-		else ShatteredPixelDungeon.switchNoFade(SimHomeScene.class);
+		nextRun();
+	}
+
+	private void nextRun(){
+		if (playing && !replaying && !stopReached() && pauseReason.isEmpty()) startRun();
+		else {
+			if (stopReached()) setPlaying(false);
+			replaying = false;
+			ShatteredPixelDungeon.switchNoFade(SimHomeScene.class);
+		}
+	}
+
+	boolean firstBugHit;
+
+	private boolean stopReached(){
+		SimProfile p = profile();
+		switch (p.stop){
+			case RUNS: return runsSinceStart >= p.stopAmount;
+			case MINUTES: return stopClockStart > 0 && System.currentTimeMillis() - stopClockStart >= p.stopAmount * 60_000L;
+			case FIRST_BUG: return firstBugHit;
+			default: return false;
+		}
+	}
+
+	private long lastPowerCheck;
+
+	//pauses (and resumes) by itself on low battery, heat, or when "only while charging" is on and the phone is unplugged
+	private void autoPause(){
+		long now = System.currentTimeMillis();
+		if (now - lastPowerCheck < 5000) return;
+		lastPowerCheck = now;
+		String reason = "";
+		int battery = platform.batteryPercent();
+		boolean charging = platform.charging();
+		if (battery >= 0 && battery < 20 && !charging) reason = "battery under 20%";
+		else if (platform.hot()) reason = "the phone is hot";
+		else if (GameSettings.getBoolean("apdsim_only_charging", false) && !charging) reason = "only runs while charging";
+		pauseReason = reason;
 	}
 
 	public void stopToHome(){
@@ -491,11 +608,17 @@ public final class SimRuntime implements SimHooks.Controller {
 
 	private String deathCause(){
 		try {
-			Object cause = Statistics.class.getField("killedBy").get(null);
-			if (cause != null) return String.valueOf(cause);
+			com.shatteredpixel.shatteredpixeldungeon.Rankings r = com.shatteredpixel.shatteredpixeldungeon.Rankings.INSTANCE;
+			if (r.records != null && r.lastRecord >= 0 && r.lastRecord < r.records.size()){
+				String d = r.records.get(r.lastRecord).desc();
+				checkText(d, "death screen text");
+				return d;
+			}
 		} catch (Throwable ignored){}
 		return "killed on floor " + Dungeon.depth;
 	}
+
+	private float lastTurnSeen;
 
 	void endRun(String outcome){
 		if (!runActive) return;
@@ -504,8 +627,17 @@ public final class SimRuntime implements SimHooks.Controller {
 		Hero h = Dungeon.hero;
 		long minutes = (System.currentTimeMillis() - runStartMillis) / 60000;
 		lastRunSummary = String.format(Locale.ROOT, "Run %d %s: %s on floor %d, level %d, turn %.0f, %d bug report(s), %d min",
-				run, heroClass == null ? "?" : heroClass.title(), outcome, depth, h == null ? 0 : h.lvl, Actor.now(), bugsThisRun, minutes);
+				run, heroClass == null ? "?" : heroClass.title(), outcome, depth, h == null ? 0 : h.lvl, Math.max(Actor.now(), lastTurnSeen), bugsThisRun, minutes);
 		GameSettings.put("apdsim_last", lastRunSummary);
+		System.out.println("APDSIM_RUN " + lastRunSummary);
+		if (autostart){
+			for (String t : log.turns()) System.out.println("APDSIM_TURN " + t);
+			for (String m : log.messages()) System.out.println("APDSIM_MSG " + m);
+		}
+		finishedRuns++;
+		if (autostart && exitAfterRuns > 0 && finishedRuns >= exitAfterRuns){
+			Game.runOnRenderThread(() -> platform.close());
+		}
 		try {
 			FileUtils.getFileHandle("simruns.txt").writeString(lastRunSummary + " | seed " + DungeonSeed.convertToCode(seed)
 					+ " | bot seed " + botSeed + "\n", true, "UTF-8");
@@ -624,6 +756,14 @@ public final class SimRuntime implements SimHooks.Controller {
 		r.seedCode = DungeonSeed.convertToCode(seed);
 		r.botSeed = botSeed;
 		r.heroClass = heroClass == null ? "" : heroClass.name();
+		SimProfile rp = runProfile != null ? runProfile : profile();
+		r.aggression = rp.aggression.title;
+		r.intelligence = rp.intelligence.title;
+		r.difficulty = rp.difficulty;
+		r.challenges = rp.challenges;
+		r.customRules = rp.customRules;
+		r.apdSettings = runSettings;
+		r.profileText = rp.encode();
 		r.depth = Dungeon.depth;
 		r.branch = Dungeon.branch;
 		r.turn = Actor.now();
@@ -640,6 +780,7 @@ public final class SimRuntime implements SimHooks.Controller {
 		try {
 			boolean fresh = reports.add(r);
 			bugsThisRun++;
+			if (r.kind != BugReport.Kind.BOT && r.kind != BugReport.Kind.SLOW) firstBugHit = true;
 			if (fresh){
 				newBugsTotal++;
 				GameSettings.put("apdsim_bugs", newBugsTotal);

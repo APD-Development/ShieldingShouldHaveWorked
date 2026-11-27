@@ -28,7 +28,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.keys.CrystalKey;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.GoldenKey;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.IronKey;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion;
-import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfCorrosiveGas;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfCorrosiveGas;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfExperience;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfFrost;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
@@ -73,12 +73,36 @@ final class SimBot {
 	private final Map<Integer, Float> npcTalkedAt = new HashMap<>();
 	private int levelKey = Integer.MIN_VALUE;
 	private int restsThisFloor, searchesThisFloor;
+	//goals are kept until reached or no longer valid, so the bot does not flip between two equally near targets
+	private int searchGoal = -1, exploreGoal = -1;
 	float floorStartTurn;
 	int focusCell = -1;
 	String lastProblem = "";
 
-	SimBot(long seed){
+	final SimProfile.Aggression aggression;
+	final SimProfile.Intelligence intelligence;
+	//what the settings mean for play (all hand-written rules)
+	final float healAt, backOffAt, tryUnknownChance;
+	final boolean fullExplore, dive, optionalFights, avoidKnownTraps, wearUnidentified;
+
+	SimBot(long seed, SimProfile.Aggression aggression, SimProfile.Intelligence intelligence){
 		rng = new Random(seed);
+		this.aggression = aggression;
+		this.intelligence = intelligence;
+		switch (aggression){
+			case CAUTIOUS:   healAt = 0.50f; backOffAt = 0.40f; tryUnknownChance = 0.15f; fullExplore = true;  dive = false; optionalFights = false; wearUnidentified = false; break;
+			case AGGRESSIVE: healAt = 0.25f; backOffAt = 0f;    tryUnknownChance = 0.85f; fullExplore = false; dive = false; optionalFights = true;  wearUnidentified = true;  break;
+			case RECKLESS:   healAt = 0.12f; backOffAt = 0f;    tryUnknownChance = 1.00f; fullExplore = false; dive = true;  optionalFights = true;  wearUnidentified = true;  break;
+			default:         healAt = 0.35f; backOffAt = 0.20f; tryUnknownChance = 0.50f; fullExplore = true;  dive = false; optionalFights = true;  wearUnidentified = false; break;
+		}
+		avoidKnownTraps = intelligence != SimProfile.Intelligence.CLUELESS;
+	}
+
+	boolean smart(){ return intelligence.ordinal() >= SimProfile.Intelligence.SMART.ordinal(); }
+	boolean clueless(){ return intelligence == SimProfile.Intelligence.CLUELESS; }
+
+	private SimNav nav(boolean throughMobs){
+		return new SimNav(level(), hero().pos, throughMobs, avoidKnownTraps);
 	}
 
 	private Hero hero(){ return Dungeon.hero; }
@@ -94,6 +118,7 @@ final class SimBot {
 			npcTalkedAt.clear();
 			restsThisFloor = 0;
 			searchesThisFloor = 0;
+			searchGoal = exploreGoal = -1;
 			floorStartTurn = Actor.now();
 		}
 	}
@@ -127,8 +152,12 @@ final class SimBot {
 			if (m instanceof NPC) continue;
 			if (m.pos < 0 || m.pos >= level().length() || !level().heroFOV[m.pos]) continue;
 			if (m.invisible > 0) continue;
-			if (m.state == m.PASSIVE && !Dungeon.level.adjacent(m.pos, hero().pos)) continue;
+			//passive enemies (statues) are an optional fight: only bold simulators start it
+			if (m.state == m.PASSIVE && !Dungeon.level.adjacent(m.pos, hero().pos)
+					&& !(optionalFights && aggression.ordinal() >= SimProfile.Aggression.AGGRESSIVE.ordinal())) continue;
 			if (m instanceof Mimic && m.alignment != Char.Alignment.ENEMY) continue;
+			//a piranha in water can't be reached; only fight it when it is right next to the hero
+			if (m instanceof com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Piranha && !clueless() && !Dungeon.level.adjacent(m.pos, hero().pos)) continue;
 			out.add(m);
 		}
 		out.sort(Comparator.comparingInt((Mob m) -> level().distance(hero().pos, m.pos)).thenComparingInt(m -> m.pos));
@@ -188,7 +217,7 @@ final class SimBot {
 			if (fight != null) return fight;
 		}
 
-		if (hunger != null && (hunger.isStarving() || (hunger.isHungry() && foes.isEmpty()))){
+		if (hunger != null && (hunger.isStarving() || (!clueless() && hunger.isHungry() && foes.isEmpty()))){
 			Food food = bestFood();
 			if (food != null) return use(food, Food.AC_EAT);
 		}
@@ -198,7 +227,7 @@ final class SimBot {
 			if (manage != null) return manage;
 		}
 
-		SimNav nav = new SimNav(level(), h.pos, false);
+		SimNav nav = nav(false);
 
 		if (h.belongings.getItem(com.shatteredpixel.shatteredpixeldungeon.items.Amulet.class) != null){
 			String up = ascend(nav);
@@ -214,14 +243,21 @@ final class SimBot {
 		String loot = loot(nav);
 		if (loot != null) return loot;
 
-		String npc = talk(nav);
-		if (npc != null) return npc;
+		if (optionalFights){
+			String npc = talk(nav);
+			if (npc != null) return npc;
+		}
 
 		String unlock = unlock(nav);
 		if (unlock != null) return unlock;
 
-		String explore = explore(nav);
-		if (explore != null) return explore;
+		boolean exitKnown = exitReachable(nav);
+		boolean starvingNoFood = hunger != null && hunger.isStarving() && bestFood() == null;
+		boolean skipExplore = exitKnown && (dive || starvingNoFood || (!fullExplore && Actor.now() - floorStartTurn > 300));
+		if (!skipExplore){
+			String explore = explore(nav);
+			if (explore != null) return explore;
+		}
 
 		String down = descend(nav);
 		if (down != null) return down;
@@ -270,7 +306,7 @@ final class SimBot {
 		focusCell = near.pos;
 
 		//low health: heal if a known Healing potion is held, otherwise gamble on an unknown potion
-		if (h.HP < h.HT * 0.35f){
+		if (h.HP < h.HT * healAt){
 			PotionOfHealing heal = find(PotionOfHealing.class);
 			if (heal != null && heal.isKnown()) return use(heal, Potion.AC_DRINK);
 			CloakOfShadows cloak = find(CloakOfShadows.class);
@@ -288,13 +324,38 @@ final class SimBot {
 			return use(armor, "ABILITY");
 		}
 
+		//Clueless: uses whatever it is holding at random now and then
+		if (clueless() && rng.nextInt(10) == 0){
+			List<Item> all = items();
+			if (!all.isEmpty()){
+				Item i = all.get(rng.nextInt(all.size()));
+				List<String> acts = new ArrayList<>(i.actions(h));
+				acts.remove(Item.AC_DROP);
+				if (!acts.isEmpty() && !tried("random@" + (int) Actor.now(), 1)) return use(i, acts.get(rng.nextInt(acts.size())));
+			}
+		}
+
 		Mob reach = null;
 		for (Mob m : foes){
-			if (h.canAttack(m) && (reach == null || m.HP < reach.HP)) reach = m;
+			if (!h.canAttack(m)) continue;
+			//Clueless hits the closest; others pick the weakest in reach
+			if (reach == null || (!clueless() && m.HP < reach.HP)) reach = m;
+		}
+
+		//backing off: low health, nothing to heal with, and the settings say retreat
+		if (backOffAt > 0 && h.HP < h.HT * backOffAt && !clueless()){
+			String away = retreat(foes);
+			if (away != null) return away;
+		}
+
+		//Smart and Expert: against a group, step into a spot where fewer of them can reach
+		if (smart() && foes.size() >= 2 && reach == null){
+			String choke = chokePoint(foes);
+			if (choke != null) return choke;
 		}
 
 		//Duelist weapon ability, Cleric spells: now and then, the way a player uses them
-		if (reach != null && rng.nextInt(4) == 0){
+		if (reach != null && !clueless() && rng.nextInt(smart() ? 2 : 5) == 0){
 			if (h.belongings.weapon() instanceof MeleeWeapon && has(h.belongings.weapon(), MeleeWeapon.AC_ABILITY)
 					&& !tried("wepab@" + (int) Actor.now(), 1)){
 				focusCell = reach.pos;
@@ -313,12 +374,12 @@ final class SimBot {
 		}
 
 		//ranged options for an enemy that can't be hit yet
-		boolean clear = new Ballistica(h.pos, near.pos, Ballistica.PROJECTILE).collisionPos == near.pos;
+		boolean clear = !clueless() && new Ballistica(h.pos, near.pos, Ballistica.PROJECTILE).collisionPos == near.pos;
 		if (clear){
 			SpiritBow bow = find(SpiritBow.class);
 			if (bow != null && has(bow, SpiritBow.AC_SHOOT)) return use(bow, SpiritBow.AC_SHOOT);
 			MagesStaff staff = find(MagesStaff.class);
-			if (staff != null && staff.wand() != null && staff.wand().curCharges > 0 && has(staff, MagesStaff.AC_ZAP)) return use(staff, MagesStaff.AC_ZAP);
+			if (staff != null && staffCharges(staff) > 0 && has(staff, MagesStaff.AC_ZAP)) return use(staff, MagesStaff.AC_ZAP);
 			for (Item i : items()){
 				if (i instanceof Wand && ((Wand) i).curCharges > 0 && has(i, Wand.AC_ZAP) && rng.nextInt(2) == 0) return use(i, Wand.AC_ZAP);
 			}
@@ -330,7 +391,7 @@ final class SimBot {
 			}
 		}
 
-		SimNav nav = new SimNav(level(), h.pos, false);
+		SimNav nav = nav(false);
 		int goal = nav.approach(level(), near.pos);
 		if (goal >= 0 && goal != h.pos){
 			String step = stepToward(nav, goal, "to fight " + nameOf(near));
@@ -342,6 +403,51 @@ final class SimBot {
 			return "wait for " + nameOf(near) + " at " + cell(near.pos);
 		}
 		return null;
+	}
+
+	private int openNeighbours(int c){
+		int n = 0;
+		for (int d : PathFinder.NEIGHBOURS8){
+			int x = c + d;
+			if (x >= 0 && x < level().length() && level().passable[x]) n++;
+		}
+		return n;
+	}
+
+	private String retreat(List<Mob> foes){
+		SimNav nav = nav(false);
+		int best = -1, bestScore = Integer.MIN_VALUE;
+		for (int d : PathFinder.NEIGHBOURS8){
+			int c = hero().pos + d;
+			if (!nav.reachable(c) || nav.dist[c] != 1) continue;
+			int score = Integer.MAX_VALUE;
+			for (Mob m : foes) score = Math.min(score, level().distance(c, m.pos));
+			if (score > bestScore){ bestScore = score; best = c; }
+		}
+		int now = Integer.MAX_VALUE;
+		for (Mob m : foes) now = Math.min(now, level().distance(hero().pos, m.pos));
+		if (best < 0 || bestScore <= now) return null;
+		return tap(best, "back off (low health) to");
+	}
+
+	private String chokePoint(List<Mob> foes){
+		int here = openNeighbours(hero().pos);
+		if (here <= 2) return null;
+		SimNav nav = nav(false);
+		int best = -1, bestOpen = here;
+		for (int d : PathFinder.NEIGHBOURS8){
+			int c = hero().pos + d;
+			if (!nav.reachable(c) || nav.dist[c] != 1) continue;
+			int open = openNeighbours(c);
+			if (open < bestOpen){ bestOpen = open; best = c; }
+		}
+		if (best < 0 || bestOpen > 2) return null;
+		return tap(best, "step into a corridor to fight one at a time at");
+	}
+
+	private static int staffCharges(MagesStaff staff){
+		Object w = SimUi.field(staff, "wand");
+		return w instanceof Wand ? ((Wand) w).curCharges : 0;
 	}
 
 	private static boolean harmful(Potion p){
@@ -359,27 +465,42 @@ final class SimBot {
 		return best;
 	}
 
+	//Average judges by tier like a new player; Smart and Expert compare the real numbers
+	private int weaponValue(MeleeWeapon w){
+		if (!smart()) return w.tier * 10;
+		try { return w.min() + w.max(); } catch (Throwable t){ return w.tier * 10; }
+	}
+
+	private int armorValue(Armor a){
+		if (!smart()) return a.tier * 10;
+		try { return a.DRMax(); } catch (Throwable t){ return a.tier * 10; }
+	}
+
 	private String manageItems(){
 		Hero h = hero();
 		//equipment
 		if (!(h.heroClass == HeroClass.MAGE && h.belongings.weapon() instanceof MagesStaff)){
 			MeleeWeapon better = null;
-			int curTier = h.belongings.weapon() instanceof MeleeWeapon ? ((MeleeWeapon) h.belongings.weapon()).tier : 0;
+			MeleeWeapon cur = h.belongings.weapon() instanceof MeleeWeapon ? (MeleeWeapon) h.belongings.weapon() : null;
 			for (Item i : items()){
-				if (i instanceof MeleeWeapon && !i.isEquipped(h) && !(i.cursedKnown && i.cursed)
-						&& ((MeleeWeapon) i).tier > curTier && ((MeleeWeapon) i).STRReq() <= h.STR()
-						&& (better == null || ((MeleeWeapon) i).tier > better.tier)) better = (MeleeWeapon) i;
+				if (!(i instanceof MeleeWeapon) || i.isEquipped(h) || (i.cursedKnown && i.cursed)) continue;
+				if (!i.isIdentified() && !wearUnidentified && !clueless()) continue;
+				MeleeWeapon m = (MeleeWeapon) i;
+				if (!clueless() && m.STRReq() > h.STR()) continue;
+				if (weaponValue(m) > (cur == null ? 0 : weaponValue(cur)) && (better == null || weaponValue(m) > weaponValue(better))) better = m;
 			}
 			if (better != null && !tried("equip" + better.getClass().getName(), 2)) return use(better, EquipableItem.AC_EQUIP);
 		}
 		Armor cur = h.belongings.armor();
 		for (Item i : items()){
-			if (i instanceof Armor && !i.isEquipped(h) && !(i.cursedKnown && i.cursed)
-					&& ((Armor) i).tier > (cur == null ? 0 : cur.tier) && ((Armor) i).STRReq() <= h.STR()
-					&& !tried("equip" + i.getClass().getName(), 2)) return use(i, EquipableItem.AC_EQUIP);
+			if (!(i instanceof Armor) || i.isEquipped(h) || (i.cursedKnown && i.cursed)) continue;
+			if (!i.isIdentified() && !wearUnidentified && !clueless()) continue;
+			if (!clueless() && ((Armor) i).STRReq() > h.STR()) continue;
+			if (armorValue((Armor) i) > (cur == null ? 0 : armorValue(cur)) && !tried("equip" + i.getClass().getName(), 2)) return use(i, EquipableItem.AC_EQUIP);
 		}
 		for (Item i : items()){
 			if ((i instanceof Ring || i instanceof Artifact) && !i.isEquipped(h) && !(i.cursedKnown && i.cursed)
+					&& (i.isIdentified() || wearUnidentified || clueless())
 					&& (h.belongings.ring() == null || h.belongings.misc() == null || (i instanceof Artifact && h.belongings.artifact() == null))
 					&& !tried("equip" + i.getClass().getName(), 2)) return use(i, EquipableItem.AC_EQUIP);
 		}
@@ -391,11 +512,13 @@ final class SimBot {
 		}
 		//identify by use, like a player: read unknown scrolls, drink unknown potions at full health
 		for (Item i : items()){
-			if (i instanceof Scroll && !((Scroll) i).isKnown() && has(i, Scroll.AC_READ) && !tried("read" + i.getClass().getName(), 2)) return use(i, Scroll.AC_READ);
+			if (i instanceof Scroll && !((Scroll) i).isKnown() && has(i, Scroll.AC_READ) && !tried("read" + i.getClass().getName(), 2)
+					&& rng.nextFloat() < tryUnknownChance) return use(i, Scroll.AC_READ);
 		}
-		if (h.HP >= h.HT * 0.9f){
+		if (h.HP >= h.HT * (aggression == SimProfile.Aggression.RECKLESS ? 0.3f : 0.9f)){
 			for (Item i : items()){
-				if (i instanceof Potion && !((Potion) i).isKnown() && has(i, Potion.AC_DRINK) && !tried("drink" + i.getClass().getName(), 2)) return use(i, Potion.AC_DRINK);
+				if (i instanceof Potion && !((Potion) i).isKnown() && has(i, Potion.AC_DRINK) && !tried("drink" + i.getClass().getName(), 2)
+						&& rng.nextFloat() < tryUnknownChance) return use(i, Potion.AC_DRINK);
 			}
 		}
 		//known scrolls that do something useful out of combat (identify, remove curse, mapping, ...): read surplus ones
@@ -499,7 +622,25 @@ final class SimBot {
 		return !level().visited[c] && !level().mapped[c];
 	}
 
+	private boolean isFrontier(int c){
+		int w = level().width();
+		for (int d : PathFinder.NEIGHBOURS8){
+			int n = c + d;
+			if (n < 0 || n >= level().length() || Math.abs(n % w - c % w) > 1) continue;
+			if (unknown(n)) return true;
+		}
+		return false;
+	}
+
 	private String explore(SimNav nav){
+		if (exploreGoal >= 0 && exploreGoal != hero().pos && nav.reachable(exploreGoal) && !doneFrontier.contains(exploreGoal) && isFrontier(exploreGoal)
+				&& attempts.getOrDefault("front" + exploreGoal, 0) <= 40){
+			tried("front" + exploreGoal, 1000);
+			String step = stepToward(nav, exploreGoal, "exploring");
+			if (step != null) return step;
+		}
+		if (exploreGoal == hero().pos) doneFrontier.add(exploreGoal);
+		exploreGoal = -1;
 		int best = -1, bestDist = Integer.MAX_VALUE;
 		int w = level().width();
 		for (int c = 0; c < level().length(); c++){
@@ -523,7 +664,13 @@ final class SimBot {
 			return explore(nav);
 		}
 		tried("front" + best, 1000);
+		exploreGoal = best;
 		return stepToward(nav, best, "exploring");
+	}
+
+	private boolean exitReachable(SimNav nav){
+		LevelTransition exit = level().getTransition(LevelTransition.Type.REGULAR_EXIT);
+		return exit != null && (level().visited[exit.cell()] || level().mapped[exit.cell()]) && nav.reachable(exit.cell()) && !level().locked;
 	}
 
 	private String descend(SimNav nav){
@@ -555,6 +702,12 @@ final class SimBot {
 	//search next to walls that might hide something, nearest first; a few per floor
 	private String search(SimNav nav){
 		if (searchesThisFloor >= 25) return null;
+		if (searchGoal >= 0 && nav.reachable(searchGoal) && !searchedSpots.contains(searchGoal)){
+			if (searchGoal == hero().pos) return searchHere();
+			String step = stepToward(nav, searchGoal, "to search");
+			if (step != null) return step;
+		}
+		searchGoal = -1;
 		int best = -1, bestDist = Integer.MAX_VALUE;
 		int w = level().width();
 		for (int c = 0; c < level().length(); c++){
@@ -575,15 +728,18 @@ final class SimBot {
 			}
 		}
 		if (best < 0) return null;
-		if (best == hero().pos){
-			for (int d : PathFinder.NEIGHBOURS9){
-				searchedSpots.add(best + d);
-			}
-			searchesThisFloor++;
-			hero().search(true);
-			return "search at " + cell(best);
-		}
+		searchGoal = best;
+		if (best == hero().pos) return searchHere();
 		return stepToward(nav, best, "to search");
+	}
+
+	private String searchHere(){
+		int c = hero().pos;
+		for (int d : PathFinder.NEIGHBOURS9) searchedSpots.add(c + d);
+		searchGoal = -1;
+		searchesThisFloor++;
+		hero().search(true);
+		return "search at " + cell(c);
 	}
 
 	//why the bot can't continue, for stuck reports

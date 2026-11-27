@@ -134,6 +134,7 @@ final class RunRecorder {
 		s.difficulty = Dungeon.difficultyKnown ? Dungeon.difficulty : 0;
 		s.difficultyBalance = Dungeon.difficultyKnown ? Dungeon.difficultyBalance : 0;
 		s.customRules = Dungeon.customRules() == null ? "" : Dungeon.customRules().preferenceText();
+		s.simTags = com.shatteredpixel.shatteredpixeldungeon.apd.sim.SimHooks.runTags;
         if(r.scoringSnapshot!=null)r.scoringSnapshot.recordTo(s);
 		LifecycleEvents.emitRunStart(r.writer, clock, partial, s);
 		r.checkpoint(LifecycleEvents.CP_RUN_START);

@@ -1,7 +1,17 @@
 package com.shatteredpixel.shatteredpixeldungeon.apd.simulator;
 
-//What the simulator needs from the device: a phone notification for new bugs, and a way to leave.
+import java.io.File;
+
+//What the simulator needs from the device.
 public interface SimPlatform {
+	//a phone notification for a NEW bug (the same bug never notifies twice)
 	void notifyBug(int id, String title, String text);
+	//hand a zipped report to the phone's share sheet
+	void share(File zip, String subject);
+	//battery percent 0-100, or -1 when unknown
+	int batteryPercent();
+	boolean charging();
+	//true when the phone reports it is getting hot
+	boolean hot();
 	void close();
 }
