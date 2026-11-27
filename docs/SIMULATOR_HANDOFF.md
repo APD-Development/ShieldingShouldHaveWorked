@@ -69,7 +69,7 @@ Last updated: 2026-11-27 (end of the first long session). Every scheduled run is
 ## In flight when the session ended
 - Uncommitted work was committed with this file: rest budget per floor (bot rests only below a health line, never hungry, limited
   turns), class rotation ignores determinism replays, save/load snapshot names the item a charger belongs to, the staff fix + test.
-- Not yet re-run after the staff fix: replay of MAGE:GAI-RVB-UDM:-5367025815424091256 (expect no save/load report), and the
+- DONE: replay of MAGE:GAI-RVB-UDM after the staff fix (clean, same digest). Still to check: the
   emulator check for the exact-replay commits (check the latest `apd-simulator-check.yml` run; reflection on libGDX's `runnables`
   field and `Actor` fields must work on Android).
 
@@ -95,4 +95,8 @@ Last updated: 2026-11-27 (end of the first long session). Every scheduled run is
    coverage, bug handling tools, reports and outputs, fun extras.
 
 ## Run log (newest first; one line per run: what was done, what was verified, commit)
+- 2026-11-27 first session, late: replayed MAGE GAI-RVB-UDM after the staff fix: same digest b3362bc0f6abc2ed, no save/load
+  report (VERIFIED). Bot: tombs opened only by Aggressive+ bots at 80% health, skeletons/remains not by Cautious or hurt bots.
+  12-run check: 3 runs reached floor 6 (was floor 1 to 5); top killers now piranha (4), gnoll scout (3). Emulator check for
+  commit 12d72680 was still running: check it first.
 - 2026-11-27 first session: everything above. Last commits: 5a76504f (determinism check), then this handoff commit.

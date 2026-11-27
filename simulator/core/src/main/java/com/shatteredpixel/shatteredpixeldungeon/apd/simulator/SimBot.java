@@ -690,6 +690,14 @@ final class SimBot {
 		if (top instanceof com.shatteredpixel.shatteredpixeldungeon.items.journal.Guidebook
 				|| top instanceof com.shatteredpixel.shatteredpixeldungeon.items.journal.GuidePage) return false;
 		switch (heap.type){
+			case TOMB:
+				//opening a tomb wakes wraiths: an optional fight, for bold bots in good health only (Clueless opens everything)
+				return clueless() || (optionalFights && aggression.ordinal() >= SimProfile.Aggression.AGGRESSIVE.ordinal()
+						&& hero().HP >= hero().HT * 0.8f);
+			case SKELETON:
+			case REMAINS:
+				//may hold a cursed item that summons a wraith: not for Cautious bots, and not when hurt
+				return clueless() || (aggression != SimProfile.Aggression.CAUTIOUS && hero().HP >= hero().HT * 0.6f);
 			case FOR_SALE:
 				return wantToBuy(heap);
 			case LOCKED_CHEST:
