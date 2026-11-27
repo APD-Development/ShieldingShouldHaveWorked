@@ -82,6 +82,12 @@ Last updated: 2026-11-27 (end of the first long session). Every scheduled run is
 - Run summaries/UIMSD tag: aggression/intelligence recorded via fact kind `sim.run`; not yet checked inside the UIMSD screens.
 - `docs/APD-SIMULATOR-GUIDE.md` needs the new features added (Drive, determinism check, checkpoints are partly there).
 
+## Work claims (avoid two sessions editing the same files)
+- The long live session (Nov 27) is working on BOT QUALITY in `SimBot.java` / `SimNav.java` until its run-log line says it stopped.
+  Scheduled runs: do NOT edit those two files meanwhile. Take item 1 (emulator check result, build S2 and send it) and then
+  item 3 (screen-off foreground service + no-graphics mode) and item 4. Always `git pull --rebase origin feature/apd-simulator`
+  before pushing.
+
 ## Next (in this order unless Chris says otherwise)
 1. Confirm the two "not yet re-run" items above; build S2 (phone APK, Developer APK with link, PC zip) and send to Chris.
 2. Bot quality, hand-written rules: hunger management, fight selection by real damage numbers, wraith/flies/statue handling,
