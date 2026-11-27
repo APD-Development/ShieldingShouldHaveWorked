@@ -607,6 +607,7 @@ public final class SimRuntime {
 		textSeen.clear();
 		bugsThisRun = 0;
 		botProblemsThisRun = 0;
+		crashesThisRun = 0;
 		depthEntries = 0;
 		maxDepth = 0;
 		progressKey = Long.MIN_VALUE;
@@ -653,6 +654,18 @@ public final class SimRuntime {
 		recorderLogId = null;
 		status = "Run " + run + ": " + heroClass.title();
 		Game.switchScene(InterlevelScene.class);
+	}
+
+	//Try my death: one run on the seed and class of one of the owner's real runs, with this simulator's settings
+	public void tryRun(String heroClassName, String seedCode){
+		HeroClass cls;
+		try { cls = HeroClass.valueOf(heroClassName.toUpperCase(Locale.ROOT)); } catch (RuntimeException e){ cls = CLASSES[0]; }
+		replaying = true;
+		replayProfile = null;
+		replayTargetTurn = -1;
+		setPlaying(false);
+		paused = false;
+		startRun(cls.ordinal(), DungeonSeed.convertFromText(seedCode), 0);
 	}
 
 	public void skipRun(){
@@ -746,7 +759,9 @@ public final class SimRuntime {
 		}
 		try {
 			FileUtils.getFileHandle("simruns.txt").writeString(lastRunSummary + " | seed " + DungeonSeed.convertToCode(seed)
-					+ " | bot seed " + botSeed + "\n", true, "UTF-8");
+					+ " | bot seed " + botSeed + " | build " + Game.version + " | crashes " + crashesThisRun + " | deepest " + maxDepth
+					+ (startedFrom.isEmpty() ? "" : " | checkpoint") + "\n", true, "UTF-8");
+			Digest.runEnded(this, maxDepth);
 		} catch (Throwable ignored){}
 		checkRecorder(depth, outcome.startsWith("died") || outcome.startsWith("won"));
 		//a run the bot stopped is left as an unfinished save; remove it so the next run starts clean
@@ -846,6 +861,7 @@ public final class SimRuntime {
 	}
 
 	private int botProblemsThisRun;
+	int crashesThisRun;
 
 	void botProblem(String during, Throwable t){
 		//the simulator's own code keeps failing: give up on this run instead of spinning
@@ -896,6 +912,8 @@ public final class SimRuntime {
 		try {
 			boolean fresh = reports.add(r);
 			bugsThisRun++;
+			if (r.kind == BugReport.Kind.CRASH || r.kind == BugReport.Kind.EXCEPTION || r.kind == BugReport.Kind.SAVELOAD) crashesThisRun++;
+			if (fresh && r.kind.notifies()) Digest.newBug();
 			if (r.kind.notifies() && r.kind != BugReport.Kind.SLOW) firstBugHit = true;
 			if (fresh){
 				newBugsTotal++;

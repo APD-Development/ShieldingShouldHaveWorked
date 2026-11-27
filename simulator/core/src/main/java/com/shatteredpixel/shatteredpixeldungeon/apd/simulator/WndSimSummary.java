@@ -43,7 +43,7 @@ final class WndSimSummary extends WndSimText {
 			FactTable t = new DerivedStore(root).load();
 			List<RunFacts> rows = new ArrayList<>(t.apdRows);
 			StringBuilder b = new StringBuilder();
-			b.append(rows.size()).append(" simulated runs recorded.\n");
+			b.append(rows.size()).append(" simulated runs recorded.\n").append(Digest.readiness()).append('\n');
 			section(b, "By class", rows, FactKeys.HERO_CLASS);
 			section(b, "By aggression", rows, "sim.aggression");
 			section(b, "By intelligence", rows, "sim.intelligence");

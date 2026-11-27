@@ -34,11 +34,20 @@ final class WndRealRunSeeds extends Window {
 		for (final String[] run : runs()){
 			RedButton b = new RedButton(run[1], 6){
 				@Override protected void onClick(){
-					p.seedMode = SimProfile.SeedMode.REAL_RUN;
-					p.seedText = run[0];
-					p.save();
-					hide();
-					ShatteredPixelDungeon.switchNoFade(SimHomeScene.class);
+					ShatteredPixelDungeon.scene().add(new com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions(run[0], run[1],
+							"Use this seed for this simulator", "Try my death: play it once now"){
+						@Override protected void onSelect(int index){
+							WndRealRunSeeds.this.hide();
+							if (index == 0){
+								p.seedMode = SimProfile.SeedMode.REAL_RUN;
+								p.seedText = run[0];
+								p.save();
+								ShatteredPixelDungeon.switchNoFade(SimHomeScene.class);
+							} else {
+								SimRuntime.get().tryRun(run[2], run[0]);
+							}
+						}
+					});
 				}
 			};
 			b.multiline = true;
@@ -75,7 +84,11 @@ final class WndRealRunSeeds extends Window {
 				long seed = facts.numOr(FactKeys.SEED, 0);
 				if (!seen.add(seed)) continue;
 				String code = DungeonSeed.convertToCode(seed);
-				out.add(new String[]{code, code + ": " + facts.textOr(FactKeys.HERO_CLASS, "?") + ", floor " + facts.numOr(FactKeys.DEEPEST, 0)});
+				long outcome = facts.numOr(FactKeys.OUTCOME, -1);
+				String how = outcome == LifecycleEvents.OUTCOME_WON ? "won" : outcome == LifecycleEvents.OUTCOME_DIED
+						? "died: " + facts.textOr(FactKeys.CAUSE, "?") : "unfinished";
+				out.add(new String[]{code, code + ": " + facts.textOr(FactKeys.HERO_CLASS, "?") + ", floor " + facts.numOr(FactKeys.DEEPEST, 0) + ", " + how,
+						facts.textOr(FactKeys.HERO_CLASS, "")});
 			} catch (Exception unreadable){
 				//skipped
 			}
