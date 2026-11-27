@@ -55,7 +55,9 @@ public class SimHomeScene extends PixelScene {
 		c.add(prof);
 		y = prof.bottom() + 3;
 
-		String status = "Runs played: " + Math.max(0, sim.run) + ". Bug reports: " + sim.reportCount() + "."
+		HistorySource hs = SimRuntime.history();
+		String status = (hs == null ? "Your history: not available" : hs.status()) + "\n"
+				+ "Runs played: " + Math.max(0, sim.run) + ". Bug reports: " + sim.reportCount() + "."
 				+ (sim.lastRunSummary.isEmpty() ? "" : "\nLast: " + sim.lastRunSummary);
 		RenderedTextBlock st = renderTextBlock(status, 6);
 		st.maxWidth((int) width);
@@ -96,6 +98,7 @@ public class SimHomeScene extends PixelScene {
 			}); } });
 		buttons.add(new RedButton("Sound: " + (SPDSettings.soundFx() ? "on" : "off"), 7){ @Override protected void onClick(){
 			boolean on = !SPDSettings.soundFx(); SPDSettings.soundFx(on); SPDSettings.music(on); GameSettings.put("apdsim_sound", on); refresh(); } });
+		buttons.add(new RedButton("Your runs (Try my death)", 7){ @Override protected void onClick(){ add(new WndRealRunSeeds(p)); } });
 		buttons.add(new RedButton("Bug reports (" + sim.reportCount() + ")", 7){ @Override protected void onClick(){ add(new WndSimReports(sim)); } });
 		buttons.add(new RedButton("Summary", 7){ @Override protected void onClick(){ add(new WndSimSummary()); } });
 		buttons.add(new RedButton("Simulator UIMSD", 7){ @Override protected void onClick(){ ShatteredPixelDungeon.switchNoFade(UimsdScene.class); } });
