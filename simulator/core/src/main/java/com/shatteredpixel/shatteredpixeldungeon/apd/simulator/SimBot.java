@@ -75,6 +75,9 @@ final class SimBot {
 	private int restsThisFloor, searchesThisFloor;
 	private long restTurnsThisFloor, restStartTurn = -1;
 	private int idleThisFloor, desperation;
+	//a piranha was seen on this floor: its water stays off limits even when it is out of sight
+	private boolean piranhaFloor;
+	private boolean[] piranhaWater;
 	//goals are kept until reached or no longer valid, so the bot does not flip between two equally near targets
 	private int searchGoal = -1, exploreGoal = -1;
 	float floorStartTurn;
@@ -120,6 +123,7 @@ final class SimBot {
 	private SimNav nav(boolean throughMobs){
 		SimNav.avoidSentries = desperation < 1 && !clueless() && aggression.ordinal() <= SimProfile.Aggression.NORMAL.ordinal();
 		SimNav.avoidWater = desperation < 1;
+		SimNav.piranhaWater = piranhaWater;
 		SimNav n = new SimNav(level(), hero().pos, throughMobs, avoidKnownTraps && desperation < 2, refused);
 		n.careful = avoidKnownTraps;
 		return n;
@@ -142,6 +146,8 @@ final class SimBot {
 			restTurnsThisFloor = 0;
 			idleThisFloor = 0;
 			desperation = 0;
+			piranhaFloor = false;
+			piranhaWater = null;
 			restStartTurn = -1;
 			searchesThisFloor = 0;
 			searchGoal = exploreGoal = -1;
@@ -273,6 +279,39 @@ final class SimBot {
 
 		List<Mob> foes = hostiles();
 		Hunger hunger = h.buff(Hunger.class);
+		if (!clueless()){
+			for (Mob m : level().mobs){
+				if (!(m instanceof com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Piranha) || !m.isAlive() || !level().heroFOV[m.pos]) continue;
+				if (piranhaWater != null && piranhaWater[m.pos]) continue;
+				//remember this piranha's whole pool: the water connected to where it is
+				if (piranhaWater == null) piranhaWater = new boolean[level().length()];
+				piranhaFloor = true;
+				java.util.ArrayDeque<Integer> q = new java.util.ArrayDeque<>();
+				q.add(m.pos);
+				piranhaWater[m.pos] = true;
+				while (!q.isEmpty()){
+					int c = q.poll();
+					for (int d : PathFinder.NEIGHBOURS8){
+						int n = c + d;
+						if (n < 0 || n >= level().length() || piranhaWater[n] || Math.abs(n % level().width() - c % level().width()) > 1) continue;
+						if (level().map[n] == Terrain.WATER){ piranhaWater[n] = true; q.add(n); }
+					}
+				}
+			}
+		}
+
+		//on fire: water puts it out (not Clueless; not into piranha water)
+		if (!clueless() && h.buff(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning.class) != null && !level().water[h.pos] && !piranhaFloor){
+			SimNav toWater = nav(true);
+			int best = -1;
+			for (int c = 0; c < level().length(); c++){
+				if (level().water[c] && toWater.reachable(c) && toWater.dist[c] <= 5 && (best < 0 || toWater.dist[c] < toWater.dist[best])) best = c;
+			}
+			if (best >= 0){
+				String step = stepToward(toWater, best, "into water to put the fire out");
+				if (step != null) return step;
+			}
+		}
 
 		//standing in fire or poison gas: get out first (a Clueless bot doesn't notice)
 		if (!clueless() && SimNav.danger(level(), h.pos)){
@@ -416,7 +455,7 @@ final class SimBot {
 				boolean wet = false;
 				for (int d : PathFinder.NEIGHBOURS9){
 					int n = c + d;
-					if (n >= 0 && n < level().length() && level().map[n] == Terrain.WATER){ wet = true; break; }
+					if (n >= 0 && n < level().length() && (piranhaWater != null ? piranhaWater[n] : level().map[n] == Terrain.WATER)){ wet = true; break; }
 				}
 				if (!wet && (best < 0 || nav.dist[c] < nav.dist[best])) best = c;
 			}
@@ -757,6 +796,8 @@ final class SimBot {
 			if (!wantHeap(heap)) continue;
 			if (!(level().visited[heap.pos] || level().mapped[heap.pos] || level().heroFOV[heap.pos])) continue;
 			if (attempts.getOrDefault("heap" + heap.pos + ":" + heap.size(), 0) >= 3) continue;
+			//loot in or beside a piranha's water is bait: left alone until the careful rules are relaxed
+			if (piranhaFloor && desperation < 1 && nearDeepWater(heap.pos)) continue;
 			int target = heap.type == Heap.Type.HEAP || heap.type == Heap.Type.FOR_SALE ? heap.pos : nav.approach(level(), heap.pos);
 			if (target < 0 || !nav.reachable(target)) continue;
 			int d = nav.dist[target];
@@ -860,6 +901,15 @@ final class SimBot {
 		tried("front" + best, 1000);
 		exploreGoal = best;
 		return stepToward(nav, best, "exploring");
+	}
+
+	private boolean nearDeepWater(int c){
+		if (piranhaWater == null) return false;
+		for (int d : PathFinder.NEIGHBOURS9){
+			int n = c + d;
+			if (n >= 0 && n < level().length() && piranhaWater[n]) return true;
+		}
+		return false;
 	}
 
 	private boolean exitReachable(SimNav nav){

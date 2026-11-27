@@ -24,6 +24,7 @@ final class SimNav {
 	//set before building, by the bot (Cautious and Normal keep off a red sentry's floor)
 	static boolean avoidSentries;
 	static boolean avoidWater = true;
+	static boolean[] piranhaWater;
 	boolean careful;
 	private boolean[] waterEdges;
 
@@ -55,22 +56,15 @@ final class SimNav {
 			if (!escaping && danger(level, i)) pass = false;
 			walk[i] = pass;
 		}
-		//keep out of the water while piranhas are around (not for a Clueless bot, which doesn't know)
-		if (avoidTraps && avoidWater){
-			for (Char c : Actor.chars()){
-				if (c instanceof com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Piranha && c.isAlive() && c.pos >= 0 && c.pos < length && level.heroFOV[c.pos]){
-					for (int i = 0; i < length; i++) if (level.water[i] && level.map[i] == Terrain.WATER && i != origin) walk[i] = false;
-					//and keep a step away from deep water, where they bite from (the next pass lets edges back in if that is the only way)
-					boolean[] edge = new boolean[length];
-					for (int i = 0; i < length; i++){
-						if (!walk[i] || i == origin) continue;
-						for (int d : PathFinder.NEIGHBOURS8){
-							int n = i + d;
-							if (n >= 0 && n < length && level.map[n] == Terrain.WATER){ edge[i] = true; break; }
-						}
-					}
-					waterEdges = edge;
-					break;
+		//a piranha's pool (the water connected to where one was seen) and the cells beside it are off limits:
+		//piranhas bite anyone standing next to their water and cannot leave it
+		if (avoidTraps && avoidWater && piranhaWater != null && piranhaWater.length == length){
+			for (int i = 0; i < length; i++){
+				if (!piranhaWater[i]) continue;
+				if (i != origin) walk[i] = false;
+				for (int d : PathFinder.NEIGHBOURS8){
+					int n = i + d;
+					if (n >= 0 && n < length && n != origin && Math.abs((n % width) - (i % width)) <= 1) walk[n] = false;
 				}
 			}
 		}
