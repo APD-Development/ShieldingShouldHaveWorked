@@ -5,6 +5,9 @@ TAB	480+
 MAJOR	Coming Soon
 BTN	i:NEWS	What's next	Finishing the last **UIMSD** upgrades, then **script mods** for Community once I've tested them on my own phone.\n\nAnything marked "Developer build" only exists in my own test build until I say it's ready for Alpha Testers.
 MAJOR	Play builds
+BUILD	Play 951 (Nov 27)
+BTN	i:RANKINGS	UIMSD rules list	Two rule sets that only differ in **unnamed settings** no longer show as the **same line** in the Rules picker.
+BTN	c:V061_BUGFIX	Wording	Item and buff details now say "**1 turn**" instead of "1 turns", and research cards read "**1 source record**".
 BUILD	Play 950 (Nov 26)
 BTN	i:STAIRS	Stair walk keeps going	Walking to the stairs now only stops for an enemy that is **faster than you** or **in your way**. A newly spotted trap is **walked around**, and starving only stops you if you **would not make it** to the stairs.
 BTN	c:V061_BUGFIX	Back and fade fixes	The hero select screen no longer **fades out** on its own, demo data has a **way back to your own runs**, and **Back** on the title screen asks before quitting.
