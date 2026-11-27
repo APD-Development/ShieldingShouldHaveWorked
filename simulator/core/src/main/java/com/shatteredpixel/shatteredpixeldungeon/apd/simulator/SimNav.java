@@ -21,6 +21,8 @@ final class SimNav {
 	final int[] dist;
 	final int[] from;
 	final int origin;
+	//set before building, by the bot (Cautious and Normal keep off a red sentry's floor)
+	static boolean avoidSentries;
 	private boolean[] waterEdges;
 
 	SimNav(Level level, int origin, boolean throughMobs){
@@ -78,6 +80,16 @@ final class SimNav {
 			}
 		}
 		if (refused != null) for (int c : refused) if (c >= 0 && c < length) walk[c] = false;
+		//red sentries fire on anyone standing on their room's special floor
+		if (avoidSentries){
+			for (com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob m : level.mobs){
+				if (!(m instanceof com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.SentryRoom.Sentry)) continue;
+				if (!(level.visited[m.pos] || level.mapped[m.pos] || level.heroFOV[m.pos])) continue;
+				for (int i = 0; i < length; i++){
+					if (i != origin && level.map[i] == Terrain.EMPTY_SP && level.distance(i, m.pos) <= 16) walk[i] = false;
+				}
+			}
+		}
 		if (origin >= 0 && origin < length) walk[origin] = true;
 		dist = new int[length];
 		from = new int[length];

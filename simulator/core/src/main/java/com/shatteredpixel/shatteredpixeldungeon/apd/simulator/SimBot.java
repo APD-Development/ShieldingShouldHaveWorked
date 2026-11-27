@@ -107,6 +107,7 @@ final class SimBot {
 	private float lastStepTime = -1;
 
 	private SimNav nav(boolean throughMobs){
+		SimNav.avoidSentries = !clueless() && aggression.ordinal() <= SimProfile.Aggression.NORMAL.ordinal();
 		SimNav n = new SimNav(level(), hero().pos, throughMobs, avoidKnownTraps, refused);
 		return n;
 	}
@@ -211,8 +212,23 @@ final class SimBot {
 	//---- the decision ----------------------------------------------------------------------------------------
 
 	//Called when it is the hero's turn and nothing is waiting for an answer. Returns what was done, or null.
+	//recent positions, to notice walking back and forth between a couple of cells
+	private final java.util.ArrayDeque<Integer> recent = new java.util.ArrayDeque<>();
+	String oscillation = null;
+
 	String act(){
 		newFloorCheck();
+		recent.addLast(hero().pos);
+		while (recent.size() > 40) recent.removeFirst();
+		if (recent.size() == 40 && new HashSet<>(recent).size() <= 3){
+			oscillation = "walking back and forth between " + new HashSet<>(recent).size() + " cells at " + cell(hero().pos);
+			//give up whatever it was heading for on this floor and pick something else
+			if (exploreGoal >= 0) doneFrontier.add(exploreGoal);
+			if (searchGoal >= 0) searchedSpots.add(searchGoal);
+			for (int c : new HashSet<>(recent)) for (int d : PathFinder.NEIGHBOURS9) attempts.put("door" + (c + d), 99);
+			exploreGoal = searchGoal = -1;
+			recent.clear();
+		}
 		if (lastStepTo >= 0 && hero().pos == lastStepFrom && Actor.now() == lastStepTime) refused.add(lastStepTo);
 		lastStepTo = -1;
 		lastProblem = "";
@@ -379,15 +395,27 @@ final class SimBot {
 			}
 		}
 
+		//an attack the game refused (no time passed, target unharmed): leave that target alone for a while
+		if (lastAttack != null && lastAttack.isAlive() && Actor.now() == lastAttackTime){
+			refusedAttack.put(lastAttack.id(), Actor.now() + 20);
+			refusedAttackNote = attackDiagnosis(lastAttack);
+		}
+		lastAttack = null;
 		Mob reach = null;
 		for (Mob m : foes){
 			if (!h.canAttack(m)) continue;
+			//a charmed hero can't attack whoever charmed them (game rule)
+			if (h.isCharmedBy(m)) continue;
+			Float until = refusedAttack.get(m.id());
+			if (until != null && Actor.now() < until) continue;
 			//Clueless hits the closest; others pick the weakest in reach
 			if (reach == null || (!clueless() && m.HP < reach.HP)) reach = m;
 		}
 
 		//backing off: low health, nothing to heal with, and the settings say retreat
-		if (backOffAt > 0 && h.HP < h.HT * backOffAt && !clueless()){
+		boolean someoneClose = false;
+		for (Mob m : foes) if (level().distance(m.pos, h.pos) <= 3) someoneClose = true;
+		if (backOffAt > 0 && h.HP < h.HT * backOffAt && !clueless() && someoneClose){
 			String away = retreat(foes);
 			if (away != null) return away;
 		}
@@ -414,6 +442,8 @@ final class SimBot {
 
 		if (reach != null){
 			focusCell = reach.pos;
+			lastAttack = reach;
+			lastAttackTime = Actor.now();
 			return tap(reach.pos, "attack " + nameOf(reach) + " at");
 		}
 
@@ -512,6 +542,30 @@ final class SimBot {
 		return w instanceof Wand ? ((Wand) w).curCharges : 0;
 	}
 
+	private Mob lastAttack;
+	private float lastAttackTime;
+	private final Map<Integer, Float> refusedAttack = new HashMap<>();
+	String refusedAttackNote;
+
+	//everything that decides whether an attack can happen, for reports
+	String attackDiagnosis(Mob m){
+		Hero h = hero();
+		StringBuilder b = new StringBuilder();
+		b.append("target ").append(m.getClass().getSimpleName()).append(" at ").append(cell(m.pos)).append(" alive=").append(m.isAlive())
+				.append(" alignment=").append(m.alignment).append(" state=").append(m.state == null ? "null" : m.state.getClass().getSimpleName())
+				.append(" invisible=").append(m.invisible).append(" HP ").append(m.HP).append('/').append(m.HT).append('\n');
+		b.append("hero at ").append(cell(h.pos)).append(" canAttack=").append(h.canAttack(m)).append(" charmedBy=").append(h.isCharmedBy(m))
+				.append(" heroSeesIt=").append(h.fieldOfView != null && h.fieldOfView[m.pos]).append(" adjacent=").append(level().adjacent(h.pos, m.pos))
+				.append(" rooted=").append(h.rooted).append(" paralysed=").append(h.paralysed).append('\n');
+		b.append("hero effects: ");
+		for (com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff x : h.buffs()) b.append(x.getClass().getSimpleName()).append(' ');
+		b.append("\ntarget effects: ");
+		for (com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff x : m.buffs()) b.append(x.getClass().getSimpleName()).append(' ');
+		b.append("\nterrain: hero ").append(level().map[h.pos]).append(", target ").append(level().map[m.pos]);
+		b.append("\nweapon: ").append(h.belongings.attackingWeapon() == null ? "none" : h.belongings.attackingWeapon().getClass().getSimpleName());
+		return b.toString();
+	}
+
 	private static boolean harmful(Potion p){
 		return p instanceof PotionOfLiquidFlame || p instanceof PotionOfToxicGas || p instanceof PotionOfParalyticGas
 				|| p instanceof PotionOfFrost || p instanceof PotionOfCorrosiveGas;
@@ -522,7 +576,11 @@ final class SimBot {
 	private Food bestFood(){
 		Food best = null;
 		for (Item i : items()){
-			if (i instanceof Food && (best == null || ((Food) i).energy > best.energy)) best = (Food) i;
+			if (!(i instanceof Food)) continue;
+			//raw blandfruit can't be eaten (the game says so); it needs cooking first
+			if (i instanceof com.shatteredpixel.shatteredpixeldungeon.items.food.Blandfruit
+					&& ((com.shatteredpixel.shatteredpixeldungeon.items.food.Blandfruit) i).potionAttrib == null) continue;
+			if (best == null || ((Food) i).energy > best.energy) best = (Food) i;
 		}
 		return best;
 	}

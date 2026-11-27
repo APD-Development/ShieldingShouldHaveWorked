@@ -460,6 +460,15 @@ public final class SimRuntime {
 			did = "wait (after a simulator problem)";
 		}
 		if (did != null) log.turn(where() + " " + did);
+		if (bot.refusedAttackNote != null){
+			report(BugReport.Kind.STUCK, "refusedattack:" + bot.refusedAttackNote.replaceAll("[0-9(),]", "").replaceAll("\\s+", " ").substring(0, Math.min(120, bot.refusedAttackNote.length())),
+					"An attack the game said was possible (canAttack) did not happen and took no time.", bot.refusedAttackNote);
+			bot.refusedAttackNote = null;
+		}
+				if (bot.oscillation != null){
+			report(BugReport.Kind.BOT_STUCK, "oscillate", "The bot was " + bot.oscillation + " and changed its plan.", "");
+			bot.oscillation = null;
+		}
 
 		float t = Actor.now();
 		if (t == lastActionTurn) zeroTimeActions++; else zeroTimeActions = 0;
