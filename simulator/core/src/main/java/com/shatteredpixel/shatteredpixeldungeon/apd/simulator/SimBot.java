@@ -481,8 +481,11 @@ final class SimBot {
 			CloakOfShadows cloak = find(CloakOfShadows.class);
 			if (cloak != null && cloak.isEquipped(h) && has(cloak, CloakOfShadows.AC_STEALTH) && !tried("cloak@" + (int) Actor.now(), 1))
 				return use(cloak, CloakOfShadows.AC_STEALTH);
-			for (Item i : items()){
-				if (i instanceof Potion && !((Potion) i).isKnown() && !tried("gamble" + i.getClass().getName(), 1)) return use(i, Potion.AC_DRINK);
+			//gambling on an unknown potion at low health kills as often as it saves: only Clueless or Reckless bots do it
+			if (clueless() || aggression == SimProfile.Aggression.RECKLESS){
+				for (Item i : items()){
+					if (i instanceof Potion && !((Potion) i).isKnown() && !tried("gamble" + i.getClass().getName(), 1)) return use(i, Potion.AC_DRINK);
+				}
 			}
 		}
 
@@ -777,6 +780,20 @@ final class SimBot {
 					&& rng.nextFloat() < tryUnknownChance) return use(i, Scroll.AC_READ);
 		}
 		if (h.HP >= h.HT * (aggression == SimProfile.Aggression.RECKLESS ? 0.3f : 0.9f)){
+			//Smart and Expert test unknown potions standing in water (fire goes out at once), when safe water is close
+			boolean unknownPotion = false;
+			for (Item i : items()) if (i instanceof Potion && !((Potion) i).isKnown() && attempts.getOrDefault("drink" + i.getClass().getName(), 0) < 2) unknownPotion = true;
+			if (unknownPotion && smart() && !level().water[h.pos] && !tried("towater", 40)){
+				SimNav wn = nav(false);
+				int best = -1;
+				for (int c = 0; c < level().length(); c++){
+					if (level().water[c] && wn.reachable(c) && wn.dist[c] <= 10 && (best < 0 || wn.dist[c] < wn.dist[best])) best = c;
+				}
+				if (best >= 0){
+					String step = stepToward(wn, best, "to water before testing a potion");
+					if (step != null) return step;
+				}
+			}
 			for (Item i : items()){
 				if (i instanceof Potion && !((Potion) i).isKnown() && has(i, Potion.AC_DRINK) && !tried("drink" + i.getClass().getName(), 2)
 						&& rng.nextFloat() < tryUnknownChance) return use(i, Potion.AC_DRINK);
