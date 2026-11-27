@@ -33,6 +33,14 @@ level: Chris has not confirmed the name.) Current state: 0 wins at every level; 
 and currently plays like Smart (`smart()` is true for Smart, Pro and Expert). Chris: "I want the bots to be able to beat the
 game, not just beat Goo." Goo HAS been beaten (every run that reached floor 6+); no bot has beaten Tengu (floor 10) yet.
 
+## Cross-launch replay: measured, and the owner's bar (Nov 27 late)
+Chris: "Anything close to 75% is good enough." So NO game code edit for stable ordering (the `Random` switch is off the
+table unless the rate drops well below that). Measured at commit 93e15f1e: the 30 fixed benchmark seeds played in two
+separate launches (PC, Normal/Average), compared by end digest and turn: 29 of 30 identical (97%). The one split was a
+Rogue run (floor 7 in one launch, died to Goo on floor 5 in the other). Caveat: no run went past floor 9; deeper runs make
+more address-ordered picks, so re-measure once bots get deep. Same run also scores the bot rules that were unscored:
+avg deepest 4.50 and 4.43 (was 4.27), 15 of 30 reach floor 5+, max 9, top deaths Goo 5-6, starvation 4, wraith 4.
+
 ## How it is built
 - `simulator/core`: bot, checks, reports, screens (package `...apd.simulator`). `simulator/android`: the app. `simulator/desktop`: PC program.
 - `SimGame` (subclass of the game) drives everything; `SimRuntime` is the per-frame driver; `SimBot` decides; `SimNav` paths;
