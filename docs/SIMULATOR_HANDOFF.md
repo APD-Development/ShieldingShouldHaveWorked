@@ -82,11 +82,9 @@ Last updated: 2026-11-27 (end of the first long session). Every scheduled run is
 - Run summaries/UIMSD tag: aggression/intelligence recorded via fact kind `sim.run`; not yet checked inside the UIMSD screens.
 - `docs/APD-SIMULATOR-GUIDE.md` needs the new features added (Drive, determinism check, checkpoints are partly there).
 
-## Work claims (avoid two sessions editing the same files)
-- The long live session (Nov 27) is working on BOT QUALITY in `SimBot.java` / `SimNav.java` until its run-log line says it stopped.
-  Scheduled runs: do NOT edit those two files meanwhile. Take item 1 (emulator check result, build S2 and send it) and then
-  item 3 (screen-off foreground service + no-graphics mode) and item 4. Always `git pull --rebase origin feature/apd-simulator`
-  before pushing.
+## Work claims
+- None. The long live session stopped on Nov 27 (Chris: fresh scheduled runs only). Scheduled runs own everything, including
+  `SimBot.java` and `SimNav.java`. Always `git pull --rebase origin feature/apd-simulator` before pushing.
 
 ## Next (in this order unless Chris says otherwise)
 1. Confirm the two "not yet re-run" items above; build S2 (phone APK, Developer APK with link, PC zip) and send to Chris.
@@ -101,6 +99,13 @@ Last updated: 2026-11-27 (end of the first long session). Every scheduled run is
    coverage, bug handling tools, reports and outputs, fun extras.
 
 ## Run log (newest first; one line per run: what was done, what was verified, commit)
+- 2026-11-27 live session, last entry: bot stands and fights when no stairs are near (running across open floor got it killed),
+  relaxes its careful rules in 3 steps when it has nothing left to do (it used to wait forever), food in the pack extends the
+  rest budget. Compiles; only one noisy 12-run check, NOT benchmarked. New tool: fixed-seed benchmark, desktop option
+  `-Dapd.sim.seedbase=N` (seed = N*1000003 + run*7919, bot seed = N*31 + run), so bot changes are compared on the same dungeons.
+  Suggested use: 3 simulators in parallel (seedbase 1000, 2000, 3000), 10 runs each, via the installed PC program
+  (`./gradlew :simulator:desktop:installDist`, run `bin/APD-Simulator` from `core/src/main/assets` with `JAVA_OPTS=-Dapd.sim...`),
+  then average the "deepest N" values in each `simruns.txt`. The baseline was started but not finished: run it first.
 - 2026-11-27 first session, late: replayed MAGE GAI-RVB-UDM after the staff fix: same digest b3362bc0f6abc2ed, no save/load
   report (VERIFIED). Bot: tombs opened only by Aggressive+ bots at 80% health, skeletons/remains not by Cautious or hurt bots.
   12-run check: 3 runs reached floor 6 (was floor 1 to 5); top killers now piranha (4), gnoll scout (3). Emulator check for

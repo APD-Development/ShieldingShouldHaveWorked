@@ -55,6 +55,7 @@ public class DesktopSimLauncher {
 			SimRuntime.forcedCheckpoint = Integer.getInteger("apd.sim.checkpoint", 0);
 			SimRuntime.forcedReplay = System.getProperty("apd.sim.replay");
 			SimRuntime.forcedVerify = Integer.getInteger("apd.sim.verify", -1);
+			SimRuntime.forcedSeedBase = Long.getLong("apd.sim.seedbase", 0L);
 			com.shatteredpixel.shatteredpixeldungeon.apd.simulator.TurnLog.echo = System.getProperty("apd.sim.trace") != null;
 		}
 		SimRuntime.realHistoryRoot(new File(System.getProperty("apd.sim.realHistory", defaultRealHistory())));

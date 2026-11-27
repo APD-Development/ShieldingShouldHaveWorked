@@ -23,6 +23,8 @@ final class SimNav {
 	final int origin;
 	//set before building, by the bot (Cautious and Normal keep off a red sentry's floor)
 	static boolean avoidSentries;
+	static boolean avoidWater = true;
+	boolean careful;
 	private boolean[] waterEdges;
 
 	SimNav(Level level, int origin, boolean throughMobs){
@@ -54,7 +56,7 @@ final class SimNav {
 			walk[i] = pass;
 		}
 		//keep out of the water while piranhas are around (not for a Clueless bot, which doesn't know)
-		if (avoidTraps){
+		if (avoidTraps && avoidWater){
 			for (Char c : Actor.chars()){
 				if (c instanceof com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Piranha && c.isAlive() && c.pos >= 0 && c.pos < length && level.heroFOV[c.pos]){
 					for (int i = 0; i < length; i++) if (level.water[i] && level.map[i] == Terrain.WATER && i != origin) walk[i] = false;

@@ -64,6 +64,7 @@ public final class SimRuntime {
 	public static String forcedAggression, forcedIntelligence;
 	public static int forcedCheckpoint;
 	public static int forcedVerify = -1;
+	public static long forcedSeedBase;
 	private int finishedRuns;
 
 	public static SimRuntime get(){ return instance; }
@@ -653,6 +654,11 @@ public final class SimRuntime {
 		else if (runProfile.seedMode != SimProfile.SeedMode.RANDOM && !runProfile.seedText.isEmpty()) seed = DungeonSeed.convertFromText(runProfile.seedText);
 		else seed = SeedPicker.freshRandomSeed(master);
 		botSeed = fixedBotSeed != 0 ? fixedBotSeed : master.nextLong();
+		//benchmark mode (desktop): a fixed list of seeds, so bot changes are compared on the same dungeons
+		if (forcedSeedBase > 0 && fixedSeed == 0){
+			seed = Math.floorMod(forcedSeedBase * 1_000_003L + run * 7919L, DungeonSeed.TOTAL_SEEDS);
+			botSeed = forcedSeedBase * 31L + run;
+		}
 		runSettings = runProfile.applyForRun(new java.util.Random(botSeed));
 		runTagsRecorded = false;
 		bot = new SimBot(botSeed, runProfile.aggression, runProfile.intelligence);

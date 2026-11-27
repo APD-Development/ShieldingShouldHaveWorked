@@ -74,6 +74,7 @@ final class SimBot {
 	private int levelKey = Integer.MIN_VALUE;
 	private int restsThisFloor, searchesThisFloor;
 	private long restTurnsThisFloor, restStartTurn = -1;
+	private int idleThisFloor, desperation;
 	//goals are kept until reached or no longer valid, so the bot does not flip between two equally near targets
 	private int searchGoal = -1, exploreGoal = -1;
 	float floorStartTurn;
@@ -117,8 +118,10 @@ final class SimBot {
 	private float lastStepTime = -1;
 
 	private SimNav nav(boolean throughMobs){
-		SimNav.avoidSentries = !clueless() && aggression.ordinal() <= SimProfile.Aggression.NORMAL.ordinal();
-		SimNav n = new SimNav(level(), hero().pos, throughMobs, avoidKnownTraps, refused);
+		SimNav.avoidSentries = desperation < 1 && !clueless() && aggression.ordinal() <= SimProfile.Aggression.NORMAL.ordinal();
+		SimNav.avoidWater = desperation < 1;
+		SimNav n = new SimNav(level(), hero().pos, throughMobs, avoidKnownTraps && desperation < 2, refused);
+		n.careful = avoidKnownTraps;
 		return n;
 	}
 
@@ -137,6 +140,8 @@ final class SimBot {
 			bannedGoals.clear();
 			restsThisFloor = 0;
 			restTurnsThisFloor = 0;
+			idleThisFloor = 0;
+			desperation = 0;
 			restStartTurn = -1;
 			searchesThisFloor = 0;
 			searchGoal = exploreGoal = -1;
@@ -306,6 +311,10 @@ final class SimBot {
 			restTurnsThisFloor += com.shatteredpixel.shatteredpixeldungeon.Statistics.apdTurn() - restStartTurn;
 			restStartTurn = -1;
 		}
+		//food in the pack buys more resting time (resting only costs hunger)
+		int foodHeld = 0;
+		for (Item i : items()) if (i instanceof Food) foodHeld += i.quantity();
+		int restBudget = this.restBudget == 0 ? 0 : this.restBudget + 200 * foodHeld;
 		if (foes.isEmpty() && h.HP < h.HT * restBelow && restTurnsThisFloor < restBudget && (hunger == null || !hunger.isHungry())){
 			restStartTurn = com.shatteredpixel.shatteredpixeldungeon.Statistics.apdTurn();
 			h.rest(true);
@@ -337,6 +346,19 @@ final class SimBot {
 		String search = search(nav);
 		if (search != null) return search;
 
+		//nothing left to do with the careful rules: relax them step by step before giving up
+		if (++idleThisFloor % 5 == 0 && desperation < 3){
+			desperation++;
+			doneFrontier.clear();
+			bannedGoals.clear();
+			refused.clear();
+			attempts.clear();
+			exploreGoal = searchGoal = -1;
+			if (desperation >= 3) searchesThisFloor = 0;
+			h.rest(false);
+			return "wait, then try again less carefully (step " + desperation + " of 3: "
+					+ (desperation == 1 ? "forget dead ends, allow water and guarded floors" : desperation == 2 ? "walk over known traps" : "search everywhere again") + ")";
+		}
 		lastProblem = noWayForward(nav);
 		h.rest(false);
 		return "wait (nothing left to do: " + lastProblem + ")";
@@ -536,21 +558,8 @@ final class SimBot {
 			if (nav.reachable(c) && nav.dist[c] <= 6 && (best < 0 || nav.dist[c] < nav.dist[best])) best = c;
 		}
 		if (best >= 0) return stepToward(nav, best, "escape to the stairs");
-		boolean adjacent = false;
-		for (Mob m : foes) if (level().adjacent(m.pos, hero().pos)) adjacent = true;
-		if (adjacent) return null;
-		best = -1; int bestScore = Integer.MIN_VALUE;
-		for (int d : PathFinder.NEIGHBOURS8){
-			int c = hero().pos + d;
-			if (!nav.reachable(c) || nav.dist[c] != 1) continue;
-			int score = Integer.MAX_VALUE;
-			for (Mob m : foes) score = Math.min(score, level().distance(c, m.pos));
-			if (score > bestScore){ bestScore = score; best = c; }
-		}
-		int now = Integer.MAX_VALUE;
-		for (Mob m : foes) now = Math.min(now, level().distance(hero().pos, m.pos));
-		if (best < 0 || bestScore <= now) return null;
-		return tap(best, "back off (low health) to");
+		//no stairs close by: running across open floor only gives the enemy free hits, so stand and fight
+		return null;
 	}
 
 	private String chokePoint(List<Mob> foes){

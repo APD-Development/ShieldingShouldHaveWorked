@@ -39,7 +39,7 @@ tasks.named('run', JavaExec) {
     if (project.hasProperty('apd.sim.fixedhash')) jvmArgs '-XX:+UnlockExperimentalVMOptions', '-XX:hashCode=2'
     systemProperty 'Specification-Version', appVersionName + '-SIM'
     systemProperty 'Implementation-Version', appVersionCode
-    ['apd.sim.dir','apd.sim.runs','apd.sim.speed','apd.sim.autostart','apd.sim.aggression','apd.sim.intelligence','apd.sim.grid','apd.sim.realHistory','apd.sim.checkpoint','apd.sim.replay','apd.sim.trace','apd.sim.verify'].each { k ->
+    ['apd.sim.dir','apd.sim.runs','apd.sim.speed','apd.sim.autostart','apd.sim.aggression','apd.sim.intelligence','apd.sim.grid','apd.sim.realHistory','apd.sim.checkpoint','apd.sim.replay','apd.sim.trace','apd.sim.verify','apd.sim.seedbase'].each { k ->
         if (project.hasProperty(k)) systemProperty k, project.property(k)
     }
 }
