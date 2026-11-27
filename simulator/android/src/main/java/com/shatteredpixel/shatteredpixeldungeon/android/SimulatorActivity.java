@@ -36,6 +36,11 @@ public class SimulatorActivity extends AndroidLauncher {
 		//the simulator plays the Developer build's version of the game
 		ApdFeatures.parse("testBuild\ngrudge\ndemoUnlock\nclericPlayable\n");
 		SimRuntime.install(new Platform(getApplicationContext()));
+		//automated check on an emulator (CI) can start playing straight away
+		if (getIntent() != null && getIntent().getBooleanExtra("apdsim.autostart", false)){
+			SimRuntime.autostart = true;
+			SimRuntime.forcedSpeed = getIntent().getIntExtra("apdsim.speed", 3);
+		}
 		SimRuntime.history(new AndroidHistoryLink(getApplicationContext()));
 		createChannels();
 		if (Build.VERSION.SDK_INT >= 33 && checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED){
