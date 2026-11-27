@@ -5,6 +5,10 @@ TAB	480+
 MAJOR	Coming Soon
 BTN	i:NEWS	What's next	Finishing the last **UIMSD** upgrades, then **script mods** for Community once I've tested them on my own phone.\n\nAnything marked "Developer build" only exists in my own test build until I say it's ready for Alpha Testers.
 MAJOR	Play builds
+BUILD	Play 953 (Nov 27)
+BTN	i:RANKINGS	UIMSD run counts	The Runs table now says "**1 shown of 6 recorded**" and lists **where every left-out run went**. UIMSD Home shows the recorded total next to finished runs, so the two screens agree.
+BTN	c:V061_BUGFIX	Real names everywhere	Enemy and cause names that showed as **code** (like actors.mobs.Piranha) now show their **game names** in tables, filters and history. The "What happened" screen never lists a code name under **Effects on you**.
+BTN	i:RANKINGS	UIMSD tour and News	Before 10 runs, the UIMSD welcome card says **when the tour opens** instead of offering a button that refuses. News has two new posts: **Community season one** and the **closed test**.
 BUILD	Play 952 (Nov 27)
 BTN	c:V061_BUGFIX	Wording	Shadowmeld and Wand of Regrowth details now read "**1 update**" and "**1 is recorded**" instead of the plural.
 BUILD	Play 951 (Nov 27)
