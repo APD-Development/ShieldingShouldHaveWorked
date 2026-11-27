@@ -423,6 +423,20 @@ public class TitleScene extends PixelScene {
 			add( btnExit );
 		}
 
+		//APD simulator: Developer build only (the launcher slot is empty in every other build, so no button)
+		final Runnable simLauncher = com.shatteredpixel.shatteredpixeldungeon.apd.sim.SimHooks.launcher;
+		if (simLauncher != null) {
+			StyledButton btnSim = new StyledButton(Chrome.Type.GREY_BUTTON_TR, "Simulator", 7){
+				@Override
+				protected void onClick() {
+					simLauncher.run();
+				}
+			};
+			btnSim.setRect( insets.left + 2, insets.top + 2, Math.max(44, btnSim.reqWidth() + 6), 16 );
+			align( btnSim );
+			add( btnSim );
+		}
+
 		Badges.loadGlobal();
 		if (Badges.isUnlocked(Badges.Badge.VICTORY) && !SPDSettings.victoryNagged()) {
 			SPDSettings.victoryNagged(true);

@@ -13,13 +13,14 @@ import com.watabou.utils.SupportActionJournal;
 /** Self-package OS exit evidence; no logcat/storage permissions or other-app reads. */
 final class AndroidSupportDiagnostics {
     private static boolean handlerInstalled;
-    static void initialize(Context activity){
+    static void initialize(Context activity, String dataFolder){
         Context context=activity.getApplicationContext();
+        java.io.File base=dataFolder.isEmpty()?context.getFilesDir():new java.io.File(context.getFilesDir(),dataFolder);
         // initialize() has not installed Gdx.files yet; use Android's own private files directory.
-        SupportDiagnostics.configure(new java.io.File(context.getFilesDir(),"apd-diagnostics"),
+        SupportDiagnostics.configure(new java.io.File(base,"apd-diagnostics"),
                 "Version: "+Game.version+"\nVersion code: "+Game.versionCode+"\nApplication ID: "+context.getPackageName()
                 +"\nDevice: "+Build.MANUFACTURER+" "+Build.MODEL+"\nAndroid: "+Build.VERSION.RELEASE+" (API "+Build.VERSION.SDK_INT+")");
-        SupportActionJournal.configure(new java.io.File(context.getFilesDir(),"apd-diagnostics"));
+        SupportActionJournal.configure(new java.io.File(base,"apd-diagnostics"));
         SupportDiagnostics.platformSnapshot=()->snapshot(context);
         if(!handlerInstalled){
             Thread.UncaughtExceptionHandler previous=Thread.getDefaultUncaughtExceptionHandler();

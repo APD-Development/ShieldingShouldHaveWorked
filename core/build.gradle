@@ -3,6 +3,15 @@ apply plugin: 'java-library'
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 java.sourceCompatibility = java.targetCompatibility = appJavaCompatibility
 
+//APD simulator: its code (src/apdsim/java) is compiled into the game ONLY for the Developer build (-PapdTestBuild).
+//Every other build (Alpha, Play) leaves it out entirely; there it is compiled with the tests so CI still checks it.
+def apdSimSource = file('src/apdsim/java')
+if (project.hasProperty('apdTestBuild')) {
+    sourceSets.main.java.srcDir apdSimSource
+} else {
+    sourceSets.test.java.srcDir apdSimSource
+}
+
 dependencies {
     api project(':SPD-classes')
     implementation project(':services')

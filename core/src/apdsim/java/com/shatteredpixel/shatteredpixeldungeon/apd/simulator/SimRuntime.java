@@ -1,0 +1,716 @@
+package com.shatteredpixel.shatteredpixeldungeon.apd.simulator;
+
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.GamesInProgress;
+import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
+import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
+import com.shatteredpixel.shatteredpixeldungeon.apd.recorder.ApdRecorder;
+import com.shatteredpixel.shatteredpixeldungeon.apd.recorder.RecorderStatus;
+import com.shatteredpixel.shatteredpixeldungeon.apd.sim.SimHooks;
+import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.AmuletScene;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.InterlevelScene;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.TitleScene;
+import com.shatteredpixel.shatteredpixeldungeon.ui.ActionIndicator;
+import com.shatteredpixel.shatteredpixeldungeon.ui.Button;
+import com.shatteredpixel.shatteredpixeldungeon.ui.StyledButton;
+import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
+import com.shatteredpixel.shatteredpixeldungeon.utils.DungeonSeed;
+import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndBag;
+import com.watabou.noosa.Game;
+import com.watabou.noosa.Scene;
+import com.watabou.utils.FileUtils;
+import com.watabou.utils.GameSettings;
+import com.watabou.utils.Random;
+import com.watabou.utils.Signal;
+
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+
+//The simulator's driver: runs once per frame on the render thread, plays the bot's turns, watches for bugs and files reports.
+public final class SimRuntime implements SimHooks.Controller {
+
+	public static final HeroClass[] CLASSES = HeroClass.values();
+	public static final String[] SPEED_LABELS = {"1x", "2x", "4x", "max"};
+	private static final int[] SPEED_PLAYBACK = {1, 2, 3, 9};
+	private static final float[] SPEED_DELAY = {0.30f, 0.15f, 0.06f, 0f};
+
+	private static SimRuntime instance;
+
+	public static SimRuntime get(){ return instance; }
+
+	final SimPlatform platform;
+	final ReportStore reports = new ReportStore();
+	final TurnLog log = new TurnLog();
+	private final List<Object[]> pendingExceptions = new ArrayList<>();
+
+	//settings that outlive the app (the simulator's own settings file, never the game's)
+	public boolean playing;
+	public boolean paused;
+	public int speed;
+
+	//the current run
+	public int run;
+	public HeroClass heroClass;
+	public long seed, botSeed;
+	public boolean replaying;
+	SimBot bot;
+	private boolean runActive;
+	private long runStartMillis;
+	private String recorderLogId;
+	private int recorderErrors;
+	private long recorderDropped;
+	public int bugsThisRun, newBugsTotal;
+	public String lastRunSummary = "";
+	public String status = "";
+
+	//watchers
+	private float thinkTimer;
+	private float deadTimer;
+	private Window lastWindow;
+	private int sameWindowActions;
+	private long lastFrameNanos;
+	private int framesSinceSceneChange;
+	private Scene lastScene;
+	private long waitingSince;
+	private boolean slowTurnReported;
+	private float lastProgressTurn;
+	private long progressKey = Long.MIN_VALUE;
+	private float lastActionTurn = -1;
+	private int zeroTimeActions;
+	private int depthEntries;
+	private int maxDepth;
+	private SimHud hud;
+	private GameScene hudScene;
+	private long interlevelSince;
+	private final java.util.Set<String> textSeen = new java.util.HashSet<>();
+	private int itemCheckCounter;
+
+	private SimRuntime(SimPlatform platform){
+		this.platform = platform;
+	}
+
+	//Called by the simulator's launcher before the game starts. Never called in the real game.
+	public static synchronized void install(SimPlatform platform){
+		if (instance != null) return;
+		instance = new SimRuntime(platform);
+		SimHooks.controller = instance;
+		Game.exceptionWatcher = instance::caught;
+		GLog.update.add(new Signal.Listener<String>(){
+			@Override public boolean onSignal(String text){
+				if (instance != null) instance.gameMessage(text);
+				return false;
+			}
+		});
+		final Thread.UncaughtExceptionHandler previous = Thread.getDefaultUncaughtExceptionHandler();
+		Thread.setDefaultUncaughtExceptionHandler((thread, error) -> {
+			try { instance.crash(thread, error); } catch (Throwable ignored){}
+			if (previous != null) previous.uncaughtException(thread, error);
+		});
+	}
+
+	void loadSettings(){
+		playing = GameSettings.getBoolean("apdsim_playing", false);
+		speed = GameSettings.getInt("apdsim_speed", 0, 0, SPEED_LABELS.length - 1);
+		run = GameSettings.getInt("apdsim_run", 0);
+		newBugsTotal = GameSettings.getInt("apdsim_bugs", 0);
+		lastRunSummary = GameSettings.getString("apdsim_last", "");
+	}
+
+	private boolean settingsLoaded;
+
+	public void setPlaying(boolean p){ playing = p; GameSettings.put("apdsim_playing", p); }
+	public void setSpeed(int s){ speed = s; GameSettings.put("apdsim_speed", s); }
+	public void cycleSpeed(){ setSpeed((speed + 1) % SPEED_LABELS.length); }
+	public String speedLabel(){ return SPEED_LABELS[speed]; }
+	public int reportCount(){ return reports.count(); }
+	public ReportStore store(){ return reports; }
+
+	//---- the frame -------------------------------------------------------------------------------------------
+
+	@Override
+	public void frame(){
+		try {
+			frameInner();
+		} catch (Throwable t){
+			botProblem("simulator frame", t);
+		}
+	}
+
+	private void frameInner(){
+		if (!settingsLoaded){
+			settingsLoaded = true;
+			loadSettings();
+			//a fresh simulator: no tutorial, quiet by default
+			SPDSettings.intro(false);
+			if (!GameSettings.contains("apdsim_sound")){
+				GameSettings.put("apdsim_sound", false);
+				SPDSettings.music(false);
+				SPDSettings.soundFx(false);
+			}
+		}
+		long now = System.nanoTime();
+		float realDelta = lastFrameNanos == 0 ? 0 : (now - lastFrameNanos) / 1e9f;
+		lastFrameNanos = now;
+
+		flushExceptions();
+
+		Scene scene = Game.scene();
+		if (scene != lastScene){ lastScene = scene; framesSinceSceneChange = 0; }
+		else framesSinceSceneChange++;
+		if (scene == null || Game.switchingScene()) return;
+
+		if (scene instanceof TitleScene || (!(scene instanceof GameScene) && !(scene instanceof InterlevelScene)
+				&& !(scene instanceof AmuletScene) && !(scene instanceof SimHomeScene) && isMenuScene(scene))){
+			if (runActive && scene.getClass().getSimpleName().equals("RankingsScene")) endRun(lastOutcome == null ? "won" : lastOutcome);
+			runActive = false;
+			ShatteredPixelDungeon.switchNoFade(SimHomeScene.class);
+			return;
+		}
+		if (scene instanceof SimHomeScene){
+			if (playing && !paused) startRun();
+			return;
+		}
+		if (scene instanceof InterlevelScene){
+			if (interlevelSince == 0) interlevelSince = System.currentTimeMillis();
+			else if (System.currentTimeMillis() - interlevelSince > 90_000 && runActive){
+				report(BugReport.Kind.STUCK, "interlevel", "Loading the next floor never finished (over 90 seconds on the loading screen).", threadDump());
+				interlevelSince = System.currentTimeMillis();
+			}
+			return;
+		}
+		interlevelSince = 0;
+		if (scene instanceof AmuletScene){
+			if (paused) return;
+			for (SimUi.Choice c : SimUi.buttons(scene)){
+				if (c.button instanceof StyledButton && !tried("amulet")){
+					log.turn("found the Amulet: choose to leave the dungeon (win)");
+					lastOutcome = "won";
+					click(c.button);
+					return;
+				}
+			}
+			return;
+		}
+		if (scene instanceof GameScene) inGame((GameScene) scene, realDelta);
+	}
+
+	private String lastOutcome;
+	private int amuletClicks;
+	private boolean tried(String what){ return amuletClicks++ > 5; }
+
+	private static boolean isMenuScene(Scene s){
+		String n = s.getClass().getSimpleName();
+		return n.equals("RankingsScene") || n.equals("HeroSelectScene") || n.equals("StartScene") || n.equals("WelcomeScene")
+				|| n.equals("SurfaceScene");
+	}
+
+	private void inGame(GameScene scene, float realDelta){
+		if (hudScene != scene){
+			hudScene = scene;
+			hud = new SimHud(this);
+			scene.addToFront(hud);
+			hud.layoutFor(scene);
+		} else if (hud != null){
+			scene.bringToFront(hud);
+		}
+		if (hud != null) hud.refresh();
+
+		Hero h = Dungeon.hero;
+		if (h == null || !runActive){
+			if (h != null && !runActive && playing){
+				//a run left over from before (e.g. after a crash): leave it and start fresh
+				startRun();
+			}
+			return;
+		}
+
+		//frame timing (the bot's own work is included; level loading is excluded)
+		if (framesSinceSceneChange > 3 && realDelta > 0.5f && !paused){
+			report(BugReport.Kind.SLOW, "slowframe-d" + (Dungeon.depth / 5),
+					String.format(Locale.ROOT, "A frame took %.0f ms (more than 500 ms) on floor %d.", realDelta * 1000, Dungeon.depth), "");
+		}
+
+		if (!h.isAlive()){
+			Window w = SimUi.topWindow();
+			if (w != null && !paused){ answerWindow(w); return; }
+			deadTimer += realDelta;
+			if (deadTimer > 1.5f){
+				deadTimer = 0;
+				endRun("died: " + deathCause());
+				if (playing) startRun();
+				else ShatteredPixelDungeon.switchNoFade(SimHomeScene.class);
+			}
+			return;
+		}
+		deadTimer = 0;
+		if (paused) { waitingSince = 0; return; }
+
+		PlaybackSpeed.apply(SPEED_PLAYBACK[speed]);
+
+		thinkTimer -= realDelta;
+		Window w = SimUi.topWindow();
+		if (w != null){
+			scanWindowText(w);
+			if (thinkTimer > 0) return;
+			thinkTimer = SPEED_DELAY[speed];
+			answerWindow(w);
+			return;
+		}
+		lastWindow = null;
+
+		WndBag.ItemSelector pane = SimUi.paneSelector();
+		if (pane != null){
+			if (thinkTimer > 0) return;
+			thinkTimer = SPEED_DELAY[speed];
+			Item pick = bot.pickItem(pane);
+			SimUi.clearPaneSelector();
+			log.turn(where() + " choose item: " + SimBot.nameOf(pick));
+			pane.onSelect(pick);
+			return;
+		}
+
+		if (!h.ready){
+			if (waitingSince == 0) waitingSince = System.currentTimeMillis();
+			long waited = System.currentTimeMillis() - waitingSince;
+			if (waited > 4000 && !slowTurnReported && actorBusy()){
+				slowTurnReported = true;
+				report(BugReport.Kind.SLOW, "slowturn:" + topFrames(actorThread(), 4),
+						"One turn took more than 4 seconds to finish (the game was busy working, not animating).", threadDump());
+			}
+			if (waited > 45_000){
+				waitingSince = System.currentTimeMillis();
+				report(BugReport.Kind.STUCK, "frozen:" + topFrames(actorThread(), 4),
+						"The game stopped responding: the hero's turn never came back for 45 seconds and no window was open.", threadDump());
+				endRun("stuck (game stopped responding)");
+				if (playing) startRun();
+			}
+			return;
+		}
+		waitingSince = 0;
+		slowTurnReported = false;
+
+		if (SimUi.choosingCell()){
+			if (thinkTimer > 0) return;
+			thinkTimer = SPEED_DELAY[speed];
+			int target = bot.pickCell();
+			if (target < 0){
+				log.turn(where() + " no target for this, cancel");
+				GameScene.cancelCellSelector();
+			} else {
+				log.turn(where() + " target " + SimBot.cell(target));
+				GameScene.handleCell(target);
+			}
+			return;
+		}
+
+		if (thinkTimer > 0) return;
+		thinkTimer = SPEED_DELAY[speed];
+
+		Invariants.check(this);
+		checkItemsText();
+		if (!checkProgress()) return;
+
+		String did;
+		try {
+			did = bot.act();
+		} catch (Throwable t){
+			botProblem("bot decision", t);
+			try { h.rest(false); } catch (Throwable ignored){}
+			did = "wait (after a simulator problem)";
+		}
+		if (did != null) log.turn(where() + " " + did);
+
+		float t = Actor.now();
+		if (t == lastActionTurn) zeroTimeActions++; else zeroTimeActions = 0;
+		lastActionTurn = t;
+		if (zeroTimeActions > 300){
+			zeroTimeActions = 0;
+			report(BugReport.Kind.STUCK, "notime:" + (did == null ? "" : did.replaceAll("[0-9(),]", "")),
+					"300 actions in a row took no game time (the game keeps refusing or undoing an action). Last action: " + did, "");
+			endRun("stuck (actions take no time)");
+			if (playing) startRun();
+		}
+	}
+
+	private boolean checkProgress(){
+		Hero h = Dungeon.hero;
+		int seen = 0;
+		for (boolean v : Dungeon.level.visited) if (v) seen++;
+		long key = ((long) Dungeon.depth << 40) ^ ((long) seen << 20) ^ ((long) h.lvl << 12) ^ h.exp ^ ((long) Statistics.enemiesSlain << 30)
+				^ ((long) Dungeon.gold << 8) ^ h.belongings.backpack.items.size();
+		if (Dungeon.depth > maxDepth){ maxDepth = Dungeon.depth; depthEntries++; }
+		if (key != progressKey){
+			progressKey = key;
+			lastProgressTurn = Actor.now();
+			return true;
+		}
+		if (Actor.now() - lastProgressTurn > 1500){
+			SimNav nav = new SimNav(Dungeon.level, h.pos, false);
+			String why = bot.noWayForward(nav);
+			report(BugReport.Kind.STUCK, "noprogress-d" + Dungeon.depth + ":" + why.replaceAll("[0-9]", "#"),
+					"No progress for 1500 turns on floor " + Dungeon.depth + " (nothing new explored, killed, found or gained).", "Bot's view of the floor: " + why);
+			endRun("stuck (no progress)");
+			if (playing) startRun();
+			return false;
+		}
+		return true;
+	}
+
+	//---- windows ---------------------------------------------------------------------------------------------
+
+	private void scanWindowText(Window w){
+		if (w == lastWindow) return;
+		for (String t : SimUi.texts(w)) checkText(t, "window " + w.getClass().getName().replaceAll(".*\\.", ""));
+	}
+
+	private void answerWindow(Window w){
+		String name = w.getClass().getName().replaceAll(".*\\.", "");
+		if (w == lastWindow) sameWindowActions++; else sameWindowActions = 0;
+		lastWindow = w;
+		if (sameWindowActions > 40){
+			report(BugReport.Kind.STUCK, "window:" + name, "A window (" + name + ") would not close after 40 tries.", String.join(" | ", SimUi.texts(w)));
+			w.hide();
+			return;
+		}
+		if (w instanceof WndBag && ((WndBag) w).getSelector() != null){
+			WndBag.ItemSelector sel = ((WndBag) w).getSelector();
+			Item pick = bot.pickItem(sel);
+			log.turn(where() + " [" + name + "] choose item: " + SimBot.nameOf(pick));
+			w.hide();
+			sel.onSelect(pick);
+			return;
+		}
+		List<SimUi.Choice> buttons = SimUi.buttons(w);
+		List<SimUi.Choice> labelled = new ArrayList<>();
+		for (SimUi.Choice c : buttons) if (!c.label.trim().isEmpty()) labelled.add(c);
+		List<SimUi.Choice> from = labelled.isEmpty() ? buttons : labelled;
+		if (from.isEmpty() || sameWindowActions > 25){
+			log.turn(where() + " [" + name + "] close");
+			w.onBackPressed();
+			return;
+		}
+		List<String> labels = new ArrayList<>();
+		for (SimUi.Choice c : from) labels.add(c.label);
+		int pick = bot.pickButton(labels);
+		if (pick < 0){
+			w.onBackPressed();
+			return;
+		}
+		log.turn(where() + " [" + name + "] press \"" + from.get(pick).label.replace('\n', ' ') + "\"");
+		click(from.get(pick).button);
+	}
+
+	private void click(Button b){
+		try {
+			SimUi.click(b);
+		} catch (java.lang.reflect.InvocationTargetException e){
+			caught(e.getCause() == null ? e : e.getCause());
+		} catch (Throwable t){
+			botProblem("pressing a button", t);
+		}
+	}
+
+	//---- runs ------------------------------------------------------------------------------------------------
+
+	public void startRun(){
+		startRun(-1, 0, 0);
+	}
+
+	public void startReplay(HeroClass cls, long seed, long botSeed){
+		replaying = true;
+		startRun(cls.ordinal(), seed, botSeed);
+	}
+
+	private void startRun(int classIndex, long fixedSeed, long fixedBotSeed){
+		if (runActive) endRun("skipped");
+		run++;
+		GameSettings.put("apdsim_run", run);
+		if (classIndex < 0) replaying = false;
+		heroClass = classIndex >= 0 ? CLASSES[classIndex] : CLASSES[(run - 1) % CLASSES.length];
+		java.util.Random master = new java.util.Random(System.nanoTime() ^ ((long) run << 32));
+		seed = fixedSeed != 0 ? fixedSeed : Math.floorMod(master.nextLong(), DungeonSeed.TOTAL_SEEDS);
+		botSeed = fixedBotSeed != 0 ? fixedBotSeed : master.nextLong();
+		bot = new SimBot(botSeed);
+		log.clear();
+		textSeen.clear();
+		bugsThisRun = 0;
+		depthEntries = 0;
+		maxDepth = 0;
+		progressKey = Long.MIN_VALUE;
+		zeroTimeActions = 0;
+		amuletClicks = 0;
+		lastOutcome = null;
+		runStartMillis = System.currentTimeMillis();
+
+		SPDSettings.intro(false);
+		SPDSettings.customSeed("");
+		GamesInProgress.curSlot = 1;
+		if (GamesInProgress.gameExists(1)) Dungeon.deleteGame(1, true);
+		GamesInProgress.selectedClass = heroClass;
+		GamesInProgress.randomizedClass = false;
+		Dungeon.hero = null;
+		Dungeon.daily = Dungeon.dailyReplay = false;
+		Dungeon.initSeed();
+		Dungeon.seed = seed;
+		Dungeon.customSeedText = "";
+		ActionIndicator.clearAction();
+		InterlevelScene.mode = InterlevelScene.Mode.DESCEND;
+		runActive = true;
+		RecorderStatus rs = ApdRecorder.status();
+		recorderErrors = rs.errorCount;
+		recorderDropped = rs.eventsDropped;
+		recorderLogId = null;
+		status = "Run " + run + ": " + heroClass.title();
+		Game.switchScene(InterlevelScene.class);
+	}
+
+	public void skipRun(){
+		if (!runActive) return;
+		endRun("skipped");
+		if (playing) startRun();
+		else ShatteredPixelDungeon.switchNoFade(SimHomeScene.class);
+	}
+
+	public void stopToHome(){
+		setPlaying(false);
+		if (runActive) endRun("stopped");
+		ShatteredPixelDungeon.switchNoFade(SimHomeScene.class);
+	}
+
+	private String deathCause(){
+		try {
+			Object cause = Statistics.class.getField("killedBy").get(null);
+			if (cause != null) return String.valueOf(cause);
+		} catch (Throwable ignored){}
+		return "killed on floor " + Dungeon.depth;
+	}
+
+	void endRun(String outcome){
+		if (!runActive) return;
+		runActive = false;
+		int depth = Dungeon.depth;
+		Hero h = Dungeon.hero;
+		long minutes = (System.currentTimeMillis() - runStartMillis) / 60000;
+		lastRunSummary = String.format(Locale.ROOT, "Run %d %s: %s on floor %d, level %d, turn %.0f, %d bug report(s), %d min",
+				run, heroClass == null ? "?" : heroClass.title(), outcome, depth, h == null ? 0 : h.lvl, Actor.now(), bugsThisRun, minutes);
+		GameSettings.put("apdsim_last", lastRunSummary);
+		try {
+			FileUtils.getFileHandle("simruns.txt").writeString(lastRunSummary + " | seed " + DungeonSeed.convertToCode(seed)
+					+ " | bot seed " + botSeed + "\n", true, "UTF-8");
+		} catch (Throwable ignored){}
+		checkRecorder(depth, outcome.startsWith("died") || outcome.startsWith("won"));
+		//a run the bot stopped is left as an unfinished save; remove it so the next run starts clean
+		try { if (!outcome.startsWith("died") && !outcome.startsWith("won") && GamesInProgress.gameExists(1)) Dungeon.deleteGame(1, true); } catch (Throwable ignored){}
+	}
+
+	//the recorder must agree with what the game did
+	private void checkRecorder(int depth, boolean finished){
+		try {
+			RecorderStatus rs = ApdRecorder.status();
+			if (!rs.enabled) return;
+			if (rs.errorCount > recorderErrors)
+				report(BugReport.Kind.RECORDER, "recerr:" + rs.lastError.replaceAll("[0-9]", "#"), "The run recorder reported an error during this run.", rs.lastError);
+			if (rs.eventsDropped > recorderDropped)
+				report(BugReport.Kind.RECORDER, "recdrop", "The run recorder dropped " + (rs.eventsDropped - recorderDropped) + " event(s) during this run.", "");
+			if (rs.writerProblem != null && !rs.writerProblem.isEmpty())
+				report(BugReport.Kind.RECORDER, "recwriter:" + rs.writerProblem.replaceAll("[0-9]", "#"), "The run recorder's log writer failed.", rs.writerProblem);
+			if (finished) RecorderCheck.later(this, recorderLogId != null ? recorderLogId : rs.logId, heroClass, maxDepth, depth, Dungeon.hero == null ? 0 : Dungeon.hero.lvl);
+		} catch (Throwable t){
+			botProblem("checking the recorder", t);
+		}
+	}
+
+	//---- watching --------------------------------------------------------------------------------------------
+
+	String where(){
+		Hero h = Dungeon.hero;
+		if (h == null || Dungeon.level == null) return "";
+		return String.format(Locale.ROOT, "T%.0f D%d %s HP %d/%d L%d:", Actor.now(), Dungeon.depth, SimBot.cell(h.pos), h.HP, h.HT, h.lvl);
+	}
+
+	private void gameMessage(String text){
+		if (text == null) return;
+		log.message(text);
+		checkText(text, "game log");
+	}
+
+	void checkText(String text, String where){
+		String p = TextCheck.problem(text);
+		if (p == null) return;
+		String sig = "text:" + p.replaceAll("\\(.*", "") + ":" + text.replaceAll("[0-9]+", "#");
+		if (!textSeen.add(sig)) return;
+		report(BugReport.Kind.TEXT, sig, p + " in the " + where + ".", "Full text: \"" + text + "\"");
+	}
+
+	private void checkItemsText(){
+		if (++itemCheckCounter % 25 != 0) return;
+		Hero h = Dungeon.hero;
+		for (Item i : h.belongings){
+			try { checkText(i.name(), "name of an item in the backpack (" + i.getClass().getSimpleName() + ")"); } catch (Throwable t){ caught(t); }
+			if (itemCheckCounter % 100 == 0){
+				try { checkText(i.info(), "description of " + i.getClass().getSimpleName()); } catch (Throwable t){ caught(t); }
+			}
+		}
+		for (Mob m : Dungeon.level.mobs.toArray(new Mob[0])){
+			if (m.pos >= 0 && m.pos < Dungeon.level.length() && Dungeon.level.heroFOV[m.pos]){
+				try { checkText(m.name(), "name of " + m.getClass().getSimpleName()); } catch (Throwable t){ caught(t); }
+				if (itemCheckCounter % 100 == 0){
+					try { checkText(m.info(), "description of " + m.getClass().getSimpleName()); } catch (Throwable t){ caught(t); }
+				}
+			}
+		}
+	}
+
+	//any thread: Game.reportException was called
+	private void caught(Throwable t){
+		synchronized (pendingExceptions){
+			if (pendingExceptions.size() < 20) pendingExceptions.add(new Object[]{t, Thread.currentThread().getName(), log.turns(), log.messages()});
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	private void flushExceptions(){
+		List<Object[]> list;
+		synchronized (pendingExceptions){
+			if (pendingExceptions.isEmpty()) return;
+			list = new ArrayList<>(pendingExceptions);
+			pendingExceptions.clear();
+		}
+		for (Object[] e : list){
+			Throwable t = (Throwable) e[0];
+			BugReport r = base(BugReport.Kind.EXCEPTION, "exc:" + signature(t), t.getClass().getSimpleName() + (t.getMessage() == null ? "" : ": " + t.getMessage()),
+					"Thread: " + e[1] + "\n" + stack(t));
+			r.lastTurns = (List<String>) e[2];
+			r.lastMessages = (List<String>) e[3];
+			file(r);
+		}
+	}
+
+	//the app is about to crash: write the report now, synchronously
+	private void crash(Thread thread, Throwable t){
+		BugReport r = base(BugReport.Kind.CRASH, "crash:" + signature(t), "The game crashed: " + t.getClass().getSimpleName()
+				+ (t.getMessage() == null ? "" : ": " + t.getMessage()), "Thread: " + thread.getName() + "\n" + stack(t));
+		file(r);
+		GameSettings.put("apdsim_last", "Run " + run + " crashed: " + r.summary);
+	}
+
+	void botProblem(String during, Throwable t){
+		report(BugReport.Kind.BOT, "bot:" + signature(t), "The simulator itself failed while " + during + ": " + t, stack(t));
+	}
+
+	void report(BugReport.Kind kind, String signature, String summary, String details){
+		file(base(kind, signature, summary, details));
+	}
+
+	private BugReport base(BugReport.Kind kind, String signature, String summary, String details){
+		BugReport r = new BugReport();
+		r.kind = kind;
+		r.signature = kind.name() + "|" + signature;
+		r.summary = summary;
+		r.details = details == null ? "" : details;
+		r.seed = seed;
+		r.seedCode = DungeonSeed.convertToCode(seed);
+		r.botSeed = botSeed;
+		r.heroClass = heroClass == null ? "" : heroClass.name();
+		r.depth = Dungeon.depth;
+		r.branch = Dungeon.branch;
+		r.turn = Actor.now();
+		r.heroLevel = Dungeon.hero == null ? 0 : Dungeon.hero.lvl;
+		r.run = run;
+		r.version = Game.version + " (" + Game.versionCode + ")";
+		r.time = System.currentTimeMillis();
+		r.lastTurns = log.turns();
+		r.lastMessages = log.messages();
+		return r;
+	}
+
+	private void file(BugReport r){
+		try {
+			boolean fresh = reports.add(r);
+			bugsThisRun++;
+			if (fresh){
+				newBugsTotal++;
+				GameSettings.put("apdsim_bugs", newBugsTotal);
+				if (r.kind != BugReport.Kind.BOT || newBugsTotal < 50){
+					platform.notifyBug(r.signature.hashCode(), "APD Simulator: " + r.kind.title,
+							r.summary + " (" + r.heroClass + ", floor " + r.depth + ")");
+				}
+			}
+		} catch (Throwable ignored){
+		}
+	}
+
+	static String signature(Throwable t){
+		StringBuilder b = new StringBuilder(t.getClass().getName());
+		int n = 0;
+		for (StackTraceElement e : t.getStackTrace()){
+			if (e.getClassName().startsWith("com.shatteredpixel") || e.getClassName().startsWith("com.watabou")){
+				b.append('|').append(e.getClassName().replaceAll(".*\\.", "")).append('.').append(e.getMethodName()).append(':').append(e.getLineNumber());
+				if (++n >= 3) break;
+			}
+		}
+		return b.toString();
+	}
+
+	static String stack(Throwable t){
+		StringWriter sw = new StringWriter();
+		t.printStackTrace(new PrintWriter(sw));
+		String s = sw.toString();
+		return s.length() > 6000 ? s.substring(0, 6000) + "\n..." : s;
+	}
+
+	//---- the actor thread ------------------------------------------------------------------------------------
+
+	private volatile Thread actorThread;
+
+	@Override
+	public void actorThreadStarting(){
+		actorThread = Thread.currentThread();
+		//Turns get their own random numbers, seeded from the run, so the same seed and bot seed play out the same way
+		//(the render thread's animations draw random numbers too and would otherwise shift them).
+		Random.isolateThread();
+		Random.pushGenerator(seed * 31 + Dungeon.depth * 1_000_003L + Dungeon.branch * 7919L + (depthEntries++) * 104_729L + botSeed);
+	}
+
+	private Thread actorThread(){ return actorThread; }
+
+	private boolean actorBusy(){
+		Thread t = actorThread;
+		return t != null && t.isAlive() && t.getState() == Thread.State.RUNNABLE;
+	}
+
+	private static String topFrames(Thread t, int n){
+		if (t == null) return "none";
+		StringBuilder b = new StringBuilder();
+		int k = 0;
+		for (StackTraceElement e : t.getStackTrace()){
+			if (!e.getClassName().startsWith("com.shatteredpixel")) continue;
+			b.append(e.getClassName().replaceAll(".*\\.", "")).append('.').append(e.getMethodName()).append('|');
+			if (++k >= n) break;
+		}
+		return b.toString();
+	}
+
+	private String threadDump(){
+		Thread t = actorThread;
+		if (t == null) return "No actor thread.";
+		StringBuilder b = new StringBuilder("Actor thread state: " + t.getState() + "\n");
+		for (StackTraceElement e : t.getStackTrace()) b.append("  at ").append(e).append('\n');
+		return b.toString();
+	}
+
+	//public for the HUD
+	public boolean runActive(){ return runActive; }
+}

@@ -404,7 +404,15 @@ public class Game implements ApplicationListener {
 		Camera.updateAll();
 	}
 	
+	//APD simulator (Developer build, simulator process only): hears every reported exception. Null in the real game.
+	public interface ExceptionWatcher { void reported( Throwable tr ); }
+	public static volatile ExceptionWatcher exceptionWatcher;
+
 	public static void reportException( Throwable tr ) {
+		ExceptionWatcher watcher = exceptionWatcher;
+		if (watcher != null) {
+			try { watcher.reported(tr); } catch (Throwable ignored) {}
+		}
 		if (instance != null && Gdx.app != null) {
 			instance.logException(tr);
 		} else {

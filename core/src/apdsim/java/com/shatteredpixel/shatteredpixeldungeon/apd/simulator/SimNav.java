@@ -1,0 +1,114 @@
+package com.shatteredpixel.shatteredpixeldungeon.apd.simulator;
+
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Fire;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.ToxicGas;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.CorrosiveGas;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
+import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
+import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
+import com.shatteredpixel.shatteredpixeldungeon.levels.traps.Trap;
+import com.watabou.utils.PathFinder;
+
+//Breadth-first paths over what the hero knows about the floor (seen or mapped cells), avoiding known traps, chasms and fire.
+final class SimNav {
+
+	final int width, length;
+	final boolean[] walk;
+	final int[] dist;
+	final int[] from;
+	final int origin;
+
+	SimNav(Level level, int origin, boolean throughMobs){
+		this.width = level.width();
+		this.length = level.length();
+		this.origin = origin;
+		walk = new boolean[length];
+		for (int i = 0; i < length; i++){
+			boolean known = level.visited[i] || level.mapped[i] || level.heroFOV[i];
+			if (!known) continue;
+			int t = level.map[i];
+			boolean pass = level.passable[i] || t == Terrain.DOOR || t == Terrain.OPEN_DOOR;
+			if (t == Terrain.LOCKED_DOOR || t == Terrain.CRYSTAL_DOOR || t == Terrain.LOCKED_EXIT || t == Terrain.HERO_LKD_DR) pass = false;
+			if (level.pit[i] || t == Terrain.CHASM) pass = false;
+			Trap trap = level.traps.get(i);
+			if (trap != null && trap.visible && trap.active) pass = false;
+			if (danger(level, i)) pass = false;
+			walk[i] = pass;
+		}
+		if (!throughMobs){
+			for (Char c : Actor.chars()){
+				if (c != Dungeon.hero && c.pos >= 0 && c.pos < length && level.heroFOV[c.pos] && !(c instanceof Mob && ((Mob) c).alignment == Char.Alignment.ALLY)){
+					walk[c.pos] = false;
+				}
+			}
+		}
+		if (origin >= 0 && origin < length) walk[origin] = true;
+		dist = new int[length];
+		from = new int[length];
+		java.util.Arrays.fill(dist, -1);
+		int[] queue = new int[length];
+		int head = 0, tail = 0;
+		if (origin >= 0 && origin < length){
+			dist[origin] = 0;
+			from[origin] = origin;
+			queue[tail++] = origin;
+		}
+		while (head < tail){
+			int c = queue[head++];
+			for (int d : PathFinder.NEIGHBOURS8){
+				int n = c + d;
+				if (n < 0 || n >= length || dist[n] >= 0) continue;
+				if (Math.abs((n % width) - (c % width)) > 1) continue;
+				if (!walk[n]) continue;
+				//no diagonal moves through doors (the game forbids them too)
+				if (d != -1 && d != 1 && d != -width && d != width){
+					if (isDoor(level.map[n]) || isDoor(level.map[c])) continue;
+				}
+				dist[n] = dist[c] + 1;
+				from[n] = c;
+				queue[tail++] = n;
+			}
+		}
+	}
+
+	static boolean isDoor(int t){
+		return t == Terrain.DOOR || t == Terrain.OPEN_DOOR;
+	}
+
+	static boolean danger(Level level, int cell){
+		for (Class<? extends Blob> c : new Class[]{Fire.class, ToxicGas.class, CorrosiveGas.class}){
+			Blob b = level.blobs.get(c);
+			if (b != null && b.volume > 0 && b.cur != null && b.cur[cell] > 0) return true;
+		}
+		return false;
+	}
+
+	boolean reachable(int cell){
+		return cell >= 0 && cell < length && dist[cell] >= 0;
+	}
+
+	//the first step towards cell, or -1
+	int firstStep(int cell){
+		if (!reachable(cell) || cell == origin) return -1;
+		int c = cell;
+		while (from[c] != origin) c = from[c];
+		return c;
+	}
+
+	//the closest reachable cell that is next to (or is) target, so things that block movement can still be approached
+	int approach(Level level, int target){
+		if (reachable(target)) return target;
+		int best = -1;
+		for (int d : PathFinder.NEIGHBOURS8){
+			int n = target + d;
+			if (n < 0 || n >= length) continue;
+			if (Math.abs((n % width) - (target % width)) > 1) continue;
+			if (reachable(n) && (best < 0 || dist[n] < dist[best])) best = n;
+		}
+		return best;
+	}
+}
