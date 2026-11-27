@@ -46,7 +46,13 @@ final class TurnStepper {
 						while (true){
 							synchronized (this){
 								notifyAll();
-								try { wait(5); } catch (InterruptedException ignored){}
+								try { wait(5); }
+								catch (InterruptedException interrupted){
+									//the game interrupts its turn thread when a scene ends and expects "nobody is mid-turn" back,
+									//exactly what its own thread does (the render thread is blocked waiting here, so this is safe)
+									try { fCurrent.set(null, null); } catch (Throwable ignored){}
+									waitingForSprite = null;
+								}
 							}
 						}
 					}
@@ -87,6 +93,8 @@ final class TurnStepper {
 	//one frame's worth of turns: until the hero waits for input, a sprite must finish moving, or the scene changes
 	static void step(SimRuntime sim) throws Exception {
 		init();
+		//the scene's sprites must exist before anyone acts (the game's own thread also only starts once the scene is up)
+		if (Dungeon.hero == null || Dungeon.hero.sprite == null || Dungeon.level == null) return;
 		for (int guard = 0; guard < 20000; guard++){
 			if (Game.switchingScene()) return;
 			Actor acting;

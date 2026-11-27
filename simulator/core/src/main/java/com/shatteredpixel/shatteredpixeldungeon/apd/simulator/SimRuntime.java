@@ -459,6 +459,14 @@ public final class SimRuntime {
 			try { h.rest(false); } catch (Throwable ignored){}
 			did = "wait (after a simulator problem)";
 		}
+		if (did != null && TurnLog.echo){
+			//full-trace mode: a fingerprint of every monster (place, health) so the first hidden difference between two replays shows
+			long fp = 17;
+			for (Mob m : Dungeon.level.mobs) fp = fp * 31 + m.pos * 1009L + m.HP * 7L + m.getClass().getSimpleName().hashCode();
+			did = did + " #" + Long.toHexString(fp & 0xFFFFFF) + "/" + Dungeon.level.mobs.size() + " f" + lockFrames + "/" + freeFrames + " r" + (runRandom == null ? -1 : runRandom.draws)
+					+ (runRandom == null ? "" : " [" + String.join(" | ", runRandom.lastCallers) + "]");
+			if (runRandom != null) runRandom.lastCallers.clear();
+		}
 		if (did != null) log.turn(where() + " " + did);
 		if (bot.refusedAttackNote != null){
 			report(BugReport.Kind.STUCK, "refusedattack:" + bot.refusedAttackNote.replaceAll("[0-9(),]", "").replaceAll("\\s+", " ").substring(0, Math.min(120, bot.refusedAttackNote.length())),
@@ -699,7 +707,11 @@ public final class SimRuntime {
 		//everything this run does on this thread (turns, item effects, visuals) draws from its own seeded stream; level
 		//generation on the loading thread keeps using the shared stack with its own per-floor seeds
 		Random.isolateThread();
-		Random.pushGenerator(seed * 0x9E3779B97F4A7C15L ^ botSeed);
+		runRandom = CountingRandom.pushOnIsolated(seed * 0x9E3779B97F4A7C15L ^ botSeed);
+		CountingRandom.recordCallers = TurnLog.echo;
+		sharedSeedCounter = 0;
+		lockFrames = freeFrames = 0;
+		seedSharedRandom();
 		seededShared = true;
 		lockstepTimeouts = 0;
 		Game.switchScene(InterlevelScene.class);
@@ -1040,6 +1052,7 @@ public final class SimRuntime {
 		if (Game.scene() instanceof GameScene && runActive){
 			StableTurnOrder.forLevel(Dungeon.level);
 			TurnStepper.takeOver();
+			seedSharedRandom();
 			if (TurnLog.echo && Dungeon.level != null){
 				long h = 7;
 				for (int t : Dungeon.level.map) h = h * 31 + t;
@@ -1068,6 +1081,19 @@ public final class SimRuntime {
 	//true while a simulated run is in the dungeon
 	boolean lockstep(){
 		return runActive && !driving && Game.scene() instanceof GameScene;
+	}
+
+	//The floor-loading thread uses the game's shared random numbers, whose base is unseeded (respawn timers, where things land
+	//on arrival). Before each loading screen can start, that shared stream is re-seeded from the run, on a helper thread
+	//(this thread has its own isolated stream), so loading a floor is repeatable too.
+	private int sharedSeedCounter;
+	CountingRandom runRandom;
+	long lockFrames, freeFrames;
+	private void seedSharedRandom(){
+		final long s = seed * 6364136223846793005L + botSeed + (sharedSeedCounter++) * 1442695040888963407L;
+		Thread t = new Thread(() -> { Random.resetGenerators(); Random.pushGenerator(s); }, "apdsim-seed");
+		t.start();
+		try { t.join(2000); } catch (InterruptedException ignored){}
 	}
 
 	//runs this frame's turns (on this thread) or, if that is unavailable, waits for the game's own turn thread

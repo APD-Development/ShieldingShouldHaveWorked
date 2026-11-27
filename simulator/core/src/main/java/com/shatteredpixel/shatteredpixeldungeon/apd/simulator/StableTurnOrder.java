@@ -15,10 +15,40 @@ final class StableTurnOrder {
 
 	static boolean installed;
 
-	//the floor's monster set is a HashSet too (iterated for noise, targeting and more): same treatment for each new floor
+	//Called on the render thread when a floor's scene has just been created, before anyone acts. While the floor loaded, the
+	//engine filled its sets in memory-address order; here they are put into a fixed order (by position, then kind) so the
+	//same floor always takes its turns the same way.
+	@SuppressWarnings("unchecked")
 	static void forLevel(com.shatteredpixel.shatteredpixeldungeon.levels.Level level){
-		if (level == null || level.mobs instanceof LinkedHashSet) return;
-		level.mobs = new LinkedHashSet<>(level.mobs);
+		if (level == null) return;
+		try {
+			java.util.List<com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob> mobs = new java.util.ArrayList<>(level.mobs);
+			mobs.sort(java.util.Comparator.comparingInt((com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob m) -> m.pos)
+					.thenComparing(m -> m.getClass().getName()));
+			level.mobs = new LinkedHashSet<>(mobs);
+			synchronized (Actor.class){
+				for (String name : new String[]{"all", "chars"}){
+					Field f = Actor.class.getDeclaredField(name);
+					f.setAccessible(true);
+					java.util.List<Object> list = new java.util.ArrayList<>((java.util.Collection<Object>) f.get(null));
+					list.sort(java.util.Comparator.comparing(StableTurnOrder::key));
+					f.set(null, new LinkedHashSet<>(list));
+				}
+			}
+		} catch (Throwable t){
+			installed = false;
+		}
+	}
+
+	//characters by position; effects by who they are on; everything else by kind (the sort is stable, so equal keys keep their order)
+	private static String key(Object a){
+		if (a instanceof com.shatteredpixel.shatteredpixeldungeon.actors.Char)
+			return String.format("1 %07d %s", ((com.shatteredpixel.shatteredpixeldungeon.actors.Char) a).pos, a.getClass().getName());
+		if (a instanceof com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff){
+			com.shatteredpixel.shatteredpixeldungeon.actors.Char t = ((com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff) a).target;
+			return String.format("2 %07d %s", t == null ? -1 : t.pos, a.getClass().getName());
+		}
+		return "0 " + a.getClass().getName();
 	}
 
 	@SuppressWarnings("unchecked")

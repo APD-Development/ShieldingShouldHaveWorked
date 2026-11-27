@@ -49,11 +49,13 @@ public class SimGame extends ShatteredPixelDungeon {
 	protected void update(){
 		SimRuntime r = SimRuntime.get();
 		if (r == null || !r.lockstep()){
+			if (r != null) r.freeFrames++;
 			super.update();
 			if (r != null && r.runActive() && TurnStepper.active()) r.runTurns();
 			if (r != null) r.frame();
 			return;
 		}
+		r.lockFrames++;
 		com.watabou.utils.SupportDiagnostics.periodicMemoryEvent();
 		com.watabou.utils.SupportDiagnostics.frame(scene);
 		Game.elapsed = Game.timeScale * FIXED_DT;
