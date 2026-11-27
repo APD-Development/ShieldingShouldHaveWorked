@@ -236,13 +236,25 @@ public final class Postmortem {
 		int at = s.indexOf('@');
 		if (at >= 0) s = s.substring(0, at);
 		if (s.contains(".") && !s.contains(" ")){
-			s = s.substring(s.lastIndexOf('.') + 1);
-			int dollar = s.lastIndexOf('$');
-			if (dollar >= 0) s = s.substring(dollar + 1);
-			s = s.replaceAll("([a-z])([A-Z])", "$1 $2");
+			String last = s.substring(s.lastIndexOf('.') + 1);
+			int dollar = last.lastIndexOf('$');
+			if (dollar >= 0) last = last.substring(dollar + 1);
+			//A class name starts with a capital. Anything else (a bare package like "com.shatteredpixel.shatteredpixeldungeon",
+			//or an anonymous class like "Hero$1") has no real effect name to show, so it is left out of the list.
+			if (last.isEmpty() || !Character.isUpperCase(last.charAt(0))) return "";
+			s = last.replaceAll("([a-z])([A-Z])", "$1 $2");
 			if (s.length() > 1) s = s.charAt(0) + s.substring(1).toLowerCase(java.util.Locale.ROOT);
 		}
+		if (looksLikeCode(s)) return "";
 		return s;
+	}
+
+	//True for anything that still reads like a Java/package name rather than a game word
+	static boolean looksLikeCode( String s ){
+		if (s == null) return false;
+		String l = s.toLowerCase(java.util.Locale.ROOT);
+		return l.contains("com.") || l.contains("shatteredpixel") || l.contains("$") || l.contains("@")
+				|| s.matches(".*[a-z0-9]\\.[a-z].*");
 	}
 
 	private void held( Catalog cat ){

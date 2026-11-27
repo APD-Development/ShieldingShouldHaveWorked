@@ -168,4 +168,46 @@ public class PostmortemTest {
 		assertFalse(Postmortem.of(store.loadRun("nope"), "nope").found);
 		assertFalse(Postmortem.of(store.loadRun(null), null).found);
 	}
+
+	//Chris, Nov 27: no entry under "Effects on you" may ever be a class or package name
+	@Test
+	public void effectsListNeverShowsPackageOrClassNames(){
+		String[] raw = {
+			"com.shatteredpixel.shatteredpixeldungeon",
+			"com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bleeding@1a2b3c",
+			"com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff$1@ff",
+			"com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero$2",
+			"com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff",
+			"actors.buffs.Cripple",
+			"com.x.MagicImmune",
+			"Poisoned", "Burning", "Mind vision", "Adrenaline surge",
+			"shatteredpixeldungeon.actors.buffs", "Thing@1234", "",
+		};
+		for (String r : raw){
+			String shown = Postmortem.effectName(r);
+			assertFalse(r + " -> " + shown, shown.contains("com."));
+			assertFalse(r + " -> " + shown, Postmortem.looksLikeCode(shown));
+			assertFalse(r + " -> " + shown, shown.toLowerCase().contains("shatteredpixel"));
+		}
+		assertEquals("", Postmortem.effectName("com.shatteredpixel.shatteredpixeldungeon"));
+		assertEquals("Cripple", Postmortem.effectName("actors.buffs.Cripple"));
+		assertEquals("Flavour buff", Postmortem.effectName("com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff"));
+		assertEquals("Mind vision", Postmortem.effectName("Mind vision"));
+	}
+
+	@Test
+	public void deathScreenEffectsFromPackageNamesShowRealNamesOnly(){
+		SyntheticLog s = new SyntheticLog(tmp.getRoot(), "c", TelemetryVersion.CURRENT, 100)
+				.start("c", 0, "WARRIOR", "r", 0, 30, false).enter(2);
+		s.clock = 10; s.fact(GameFacts.STATUS_START, "com.shatteredpixel.shatteredpixeldungeon", 5);
+		s.clock = 11; s.fact(GameFacts.STATUS_START, "com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bleeding@9f", 5);
+		s.clock = 12; s.fact(GameFacts.STATUS_START, "com.shatteredpixel.shatteredpixeldungeon", 5);
+		s.clock = 20;
+		s.heroDies("gnoll scout", CombatEvents.SRC_CHAR);
+		s.end(LifecycleEvents.OUTCOME_DIED, "GnollScout", 2, 2, 10).close(true);
+		Postmortem p = Postmortem.of(new DatasetStore(tmp.getRoot()).load(), "c");
+		assertEquals(java.util.Collections.singletonList("Bleeding"), p.effects);
+		for (String e : p.effects) assertFalse(e, e.contains("com.") || Postmortem.looksLikeCode(e));
+		assertFalse(p.text(), p.text().contains("com."));
+	}
 }
