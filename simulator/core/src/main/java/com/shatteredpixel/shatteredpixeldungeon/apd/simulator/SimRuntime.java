@@ -468,7 +468,7 @@ public final class SimRuntime {
 			zeroTimeActions = 0;
 			//the same action refused again and again is the game's problem; different actions going round in a loop is the bot's
 			java.util.Set<String> kinds = new java.util.HashSet<>();
-			for (String t : log.turns()) kinds.add(t.replaceAll("^\\d+\\. T\\d+ D\\d+ \\(\\d+,\\d+\\) HP \\d+/\\d+ L\\d+: ", "").replaceAll("[0-9(),]", ""));
+			for (String line : log.turns()) kinds.add(line.replaceAll("^\\d+\\. T\\d+ D\\d+ \\(\\d+,\\d+\\) HP \\d+/\\d+ L\\d+: ", "").replaceAll("[0-9(),]", ""));
 			if (kinds.size() > 1){
 				report(BugReport.Kind.BOT_STUCK, "botloop:" + (did == null ? "" : did.replaceAll("[0-9(),]", "")),
 						"The bot went round in a loop of actions that take no game time (" + kinds.size() + " different actions).", String.join("\n", kinds));
