@@ -28,6 +28,10 @@ final class SimNav {
 
 	//avoidTraps false: walks over traps it can see (only traps already triggered are avoided, as they are spent)
 	SimNav(Level level, int origin, boolean throughMobs, boolean avoidTraps){
+		this(level, origin, throughMobs, avoidTraps, null);
+	}
+
+	SimNav(Level level, int origin, boolean throughMobs, boolean avoidTraps, java.util.Set<Integer> refused){
 		this.width = level.width();
 		this.length = level.length();
 		this.origin = origin;
@@ -62,6 +66,7 @@ final class SimNav {
 				}
 			}
 		}
+		if (refused != null) for (int c : refused) if (c >= 0 && c < length) walk[c] = false;
 		if (origin >= 0 && origin < length) walk[origin] = true;
 		dist = new int[length];
 		from = new int[length];

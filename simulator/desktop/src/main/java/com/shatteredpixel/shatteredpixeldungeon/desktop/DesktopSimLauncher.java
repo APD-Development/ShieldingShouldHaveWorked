@@ -53,6 +53,8 @@ public class DesktopSimLauncher {
 			SimRuntime.forcedAggression = System.getProperty("apd.sim.aggression");
 			SimRuntime.forcedIntelligence = System.getProperty("apd.sim.intelligence");
 			SimRuntime.forcedCheckpoint = Integer.getInteger("apd.sim.checkpoint", 0);
+			SimRuntime.forcedReplay = System.getProperty("apd.sim.replay");
+			com.shatteredpixel.shatteredpixeldungeon.apd.simulator.TurnLog.echo = System.getProperty("apd.sim.trace") != null;
 		}
 		SimRuntime.realHistoryRoot(new File(System.getProperty("apd.sim.realHistory", defaultRealHistory())));
 		new Lwjgl3Application(new SimGame(new DesktopPlatformSupport()), config);

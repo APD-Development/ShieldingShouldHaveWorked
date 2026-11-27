@@ -42,8 +42,10 @@ public final class SimRuntime {
 
 	public static final HeroClass[] CLASSES = HeroClass.values();
 	public static final String[] SPEED_LABELS = {"1x", "2x", "4x", "max"};
-	private static final int[] SPEED_PLAYBACK = {1, 2, 3, 9};
-	private static final float[] SPEED_DELAY = {0.30f, 0.15f, 0.06f, 0f};
+	//game frames per drawn frame for 1x, 2x, 4x and max (the game's own playback speed stays at normal)
+	private static final int[] SPEED_STEPS = {1, 2, 4, 400};
+	//the bot's thinking pause in game time, the same at every speed so runs replay exactly
+	private static final float BOT_THINK = 0.20f;
 
 	private static SimRuntime instance;
 
@@ -175,6 +177,7 @@ public final class SimRuntime {
 		if (instance != null) return;
 		instance = new SimRuntime(platform);
 		NetworkGuard.install(instance);
+		StableTurnOrder.install();
 		GLog.update.add(LOG_LISTENER);
 		final Thread.UncaughtExceptionHandler previous = Thread.getDefaultUncaughtExceptionHandler();
 		Thread.setDefaultUncaughtExceptionHandler((thread, error) -> {
@@ -358,17 +361,14 @@ public final class SimRuntime {
 		if (paused || driving) { waitingSince = 0; return; }
 
 		if (!pauseReason.isEmpty()) return;
-		int effectiveSpeed = speed;
-		if (replaying && replayTargetTurn >= 0) effectiveSpeed = Actor.now() < replayTargetTurn ? 3 : 0;
-		PlaybackSpeed.apply(SPEED_PLAYBACK[effectiveSpeed]);
-		final int speed = effectiveSpeed;
+		PlaybackSpeed.apply(1);
 
-		thinkTimer -= realDelta;
+		thinkTimer -= SimGame.FIXED_DT;
 		Window w = SimUi.topWindow();
 		if (w != null){
 			scanWindowText(w);
 			if (thinkTimer > 0) return;
-			thinkTimer = SPEED_DELAY[speed];
+			thinkTimer = BOT_THINK;
 			answerWindow(w);
 			return;
 		}
@@ -377,7 +377,7 @@ public final class SimRuntime {
 		WndBag.ItemSelector pane = SimUi.paneSelector();
 		if (pane != null){
 			if (thinkTimer > 0) return;
-			thinkTimer = SPEED_DELAY[speed];
+			thinkTimer = BOT_THINK;
 			Item pick = bot.pickItem(pane);
 			SimUi.clearPaneSelector();
 			log.turn(where() + " choose item: " + SimBot.nameOf(pick));
@@ -419,7 +419,7 @@ public final class SimRuntime {
 
 		if (SimUi.choosingCell()){
 			if (thinkTimer > 0) return;
-			thinkTimer = SPEED_DELAY[speed];
+			thinkTimer = BOT_THINK;
 			int target = bot.pickCell();
 			if (target < 0){
 				log.turn(where() + " no target for this, cancel");
@@ -432,7 +432,7 @@ public final class SimRuntime {
 		}
 
 		if (thinkTimer > 0) return;
-		thinkTimer = SPEED_DELAY[speed];
+		thinkTimer = BOT_THINK;
 
 		if (Dungeon.depth > checkpointedDepth && Dungeon.depth > 1 && !replaying){
 			checkpointedDepth = Dungeon.depth;
@@ -570,8 +570,18 @@ public final class SimRuntime {
 	//---- runs ------------------------------------------------------------------------------------------------
 
 	public void startRun(){
+		//desktop testing: replay one exact run (class:seed:botSeed) given on the command line
+		if (forcedReplay != null){
+			String[] r = forcedReplay.split(":");
+			forcedReplay = null;
+			HeroClass cls = HeroClass.valueOf(r[0]);
+			long rs = Long.parseLong(r[1]), rb = Long.parseLong(r[2]);
+			startRun(cls.ordinal(), rs, rb);
+			return;
+		}
 		startRun(-1, 0, 0);
 	}
+	public static String forcedReplay;
 
 	//Same seed, class, bot seed and simulator settings as a report; plays fast until about 50 turns before the bug, then at 1x.
 	public void startReplay(HeroClass cls, long seed, long botSeed, String profileText, int bugTurn){
@@ -639,6 +649,7 @@ public final class SimRuntime {
 		runStartMillis = System.currentTimeMillis();
 
 		SPDSettings.intro(false);
+		RunContext.apply();
 		SPDSettings.customSeed("");
 		GamesInProgress.curSlot = 1;
 		if (GamesInProgress.gameExists(1)) Dungeon.deleteGame(1, true);
@@ -675,6 +686,11 @@ public final class SimRuntime {
 		recorderDropped = rs.eventsDropped;
 		recorderLogId = null;
 		status = "Run " + run + ": " + heroClass.title();
+		//the render thread's random numbers (thrown items landing, item effects, visuals) come from this run's own seed too
+		Random.resetGenerators();
+		Random.pushGenerator(seed * 0x9E3779B97F4A7C15L ^ botSeed);
+		seededShared = true;
+		lockstepTimeouts = 0;
 		Game.switchScene(InterlevelScene.class);
 	}
 
@@ -1010,7 +1026,49 @@ public final class SimRuntime {
 
 	//SimGame: a scene was just created. A new floor's turns get their own seeded random numbers before anything acts.
 	void sceneSwitched(){
-		if (Game.scene() instanceof GameScene && runActive) com.shatteredpixel.shatteredpixeldungeon.actors.Actor.add(new SeedActor(this));
+		if (Game.scene() instanceof GameScene && runActive){
+			StableTurnOrder.forLevel(Dungeon.level);
+			if (TurnLog.echo && Dungeon.level != null){
+				long h = 7;
+				for (int t : Dungeon.level.map) h = h * 31 + t;
+				long heaps = 0;
+				for (com.shatteredpixel.shatteredpixeldungeon.items.Heap hp : Dungeon.level.heaps.valueList()) heaps += hp.pos * 131L + hp.peek().getClass().getName().hashCode();
+				long mobs = 0;
+				for (Mob m : Dungeon.level.mobs) mobs += m.pos * 7919L + m.getClass().getName().hashCode();
+				log.turn("floor " + Dungeon.depth + " fingerprint map=" + Long.toHexString(h) + " piles=" + Long.toHexString(heaps) + " monsters=" + Long.toHexString(mobs));
+			}
+			com.shatteredpixel.shatteredpixeldungeon.actors.Actor.add(new SeedActor(this));
+		}
+	}
+
+	//---- lockstep (determinism) ------------------------------------------------------------------------------
+
+	private boolean seededShared;
+	public int lockstepTimeouts;
+
+	int stepsPerFrame(){
+		if (paused || driving) return 1;
+		//bug replay: fast until about 50 turns before the bug, then 1x so the lead-up can be watched
+		if (replaying && replayTargetTurn >= 0) return Statistics.apdTurn() < replayTargetTurn ? SPEED_STEPS[3] : 1;
+		return SPEED_STEPS[speed];
+	}
+
+	//true while a simulated run is in the dungeon
+	boolean lockstep(){
+		return runActive && !driving && Game.scene() instanceof GameScene;
+	}
+
+	//after the scene woke the turn thread, wait until it has finished (waiting for the hero or an animation)
+	void waitForTurnThread(){
+		Thread t = actorThread;
+		if (t == null || !t.isAlive()) return;
+		long until = System.nanoTime() + 250_000_000L;
+		while (true){
+			Thread.State st = t.getState();
+			if (st == Thread.State.WAITING || st == Thread.State.TIMED_WAITING || st == Thread.State.TERMINATED) return;
+			if (System.nanoTime() > until){ lockstepTimeouts++; return; }
+			Thread.yield();
+		}
 	}
 
 	//public for the HUD

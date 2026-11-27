@@ -101,8 +101,14 @@ final class SimBot {
 	boolean smart(){ return intelligence.ordinal() >= SimProfile.Intelligence.SMART.ordinal(); }
 	boolean clueless(){ return intelligence == SimProfile.Intelligence.CLUELESS; }
 
+	//cells the game refused to let the hero step onto this floor (the move took no time and the hero stayed put)
+	private final Set<Integer> refused = new HashSet<>();
+	private int lastStepFrom = -1, lastStepTo = -1;
+	private float lastStepTime = -1;
+
 	private SimNav nav(boolean throughMobs){
-		return new SimNav(level(), hero().pos, throughMobs, avoidKnownTraps);
+		SimNav n = new SimNav(level(), hero().pos, throughMobs, avoidKnownTraps, refused);
+		return n;
 	}
 
 	private Hero hero(){ return Dungeon.hero; }
@@ -116,6 +122,7 @@ final class SimBot {
 			doneFrontier.clear();
 			searchedSpots.clear();
 			npcTalkedAt.clear();
+			refused.clear();
 			restsThisFloor = 0;
 			searchesThisFloor = 0;
 			searchGoal = exploreGoal = -1;
@@ -195,6 +202,9 @@ final class SimBot {
 	private String stepToward(SimNav nav, int target, String why){
 		int step = nav.firstStep(target);
 		if (step < 0) return null;
+		lastStepFrom = hero().pos;
+		lastStepTo = step;
+		lastStepTime = Actor.now();
 		return tap(step, "move (" + why + ") to");
 	}
 
@@ -203,6 +213,8 @@ final class SimBot {
 	//Called when it is the hero's turn and nothing is waiting for an answer. Returns what was done, or null.
 	String act(){
 		newFloorCheck();
+		if (lastStepTo >= 0 && hero().pos == lastStepFrom && Actor.now() == lastStepTime) refused.add(lastStepTo);
+		lastStepTo = -1;
 		lastProblem = "";
 		Hero h = hero();
 
@@ -564,6 +576,11 @@ final class SimBot {
 
 	private boolean wantHeap(Heap heap){
 		if (heap == null || heap.isEmpty() || heap.hidden) return false;
+		//the early guidebook pages are placed with deliberately unseeded randomness (so meta progression never changes level
+		//generation); going for them would make the same seed play differently each time, so the bot leaves them
+		Item top = heap.peek();
+		if (top instanceof com.shatteredpixel.shatteredpixeldungeon.items.journal.Guidebook
+				|| top instanceof com.shatteredpixel.shatteredpixeldungeon.items.journal.GuidePage) return false;
 		switch (heap.type){
 			case FOR_SALE:
 				return wantToBuy(heap);

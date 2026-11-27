@@ -13,8 +13,12 @@ public final class TurnLog {
 	private final ArrayDeque<String> messages = new ArrayDeque<>();
 	private long actions;
 
+	//desktop testing: print every turn (full traces for determinism comparisons)
+	public static boolean echo;
+
 	public synchronized void turn(String line){
 		actions++;
+		if (echo) System.out.println("APDSIM_TRACE " + actions + ". " + line);
 		turns.addLast(actions + ". " + line);
 		while (turns.size() > KEEP) turns.removeFirst();
 	}
