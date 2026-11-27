@@ -584,6 +584,30 @@ final class SimBot {
 			}
 		}
 
+		//the fight plan (Smart and better): read the arena, read the enemies, look for a corridor to take them one at a
+		//time, compare the cost with the health left, then fight here, reposition, use an item or flee (see FightPlan)
+		if (smart() && FightJudge.enabled && !tried("plan@" + (int) Actor.now(), 2)){
+			FightPlan plan = FightPlan.make(level(), h, foes, nav(false), nav(true), items(), level().locked,
+					aggression != SimProfile.Aggression.RECKLESS);
+			if (plan.hold && !tried("planhold", 40)) holdGround = true;
+			if (plan.kind == FightPlan.Kind.REPOSITION && !tried("planmove", 30)){
+				String step = stepToward(nav(false), plan.cell, "to a corridor so they come one at a time; " + plan.why);
+				if (step != null) return step;
+			}
+			if (plan.kind == FightPlan.Kind.ITEM && !tried("planitem" + plan.item.getClass().getName(), 2)){
+				focusCell = plan.aimAt;
+				return use(plan.item, plan.action) + " (" + plan.why + ")";
+			}
+			if (plan.kind == FightPlan.Kind.FLEE && com.shatteredpixel.shatteredpixeldungeon.Statistics.apdTurn() - lastEscapeTurn >= 50){
+				if (plan.cell == h.pos){
+					lastEscapeTurn = com.shatteredpixel.shatteredpixeldungeon.Statistics.apdTurn();
+					return tap(plan.cell, "flee by the stairs (" + plan.why + ") at");
+				}
+				String step = stepToward(nav(true), plan.cell, "flee to the stairs; " + plan.why);
+				if (step != null) return step;
+			}
+		}
+
 		//armor ability when crowded or against a boss
 		ClassArmor armor = h.belongings.armor() instanceof ClassArmor ? (ClassArmor) h.belongings.armor() : null;
 		if (armor != null && h.armorAbility != null && (foes.size() >= 2 || Char.hasProp(near, Char.Property.BOSS))
@@ -782,6 +806,8 @@ final class SimBot {
 			}
 			if (nav.reachable(c) && nav.dist[c] <= 6 && (best < 0 || nav.dist[c] < nav.dist[best])) best = c;
 		}
+		//never a retreat that needs outrunning something faster than the hero
+		if (best >= 0 && FightJudge.enabled && !FightPlan.canFleeTo(level(), hero(), foes, nav(true), nav.dist[best])) return null;
 		if (best >= 0) return stepToward(nav, best, "escape to the stairs");
 		//no stairs close by: running across open floor only gives the enemy free hits, so stand and fight
 		return null;
