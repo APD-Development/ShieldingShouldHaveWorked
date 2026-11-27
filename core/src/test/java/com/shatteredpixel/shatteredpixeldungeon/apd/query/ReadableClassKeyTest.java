@@ -32,4 +32,11 @@ public class ReadableClassKeyTest {
 			assertFalse(s + " -> " + shown, shown.contains(".") || shown.contains("$") || shown.contains("@"));
 		}
 	}
+
+	//A filter made by tapping a "Killed by" cell keeps the raw key; the status line describing it must not show code
+	@Test
+	public void filterDescriptionShowsGameName(){
+		String d = StatusText.describe(Datasets.deaths(), Filter.text("death.cause", Op.EQ, "actors.mobs.Piranha"));
+		assertEquals("Killed by is \"Piranha\"", d);
+	}
 }
