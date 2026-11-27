@@ -82,7 +82,7 @@ final class SimBot {
 	final SimProfile.Aggression aggression;
 	final SimProfile.Intelligence intelligence;
 	//what the settings mean for play (all hand-written rules)
-	final float healAt, backOffAt, tryUnknownChance;
+	final float healAt, backOffAt, tryUnknownChance, restTo;
 	final boolean fullExplore, dive, optionalFights, avoidKnownTraps, wearUnidentified;
 
 	SimBot(long seed, SimProfile.Aggression aggression, SimProfile.Intelligence intelligence){
@@ -90,10 +90,10 @@ final class SimBot {
 		this.aggression = aggression;
 		this.intelligence = intelligence;
 		switch (aggression){
-			case CAUTIOUS:   healAt = 0.50f; backOffAt = 0.40f; tryUnknownChance = 0.15f; fullExplore = true;  dive = false; optionalFights = false; wearUnidentified = false; break;
-			case AGGRESSIVE: healAt = 0.25f; backOffAt = 0f;    tryUnknownChance = 0.85f; fullExplore = false; dive = false; optionalFights = true;  wearUnidentified = true;  break;
-			case RECKLESS:   healAt = 0.12f; backOffAt = 0f;    tryUnknownChance = 1.00f; fullExplore = false; dive = true;  optionalFights = true;  wearUnidentified = true;  break;
-			default:         healAt = 0.35f; backOffAt = 0.20f; tryUnknownChance = 0.50f; fullExplore = true;  dive = false; optionalFights = true;  wearUnidentified = false; break;
+			case CAUTIOUS:   restTo = 0.95f; healAt = 0.50f; backOffAt = 0.40f; tryUnknownChance = 0.15f; fullExplore = true;  dive = false; optionalFights = false; wearUnidentified = false; break;
+			case AGGRESSIVE: restTo = 0.50f; healAt = 0.25f; backOffAt = 0f;    tryUnknownChance = 0.85f; fullExplore = false; dive = false; optionalFights = true;  wearUnidentified = true;  break;
+			case RECKLESS:   restTo = 0.30f; healAt = 0.12f; backOffAt = 0f;    tryUnknownChance = 1.00f; fullExplore = false; dive = true;  optionalFights = true;  wearUnidentified = true;  break;
+			default:         restTo = 0.80f; healAt = 0.35f; backOffAt = 0.20f; tryUnknownChance = 0.50f; fullExplore = true;  dive = false; optionalFights = true;  wearUnidentified = false; break;
 		}
 		avoidKnownTraps = intelligence != SimProfile.Intelligence.CLUELESS;
 	}
@@ -234,7 +234,7 @@ final class SimBot {
 			if (up != null) return up;
 		}
 
-		if (foes.isEmpty() && h.HP < h.HT * 0.6f && restsThisFloor < 40 && (hunger == null || !hunger.isStarving())){
+		if (foes.isEmpty() && h.HP < h.HT * restTo && restsThisFloor < 40 && (hunger == null || !hunger.isStarving())){
 			restsThisFloor++;
 			h.rest(true);
 			return "rest until healed";
@@ -414,9 +414,20 @@ final class SimBot {
 		return n;
 	}
 
+	//running away from something next to you only gives it free hits; the bot escapes only by stairs that are close
 	private String retreat(List<Mob> foes){
 		SimNav nav = nav(false);
-		int best = -1, bestScore = Integer.MIN_VALUE;
+		int best = -1;
+		for (LevelTransition t : level().transitions){
+			int c = t.cell();
+			if (c == hero().pos && !level().locked) return tap(c, "escape (low health) by the stairs at");
+			if (nav.reachable(c) && nav.dist[c] <= 6 && (best < 0 || nav.dist[c] < nav.dist[best])) best = c;
+		}
+		if (best >= 0) return stepToward(nav, best, "escape to the stairs");
+		boolean adjacent = false;
+		for (Mob m : foes) if (level().adjacent(m.pos, hero().pos)) adjacent = true;
+		if (adjacent) return null;
+		best = -1; int bestScore = Integer.MIN_VALUE;
 		for (int d : PathFinder.NEIGHBOURS8){
 			int c = hero().pos + d;
 			if (!nav.reachable(c) || nav.dist[c] != 1) continue;

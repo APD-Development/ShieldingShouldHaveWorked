@@ -81,6 +81,21 @@ jobs:
           APD_UPLOAD_KEY_PASSWORD: ${{ secrets.APD_UPLOAD_KEY_PASSWORD }}
           APD_UPLOAD_KEY_ALIAS: ${{ secrets.APD_UPLOAD_KEY_ALIAS }}
         run: ./gradlew :android:bundleRelease :android:assembleRelease --no-daemon
+      - name: No simulator code in the Play build
+        run: |
+          # The APD Simulator is a separate app and the Developer build's read-only history link is debug-only.
+          # Neither may ever reach a Play bundle. Fails the build if any trace of them is in the release bundle or APK.
+          set -e
+          AAB=android/build/outputs/bundle/release/android-release.aab
+          APK=$(find android/build/outputs/apk/release -name "*.apk" | head -1)
+          mkdir -p /tmp/simcheck/aab /tmp/simcheck/apk
+          unzip -q -o "$AAB" -d /tmp/simcheck/aab
+          unzip -q -o "$APK" -d /tmp/simcheck/apk
+          if grep -a -r -l -E "apd/simulator|apd\.simulator|HistoryLinkProvider|READ_HISTORY|apdsim" /tmp/simcheck; then
+            echo "FAIL: simulator or history-link code found in the Play build (files above)."
+            exit 1
+          fi
+          echo "OK: no simulator or history-link code in the Play bundle or release APK."
       - name: Describe outputs
         run: |
           find android/build/outputs -name "*.aab" -o -name "*.apk" | xargs ls -l

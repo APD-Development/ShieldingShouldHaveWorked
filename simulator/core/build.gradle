@@ -4,7 +4,22 @@ apply plugin: 'java-library'
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 java.sourceCompatibility = java.targetCompatibility = appJavaCompatibility
 
+evaluationDependsOn(':core')
+
 dependencies {
     api project(':core')
     testImplementation 'junit:junit:4.13.2'
+    //the game's own headless test setup (real level generation without a screen)
+    testImplementation rootProject.project(':core').sourceSets.test.output
+    testImplementation "com.badlogicgames.gdx:gdx-backend-headless:$gdxVersion"
+    testImplementation "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
+    testImplementation 'org.json:json:20240303'
+}
+
+test {
+    workingDir = rootProject.file('core/src/main/assets')
+    //-Papd.audit.seeds=10000 for a big floor audit; CI runs a small one
+    systemProperty 'apd.audit.debug', project.findProperty('apd.audit.debug') ?: ''
+    systemProperty 'apd.audit.seeds', project.findProperty('apd.audit.seeds') ?: '8'
+    testLogging { events 'failed'; exceptionFormat 'full'; showStandardStreams = true }
 }

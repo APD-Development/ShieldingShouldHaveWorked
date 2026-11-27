@@ -47,6 +47,14 @@ public final class SimRuntime {
 
 	private static SimRuntime instance;
 
+	//the game's log window replaces every listener when it is created, so this is re-added every frame
+	private static final Signal.Listener<String> LOG_LISTENER = new Signal.Listener<String>(){
+		@Override public boolean onSignal(String text){
+			if (instance != null) instance.gameMessage(text);
+			return false;
+		}
+	};
+
 	//desktop test runs only (set by the desktop launcher)
 	public static boolean autostart;
 	public static int exitAfterRuns;
@@ -145,6 +153,7 @@ public final class SimRuntime {
 	private final java.util.Set<String> textSeen = new java.util.HashSet<>();
 	private int itemCheckCounter;
 	private int pendingFrames;
+	private int busySamples, idleSamples;
 	private boolean runTagsRecorded;
 
 	private SimRuntime(SimPlatform platform){
@@ -156,12 +165,7 @@ public final class SimRuntime {
 		if (instance != null) return;
 		instance = new SimRuntime(platform);
 		NetworkGuard.install(instance);
-		GLog.update.add(new Signal.Listener<String>(){
-			@Override public boolean onSignal(String text){
-				if (instance != null) instance.gameMessage(text);
-				return false;
-			}
-		});
+		GLog.update.add(LOG_LISTENER);
 		final Thread.UncaughtExceptionHandler previous = Thread.getDefaultUncaughtExceptionHandler();
 		Thread.setDefaultUncaughtExceptionHandler((thread, error) -> {
 			try { instance.crash(thread, error); } catch (Throwable ignored){}
@@ -220,6 +224,7 @@ public final class SimRuntime {
 		lastFrameNanos = now;
 
 		flushExceptions();
+		GLog.update.add(LOG_LISTENER);
 
 		Scene scene = Game.scene();
 		if (scene != lastScene){ lastScene = scene; framesSinceSceneChange = 0; }
@@ -239,6 +244,17 @@ public final class SimRuntime {
 			return;
 		}
 		if (scene instanceof InterlevelScene){
+			//a region's story is shown with a Continue button: read it (text checks), then continue like a player
+			if (!paused && framesSinceSceneChange > 10){
+				for (SimUi.Choice c : SimUi.buttons(scene)){
+					if (c.label != null && !c.label.trim().isEmpty() && (!(c.button instanceof StyledButton) || ((StyledButton) c.button).alpha() > 0.99f)){
+						for (String t : SimUi.texts(scene)) checkText(t, "story screen");
+						log.turn("story screen: press \"" + c.label + "\"");
+						click(c.button);
+						break;
+					}
+				}
+			}
 			if (interlevelSince == 0) interlevelSince = System.currentTimeMillis();
 			else if (System.currentTimeMillis() - interlevelSince > 90_000 && runActive){
 				report(BugReport.Kind.STUCK, "interlevel", "Loading the next floor never finished (over 90 seconds on the loading screen).", threadDump());
@@ -356,9 +372,11 @@ public final class SimRuntime {
 		pendingFrames = 0;
 
 		if (!h.ready){
-			if (waitingSince == 0) waitingSince = System.currentTimeMillis();
+			if (waitingSince == 0){ waitingSince = System.currentTimeMillis(); busySamples = idleSamples = 0; }
 			long waited = System.currentTimeMillis() - waitingSince;
-			if (waited > 4000 && !slowTurnReported && actorBusy()){
+			if (actorBusy()) busySamples++; else idleSamples++;
+			//slow only if the game was computing (not animating or waiting) in at least 80% of the frames sampled
+			if (waited > 4000 && !slowTurnReported && busySamples >= 20 && busySamples * 5 >= (busySamples + idleSamples) * 4){
 				slowTurnReported = true;
 				report(BugReport.Kind.SLOW, "slowturn:" + topFrames(actorThread(), 4),
 						"One turn took more than 4 seconds to finish (the game was busy working, not animating).", threadDump());
@@ -399,7 +417,7 @@ public final class SimRuntime {
 		String did;
 		try {
 			did = bot.act();
-			lastTurnSeen = Actor.now();
+			lastTurnSeen = Statistics.apdTurn();
 		} catch (Throwable t){
 			botProblem("bot decision", t);
 			try { h.rest(false); } catch (Throwable ignored){}
@@ -434,8 +452,16 @@ public final class SimRuntime {
 		if (Actor.now() - lastProgressTurn > 1500){
 			SimNav nav = new SimNav(Dungeon.level, h.pos, false);
 			String why = bot.noWayForward(nav);
-			report(BugReport.Kind.STUCK, "noprogress-d" + Dungeon.depth + ":" + why.replaceAll("[0-9]", "#"),
-					"No progress for 1500 turns on floor " + Dungeon.depth + " (nothing new explored, killed, found or gained).", "Bot's view of the floor: " + why);
+			FloorTruth.Result truth = FloorTruth.check(Dungeon.level, Dungeon.depth, h.pos);
+			if (truth.problems.isEmpty()){
+				//the real map has a way on: the bot was dumb, not the game
+				report(BugReport.Kind.BOT_STUCK, "botstuck-d" + Dungeon.depth + ":" + why.replaceAll("[0-9]", "#"),
+						"The bot made no progress for 1500 turns on floor " + Dungeon.depth + ", but the real map has a way on.", "Bot's view of the floor: " + why);
+			} else {
+				report(BugReport.Kind.STUCK, "noprogress-d" + Dungeon.depth + ":" + String.join("|", truth.problems).replaceAll("[0-9]+", "#"),
+						"Stuck on floor " + Dungeon.depth + ": " + truth.problems.get(0) + ".",
+						"Checked against the real map (hidden doors and keys included):\n- " + String.join("\n- ", truth.problems) + "\n\nBot's view of the floor: " + why);
+			}
 			endRun("stuck (no progress)");
 			nextRun();
 			return false;
@@ -656,7 +682,7 @@ public final class SimRuntime {
 		Hero h = Dungeon.hero;
 		long minutes = (System.currentTimeMillis() - runStartMillis) / 60000;
 		lastRunSummary = String.format(Locale.ROOT, "Run %d %s: %s on floor %d, level %d, turn %.0f, %d bug report(s), %d min",
-				run, heroClass == null ? "?" : heroClass.title(), outcome, depth, h == null ? 0 : h.lvl, Math.max(Actor.now(), lastTurnSeen), bugsThisRun, minutes);
+				run, heroClass == null ? "?" : heroClass.title(), outcome, depth, h == null ? 0 : h.lvl, (float) Math.max(Statistics.apdTurn(), lastTurnSeen), bugsThisRun, minutes);
 		GameSettings.put("apdsim_last", lastRunSummary);
 		System.out.println("APDSIM_RUN " + lastRunSummary);
 		if (autostart){
@@ -698,7 +724,7 @@ public final class SimRuntime {
 	String where(){
 		Hero h = Dungeon.hero;
 		if (h == null || Dungeon.level == null) return "";
-		return String.format(Locale.ROOT, "T%.0f D%d %s HP %d/%d L%d:", Actor.now(), Dungeon.depth, SimBot.cell(h.pos), h.HP, h.HT, h.lvl);
+		return String.format(Locale.ROOT, "T%.0f D%d %s HP %d/%d L%d:", Statistics.apdTurn(), Dungeon.depth, SimBot.cell(h.pos), h.HP, h.HT, h.lvl);
 	}
 
 	private void gameMessage(String text){
@@ -795,7 +821,7 @@ public final class SimRuntime {
 		r.profileText = rp.encode();
 		r.depth = Dungeon.depth;
 		r.branch = Dungeon.branch;
-		r.turn = Actor.now();
+		r.turn = Statistics.apdTurn();
 		r.heroLevel = Dungeon.hero == null ? 0 : Dungeon.hero.lvl;
 		r.run = run;
 		r.version = Game.version + " (" + Game.versionCode + ")";
@@ -809,11 +835,11 @@ public final class SimRuntime {
 		try {
 			boolean fresh = reports.add(r);
 			bugsThisRun++;
-			if (r.kind != BugReport.Kind.BOT && r.kind != BugReport.Kind.SLOW) firstBugHit = true;
+			if (r.kind.notifies() && r.kind != BugReport.Kind.SLOW) firstBugHit = true;
 			if (fresh){
 				newBugsTotal++;
 				GameSettings.put("apdsim_bugs", newBugsTotal);
-				if (r.kind != BugReport.Kind.BOT || newBugsTotal < 50){
+				if (r.kind.notifies()){
 					platform.notifyBug(r.signature.hashCode(), "APD Simulator: " + r.kind.title,
 							r.summary + " (" + r.heroClass + ", floor " + r.depth + ")");
 				}

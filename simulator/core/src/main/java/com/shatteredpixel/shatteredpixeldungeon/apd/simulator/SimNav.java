@@ -36,7 +36,7 @@ final class SimNav {
 			boolean known = level.visited[i] || level.mapped[i] || level.heroFOV[i];
 			if (!known) continue;
 			int t = level.map[i];
-			boolean pass = level.passable[i] || t == Terrain.DOOR || t == Terrain.OPEN_DOOR;
+			boolean pass = level.passable[i] || t == Terrain.DOOR || t == Terrain.OPEN_DOOR || (level.avoid[i] && !level.pit[i]);
 			if (t == Terrain.LOCKED_DOOR || t == Terrain.CRYSTAL_DOOR || t == Terrain.LOCKED_EXIT || t == Terrain.HERO_LKD_DR) pass = false;
 			if (level.pit[i] || t == Terrain.CHASM) pass = false;
 			Trap trap = level.traps.get(i);

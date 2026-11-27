@@ -21,10 +21,13 @@ public final class BugReport {
 		NONDETERMINISM("Replay did not match"),
 		SAVELOAD("Save and load changed the game"),
 		LEAK("Memory keeps climbing"),
-		BOT("Simulator problem (not a game bug)");
+		BOT("Simulator problem (not a game bug)"),
+		BOT_STUCK("Bot got stuck, the game looks fine");
 
 		public final String title;
 		Kind(String title){ this.title = title; }
+		//only real game problems ping the phone
+		public boolean notifies(){ return this != BOT && this != BOT_STUCK; }
 	}
 
 	public String id;
