@@ -188,6 +188,9 @@ final class SimBot {
 			if (m.state == m.PASSIVE && !Dungeon.level.adjacent(m.pos, hero().pos)
 					&& !(optionalFights && aggression.ordinal() >= SimProfile.Aggression.AGGRESSIVE.ordinal())) continue;
 			if (m instanceof Mimic && m.alignment != Char.Alignment.ENEMY) continue;
+			//the Great Crab blocks every hit from whoever it is chasing and walks slowly: a fight the hero can't win head on,
+			//so anyone but a Clueless bot keeps moving instead of trading blows with it
+			if (m instanceof com.shatteredpixel.shatteredpixeldungeon.actors.mobs.GreatCrab && !clueless()) continue;
 			//a piranha in water can't be reached; only fight it when it is right next to the hero
 			if (m instanceof com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Piranha && !clueless() && !Dungeon.level.adjacent(m.pos, hero().pos)) continue;
 			out.add(m);
@@ -313,6 +316,20 @@ final class SimBot {
 			}
 		}
 
+		//caustic ooze (Goo, fetid rat, slimes) burns every turn until washed off: walk to water, fight or no fight (not Clueless)
+		if (!clueless() && h.buff(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Ooze.class) != null && !level().water[h.pos]){
+			SimNav toWater = nav(true);
+			int best = -1;
+			for (int c = 0; c < level().length(); c++){
+				if (level().water[c] && toWater.reachable(c) && toWater.dist[c] <= (foes.isEmpty() ? 10 : 2) && (piranhaWater == null || !piranhaWater[c])
+						&& (best < 0 || toWater.dist[c] < toWater.dist[best])) best = c;
+			}
+			if (best >= 0){
+				String step = stepToward(toWater, best, "into water to wash the ooze off");
+				if (step != null) return step;
+			}
+		}
+
 		//standing in fire or poison gas: get out first (a Clueless bot doesn't notice)
 		if (!clueless() && SimNav.danger(level(), h.pos)){
 			SimNav out = nav(true);
@@ -408,8 +425,34 @@ final class SimBot {
 					+ (desperation == 1 ? "forget dead ends, allow water and guarded floors" : desperation == 2 ? "walk over known traps" : "search everywhere again") + ")";
 		}
 		lastProblem = noWayForward(nav);
+		if (TurnLog.echo && !tried("mapdump", 1)) System.out.println("APDSIM_MAP\n" + asciiMap(nav));
 		h.rest(false);
 		return "wait (nothing left to do: " + lastProblem + ")";
+	}
+
+	//what the bot knows of the floor, for the trace: @ hero, > exit, < entrance, + door, L locked, ~ water, # wall,
+	//. reachable floor, x known floor it will not or cannot walk on, M monster in view, ? never seen
+	private String asciiMap(SimNav nav){
+		StringBuilder b = new StringBuilder();
+		Level l = level();
+		for (int c = 0; c < l.length(); c++){
+			char ch;
+			int t = l.map[c];
+			boolean known = l.visited[c] || l.mapped[c] || l.heroFOV[c];
+			if (c == hero().pos) ch = '@';
+			else if (!known) ch = '?';
+			else if (l.heroFOV[c] && Actor.findChar(c) != null) ch = 'M';
+			else if (t == Terrain.EXIT || t == Terrain.UNLOCKED_EXIT || t == Terrain.LOCKED_EXIT) ch = '>';
+			else if (t == Terrain.ENTRANCE || t == Terrain.ENTRANCE_SP) ch = '<';
+			else if (t == Terrain.LOCKED_DOOR || t == Terrain.CRYSTAL_DOOR || t == Terrain.HERO_LKD_DR) ch = 'L';
+			else if (t == Terrain.DOOR || t == Terrain.OPEN_DOOR) ch = nav.reachable(c) ? '+' : 'x';
+			else if (l.solid[c]) ch = '#';
+			else if (nav.reachable(c)) ch = l.water[c] ? '~' : '.';
+			else ch = 'x';
+			b.append(ch);
+			if (c % l.width() == l.width() - 1) b.append('\n');
+		}
+		return b.toString();
 	}
 
 	//talents and subclass choices cost no turn
@@ -556,7 +599,7 @@ final class SimBot {
 			focusCell = reach.pos;
 			lastAttack = reach;
 			lastAttackTime = Actor.now();
-			return tap(reach.pos, "attack " + nameOf(reach) + " at");
+			return tap(reach.pos, "attack " + nameOf(reach) + " (" + reach.HP + "/" + reach.HT + " health) at");
 		}
 
 		//ranged options for an enemy that can't be hit yet
@@ -824,7 +867,12 @@ final class SimBot {
 			case SKELETON:
 			case REMAINS:
 				//may hold a cursed item that summons a wraith: not for Cautious bots, and not when hurt
-				return clueless() || (aggression != SimProfile.Aggression.CAUTIOUS && hero().HP >= hero().HT * 0.6f);
+				//a wraith dodges about nine melee swings in ten, so a weak hero loses that fight: Normal bots wait until
+				//they have some health to spend (level 5 and up, nearly full health); bold bots just need to be healthy
+				if (clueless()) return true;
+				if (aggression == SimProfile.Aggression.CAUTIOUS) return false;
+				if (aggression == SimProfile.Aggression.NORMAL) return hero().lvl >= 5 && hero().HP >= hero().HT * 0.9f;
+				return hero().HP >= hero().HT * 0.6f;
 			case FOR_SALE:
 				return wantToBuy(heap);
 			case LOCKED_CHEST:
@@ -893,12 +941,14 @@ final class SimBot {
 	private String unlock(SimNav nav){
 		boolean iron = Notes.keyCount(new IronKey(Dungeon.depth)) > 0;
 		boolean crystal = Notes.keyCount(new CrystalKey(Dungeon.depth)) > 0;
-		if (!iron && !crystal) return null;
+		//the boss drops a worn key that opens the locked way down
+		boolean worn = Notes.keyCount(new com.shatteredpixel.shatteredpixeldungeon.items.keys.WornKey(Dungeon.depth)) > 0;
+		if (!iron && !crystal && !worn) return null;
 		int best = -1, bestDist = Integer.MAX_VALUE;
 		for (int i = 0; i < level().length(); i++){
 			int t = level().map[i];
 			if (!(level().visited[i] || level().mapped[i])) continue;
-			if (!((t == Terrain.LOCKED_DOOR && iron) || (t == Terrain.CRYSTAL_DOOR && crystal))) continue;
+			if (!((t == Terrain.LOCKED_DOOR && iron) || (t == Terrain.CRYSTAL_DOOR && crystal) || (t == Terrain.LOCKED_EXIT && worn))) continue;
 			int a = nav.approach(level(), i);
 			if (a < 0 || attempts.getOrDefault("door" + i, 0) >= 4) continue;
 			if (nav.dist[a] < bestDist){ bestDist = nav.dist[a]; best = i; }
