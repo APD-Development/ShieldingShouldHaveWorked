@@ -33,7 +33,13 @@ final class SaveLoadCheck {
 		Collections.sort(items);
 		out.add("pack: " + items);
 		List<String> buffs = new ArrayList<>();
-		for (Buff b : h.buffs()) buffs.add(b.getClass().getSimpleName());
+		for (Buff b : h.buffs()){
+			String n = b.getClass().getName().replaceAll(".*\\.", "");
+			//an effect that belongs to an item (a wand's or artifact's charger) names its item
+			Object owner = SimUi.field(b, "this$0");
+			if (owner instanceof Item) n += "(" + owner.getClass().getSimpleName() + (((Item) owner).isEquipped(h) ? ", equipped" : ", in pack") + ")";
+			buffs.add(n);
+		}
 		Collections.sort(buffs);
 		out.add("hero effects: " + buffs);
 		List<String> mobs = new ArrayList<>();

@@ -648,7 +648,7 @@ public final class SimRuntime {
 		runProfile = replayProfile != null ? replayProfile : profile();
 		java.util.Random master = new java.util.Random(System.nanoTime() ^ ((long) run << 32));
 		heroClass = classIndex >= 0 ? CLASSES[classIndex]
-				: runProfile.heroClass >= 0 ? CLASSES[runProfile.heroClass] : CLASSES[(run - 1) % CLASSES.length];
+				: runProfile.heroClass >= 0 ? CLASSES[runProfile.heroClass] : CLASSES[(rotation++) % CLASSES.length];
 		if (fixedSeed != 0) seed = fixedSeed;
 		else if (runProfile.seedMode != SimProfile.SeedMode.RANDOM && !runProfile.seedText.isEmpty()) seed = DungeonSeed.convertFromText(runProfile.seedText);
 		else seed = SeedPicker.freshRandomSeed(master);
@@ -1148,6 +1148,7 @@ public final class SimRuntime {
 	//on arrival). Before each loading screen can start, that shared stream is re-seeded from the run, on a helper thread
 	//(this thread has its own isolated stream), so loading a floor is repeatable too.
 	private int sharedSeedCounter;
+	private int rotation;      //class rotation counts only normal runs (determinism replays do not shift it)
 	//determinism check
 	private long runDigest;
 	private int digestCount;

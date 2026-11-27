@@ -239,6 +239,13 @@ public class MagesStaff extends MeleeWeapon {
 			}
 		}
 
+		//APD (found by the simulator's save/load check): the wand being replaced no longer belongs to the staff, so its
+		//charging effect must leave the hero now. It used to linger (invisible, recharging a wand that no longer exists) until
+		//the next save and load. A wand kept by Wand Preservation is in the pack and keeps charging.
+		if (this.wand != null && (Dungeon.hero == null || !Dungeon.hero.belongings.contains(this.wand))){
+			this.wand.stopCharging();
+		}
+
 		this.wand = null;
 
 		wand.resinBonus = 0;

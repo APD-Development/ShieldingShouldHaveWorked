@@ -73,6 +73,7 @@ final class SimBot {
 	private final Map<Integer, Float> npcTalkedAt = new HashMap<>();
 	private int levelKey = Integer.MIN_VALUE;
 	private int restsThisFloor, searchesThisFloor;
+	private long restTurnsThisFloor, restStartTurn = -1;
 	//goals are kept until reached or no longer valid, so the bot does not flip between two equally near targets
 	private int searchGoal = -1, exploreGoal = -1;
 	float floorStartTurn;
@@ -83,6 +84,9 @@ final class SimBot {
 	final SimProfile.Intelligence intelligence;
 	//what the settings mean for play (all hand-written rules)
 	final float healAt, backOffAt, tryUnknownChance, restTo;
+	//rest only below this share of health, and at most this many turns per floor
+	final float restBelow;
+	final int restBudget;
 	final boolean fullExplore, dive, optionalFights, avoidKnownTraps, wearUnidentified;
 
 	SimBot(long seed, SimProfile.Aggression aggression, SimProfile.Intelligence intelligence){
@@ -96,6 +100,12 @@ final class SimBot {
 			default:         restTo = 0.80f; healAt = 0.35f; backOffAt = 0.20f; tryUnknownChance = 0.50f; fullExplore = true;  dive = false; optionalFights = true;  wearUnidentified = false; break;
 		}
 		avoidKnownTraps = intelligence != SimProfile.Intelligence.CLUELESS;
+		switch (aggression){
+			case CAUTIOUS:   restBelow = 0.70f; restBudget = 250; break;
+			case AGGRESSIVE: restBelow = 0.30f; restBudget = 80;  break;
+			case RECKLESS:   restBelow = 0f;    restBudget = 0;   break;
+			default:         restBelow = 0.50f; restBudget = 150; break;
+		}
 	}
 
 	boolean smart(){ return intelligence.ordinal() >= SimProfile.Intelligence.SMART.ordinal(); }
@@ -126,6 +136,8 @@ final class SimBot {
 			refused.clear();
 			bannedGoals.clear();
 			restsThisFloor = 0;
+			restTurnsThisFloor = 0;
+			restStartTurn = -1;
 			searchesThisFloor = 0;
 			searchGoal = exploreGoal = -1;
 			floorStartTurn = Actor.now();
@@ -289,10 +301,15 @@ final class SimBot {
 			if (up != null) return up;
 		}
 
-		if (foes.isEmpty() && h.HP < h.HT * restTo && restsThisFloor < 40 && (hunger == null || !hunger.isStarving())){
-			restsThisFloor++;
+		//resting heals slowly and costs food: only below a health line, never while hungry, and within a turn budget per floor
+		if (restStartTurn >= 0){
+			restTurnsThisFloor += com.shatteredpixel.shatteredpixeldungeon.Statistics.apdTurn() - restStartTurn;
+			restStartTurn = -1;
+		}
+		if (foes.isEmpty() && h.HP < h.HT * restBelow && restTurnsThisFloor < restBudget && (hunger == null || !hunger.isHungry())){
+			restStartTurn = com.shatteredpixel.shatteredpixeldungeon.Statistics.apdTurn();
 			h.rest(true);
-			return "rest until healed";
+			return "rest until healed (" + restTurnsThisFloor + " of " + restBudget + " rest turns used on this floor)";
 		}
 
 		String loot = loot(nav);
