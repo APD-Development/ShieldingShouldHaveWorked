@@ -6,7 +6,7 @@ java.sourceCompatibility = java.targetCompatibility = appJavaCompatibility
 base { archivesName = 'apd-simulator-desktop' }
 
 application.mainClass = 'com.shatteredpixel.shatteredpixeldungeon.desktop.DesktopSimLauncher'
-application.applicationName = 'APD-Simulator'
+application.applicationName = 'APD-Sim-Visual'
 
 processResources {
     from new File(project(':core').projectDir, "/src/main/assets")
@@ -39,7 +39,28 @@ dependencies {
 //the desktop platform code is shared with the game's desktop module (sources only, nothing from the simulator goes back)
 sourceSets.main.java.srcDir new File(project(':desktop').projectDir, 'src/main/java')
 
-application.applicationDefaultJvmArgs = ['-Xmx2g']
+//Two programs in one folder, same jars, same version: APD-Sim-Visual and APD-Sim-Headless.
+//Each start script tells the program which one it is and where it is installed (so Headless can start Visual).
+application.applicationDefaultJvmArgs = ['-Xmx2g', '-Dapd.sim.app=visual', '-Dapd.sim.home=APD_SIM_HOME']
+def fixHome = { t ->
+    t.doLast {
+        t.unixScript.text = t.unixScript.text.replace('APD_SIM_HOME', '$APP_HOME')
+        t.windowsScript.text = t.windowsScript.text.replace('APD_SIM_HOME', '%APP_HOME%')
+    }
+}
+tasks.named('startScripts') { fixHome(it) }
+tasks.register('headlessStartScripts', CreateStartScripts) {
+    applicationName = 'APD-Sim-Headless'
+    mainClass = application.mainClass
+    classpath = tasks.named('startScripts').get().classpath
+    outputDir = layout.buildDirectory.dir('headlessScripts').get().asFile
+    defaultJvmOpts = ['-Xmx2g', '-Dapd.sim.app=headless', '-Dapd.sim.home=APD_SIM_HOME']
+    fixHome(it)
+}
+distributions.main {
+    distributionBaseName = 'APD-Sim'
+    contents { from(tasks.named('headlessStartScripts')) { into 'bin' } }
+}
 
 tasks.named('run', JavaExec) {
     workingDir = rootProject.file('core/src/main/assets')
@@ -47,7 +68,7 @@ tasks.named('run', JavaExec) {
     if (project.hasProperty('apd.sim.fixedhash')) jvmArgs '-XX:+UnlockExperimentalVMOptions', '-XX:hashCode=2'
     systemProperty 'Specification-Version', appVersionName + '-SIM'
     systemProperty 'Implementation-Version', appVersionCode
-    ['apd.sim.dir','apd.sim.runs','apd.sim.speed','apd.sim.autostart','apd.sim.aggression','apd.sim.intelligence','apd.sim.grid','apd.sim.realHistory','apd.sim.checkpoint','apd.sim.replay','apd.sim.trace','apd.sim.verify','apd.sim.seedbase','apd.sim.headless'].each { k ->
+    ['apd.sim.dir','apd.sim.runs','apd.sim.speed','apd.sim.autostart','apd.sim.aggression','apd.sim.intelligence','apd.sim.grid','apd.sim.realHistory','apd.sim.checkpoint','apd.sim.replay','apd.sim.trace','apd.sim.verify','apd.sim.seedbase','apd.sim.headless','apd.sim.app'].each { k ->
         if (project.hasProperty(k)) systemProperty k, project.property(k)
     }
 }

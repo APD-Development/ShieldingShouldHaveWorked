@@ -35,6 +35,8 @@ public class SimulatorActivity extends AndroidLauncher {
 	protected void onCreate(Bundle savedInstanceState){
 		//the simulator plays the Developer build's version of the game
 		ApdFeatures.parse("testBuild\ngrudge\ndemoUnlock\nclericPlayable\n");
+		//which of the two apps this is comes from its package name (same code in both)
+		SimRuntime.app = getPackageName().endsWith(".headless") ? "headless" : "visual";
 		SimRuntime.install(new Platform(getApplicationContext()));
 		//automated check on an emulator (CI) can start playing straight away
 		if (getIntent() != null && getIntent().getBooleanExtra("apdsim.autostart", false)){
@@ -62,6 +64,12 @@ public class SimulatorActivity extends AndroidLauncher {
 	//"Send this run to the simulator" from the Developer build: seed, class and rules
 	private void handleIntent(Intent intent){
 		if (intent == null || !"com.charltonchris29.adhdpixeldungeon.simulator.PLAY_SEED".equals(intent.getAction())) return;
+		//from the Headless app: an exact run to watch (class, seed, bot seed, simulator settings)
+		if (intent.hasExtra("botSeed")){
+			SimRuntime.handOver(intent.getStringExtra("heroClass"), intent.getLongExtra("seedNumber", 0), intent.getLongExtra("botSeed", 0),
+					intent.getStringExtra("profile"));
+			return;
+		}
 		SimRuntime.requestedRun(intent.getStringExtra("seed"), intent.getStringExtra("heroClass"),
 				intent.getIntExtra("difficulty", 0), intent.getIntExtra("challenges", 0), intent.getStringExtra("customRules"),
 				intent.getBooleanExtra("tryDeath", false));
@@ -121,6 +129,19 @@ public class SimulatorActivity extends AndroidLauncher {
 			if (Build.VERSION.SDK_INT < 29) return false;
 			PowerManager pm = context.getSystemService(PowerManager.class);
 			return pm != null && pm.getCurrentThermalStatus() >= PowerManager.THERMAL_STATUS_SEVERE;
+		}
+
+		@Override public boolean openInVisual(String heroClass, long seed, long botSeed, String profileText){
+			try {
+				Intent open = new Intent("com.charltonchris29.adhdpixeldungeon.simulator.PLAY_SEED")
+						.setClassName("com.charltonchris29.adhdpixeldungeon.simulator.visual", SimulatorActivity.class.getName())
+						.putExtra("heroClass", heroClass).putExtra("seedNumber", seed).putExtra("botSeed", botSeed).putExtra("profile", profileText)
+						.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+				context.startActivity(open);
+				return true;
+			} catch (RuntimeException notInstalled){
+				return false;
+			}
 		}
 
 		@Override public void close(){

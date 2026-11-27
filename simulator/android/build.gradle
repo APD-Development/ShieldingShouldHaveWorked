@@ -16,6 +16,22 @@ android {
         manifestPlaceholders = [appName: 'APD Simulator']
     }
 
+    //Two apps from the same code, installable side by side, same version on both:
+    //APD Sim Headless (no graphics mode, benchmark, export) and APD Sim Visual (watchable runs).
+    flavorDimensions 'app'
+    productFlavors {
+        headless {
+            dimension 'app'
+            applicationIdSuffix '.headless'
+            manifestPlaceholders = [appName: 'APD Sim Headless']
+        }
+        visual {
+            dimension 'app'
+            applicationIdSuffix '.visual'
+            manifestPlaceholders = [appName: 'APD Sim Visual']
+        }
+    }
+
     sourceSets {
         main {
             //the game's Android platform code is shared as source (nothing from the simulator goes back to APD)

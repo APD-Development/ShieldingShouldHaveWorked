@@ -21,7 +21,10 @@ import java.io.File;
 public class DesktopSimLauncher {
 
 	public static void main(String[] args){
-		File dir = new File(System.getProperty("apd.sim.dir", System.getProperty("user.home") + File.separator + "APD-Simulator")).getAbsoluteFile();
+		//two programs from the same code: APD-Sim-Headless and APD-Sim-Visual (their start scripts set apd.sim.app)
+		SimRuntime.app = "headless".equals(System.getProperty("apd.sim.app")) ? "headless" : "visual";
+		File dir = new File(System.getProperty("apd.sim.dir", System.getProperty("user.home") + File.separator
+				+ (SimRuntime.headlessApp() ? "APD-Sim-Headless" : "APD-Sim-Visual"))).getAbsoluteFile();
 		dir.mkdirs();
 		String base = dir.getPath() + File.separator;
 		//from this program's jar; the system properties are only for running straight from the build tool
@@ -33,7 +36,7 @@ public class DesktopSimLauncher {
 		ApdFeatures.parse("testBuild\ngrudge\ndemoUnlock\nclericPlayable\n");
 
 		Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
-		config.setTitle("APD Simulator");
+		config.setTitle(SimRuntime.appTitle());
 		config.setPreferencesConfig(base, Files.FileType.Absolute);
 		SPDSettings.set(new Lwjgl3Preferences(new Lwjgl3FileHandle(base + "simulator-settings.xml", Files.FileType.Absolute)));
 		FileUtils.setDefaultFileProperties(Files.FileType.Absolute, base);
@@ -48,6 +51,22 @@ public class DesktopSimLauncher {
 			@Override public int batteryPercent(){ return -1; }
 			@Override public boolean charging(){ return true; }
 			@Override public boolean hot(){ return false; }
+			@Override public boolean openInVisual(String heroClass, long seed, long botSeed, String profileText){
+				//starts the Visual program that sits next to this one, replaying the run at watching speed
+				try {
+					String home = System.getProperty("apd.sim.home");
+					if (home == null) return false;
+					boolean win = System.getProperty("os.name", "").toLowerCase(java.util.Locale.ROOT).contains("win");
+					File script = new File(new File(home, "bin"), win ? "APD-Sim-Visual.bat" : "APD-Sim-Visual");
+					if (!script.exists()) return false;
+					ProcessBuilder pb = new ProcessBuilder(script.getAbsolutePath());
+					pb.environment().put("JAVA_OPTS", "-Dapd.sim.autostart=1 -Dapd.sim.speed=0 -Dapd.sim.runs=0 -Dapd.sim.replay=" + heroClass + ":" + seed + ":" + botSeed);
+					pb.inheritIO().start();
+					return true;
+				} catch (Exception e){
+					return false;
+				}
+			}
 			@Override public void close(){ System.exit(0); }
 		});
 		if (System.getProperty("apd.sim.autostart") != null){

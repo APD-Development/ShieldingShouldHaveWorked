@@ -19,6 +19,8 @@
 	<uses-permission android:name="com.charltonchris29.adhdpixeldungeon.indev.permission.READ_HISTORY" />
 	<queries>
 		<package android:name="com.charltonchris29.adhdpixeldungeon.indev" />
+		<!-- the Headless app opens runs in the Visual app -->
+		<package android:name="com.charltonchris29.adhdpixeldungeon.simulator.visual" />
 	</queries>
 
 	<application

@@ -13,5 +13,7 @@ public interface SimPlatform {
 	boolean charging();
 	//true when the phone reports it is getting hot
 	boolean hot();
+	//Headless app: hand a run to the Visual app to watch (same class, seed, bot seed, settings). False when the Visual app is missing.
+	boolean openInVisual(String heroClass, long seed, long botSeed, String profileText);
 	void close();
 }

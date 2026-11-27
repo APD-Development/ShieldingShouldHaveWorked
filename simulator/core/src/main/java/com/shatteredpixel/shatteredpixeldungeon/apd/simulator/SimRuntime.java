@@ -57,6 +57,18 @@ public final class SimRuntime {
 		}
 	};
 
+	//Which app this is: "headless" (APD Sim Headless), "visual" (APD Sim Visual). Both are built from this same code;
+	//the launcher sets it before the game starts. The mode is fixed by the app.
+	public static String app = "visual";
+	public static boolean headlessApp(){ return "headless".equals(app); }
+	public static String appTitle(){ return headlessApp() ? "APD Sim Headless" : "APD Sim Visual"; }
+
+	//a run handed over from the Headless app (or the Developer build): {class, seed, bot seed, profile text}
+	public static volatile String[] handedOver;
+	public static void handOver(String heroClass, long seed, long botSeed, String profileText){
+		handedOver = new String[]{heroClass, String.valueOf(seed), String.valueOf(botSeed), profileText == null ? "" : profileText};
+	}
+
 	//desktop test runs only (set by the desktop launcher)
 	public static boolean autostart;
 	public static int exitAfterRuns;
@@ -107,7 +119,18 @@ public final class SimRuntime {
 	public boolean paused;
 	//Mode 1 headless (no drawing, as fast as possible) or Mode 2 visual (watchable). Same engine and bot either way.
 	public boolean headless;
-	public void setHeadless(boolean h){ headless = h; GameSettings.put("apdsim_headless", h); }
+	//Benchmark (Headless app): 10 fixed seeds, always the same, so results compare between builds and bot settings
+	public String benchResult = "";
+	private int benchLeft, benchDeepSum, benchRuns;
+	private long benchStart;
+	public void startBenchmark(){
+		benchLeft = 10; benchDeepSum = 0; benchRuns = 0; benchStart = System.currentTimeMillis();
+		forcedSeedBase = 777;
+		paused = false;
+		setPlaying(true);
+		resetStopClock();
+		startRun();
+	}
 	//the player has the controls (take over / Chauffeur); the bot watches and does nothing
 	public boolean driving;
 	private boolean chauffeurDone;
@@ -196,8 +219,8 @@ public final class SimRuntime {
 	void loadSettings(){
 		playing = GameSettings.getBoolean("apdsim_playing", false);
 		speed = GameSettings.getInt("apdsim_speed", 0, 0, SPEED_LABELS.length - 1);
-		headless = GameSettings.getBoolean("apdsim_headless", false);
-		if (forcedHeadless) headless = true;
+		headless = headlessApp() || forcedHeadless;
+		benchResult = GameSettings.getString("apdsim_bench", "");
 		run = GameSettings.getInt("apdsim_run", 0);
 		newBugsTotal = GameSettings.getInt("apdsim_bugs", 0);
 		lastRunSummary = GameSettings.getString("apdsim_last", "");
@@ -251,6 +274,12 @@ public final class SimRuntime {
 		GLog.update.add(LOG_LISTENER);
 
 		Scene scene = Game.scene();
+		String[] hand = handedOver;
+		if (hand != null && scene != null && !Game.switchingScene() && !(scene instanceof InterlevelScene)){
+			handedOver = null;
+			try { replayVisual(hand[0], Long.parseLong(hand[1]), Long.parseLong(hand[2]), hand[3]); return; }
+			catch (RuntimeException bad){ botProblem("opening a handed-over run", bad); }
+		}
 		if (scene != lastScene){ lastScene = scene; framesSinceSceneChange = 0; }
 		else framesSinceSceneChange++;
 		if (scene == null || Game.switchingScene()) return;
@@ -888,6 +917,17 @@ public final class SimRuntime {
 			FileUtils.getFileHandle("simruns.txt").writeString(lastRunSummary + " | seed " + DungeonSeed.convertToCode(seed)
 					+ " | bot seed " + botSeed + " | build " + Game.version + " | crashes " + crashesThisRun + " | deepest " + maxDepth + " | save/load checks " + saveLoadsThisRun
 					+ (startedFrom.isEmpty() ? "" : " | checkpoint") + "\n", true, "UTF-8");
+			if (benchLeft > 0){
+				benchDeepSum += maxDepth; benchRuns++;
+				if (--benchLeft == 0){
+					long ms = Math.max(1, System.currentTimeMillis() - benchStart);
+					benchResult = String.format(Locale.ROOT, "Benchmark: %d runs, average deepest floor %.2f, %.0f runs per hour, %s/%s, build %s",
+							benchRuns, benchDeepSum / (float) benchRuns, benchRuns * 3600000f / ms, profileOfRun().aggression.title, profileOfRun().intelligence.title, Game.version);
+					GameSettings.put("apdsim_bench", benchResult);
+					forcedSeedBase = 0;
+					setPlaying(false);
+				}
+			}
 			RunLog.append(this, outcome, depth, h == null ? 0 : h.lvl, deathTurn >= 0 ? deathTurn : Statistics.apdTurn(), maxDepth,
 					Long.toHexString(runDigest), System.currentTimeMillis() - runStartMillis);
 			Digest.runEnded(this, maxDepth);

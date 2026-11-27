@@ -24,7 +24,10 @@ final class WndSimRuns extends Window {
 				@Override protected void onClick(){
 					hide();
 					try {
-						sim.replayVisual(r[3], Long.parseLong(r[5]), Long.parseLong(r[6]), r.length > 23 ? r[23].replace('|', '\t') : "");
+						String prof = r.length > 23 ? r[23].replace('|', '\t') : "";
+						//the Headless app hands the run to the Visual app; if that is not installed it is replayed here
+						if (!SimRuntime.headlessApp() || !sim.platform.openInVisual(r[3], Long.parseLong(r[5]), Long.parseLong(r[6]), prof))
+							sim.replayVisual(r[3], Long.parseLong(r[5]), Long.parseLong(r[6]), prof);
 					} catch (RuntimeException bad){
 						sim.botProblem("replaying a logged run", bad);
 					}

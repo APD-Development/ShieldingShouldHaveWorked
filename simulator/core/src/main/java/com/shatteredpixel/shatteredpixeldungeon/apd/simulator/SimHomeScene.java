@@ -36,7 +36,7 @@ public class SimHomeScene extends PixelScene {
 		float x = (w - width) / 2f;
 		float y = 4;
 
-		RenderedTextBlock title = renderTextBlock("APD Simulator", 10);
+		RenderedTextBlock title = renderTextBlock(SimRuntime.appTitle(), 10);
 		title.hardlight(0xFFFF44);
 		title.setPos(x, y);
 		c.add(title);
@@ -57,6 +57,7 @@ public class SimHomeScene extends PixelScene {
 
 		HistorySource hs = SimRuntime.history();
 		String status = (hs == null ? "Your history: not available" : hs.status()) + "\n"
+				+ (sim.benchResult.isEmpty() ? "" : sim.benchResult + "\n")
 				+ "Runs played: " + Math.max(0, sim.run) + ". Bug reports: " + sim.reportCount() + "."
 				+ (sim.lastRunSummary.isEmpty() ? "" : "\nLast: " + sim.lastRunSummary);
 		RenderedTextBlock st = renderTextBlock(status, 6);
@@ -67,7 +68,8 @@ public class SimHomeScene extends PixelScene {
 
 		List<RedButton> buttons = new ArrayList<>();
 		buttons.add(new RedButton(sim.playing ? "Keep playing" : "Start", 8){ @Override protected void onClick(){ sim.paused = false; sim.setPlaying(true); sim.resetStopClock(); sim.startRun(); } });
-		buttons.add(new RedButton("Mode: " + (sim.headless ? "Headless (no graphics, fastest)" : "Visual (watchable)"), 7){ @Override protected void onClick(){ sim.setHeadless(!sim.headless); refresh(); } });
+		if (SimRuntime.headlessApp())
+			buttons.add(new RedButton("Benchmark (10 fixed seeds)", 7){ @Override protected void onClick(){ sim.startBenchmark(); } });
 		buttons.add(new RedButton("Speed: " + sim.speedLabel(), 7){ @Override protected void onClick(){ sim.cycleSpeed(); refresh(); } });
 		buttons.add(new RedButton("Class: " + p.classTitle(), 7){ @Override protected void onClick(){
 			p.heroClass = p.heroClass + 1 >= HeroClass.values().length ? -1 : p.heroClass + 1; save(p); } });

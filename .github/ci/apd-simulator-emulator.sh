@@ -1,8 +1,8 @@
 #!/bin/bash
 # Installs the APD Simulator on the running emulator, lets it play, and prints the results into the log.
 set -x
-PKG=com.charltonchris29.adhdpixeldungeon.simulator
-APK=simulator/android/build/outputs/apk/debug/android-debug.apk
+PKG=com.charltonchris29.adhdpixeldungeon.simulator.visual
+APK=simulator/android/build/outputs/apk/visual/debug/android-visual-debug.apk
 adb install -r "$APK"
 adb logcat -c
 adb shell pm grant $PKG android.permission.POST_NOTIFICATIONS || true

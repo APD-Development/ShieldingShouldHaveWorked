@@ -101,6 +101,18 @@ Last updated: 2026-11-27 (end of the first long session). Every scheduled run is
    coverage, bug handling tools, reports and outputs, fun extras.
 
 ## Run log (newest first; one line per run: what was done, what was verified, commit)
+- 2026-11-27 live session, night: Chris's new requirement: TWO SEPARATE APPS, installable side by side, same code, same
+  version, every build makes both: "APD Sim Headless" (`...simulator.headless`: no-graphics mode, benchmark button, export)
+  and "APD Sim Visual" (`...simulator.visual`: watchable runs, speed, personalities, later a grid of runs). Tapping a seed in
+  Headless opens it in Visual. Same split on PC. BUILT: Android product flavors `headless`/`visual` in `simulator/android`
+  (the app knows which it is from its package name, `SimRuntime.app`), hand-over by an explicit intent (`SimRuntime.handOver`),
+  Benchmark button (10 fixed seeds, seedbase 777, shows average deepest floor and runs per hour), PC start scripts
+  `bin/APD-Sim-Headless` and `bin/APD-Sim-Visual` in one zip (`APD-Sim-<version>.zip`), Headless starts Visual with the run.
+  VERIFIED: both APKs build with version 4.0.9-apd-SIM-bS2 and the right names and IDs; the PC Headless program plays the
+  benchmark seeds with the same digests as before. NOT VERIFIED: the hand-over on a phone or PC (needs two installed apps and
+  a screen), the Benchmark button. NOT BUILT YET (Chris asked for them): Headless running in the background as a foreground
+  service (needs a true no-graphics game loop: the game stops stepping when Android stops drawing), the threads setting
+  (several runs at once), the Visual app's grid of runs. The old single app ID `...simulator` (build S1) is retired: uninstall it.
 - 2026-11-27 live session, evening: (1) Chris's new requirement: TWO MODES. Mode 1 headless (no drawing, fastest, every
   death/bug/stat logged to an exportable file), Mode 2 visual (watchable, personalities). Same engine and bot code, so a seed
   gives the same result in both; a button replays any headless seed in visual mode. BUILT: Mode toggle on the home screen,
