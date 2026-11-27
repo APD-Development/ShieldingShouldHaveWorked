@@ -380,7 +380,8 @@ final class SimBot {
 		if (unlock != null) return unlock;
 
 		boolean exitKnown = exitReachable(nav);
-		boolean starvingNoFood = hunger != null && hunger.isStarving() && bestFood() == null;
+		//hungry with nothing to eat: food is deeper, so stop wandering and take the stairs (a Clueless bot only when starving)
+		boolean starvingNoFood = hunger != null && bestFood() == null && (hunger.isStarving() || (!clueless() && hunger.isHungry()));
 		boolean skipExplore = exitKnown && (dive || starvingNoFood || (!fullExplore && Actor.now() - floorStartTurn > 300));
 		if (!skipExplore){
 			String explore = explore(nav);
@@ -445,6 +446,12 @@ final class SimBot {
 		Hero h = hero();
 		Mob near = foes.get(0);
 		focusCell = near.pos;
+
+		//Goo (floor 5 boss), not Clueless: wash caustic ooze off in water, and step out of reach while it pumps up its big hit
+		if (!clueless()){
+			String goo = gooRules(foes);
+			if (goo != null) return goo;
+		}
 
 		//piranhas can't leave the water: step away from it instead of trading bites at the edge (not Clueless)
 		if (!clueless() && near instanceof com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Piranha){
@@ -577,6 +584,40 @@ final class SimBot {
 		if (!tried("waitfor" + near.id(), 6)){
 			h.rest(false);
 			return "wait for " + nameOf(near) + " at " + cell(near.pos);
+		}
+		return null;
+	}
+
+	private String gooRules(List<Mob> foes){
+		Hero h = hero();
+		com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Goo goo = null;
+		for (Mob m : foes) if (m instanceof com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Goo) goo = (com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Goo) m;
+		if (goo == null) return null;
+		Object p = SimUi.field(goo, "pumpedUp");
+		int pumped = p instanceof Integer ? (Integer) p : 0;
+		SimNav nav = nav(false);
+		//pumping up: its next hit reaches 2 cells and hurts a lot; get more than 2 away if that takes one or two steps
+		if (pumped > 0 && level().distance(h.pos, goo.pos) <= 2){
+			int best = -1;
+			for (int c = 0; c < level().length(); c++){
+				if (!nav.reachable(c) || nav.dist[c] > 2 || level().distance(c, goo.pos) <= 2) continue;
+				if (best < 0 || nav.dist[c] < nav.dist[best]) best = c;
+			}
+			if (best >= 0){
+				String step = stepToward(nav, best, "out of reach while Goo pumps up");
+				if (step != null) return step;
+			}
+		}
+		//caustic ooze burns every turn until washed off in water
+		if (h.buff(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Ooze.class) != null && !level().water[h.pos]){
+			int best = -1;
+			for (int c = 0; c < level().length(); c++){
+				if (level().water[c] && nav.reachable(c) && nav.dist[c] <= 3 && (best < 0 || nav.dist[c] < nav.dist[best])) best = c;
+			}
+			if (best >= 0){
+				String step = stepToward(nav, best, "into water to wash the ooze off");
+				if (step != null) return step;
+			}
 		}
 		return null;
 	}
@@ -924,6 +965,13 @@ final class SimBot {
 		if (!(level().visited[cell] || level().mapped[cell])) return null;
 		if (level().locked) return null;
 		if (hero().pos == cell || level().adjacent(hero().pos, cell)){
+			//a boss waits on every fifth floor: go down healthy (not Clueless, not Reckless), as long as food allows
+			Hunger hg = hero().buff(Hunger.class);
+			if ((Dungeon.depth + 1) % 5 == 0 && !clueless() && aggression != SimProfile.Aggression.RECKLESS
+					&& hero().HP < hero().HT * 0.9f && (hg == null || !hg.isHungry()) && !tried("bossrest", 6)){
+				hero().rest(true);
+				return "rest before the boss floor";
+			}
 			if (tried("descend", 30)) return null;
 			return tap(cell, "go down the stairs at");
 		}
