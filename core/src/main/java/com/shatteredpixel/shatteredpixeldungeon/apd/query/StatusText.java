@@ -54,6 +54,24 @@ public final class StatusText {
 		return n + " " + (n == 1 ? one : many);
 	}
 
+	static String leftOutSummary( QueryResult.Stats s, String one, String many ){
+		int out = s.total - s.matching;
+		if (out <= 0) return "";
+		List<String> parts = new ArrayList<>();
+		int counted = 0;
+		if (s.unfinished > 0){ parts.add(s.unfinished + " still going or not finished"); counted += s.unfinished; }
+		if (s.otherRulesets > 0){ parts.add(s.otherRulesets + " under other rules"); counted += s.otherRulesets; }
+		if (s.unknownRuleset > 0){ parts.add(s.unknownRuleset + " with unrecorded rules"); counted += s.unknownRuleset; }
+		if (s.mixedRuleset > 0){ parts.add(s.mixedRuleset + " whose rules changed mid-run"); counted += s.mixedRuleset; }
+		if (s.duplicates > 0){ parts.add(s.duplicates + " duplicate" + (s.duplicates == 1 ? "" : "s") + " of imported " + many); counted += s.duplicates; }
+		int filtered = s.inScope - s.matching;
+		if (filtered > 0){ parts.add(filtered + " removed by your filters"); counted += filtered; }
+		if (counted < out) parts.add((out - counted) + " hidden for other reasons (hidden information, small groups)");
+		StringBuilder b = new StringBuilder(plural(out, one, many)).append(" not shown: ");
+		for (int i = 0; i < parts.size(); i++) b.append(i == 0 ? "" : ", ").append(parts.get(i));
+		return b.append('.').toString();
+	}
+
 	//rulesetLabel: how the player's current rules read ("challenges 0, exotic 30%, difficulty 3"), may be empty
 	public static List<Line> lines( QueryResult r, String viewTitle, String rulesetLabel ){
 		List<Line> out = new ArrayList<>();
@@ -63,9 +81,13 @@ public final class StatusText {
 		if (r.isGrouped()){
 			out.add(new Line(viewTitle + ": " + plural(r.groups.size(), "group", "groups") + ", counting " + s.matching + " of " + s.total + " " + many, INFO, ACT_NONE));
 		} else {
-			out.add(new Line(viewTitle + ": " + s.matching + " of " + s.total + " " + many
+			out.add(new Line(viewTitle + ": " + s.matching + " shown of " + s.total + " " + many + " recorded"
 					+ (s.matching == s.inScope ? "" : " (your filters removed " + (s.inScope - s.matching) + ")"), INFO, ACT_NONE));
 		}
+		//Trial jurors 4, 7 and 12 (Nov 27): Home said "1 finished run" while this said "1 of 6 runs" with nothing saying
+		//what the other 5 were. Say where every left-out one went, in one line, before the details below.
+		String why = leftOutSummary(s, one, many);
+		if (!why.isEmpty()) out.add(new Line(why, INFO, ACT_NONE));
 		String rules;
 		switch (q.scope.rules){
 			case ALL: rules = "all rules, mixed together"; break;

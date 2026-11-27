@@ -228,7 +228,10 @@ public final class UimsdHome {
 	private static Card overview( Dataset ds, Query q, QueryResult r ){
 		Card c = new Card("runs", "Your runs");
 		DatasetDef def = ds.def;
-		c.line("Finished runs", String.valueOf(r.rows.size()), "", CellText.EXACT);
+		//Trial jurors 4, 7 and 12 (Nov 27): show the recorded total next to the finished count so it matches the Runs table
+		int recorded = r.stats.total;
+		c.line("Finished runs", String.valueOf(r.rows.size()),
+				recorded > r.rows.size() ? "of " + recorded + " recorded; the Runs table says why the rest are left out" : "", CellText.EXACT);
 		stat(c, "Won", def, q, Aggregate.count().where(FactKeys.OUTCOME, 1), r.rows);
 		stat(c, "Died", def, q, Aggregate.count().where(FactKeys.OUTCOME, 0), r.rows);
 		stat(c, "Abandoned", def, q, Aggregate.count().where(FactKeys.OUTCOME, 2), r.rows);
