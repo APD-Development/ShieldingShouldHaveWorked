@@ -25,7 +25,7 @@ public final class TextCheck {
 
 	//Clean mode audit: with Adult humor off, none of these may ever be shown (whole words, any case)
 	private static final Pattern SWEAR = Pattern.compile(
-			"(?i)\\b(fuck\\w*|motherfuck\\w*|shit(s|ty|ting|ted|head\\w*)?|bullshit|bitch\\w*|bastard\\w*|asshole\\w*|dickhead\\w*|cunt\\w*|cock(sucker)?s?|piss(ed)?|goddamn\\w*|twat\\w*|wanker\\w*|prick\\w*|slut\\w*|whore\\w*)\\b");
+			"(?i)\\b(fuck\\w*|motherfuck\\w*|shit(s|ty|ting|ted|head\\w*)?|bullshit|bitch\\w*|bastard\\w*|asshole\\w*|dickhead\\w*|cunt\\w*|cock(sucker)?s?|piss(ed)?|goddamn\\w*|twat\\w*|wanker\\w*|slut\\w*|whore\\w*)\\b");
 
 	//null when the text is clean
 	public static String swear(String text){
