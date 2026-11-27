@@ -628,7 +628,13 @@ public class UimsdScene extends PixelScene {
 		what.setPos(x0, y);y = what.bottom() + 4;
 
 		//the tour hides after the first view (Chris, Nov 26); the Guide still replays it
-		if (com.shatteredpixel.shatteredpixeldungeon.apd.demo.UimsdTourFlag.showWelcomeTourButton()){
+		//Trial jurors 3, 9 and 10 (Nov 27): the welcome card offered the tour "even before you have played", then the tap
+		//said it opens after 10 runs. Before 10 runs the card now says so instead of offering a button that refuses.
+		if (!com.shatteredpixel.shatteredpixeldungeon.windows.UimsdGate.tourAvailable()){
+			RenderedTextBlock locked = text("The guided tour opens after you finish 10 runs of your own.", UimsdStyle.SIZE_META, UimsdStyle.FAINT, contentW);
+			locked.setPos(x0, y);
+			y = locked.bottom() + 4;
+		} else if (com.shatteredpixel.shatteredpixeldungeon.apd.demo.UimsdTourFlag.showWelcomeTourButton()){
 			StyledButton tour = new StyledButton(Chrome.Type.GREY_BUTTON_TR, "Take the tour (2 minutes)", 8){
 				@Override
 				protected void onClick(){
@@ -639,7 +645,7 @@ public class UimsdScene extends PixelScene {
 			ui.add(tour);
 			reg("tour", x0, y, contentW, 22);
 			y += 24;
-			RenderedTextBlock sampleNote = text("The tour uses a small made-up history, so it works even before you have played. It never touches your own.", UimsdStyle.SIZE_META, UimsdStyle.FAINT, contentW);
+			RenderedTextBlock sampleNote = text("The tour can use your own runs or a small made-up history. It never changes your own.", UimsdStyle.SIZE_META, UimsdStyle.FAINT, contentW);
 			sampleNote.setPos(x0, y);
 			y = sampleNote.bottom() + 4;
 		}
