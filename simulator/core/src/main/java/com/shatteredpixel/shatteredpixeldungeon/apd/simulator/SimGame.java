@@ -111,6 +111,48 @@ public class SimGame extends ShatteredPixelDungeon {
 		r.frame();
 	}
 
+	//---- running with the screen away (Android) ----------------------------------------------------------------
+	//Android stops drawing when the app leaves the screen, and the game only moves when a frame is drawn. The phone
+	//app then keeps the same game going from a thread of its own (see SimulatorActivity): the same frames, minus the
+	//drawing. Nothing here is used on PC.
+
+	//true when a headless run is playing and should carry on with the screen away
+	public static boolean wantsBackground(){
+		SimRuntime r = SimRuntime.get();
+		return r != null && r.headless && r.playing && !r.paused;
+	}
+
+	//one frame without drawing; called on the thread that took over
+	public void backgroundFrame(){
+		try {
+			step();
+		} catch (Throwable t){
+			logException(t);
+		}
+	}
+
+	//The run's own random numbers belong to one thread (the one that draws). Whoever takes over the frames takes them
+	//over too, or the run would continue on different numbers. Called on the new thread before its first frame.
+	public static void adoptThread(){
+		try {
+			java.lang.reflect.Field f = com.watabou.utils.Random.class.getDeclaredField("isolatedThread");
+			f.setAccessible(true);
+			synchronized (com.watabou.utils.Random.class){
+				if (f.get(null) != null) f.set(null, Thread.currentThread());
+			}
+		} catch (Throwable t){
+			SimRuntime r = SimRuntime.get();
+			if (r != null) r.caught(t);
+		}
+	}
+
+	//for the notification: what the simulator is doing right now
+	public static String backgroundStatus(){
+		SimRuntime r = SimRuntime.get();
+		if (r == null) return "";
+		return r.status + (r.lastRunSummary.isEmpty() ? "" : "\nLast: " + r.lastRunSummary);
+	}
+
 	//The game closes itself in one place on purpose: a cursed wand's rare joke effect shows a fake "Abort, Retry,
 	//Fail?" error and then really quits (after saving). In the simulator that must end the run, not the simulator.
 	@Override

@@ -81,6 +81,142 @@ public class SimulatorActivity extends AndroidLauncher {
 		super.initialize(new SimGame(Game.platform), config);
 	}
 
+	//---- running with the screen away -----------------------------------------------------------------------------
+	//Android stops drawing when the app leaves the screen, and the game only moves when a frame is drawn. While a
+	//headless run is playing, a thread here borrows the game's graphics context (free while Android is not drawing) and
+	//keeps running the same game frames without drawing them. When the app comes back the thread hands everything
+	//back before Android draws again. A foreground service keeps the app and the processor awake meanwhile.
+	//If the phone will not lend the context, the simulator simply waits, as it did before, and the notification says so.
+
+	private android.opengl.EGLDisplay eglDisplay;
+	private android.opengl.EGLContext eglContext;
+	private volatile boolean backgroundOn;
+	private Thread backgroundThread;
+	//for the automated check: how the last attempt went ("" = never tried)
+	static volatile String backgroundResult = "";
+
+	@Override
+	protected void onResume(){
+		stopBackground();
+		super.onResume();
+		//on the drawing thread: note the graphics context (it can be a new one after a long time away) and take the
+		//run's random numbers back
+		com.badlogic.gdx.Gdx.app.postRunnable(() -> {
+			eglDisplay = android.opengl.EGL14.eglGetCurrentDisplay();
+			eglContext = android.opengl.EGL14.eglGetCurrentContext();
+			SimGame.adoptThread();
+		});
+	}
+
+	@Override
+	protected void onPause(){
+		boolean carryOn = SimGame.wantsBackground() && eglContext != null
+				&& eglContext != android.opengl.EGL14.EGL_NO_CONTEXT && !isFinishing();
+		//the service must be started while the app is still on the screen
+		if (carryOn){
+			try { SimulatorService.start(getApplicationContext()); }
+			catch (RuntimeException notAllowed){ carryOn = false; backgroundResult = "service refused: " + notAllowed; }
+		}
+		super.onPause();
+		if (carryOn) startBackground();
+	}
+
+	@Override
+	protected void onDestroy(){
+		stopBackground();
+		super.onDestroy();
+	}
+
+	private void startBackground(){
+		if (backgroundThread != null) return;
+		backgroundOn = true;
+		final android.opengl.EGLDisplay display = eglDisplay;
+		final android.opengl.EGLContext context = eglContext;
+		final Context app = getApplicationContext();
+		backgroundThread = new Thread(() -> {
+			android.opengl.EGLSurface surface = offscreenSurface(display, context);
+			//Android lets go of the context a moment after the pause: try for a few seconds
+			boolean mine = false;
+			for (int tries = 0; tries < 60 && backgroundOn && !mine; tries++){
+				mine = android.opengl.EGL14.eglMakeCurrent(display, surface, surface, context);
+				if (!mine) try { Thread.sleep(50); } catch (InterruptedException e){ break; }
+			}
+			if (!mine){
+				backgroundResult = "no context (error " + android.opengl.EGL14.eglGetError() + ")";
+				android.util.Log.i("APDSIM", "APDSIM_BACKGROUND " + backgroundResult);
+				SimulatorService.show(app, "Waiting: this phone cannot run the simulator with the screen away. Open the app to continue.");
+				destroy(display, surface);
+				return;
+			}
+			backgroundResult = "running";
+			android.util.Log.i("APDSIM", "APDSIM_BACKGROUND started, surface " + (surface != android.opengl.EGL14.EGL_NO_SURFACE));
+			try {
+				SimGame.adoptThread();
+				SimGame game = (SimGame) Game.instance;
+				long shown = 0, frames = 0;
+				while (backgroundOn){
+					long before = System.nanoTime();
+					game.backgroundFrame();
+					frames++;
+					long now = System.currentTimeMillis();
+					if (now - shown > 5000){
+						shown = now;
+						backgroundResult = "running, " + frames + " batches";
+						android.util.Log.i("APDSIM", "APDSIM_BACKGROUND " + backgroundResult + " | " + SimGame.backgroundStatus().replace('\n', ' '));
+						SimulatorService.show(app, SimGame.backgroundStatus());
+					}
+					//nothing to play (paused by battery or heat, or the run list is done): do not spin
+					if (!SimGame.wantsBackground()){
+						try { Thread.sleep(250); } catch (InterruptedException e){ break; }
+					} else if (System.nanoTime() - before < 2_000_000L){
+						try { Thread.sleep(2); } catch (InterruptedException e){ break; }
+					}
+				}
+			} finally {
+				android.opengl.EGL14.eglMakeCurrent(display, android.opengl.EGL14.EGL_NO_SURFACE,
+						android.opengl.EGL14.EGL_NO_SURFACE, android.opengl.EGL14.EGL_NO_CONTEXT);
+				destroy(display, surface);
+				android.util.Log.i("APDSIM", "APDSIM_BACKGROUND handed back");
+			}
+		}, "apdsim-background");
+		backgroundThread.start();
+	}
+
+	//before Android draws again: stop the loop and wait until it has given the context back
+	private void stopBackground(){
+		Thread t = backgroundThread;
+		backgroundThread = null;
+		backgroundOn = false;
+		if (t != null){
+			t.interrupt();
+			try { t.join(15000); } catch (InterruptedException ignored){}
+		}
+		SimulatorService.stop(getApplicationContext());
+	}
+
+	//a 1x1 surface nobody sees, of the same kind as the context; none at all if the phone will not make one (most
+	//phones can run a context without a surface)
+	private static android.opengl.EGLSurface offscreenSurface(android.opengl.EGLDisplay display, android.opengl.EGLContext context){
+		try {
+			int[] id = new int[1];
+			if (!android.opengl.EGL14.eglQueryContext(display, context, android.opengl.EGL14.EGL_CONFIG_ID, id, 0))
+				return android.opengl.EGL14.EGL_NO_SURFACE;
+			android.opengl.EGLConfig[] configs = new android.opengl.EGLConfig[1];
+			int[] count = new int[1];
+			if (!android.opengl.EGL14.eglChooseConfig(display, new int[]{android.opengl.EGL14.EGL_CONFIG_ID, id[0], android.opengl.EGL14.EGL_NONE}, 0,
+					configs, 0, 1, count, 0) || count[0] < 1) return android.opengl.EGL14.EGL_NO_SURFACE;
+			android.opengl.EGLSurface s = android.opengl.EGL14.eglCreatePbufferSurface(display, configs[0],
+					new int[]{android.opengl.EGL14.EGL_WIDTH, 1, android.opengl.EGL14.EGL_HEIGHT, 1, android.opengl.EGL14.EGL_NONE}, 0);
+			return s == null ? android.opengl.EGL14.EGL_NO_SURFACE : s;
+		} catch (RuntimeException e){
+			return android.opengl.EGL14.EGL_NO_SURFACE;
+		}
+	}
+
+	private static void destroy(android.opengl.EGLDisplay display, android.opengl.EGLSurface surface){
+		if (surface != null && surface != android.opengl.EGL14.EGL_NO_SURFACE) android.opengl.EGL14.eglDestroySurface(display, surface);
+	}
+
 	private void createChannels(){
 		if (Build.VERSION.SDK_INT < 26) return;
 		NotificationManager nm = getSystemService(NotificationManager.class);
