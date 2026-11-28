@@ -412,6 +412,12 @@ public final class SimRuntime {
 			log.turn(where() + " Chauffeur: reached floor " + Dungeon.depth + ", the controls are yours");
 			platform.notifyBug(7, "APD Simulator: Chauffeur", "Reached floor " + Dungeon.depth + ". The controls are yours.");
 		}
+		if (closedItself){
+			closedItself = false;
+			endRun("ended: the game closed itself (a cursed wand's fake crash does that)");
+			nextRun();
+			return;
+		}
 		//boss test: the fight is over once the hero has gone deeper than the floor the checkpoint was saved on
 		if (runProfile != null && runProfile.bossTest && !startedFrom.isEmpty() && Dungeon.depth > startedDepth){
 			endRun("TEST boss floor " + startedDepth + " cleared");
@@ -1295,4 +1301,8 @@ public final class SimRuntime {
 
 	//public for the HUD
 	public boolean runActive(){ return runActive; }
+
+	private boolean closedItself;
+	//called when the game asked to quit during a run (see SimGame.finish)
+	public void gameClosedItself(){ closedItself = true; }
 }

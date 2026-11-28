@@ -88,6 +88,18 @@ public class SimGame extends ShatteredPixelDungeon {
 		r.frame();
 	}
 
+	//The game closes itself in one place on purpose: a cursed wand's rare joke effect shows a fake "Abort, Retry,
+	//Fail?" error and then really quits (after saving). In the simulator that must end the run, not the simulator.
+	@Override
+	public void finish(){
+		SimRuntime r = SimRuntime.get();
+		if (r != null && r.runActive()){
+			r.gameClosedItself();
+			return;
+		}
+		super.finish();
+	}
+
 	@Override
 	protected void logException(Throwable tr){
 		SimRuntime r = SimRuntime.get();
