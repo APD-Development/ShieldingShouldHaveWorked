@@ -127,7 +127,8 @@ final class SimBot {
 	private float lastStepTime = -1;
 
 	private SimNav nav(boolean throughMobs){
-		SimNav.avoidSentries = desperation < 1 && !clueless() && aggression.ordinal() <= SimProfile.Aggression.NORMAL.ordinal();
+		//the sentry's room is a side room with a prize, never the way on: only Reckless and Clueless bots go in
+		SimNav.avoidSentries = !clueless() && aggression != SimProfile.Aggression.RECKLESS;
 		SimNav.avoidWater = desperation < 1;
 		SimNav.piranhaWater = piranhaWater;
 		SimNav n = new SimNav(level(), hero().pos, throughMobs, avoidKnownTraps && desperation < 2, refused);
@@ -224,6 +225,9 @@ final class SimBot {
 			if (m.state == m.PASSIVE
 					&& !(optionalFights && aggression.ordinal() >= SimProfile.Aggression.AGGRESSIVE.ordinal())) continue;
 			if (m instanceof Mimic && m.alignment != Char.Alignment.ENEMY) continue;
+			//a red sentry cannot be killed and only fires at whoever stands on its room's floor: nothing to fight,
+			//the bot just keeps off that floor (a Clueless bot walks in)
+			if (m instanceof com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.SentryRoom.Sentry && !clueless()) continue;
 			//the Great Crab blocks every hit from whoever it is chasing and walks slowly: a fight the hero can't win head on,
 			//so anyone but a Clueless bot keeps moving instead of trading blows with it
 			if (m instanceof com.shatteredpixel.shatteredpixeldungeon.actors.mobs.GreatCrab && !clueless()) continue;
