@@ -196,9 +196,11 @@ public final class RunTurnBrowser {
     public void previous(){current = current<=step ? 1 : current-step;}
     public List<String> events(){List<String> v=timeline.get(current);return v==null?Collections.emptyList():Collections.unmodifiableList(v);}
     public int recordedTurns(){return timeline.size();}
+    /** "1 turn" / "10 turns". */
+    public static String turns(long n){return n+(n==1?" turn":" turns");}
     public String summary(){
         StringBuilder out=new StringBuilder("Turn ").append(current).append(" / ").append(lastTurn)
-          .append("\nStep: ").append(step).append(" turn(s)\n");
+          .append("\nStep: ").append(turns(step)).append("\n");
         List<String> items=events();
         if(items.isEmpty()) return out.append("\nNo recorded event for this turn.\nOlder runs may have missing details.").toString();
         for(String item:items) out.append("\n- ").append(item);
