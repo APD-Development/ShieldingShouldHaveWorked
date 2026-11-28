@@ -1280,15 +1280,46 @@ final class SimBot {
 		}
 	}
 
-	private boolean wantToBuy(Heap heap){
-		Item i = heap.peek();
-		if (i == null) return false;
+	//What an item in the shop is worth to this hero right now (0 = leave it). Gold is short on floor 6, so what is
+	//bought first matters: armor the hero can wear that beats what is worn, then a better weapon, then healing,
+	//an ankh, food when the pack is low on it. Anything else only with gold to spare.
+	private int shopScore(Item i){
+		if (i == null) return 0;
 		int price = Shopkeeper.sellPrice(i);
-		if (price > Dungeon.gold) return false;
-		if (i instanceof Bag || i instanceof Food || i instanceof Ankh) return true;
-		if (i instanceof PotionOfHealing) return true;
-		if (i instanceof Armor && hero().belongings.armor() != null && ((Armor) i).tier > hero().belongings.armor().tier) return true;
-		return Dungeon.gold > price * 3;
+		if (price > Dungeon.gold) return 0;
+		Hero h = hero();
+		if (clueless()) return 1 + rng.nextInt(5);
+		if (i instanceof Armor){
+			Armor worn = h.belongings.armor();
+			if (((Armor) i).STRReq() <= h.STR() && (worn == null || ((Armor) i).tier > worn.tier)) return 100 + ((Armor) i).tier;
+			return 0;
+		}
+		if (i instanceof MeleeWeapon && !(h.belongings.weapon() instanceof MagesStaff)){
+			MeleeWeapon held = h.belongings.weapon() instanceof MeleeWeapon ? (MeleeWeapon) h.belongings.weapon() : null;
+			if (((MeleeWeapon) i).STRReq() <= h.STR() && (held == null || ((MeleeWeapon) i).tier > held.tier)) return 80 + ((MeleeWeapon) i).tier;
+			return 0;
+		}
+		if (i instanceof PotionOfHealing) return 70;
+		if (i instanceof Ankh) return 60;
+		if (i instanceof Food){
+			int held = 0;
+			for (Item f : items()) if (f instanceof Food) held += f.quantity();
+			return held < 2 ? 50 : 0;
+		}
+		return Dungeon.gold > price * 3 ? 10 : 0;
+	}
+
+	private boolean wantToBuy(Heap heap){
+		int mine = shopScore(heap.peek());
+		if (mine <= 0) return false;
+		//only the best thing on offer that the gold reaches; the next best is looked at again after buying it
+		for (Heap other : level().heaps.valueList()){
+			if (other == heap || other.type != Heap.Type.FOR_SALE || other.isEmpty()) continue;
+			if (!(level().visited[other.pos] || level().mapped[other.pos] || level().heroFOV[other.pos])) continue;
+			if (attempts.getOrDefault("heap" + other.pos + ":" + other.size(), 0) >= 3) continue;
+			if (shopScore(other.peek()) > mine) return false;
+		}
+		return true;
 	}
 
 	private String loot(SimNav nav){
