@@ -54,6 +54,51 @@ Before the gear rules 18 of 20 bots met Goo in cloth armor with the starting wea
 Still open on gear: Average spends scrolls on cloth; items above the hero's strength are never worn; no shop buying plan;
 arcane stylus, enchant scrolls and the Ghost reward are not used on purpose. New top killers: DM-100 4, Goo 4.
 
+## Fight judge, fight plan, boss tests and the history check (Nov 27-28)
+Owner said "Stop stopping": keep working without waiting between steps. Replies to the owner are in caveman style again
+(his request); code, commits and docs stay normal English.
+
+**Fight judge** (`FightJudge.java`): arithmetic on the game's own numbers, no learning. Hit chance by the game's rule
+(`hitChance`), monster damage and armor sampled 200 times from a throwaway copy on a throwaway random stream (a live
+`damageRoll` has side effects, for example Goo's pump), hero accuracy from level, weapon and ring, surprise swings always
+land. Gives hit chances, damage each way, turns to kill, health the fight should cost. Used for: when to heal, which
+enemy to hit first (Smart+), ranged openers in dangerous fights, how long Smart+ rest. `-Dapd.sim.nojudge=true` plays by
+the older fixed rules so the judge can be measured.
+
+**Fight plan** (`FightPlan.java`, Smart and better; from National Pie's design): step 0 read the arena (how open, nearest
+corridor or doorway, water, traps, stairs), step 1 read each enemy (speed, damage, health, ranged, turns to melee), step 2
+corridor reachable before fast enemies arrive, step 3 compare cost here, in the corridor and health left, step 4 pick an
+item (thrown gas/fire, mirror image/lullaby/terror, teleport). No retreat is planned past an enemy faster than the hero
+(`reachableInTime`). Average bots only get the judge's healing rule; the owner has not said whether Average should plan.
+
+**Boss tests from checkpoints**: snapshots are saved on every new deepest floor (40 kept per class on boss floors, with
+a readable `checkpoint.txt`). `SimProfile.bossTest` + `checkpointFloor` (home screen "Boss test" button; PC
+`-Dapd.sim.checkpoint=5 -Dapd.sim.bosstest=true`, optional `-Dapd.sim.checkpointName=`) starts every run from a snapshot
+saved on that exact floor, taken in turn (`Checkpoints.inTurn`) so two series face the same fights, and ends when the
+floor is cleared or the hero dies. Marked TEST in the run line and left out of the summary's win rates. Only Goo can be
+tested so far: 35 floor 5 snapshots, 3 for floor 10, none deeper. The Boss test button and summary change are not yet
+checked on screen.
+
+**Goo, 210 fights from the same 35 snapshots (Average)**: 57% judge off = 58% judge on (the judge does not matter against
+one boss in an open room; Smart with the planner 56%) -> 66% after fixing rule order (the ooze rule ran before healing
+and pump dodging and aimed at Goo's own cell) -> 69% pump dodge only when the moves left really end more than 2 cells
+away (Goo pumps for two turns, the pump is wasted if the hero is out of reach when it swings) -> 68% fighting from water
+(ooze deaths 13 to 3, deaths to hits 52 to 65). By class about: Mage 85%, Huntress 75%, Duelist 60%, Warrior 60%,
+Rogue 57%, Cleric 40-60%. Ranged classes win; the rest is gear and level on arrival.
+
+**Other bot bugs fixed on the way**: stairs are now the end of a path only (exploring walked onto the stairs up and left
+the floor); no resting while health is dropping or with the Great Crab near (the bot ignores the crab and was resting
+while it attacked); no stair escape on a sealed boss floor.
+
+**History check**: the owner uploaded his history export (118 detailed runs, 953,301 events, 1 win; mostly Duelist; 11
+rulesets, 30 runs on custom rules). It is NEVER committed; it lives outside the repo.
+`JudgeHistoryCheckTest` (`-Papd.history.dir=<unpacked export>`) compares the judge with every recorded weapon swing
+(83,253): monsters hit the hero 46.2% real against 45.3% judge; monster damage before armor 8.97 real against 8.33 from a
+calm copy (so the judge scales by that ratio, `DAMAGE_SEEN_IN_PLAY`); monster armor 1.99 against 1.96; the hero hits
+80.5% real against 76.2% from level alone (snakes 53% against 24%: surprise attacks, now counted for the first swing).
+Open with the owner: which of his runs count as real attempts, and whether the history should also set rule numbers or
+build a "Chris bot".
+
 ## How it is built
 - `simulator/core`: bot, checks, reports, screens (package `...apd.simulator`). `simulator/android`: the app. `simulator/desktop`: PC program.
 - `SimGame` (subclass of the game) drives everything; `SimRuntime` is the per-frame driver; `SimBot` decides; `SimNav` paths;
