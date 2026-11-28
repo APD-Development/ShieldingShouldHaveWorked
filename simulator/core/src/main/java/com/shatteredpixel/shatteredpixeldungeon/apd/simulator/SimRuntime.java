@@ -79,6 +79,8 @@ public final class SimRuntime {
 	public static boolean forcedBossTest;
 	//desktop: play by the older fixed rules, to measure the fight judge against them
 	public static boolean forcedNoJudge;
+	//desktop: switch the corner trick and doorway ambush off, to measure them
+	public static boolean forcedNoCorner;
 	public static String checkpointNameHas;
 	private int startedDepth;
 	public static int forcedVerify = -1;
