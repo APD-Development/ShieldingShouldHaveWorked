@@ -795,6 +795,14 @@ final class SimBot {
 					if (mark == null) mark = new boolean[level().length()];
 					for (int c = 0; c < level().length(); c++) if (level().distance(c, at) <= 2) mark[c] = true;
 				}
+				//the shock field flips every turn between the straight and the diagonal cells around the shocker,
+				//so every cell next to it is unsafe to stop on
+				if (b instanceof com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Tengu.ShockerAbility){
+					int at = ((com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Tengu.ShockerAbility) b).shockerPos;
+					if (at < 0 || at >= level().length()) continue;
+					if (mark == null) mark = new boolean[level().length()];
+					for (int c = 0; c < level().length(); c++) if (level().distance(c, at) <= 1) mark[c] = true;
+				}
 			}
 		}
 		for (Class<? extends com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob> k : java.util.Arrays.asList(
