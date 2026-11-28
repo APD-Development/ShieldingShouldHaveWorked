@@ -702,7 +702,9 @@ final class SimBot {
 		}
 
 		//Smart and Expert: against a group, step into a spot where fewer of them can reach
-		if (smart() && foes.size() >= 2 && reach == null){
+		//(the fight plan does this properly when the judge is on; this older rule is kept for judge-off runs, and only a
+		//few times per floor: with enemies in view that never come it used to trade places with looting forever)
+		if (smart() && foes.size() >= 2 && reach == null && !FightJudge.enabled && !tried("choke", 8)){
 			String choke = chokePoint(foes);
 			if (choke != null) return choke;
 		}
