@@ -773,7 +773,7 @@ final class SimBot {
 				if (i instanceof Potion && ((Potion) i).isKnown() && harmful((Potion) i) && level().distance(h.pos, near.pos) >= 2) return use(i, Item.AC_THROW);
 			}
 			for (Item i : items()){
-				if (i instanceof MissileWeapon && !i.isEquipped(h) && (dangerous || rng.nextInt(2) == 0)) return use(i, Item.AC_THROW);
+				if (i instanceof MissileWeapon && !i.isEquipped(h) && (dangerous || Char.hasProp(near, Char.Property.BOSS) || rng.nextInt(2) == 0)) return use(i, Item.AC_THROW);
 			}
 		}
 
