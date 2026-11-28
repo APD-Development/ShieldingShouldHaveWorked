@@ -792,6 +792,9 @@ final class SimBot {
 				if (b instanceof com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Tengu.BombAbility){
 					int at = ((com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Tengu.BombAbility) b).bombPos;
 					if (at < 0 || at >= level().length()) continue;
+					//the bomb counts 3, 2, 1 on screen: its blast area is safe to cross until the count is nearly out
+					Object timer = SimUi.field(b, "timer");
+					if (timer instanceof Integer && (Integer) timer > 1) continue;
 					if (mark == null) mark = new boolean[level().length()];
 					for (int c = 0; c < level().length(); c++) if (level().distance(c, at) <= 2) mark[c] = true;
 				}
