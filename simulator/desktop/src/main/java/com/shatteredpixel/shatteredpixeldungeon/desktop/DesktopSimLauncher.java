@@ -79,6 +79,7 @@ public class DesktopSimLauncher {
 			SimRuntime.forcedBossTest = Boolean.getBoolean("apd.sim.bosstest");
 			SimRuntime.forcedNoJudge = Boolean.getBoolean("apd.sim.nojudge");
 			SimRuntime.cornerTrick = Boolean.getBoolean("apd.sim.corner");
+			com.shatteredpixel.shatteredpixeldungeon.apd.simulator.SimGame.headlessBatchMillis = Math.max(50, Long.getLong("apd.sim.batchms", 200));
 			SimRuntime.checkpointNameHas = System.getProperty("apd.sim.checkpointName");
 			SimRuntime.forcedReplay = System.getProperty("apd.sim.replay");
 			SimRuntime.forcedVerify = Integer.getInteger("apd.sim.verify", -1);

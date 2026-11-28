@@ -37,20 +37,31 @@ public class SimGame extends ShatteredPixelDungeon {
 			r.frame();
 			return;
 		}
+		renders++;
+		long t0 = System.nanoTime();
 		int steps = r.stepsPerFrame();
 		//headless mode gives almost the whole frame to the game (no drawing to pay for)
-		long until = System.nanoTime() + (r.headless ? 200_000_000L : 15_000_000L);
+		long until = System.nanoTime() + (r.headless ? headlessBatchMillis * 1_000_000L : 15_000_000L);
 		for (int i = 0; i < steps; i++){
 			super.step();
 			if (!r.lockstep() || Game.switchingScene()) break;
 			if (steps > 4 && System.nanoTime() > until) break;
 		}
+		stepNanos += System.nanoTime() - t0;
 	}
 
 	//Headless mode: the same game frames, the same turns, the same bot; only the drawing is left out. One frame in 20 is
 	//still drawn so the screen shows progress. Because nothing in the game depends on drawing, a seed gives the same result
 	//in headless and in visual mode (the determinism check compares them the same way as any replay).
 	private int skippedDraws;
+	//for the speed line in the run summary: screen refreshes, and time spent running game frames
+	static long renders, stepNanos;
+	//Headless: how long the game runs between screen refreshes. 200 ms keeps the buttons responsive on a phone. On a
+	//machine with no graphics card a refresh can cost most of a second, so unattended PC runs ask for much longer
+	//(-Dapd.sim.batchms). The game frames are the same either way; only how often the screen is touched changes.
+	public static long headlessBatchMillis = 200;
+	//how many times faster the clock runs on the screens between floors in headless mode
+	public static float headlessScreenSpeed = 40f;
 
 	@Override
 	protected void draw(){
@@ -66,7 +77,19 @@ public class SimGame extends ShatteredPixelDungeon {
 			if (r != null) r.freeFrames++;
 			FrameRunnables.install();
 			FrameRunnables.drain();
-			super.update();
+			//Headless: the screens between floors (fades, loading, the death screen) are timed by the clock, and nothing
+			//in them is game play. Running their clock fast is where most of a headless run's waiting goes.
+			boolean hurry = r != null && r.headless && r.playing && !r.paused && !r.driving;
+			//...except while a floor is actually being built: that screen has a watchdog on the same clock ("waited more
+			//than 10 seconds on levelgen"), which a fast clock would trip for no reason
+			if (hurry && scene instanceof com.shatteredpixel.shatteredpixeldungeon.scenes.InterlevelScene
+					&& "STATIC".equals(String.valueOf(SimUi.field(scene, "phase")))) hurry = false;
+			if (hurry) Game.timeScale = headlessScreenSpeed;
+			try {
+				super.update();
+			} finally {
+				if (hurry) Game.timeScale = 1f;
+			}
 			if (r != null && r.runActive() && TurnStepper.active()) r.runTurns();
 			if (r != null) r.frame();
 			return;

@@ -934,6 +934,9 @@ public final class SimRuntime {
 		lastRunSummary = String.format(Locale.ROOT, "Run %d %s: %s on floor %d, level %d, turn %.0f, %d bug report(s), %d min",
 				run, heroClass == null ? "?" : heroClass.title(), shown, depth, h == null ? 0 : h.lvl, (float) (deathTurn >= 0 ? deathTurn : Math.max(Statistics.apdTurn(), lastTurnSeen)), bugsThisRun, minutes);
 		GameSettings.put("apdsim_last", lastRunSummary);
+		if (autostart) System.out.println("APDSIM_PERF run " + run + ": " + lockFrames + " game frames in " + SimGame.renders + " screen refreshes, "
+				+ (SimGame.stepNanos / 1_000_000) + " ms in game frames of " + (System.currentTimeMillis() - runStartMillis) + " ms");
+		SimGame.renders = 0; SimGame.stepNanos = 0;
 		System.out.println("APDSIM_RUN " + lastRunSummary + (verifying ? " [determinism replay]" : "") + " digest " + Long.toHexString(runDigest));
 		if (autostart){
 			for (String t : log.turns()) System.out.println("APDSIM_TURN " + t);
