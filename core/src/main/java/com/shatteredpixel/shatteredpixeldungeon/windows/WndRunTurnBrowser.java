@@ -59,7 +59,7 @@ public final class WndRunTurnBrowser extends Window {
     }
     private void chooseStep(){
         java.util.List<WndUimsdList.Entry> choices=new java.util.ArrayList<>();
-        for(long n:new long[]{1,10,100,1000}) choices.add(WndUimsdList.Entry.item(n+" turn(s)").current(n==model.step()));
+        for(long n:new long[]{1,10,100,1000}) choices.add(WndUimsdList.Entry.item(com.shatteredpixel.shatteredpixeldungeon.apd.query.RunTurnBrowser.turns(n)).current(n==model.step()));
         choices.add(WndUimsdList.Entry.item("Custom amount..."));
         ShatteredPixelDungeon.scene().addToFront(WndUimsdList.menu("Turns per press",
                 "Choose how far Previous and Next move.",choices,(index,checked)->{
