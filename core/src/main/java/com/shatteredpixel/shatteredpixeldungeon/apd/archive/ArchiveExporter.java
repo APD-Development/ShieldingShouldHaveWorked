@@ -83,8 +83,8 @@ public final class ArchiveExporter {
 				b.append("\n").append(redactedRunLogs).append(redactedRunLogs == 1 ? " log belongs to a run" : " logs belong to runs").append(" that ")
 						.append(redactedRunLogs == 1 ? "is" : "are").append(" not finished: they are exported without their hidden information, which stays protected until the run is over.");
 			}
-			if (skippedUnreadable > 0) b.append("\n").append(skippedUnreadable).append(" file(s) were not readable as logs and were left out.");
-			if (skippedDamagedTails > 0) b.append("\n").append(skippedDamagedTails).append(" saved damaged tail(s) stay on this device only.");
+			if (skippedUnreadable > 0) b.append("\n").append(skippedUnreadable).append(skippedUnreadable == 1 ? " file was not readable as a log and was left out." : " files were not readable as logs and were left out.");
+			if (skippedDamagedTails > 0) b.append("\n").append(skippedDamagedTails).append(skippedDamagedTails == 1 ? " saved damaged tail stays on this device only." : " saved damaged tails stay on this device only.");
 			for (String n : notes) b.append("\n").append(n);
 			return b.toString();
 		}
@@ -199,7 +199,7 @@ public final class ArchiveExporter {
 				for (Plan p : included) if (p.redact) report.redactedRunLogs++;
 			}
 			manifest.notes.add("Raw evidence only. The index and the derived caches are rebuilt by the app that imports this.");
-			if (report.skippedDamagedTails > 0) manifest.notes.add(report.skippedDamagedTails + " saved damaged tails were not exported.");
+			if (report.skippedDamagedTails > 0) manifest.notes.add(report.skippedDamagedTails + (report.skippedDamagedTails == 1 ? " saved damaged tail was not exported." : " saved damaged tails were not exported."));
 
 			//second pass: write
 			CountingOutputStream counted = new CountingOutputStream(new NonClosingOutputStream(out));
