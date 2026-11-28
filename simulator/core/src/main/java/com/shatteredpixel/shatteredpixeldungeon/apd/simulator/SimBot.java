@@ -763,6 +763,24 @@ final class SimBot {
 			}
 		}
 
+		//magic cannot miss: against something next to the hero that dodges most swings, a staff or wand charge is worth
+		//far more than a swing (not Clueless)
+		if (reach != null && !clueless() && FightJudge.enabled){
+			FightJudge.Verdict rv = FightJudge.judge(reach);
+			if (!rv.surprise && rv.heroHits < 0.5f){
+				MagesStaff staff = find(MagesStaff.class);
+				if (staff != null && staffCharges(staff) > 0 && has(staff, MagesStaff.AC_ZAP)){
+					focusCell = reach.pos;
+					return use(staff, MagesStaff.AC_ZAP);
+				}
+				for (Item i : items()){
+					if (i instanceof com.shatteredpixel.shatteredpixeldungeon.items.wands.DamageWand && ((Wand) i).curCharges > 0 && has(i, Wand.AC_ZAP)){
+						focusCell = reach.pos;
+						return use(i, Wand.AC_ZAP);
+					}
+				}
+			}
+		}
 		//on the way to a doorway ambush: keep going, then wait beside the door until it steps into the doorway unaware
 		if (doorwaySpot >= 0){
 			Mob target = foes.size() == 1 && foes.get(0).id() == doorwayFor ? foes.get(0) : null;
@@ -795,7 +813,10 @@ final class SimBot {
 			SpiritBow bow = find(SpiritBow.class);
 			if (bow != null && has(bow, SpiritBow.AC_SHOOT)) return use(bow, SpiritBow.AC_SHOOT);
 			MagesStaff staff = find(MagesStaff.class);
-			if (staff != null && staffCharges(staff) > 0 && has(staff, MagesStaff.AC_ZAP)) return use(staff, MagesStaff.AC_ZAP);
+			//the last staff charge is kept for something that is hard to hit or dangerous (the judge's numbers)
+			boolean keepLast = FightJudge.enabled && staff != null && staffCharges(staff) == 1 && !dangerous
+					&& FightJudge.judge(near).heroHits >= 0.5f && !Char.hasProp(near, Char.Property.BOSS);
+			if (staff != null && staffCharges(staff) > 0 && has(staff, MagesStaff.AC_ZAP) && !keepLast) return use(staff, MagesStaff.AC_ZAP);
 			for (Item i : items()){
 				//wands and thrown weapons: now and then in an easy fight, every time in one that costs a third of the health left
 				if (i instanceof Wand && ((Wand) i).curCharges > 0 && has(i, Wand.AC_ZAP) && (dangerous || Char.hasProp(near, Char.Property.BOSS) || rng.nextInt(2) == 0)) return use(i, Wand.AC_ZAP);
