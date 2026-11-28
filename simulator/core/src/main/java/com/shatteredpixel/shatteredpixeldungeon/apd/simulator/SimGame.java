@@ -174,6 +174,7 @@ public class SimGame extends ShatteredPixelDungeon {
 
 	@Override
 	protected void switchScene(){
+		TurnStepper.sceneEnding();
 		super.switchScene();
 		SimRuntime r = SimRuntime.get();
 		if (r != null) r.sceneSwitched();

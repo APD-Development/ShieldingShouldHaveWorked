@@ -70,8 +70,21 @@ alternate. **Apps and tools session 1 (this one):**
   known cause (address-ordered picks). The owner's bar was "close to 75%"; it will fall as bots go deeper. Changing the
   window size also changes results, so the window size stays fixed.
 - `JudgeLeavesGameAloneTest`: judging 38 kinds of monster on 5 depths changes no loot table and draws no game randomness.
-Still to build on the apps side: headless as an Android foreground service, several at once on the phone, the Visual
-grid of runs, the labs and audits in the complete list, on-screen check of the Boss test button and the summary.
+- **Headless with the screen off (phone)**: BUILT and passed the emulator check (run 66: 3 runs finished in the first
+  minute on screen, 10 after two minutes with the screen off, 11 after coming back, no crash, graphics intact). How:
+  `SimulatorActivity` starts `SimulatorService` (foreground, wake lock, status notification) in onPause when a headless
+  run is playing, then a thread borrows the game's EGL context (free while GLSurfaceView is paused), calls
+  `SimGame.adoptThread()` (moves Random's isolated thread by reflection) and loops `SimGame.backgroundFrame()` with the
+  real frame time written into libGDX's `deltaTime`. onResume stops the loop and joins it before super.onResume().
+  The service is never stopped directly (Android crashes an app that stops a foreground service before it started):
+  `SimulatorService.stop` sets a flag and the service ends itself. NOT verified on a real phone.
+- `TurnStepper.sceneEnding()` (called from `SimGame.switchScene`): clears "someone is mid-turn" on the render thread
+  before a scene ends. The Visual app crashed once on the emulator with "timeout waiting for actor thread" when the
+  placeholder thread did not clear it in time.
+- Build S3 (Nov 28) has everything above.
+Still to build on the apps side: several at once on the phone (needs the game running in a service process with no
+activity: own EGL context and hand-made Gdx globals; build on the screen-off loop), the Visual grid of runs, the labs
+and audits in the complete list, on-screen check of the Boss test button and the summary.
 
 ## Measured on 60 seeds (Nov 28, later): what helped, what did not
 From here every change is measured on 60 fixed seeds (`SIMRUNS=20` per simulator); 30 seeds flattered (5.9 to 6.1 on

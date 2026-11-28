@@ -24,6 +24,10 @@ They contain the current game and a bot that plays it to find bugs and collect b
 ## PC
 Unzip APD-Sim, then run `bin/APD-Sim-Visual` or `bin/APD-Sim-Headless` (`.bat` on Windows). It needs Java 17 or newer. Its files go next to the program; it reads the APD desktop game's history read-only.
 
+**Screen off (phone, Headless app).** While runs are playing, APD Sim Headless keeps going when the screen turns off
+or you switch to another app. A notification shows the current run and the last result; tap it to come back. Pause or
+stop the runs in the app to end it. If a phone refuses, the notification says so and the runs wait until the app is open.
+
 **Several at once (PC headless).** Set options in `JAVA_OPTS` before starting, for example
 `JAVA_OPTS="-Dapd.sim.workers=4 -Dapd.sim.runs=400 -Dapd.sim.autostart=1" bin/APD-Sim-Headless`. That starts 4 copies
 (one per processor core is a good number), each in its own `worker-N` folder, and when they finish writes one merged

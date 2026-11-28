@@ -69,6 +69,15 @@ final class TurnStepper {
 		}
 	}
 
+	//A scene is about to end, on the render thread. The game then asks its turn thread to stop and waits until nobody
+	//is mid-turn. Turns run on this thread here, so nobody can be: say so directly instead of leaving it to the
+	//placeholder thread noticing the request in time (on a phone that once came too late and the game gave up).
+	static void sceneEnding(){
+		if (!active()) return;
+		try { fCurrent.set(null, null); } catch (Throwable ignored){}
+		waitingForSprite = null;
+	}
+
 	static boolean active(){
 		try { return !failed && fActorThread != null && fActorThread.get(null) == placeholder && placeholder != null; }
 		catch (Throwable t){ return false; }
