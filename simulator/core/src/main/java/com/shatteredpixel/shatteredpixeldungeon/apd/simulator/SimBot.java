@@ -79,7 +79,7 @@ final class SimBot {
 	private boolean piranhaFloor;
 	//the most health a single fight on this floor was judged to cost (Smart and better rest up to it)
 	private float floorFightCost;
-	private int lastSeenHP = Integer.MAX_VALUE;
+	private int lastSeenHP = -1;
 	private float noRestUntil = -1;
 	private boolean[] piranhaWater;
 	//goals are kept until reached or no longer valid, so the bot does not flip between two equally near targets
@@ -420,7 +420,7 @@ final class SimBot {
 		boolean tooHurtForThisFloor = smart() && restBudget > 0 && h.HP < Math.min(h.HT * 0.9f, floorFightCost * 1.5f);
 		//resting while something is hurting the hero (an enemy the bot leaves alone, ooze, poison) only loses health:
 		//after a drop in health no resting for a while, and never with the Great Crab close by
-		if (h.HP < lastSeenHP) noRestUntil = Actor.now() + 15;
+		if (lastSeenHP >= 0 && h.HP < lastSeenHP) noRestUntil = Actor.now() + 15;
 		lastSeenHP = h.HP;
 		//a sealed boss floor gives no health back for resting, and resting "until healed" there never ends
 		boolean restUnsafe = Actor.now() < noRestUntil || level().locked
