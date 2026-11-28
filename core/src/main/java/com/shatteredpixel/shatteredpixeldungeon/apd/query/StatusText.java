@@ -169,7 +169,7 @@ public final class StatusText {
 					b.append(' ').append(f.texts.length).append(" values");   //"runs containing it" can name hundreds
 				} else {
 					for (int i = 0; i < f.texts.length; i++){
-						String t = c.format == ColumnDef.Format.CLASS_NAME ? CellFormatter.className(f.texts[i]) : f.texts[i];
+						String t = c.format == ColumnDef.Format.CLASS_NAME ? CellFormatter.className(f.texts[i]) : CellFormatter.readable(f.texts[i]);
 						b.append(i > 0 ? ", " : " ").append('"').append(t).append('"');
 					}
 				}

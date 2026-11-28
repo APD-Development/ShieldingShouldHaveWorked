@@ -30,4 +30,17 @@ public class RunCountExplainedTest {
 		String line = StatusText.leftOutSummary(s, "run", "runs");
 		assertTrue(line, line.startsWith("5 runs not shown: 2 still going or not finished, 3 hidden for other reasons"));
 	}
+	//Trial jurors 3, 9 and 10 (Nov 27): the welcome card must not promise a tour before the 10-run gate opens
+	@Test
+	public void welcomeCardNeverPromisesALockedTour() throws Exception {
+		String root = System.getProperty("apd.game.src");
+		java.nio.file.Path p = java.nio.file.Paths.get(root == null ? "src/main/java" : root,
+				"scenes/UimsdScene.java");
+		String src = new String(java.nio.file.Files.readAllBytes(p), java.nio.charset.StandardCharsets.UTF_8);
+		assertTrue(!src.contains("works even before you have played"));
+		int card = src.indexOf("private void buildFirstRun");
+		int gate = src.indexOf("UimsdGate.tourAvailable()", card);
+		int button = src.indexOf("\"Take the tour (2 minutes)\"", card);
+		assertTrue("the tour button is behind the 10-run gate", gate > card && gate < button);
+	}
 }
