@@ -141,6 +141,11 @@ public class SimulatorActivity extends AndroidLauncher {
 				mine = android.opengl.EGL14.eglMakeCurrent(display, surface, surface, context);
 				if (!mine) try { Thread.sleep(50); } catch (InterruptedException e){ break; }
 			}
+			if (!mine && !backgroundOn){
+				//the app came straight back: nothing to do
+				destroy(display, surface);
+				return;
+			}
 			if (!mine){
 				backgroundResult = "no context (error " + android.opengl.EGL14.eglGetError() + ")";
 				android.util.Log.i("APDSIM", "APDSIM_BACKGROUND " + backgroundResult);
@@ -153,9 +158,17 @@ public class SimulatorActivity extends AndroidLauncher {
 			try {
 				SimGame.adoptThread();
 				SimGame game = (SimGame) Game.instance;
-				long shown = 0, frames = 0;
+				long shown = 0, frames = 0, last = System.nanoTime();
+				java.lang.reflect.Field delta = deltaField();
 				while (backgroundOn){
 					long before = System.nanoTime();
+					//the screens between floors run on the clock: give them the real time since the last frame (Android
+					//only measures it for frames it draws, and a stale number would make that clock race)
+					if (delta != null){
+						try { delta.setFloat(com.badlogic.gdx.Gdx.graphics, Math.min(0.2f, (before - last) / 1e9f)); }
+						catch (Throwable ignored){ delta = null; }
+					}
+					last = before;
 					game.backgroundFrame();
 					frames++;
 					long now = System.currentTimeMillis();
@@ -180,6 +193,22 @@ public class SimulatorActivity extends AndroidLauncher {
 			}
 		}, "apdsim-background");
 		backgroundThread.start();
+	}
+
+	private static java.lang.reflect.Field deltaField(){
+		Class<?> c = com.badlogic.gdx.Gdx.graphics.getClass();
+		while (c != null){
+			try {
+				java.lang.reflect.Field f = c.getDeclaredField("deltaTime");
+				f.setAccessible(true);
+				return f;
+			} catch (NoSuchFieldException e){
+				c = c.getSuperclass();
+			} catch (Throwable t){
+				return null;
+			}
+		}
+		return null;
 	}
 
 	//before Android draws again: stop the loop and wait until it has given the context back

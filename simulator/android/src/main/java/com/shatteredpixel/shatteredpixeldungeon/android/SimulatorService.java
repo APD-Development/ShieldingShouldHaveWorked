@@ -19,17 +19,27 @@ public class SimulatorService extends Service {
 	private PowerManager.WakeLock wakeLock;
 
 	static void start(Context c){
+		wanted = true;
 		Intent i = new Intent(c, SimulatorService.class);
 		if (Build.VERSION.SDK_INT >= 26) c.startForegroundService(i);
 		else c.startService(i);
 	}
 
+	//Android crashes the app if a service asked to start in the foreground is stopped before it got that far, so a
+	//stop never reaches for the service directly: it is noted here, and the service ends itself (now if it is up,
+	//or as soon as it has started).
+	private static volatile boolean wanted;
+	private static volatile SimulatorService running;
+
 	static void stop(Context c){
-		c.stopService(new Intent(c, SimulatorService.class));
+		wanted = false;
+		SimulatorService s = running;
+		if (s != null) s.stopSelf();
 	}
 
 	//new text in the notification (called every few seconds by the background loop)
 	static void show(Context c, String text){
+		if (!wanted || running == null) return;
 		try {
 			c.getSystemService(NotificationManager.class).notify(NOTIFICATION, build(c, text));
 		} catch (RuntimeException ignored){
@@ -55,6 +65,11 @@ public class SimulatorService extends Service {
 		//34 = Android 14, where the kind of foreground service must be named (1 << 30 is "special use")
 		if (Build.VERSION.SDK_INT >= 34) startForeground(NOTIFICATION, n, 1 << 30);
 		else startForeground(NOTIFICATION, n);
+		running = this;
+		if (!wanted){
+			stopSelf();
+			return START_NOT_STICKY;
+		}
 		if (wakeLock == null){
 			PowerManager pm = getSystemService(PowerManager.class);
 			wakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "apdsim:running");
@@ -66,6 +81,7 @@ public class SimulatorService extends Service {
 
 	@Override
 	public void onDestroy(){
+		if (running == this) running = null;
 		if (wakeLock != null && wakeLock.isHeld()) wakeLock.release();
 		super.onDestroy();
 	}
