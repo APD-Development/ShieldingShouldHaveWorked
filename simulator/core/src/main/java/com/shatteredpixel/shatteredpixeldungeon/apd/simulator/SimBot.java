@@ -1097,9 +1097,9 @@ final class SimBot {
 			if (i instanceof PotionOfStrength && ((Potion) i).isKnown()) return use(i, Potion.AC_DRINK);
 			if (i instanceof PotionOfExperience && ((Potion) i).isKnown()) return use(i, Potion.AC_DRINK);
 			if (i instanceof ScrollOfUpgrade && ((Scroll) i).isKnown()){
-				//Smart and better: scrolls put into starting cloth are lost when real armor turns up, so they keep them
+				//not Clueless: scrolls put into starting cloth are lost when real armor turns up, so they keep them
 				//for the first three floors while still in tier 1 armor (a Mage's go into the staff either way)
-				boolean hold = smart() && Dungeon.depth < 4 && !(h.belongings.weapon() instanceof MagesStaff)
+				boolean hold = !clueless() && Dungeon.depth < 4 && !(h.belongings.weapon() instanceof MagesStaff)
 						&& (h.belongings.armor() == null || h.belongings.armor().tier <= 1);
 				if (!hold) return use(i, Scroll.AC_READ);
 			}
