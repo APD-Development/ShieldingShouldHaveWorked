@@ -54,6 +54,24 @@ Before the gear rules 18 of 20 bots met Goo in cloth armor with the starting wea
 Still open on gear: Average spends scrolls on cloth; items above the hero's strength are never worn; no shop buying plan;
 arcane stylus, enchant scrolls and the Ghost reward are not used on purpose. New top killers: DM-100 4, Goo 4.
 
+## Bot progress, Nov 28 (after the fight judge section below was written)
+Full runs, 30 fixed seeds, Normal aggression: **Average 6.07 average deepest floor, max 12, 21 of 30 reach floor 5**;
+**Smart (judge and plan on) 5.90, max 12, 21 of 30** (one earlier Smart run reached floor 15 and died to DM-300).
+Session start was 4.50 for Average. Measured with the build before the sentry and fire fixes; a rerun is the next step.
+**Tengu: first kills.** 12 floor 10 snapshots; about 5 of 12 won (Huntress 3 of 5, Mage 1 of 2, Warrior 0-1 of 3).
+Rules: close in (the game gives him accuracy 20 at range, 10 adjacent); ranged heroes shoot when he is more than two steps
+away; all active traps on the prison boss floor in its first phase count as known (the game shows them for a moment);
+`markBossDanger` marks bomb area (only when its count is 1 or less), flames and every cell beside a shocker.
+**Bot bugs fixed** (each cost runs): the fight plan fled DOWN the stairs (hurt level 2 heroes on floor 3; flee is now
+only back up); old corridor rule swapped places with looting forever (starved on floor 1); red sentries were treated as
+monsters to walk up to; statues were attacked when walked past; resting on a sealed boss floor never ended (no health
+comes back there); the first health reading counted as a drop and blocked resting; rest before a boss now runs to 90%
+and is allowed while hungry (not starving); on fire with no water the bot stands on bare floor instead of walking
+through grass and re-lighting.
+**Known limits**: food is tight by design (about one food item and about 300 turns per floor); starving happens when a
+floor runs long, usually a secret door hiding the way down. Top killers now: Goo, prison guards, gnoll brutes, DM-100.
+No DM-300 snapshot pool yet (one bot has reached floor 15). Pro and Expert still play like Smart.
+
 ## Fight judge, fight plan, boss tests and the history check (Nov 27-28)
 Owner said "Stop stopping": keep working without waiting between steps. Replies to the owner are in caveman style again
 (his request); code, commits and docs stay normal English.
