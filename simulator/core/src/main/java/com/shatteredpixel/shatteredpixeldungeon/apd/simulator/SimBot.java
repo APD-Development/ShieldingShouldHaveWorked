@@ -344,15 +344,27 @@ final class SimBot {
 			}
 		}
 
-		//on fire: water puts it out (not Clueless; not into piranha water)
-		if (!clueless() && h.buff(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning.class) != null && !level().water[h.pos] && !piranhaFloor){
-			SimNav toWater = nav(true);
-			int best = -1;
+		//On fire (not Clueless). Water puts it out at once. With no water in reach the fire burns out by itself in a few
+		//turns, unless the hero keeps walking through grass, which catches and sets them alight again: so stand on
+		//bare floor and wait it out.
+		if (!clueless() && h.buff(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning.class) != null && !level().water[h.pos]){
+			SimNav toSafe = nav(true);
+			int water = -1, bare = -1;
 			for (int c = 0; c < level().length(); c++){
-				if (level().water[c] && toWater.reachable(c) && toWater.dist[c] <= 5 && (best < 0 || toWater.dist[c] < toWater.dist[best])) best = c;
+				if (!toSafe.reachable(c) || toSafe.dist[c] > 8 || (c != h.pos && Actor.findChar(c) != null)) continue;
+				if (level().water[c] && (piranhaWater == null || !piranhaWater[c]) && (water < 0 || toSafe.dist[c] < toSafe.dist[water])) water = c;
+				if (!level().flamable[c] && !SimNav.danger(level(), c) && (bare < 0 || toSafe.dist[c] < toSafe.dist[bare])) bare = c;
 			}
-			if (best >= 0){
-				String step = stepToward(toWater, best, "into water to put the fire out");
+			if (water >= 0){
+				String step = stepToward(toSafe, water, "into water to put the fire out");
+				if (step != null) return step;
+			}
+			if (foes.isEmpty() && bare >= 0){
+				if (bare == h.pos){
+					h.rest(false);
+					return "stand on bare floor until the fire burns out";
+				}
+				String step = stepToward(toSafe, bare, "to bare floor so the fire burns out");
 				if (step != null) return step;
 			}
 		}
