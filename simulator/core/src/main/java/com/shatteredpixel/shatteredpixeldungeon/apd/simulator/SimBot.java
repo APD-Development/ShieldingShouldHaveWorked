@@ -350,11 +350,11 @@ final class SimBot {
 		}
 
 		//caustic ooze (Goo, fetid rat, slimes) burns every turn until washed off: walk to water, fight or no fight (not Clueless)
-		if (!clueless() && h.buff(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Ooze.class) != null && !level().water[h.pos]){
-			SimNav toWater = nav(true);
+		if (!clueless() && foes.isEmpty() && h.buff(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Ooze.class) != null && !level().water[h.pos]){
+			SimNav toWater = nav(false);
 			int best = -1;
 			for (int c = 0; c < level().length(); c++){
-				if (level().water[c] && toWater.reachable(c) && toWater.dist[c] <= (foes.isEmpty() ? 10 : 2) && (piranhaWater == null || !piranhaWater[c])
+				if (level().water[c] && toWater.reachable(c) && toWater.dist[c] <= 10 && (piranhaWater == null || !piranhaWater[c])
 						&& (best < 0 || toWater.dist[c] < toWater.dist[best])) best = c;
 			}
 			if (best >= 0){
@@ -527,12 +527,6 @@ final class SimBot {
 		focusCell = near.pos;
 		holdGround = false;
 
-		//Goo (floor 5 boss), not Clueless: wash caustic ooze off in water, and step out of reach while it pumps up its big hit
-		if (!clueless()){
-			String goo = gooRules(foes);
-			if (goo != null) return goo;
-		}
-
 		//piranhas can't leave the water: step away from it instead of trading bites at the edge (not Clueless)
 		if (!clueless() && near instanceof com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Piranha){
 			SimNav nav = nav(false);
@@ -557,7 +551,15 @@ final class SimBot {
 		float worstNow = 0, fightCost = 0;
 		if (!clueless() && FightJudge.enabled){
 			for (Mob m : foes){
-				if (level().distance(m.pos, h.pos) <= 1) worstNow += FightJudge.judge(m).worstHit;
+				float worst = FightJudge.judge(m).worstHit;
+				//a pumped-up Goo hits for three times as much and reaches two cells
+				boolean pumped = false;
+				if (m instanceof com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Goo){
+					Object pu = SimUi.field(m, "pumpedUp");
+					pumped = pu instanceof Integer && (Integer) pu > 0;
+				}
+				if (pumped) worst *= 3f;
+				if (level().distance(m.pos, h.pos) <= (pumped ? 2 : 1)) worstNow += worst;
 			}
 			fightCost = FightJudge.costOfAll(foes);
 			if (smart()) floorFightCost = Math.max(floorFightCost, Math.min(fightCost, h.HT));
@@ -580,6 +582,25 @@ final class SimBot {
 			if (clueless() || aggression == SimProfile.Aggression.RECKLESS){
 				for (Item i : items()){
 					if (i instanceof Potion && !((Potion) i).isKnown() && !tried("gamble" + i.getClass().getName(), 1)) return use(i, Potion.AC_DRINK);
+				}
+			}
+		}
+
+		//Goo (floor 5 boss), not Clueless: step out of reach while it pumps up its big hit, and pick where to stand
+		if (!clueless()){
+			String goo = gooRules(foes);
+			if (goo != null) return goo;
+			//ooze in a fight: water one or two steps away, on a free cell, is worth the walk
+			if (h.buff(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Ooze.class) != null && !level().water[h.pos] && !tried("oozewash", 20)){
+				SimNav toWater = nav(false);
+				int best = -1;
+				for (int c = 0; c < level().length(); c++){
+					if (level().water[c] && toWater.reachable(c) && toWater.dist[c] <= 2 && Actor.findChar(c) == null
+							&& (piranhaWater == null || !piranhaWater[c]) && (best < 0 || toWater.dist[c] < toWater.dist[best])) best = c;
+				}
+				if (best >= 0){
+					String step = stepToward(toWater, best, "into water to wash the ooze off");
+					if (step != null) return step;
 				}
 			}
 		}
