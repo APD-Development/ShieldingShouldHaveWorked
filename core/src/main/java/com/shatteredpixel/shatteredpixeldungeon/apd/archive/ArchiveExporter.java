@@ -206,14 +206,14 @@ public final class ArchiveExporter {
 			ZipOutputStream zip = new ZipOutputStream(counted);
 			try {
 				byte[] text = manifest.encode().getBytes(ArchiveManifest.utf8());
-				put(zip, ArchiveManifest.ENTRY_NAME, text);
+				put(zip, ArchiveManifest.ENTRY_NAME, text, nowMillis);
 				for (Plan p : included){
 					byte[] bytes = content(p);
 					if (bytes == null || bytes.length != p.entry.size || !ArchiveManifest.sha256Hex(bytes).equals(p.entry.sha256)){
 						//The manifest already lists this file. Skipping it creates an archive import must reject.
 						throw new IOException(p.entry.path + " changed while exporting. The archive is incomplete; export again.");
 					}
-					put(zip, p.entry.path, bytes);
+					put(zip, p.entry.path, bytes, nowMillis);
 					// Report the number of ZIP bytes actually written, not this entry's uncompressed size.
 					if (p.entry.kind.equals(ArchiveManifest.KIND_IMPORTED)) report.importedFiles++;
 					else report.runLogs++;
@@ -260,9 +260,16 @@ public final class ArchiveExporter {
 		}
 	}
 
-	private static void put( ZipOutputStream zip, String name, byte[] bytes ) throws IOException {
+	//Entries carry the export time: time 0 showed as December 31, 1969 in phone file managers (tester report, Nov 27).
+	//ZIP's DOS time starts in 1980, so anything earlier (a bad clock or a test's 0) is stored as 1980-01-01 UTC.
+	static final long ZIP_EPOCH_MILLIS = 315532800000L;
+	static long entryTime( long nowMillis ){
+		return nowMillis < ZIP_EPOCH_MILLIS ? ZIP_EPOCH_MILLIS : nowMillis;
+	}
+
+	private static void put( ZipOutputStream zip, String name, byte[] bytes, long nowMillis ) throws IOException {
 		ZipEntry e = new ZipEntry(name);
-		e.setTime(0);
+		e.setTime(entryTime(nowMillis));
 		zip.putNextEntry(e);
 		zip.write(bytes);
 		zip.closeEntry();
