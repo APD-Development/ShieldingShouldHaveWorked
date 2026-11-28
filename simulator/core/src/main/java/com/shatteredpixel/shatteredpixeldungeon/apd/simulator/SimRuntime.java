@@ -79,8 +79,10 @@ public final class SimRuntime {
 	public static boolean forcedBossTest;
 	//desktop: play by the older fixed rules, to measure the fight judge against them
 	public static boolean forcedNoJudge;
-	//desktop: switch the corner trick and doorway ambush off, to measure them
-	public static boolean forcedNoCorner;
+	//The corner trick and doorway ambush are OFF unless asked for. Measured on 60 seeds, Average: 5.60, 5.57, 5.55
+	//average deepest floor without them, 5.45, 5.40, 5.32, 5.18 with them. They fix the odd snake death and cost more
+	//elsewhere; kept in the code to be reworked, not used.
+	public static boolean cornerTrick;
 	public static String checkpointNameHas;
 	private int startedDepth;
 	public static int forcedVerify = -1;

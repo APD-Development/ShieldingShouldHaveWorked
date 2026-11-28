@@ -795,7 +795,7 @@ final class SimBot {
 			} else doorwaySpot = -1;
 		}
 		//one hard-to-hit enemy next to the hero: step out of its sight so it walks into a surprise hit
-		if (reach != null && !clueless() && FightJudge.enabled && foes.size() == 1 && !SimRuntime.forcedNoCorner){
+		if (reach != null && !clueless() && FightJudge.enabled && foes.size() == 1 && SimRuntime.cornerTrick){
 			String corner = cornerTrick(reach);
 			if (corner != null) return corner;
 		}

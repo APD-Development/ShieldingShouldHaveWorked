@@ -54,6 +54,26 @@ Before the gear rules 18 of 20 bots met Goo in cloth armor with the starting wea
 Still open on gear: Average spends scrolls on cloth; items above the hero's strength are never worn; no shop buying plan;
 arcane stylus, enchant scrolls and the Ghost reward are not used on purpose. New top killers: DM-100 4, Goo 4.
 
+## Measured on 60 seeds (Nov 28, later): what helped, what did not
+From here every change is measured on 60 fixed seeds (`SIMRUNS=20` per simulator); 30 seeds flattered (5.9 to 6.1 on
+30, 5.6 on 60). **Average baseline 5.60 average deepest floor**: 39 of 60 reach floor 5, 30 get past Goo, 4 reach
+floor 10, 1 gets past Tengu. Smart is level with Average.
+- Holding early upgrade scrolls (now for every level but Clueless): no change (5.57). Only 16 of 40 bots have found
+  armor better than cloth by floor 5, so gear on arrival is limited by drops, not by how scrolls are spent.
+- Always throwing held missiles at a boss: no change on 70 Goo fights (49 then 46).
+- **Corner trick and doorway ambush: worse.** 5.60, 5.57, 5.55 without; 5.45, 5.40, 5.32, 5.18 with. Now OFF unless
+  `-Dapd.sim.corner=true` (`SimRuntime.cornerTrick`). They do get used and do fix the odd snake death; the cost is
+  somewhere deeper and has not been traced.
+- Zapping what dodges swings and keeping the last staff charge for it: removes the floor 1 snake deaths for Mages; too
+  small to show on the average.
+**The cursed wand's fake crash**: a rare cursed wand effect (`CursedWand.AbortRetryFail`) shows a fake error and then
+really calls `Game.finish()`. That shut the whole simulator down silently, always on the same seeds (seed base 2000),
+and cut several sets short (the "Smart runs did not finish" note above was this, not slowness). `SimGame.finish()` now
+ends the run instead. This is the original game's joke, not a bug; nothing in APD was changed.
+Deaths over 120 Average runs by floor: 1: 8 (snakes), 2: 16, 3-4: 17, 5: 19 (Goo 16), 6-7: 23 (skeletons, guards),
+8-9: 30 (DM-100, guards, necromancer's skeletons), 10: 5, 11-12: 2. By class, average deepest: Warrior 6.7,
+Huntress 6.6, Duelist 5.4, Mage 5.2, Cleric 4.8, Rogue 4.6.
+
 ## Bot progress, Nov 28 (after the fight judge section below was written)
 Full runs, 30 fixed seeds, Normal aggression: **Average 6.07 average deepest floor, max 12, 21 of 30 reach floor 5**;
 **Smart (judge and plan on) 5.90, max 12, 21 of 30** (one earlier Smart run reached floor 15 and died to DM-300).
