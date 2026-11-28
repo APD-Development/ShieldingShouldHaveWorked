@@ -349,7 +349,10 @@ final class SimBot {
 		//turns, unless the hero keeps walking through grass, which catches and sets them alight again: so stand on
 		//bare floor and wait it out.
 		if (!clueless() && h.buff(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning.class) != null && !level().water[h.pos]){
+			//already burning: flames in the way of water are no reason to stay out of it
+			SimNav.crossFire = true;
 			SimNav toSafe = nav(true);
+			SimNav.crossFire = false;
 			int water = -1, bare = -1;
 			for (int c = 0; c < level().length(); c++){
 				if (!toSafe.reachable(c) || toSafe.dist[c] > 8 || (c != h.pos && Actor.findChar(c) != null)) continue;

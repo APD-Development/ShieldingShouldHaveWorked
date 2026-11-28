@@ -43,7 +43,7 @@ final class SimNav {
 		this.origin = origin;
 		walk = new boolean[length];
 		//already standing in gas or fire: crossing more of it is allowed, to get out
-		boolean escaping = origin >= 0 && origin < length && danger(level, origin);
+		boolean escaping = crossFire || (origin >= 0 && origin < length && danger(level, origin));
 		for (int i = 0; i < length; i++){
 			boolean known = level.visited[i] || level.mapped[i] || level.heroFOV[i];
 			if (!known) continue;
@@ -157,6 +157,8 @@ final class SimNav {
 		return t == Terrain.DOOR || t == Terrain.OPEN_DOOR;
 	}
 
+	//set for one path only: the hero is already burning, so flames between them and water are worth crossing
+	static boolean crossFire;
 	//cells the bot will not step on (traps it was shown for a moment), set before building a path
 	static boolean[] extraAvoid;
 	//cells the bot has marked as about to hurt (a boss's bomb, flames and shock field), set before building a path
