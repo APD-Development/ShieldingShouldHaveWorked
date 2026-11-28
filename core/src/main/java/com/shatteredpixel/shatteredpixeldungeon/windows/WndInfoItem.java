@@ -130,7 +130,7 @@ public class WndInfoItem extends Window {
 			if (!(item instanceof com.shatteredpixel.shatteredpixeldungeon.items.EquipableItem)) return "";
 			if (item instanceof com.shatteredpixel.shatteredpixeldungeon.items.rings.Ring
 					&& !((com.shatteredpixel.shatteredpixeldungeon.items.rings.Ring) item).isKnown()) return "";
-			String line = h == null ? "" : h.line(item.name());
+			String line = h == null ? "" : h.line(item.name(), item.getClass().getName(), true);
 			return line.isEmpty() ? "" : "\n\n" + line;
 		} catch (Throwable e){
 			return "";

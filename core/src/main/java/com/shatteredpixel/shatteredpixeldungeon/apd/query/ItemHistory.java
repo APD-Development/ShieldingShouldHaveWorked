@@ -42,6 +42,9 @@ public final class ItemHistory {
 	}
 
 	private final Map<String, Entry> byName = new HashMap<>();
+	//The same counts keyed by the item's kind (short class name), where the player knows it. A weapon's shown name changes
+	//with its enchantment ("blazing sword"), so a name-only lookup missed every run where the sword ended up enchanted.
+	private final Map<String, Entry> byType = new HashMap<>();
 	public final int finishedRuns;
 
 	private ItemHistory( int finishedRuns ){
@@ -67,7 +70,7 @@ public final class ItemHistory {
 		ItemHistory h = new ItemHistory(finished.size());
 		DatasetDef def = d.def;
 		int nameC = def.indexOf("item.name"), seenC = def.indexOf("item.seen"),
-				acqC = def.indexOf("item.acquired"), eqC = def.indexOf("item.equipped");
+				acqC = def.indexOf("item.acquired"), eqC = def.indexOf("item.equipped"), typeC = def.indexOf("item.type");
 		if (nameC < 0) return h;
 		for (Row r : d.rows){
 			if (r.imported || r.duplicate || !r.publicRow || !finished.contains(r.runId)) continue;
@@ -82,6 +85,17 @@ public final class ItemHistory {
 			e.seen.add(r.runId);
 			if (acq) e.acquired.add(r.runId);
 			if (eq) e.equipped.add(r.runId);
+			//a kind stood in for by the shown name (not yet learned) is not a kind
+			if (known(r, typeC) && !r.asText(typeC).startsWith(CellFormatter.NAME_KEY_PREFIX)){
+				String type = typeKey(r.asText(typeC));
+				if (!type.isEmpty()){
+					Entry t = h.byType.get(type);
+					if (t == null) h.byType.put(type, t = new Entry(name));
+					t.seen.add(r.runId);
+					if (acq) t.acquired.add(r.runId);
+					if (eq) t.equipped.add(r.runId);
+				}
+			}
 		}
 		return h;
 	}
@@ -102,6 +116,20 @@ public final class ItemHistory {
 		return name == null ? null : byName.get(key(name));
 	}
 
+	/** Short class name, lower case: "com.x.items.weapon.melee.Sword" and "items.weapon.melee.Sword" both give "sword". */
+	static String typeKey( String className ){
+		if (className == null) return "";
+		String c = className.trim();
+		int dot = c.lastIndexOf('.');
+		return (dot >= 0 ? c.substring(dot + 1) : c).toLowerCase(Locale.ROOT);
+	}
+
+	/** By kind when it was recorded (the caller must only pass a kind the player knows), else by shown name. */
+	public Entry get( String name, String className ){
+		Entry t = byType.get(typeKey(className));
+		return t != null ? t : get(name);
+	}
+
 	/** One plain line for the info window, or "" when there are no finished runs to read. */
 	public String line( String name ){
 		return line(name, true);
@@ -109,8 +137,12 @@ public final class ItemHistory {
 
 	/** Chris, Nov 25: "equipped in" only for things that can be equipped (a scroll can't be). */
 	public String line( String name, boolean equippable ){
+		return line(name, null, equippable);
+	}
+
+	public String line( String name, String className, boolean equippable ){
 		if (finishedRuns == 0) return "";
-		Entry e = get(name);
+		Entry e = get(name, className);
 		String runs = finishedRuns == 1 ? "1 finished run" : finishedRuns + " finished runs";
 		if (e == null) return "Your history: not seen in your " + runs + ".";
 		return "Your history: seen in " + e.seen.size() + " of your " + runs + "; picked up in " + e.acquired.size()
