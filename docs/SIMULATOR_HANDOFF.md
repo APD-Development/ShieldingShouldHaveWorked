@@ -272,3 +272,19 @@ build a "Chris bot".
   12-run check: 3 runs reached floor 6 (was floor 1 to 5); top killers now piranha (4), gnoll scout (3). Emulator check for
   commit 12d72680 was still running: check it first.
 - 2026-11-27 first session: everything above. Last commits: 5a76504f (determinism check), then this handoff commit.
+
+## 600 fresh seeds baseline and the gravity freeze (Nov 28)
+
+First measurement on seeds the bots never played (seedbase 5000, 3 at once):
+
+- Average, 520 runs (see freeze below): average deepest floor 5.34, reach floor 5 59%, past Goo 45%, reach floor 10 4.4%, past Tengu 1.9%, dead by floor 2 14%, deepest 13, wins 0.
+- Smart, 600 runs: average deepest floor 5.67, reach floor 5 64%, past Goo 47%, reach floor 10 6.3%, past Tengu 4.2%, dead by floor 2 12%, deepest 14, wins 0.
+
+These match the usual 60 seeds, so the earlier numbers were not fitted to them.
+
+Simulator bug found and fixed: the cursed wand's gravity effect (GravityChaosTracker) waits inside its own turn for
+every sprite to stop moving. The simulator runs turns on the render thread, the only thread that can finish a sprite's
+move, so the whole simulator froze forever (one worker stopped at run 120 of 200). TurnStepper now gives that effect its
+turn only when nothing is moving. Proven by replaying WARRIOR:5000973199:155121: old build freezes, fixed build finishes.
+The game itself is fine and was not changed. The "stopped responding" check cannot catch a freeze of the render thread
+itself, and the several-at-once launcher has no stall guard for a worker yet.

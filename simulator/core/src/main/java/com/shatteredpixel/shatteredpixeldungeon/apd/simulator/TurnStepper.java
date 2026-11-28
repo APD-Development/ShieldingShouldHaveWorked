@@ -3,6 +3,7 @@ package com.shatteredpixel.shatteredpixeldungeon.apd.simulator;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.GravityChaosTracker;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.watabou.noosa.Game;
 
@@ -87,6 +88,14 @@ final class TurnStepper {
 	}
 
 	private static boolean moving(Actor a){
+		//The cursed wand's gravity effect waits inside its own turn until every sprite has stopped moving. On the game's
+		//turn thread that is a short pause; here the turns run on the render thread, the only thread that can finish a
+		//sprite's move, so that wait would never end. It is given its turn only once nothing is moving, which is the
+		//same order of events and leaves its own wait with nothing to wait for.
+		if (a instanceof GravityChaosTracker){
+			for (Char ch : Actor.chars()) if (ch.sprite != null && ch.sprite.isMoving) return true;
+			return false;
+		}
 		return a instanceof Char && ((Char) a).sprite != null && ((Char) a).sprite.isMoving;
 	}
 
