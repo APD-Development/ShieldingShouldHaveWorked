@@ -49,6 +49,24 @@ public class ItemHistoryTest {
 	}
 
 	@Test
+	public void aSwordThatEndedUpEnchantedStillCountsAsASword(){
+		//run a: a plain sword, later enchanted, so its last shown name is "blazing sword"
+		SyntheticLog a = new SyntheticLog(tmp.getRoot(), "a", TelemetryVersion.CURRENT, 100).start("a", 0, "WARRIOR", "r", 0, 30, false).enter(1);
+		a.registered("a1", "items.weapon.melee.Sword", 1, false, ItemEvents.ORIGIN_GENERATED).seen("a1", "sword", WEAPON)
+				.acquired("a1", "sword", WEAPON, false, 0).seen("a1", "blazing sword", WEAPON);
+		a.end(LifecycleEvents.OUTCOME_DIED, "Rat", 1, 1, 10).close(true);
+
+		ItemHistory h = ItemHistory.of(new DatasetStore(tmp.getRoot()).load(), null);
+		String plain = h.line("sword", "com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sword", true);
+		assertEquals("Your history: seen in 1 of your 1 finished run; picked up in 1, equipped in 0.", plain);
+		//an enchanted sword in a new run reads the same history
+		assertEquals(plain, h.line("chilling sword", "com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sword", true));
+		//another kind is still not seen
+		assertEquals("Your history: not seen in your 1 finished run.",
+				h.line("glaive", "com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Glaive", true));
+	}
+
+	@Test
 	public void noHistoryMeansNoLine(){
 		assertEquals("", ItemHistory.of(new DatasetStore(tmp.getRoot()).load(), null).line("sword"));
 		assertEquals("", ItemHistory.of(null, null).line("sword"));
