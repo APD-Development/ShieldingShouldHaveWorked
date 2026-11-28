@@ -759,8 +759,10 @@ public final class SimRuntime {
 		saveLoad.pending = false;
 		//start deep: continue a saved checkpoint instead of a new game (tagged, kept apart in the stats)
 		if (fixedSeed == 0 && runProfile.checkpointFloor > 1){
-			com.badlogic.gdx.files.FileHandle cp = Checkpoints.pick(master, runProfile.heroClass >= 0 ? heroClass.name() : null, runProfile.checkpointFloor,
-					runProfile.bossTest, checkpointNameHas);
+			String cpClass = runProfile.heroClass >= 0 ? heroClass.name() : null;
+			com.badlogic.gdx.files.FileHandle cp = runProfile.bossTest
+					? Checkpoints.inTurn(run, cpClass, runProfile.checkpointFloor, checkpointNameHas)
+					: Checkpoints.pick(master, cpClass, runProfile.checkpointFloor, false, checkpointNameHas);
 			if (cp == null && runProfile.bossTest) System.out.println("APDSIM_NOTE no checkpoint saved on floor " + runProfile.checkpointFloor + " yet: this run starts at floor 1 and is a normal run");
 			if (cp != null && Checkpoints.restore(cp)){
 				startedFrom = cp.name();

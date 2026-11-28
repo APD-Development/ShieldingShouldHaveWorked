@@ -70,6 +70,18 @@ final class Checkpoints {
 	//exact: only checkpoints saved on that very floor. nameHas: only checkpoints whose name contains this text
 	//(a class, a seed code or a whole snapshot name), so one chosen snapshot can be played over and over.
 	static FileHandle pick(Random rng, String heroClass, int minDepth, boolean exact, String nameHas){
+		List<FileHandle> ok = matching(heroClass, minDepth, exact, nameHas);
+		return ok.isEmpty() ? null : ok.get(rng.nextInt(ok.size()));
+	}
+
+	//boss tests take the snapshots in turn (run 1 the first, run 2 the second, and round again), so every snapshot is
+	//fought the same number of times and two test series face exactly the same fights
+	static FileHandle inTurn(int run, String heroClass, int depth, String nameHas){
+		List<FileHandle> ok = matching(heroClass, depth, true, nameHas);
+		return ok.isEmpty() ? null : ok.get(Math.floorMod(run - 1, ok.size()));
+	}
+
+	private static List<FileHandle> matching(String heroClass, int minDepth, boolean exact, String nameHas){
 		List<FileHandle> ok = new ArrayList<>();
 		for (FileHandle f : all()){
 			String[] p = f.name().split("-");
@@ -79,7 +91,7 @@ final class Checkpoints {
 			if (d < minDepth || (exact && d != minDepth)) continue;
 			ok.add(f);
 		}
-		return ok.isEmpty() ? null : ok.get(rng.nextInt(ok.size()));
+		return ok;
 	}
 
 	//puts the checkpoint into save slot 1; the caller then continues that game
