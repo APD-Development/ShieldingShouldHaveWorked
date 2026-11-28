@@ -73,6 +73,17 @@ public class DeathContextTest {
         assertTrue(context.entries().get(1).death);
         assertTrue(context.summary().contains("This death ended the run."));
         assertTrue(context.summary().contains("does not prove survival, causation"));
+        assertTrue(context.summary().contains("2 records on 2 turns."));
+    }
+
+    @Test
+    public void singleRecordSummaryIsSingular() {
+        Fixture f = fixture("single", 20L, 0L, 1L);
+        DeathContext context = new DeathContext(f.catalog, f.death, 1);
+        assertEquals(1, context.observedRecords());
+        assertEquals(1, context.recordedTurns());
+        assertTrue(context.summary(), context.summary().contains("1 record on 1 turn."));
+        assertFalse(context.summary().contains("(s)"));
     }
 
     @Test
