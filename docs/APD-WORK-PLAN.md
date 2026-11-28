@@ -316,6 +316,7 @@ reseeded each round, one changeable vote per matchup, ties to higher seed, champ
 Server changes deploy by pushing to deploy/community-server; app changes reach players through the 8-hour Play builds.
 
 ## Run log
+- 2026-11-27 11:10 PM ET (Chris live): do NOT build or send an alpha tester APK in the Nov 28 12 AM run.
 - 2026-11-27 11 PM ET (scheduled): no code change, no CI. Every approved item done or blocked; same open questions for Chris (R2 + Workers AI cost/setup, borderline-hold OK?, server deploy approval, Badge-or-what for the new-search achievement, next priority).
 - 2026-11-27 10 PM ET (scheduled): no code change, no CI. Every approved item done or blocked; same open questions for Chris (R2 + Workers AI cost/setup, borderline-hold OK?, server deploy approval, Badge-or-what for the new-search achievement); a next priority from Chris is needed.
 - 2026-11-27 9 PM ET (scheduled): no code change, no CI. Checked the other ZIP writer (DiagnosticReport) for the 1969 entry-time bug: not affected (no explicit time, Java stamps now). Every approved item done or blocked; same open questions for Chris (R2 + Workers AI cost/setup, borderline-hold OK?, server deploy approval, Badge-or-what for the new-search achievement, next priority).
