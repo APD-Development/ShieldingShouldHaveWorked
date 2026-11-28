@@ -27,6 +27,10 @@ final class FightJudge {
 
 	private static final Map<String, Stats> cache = new HashMap<>();
 	private static final int SAMPLES = 200;
+	//Measured against 28,553 recorded monster swings from real play (JudgeHistoryCheckTest): real hits landed for 8.97
+	//before armor where a calm copy of the monster rolls 8.33. Enraged brutes and the like make up the difference, so
+	//the copy's roll is scaled by that ratio.
+	static final float DAMAGE_SEEN_IN_PLAY = 8.97f / 8.33f;
 
 	//off = the bot plays by its older fixed rules (kept so the judge can be measured against them)
 	public static boolean enabled = true;
@@ -44,6 +48,8 @@ final class FightJudge {
 		float worstHit;
 		//health the hero loses per turn while it stands next to them
 		float perTurn;
+		//it is asleep or has not noticed the hero: the next swing at it cannot miss
+		boolean surprise;
 
 		boolean cannotWin(){ return heroHits <= 0f || heroDamage <= 0f; }
 	}
@@ -83,7 +89,7 @@ final class FightJudge {
 					max = Math.max(max, d);
 					armor += copy.drRoll();
 				}
-				s.avgDamage = dmg / SAMPLES;
+				s.avgDamage = dmg / SAMPLES * DAMAGE_SEEN_IN_PLAY;
 				s.maxDamage = max;
 				s.avgArmor = armor / SAMPLES;
 			}
@@ -96,9 +102,23 @@ final class FightJudge {
 		return s;
 	}
 
-	private static float heroAccuracy(Hero h){
+	private static float heroAccuracy(Hero h, Mob m){
 		Object a = SimUi.field(h, "attackSkill");
-		return a instanceof Integer ? (Integer) a : 10 + h.lvl - 1;
+		float acc = a instanceof Integer ? (Integer) a : 10 + h.lvl - 1;
+		//the weapon's own accuracy (and the penalty for one too heavy), and a ring of accuracy
+		try {
+			if (h.belongings.weapon() instanceof com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon)
+				acc *= ((com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon) h.belongings.weapon()).accuracyFactor(h, m);
+			acc *= com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfAccuracy.accuracyMultiplier(h);
+		} catch (Throwable ignored){}
+		return acc;
+	}
+
+	//asleep, or awake but not yet aware of the hero: the game gives it no chance to dodge the next swing
+	static boolean unaware(Mob m){
+		if (m.state == m.SLEEPING || m.paralysed > 0) return true;
+		Object seen = SimUi.field(m, "enemySeen");
+		return seen instanceof Boolean && !((Boolean) seen);
 	}
 
 	private static float heroEvasion(Hero h){
@@ -107,6 +127,7 @@ final class FightJudge {
 		//armor heavier than the hero's strength cuts evasion for every missing point (game rule)
 		Armor a = h.belongings.armor();
 		if (a != null && a.STRReq() > h.STR()) ev /= (float) Math.pow(1.5, a.STRReq() - h.STR());
+		try { ev *= com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfEvasion.evasionMultiplier(h); } catch (Throwable ignored){}
 		if (h.paralysed > 0) ev = 0;
 		return ev;
 	}
@@ -137,19 +158,25 @@ final class FightJudge {
 		float mobAccuracy;
 		try { mobAccuracy = m.attackSkill(h); } catch (Throwable t){ mobAccuracy = 8 + Dungeon.depth; }
 		float mobEvasion = m.defenseSkill;
-		//asleep or not yet aware of the hero: the first hit can't be dodged
-		v.heroHits = hitChance(heroAccuracy(h), mobEvasion);
+		v.heroHits = hitChance(heroAccuracy(h, m), mobEvasion);
+		v.surprise = unaware(m);
 		v.mobHits = hitChance(mobAccuracy, heroEvasion(h));
 		v.heroDamage = Math.max(0f, heroWeaponDamage(h) - s.avgArmor);
 		//armor rolls can swallow a whole swing; never count on less than a quarter getting through
 		v.mobDamage = Math.max(s.avgDamage * 0.25f, s.avgDamage - heroArmor(h));
 		v.worstHit = Math.max(1f, s.maxDamage - heroArmor(h) / 2f);
 		v.perTurn = v.mobHits * v.mobDamage;
+		if (v.heroDamage > 0f && v.heroHits <= 0f && v.surprise && m.HP <= v.heroDamage){
+			//it dodges everything once awake, but one surprise swing is enough
+			v.heroHits = 0.0001f;
+		}
 		if (v.cannotWin()){
 			v.turnsToKill = Float.MAX_VALUE;
 			v.cost = Float.MAX_VALUE;
 		} else {
-			v.turnsToKill = (float) Math.ceil(m.HP / (double) v.heroDamage) / v.heroHits;
+			float hitsNeeded = (float) Math.ceil(m.HP / (double) v.heroDamage);
+			//a surprise swing always lands; the rest are ordinary swings
+			v.turnsToKill = v.surprise ? 1f + (hitsNeeded - 1f) / v.heroHits : hitsNeeded / v.heroHits;
 			//it swings once for each of the hero's turns, minus the last (it is dead by then)
 			v.cost = Math.max(0f, v.turnsToKill - 0.5f) * v.perTurn;
 		}
