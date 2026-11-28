@@ -438,7 +438,9 @@ final class SimBot {
 			restBudget = Math.max(restBudget, 900);
 			tooHurtForThisFloor = true;
 		}
-		if (foes.isEmpty() && !restUnsafe && (h.HP < h.HT * restBelow || tooHurtForThisFloor) && restTurnsThisFloor < restBudget && (hunger == null || !hunger.isHungry())){
+		if (foes.isEmpty() && !restUnsafe && (h.HP < h.HT * restBelow || tooHurtForThisFloor) && restTurnsThisFloor < restBudget
+				//hungry is no reason to face a boss hurt: health still comes back until the hero is starving
+				&& (hunger == null || !hunger.isHungry() || (bossNext && h.HP < h.HT * 0.9f && !hunger.isStarving()))){
 			restStartTurn = com.shatteredpixel.shatteredpixeldungeon.Statistics.apdTurn();
 			h.rest(true);
 			return "rest until healed (" + restTurnsThisFloor + " of " + restBudget + " rest turns used on this floor)";
