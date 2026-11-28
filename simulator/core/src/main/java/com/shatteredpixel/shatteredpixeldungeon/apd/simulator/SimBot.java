@@ -758,17 +758,23 @@ final class SimBot {
 		Object p = SimUi.field(goo, "pumpedUp");
 		int pumped = p instanceof Integer ? (Integer) p : 0;
 		SimNav nav = nav(false);
-		//pumping up: its next hit reaches 2 cells and hurts a lot; get more than 2 away if that takes one or two steps
+		//Pumping up takes Goo two turns, then it hits for triple at up to 2 cells. If the hero is more than 2 cells away
+		//when it would swing, the pump is wasted. So: right after it starts (two moves left) or one turn in (one move
+		//left), step away only if that many moves really end more than 2 cells from it. Otherwise running just gives up
+		//swings and still takes the hit, so the hero stays and keeps hitting (healing first if the big hit could kill).
 		if (pumped > 0 && level().distance(h.pos, goo.pos) <= 2){
+			int movesLeft = pumped >= 2 ? 1 : 2;
 			int best = -1;
 			for (int c = 0; c < level().length(); c++){
-				if (!nav.reachable(c) || nav.dist[c] > 3 || level().distance(c, goo.pos) <= 2) continue;
-				if (best < 0 || nav.dist[c] < nav.dist[best]) best = c;
+				if (!nav.reachable(c) || nav.dist[c] < 1 || nav.dist[c] > movesLeft || level().distance(c, goo.pos) <= 2) continue;
+				if (best < 0 || nav.dist[c] < nav.dist[best] || (nav.dist[c] == nav.dist[best] && level().distance(c, goo.pos) > level().distance(best, goo.pos))) best = c;
 			}
 			if (best >= 0){
 				String step = stepToward(nav, best, "out of reach while Goo pumps up");
 				if (step != null) return step;
 			}
+			//no way out in time: do not wander off to a better spot now, fight
+			return null;
 		}
 		//where to stand: Goo heals while it is in water, and water under the hero washes ooze off at once. So the best
 		//spot is a water cell with dry floor around it. Moving there costs nothing: Goo spends its turn following.
@@ -817,6 +823,8 @@ final class SimBot {
 	private String retreat(List<Mob> foes){
 		//one stair escape at a time: taking stairs costs no turns, so escaping again at once would loop between two floors
 		if (com.shatteredpixel.shatteredpixeldungeon.Statistics.apdTurn() - lastEscapeTurn < 50) return null;
+		//a sealed boss floor has no stairs to escape by
+		if (level().locked) return null;
 		SimNav nav = nav(false);
 		int best = -1;
 		for (LevelTransition t : level().transitions){
