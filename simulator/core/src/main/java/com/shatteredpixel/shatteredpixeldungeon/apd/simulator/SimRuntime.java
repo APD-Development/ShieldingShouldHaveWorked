@@ -232,6 +232,7 @@ public final class SimRuntime {
 		headless = headlessApp() || forcedHeadless;
 		benchResult = GameSettings.getString("apdsim_bench", "");
 		run = GameSettings.getInt("apdsim_run", 0);
+		rotation = run; //the class rotation carries on where the run counter is (a restarted copy keeps its order)
 		newBugsTotal = GameSettings.getInt("apdsim_bugs", 0);
 		lastRunSummary = GameSettings.getString("apdsim_last", "");
 		if (autostart){

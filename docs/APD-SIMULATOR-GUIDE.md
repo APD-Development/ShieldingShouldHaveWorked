@@ -31,6 +31,9 @@ Unzip APD-Sim, then run `bin/APD-Sim-Visual` or `bin/APD-Sim-Headless` (`.bat` o
 floors 5 and 10, wins, and how the runs ended. Add `-Dapd.sim.seedbase=1000` to play the same fixed seeds every time
 (for comparing two versions of the bot); leave it out for random seeds. Other options: `-Dapd.sim.intelligence=SMART`,
 `-Dapd.sim.aggression=CAUTIOUS`, `-Dapd.sim.dir=<folder>`. On a 4-core machine 60 full runs take about 2.5 minutes.
+If a copy writes nothing for 3 minutes it has frozen: it is stopped, the seed it was on is written to `simfrozen.txt`
+in the main folder, and the copy starts again on the next run (`-Dapd.sim.stallsec=<seconds>` changes the wait).
+A frozen run is a simulator or game bug worth looking at; replay it with `-Dapd.sim.replay=CLASS:seednumber:botseed`.
 
 ## The bot
 Hand-written rules only: no AI, no machine learning, nothing trained. Two settings shape it.

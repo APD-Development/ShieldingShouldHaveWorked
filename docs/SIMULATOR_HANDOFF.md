@@ -287,4 +287,6 @@ every sprite to stop moving. The simulator runs turns on the render thread, the 
 move, so the whole simulator froze forever (one worker stopped at run 120 of 200). TurnStepper now gives that effect its
 turn only when nothing is moving. Proven by replaying WARRIOR:5000973199:155121: old build freezes, fixed build finishes.
 The game itself is fine and was not changed. The "stopped responding" check cannot catch a freeze of the render thread
-itself, and the several-at-once launcher has no stall guard for a worker yet.
+itself, so the several-at-once launcher now has a freeze guard: a copy that writes nothing for 3 minutes
+(apd.sim.stallsec) is stopped, its seed goes to simfrozen.txt, and it restarts on the next run. Tested by suspending a
+copy on purpose. The class rotation now follows the saved run counter so a restarted copy keeps its class order.
