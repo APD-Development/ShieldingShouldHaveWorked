@@ -93,6 +93,12 @@ final class SimNav {
 				}
 			}
 		}
+		//stairs are the end of a path, never part of one: a step onto them leaves the floor
+		boolean[] terminal = new boolean[length];
+		for (com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition t : level.transitions){
+			int c = t.cell();
+			if (c >= 0 && c < length && c != origin) terminal[c] = true;
+		}
 		if (origin >= 0 && origin < length) walk[origin] = true;
 		dist = new int[length];
 		from = new int[length];
@@ -123,6 +129,7 @@ final class SimNav {
 				continue;
 			}
 			int c = queue[head++];
+			if (terminal[c]) continue;
 			for (int d : PathFinder.NEIGHBOURS8){
 				int n = c + d;
 				if (n < 0 || n >= length || dist[n] >= 0) continue;

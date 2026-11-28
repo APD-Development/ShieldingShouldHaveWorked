@@ -79,6 +79,8 @@ final class SimBot {
 	private boolean piranhaFloor;
 	//the most health a single fight on this floor was judged to cost (Smart and better rest up to it)
 	private float floorFightCost;
+	private int lastSeenHP = Integer.MAX_VALUE;
+	private float noRestUntil = -1;
 	private boolean[] piranhaWater;
 	//goals are kept until reached or no longer valid, so the bot does not flip between two equally near targets
 	private int searchGoal = -1, exploreGoal = -1;
@@ -415,7 +417,16 @@ final class SimBot {
 		int restBudget = this.restBudget == 0 ? 0 : this.restBudget + 200 * foodHeld + (smart() ? 250 : 0);
 		//Smart and better also rest when the hardest fight met on this floor would cost more than they have left
 		boolean tooHurtForThisFloor = smart() && restBudget > 0 && h.HP < Math.min(h.HT * 0.9f, floorFightCost * 1.5f);
-		if (foes.isEmpty() && (h.HP < h.HT * restBelow || tooHurtForThisFloor) && restTurnsThisFloor < restBudget && (hunger == null || !hunger.isHungry())){
+		//resting while something is hurting the hero (an enemy the bot leaves alone, ooze, poison) only loses health:
+		//after a drop in health no resting for a while, and never with the Great Crab close by
+		if (h.HP < lastSeenHP) noRestUntil = Actor.now() + 15;
+		lastSeenHP = h.HP;
+		boolean restUnsafe = Actor.now() < noRestUntil;
+		for (Mob m : level().mobs){
+			if (m instanceof com.shatteredpixel.shatteredpixeldungeon.actors.mobs.GreatCrab && m.isAlive() && level().heroFOV[m.pos]
+					&& level().distance(m.pos, h.pos) <= 6) restUnsafe = true;
+		}
+		if (foes.isEmpty() && !restUnsafe && (h.HP < h.HT * restBelow || tooHurtForThisFloor) && restTurnsThisFloor < restBudget && (hunger == null || !hunger.isHungry())){
 			restStartTurn = com.shatteredpixel.shatteredpixeldungeon.Statistics.apdTurn();
 			h.rest(true);
 			return "rest until healed (" + restTurnsThisFloor + " of " + restBudget + " rest turns used on this floor)";
@@ -1187,7 +1198,7 @@ final class SimBot {
 			//a boss waits on every fifth floor: go down healthy (not Clueless, not Reckless), as long as food allows
 			Hunger hg = hero().buff(Hunger.class);
 			if ((Dungeon.depth + 1) % 5 == 0 && !clueless() && aggression != SimProfile.Aggression.RECKLESS
-					&& hero().HP < hero().HT * 0.9f && (hg == null || !hg.isHungry()) && !tried("bossrest", 6)){
+					&& hero().HP < hero().HT * 0.9f && (hg == null || !hg.isHungry()) && Actor.now() >= noRestUntil && !tried("bossrest", 6)){
 				hero().rest(true);
 				return "rest before the boss floor";
 			}
