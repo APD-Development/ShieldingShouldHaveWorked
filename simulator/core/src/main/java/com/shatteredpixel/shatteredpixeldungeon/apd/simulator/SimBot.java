@@ -183,6 +183,7 @@ final class SimBot {
 			desperation = 0;
 			piranhaFloor = false;
 			piranhaWater = null;
+			doorwaySpot = -1;
 			floorFightCost = 0;
 			restStartTurn = -1;
 			searchesThisFloor = 0;
@@ -396,6 +397,18 @@ final class SimBot {
 			}
 		}
 
+		//doorway ambush under way and the enemy is out of sight behind the wall: finish the walk, then wait for it
+		if (doorwaySpot >= 0 && foes.isEmpty()){
+			if (Actor.now() > doorwayUntil) doorwaySpot = -1;
+			else if (h.pos == doorwaySpot){
+				h.rest(false);
+				return "wait beside the door for what was following";
+			} else {
+				String step = stepToward(nav(false), doorwaySpot, "through a door to ambush what is following");
+				if (step != null) return step;
+				doorwaySpot = -1;
+			}
+		}
 		if (!foes.isEmpty()){
 			String fight = fight(foes);
 			if (fight != null) return fight;
@@ -750,6 +763,19 @@ final class SimBot {
 			}
 		}
 
+		//on the way to a doorway ambush: keep going, then wait beside the door until it steps into the doorway unaware
+		if (doorwaySpot >= 0){
+			Mob target = foes.size() == 1 && foes.get(0).id() == doorwayFor ? foes.get(0) : null;
+			if (target == null || Actor.now() > doorwayUntil || foes.size() != 1) doorwaySpot = -1;
+			else if (h.pos != doorwaySpot){
+				String step = stepToward(nav(false), doorwaySpot, "through a door to ambush " + nameOf(target) + " from beside it");
+				if (step != null) return step;
+				doorwaySpot = -1;
+			} else if (!level().adjacent(h.pos, target.pos)){
+				h.rest(false);
+				return "wait beside the door for " + nameOf(target);
+			} else doorwaySpot = -1;
+		}
 		//one hard-to-hit enemy next to the hero: step out of its sight so it walks into a surprise hit
 		if (reach != null && !clueless() && FightJudge.enabled && foes.size() == 1){
 			String corner = cornerTrick(reach);
@@ -826,10 +852,35 @@ final class SimBot {
 			if (sees[c] || Actor.findChar(c) != null || level().adjacent(c, m.pos)) continue;
 			if (best < 0 || level().distance(c, m.pos) < level().distance(best, m.pos)) best = c;
 		}
-		if (best < 0) return null;
-		cornerWaitUntil = Actor.now() + 3;
-		return tap(best, "step out of " + nameOf(m) + "'s sight so it walks into a surprise hit, to");
+		if (best >= 0){
+			cornerWaitUntil = Actor.now() + 3;
+			return tap(best, "step out of " + nameOf(m) + "'s sight so it walks into a surprise hit, to");
+		}
+		//no blind cell right here: use a doorway. Go through the nearest door and stand beside it on the far side,
+		//off the line of the passage; whatever follows has to step into the doorway without having seen the hero.
+		if (tried("doorway" + m.id(), 2)) return null;
+		int w = level().width();
+		int spot = -1;
+		for (int door = 0; door < level().length(); door++){
+			int t = level().map[door];
+			if ((t != Terrain.DOOR && t != Terrain.OPEN_DOOR) || !nav.reachable(door) || nav.dist[door] > 6 || door == m.pos) continue;
+			for (int d : new int[]{-w - 1, -w + 1, w - 1, w + 1}){
+				int c = door + d;
+				if (c < 0 || c >= level().length() || Math.abs(c % w - door % w) != 1) continue;
+				//beside the door on the far side: two steps past it by the path (through, then sideways)
+				if (!nav.reachable(c) || nav.dist[c] != nav.dist[door] + 2 || Actor.findChar(c) != null) continue;
+				if (spot < 0 || nav.dist[c] < nav.dist[spot]) spot = c;
+			}
+		}
+		if (spot < 0) return null;
+		doorwaySpot = spot;
+		doorwayFor = m.id();
+		doorwayUntil = Actor.now() + nav.dist[spot] + 6;
+		return stepToward(nav, spot, "through a door to ambush " + nameOf(m) + " from beside it");
 	}
+
+	private int doorwaySpot = -1, doorwayFor = -1;
+	private float doorwayUntil = -1;
 
 	//Tengu's bomb (everything within 2 cells when it goes off), his flames and his shock field: cells to get out of
 	//and stay out of. Read from what is on screen: the bomb's place, the burning and crackling cells.
