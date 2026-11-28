@@ -429,6 +429,14 @@ final class SimBot {
 			if (m instanceof com.shatteredpixel.shatteredpixeldungeon.actors.mobs.GreatCrab && m.isAlive() && level().heroFOV[m.pos]
 					&& level().distance(m.pos, h.pos) <= 6) restUnsafe = true;
 		}
+		//a boss is next (this floor is a boss floor not yet sealed, or the floor above one): go in close to full health.
+		//Not Clueless, not Reckless; still never while hungry.
+		boolean bossNext = !clueless() && aggression != SimProfile.Aggression.RECKLESS
+				&& (Dungeon.depth % 5 == 0 || (Dungeon.depth + 1) % 5 == 0) && Dungeon.depth < 26;
+		if (bossNext && h.HP < h.HT * 0.9f){
+			restBudget = Math.max(restBudget, 900);
+			tooHurtForThisFloor = true;
+		}
 		if (foes.isEmpty() && !restUnsafe && (h.HP < h.HT * restBelow || tooHurtForThisFloor) && restTurnsThisFloor < restBudget && (hunger == null || !hunger.isHungry())){
 			restStartTurn = com.shatteredpixel.shatteredpixeldungeon.Statistics.apdTurn();
 			h.rest(true);
