@@ -314,6 +314,7 @@ final class SimBot {
 
 		String free = freeActions();
 		if (free != null) return free;
+		markBossDanger();
 
 		List<Mob> foes = hostiles();
 		Hunger hunger = h.buff(Hunger.class);
@@ -421,7 +422,9 @@ final class SimBot {
 		//after a drop in health no resting for a while, and never with the Great Crab close by
 		if (h.HP < lastSeenHP) noRestUntil = Actor.now() + 15;
 		lastSeenHP = h.HP;
-		boolean restUnsafe = Actor.now() < noRestUntil;
+		//a sealed boss floor gives no health back for resting, and resting "until healed" there never ends
+		boolean restUnsafe = Actor.now() < noRestUntil || level().locked
+				|| h.buff(com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor.class) != null;
 		for (Mob m : level().mobs){
 			if (m instanceof com.shatteredpixel.shatteredpixeldungeon.actors.mobs.GreatCrab && m.isAlive() && level().heroFOV[m.pos]
 					&& level().distance(m.pos, h.pos) <= 6) restUnsafe = true;
@@ -597,6 +600,10 @@ final class SimBot {
 			}
 		}
 
+		if (!clueless()){
+			String tengu = tenguRules(foes);
+			if (tengu != null) return tengu;
+		}
 		//Goo (floor 5 boss), not Clueless: step out of reach while it pumps up its big hit, and pick where to stand
 		if (!clueless()){
 			String goo = gooRules(foes);
@@ -760,6 +767,58 @@ final class SimBot {
 	}
 
 	private boolean holdGround;
+
+	//Tengu's bomb (everything within 2 cells when it goes off), his flames and his shock field: cells to get out of
+	//and stay out of. Read from what is on screen: the bomb's place, the burning and crackling cells.
+	private void markBossDanger(){
+		SimNav.extraDanger = null;
+		SimNav.extraAvoid = null;
+		if (clueless() || level() == null) return;
+		//Tengu's first phase: each time he jumps the game lays dart traps in his cell and shows them for a moment
+		//before they fade from view. A player remembers where they were; so does the bot (not Clueless).
+		if (level() instanceof com.shatteredpixel.shatteredpixeldungeon.levels.PrisonBossLevel
+				&& ((com.shatteredpixel.shatteredpixeldungeon.levels.PrisonBossLevel) level()).state()
+				== com.shatteredpixel.shatteredpixeldungeon.levels.PrisonBossLevel.State.FIGHT_START){
+			boolean[] avoid = new boolean[level().length()];
+			for (com.shatteredpixel.shatteredpixeldungeon.levels.traps.Trap t : level().traps.valueList()){
+				if (t.active && t.pos >= 0 && t.pos < avoid.length) avoid[t.pos] = true;
+			}
+			SimNav.extraAvoid = avoid;
+		}
+		boolean[] mark = null;
+		for (Mob m : level().mobs){
+			if (!(m instanceof com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Tengu)) continue;
+			for (com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff b : m.buffs()){
+				if (b instanceof com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Tengu.BombAbility){
+					int at = ((com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Tengu.BombAbility) b).bombPos;
+					if (at < 0 || at >= level().length()) continue;
+					if (mark == null) mark = new boolean[level().length()];
+					for (int c = 0; c < level().length(); c++) if (level().distance(c, at) <= 2) mark[c] = true;
+				}
+			}
+		}
+		for (Class<? extends com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob> k : java.util.Arrays.asList(
+				com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Tengu.FireAbility.FireBlob.class,
+				com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Tengu.ShockerAbility.ShockerBlob.class)){
+			com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob b = level().blobs.get(k);
+			if (b == null || b.volume <= 0 || b.cur == null) continue;
+			if (mark == null) mark = new boolean[level().length()];
+			for (int c = 0; c < level().length(); c++) if (b.cur[c] > 0) mark[c] = true;
+		}
+		SimNav.extraDanger = mark;
+	}
+
+	//Tengu aims twice as well at range as up close (the game gives him accuracy 20 at range, 10 next to the hero),
+	//so the hero closes in instead of trading shots from across the room
+	private String tenguRules(List<Mob> foes){
+		Mob tengu = null;
+		for (Mob m : foes) if (m instanceof com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Tengu) tengu = m;
+		if (tengu == null || level().adjacent(tengu.pos, hero().pos) || tried("tenguchase", 600)) return null;
+		SimNav nav = nav(false);
+		int goal = nav.approach(level(), tengu.pos);
+		if (goal < 0 || goal == hero().pos) return null;
+		return stepToward(nav, goal, "to get next to Tengu (his aim is half as good up close)");
+	}
 
 	private String gooRules(List<Mob> foes){
 		Hero h = hero();

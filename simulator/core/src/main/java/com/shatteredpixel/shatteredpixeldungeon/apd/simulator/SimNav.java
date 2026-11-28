@@ -82,6 +82,9 @@ final class SimNav {
 			if (heap.type != com.shatteredpixel.shatteredpixeldungeon.items.Heap.Type.HEAP
 					&& heap.type != com.shatteredpixel.shatteredpixeldungeon.items.Heap.Type.FOR_SALE) walk[heap.pos] = false;
 		}
+		if (extraAvoid != null && extraAvoid.length == length){
+			for (int i = 0; i < length; i++) if (extraAvoid[i] && i != origin) walk[i] = false;
+		}
 		if (refused != null) for (int c : refused) if (c >= 0 && c < length) walk[c] = false;
 		//red sentries fire on anyone standing on their room's special floor
 		if (avoidSentries){
@@ -154,7 +157,13 @@ final class SimNav {
 		return t == Terrain.DOOR || t == Terrain.OPEN_DOOR;
 	}
 
+	//cells the bot will not step on (traps it was shown for a moment), set before building a path
+	static boolean[] extraAvoid;
+	//cells the bot has marked as about to hurt (a boss's bomb, flames and shock field), set before building a path
+	static boolean[] extraDanger;
+
 	static boolean danger(Level level, int cell){
+		if (extraDanger != null && cell >= 0 && cell < extraDanger.length && extraDanger[cell]) return true;
 		for (Class<? extends Blob> c : new Class[]{Fire.class, ToxicGas.class, CorrosiveGas.class}){
 			Blob b = level.blobs.get(c);
 			if (b != null && b.volume > 0 && b.cur != null && b.cur[cell] > 0) return true;
