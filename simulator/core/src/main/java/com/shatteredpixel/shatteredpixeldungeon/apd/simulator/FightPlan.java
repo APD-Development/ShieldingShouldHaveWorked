@@ -99,6 +99,8 @@ final class FightPlan {
 		}
 		if (!levelLocked){
 			for (LevelTransition t : level.transitions){
+				//only the way back up: running down the stairs from a fight lands a hurt hero on a harder floor
+				if (t.type != LevelTransition.Type.REGULAR_ENTRANCE) continue;
 				int c = t.cell();
 				int steps = c == h.pos ? 0 : nav.reachable(c) ? nav.dist[c] : -1;
 				if (steps >= 0 && steps <= 15 && (a.stairs < 0 || steps < a.stairsSteps)){ a.stairs = c; a.stairsSteps = steps; }

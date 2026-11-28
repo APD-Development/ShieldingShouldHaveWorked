@@ -220,7 +220,8 @@ final class SimBot {
 			if (m.pos < 0 || m.pos >= level().length() || !level().heroFOV[m.pos]) continue;
 			if (m.invisible > 0) continue;
 			//passive enemies (statues) are an optional fight: only bold simulators start it
-			if (m.state == m.PASSIVE && !Dungeon.level.adjacent(m.pos, hero().pos)
+			//(walking past one does not wake it, so being next to it is no reason to start)
+			if (m.state == m.PASSIVE
 					&& !(optionalFights && aggression.ordinal() >= SimProfile.Aggression.AGGRESSIVE.ordinal())) continue;
 			if (m instanceof Mimic && m.alignment != Char.Alignment.ENEMY) continue;
 			//the Great Crab blocks every hit from whoever it is chasing and walks slowly: a fight the hero can't win head on,
@@ -942,6 +943,8 @@ final class SimBot {
 		SimNav nav = nav(false);
 		int best = -1;
 		for (LevelTransition t : level().transitions){
+			//only the way back up: running down the stairs from a fight lands a hurt hero on a harder floor
+			if (t.type != LevelTransition.Type.REGULAR_ENTRANCE || Dungeon.depth <= 1) continue;
 			int c = t.cell();
 			if (c == hero().pos && !level().locked){
 				lastEscapeTurn = com.shatteredpixel.shatteredpixeldungeon.Statistics.apdTurn();
