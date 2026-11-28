@@ -24,6 +24,14 @@ They contain the current game and a bot that plays it to find bugs and collect b
 ## PC
 Unzip APD-Sim, then run `bin/APD-Sim-Visual` or `bin/APD-Sim-Headless` (`.bat` on Windows). It needs Java 17 or newer. Its files go next to the program; it reads the APD desktop game's history read-only.
 
+**Several at once (PC headless).** Set options in `JAVA_OPTS` before starting, for example
+`JAVA_OPTS="-Dapd.sim.workers=4 -Dapd.sim.runs=400 -Dapd.sim.autostart=1" bin/APD-Sim-Headless`. That starts 4 copies
+(one per processor core is a good number), each in its own `worker-N` folder, and when they finish writes one merged
+`simruns.txt` and `simlog.csv` in the main folder and prints a summary: runs, average deepest floor, how many got past
+floors 5 and 10, wins, and how the runs ended. Add `-Dapd.sim.seedbase=1000` to play the same fixed seeds every time
+(for comparing two versions of the bot); leave it out for random seeds. Other options: `-Dapd.sim.intelligence=SMART`,
+`-Dapd.sim.aggression=CAUTIOUS`, `-Dapd.sim.dir=<folder>`. On a 4-core machine 60 full runs take about 2.5 minutes.
+
 ## The bot
 Hand-written rules only: no AI, no machine learning, nothing trained. Two settings shape it.
 - **Aggression** (Cautious, Normal, Aggressive, Reckless): when it heals, rests, backs off, takes optional fights, tries unknown items.

@@ -26,6 +26,17 @@ public class DesktopSimLauncher {
 		File dir = new File(System.getProperty("apd.sim.dir", System.getProperty("user.home") + File.separator
 				+ (SimRuntime.headlessApp() ? "APD-Sim-Headless" : "APD-Sim-Visual"))).getAbsoluteFile();
 		dir.mkdirs();
+		//several at once: this program only starts the copies, waits and merges their logs
+		int workers = SimWorkers.requested();
+		if (workers > 1){
+			try {
+				System.exit(SimWorkers.run(dir, workers));
+			} catch (Exception e){
+				System.err.println("APD Sim: could not run several at once: " + e);
+				System.exit(2);
+			}
+			return;
+		}
 		String base = dir.getPath() + File.separator;
 		//from this program's jar; the system properties are only for running straight from the build tool
 		Package pkg = DesktopSimLauncher.class.getPackage();

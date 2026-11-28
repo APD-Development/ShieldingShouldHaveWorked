@@ -54,6 +54,25 @@ Before the gear rules 18 of 20 bots met Goo in cloth armor with the starting wea
 Still open on gear: Average spends scrolls on cloth; items above the hero's strength are never worn; no shop buying plan;
 arcane stylus, enchant scrolls and the Ghost reward are not used on purpose. New top killers: DM-100 4, Goo 4.
 
+## Work is split from here (owner, Nov 28): one session on the apps and tools, the next on the bots, and so on
+The owner asked how long until complete and said the last stretch made no progress. Honest position given to him: apps
+and tools about 4 to 6 more sessions; bots that win at the target rates unknown (weeks, not certain). He chose to
+alternate. **Apps and tools session 1 (this one):**
+- **Headless is about 25 times faster for benchmarks.** Profiling: a 29 s run spent 5 s in game frames; the rest was the
+  fade, loading and death screens, timed by the real clock. In headless those run on a 40x clock
+  (`SimGame.headlessScreenSpeed`), except in InterlevelScene's STATIC phase (it has a 10 s levelgen watchdog on the same
+  clock). Each run prints `APDSIM_PERF` (game frames, screen refreshes, ms in game frames). A shorter bot idle time was
+  tried and dropped: it changed every result and was not faster.
+- **Several at once (PC)**: `-Dapd.sim.workers=N` (`SimWorkers`): N copies in `worker-N` folders, merged `simruns.txt` and
+  `simlog.csv`, printed summary. 60 fixed seeds on 3 copies: 139 s (was about an hour with the old scripts). Use this for
+  all bot measurement now; 600 runs is about 25 minutes, so small effects can finally be seen.
+- **Replay between launches** is now about 3 in 4 seeds at current depths (was 29 of 30 when runs were shorter), the same
+  known cause (address-ordered picks). The owner's bar was "close to 75%"; it will fall as bots go deeper. Changing the
+  window size also changes results, so the window size stays fixed.
+- `JudgeLeavesGameAloneTest`: judging 38 kinds of monster on 5 depths changes no loot table and draws no game randomness.
+Still to build on the apps side: headless as an Android foreground service, several at once on the phone, the Visual
+grid of runs, the labs and audits in the complete list, on-screen check of the Boss test button and the summary.
+
 ## Measured on 60 seeds (Nov 28, later): what helped, what did not
 From here every change is measured on 60 fixed seeds (`SIMRUNS=20` per simulator); 30 seeds flattered (5.9 to 6.1 on
 30, 5.6 on 60). **Average baseline 5.60 average deepest floor**: 39 of 60 reach floor 5, 30 get past Goo, 4 reach
