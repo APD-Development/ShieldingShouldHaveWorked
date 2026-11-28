@@ -22,5 +22,7 @@ test {
     //-Papd.audit.seeds=10000 for a big floor audit; CI runs a small one
     systemProperty 'apd.audit.debug', project.findProperty('apd.audit.debug') ?: ''
     systemProperty 'apd.audit.seeds', project.findProperty('apd.audit.seeds') ?: '8'
+    //-Papd.history.dir=/path/to/unpacked/history: checks the fight judge against real recorded fights (never committed)
+    systemProperty 'apd.history.dir', project.findProperty('apd.history.dir') ?: ''
     testLogging { events 'failed'; exceptionFormat 'full'; showStandardStreams = true }
 }

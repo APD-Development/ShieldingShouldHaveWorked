@@ -21,12 +21,12 @@ import java.util.Map;
 final class FightJudge {
 
 	//what one kind of monster does on this depth, measured once from a throwaway copy
-	private static final class Stats {
+	static final class Stats {
 		float avgDamage, maxDamage, avgArmor;
 	}
 
 	private static final Map<String, Stats> cache = new HashMap<>();
-	private static final int SAMPLES = 24;
+	private static final int SAMPLES = 200;
 
 	//off = the bot plays by its older fixed rules (kept so the judge can be measured against them)
 	public static boolean enabled = true;
@@ -57,7 +57,7 @@ final class FightJudge {
 		return accuracy >= evasion ? 1f - evasion / (2f * accuracy) : accuracy / (2f * evasion);
 	}
 
-	private static Stats stats(Mob m){
+	static Stats stats(Mob m){
 		int wraithLevel = 0;
 		if (m instanceof Wraith){
 			Object l = SimUi.field(m, "level");
