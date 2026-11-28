@@ -738,7 +738,7 @@ final class SimBot {
 			if (staff != null && staffCharges(staff) > 0 && has(staff, MagesStaff.AC_ZAP)) return use(staff, MagesStaff.AC_ZAP);
 			for (Item i : items()){
 				//wands and thrown weapons: now and then in an easy fight, every time in one that costs a third of the health left
-				if (i instanceof Wand && ((Wand) i).curCharges > 0 && has(i, Wand.AC_ZAP) && (dangerous || rng.nextInt(2) == 0)) return use(i, Wand.AC_ZAP);
+				if (i instanceof Wand && ((Wand) i).curCharges > 0 && has(i, Wand.AC_ZAP) && (dangerous || Char.hasProp(near, Char.Property.BOSS) || rng.nextInt(2) == 0)) return use(i, Wand.AC_ZAP);
 			}
 			for (Item i : items()){
 				if (i instanceof Potion && ((Potion) i).isKnown() && harmful((Potion) i) && level().distance(h.pos, near.pos) >= 2) return use(i, Item.AC_THROW);
@@ -825,6 +825,14 @@ final class SimBot {
 		SimNav nav = nav(false);
 		int goal = nav.approach(level(), tengu.pos);
 		if (goal < 0 || goal == hero().pos) return null;
+		//more than two steps away with a shot that cannot miss or a bow in hand: shooting now beats walking under fire
+		if (nav.dist[goal] > 2 && new Ballistica(hero().pos, tengu.pos, Ballistica.PROJECTILE).collisionPos == tengu.pos){
+			MagesStaff staff = find(MagesStaff.class);
+			if (staff != null && staffCharges(staff) > 0) return null;
+			SpiritBow bow = find(SpiritBow.class);
+			if (bow != null && has(bow, SpiritBow.AC_SHOOT)) return null;
+			for (Item i : items()) if (i instanceof Wand && ((Wand) i).curCharges > 0) return null;
+		}
 		return stepToward(nav, goal, "to get next to Tengu (his aim is half as good up close)");
 	}
 
