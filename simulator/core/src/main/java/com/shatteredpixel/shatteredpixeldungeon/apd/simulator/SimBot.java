@@ -750,6 +750,11 @@ final class SimBot {
 			}
 		}
 
+		//one hard-to-hit enemy next to the hero: step out of its sight so it walks into a surprise hit
+		if (reach != null && !clueless() && FightJudge.enabled && foes.size() == 1){
+			String corner = cornerTrick(reach);
+			if (corner != null) return corner;
+		}
 		if (reach != null){
 			focusCell = reach.pos;
 			lastAttack = reach;
@@ -777,6 +782,8 @@ final class SimBot {
 			}
 		}
 
+		//just stepped around a corner: wait there for it to come
+		if (Actor.now() < cornerWaitUntil && !level().adjacent(h.pos, near.pos)) holdGround = true;
 		if (holdGround){
 			h.rest(false);
 			return "hold this spot and let " + nameOf(near) + " come";
@@ -796,6 +803,33 @@ final class SimBot {
 	}
 
 	private boolean holdGround;
+	private float cornerWaitUntil = -1;
+
+	//The corner trick, the way players kill snakes. An enemy that comes round a corner or through a door has not seen
+	//the hero yet, and the game lets a swing at an unaware enemy always land. So against one enemy the hero can
+	//barely hit, step to a cell next door that it cannot see, let it follow, hit it, and repeat.
+	private String cornerTrick(Mob m){
+		Hero h = hero();
+		FightJudge.Verdict v = FightJudge.judge(m);
+		if (v.surprise || v.heroHits >= 0.4f || tried("corner" + m.id(), 14)) return null;
+		float speed;
+		try { speed = m.speed(); } catch (Throwable t){ speed = 1f; }
+		//something faster gets a free hit on the way; something at range does not need to follow
+		if (speed > h.speed() || FightPlan.ranged(m)) return null;
+		boolean[] sees = new boolean[level().length()];
+		try { level().updateFieldOfView(m, sees); } catch (Throwable t){ return null; }
+		SimNav nav = nav(false);
+		int best = -1;
+		for (int d : PathFinder.NEIGHBOURS8){
+			int c = h.pos + d;
+			if (c < 0 || c >= level().length() || !nav.reachable(c) || nav.dist[c] != 1) continue;
+			if (sees[c] || Actor.findChar(c) != null || level().adjacent(c, m.pos)) continue;
+			if (best < 0 || level().distance(c, m.pos) < level().distance(best, m.pos)) best = c;
+		}
+		if (best < 0) return null;
+		cornerWaitUntil = Actor.now() + 3;
+		return tap(best, "step out of " + nameOf(m) + "'s sight so it walks into a surprise hit, to");
+	}
 
 	//Tengu's bomb (everything within 2 cells when it goes off), his flames and his shock field: cells to get out of
 	//and stay out of. Read from what is on screen: the bomb's place, the burning and crackling cells.
