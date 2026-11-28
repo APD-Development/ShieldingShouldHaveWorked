@@ -163,8 +163,10 @@ public final class DeathContext {
                 .append(" (window ").append(startTurn).append("-").append(endTurn).append(")\n")
                 .append("Killed by: ").append(cause.isEmpty() ? "not recorded" : cause).append("\n")
                 .append("Outcome: ").append(outcomeText()).append("\n")
-                .append("Observed records only: ").append(observedRecords()).append(" record(s) on ")
-                .append(recordedTurns).append(" turn(s). Empty turns may be unrecorded; ")
+                .append("Observed records only: ").append(observedRecords())
+                .append(observedRecords() == 1 ? " record on " : " records on ")
+                .append(recordedTurns).append(recordedTurns == 1 ? " turn. " : " turns. ")
+                .append("Empty turns may be unrecorded; ")
                 .append("this does not prove survival, causation, or absence of other events.");
         for (Entry entry : entries) {
             out.append("\n- Turn ").append(entry.turn).append(": ").append(entry.text);
